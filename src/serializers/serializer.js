@@ -7,7 +7,7 @@ class Serializer {
 	 *
 	 * @param {Document} doc Retrieved MongoDB object
 	 * @param {Request} req Request object
-	 * @param {{ [includedFields]:string[], [excludedFields]:string[], [starred]:boolean|undefined, [fileIds]:string[], [thumbFlavor]:string, [thumbFormat]:string, [fullThumbData]:boolean, [thumbPerFile]:boolean }} [opts] Additional options for serialization
+	 * @param {{ [includedFields]:string[], [excludedFields]:string[], [starred]:boolean|undefined, [fileIds]:string[], [thumbFlavor]:string, [thumbFormat]:string, [fullThumbData]:boolean, [thumbPerFile]:boolean, [includeProviderId]:string }} [opts] Additional options for serialization
 	 * @return {object} Serialized object
 	 */
 	reduced(doc, req, opts) {
@@ -19,7 +19,7 @@ class Serializer {
 	 *
 	 * @param {Document} doc Retrieved MongoDB object
 	 * @param {Request} req Request object
-	 * @param {{ [includedFields]:string[], [excludedFields]:string[], [starred]:boolean|undefined, [fileIds]:string[], [thumbFlavor]:string, [thumbFormat]:string, [fullThumbData]:boolean, [thumbPerFile]:boolean }} [opts] Additional options for serialization
+	 * @param {{ [includedFields]:string[], [excludedFields]:string[], [starred]:boolean|undefined, [fileIds]:string[], [thumbFlavor]:string, [thumbFormat]:string, [fullThumbData]:boolean, [thumbPerFile]:boolean, [includeProviderId]:string }} [opts] Additional options for serialization
 	 * @return {object} Serialized object
 	 */
 	simple(doc, req, opts) {
@@ -31,7 +31,7 @@ class Serializer {
 	 *
 	 * @param {Document} doc Retrieved MongoDB object
 	 * @param {Request} req Request object
-	 * @param {{ [includedFields]:string[], [excludedFields]:string[], [starred]:boolean|undefined, [fileIds]:string[], [thumbFlavor]:string, [thumbFormat]:string, [fullThumbData]:boolean, [thumbPerFile]:boolean }} [opts] Additional options for serialization
+	 * @param {{ [includedFields]:string[], [excludedFields]:string[], [starred]:boolean|undefined, [fileIds]:string[], [thumbFlavor]:string, [thumbFormat]:string, [fullThumbData]:boolean, [thumbPerFile]:boolean, [includeProviderId]:string }} [opts] Additional options for serialization
 	 * @return {object} Serialized object
 	 */
 	detailed(doc, req, opts) {

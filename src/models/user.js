@@ -31,7 +31,6 @@ const metrics = require('./plugins/metrics');
 
 const config = require('../modules/settings').current;
 const flavor = require('../modules/flavor');
-const pusher = require('../modules/pusher');
 const Schema = mongoose.Schema;
 
 
@@ -109,20 +108,14 @@ UserSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already t
 //-----------------------------------------------------------------------------
 // PLUGINS
 //-----------------------------------------------------------------------------
-UserSchema.plugin(metrics);
 
-//-----------------------------------------------------------------------------
-// API FIELDS
-//-----------------------------------------------------------------------------
-const apiFields = {
-	reduced: ['id', 'name', 'username', 'thumb', 'gravatar_id', 'location'], // "member" search result
-	simple: ['email', 'is_active', 'provider', 'roles', 'plan', 'created_at', 'google', 'github', 'preferences', 'counter']  // "admin" lists & profile
-};
+UserSchema.plugin(metrics);
 
 
 //-----------------------------------------------------------------------------
 // VIRTUALS
 //-----------------------------------------------------------------------------
+
 UserSchema.virtual('password')
 	.set(function(password) {
 		this._password = password;
@@ -131,21 +124,6 @@ UserSchema.virtual('password')
 	})
 	.get(function() {
 		return this._password;
-	});
-
-UserSchema.virtual('gravatar_id')
-	.get(function() {
-		return this.email ? crypto.createHash('md5').update(this.email.toLowerCase()).digest('hex') : null;
-	});
-
-UserSchema.virtual('plan')
-	.get(function() {
-		let plan = _.find(config.vpdb.quota.plans, p => p.id === this._plan);
-		return {
-			id: this._plan,
-			app_tokens_enabled: plan.enableAppTokens,
-			push_notifications_enabled: plan.enableRealtime
-		};
 	});
 
 UserSchema.virtual('planConfig')
@@ -162,6 +140,7 @@ UserSchema.virtual('planConfig')
 //-----------------------------------------------------------------------------
 // MIDDLEWARE
 //-----------------------------------------------------------------------------
+
 UserSchema.pre('validate', function(next) {
 	const user = this.toJSON();
 	if (this.isNew && !this.name) {
@@ -388,18 +367,6 @@ UserSchema.methods.hasRole = function(role) {
 	return UserSchema.statics.toReduced(this);
 };
 
-UserSchema.methods.toReduced = function() {
-	return UserSchema.statics.toReduced(this);
-};
-
-UserSchema.methods.toSimple = function() {
-	return UserSchema.statics.toSimple(this);
-};
-
-UserSchema.methods.toDetailed = function() {
-	return UserSchema.statics.toDetailed(this);
-};
-
 
 //-----------------------------------------------------------------------------
 // STATIC METHODS
@@ -449,68 +416,6 @@ UserSchema.statics.createUser = function(userObj, confirmUserEmail) {
 	});
 };
 
-UserSchema.statics.toReduced = function(user, opts) {
-	opts = opts || {};
-	if (!user) {
-		return user;
-	}
-	const obj = user.toObj ? user.toObj() : user;
-	user = _.extend(_.pick(obj, apiFields.reduced), { counter: _.pick(obj.counter, ['comments', 'stars'] ) });
-	if (opts.providerData && obj[opts.providerData]) {
-		user[opts.providerData] = { id: obj[opts.providerData].id };
-	}
-	return user;
-};
-
-UserSchema.statics.toSimple = function(user, opts) {
-	opts = opts || {};
-	const obj = user.toObj ? user.toObj() : user;
-	user = _.pick(obj, apiFields.reduced.concat(apiFields.simple));
-	if (!_.isEmpty(user.github)) {
-		user.github = UserSchema.statics.normalizeProviderData('github', user.github);
-	}
-	if (!_.isEmpty(user.google)) {
-		user.google = UserSchema.statics.normalizeProviderData('google', user.google);
-	}
-	if (opts.providerData && obj[opts.providerData]) {
-		user[opts.providerData] = { id: obj[opts.providerData].id };
-	}
-	return user;
-};
-
-UserSchema.statics.toDetailed = function(user) {
-	user = user.toObj ? user.toObj() : user;
-	if (!_.isEmpty(user.github)) {
-		user.github = UserSchema.statics.normalizeProviderData('github', user.github);
-	}
-	if (!_.isEmpty(user.google)) {
-		user.google = UserSchema.statics.normalizeProviderData('google', user.google);
-	}
-	return user;
-};
-
-UserSchema.statics.normalizeProviderData = function(provider, data) {
-	switch (provider) {
-		case 'github':
-			return {
-				id: data.id,
-				username: data.login,
-				email: data.email,
-				avatar_url: data.avatar_url,
-				html_url: data.html_url
-			};
-		case 'google':
-			return {
-				id: data.id,
-				username: data.login,
-				email: data.email,
-				avatar_url: data.avatar_url,
-				html_url: data.html_url
-			};
-	}
-};
-
-
 //-----------------------------------------------------------------------------
 // TRIGGERS
 //-----------------------------------------------------------------------------
@@ -530,31 +435,7 @@ UserSchema.post('remove', function(obj, done) {
 //-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
-UserSchema.options.toObject = {
-	virtuals: true,
-	transform: function(doc, user) {
-
-		if (pusher.isUserEnabled(user)) {
-			user.channel_config.api_key = config.vpdb.pusher.options.key;
-		} else {
-			delete user.channel_config;
-		}
-		delete user._id;
-		delete user.__v;
-		delete user._plan;
-		delete user.password_hash;
-		delete user.password_salt;
-		delete user.password;
-		delete user.validated_emails;
-		delete user.emails;
-		delete user.planConfig;
-		if (user.email_status.code === 'confirmed') {
-			delete user.email_status;
-		} else {
-			delete user.email_status.token;
-		}
-	}
-};
+UserSchema.options.toObject = { virtuals: true, versionKey: false };
 
 
 mongoose.model('User', UserSchema);

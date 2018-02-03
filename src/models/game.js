@@ -31,7 +31,6 @@ const fileRef = require('./plugins/file-ref');
 const metrics = require('./plugins/metrics');
 const prettyId = require('./plugins/pretty-id');
 const sortTitle = require('./plugins/sortable-title');
-let ipdb = require('../modules/ipdb');
 const config = require('../modules/settings').current;
 
 const Schema = mongoose.Schema;

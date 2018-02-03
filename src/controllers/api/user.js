@@ -39,6 +39,8 @@ const mailer = require('../../modules/mailer');
 const error = require('../../modules/error')('api', 'user');
 const config = require('../../modules/settings').current;
 
+const UserSerializer = require('../../serializers/user.serializer');
+
 // redis
 const Redis = require('redis');
 Promise.promisifyAll(Redis.RedisClient.prototype);
@@ -61,7 +63,7 @@ exports.view = function(req, res) {
 		return quota.getCurrent(req.user);
 
 	}).then(quota => {
-		api.success(res, _.extend(req.user.toDetailed(), acls, { quota: quota }), 200);
+		api.success(res, _.extend(UserSerializer.detailed(req.user, req), acls, { quota: quota }), 200);
 
 	}).catch(api.handleError(res, error, 'Error retrieving user'));
 };
@@ -234,10 +236,10 @@ exports.update = function(req, res) {
 
 		// return result now and send email afterwards
 		if (testMode && req.body.returnEmailToken) {
-			api.success(res, _.extend(user.toDetailed(), acls, { email_token: user.email_status.token }), 200);
-		} else {
-			api.success(res, _.extend(user.toDetailed(), acls), 200);
+			return api.success(res, _.extend(UserSerializer.detailed(user, req), acls, { email_token: user.email_status.token }), 200);
 		}
+
+		return api.success(res, _.extend(UserSerializer.detailed(user, req), acls), 200);
 
 	}).catch(api.handleError(res, error, 'Error updating user'));
 };
@@ -379,7 +381,7 @@ exports.authenticate = function(req, res) {
 			return {
 				token: token,
 				expires: expires,
-				user: _.extend(user.toSimple(), acls)
+				user: _.extend(UserSerializer.detailed(user, req), acls)
 			};
 		});
 
@@ -543,7 +545,7 @@ function passportCallback(req, res) {
 			api.success(res, {
 				token: token,
 				expires: expires,
-				user: _.extend(user.toSimple(), acls)
+				user: _.extend(UserSerializer.detailed(user, req), acls)
 			}, 200);
 		});
 	};

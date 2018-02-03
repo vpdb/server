@@ -794,7 +794,7 @@ exports.list = function(req, res) {
 			}
 			serializerOpts.fileIds = fileIds;
 			if (req.tokenType === 'application') {
-				serializerOpts.providerData = req.tokenProvider;
+				serializerOpts.includeProviderId = req.tokenProvider;
 			}
 			release = ReleaseSerializer.simple(release, req, serializerOpts);
 			//release = Release.toSimple(release, transformOpts);

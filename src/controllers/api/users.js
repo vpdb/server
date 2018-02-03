@@ -37,6 +37,8 @@ const redis = require('redis').createClient(config.vpdb.redis.port, config.vpdb.
 redis.select(config.vpdb.redis.db);
 redis.on('error', err => logger.error(err.message));
 
+const UserSerializer = require('../../serializers/user.serializer');
+
 /**
  * Creates a new user.
  *
@@ -73,16 +75,18 @@ exports.create = function(req, res) {
 
 		// return result now and send email afterwards
 		if (testMode && req.body.returnEmailToken) {
-			api.success(res, _.extend(user.toDetailed(), { email_token: user.email_status.token }), 201);
+			api.success(res, _.extend(UserSerializer.detailed(user, req), { email_token: user.email_status.token }), 201);
 
 		} else {
-			api.success(res, user.toDetailed(), 201);
+			api.success(res, UserSerializer.detailed(user, req), 201);
 		}
 
 		// user validated and created. time to send the activation email.
 		if (config.vpdb.email.confirmUserEmail) {
 			mailer.registrationConfirmation(user);
 		}
+
+		return null;
 
 	}).catch(api.handleError(res, error, 'Error creating user'));
 };
@@ -177,7 +181,7 @@ exports.createOrUpdate = function(req, res) {
 		});
 
 	}).then(user => {
-		api.success(res, user.toDetailed(), isNew ? 201 : 200);
+		return api.success(res, UserSerializer.detailed(user, req), isNew ? 201 : 200);
 
 	}).catch(api.handleError(res, error, 'Error creating or updating user'));
 };
@@ -239,7 +243,7 @@ exports.list = function(req, res) {
 
 	}).then(users => {
 		// reduce
-		users = users.map(user => canGetFullDetails ? user.toSimple() : user.toReduced());
+		users = users.map(user => canGetFullDetails ? UserSerializer.detailed(user, req) : UserSerializer.simple(user, req));
 		api.success(res, users);
 
 	}).catch(api.handleError(res, error, 'Error listing users'));
@@ -249,8 +253,8 @@ exports.list = function(req, res) {
 /**
  * Updates an existing user.
  *
- * @param {object} req Request object
- * @param {object} res Response object
+ * @param {Request} req Request object
+ * @param {Response} res Response object
  */
 exports.update = function(req, res) {
 
@@ -345,11 +349,11 @@ exports.update = function(req, res) {
 					logger.info('[api|user:update] Marking user <%s> as dirty.', user.email);
 					redis.set('dirty_user_' + user.id, new Date().getTime(), function() {
 						redis.expire('dirty_user_' + user.id, 10000, function() {
-							api.success(res, user.toSimple(), 200);
+							return api.success(res, UserSerializer.detailed(user, req), 200);
 						});
 					});
 				} else {
-					api.success(res, user.toSimple(), 200);
+					return api.success(res, UserSerializer.detailed(user, req), 200);
 				}
 			}, 'Error updating user "%s"'));
 		});
@@ -374,7 +378,7 @@ exports.view = function(req, res) {
 
 		acl.isAllowed(req.user.id, 'users', 'full-details', assert(function(fullDetails) {
 
-			return api.success(res, fullDetails ? user.toDetailed() : user.toReduced());
+			return api.success(res, fullDetails ? UserSerializer.detailed(user, req) : UserSerializer.simple(user, req));
 
 		}, 'Error checking for ACL "users/full-details"'));
 

@@ -1,11 +1,12 @@
 "use strict";
 
 Promise = require('bluebird'); // jshint ignore:line
-var _ = require('lodash');
-var fs = require('fs');
-var argv = require('yargs').argv;
+const _ = require('lodash');
+const fs = require('fs');
+const stringify = require('json-stable-stringify');
+const argv = require('yargs').argv;
 
-var statusMessage = {
+const statusMessage = {
 	200: 'OK',
 	201: 'Created',
 	204: 'No Content',
@@ -42,11 +43,11 @@ module.exports = function(superagent, options) {
 		return '/' + p.join('/');
 	};
 
-	var Request = superagent.Request;
+	const Request = superagent.Request;
 
 	//console.log('Initializing super agent with server %s://%s:%s/\n', options.scheme, options.host, options.port);
 
-	var oldRequest = Request.prototype.request;
+	const oldRequest = Request.prototype.request;
 
 	Request.prototype.request = function() {
 		this.request = oldRequest;
@@ -56,13 +57,13 @@ module.exports = function(superagent, options) {
 		return this.request();
 	};
 
-	var oldCallback = Request.prototype.callback;
+	const oldCallback = Request.prototype.callback;
 
 	// automatic doc request/response generation
 	Request.prototype.callback = function() {
 		this.callback = oldCallback;
-		var dest, dump, forceHeaders;
-		var that = this;
+		let dest, dump, forceHeaders;
+		const that = this;
 		if (this._saveReq) {
 			dest = saveRoot(options.saveRoot, this._saveReq.path, '-req.json');
 			dump = this.req.method + ' ' + options.pathTrim(this.req.path) + ' HTTP/2.0\r\n';
@@ -75,7 +76,7 @@ module.exports = function(superagent, options) {
 			});
 			dump += '\r\n';
 			if (this._data) {
-				dump += JSON.stringify(this._data, null, '  ');
+				dump += stringify(this._data, { space: 3 });
 			}
 			fs.writeFileSync(dest, dump);
 			delete this._saveReq;
@@ -90,8 +91,8 @@ module.exports = function(superagent, options) {
 				}
 			});
 			dump += '\r\n';
-			if (this.res.body) {
-				dump += JSON.stringify(this.res.body, null, '  ');
+			if (this.res.body || this.res.text) {
+				dump += stringify(this.res.body || JSON.parse(this.res.text), { space: 3 });
 			}
 
 			fs.writeFileSync(dest, dump);
@@ -148,7 +149,7 @@ module.exports = function(superagent, options) {
 	 * @return {Promise}
 	 */
 	Request.prototype.promise = function() {
-		var req = this;
+		const req = this;
 		return new Promise((resolve, reject, onCancel) => {
 			req.end(function(err, res) {
 				if (err && err.status) {
@@ -176,13 +177,13 @@ module.exports = function(superagent, options) {
 	 * @return {Promise}
 	 */
 	Request.prototype.then = function() {
-		var promise = this.promise();
+		const promise = this.promise();
 		return promise.then.apply(promise, arguments);
 	};
 };
 
 function saveRoot(root, savePath, suffix) {
-	var p = savePath.split('/', 2);
+	const p = savePath.split('/', 2);
 	root = root + '/' + p[0] + '/http';
 	if (!fs.existsSync(root)) {
 		fs.mkdirSync(root);

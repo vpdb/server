@@ -5,3 +5,8 @@ Content-Type: application/json; charset=utf-8
 Content-Length: 93
 Etag: W/"5d-ekPrQK2SSsxmLMhZOx9gNcCu/P0"
 
+{
+   "description": "A tag, generated for testing purpose.",
+   "id": "mytag",
+   "name": "mytag"
+}

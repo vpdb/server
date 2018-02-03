@@ -1,14 +1,14 @@
 PATCH /v1/user HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwazZodmVxeThwcyIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MTI6MjguMDA3WiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MTI6MjguMDA3WiIsImlydCI6ZmFsc2V9.hq2elIbBLX13Yp_WUe058hDl5sV1N9rOpgGL-73pSWw
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa3E5c2RlYXI1OSIsImlhdCI6IjIwMTgtMDItMDNUMjI6Mjc6MzQuMDk2WiIsImV4cCI6IjIwMTgtMDItMDNUMjM6Mjc6MzQuMDk2WiIsImlydCI6ZmFsc2V9.6BCy0lgGLCPh5Ctbk_m7XipPdfGxxovRHfPJyaLjVWk
 Content-Type: application/json
 Content-Length: 134
 
 {
-  "name": "Corbin Volkman",
-  "location": "Hilllside",
-  "email": "manuela76@yahoo.com",
-  "current_password": "fkoYFHjyIq",
-  "password": "VF2bSQI0li"
+   "current_password": "TUGpbEGUBg",
+   "email": "aric34@gmail.com",
+   "location": "Cristianland",
+   "name": "Shayne Gaylord",
+   "password": "7hX81WcqMI"
 }

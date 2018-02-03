@@ -2,6 +2,18 @@
 Access-Control-Allow-Origin: *
 Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Content-Length: 181
-Etag: W/"b5-0v0WxX+sVr1ZypRBtX78LvKHwB4"
+Content-Length: 180
+Etag: W/"b4-Oy88SDNLpQ65lxg8+jWCIDd2fmM"
 
+[
+   {
+      "counter": {
+         "comments": 0,
+         "stars": 0
+      },
+      "gravatar_id": "239e810b3ae29ce11309d57512ecba4a",
+      "id": "p2tys3ea5rs",
+      "name": "Ruby99",
+      "username": "Ruby99"
+   }
+]

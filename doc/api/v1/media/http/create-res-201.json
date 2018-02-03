@@ -2,6 +2,104 @@
 Access-Control-Allow-Origin: *
 Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Etag: W/"8a7-hdOIW4F989jE3EkVTVpN/wNwG0Q"
+Etag: W/"8ba-uQludeeJEc1299hUPeQSg46ixP8"
 Content-Encoding: gzip
 
+{
+   "acknowledgements": "- Thanks to @mom for all her patience",
+   "category": "backglass_image",
+   "created_at": "2018-02-03T22:23:58.916Z",
+   "created_by": {
+      "counter": {
+         "comments": 0,
+         "stars": 0
+      },
+      "gravatar_id": "5557bee28244ded8713b2eadbcbb204f",
+      "id": "e2uu2ear59",
+      "name": "LaylaBartoletti",
+      "username": "LaylaBartoletti"
+   },
+   "description": "This is a very super high resolution backglass that I have stitched together from four different sources.",
+   "file": {
+      "bytes": 135,
+      "counter": {
+         "downloads": 0
+      },
+      "created_at": "2018-02-03T22:23:57.656Z",
+      "file_type": "backglass",
+      "id": "pkz9a2pn5rs",
+      "is_protected": true,
+      "metadata": {
+         "depth": 8,
+         "format": "PNG",
+         "size": {
+            "height": 512,
+            "width": 640
+         }
+      },
+      "mime_type": "image/png",
+      "name": "backglass.png",
+      "url": "http://localhost:7357/storage/v1/files/pkz9a2pn5rs.png",
+      "variations": {
+         "full": {
+            "bytes": 2448,
+            "height": 512,
+            "mime_type": "image/jpeg",
+            "url": "http://localhost:7357/storage/public/files/full/pkz9a2pn5rs.jpg",
+            "width": 640
+         },
+         "medium": {
+            "bytes": 1188,
+            "height": 291,
+            "mime_type": "image/jpeg",
+            "url": "http://localhost:7357/storage/public/files/medium/pkz9a2pn5rs.jpg",
+            "width": 364
+         },
+         "medium-2x": {
+            "bytes": 3082,
+            "height": 582,
+            "mime_type": "image/jpeg",
+            "url": "http://localhost:7357/storage/public/files/medium-2x/pkz9a2pn5rs.jpg",
+            "width": 728
+         },
+         "small": {
+            "bytes": 836,
+            "height": 202,
+            "mime_type": "image/jpeg",
+            "url": "http://localhost:7357/storage/public/files/small/pkz9a2pn5rs.jpg",
+            "width": 253
+         },
+         "small-2x": {
+            "bytes": 1776,
+            "height": 404,
+            "mime_type": "image/jpeg",
+            "url": "http://localhost:7357/storage/public/files/small-2x/pkz9a2pn5rs.jpg",
+            "width": 505
+         }
+      }
+   },
+   "game": {
+      "counter": {
+         "comments": 0,
+         "downloads": 0,
+         "releases": 0,
+         "stars": 0,
+         "views": 0
+      },
+      "game_type": "pm",
+      "id": "blue-streak",
+      "ipdb": {
+         "mfg": 106,
+         "number": 4206
+      },
+      "manufacturer": "Dudley-Clark Company",
+      "rating": {
+         "average": 0,
+         "score": 0,
+         "votes": 0
+      },
+      "title": "Blue Streak",
+      "year": 1934
+   },
+   "id": "ek1ckpn5r9"
+}

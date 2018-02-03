@@ -1,55 +1,55 @@
 POST /v1/releases HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla3Y0cGc0eW1lcyIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MDk6MjkuNzE5WiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MDk6MjkuNzE5WiIsImlydCI6ZmFsc2V9.QnNEwYyekk492DzuOKoxxtJfq0-cDrgtiLAjMFko4Y8
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMjc0czllbnJycyIsImlhdCI6IjIwMTgtMDItMDNUMjI6MjQ6MzguNDA2WiIsImV4cCI6IjIwMTgtMDItMDNUMjM6MjQ6MzguNDA2WiIsImlydCI6ZmFsc2V9.bscLgkd58EfQPdgCbpQMVovLch-bHX7qTZYuYUjDW2w
 Content-Type: application/json
-Content-Length: 521
+Content-Length: 548
 
 {
-  "name": "release",
-  "license": "by-sa",
-  "_game": "sw",
-  "versions": [
-    {
-      "files": [
-        {
-          "released_at": "2015-01-01T00:00:00.000Z",
-          "_file": "e2h4yc4ymps",
-          "_playfield_image": "pkaxzc4zme9",
-          "_compatibility": [
-            "9.9.0"
-          ],
-          "flavor": {
-            "orientation": "fs",
-            "lighting": "night"
-          }
-        },
-        {
-          "_file": "ekzxz7xz8e9",
-          "_playfield_image": "ekd4y7xy8p9",
-          "_compatibility": [
-            "9.9.0"
-          ],
-          "flavor": {
-            "orientation": "fs",
-            "lighting": "day"
-          }
-        }
-      ],
-      "version": "1.0.0",
-      "released_at": "2015-08-01T00:00:00.000Z"
-    }
-  ],
-  "authors": [
-    {
-      "_user": "ekv4pg4ymes",
-      "roles": [
-        "Table Creator"
-      ]
-    }
-  ],
-  "_tags": [
-    "hd",
-    "dof"
-  ]
+   "_game": "elektro-bomber-brillant-type-1",
+   "_tags": [
+      "hd",
+      "dof"
+   ],
+   "authors": [
+      {
+         "_user": "p274s9enrrs",
+         "roles": [
+            "Table Creator"
+         ]
+      }
+   ],
+   "license": "by-sa",
+   "name": "release",
+   "versions": [
+      {
+         "files": [
+            {
+               "_compatibility": [
+                  "9.9.0"
+               ],
+               "_file": "ek2939ear5s",
+               "_playfield_image": "ekp939enrr9",
+               "flavor": {
+                  "lighting": "night",
+                  "orientation": "fs"
+               },
+               "released_at": "2015-01-01T00:00:00.000Z"
+            },
+            {
+               "_compatibility": [
+                  "9.9.0"
+               ],
+               "_file": "pkb93spa5r9",
+               "_playfield_image": "pkyo9pn5rs",
+               "flavor": {
+                  "lighting": "day",
+                  "orientation": "fs"
+               }
+            }
+         ],
+         "released_at": "2015-08-01T00:00:00.000Z",
+         "version": "1.0.0"
+      }
+   ]
 }

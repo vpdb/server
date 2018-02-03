@@ -5,3 +5,19 @@ Content-Type: application/json; charset=utf-8
 Content-Length: 387
 Etag: W/"183-VE2WSYb6SbOJ9qpy6XsHg8xUwBg"
 
+{
+   "errors": [
+      {
+         "field": "_file",
+         "message": "You must provide a file reference."
+      },
+      {
+         "field": "_ref",
+         "message": "Reference to game missing."
+      },
+      {
+         "field": "category",
+         "message": "Must provide sub-category for \"flyer_image\". Possible values: [ \"back\", \"front\", \"inside1\", \"inside2\", \"inside3\", \"inside4\", \"inside5\", \"inside6\" ]."
+      }
+   ]
+}

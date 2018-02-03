@@ -2,6 +2,9 @@
 Access-Control-Allow-Origin: *
 Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Content-Length: 86
-Etag: W/"56-IJkJwq8NdyqzcOLQwpVuyel12s8"
+Content-Length: 91
+Etag: W/"5b-O/VYtT6vRJslovdWLCkKzuwuGto"
 
+{
+   "error": "No star for <linnea_blanda27@hotmail.com> for \"cullen67@gmail.com\" found."
+}

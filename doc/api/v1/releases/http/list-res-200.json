@@ -5,6 +5,392 @@ X-List-Page: 1
 X-List-Size: 12
 X-List-Count: 4
 Content-Type: application/json; charset=utf-8
-Etag: W/"1dde-oRQbriWbrlaZS3cIy/mJ0pDWNAU"
+Etag: W/"1d6d-H1F6lIlicL/dP8yVPTD9WkNbzqk"
 Content-Encoding: gzip
 
+[
+   {
+      "authors": [
+         {
+            "roles": [
+               "Table Creator"
+            ],
+            "user": {
+               "counter": {
+                  "comments": 0,
+                  "stars": 0
+               },
+               "gravatar_id": "d8bd0020afab0564ae9e6ebc0181bb20",
+               "id": "p2q97near5s",
+               "name": "TomReichert",
+               "username": "TomReichert"
+            }
+         }
+      ],
+      "counter": {
+         "comments": 0,
+         "downloads": 0,
+         "stars": 0,
+         "views": 0
+      },
+      "created_at": "2018-02-03T22:26:54.850Z",
+      "game": {
+         "id": "cue-ball",
+         "manufacturer": "Williams",
+         "title": "Cue Ball",
+         "year": 1956
+      },
+      "id": "e2pbc6pnrrs",
+      "name": "Implemented Edition",
+      "released_at": "2015-08-30T12:00:00.000Z",
+      "thumb": {
+         "flavor": {
+            "lighting": "day",
+            "orientation": "fs"
+         },
+         "image": {
+            "height": 120,
+            "url": "http://localhost:7357/storage/public/files/square/ek49tgear5s.jpg",
+            "width": 120
+         }
+      },
+      "versions": [
+         {
+            "files": [
+               {
+                  "compatibility": [
+                     {
+                        "id": "10.x"
+                     }
+                  ],
+                  "file": {
+                     "bytes": 135168,
+                     "id": "p28hvgear5s",
+                     "mime_type": "application/x-visual-pinball-table",
+                     "name": "test-table-0.vpt"
+                  },
+                  "flavor": {
+                     "lighting": "night",
+                     "orientation": "fs"
+                  },
+                  "released_at": "2015-08-30T12:00:00.000Z"
+               },
+               {
+                  "compatibility": [
+                     {
+                        "id": "10.x"
+                     }
+                  ],
+                  "file": {
+                     "bytes": 135168,
+                     "id": "e2dht6ea55s",
+                     "mime_type": "application/x-visual-pinball-table",
+                     "name": "test-table-1.vpt"
+                  },
+                  "flavor": {
+                     "lighting": "day",
+                     "orientation": "fs"
+                  },
+                  "released_at": "2015-08-30T12:00:00.000Z"
+               }
+            ],
+            "released_at": "2015-08-30T12:00:00.000Z",
+            "version": "2.0"
+         },
+         {
+            "files": [
+               {
+                  "compatibility": [
+                     {
+                        "id": "10.x"
+                     }
+                  ],
+                  "file": {
+                     "bytes": 135168,
+                     "id": "p21hv6enr59",
+                     "mime_type": "application/x-visual-pinball-table",
+                     "name": "test-table-2.vpt"
+                  },
+                  "flavor": {
+                     "lighting": "night",
+                     "orientation": "ws"
+                  },
+                  "released_at": "2015-07-01T12:00:00.000Z"
+               }
+            ],
+            "released_at": "2015-07-01T12:00:00.000Z",
+            "version": "1.0"
+         }
+      ]
+   },
+   {
+      "authors": [
+         {
+            "roles": [
+               "Table Creator"
+            ],
+            "user": {
+               "counter": {
+                  "comments": 0,
+                  "stars": 0
+               },
+               "gravatar_id": "d8bd0020afab0564ae9e6ebc0181bb20",
+               "id": "p2q97near5s",
+               "name": "TomReichert",
+               "username": "TomReichert"
+            }
+         }
+      ],
+      "counter": {
+         "comments": 0,
+         "downloads": 0,
+         "stars": 0,
+         "views": 0
+      },
+      "created_at": "2018-02-03T22:26:40.486Z",
+      "game": {
+         "id": "gremlins",
+         "manufacturer": "Pinball Shop",
+         "title": "Gremlins",
+         "year": 1988
+      },
+      "id": "pkmh8aenrrs",
+      "name": "Triple-buffered Edition",
+      "released_at": "2018-02-03T22:26:40.486Z",
+      "thumb": {
+         "flavor": {
+            "lighting": "night",
+            "orientation": "fs"
+         },
+         "image": {
+            "height": 120,
+            "url": "http://localhost:7357/storage/public/files/square/ekfb8aea55s.jpg",
+            "width": 120
+         }
+      },
+      "versions": [
+         {
+            "files": [
+               {
+                  "compatibility": [
+                     {
+                        "id": "9.9.0"
+                     }
+                  ],
+                  "file": {
+                     "bytes": 135168,
+                     "id": "pk8npar5s",
+                     "mime_type": "application/x-visual-pinball-table",
+                     "name": "test-table-0.vpt"
+                  },
+                  "flavor": {
+                     "lighting": "night",
+                     "orientation": "fs"
+                  },
+                  "released_at": "2018-02-03T22:26:40.486Z"
+               }
+            ],
+            "released_at": "2018-02-03T22:26:40.486Z",
+            "version": "1.0.0"
+         }
+      ]
+   },
+   {
+      "authors": [
+         {
+            "roles": [
+               "Table Creator"
+            ],
+            "user": {
+               "counter": {
+                  "comments": 0,
+                  "stars": 0
+               },
+               "gravatar_id": "d8bd0020afab0564ae9e6ebc0181bb20",
+               "id": "p2q97near5s",
+               "name": "TomReichert",
+               "username": "TomReichert"
+            }
+         }
+      ],
+      "counter": {
+         "comments": 0,
+         "downloads": 0,
+         "stars": 0,
+         "views": 0
+      },
+      "created_at": "2018-02-03T22:26:43.280Z",
+      "game": {
+         "id": "crossroads",
+         "manufacturer": "Gottlieb",
+         "title": "Crossroads",
+         "year": 1952
+      },
+      "id": "ek2h26pn5rs",
+      "name": "Future-proofed Edition",
+      "released_at": "2018-02-03T22:26:43.280Z",
+      "thumb": {
+         "flavor": {
+            "lighting": "night",
+            "orientation": "fs"
+         },
+         "image": {
+            "height": 120,
+            "url": "http://localhost:7357/storage/public/files/square/ek49oaenrr9.jpg",
+            "width": 120
+         }
+      },
+      "versions": [
+         {
+            "files": [
+               {
+                  "compatibility": [
+                     {
+                        "id": "9.9.0"
+                     }
+                  ],
+                  "file": {
+                     "bytes": 135168,
+                     "id": "p2uyoapa5rs",
+                     "mime_type": "application/x-visual-pinball-table",
+                     "name": "test-table-0.vpt"
+                  },
+                  "flavor": {
+                     "lighting": "night",
+                     "orientation": "fs"
+                  },
+                  "released_at": "2018-02-03T22:26:43.280Z"
+               },
+               {
+                  "compatibility": [
+                     {
+                        "id": "9.9.0"
+                     }
+                  ],
+                  "file": {
+                     "bytes": 135168,
+                     "id": "p2ty1npnrr9",
+                     "mime_type": "application/x-visual-pinball-table",
+                     "name": "test-table-1.vpt"
+                  },
+                  "flavor": {
+                     "lighting": "day",
+                     "orientation": "ws"
+                  },
+                  "released_at": "2018-02-03T22:26:43.280Z"
+               }
+            ],
+            "released_at": "2018-02-03T22:26:43.280Z",
+            "version": "1.0"
+         }
+      ]
+   },
+   {
+      "authors": [
+         {
+            "roles": [
+               "Table Creator"
+            ],
+            "user": {
+               "counter": {
+                  "comments": 0,
+                  "stars": 0
+               },
+               "gravatar_id": "d8bd0020afab0564ae9e6ebc0181bb20",
+               "id": "p2q97near5s",
+               "name": "TomReichert",
+               "username": "TomReichert"
+            }
+         }
+      ],
+      "counter": {
+         "comments": 0,
+         "downloads": 0,
+         "stars": 0,
+         "views": 0
+      },
+      "created_at": "2018-02-03T22:26:47.201Z",
+      "game": {
+         "id": "wizard",
+         "manufacturer": "Gottlieb",
+         "title": "Wizard",
+         "year": 1971
+      },
+      "id": "p2qe6ear5s",
+      "name": "Proactive Edition",
+      "released_at": "2018-02-03T22:26:47.201Z",
+      "thumb": {
+         "flavor": {
+            "lighting": "any",
+            "orientation": "fs"
+         },
+         "image": {
+            "height": 120,
+            "url": "http://localhost:7357/storage/public/files/square/ek946ea5rs.jpg",
+            "width": 120
+         }
+      },
+      "versions": [
+         {
+            "files": [
+               {
+                  "compatibility": [
+                     {
+                        "id": "10.x"
+                     }
+                  ],
+                  "file": {
+                     "bytes": 135168,
+                     "id": "e2es96pn5rs",
+                     "mime_type": "application/x-visual-pinball-table",
+                     "name": "test-table-0.vpt"
+                  },
+                  "flavor": {
+                     "lighting": "any",
+                     "orientation": "fs"
+                  },
+                  "released_at": "2018-02-03T22:26:47.201Z"
+               },
+               {
+                  "compatibility": [
+                     {
+                        "id": "10.x"
+                     }
+                  ],
+                  "file": {
+                     "bytes": 135168,
+                     "id": "e259sgpa5rs",
+                     "mime_type": "application/x-visual-pinball-table",
+                     "name": "test-table-1.vpt"
+                  },
+                  "flavor": {
+                     "lighting": "night",
+                     "orientation": "any"
+                  },
+                  "released_at": "2018-02-03T22:26:47.201Z"
+               },
+               {
+                  "compatibility": [
+                     {
+                        "id": "10.x"
+                     }
+                  ],
+                  "file": {
+                     "bytes": 135168,
+                     "id": "p2ussgpar5s",
+                     "mime_type": "application/x-visual-pinball-table",
+                     "name": "test-table-2.vpt"
+                  },
+                  "flavor": {
+                     "lighting": "any",
+                     "orientation": "any"
+                  },
+                  "released_at": "2018-02-03T22:26:47.201Z"
+               }
+            ],
+            "released_at": "2018-02-03T22:26:47.201Z",
+            "version": "2.0"
+         }
+      ]
+   }
+]

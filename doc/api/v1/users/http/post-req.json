@@ -2,10 +2,10 @@ POST /v1/users HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Content-Length: 88
+Content-Length: 85
 
 {
-  "username": "Daniella92",
-  "password": "OSXuD4LVJl",
-  "email": "angeline_waelchi@hotmail.com"
+   "email": "madison94@hotmail.com",
+   "password": "jnYp00SfKy",
+   "username": "MadilynPagac99"
 }

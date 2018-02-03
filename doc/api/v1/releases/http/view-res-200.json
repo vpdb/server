@@ -2,6 +2,187 @@
 Access-Control-Allow-Origin: *
 Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Etag: W/"15f0-HDJKgrecygj42RUHUcFxfiF2fz0"
+Etag: W/"15c5-p7F3WtlI4G7Q2l4+q/2rUO2HSK8"
 Content-Encoding: gzip
 
+{
+   "authors": [
+      {
+         "roles": [
+            "Table Creator"
+         ],
+         "user": {
+            "counter": {
+               "comments": 0,
+               "stars": 0
+            },
+            "gravatar_id": "019aa402725dc36f824cee47c1681c45",
+            "id": "p2bhsapa55s",
+            "name": "ArnoldBrown",
+            "username": "ArnoldBrown"
+         }
+      }
+   ],
+   "counter": {
+      "comments": 0,
+      "downloads": 0,
+      "stars": 0,
+      "views": 0
+   },
+   "created_at": "2018-02-03T22:26:35.421Z",
+   "created_by": {
+      "counter": {
+         "comments": 0,
+         "stars": 0
+      },
+      "gravatar_id": "019aa402725dc36f824cee47c1681c45",
+      "id": "p2bhsapa55s",
+      "name": "ArnoldBrown",
+      "username": "ArnoldBrown"
+   },
+   "game": {
+      "id": "oxo",
+      "manufacturer": "Williams",
+      "title": "OXO",
+      "year": 1973
+   },
+   "id": "p24zfaea559",
+   "license": "by-sa",
+   "links": [
+   ],
+   "metrics": {
+      "popularity": 0
+   },
+   "modified_at": "2018-02-03T22:26:35.421Z",
+   "name": "Devolved Edition",
+   "name_sortable": "Devolved Edition",
+   "rating": {
+      "average": 0,
+      "score": 0,
+      "votes": 0
+   },
+   "released_at": "2018-02-03T22:26:35.421Z",
+   "tags": [
+   ],
+   "thumb": {
+      "flavor": {
+         "lighting": "night",
+         "orientation": "fs"
+      },
+      "image": {
+         "height": 1920,
+         "is_protected": true,
+         "url": "http://localhost:7357/storage/v1/files/p21hfnpa55s.png",
+         "width": 1080
+      }
+   },
+   "versions": [
+      {
+         "counter": {
+            "comments": 0,
+            "downloads": 0
+         },
+         "files": [
+            {
+               "compatibility": [
+                  {
+                     "built_at": "2014-04-29T00:00:00.000Z",
+                     "download_url": "http://www.vpforums.org/index.php?app=downloads&showfile=8793",
+                     "id": "9.9.0",
+                     "is_range": false,
+                     "label": "v9.9.0",
+                     "major_version": "9",
+                     "platform": "vp",
+                     "type": "release"
+                  }
+               ],
+               "counter": {
+                  "downloads": 0
+               },
+               "file": {
+                  "bytes": 135168,
+                  "cost": 1,
+                  "counter": {
+                     "downloads": 0
+                  },
+                  "created_at": "2018-02-03T22:26:35.054Z",
+                  "file_type": "release",
+                  "id": "ek5hfnpnr5s",
+                  "is_protected": true,
+                  "metadata": {
+                     "author_email": "_table_email_",
+                     "author_name": "_table_author_",
+                     "author_website": "_table_website_",
+                     "release_date": "_table_release_date_",
+                     "table_description": "_table_description_",
+                     "table_name": "_table_name_",
+                     "table_rules": "_table_rules_",
+                     "table_script": "Sub Table1_KeyDown(ByVal keycode)\r\r\tIf keycode = PlungerKey Then\r\t\tPlunger.PullBack\r\tEnd If\r\r\tIf keycode = LeftFlipperKey Then\r\t\tLeftFlipper.RotateToEnd\r\t\tPlaySound \"FlipperUp\",0,1,-0.1,0.25\r\tEnd If\r    \r\tIf keycode = RightFlipperKey Then\r\t\tRightFlipper.RotateToEnd\r\r\t\tPlaySound \"FlipperUp\",0,1,0.1,0.25\r\tEnd If\r    \r\tIf keycode = LeftTiltKey Then\r\t\tNudge 90, 2\r\tEnd If\r    \r\tIf keycode = RightTiltKey Then\r\t\tNudge 270, 2\r\tEnd If\r    \r\tIf keycode = CenterTiltKey Then\r\t\tNudge 0, 2\r\tEnd If\r    \rEnd Sub\r\rSub Table1_KeyUp(ByVal keycode)\r\r\tIf keycode = PlungerKey Then\r\t\tPlunger.Fire\r\tEnd If\r    \r\tIf keycode = LeftFlipperKey Then\r\t\tLeftFlipper.RotateToStart\r\t\tPlaySound \"FlipperDown\",0,1,-0.1,0.25\r\tEnd If\r    \r\tIf keycode = RightFlipperKey Then\r\t\tRightFlipper.RotateToStart\r        \r\t\tPlaySound \"FlipperDown\",0,1,0.1,0.25\r\tEnd If\r\rEnd Sub\r\rSub Drain_Hit()\r\tDrain.DestroyBall\r\tPlunger.CreateBall\r\tPlaySound \"Plunger\",0,1,0,0.25\rEnd Sub\r\rSub LeftSlingshot_Slingshot()\r\tPlaySound \"Bumper\",0,1,-0.15,0.25\rEnd Sub\r\rSub RightSlingshot_Slingshot()\r\tPlaySound \"Bumper\",0,1,0.15,0.25\rEnd Sub\r\rSub Plunger_Init()\r\tPlaySound \"Plunger\",0,0.5,0.5,0.25\r\tPlunger.CreateBall\rEnd Sub",
+                     "table_version": "_table_version_"
+                  },
+                  "mime_type": "application/x-visual-pinball-table",
+                  "name": "test-table-0.vpt",
+                  "url": "http://localhost:7357/storage/v1/files/ek5hfnpnr5s.vpt",
+                  "variations": {
+                  }
+               },
+               "flavor": {
+                  "lighting": "night",
+                  "orientation": "fs"
+               },
+               "playfield_image": {
+                  "bytes": 348,
+                  "counter": {
+                     "downloads": 0
+                  },
+                  "created_at": "2018-02-03T22:26:35.117Z",
+                  "file_type": "playfield-fs",
+                  "id": "p21hfnpa55s",
+                  "is_active": true,
+                  "is_protected": true,
+                  "metadata": {
+                     "depth": 8,
+                     "format": "PNG",
+                     "size": {
+                        "height": 1920,
+                        "width": 1080
+                     }
+                  },
+                  "mime_type": "image/png",
+                  "name": "playfield-0.png",
+                  "url": "http://localhost:7357/storage/v1/files/p21hfnpa55s.png",
+                  "variations": {
+                     "full": {
+                        "url": "http://localhost:7357/storage/public/files/full/p21hfnpa55s.jpg"
+                     },
+                     "hyperpin": {
+                        "url": "http://localhost:7357/storage/public/files/hyperpin/p21hfnpa55s.png"
+                     },
+                     "landscape": {
+                        "url": "http://localhost:7357/storage/public/files/landscape/p21hfnpa55s.jpg"
+                     },
+                     "landscape-2x": {
+                        "url": "http://localhost:7357/storage/public/files/landscape-2x/p21hfnpa55s.jpg"
+                     },
+                     "medium": {
+                        "url": "http://localhost:7357/storage/public/files/medium/p21hfnpa55s.jpg"
+                     },
+                     "medium-2x": {
+                        "url": "http://localhost:7357/storage/public/files/medium-2x/p21hfnpa55s.jpg"
+                     },
+                     "square": {
+                        "url": "http://localhost:7357/storage/public/files/square/p21hfnpa55s.jpg"
+                     },
+                     "square-2x": {
+                        "url": "http://localhost:7357/storage/public/files/square-2x/p21hfnpa55s.jpg"
+                     }
+                  }
+               },
+               "released_at": "2018-02-03T22:26:35.421Z"
+            }
+         ],
+         "released_at": "2018-02-03T22:26:35.421Z",
+         "version": "1.0.0"
+      }
+   ]
+}

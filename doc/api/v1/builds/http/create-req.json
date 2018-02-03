@@ -1,18 +1,18 @@
 POST /v1/builds HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa3p5ZWU0ejhwcyIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MDg6MDkuMDEyWiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MDg6MDkuMDEyWiIsImlydCI6ZmFsc2V9.29kq1xn75IK0k3VSxvxN9ckBUQMFnXhq8F6euKfTDxk
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla3BxcjN3bnI1cyIsImlhdCI6IjIwMTgtMDItMDNUMjI6MjM6MjIuNzAwWiIsImV4cCI6IjIwMTgtMDItMDNUMjM6MjM6MjIuNzAwWiIsImlydCI6ZmFsc2V9.bkK_FgKEQWYvPsnJqsHlPABIyx2P3FbYypZw97qzvz0
 Content-Type: application/json
 Content-Length: 232
 
 {
-  "label": "v1.0.1",
-  "platform": "vp",
-  "major_version": "1",
-  "type": "release",
-  "description": "The very first release.",
-  "download_url": "http://download_url/",
-  "support_url": "http://support_url/",
-  "built_at": "2000-01-01 12:21",
-  "is_range": false
+   "built_at": "2000-01-01 12:21",
+   "description": "The very first release.",
+   "download_url": "http://download_url/",
+   "is_range": false,
+   "label": "v1.0.1",
+   "major_version": "1",
+   "platform": "vp",
+   "support_url": "http://support_url/",
+   "type": "release"
 }

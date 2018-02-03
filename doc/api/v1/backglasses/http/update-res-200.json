@@ -2,6 +2,85 @@
 Access-Control-Allow-Origin: *
 Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Etag: W/"703-hJP7qFQCKWBCToItdl0lI1nGVf0"
+Etag: W/"722-wYICOY/xQcADGm0dKa+GqQCIqk8"
 Content-Encoding: gzip
 
+{
+   "acknowledgements": "Thanks to @mom for supporting me.",
+   "authors": [
+      {
+         "roles": [
+            "creator"
+         ],
+         "user": {
+            "counter": {
+               "comments": 0,
+               "stars": 0
+            },
+            "gravatar_id": "e0d99a2b02a03f2af2d5c8409f95a8b4",
+            "id": "p2dqrmwnr5s",
+            "name": "ZanderBatz",
+            "username": "ZanderBatz"
+         }
+      }
+   ],
+   "created_at": "2018-02-03T22:23:07.091Z",
+   "created_by": {
+      "counter": {
+         "comments": 0,
+         "stars": 0
+      },
+      "gravatar_id": "a5f44ac82865dc06ad10576e1f654151",
+      "id": "e2nq5mqnrr9",
+      "name": "KarleyHansen55",
+      "username": "KarleyHansen55"
+   },
+   "description": "It is a fantasy backglass that does not contain any more spelling errors.",
+   "game": {
+      "id": "deadville-one-ball",
+      "ipdb": {
+         "mfg": 590,
+         "number": 6206
+      },
+      "manufacturer": "The Slot Construction Company B.V.B.A.",
+      "title": "Deadville One Ball",
+      "year": 1900
+   },
+   "id": "pksbfmwn55s",
+   "versions": [
+      {
+         "counter": {
+            "downloads": 0
+         },
+         "file": {
+            "bytes": 2067,
+            "counter": {
+               "downloads": 0
+            },
+            "id": "p29umqn559",
+            "is_protected": true,
+            "name": "test.directb2s",
+            "url": "http://localhost:7357/storage/v1/files/p29umqn559.directb2s",
+            "variations": {
+               "full": {
+                  "url": "http://localhost:7357/storage/public/files/full/p29umqn559.jpg"
+               },
+               "medium": {
+                  "url": "http://localhost:7357/storage/public/files/medium/p29umqn559.jpg"
+               },
+               "medium-2x": {
+                  "url": "http://localhost:7357/storage/public/files/medium-2x/p29umqn559.jpg"
+               },
+               "small": {
+                  "url": "http://localhost:7357/storage/public/files/small/p29umqn559.jpg"
+               },
+               "small-2x": {
+                  "url": "http://localhost:7357/storage/public/files/small-2x/p29umqn559.jpg"
+               }
+            }
+         },
+         "released_at": "2018-02-03T22:23:07.091Z",
+         "version": "1.0"
+      }
+   ]
+}

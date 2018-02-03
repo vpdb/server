@@ -5,3 +5,15 @@ Content-Type: application/json; charset=utf-8
 Content-Length: 168
 Etag: W/"a8-SLKSH/pIGd5fhkp0NkSfpx4TVCQ"
 
+{
+   "errors": [
+      {
+         "field": "description",
+         "message": "Description must be provided."
+      },
+      {
+         "field": "name",
+         "message": "Name must be provided."
+      }
+   ]
+}

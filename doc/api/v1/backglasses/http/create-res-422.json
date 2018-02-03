@@ -5,3 +5,23 @@ Content-Type: application/json; charset=utf-8
 Content-Length: 324
 Etag: W/"144-ZEJ7tR48A6VjDUlm1nSioDaKoEE"
 
+{
+   "errors": [
+      {
+         "field": "_game",
+         "message": "Reference to game must be provided."
+      },
+      {
+         "field": "authors",
+         "message": "You must provide at least one author.",
+         "value": [
+         ]
+      },
+      {
+         "field": "versions",
+         "message": "You must provide at least one version for the backglass.",
+         "value": [
+         ]
+      }
+   ]
+}

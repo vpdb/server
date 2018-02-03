@@ -1,19 +1,19 @@
 PATCH /v1/builds/v1.0.0 HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMmc5ZWU0eThlcyIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MDg6MDkuMjA4WiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MDg6MDkuMjA4WiIsImlydCI6ZmFsc2V9.WffYat6JLUhJZ_XxLu_XUKmdixtuJ7dL8ItI9mWLo4I
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa2ZmZHFhcnJzIiwiaWF0IjoiMjAxOC0wMi0wM1QyMjoyMzoyMi44NTNaIiwiZXhwIjoiMjAxOC0wMi0wM1QyMzoyMzoyMi44NTNaIiwiaXJ0IjpmYWxzZX0.YOff1Z-SjA_a08a-dr15uk9KRtdQ3l_fjfU5aeY0Brs
 Content-Type: application/json
 Content-Length: 323
 
 {
-  "platform": "vp",
-  "label": "Updated build label",
-  "major_version": "11",
-  "download_url": "https://visualpinball.com/updated-url",
-  "support_url": "https://visualpinball.com/support-url",
-  "built_at": "2017-01-01T11:00:00.000Z",
-  "description": "The new future version of Visual Pinball!",
-  "type": "nightly",
-  "is_range": true,
-  "is_active": true
+   "built_at": "2017-01-01T11:00:00.000Z",
+   "description": "The new future version of Visual Pinball!",
+   "download_url": "https://visualpinball.com/updated-url",
+   "is_active": true,
+   "is_range": true,
+   "label": "Updated build label",
+   "major_version": "11",
+   "platform": "vp",
+   "support_url": "https://visualpinball.com/support-url",
+   "type": "nightly"
 }

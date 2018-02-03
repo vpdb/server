@@ -5,3 +5,6 @@ Content-Type: application/json; charset=utf-8
 Content-Length: 69
 Etag: W/"45-mB1yWuhCDyQgbZfBV4pcUhqexaM"
 
+{
+   "error": "Cannot vote twice. Use PUT in order to update a vote."
+}

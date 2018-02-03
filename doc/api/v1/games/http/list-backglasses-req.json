@@ -1,4 +1,4 @@
-GET /v1/games/post-time/backglasses HTTP/2.0
+GET /v1/games/wipe-out/backglasses HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
 

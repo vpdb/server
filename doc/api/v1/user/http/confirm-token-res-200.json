@@ -5,3 +5,7 @@ Content-Type: application/json; charset=utf-8
 Content-Length: 82
 Etag: W/"52-c6Txh6Kxg60LWrywEMDl3cU1Qgw"
 
+{
+   "message": "Email validated and updated.",
+   "previous_code": "pending_update"
+}

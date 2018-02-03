@@ -3,5 +3,14 @@ Access-Control-Allow-Origin: *
 Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
 Content-Length: 119
-Etag: W/"77-QZCtYBGWdy/9CskkINvMwnAlmX4"
+Etag: W/"77-elesnQ5GIweTfbXN3JyC9SLqXiI"
 
+{
+   "created_at": "2018-02-03T22:24:22.877Z",
+   "game": {
+      "average": 7,
+      "score": 4.75,
+      "votes": 1
+   },
+   "value": 7
+}

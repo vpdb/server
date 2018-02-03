@@ -2,6 +2,110 @@
 Access-Control-Allow-Origin: *
 Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Etag: W/"847-WnNeZxPYn4CiHa+omy7DusyeR9E"
+Etag: W/"84e-YTMUl1fgJFIWkwiJDyRwLADGRfE"
 Content-Encoding: gzip
 
+{
+   "expires": "2018-02-03T23:27:33.122Z",
+   "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMjd5ejNlbjU1OSIsImlhdCI6IjIwMTgtMDItMDNUMjI6Mjc6MzMuMTIyWiIsImV4cCI6IjIwMTgtMDItMDNUMjM6Mjc6MzMuMTIyWiIsImlydCI6ZmFsc2V9.SffEwnWWzuMF7x62ojA-Z3t6Gmqqbg0a0xnk1-xAuwo",
+   "user": {
+      "counter": {
+         "comments": 0,
+         "downloads": 0,
+         "stars": 0
+      },
+      "created_at": "2018-02-03T22:27:32.998Z",
+      "email": "estevan.goyette@yahoo.com",
+      "gravatar_id": "a703e3b0d6071aa484b26e014ada97ce",
+      "id": "p27yz3en559",
+      "is_active": true,
+      "name": "Barbara41",
+      "permissions": {
+         "backglasses": [
+            "add",
+            "delete-own",
+            "update-own",
+            "star"
+         ],
+         "builds": [
+            "add",
+            "delete-own"
+         ],
+         "comments": [
+            "add"
+         ],
+         "files": [
+            "download",
+            "delete-own",
+            "upload"
+         ],
+         "game_requests": [
+            "add",
+            "delete-own"
+         ],
+         "games": [
+            "rate",
+            "star"
+         ],
+         "media": [
+            "add",
+            "delete-own",
+            "star"
+         ],
+         "messages": [
+            "receive"
+         ],
+         "releases": [
+            "add",
+            "rate",
+            "delete-own",
+            "update-own",
+            "star"
+         ],
+         "tags": [
+            "add",
+            "delete-own"
+         ],
+         "tokens": [
+            "add",
+            "list",
+            "delete-own",
+            "update-own"
+         ],
+         "user": [
+            "update",
+            "view"
+         ],
+         "users": [
+            "star",
+            "view",
+            "search"
+         ]
+      },
+      "plan": {
+         "app_tokens_enabled": false,
+         "id": "free",
+         "push_notifications_enabled": false
+      },
+      "preferences": {
+         "contributor_notify_game_request_created": true,
+         "moderator_notify_backglass_auto_approved": false,
+         "moderator_notify_backglass_submitted": true,
+         "moderator_notify_release_auto_approved": false,
+         "moderator_notify_release_commented": true,
+         "moderator_notify_release_submitted": true,
+         "notify_backglass_moderation_status": true,
+         "notify_created_release_comments": true,
+         "notify_created_release_followers": true,
+         "notify_game_requests": true,
+         "notify_mentions": true,
+         "notify_release_moderation_status": true,
+         "notify_release_validation_status": true
+      },
+      "provider": "local",
+      "roles": [
+         "member"
+      ],
+      "username": "Barbara41"
+   }
+}

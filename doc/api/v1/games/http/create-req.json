@@ -1,32 +1,23 @@
 POST /v1/games HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla3llcTV4eThlcyIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MDg6MjQuNDQ3WiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MDg6MjQuNDQ3WiIsImlydCI6ZmFsc2V9.1z4Jc4xifY5qkOgt1QIdTGp0nbpnOcENZcs6xLJk8UQ
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMjNwcG9xbnJyOSIsImlhdCI6IjIwMTgtMDItMDNUMjI6MjM6MzcuNzQ5WiIsImV4cCI6IjIwMTgtMDItMDNUMjM6MjM6MzcuNzQ5WiIsImlydCI6ZmFsc2V9.nqMjle1ujgcQ91KXJ7ys7U5z8f1NJsxxFLjeX4eVzVM
 Content-Type: application/json
-Content-Length: 563
+Content-Length: 490
 
 {
-  "ipdb": {
-    "number": 938,
-    "mfg": 350,
-    "rating": "7.7"
-  },
-  "title": "4 Roses",
-  "manufacturer": "Williams",
-  "model_number": "274",
-  "year": 1962,
-  "game_type": "em",
-  "produced_units": 1250,
-  "themes": [
-    "Pageantry"
-  ],
-  "designers": [
-    "Steve Kordek"
-  ],
-  "artists": [
-    "George Molentin"
-  ],
-  "features": "Flippers (2), Pop bumpers (3), Passive bumpers (2), Slingshots (2), Gobble holes (2), Rotating target (1). Red and Yellow advances raise corresponding gobble hole values from 50 points to 100, 200, 300, and Special.Maximum displayed point score is 1,999 points.",
-  "id": "4-roses",
-  "_backglass": "pkrpw54z8p9"
+   "_backglass": "p2h5own55s",
+   "artists": [
+      "Seamus McLaughlin"
+   ],
+   "game_type": "ss",
+   "id": "walk-n-the-ball",
+   "ipdb": {
+      "mfg": 252,
+      "number": 6053
+   },
+   "manufacturer": "Pinstar",
+   "notes": "This game was never produced.Artist Seamus McLaughlin told us that the images presented here are of a concept drawing on which he had been working while doing the artwork for Pinstar's 1985 'Gamatron'. He had been in contact with Steve Kirk in the idea of some new games for Pinstar.",
+   "title": "Walk 'N The Ball",
+   "year": 1985
 }

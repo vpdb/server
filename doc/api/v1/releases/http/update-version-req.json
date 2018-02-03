@@ -1,23 +1,23 @@
-PATCH /v1/releases/ek3hrkqymes/versions/1.0.0 HTTP/2.0
+PATCH /v1/releases/pk8h4uea55s/versions/1.0.0 HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMnV5MmtxeThlOSIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MTA6NDMuMTMwWiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MTA6NDMuMTMwWiIsImlydCI6ZmFsc2V9.a-CCLG04lmOt8qq_Q0cT_IeGTlPYlykIw7sNPTYrwOE
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa256ODVlYTVycyIsImlhdCI6IjIwMTgtMDItMDNUMjI6MjU6NTIuMTg4WiIsImV4cCI6IjIwMTgtMDItMDNUMjM6MjU6NTIuMTg4WiIsImlydCI6ZmFsc2V9.xAyqrWJQeBM-aR_lAQlbxZ2Y-uLQit85MBF2KYZGhN8
 Content-Type: application/json
 Content-Length: 166
 
 {
-  "changes": "New changes.",
-  "files": [
-    {
-      "_file": "pkqzfkqzmps",
-      "_playfield_image": "p23tkwy8p9",
-      "_compatibility": [
-        "9.9.0"
-      ],
-      "flavor": {
-        "orientation": "fs",
-        "lighting": "day"
+   "changes": "New changes.",
+   "files": [
+      {
+         "_compatibility": [
+            "9.9.0"
+         ],
+         "_file": "pk2s4fpa5rs",
+         "_playfield_image": "ekteupa5r9",
+         "flavor": {
+            "lighting": "day",
+            "orientation": "fs"
+         }
       }
-    }
-  ]
+   ]
 }

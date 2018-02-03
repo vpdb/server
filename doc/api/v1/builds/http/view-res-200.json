@@ -5,3 +5,12 @@ Content-Type: application/json; charset=utf-8
 Content-Length: 142
 Etag: W/"8e-91dVMmDgRhNcFF0XHrUlyo3rWjQ"
 
+{
+   "id": "v1.0.0",
+   "is_active": false,
+   "is_range": false,
+   "label": "v1.0.0",
+   "major_version": "1",
+   "platform": "vp",
+   "type": "release"
+}

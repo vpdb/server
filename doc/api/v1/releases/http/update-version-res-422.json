@@ -5,3 +5,15 @@ Content-Type: application/json; charset=utf-8
 Content-Length: 294
 Etag: W/"126-qMp9+kyxiGMMy3itRF1F39b6+tw"
 
+{
+   "errors": [
+      {
+         "field": "files.0._compatibility",
+         "message": "A combination of compatibility and flavor already exists with the same values."
+      },
+      {
+         "field": "files.0.flavor",
+         "message": "A combination of compatibility and flavor already exists with the same values."
+      }
+   ]
+}

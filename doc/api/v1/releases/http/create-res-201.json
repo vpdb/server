@@ -2,6 +2,343 @@
 Access-Control-Allow-Origin: *
 Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Etag: W/"29ca-bJZSIEPAg/UHz4nlap0XgEJn3eY"
+Etag: W/"2c28-/GhOGzlngks0ZuHWp44uj44/UGc"
 Content-Encoding: gzip
 
+{
+   "authors": [
+      {
+         "roles": [
+            "Table Creator"
+         ],
+         "user": {
+            "counter": {
+               "comments": 0,
+               "stars": 0
+            },
+            "gravatar_id": "ac581e1b10fb47268bedbd86203b67c3",
+            "id": "p274s9enrrs",
+            "name": "DarrickGerlach40",
+            "username": "DarrickGerlach40"
+         }
+      }
+   ],
+   "counter": {
+      "comments": 0,
+      "downloads": 0,
+      "stars": 0,
+      "views": 0
+   },
+   "created_at": "2018-02-03T22:24:50.101Z",
+   "created_by": {
+      "counter": {
+         "comments": 0,
+         "stars": 0
+      },
+      "gravatar_id": "ac581e1b10fb47268bedbd86203b67c3",
+      "id": "p274s9enrrs",
+      "name": "DarrickGerlach40",
+      "username": "DarrickGerlach40"
+   },
+   "game": {
+      "id": "elektro-bomber-brillant-type-1",
+      "manufacturer": "T.H. Bergmann & Company",
+      "title": "Elektro-Bomber (Brillant Type 1)",
+      "year": 1900
+   },
+   "id": "e2fb1spn5r9",
+   "license": "by-sa",
+   "links": [
+   ],
+   "metrics": {
+      "popularity": 0
+   },
+   "moderation": {
+      "auto_approved": false,
+      "is_approved": false,
+      "is_refused": false
+   },
+   "modified_at": "2018-02-03T22:24:50.101Z",
+   "name": "release",
+   "name_sortable": "release",
+   "rating": {
+      "average": 0,
+      "score": 0,
+      "votes": 0
+   },
+   "released_at": "2015-08-01T00:00:00.000Z",
+   "tags": [
+      {
+         "description": "All textures render crispy at Full HD resolution.",
+         "id": "hd",
+         "name": "HD"
+      },
+      {
+         "description": "Support for Direct Output Framework.",
+         "id": "dof",
+         "name": "DOF"
+      }
+   ],
+   "versions": [
+      {
+         "counter": {
+            "comments": 0,
+            "downloads": 0
+         },
+         "files": [
+            {
+               "compatibility": [
+                  {
+                     "built_at": "2014-04-29T00:00:00.000Z",
+                     "download_url": "http://www.vpforums.org/index.php?app=downloads&showfile=8793",
+                     "id": "9.9.0",
+                     "is_range": false,
+                     "label": "v9.9.0",
+                     "major_version": "9",
+                     "platform": "vp",
+                     "type": "release"
+                  }
+               ],
+               "counter": {
+                  "downloads": 0
+               },
+               "file": {
+                  "bytes": 135168,
+                  "cost": 1,
+                  "counter": {
+                     "downloads": 0
+                  },
+                  "created_at": "2018-02-03T22:24:49.650Z",
+                  "file_type": "release",
+                  "id": "ek2939ear5s",
+                  "is_protected": true,
+                  "metadata": {
+                     "author_email": "_table_email_",
+                     "author_name": "_table_author_",
+                     "author_website": "_table_website_",
+                     "release_date": "_table_release_date_",
+                     "table_description": "_table_description_",
+                     "table_name": "_table_name_",
+                     "table_rules": "_table_rules_",
+                     "table_script": "Sub Table1_KeyDown(ByVal keycode)\r\r\tIf keycode = PlungerKey Then\r\t\tPlunger.PullBack\r\tEnd If\r\r\tIf keycode = LeftFlipperKey Then\r\t\tLeftFlipper.RotateToEnd\r\t\tPlaySound \"FlipperUp\",0,1,-0.1,0.25\r\tEnd If\r    \r\tIf keycode = RightFlipperKey Then\r\t\tRightFlipper.RotateToEnd\r\r\t\tPlaySound \"FlipperUp\",0,1,0.1,0.25\r\tEnd If\r    \r\tIf keycode = LeftTiltKey Then\r\t\tNudge 90, 2\r\tEnd If\r    \r\tIf keycode = RightTiltKey Then\r\t\tNudge 270, 2\r\tEnd If\r    \r\tIf keycode = CenterTiltKey Then\r\t\tNudge 0, 2\r\tEnd If\r    \rEnd Sub\r\rSub Table1_KeyUp(ByVal keycode)\r\r\tIf keycode = PlungerKey Then\r\t\tPlunger.Fire\r\tEnd If\r    \r\tIf keycode = LeftFlipperKey Then\r\t\tLeftFlipper.RotateToStart\r\t\tPlaySound \"FlipperDown\",0,1,-0.1,0.25\r\tEnd If\r    \r\tIf keycode = RightFlipperKey Then\r\t\tRightFlipper.RotateToStart\r        \r\t\tPlaySound \"FlipperDown\",0,1,0.1,0.25\r\tEnd If\r\rEnd Sub\r\rSub Drain_Hit()\r\tDrain.DestroyBall\r\tPlunger.CreateBall\r\tPlaySound \"Plunger\",0,1,0,0.25\rEnd Sub\r\rSub LeftSlingshot_Slingshot()\r\tPlaySound \"Bumper\",0,1,-0.15,0.25\rEnd Sub\r\rSub RightSlingshot_Slingshot()\r\tPlaySound \"Bumper\",0,1,0.15,0.25\rEnd Sub\r\rSub Plunger_Init()\r\tPlaySound \"Plunger\",0,0.5,0.5,0.25\r\tPlunger.CreateBall\rEnd Sub",
+                     "table_version": "_table_version_"
+                  },
+                  "mime_type": "application/x-visual-pinball-table",
+                  "name": "test-table-0.vpt",
+                  "url": "http://localhost:7357/storage/v1/files/ek2939ear5s.vpt",
+                  "variations": {
+                  }
+               },
+               "flavor": {
+                  "lighting": "night",
+                  "orientation": "fs"
+               },
+               "playfield_image": {
+                  "bytes": 348,
+                  "counter": {
+                     "downloads": 0
+                  },
+                  "created_at": "2018-02-03T22:24:49.757Z",
+                  "file_type": "playfield-fs",
+                  "id": "ekp939enrr9",
+                  "is_active": true,
+                  "is_protected": true,
+                  "metadata": {
+                     "depth": 8,
+                     "format": "PNG",
+                     "size": {
+                        "height": 1920,
+                        "width": 1080
+                     }
+                  },
+                  "mime_type": "image/png",
+                  "name": "playfield-0.png",
+                  "url": "http://localhost:7357/storage/v1/files/ekp939enrr9.png",
+                  "variations": {
+                     "full": {
+                        "bytes": 12768,
+                        "height": 1920,
+                        "mime_type": "image/jpeg",
+                        "url": "http://localhost:7357/storage/public/files/full/ekp939enrr9.jpg",
+                        "width": 1080
+                     },
+                     "hyperpin": {
+                        "url": "http://localhost:7357/storage/public/files/hyperpin/ekp939enrr9.png"
+                     },
+                     "landscape": {
+                        "bytes": 1054,
+                        "height": 221,
+                        "mime_type": "image/jpeg",
+                        "url": "http://localhost:7357/storage/public/files/landscape/ekp939enrr9.jpg",
+                        "width": 393
+                     },
+                     "landscape-2x": {
+                        "bytes": 2628,
+                        "height": 442,
+                        "mime_type": "image/jpeg",
+                        "url": "http://localhost:7357/storage/public/files/landscape-2x/ekp939enrr9.jpg",
+                        "width": 786
+                     },
+                     "medium": {
+                        "bytes": 1392,
+                        "height": 498,
+                        "mime_type": "image/jpeg",
+                        "url": "http://localhost:7357/storage/public/files/medium/ekp939enrr9.jpg",
+                        "width": 280
+                     },
+                     "medium-2x": {
+                        "bytes": 3836,
+                        "height": 996,
+                        "mime_type": "image/jpeg",
+                        "url": "http://localhost:7357/storage/public/files/medium-2x/ekp939enrr9.jpg",
+                        "width": 560
+                     },
+                     "square": {
+                        "bytes": 616,
+                        "height": 120,
+                        "mime_type": "image/jpeg",
+                        "url": "http://localhost:7357/storage/public/files/square/ekp939enrr9.jpg",
+                        "width": 120
+                     },
+                     "square-2x": {
+                        "bytes": 862,
+                        "height": 240,
+                        "mime_type": "image/jpeg",
+                        "url": "http://localhost:7357/storage/public/files/square-2x/ekp939enrr9.jpg",
+                        "width": 240
+                     }
+                  }
+               },
+               "released_at": "2015-01-01T00:00:00.000Z"
+            },
+            {
+               "compatibility": [
+                  {
+                     "built_at": "2014-04-29T00:00:00.000Z",
+                     "download_url": "http://www.vpforums.org/index.php?app=downloads&showfile=8793",
+                     "id": "9.9.0",
+                     "is_range": false,
+                     "label": "v9.9.0",
+                     "major_version": "9",
+                     "platform": "vp",
+                     "type": "release"
+                  }
+               ],
+               "counter": {
+                  "downloads": 0
+               },
+               "file": {
+                  "bytes": 135168,
+                  "cost": 1,
+                  "counter": {
+                     "downloads": 0
+                  },
+                  "created_at": "2018-02-03T22:24:49.650Z",
+                  "file_type": "release",
+                  "id": "pkb93spa5r9",
+                  "is_protected": true,
+                  "metadata": {
+                     "author_email": "_table_email_",
+                     "author_name": "_table_author_",
+                     "author_website": "_table_website_",
+                     "release_date": "_table_release_date_",
+                     "table_description": "_table_description_",
+                     "table_name": "_table_name_",
+                     "table_rules": "_table_rules_",
+                     "table_script": "Sub Table1_KeyDown(ByVal keycode)\r\r\tIf keycode = PlungerKey Then\r\t\tPlunger.PullBack\r\tEnd If\r\r\tIf keycode = LeftFlipperKey Then\r\t\tLeftFlipper.RotateToEnd\r\t\tPlaySound \"FlipperUp\",0,1,-0.1,0.25\r\tEnd If\r    \r\tIf keycode = RightFlipperKey Then\r\t\tRightFlipper.RotateToEnd\r\r\t\tPlaySound \"FlipperUp\",0,1,0.1,0.25\r\tEnd If\r    \r\tIf keycode = LeftTiltKey Then\r\t\tNudge 90, 2\r\tEnd If\r    \r\tIf keycode = RightTiltKey Then\r\t\tNudge 270, 2\r\tEnd If\r    \r\tIf keycode = CenterTiltKey Then\r\t\tNudge 0, 2\r\tEnd If\r    \rEnd Sub\r\rSub Table1_KeyUp(ByVal keycode)\r\r\tIf keycode = PlungerKey Then\r\t\tPlunger.Fire\r\tEnd If\r    \r\tIf keycode = LeftFlipperKey Then\r\t\tLeftFlipper.RotateToStart\r\t\tPlaySound \"FlipperDown\",0,1,-0.1,0.25\r\tEnd If\r    \r\tIf keycode = RightFlipperKey Then\r\t\tRightFlipper.RotateToStart\r        \r\t\tPlaySound \"FlipperDown\",0,1,0.1,0.25\r\tEnd If\r\rEnd Sub\r\rSub Drain_Hit()\r\tDrain.DestroyBall\r\tPlunger.CreateBall\r\tPlaySound \"Plunger\",0,1,0,0.25\rEnd Sub\r\rSub LeftSlingshot_Slingshot()\r\tPlaySound \"Bumper\",0,1,-0.15,0.25\rEnd Sub\r\rSub RightSlingshot_Slingshot()\r\tPlaySound \"Bumper\",0,1,0.15,0.25\rEnd Sub\r\rSub Plunger_Init()\r\tPlaySound \"Plunger\",0,0.5,0.5,0.25\r\tPlunger.CreateBall\rEnd Sub",
+                     "table_version": "_table_version_"
+                  },
+                  "mime_type": "application/x-visual-pinball-table",
+                  "name": "test-table-1.vpt",
+                  "url": "http://localhost:7357/storage/v1/files/pkb93spa5r9.vpt",
+                  "variations": {
+                  }
+               },
+               "flavor": {
+                  "lighting": "day",
+                  "orientation": "fs"
+               },
+               "playfield_image": {
+                  "bytes": 348,
+                  "counter": {
+                     "downloads": 0
+                  },
+                  "created_at": "2018-02-03T22:24:49.805Z",
+                  "file_type": "playfield-fs",
+                  "id": "pkyo9pn5rs",
+                  "is_active": true,
+                  "is_protected": true,
+                  "metadata": {
+                     "depth": 8,
+                     "format": "PNG",
+                     "size": {
+                        "height": 1920,
+                        "width": 1080
+                     }
+                  },
+                  "mime_type": "image/png",
+                  "name": "playfield-1.png",
+                  "url": "http://localhost:7357/storage/v1/files/pkyo9pn5rs.png",
+                  "variations": {
+                     "full": {
+                        "bytes": 12768,
+                        "height": 1920,
+                        "mime_type": "image/jpeg",
+                        "url": "http://localhost:7357/storage/public/files/full/pkyo9pn5rs.jpg",
+                        "width": 1080
+                     },
+                     "hyperpin": {
+                        "url": "http://localhost:7357/storage/public/files/hyperpin/pkyo9pn5rs.png"
+                     },
+                     "landscape": {
+                        "bytes": 1053,
+                        "height": 221,
+                        "mime_type": "image/jpeg",
+                        "url": "http://localhost:7357/storage/public/files/landscape/pkyo9pn5rs.jpg",
+                        "width": 393
+                     },
+                     "landscape-2x": {
+                        "bytes": 2627,
+                        "height": 442,
+                        "mime_type": "image/jpeg",
+                        "url": "http://localhost:7357/storage/public/files/landscape-2x/pkyo9pn5rs.jpg",
+                        "width": 786
+                     },
+                     "medium": {
+                        "bytes": 1391,
+                        "height": 498,
+                        "mime_type": "image/jpeg",
+                        "url": "http://localhost:7357/storage/public/files/medium/pkyo9pn5rs.jpg",
+                        "width": 280
+                     },
+                     "medium-2x": {
+                        "bytes": 3835,
+                        "height": 996,
+                        "mime_type": "image/jpeg",
+                        "url": "http://localhost:7357/storage/public/files/medium-2x/pkyo9pn5rs.jpg",
+                        "width": 560
+                     },
+                     "square": {
+                        "bytes": 615,
+                        "height": 120,
+                        "mime_type": "image/jpeg",
+                        "url": "http://localhost:7357/storage/public/files/square/pkyo9pn5rs.jpg",
+                        "width": 120
+                     },
+                     "square-2x": {
+                        "bytes": 861,
+                        "height": 240,
+                        "mime_type": "image/jpeg",
+                        "url": "http://localhost:7357/storage/public/files/square-2x/pkyo9pn5rs.jpg",
+                        "width": 240
+                     }
+                  }
+               },
+               "released_at": "2015-08-01T00:00:00.000Z"
+            }
+         ],
+         "released_at": "2015-08-01T00:00:00.000Z",
+         "version": "1.0.0"
+      }
+   ]
+}

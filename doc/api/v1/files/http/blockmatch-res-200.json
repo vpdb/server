@@ -2,6 +2,132 @@
 Access-Control-Allow-Origin: *
 Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Etag: W/"97c-uGVSNc1TR4QqqNYIsjq3xesJYRk"
+Etag: W/"973-bwb6ceAk9qsTepIreF4Tj6qKzjc"
 Content-Encoding: gzip
 
+{
+   "file": {
+      "compatibility": [
+         {
+            "id": "9.9.0",
+            "label": "v9.9.0"
+         }
+      ],
+      "file": {
+         "bytes": 135168,
+         "cost": 1,
+         "counter": {
+            "downloads": 0
+         },
+         "id": "e2fb8mqar59",
+         "is_protected": true,
+         "name": "test-table-0.vpt",
+         "url": "http://localhost:7357/storage/v1/files/e2fb8mqar59.vpt",
+         "variations": {
+         }
+      },
+      "flavor": {
+         "lighting": "night",
+         "orientation": "fs"
+      },
+      "released_at": "2018-02-03T22:23:12.870Z"
+   },
+   "game": {
+      "id": "golden-game",
+      "manufacturer": "Splin S.A.",
+      "title": "Golden Game",
+      "year": 1900
+   },
+   "matches": [
+      {
+         "bytesPercentage": 97.57880418711929,
+         "countPercentage": 77.27272727272727,
+         "file": {
+            "compatibility": [
+               {
+                  "id": "9.9.0",
+                  "label": "v9.9.0"
+               }
+            ],
+            "file": {
+               "bytes": 135168,
+               "cost": 1,
+               "counter": {
+                  "downloads": 0
+               },
+               "id": "pkeykdqa559",
+               "is_protected": true,
+               "name": "test-table-0.vpt",
+               "url": "http://localhost:7357/storage/v1/files/pkeykdqa559.vpt",
+               "variations": {
+               }
+            },
+            "flavor": {
+               "lighting": "night",
+               "orientation": "fs"
+            },
+            "released_at": "2018-02-03T22:23:15.529Z"
+         },
+         "game": {
+            "id": "black-jack",
+            "manufacturer": "Bally",
+            "title": "Black Jack",
+            "year": 1976
+         },
+         "matchedBytes": 82498,
+         "matchedCount": 17,
+         "release": {
+            "authors": [
+               {
+                  "roles": [
+                     "Table Creator"
+                  ],
+                  "user": {
+                     "counter": {
+                        "comments": 0,
+                        "stars": 0
+                     },
+                     "gravatar_id": "182ebc2a79364e09ae6b1675c20850f6",
+                     "id": "e2t478wa559",
+                     "name": "AidanSchmeler61",
+                     "username": "AidanSchmeler61"
+                  }
+               }
+            ],
+            "created_at": "2018-02-03T22:23:15.529Z",
+            "id": "ekw92dwnr59",
+            "name": "Versatile Edition"
+         },
+         "version": {
+            "released_at": "2018-02-03T22:23:15.529Z",
+            "version": "1.0.0"
+         }
+      }
+   ],
+   "release": {
+      "authors": [
+         {
+            "roles": [
+               "Table Creator"
+            ],
+            "user": {
+               "counter": {
+                  "comments": 0,
+                  "stars": 0
+               },
+               "gravatar_id": "182ebc2a79364e09ae6b1675c20850f6",
+               "id": "e2t478wa559",
+               "name": "AidanSchmeler61",
+               "username": "AidanSchmeler61"
+            }
+         }
+      ],
+      "created_at": "2018-02-03T22:23:12.870Z",
+      "id": "ekxd8wa559",
+      "name": "Adaptive Edition"
+   },
+   "version": {
+      "released_at": "2018-02-03T22:23:12.870Z",
+      "version": "1.0.0"
+   }
+}

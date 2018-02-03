@@ -3,5 +3,9 @@ Access-Control-Allow-Origin: *
 Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
 Content-Length: 64
-Etag: W/"40-S18Iylbs36MR9F3lwefzMjJrVBA"
+Etag: W/"40-LH33chWCrWgwUTVmGA0DdK/RNwo"
 
+{
+   "created_at": "2018-02-03T22:27:31.188Z",
+   "total_stars": 1
+}

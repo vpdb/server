@@ -2,6 +2,49 @@
 Access-Control-Allow-Origin: *
 Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Etag: W/"4a2-XTtiMDwgP43xsNiSQqigxgA+lZ0"
+Etag: W/"49c-dcxfhEDzc7Xmu6lCxVh8WBgT94A"
 Content-Encoding: gzip
 
+{
+   "counter": {
+      "comments": 0,
+      "downloads": 0,
+      "stars": 0
+   },
+   "created_at": "2018-02-03T22:27:34.392Z",
+   "email": "madison94@hotmail.com",
+   "email_status": {
+      "code": "pending_registration",
+      "expires_at": "2018-02-04T22:27:34.392Z",
+      "value": "madison94@hotmail.com"
+   },
+   "gravatar_id": "38d4eb59adb08a8595a72824ce7077bc",
+   "id": "p2ors3pnrrs",
+   "is_active": false,
+   "name": "MadilynPagac99",
+   "plan": {
+      "app_tokens_enabled": false,
+      "id": "free",
+      "push_notifications_enabled": false
+   },
+   "preferences": {
+      "contributor_notify_game_request_created": true,
+      "moderator_notify_backglass_auto_approved": false,
+      "moderator_notify_backglass_submitted": true,
+      "moderator_notify_release_auto_approved": false,
+      "moderator_notify_release_commented": true,
+      "moderator_notify_release_submitted": true,
+      "notify_backglass_moderation_status": true,
+      "notify_created_release_comments": true,
+      "notify_created_release_followers": true,
+      "notify_game_requests": true,
+      "notify_mentions": true,
+      "notify_release_moderation_status": true,
+      "notify_release_validation_status": true
+   },
+   "provider": "local",
+   "roles": [
+      "member"
+   ],
+   "username": "MadilynPagac99"
+}

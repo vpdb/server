@@ -1,5 +1,5 @@
-GET /v1/users/pkfswpwymps/star HTTP/2.0
+GET /v1/users/p2rykdpnr59/star HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla2s5d3BxeThwcyIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MTI6MjQuNDg0WiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MTI6MjQuNDg0WiIsImlydCI6ZmFsc2V9.eY5x-C3-x2WL3hLsUXi_vFwMBkn2TaQ24zAitMtjf40
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMm9iMjNwbjVycyIsImlhdCI6IjIwMTgtMDItMDNUMjI6Mjc6MzEuMDM4WiIsImV4cCI6IjIwMTgtMDItMDNUMjM6Mjc6MzEuMDM4WiIsImlydCI6ZmFsc2V9.3l8O2RUDuLB0yaUlzJIyyYGYZ4LsJckqi3bBN5LCkUY
 

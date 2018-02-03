@@ -2,6 +2,121 @@
 Access-Control-Allow-Origin: *
 Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Etag: W/"b29-pCHOs0Ue0vVsuD6oLqxQasw/qQA"
+Etag: W/"b32-CoALa1YuzP11EDxCAneb7Y9OHYw"
 Content-Encoding: gzip
 
+{
+   "acknowledgements": "- Thanks @mom for supporting my late hours\n- Thanks @dad for supporting @mom!",
+   "authors": [
+      {
+         "roles": [
+            "creator"
+         ],
+         "user": {
+            "counter": {
+               "comments": 0,
+               "stars": 0
+            },
+            "gravatar_id": "9c1e53d2c2ab8dd41b10975301706b6a",
+            "id": "eke5qmqa559",
+            "name": "HoustonPredovic20",
+            "username": "HoustonPredovic20"
+         }
+      }
+   ],
+   "created_at": "2018-02-03T22:23:05.670Z",
+   "created_by": {
+      "counter": {
+         "comments": 0,
+         "stars": 0
+      },
+      "gravatar_id": "9c1e53d2c2ab8dd41b10975301706b6a",
+      "id": "eke5qmqa559",
+      "name": "HoustonPredovic20",
+      "username": "HoustonPredovic20"
+   },
+   "description": "Photoshopped the super hires backglass together from four different sources!",
+   "game": {
+      "id": "monaco",
+      "ipdb": {
+         "mfg": 323,
+         "number": 1613
+      },
+      "manufacturer": "United",
+      "title": "Monaco",
+      "year": 1956
+   },
+   "id": "p2pxe8warrs",
+   "versions": [
+      {
+         "changes": "Initial release",
+         "counter": {
+            "downloads": 0
+         },
+         "file": {
+            "bytes": 2067,
+            "counter": {
+               "downloads": 0
+            },
+            "id": "e2f9p8qa5r9",
+            "is_protected": true,
+            "name": "test.directb2s",
+            "url": "http://localhost:7357/storage/v1/files/e2f9p8qa5r9.directb2s",
+            "variations": {
+               "full": {
+                  "url": "http://localhost:7357/storage/public/files/full/e2f9p8qa5r9.jpg"
+               },
+               "medium": {
+                  "url": "http://localhost:7357/storage/public/files/medium/e2f9p8qa5r9.jpg"
+               },
+               "medium-2x": {
+                  "url": "http://localhost:7357/storage/public/files/medium-2x/e2f9p8qa5r9.jpg"
+               },
+               "small": {
+                  "url": "http://localhost:7357/storage/public/files/small/e2f9p8qa5r9.jpg"
+               },
+               "small-2x": {
+                  "url": "http://localhost:7357/storage/public/files/small-2x/e2f9p8qa5r9.jpg"
+               }
+            }
+         },
+         "released_at": "2018-02-03T22:23:05.670Z",
+         "version": "1.0"
+      },
+      {
+         "changes": "- Backglass is now even more high res!\n- It blinks more.",
+         "counter": {
+            "downloads": 0
+         },
+         "file": {
+            "bytes": 2067,
+            "counter": {
+               "downloads": 0
+            },
+            "id": "p2k4pmwn5r9",
+            "is_protected": true,
+            "name": "test.directb2s",
+            "url": "http://localhost:7357/storage/v1/files/p2k4pmwn5r9.directb2s",
+            "variations": {
+               "full": {
+                  "url": "http://localhost:7357/storage/public/files/full/p2k4pmwn5r9.jpg"
+               },
+               "medium": {
+                  "url": "http://localhost:7357/storage/public/files/medium/p2k4pmwn5r9.jpg"
+               },
+               "medium-2x": {
+                  "url": "http://localhost:7357/storage/public/files/medium-2x/p2k4pmwn5r9.jpg"
+               },
+               "small": {
+                  "url": "http://localhost:7357/storage/public/files/small/p2k4pmwn5r9.jpg"
+               },
+               "small-2x": {
+                  "url": "http://localhost:7357/storage/public/files/small-2x/p2k4pmwn5r9.jpg"
+               }
+            }
+         },
+         "released_at": "2018-02-03T22:23:05.670Z",
+         "version": "1.1"
+      }
+   ]
+}

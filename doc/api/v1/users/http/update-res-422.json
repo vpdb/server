@@ -5,3 +5,31 @@ Content-Type: application/json; charset=utf-8
 Content-Length: 484
 Etag: W/"1e4-PJWY9iqTYW+rZ2mjQDWw8lpI38I"
 
+{
+   "errors": [
+      {
+         "field": "_plan",
+         "message": "Path `_plan` is required."
+      },
+      {
+         "field": "email",
+         "message": "Email must be provided."
+      },
+      {
+         "field": "is_active",
+         "message": "Path `is_active` is required."
+      },
+      {
+         "field": "name",
+         "message": "Name must be provided."
+      },
+      {
+         "field": "roles",
+         "message": "Path `roles` is required."
+      },
+      {
+         "field": "username",
+         "message": "Username must be a string between 3 and 30 characters."
+      }
+   ]
+}

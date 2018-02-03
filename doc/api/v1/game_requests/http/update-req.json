@@ -1,11 +1,11 @@
-PATCH /v1/game_requests/ekbzsrxymes HTTP/2.0
+PATCH /v1/game_requests/ekos4oqnr59 HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla3loOXJ4em1wOSIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MDg6MjEuOTE1WiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MDg6MjEuOTE1WiIsImlydCI6ZmFsc2V9.YYCV0BiotJ_uqWOSBY4Dc0JdWVxRJXnt-8nkGqBey5U
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwazF5eG93YXI1cyIsImlhdCI6IjIwMTgtMDItMDNUMjI6MjM6MzUuMTQzWiIsImV4cCI6IjIwMTgtMDItMDNUMjM6MjM6MzUuMTQzWiIsImlydCI6ZmFsc2V9.mquG6SPVDvJFro2XQk3zkBTda15yrsyLP74Zhi8HGzM
 Content-Type: application/json
 Content-Length: 125
 
 {
-  "is_closed": true,
-  "message": "Game is already added with IPDB number xxx. We do not keep multiple editions of the same game."
+   "is_closed": true,
+   "message": "Game is already added with IPDB number xxx. We do not keep multiple editions of the same game."
 }

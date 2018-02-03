@@ -1,10 +1,10 @@
-POST /v1/releases/ek4upxz8es/comments HTTP/2.0
+POST /v1/releases/e2abvdwnr5s/comments HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMnh1ZXB4eThwOSIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MDg6MDkuNzg0WiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MDg6MDkuNzg0WiIsImlydCI6ZmFsc2V9.budYCEN9CAPAEO7t5fOWsE02veIFSdJBKmJf5Ooi6xo
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla2hxZjN3YTU1OSIsImlhdCI6IjIwMTgtMDItMDNUMjI6MjM6MjMuMzgxWiIsImV4cCI6IjIwMTgtMDItMDNUMjM6MjM6MjMuMzgxWiIsImlydCI6ZmFsc2V9.5AUPsbn8rILz2XnGkVanKkxtfJHCc6_UdopCO6IwKfA
 Content-Type: application/json
-Content-Length: 48
+Content-Length: 44
 
 {
-  "message": "Visionary analyzing data-warehouse"
+   "message": "Decentralized exuding paradigm"
 }

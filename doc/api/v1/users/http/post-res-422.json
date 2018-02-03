@@ -5,3 +5,20 @@ Content-Type: application/json; charset=utf-8
 Content-Length: 304
 Etag: W/"130-bEi26lmaSBFk7kHrUGh60px7uZY"
 
+{
+   "errors": [
+      {
+         "field": "email",
+         "message": "Email must be in the correct format.",
+         "value": "xxx"
+      },
+      {
+         "field": "password",
+         "message": "Password must be at least 6 characters."
+      },
+      {
+         "field": "username",
+         "message": "Username must be between 3 and 30 characters."
+      }
+   ]
+}

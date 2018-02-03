@@ -2,6 +2,113 @@
 Access-Control-Allow-Origin: *
 Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Etag: W/"74e-Wx8+bKcFiwiOCZ2YXFHH5hvDbYs"
+Etag: W/"740-sN1RZSEar1BJmbVOlocOrDwOWwA"
 Content-Encoding: gzip
 
+{
+   "counter": {
+      "comments": 0,
+      "downloads": 0,
+      "stars": 0
+   },
+   "created_at": "2018-02-03T22:23:01.750Z",
+   "email": "jules_nienow@yahoo.com",
+   "gravatar_id": "df7ee1d52c4a95ec67810fb5a343a350",
+   "id": "e2uby8qn559",
+   "is_active": true,
+   "name": "Regan61",
+   "permissions": {
+      "backglasses": [
+         "add",
+         "delete-own",
+         "update-own",
+         "star"
+      ],
+      "builds": [
+         "add",
+         "delete-own"
+      ],
+      "comments": [
+         "add"
+      ],
+      "files": [
+         "download",
+         "delete-own",
+         "upload"
+      ],
+      "game_requests": [
+         "add",
+         "delete-own"
+      ],
+      "games": [
+         "rate",
+         "star"
+      ],
+      "media": [
+         "add",
+         "delete-own",
+         "star"
+      ],
+      "messages": [
+         "receive"
+      ],
+      "releases": [
+         "add",
+         "rate",
+         "delete-own",
+         "update-own",
+         "star"
+      ],
+      "tags": [
+         "add",
+         "delete-own"
+      ],
+      "tokens": [
+         "add",
+         "list",
+         "delete-own",
+         "update-own"
+      ],
+      "user": [
+         "update",
+         "view"
+      ],
+      "users": [
+         "star",
+         "view",
+         "search"
+      ]
+   },
+   "plan": {
+      "app_tokens_enabled": true,
+      "id": "subscribed",
+      "push_notifications_enabled": false
+   },
+   "preferences": {
+      "contributor_notify_game_request_created": true,
+      "moderator_notify_backglass_auto_approved": false,
+      "moderator_notify_backglass_submitted": true,
+      "moderator_notify_release_auto_approved": false,
+      "moderator_notify_release_commented": true,
+      "moderator_notify_release_submitted": true,
+      "notify_backglass_moderation_status": true,
+      "notify_created_release_comments": true,
+      "notify_created_release_followers": true,
+      "notify_game_requests": true,
+      "notify_mentions": true,
+      "notify_release_moderation_status": true,
+      "notify_release_validation_status": true
+   },
+   "provider": "local",
+   "quota": {
+      "limit": 50,
+      "period": "day",
+      "remaining": 50,
+      "reset": 86400000,
+      "unlimited": false
+   },
+   "roles": [
+      "member"
+   ],
+   "username": "Regan61"
+}

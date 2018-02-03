@@ -1,5 +1,5 @@
-GET /v1/games/skill-ball/rating HTTP/2.0
+GET /v1/games/paragon/rating HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa215MmF4eW1lOSIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MDk6MDcuMTQwWiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MDk6MDcuMTQwWiIsImlydCI6ZmFsc2V9.2Hl4Ov3a55-XSDxWMj1_TkEtBLE1tmkjvXhHsl_EpiA
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMnRzcXpwYXJyOSIsImlhdCI6IjIwMTgtMDItMDNUMjI6MjQ6MjQuMTczWiIsImV4cCI6IjIwMTgtMDItMDNUMjM6MjQ6MjQuMTczWiIsImlydCI6ZmFsc2V9.XAgoJAx8KwVkP0zh6p_WHLQsK_ZmEqitSKNcvBui73Y
 

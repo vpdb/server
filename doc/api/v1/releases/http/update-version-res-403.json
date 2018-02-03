@@ -5,3 +5,6 @@ Content-Type: application/json; charset=utf-8
 Content-Length: 80
 Etag: W/"50-JczMxayu/JK1owBPgh99/PD+L2g"
 
+{
+   "error": "Only moderators and authors of the release can update a version."
+}

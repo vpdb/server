@@ -1,11 +1,11 @@
 POST /v1/tags HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwazN6cHB3eThwOSIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MTI6MjUuNTU4WiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MTI6MjUuNTU4WiIsImlydCI6ZmFsc2V9.efPiaFimqJaTfel5qKQpwbFBGNmBWoj_G435XqXc_l4
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMmVzaGRlYXJyOSIsImlhdCI6IjIwMTgtMDItMDNUMjI6Mjc6MzIuNTIzWiIsImV4cCI6IjIwMTgtMDItMDNUMjM6Mjc6MzIuNTIzWiIsImlydCI6ZmFsc2V9.2OowoAId4IuskBrm6DKBg2nDqjFG1xWXijs_4_bc7jE
 Content-Type: application/json
 Content-Length: 70
 
 {
-  "name": "mytag",
-  "description": "A tag, generated for testing purpose."
+   "description": "A tag, generated for testing purpose.",
+   "name": "mytag"
 }

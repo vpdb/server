@@ -2,6 +2,9 @@
 Access-Control-Allow-Origin: *
 Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Content-Length: 73
-Etag: W/"49-1OnnFR5TIJgq8/lSF2XTJ9PNnO0"
+Content-Length: 87
+Etag: W/"57-TICaGFlEMN44ujd78Wc5QqwV3oA"
 
+{
+   "error": "No star for <salvador_bechtelar31@hotmail.com> for \"Lexington\" found."
+}

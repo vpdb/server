@@ -2,6 +2,64 @@
 Access-Control-Allow-Origin: *
 Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Content-Length: 956
-Etag: W/"3bc-5y/kgyxvCRmCjMV2Cte3VpPN86s"
+Content-Length: 966
+Etag: W/"3c6-b/jDx8YjUKGPoBTZX2/oxJxlqCA"
 
+{
+   "created_by": {
+      "counter": {
+         "comments": 0,
+         "stars": 0
+      },
+      "gravatar_id": "b0ca4d58a6e657eb9be6e32fe89af4dd",
+      "id": "pkqdcearr9",
+      "name": "Carolina8",
+      "username": "Carolina8"
+   },
+   "game": {
+      "counter": {
+         "comments": 0,
+         "downloads": 0,
+         "releases": 0,
+         "stars": 0,
+         "views": 0
+      },
+      "game_type": "pm",
+      "id": "riviera-golf",
+      "ipdb": {
+         "mfg": 328,
+         "number": 6327
+      },
+      "manufacturer": "Unknown",
+      "rating": {
+         "average": 0,
+         "score": 0,
+         "votes": 0
+      },
+      "title": "Riviera Golf",
+      "year": 1900
+   },
+   "id": "hulk6",
+   "languages": [
+   ],
+   "rom_files": [
+      {
+         "bytes": 1024,
+         "crc": 3227331410,
+         "filename": "433.cpu",
+         "modified_at": "1996-12-24T22:32:00.000Z"
+      },
+      {
+         "bytes": 1024,
+         "crc": 550313471,
+         "filename": "433.snd",
+         "modified_at": "1996-12-24T22:32:00.000Z"
+      },
+      {
+         "bytes": 1024,
+         "crc": 3078820641,
+         "filename": "6530sys1.bin",
+         "modified_at": "1996-12-24T22:32:00.000Z"
+      }
+   ]
+}

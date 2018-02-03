@@ -5,3 +5,13 @@ Content-Type: application/json; charset=utf-8
 Content-Length: 203
 Etag: W/"cb-o/+hU5jzgP8QH4klDRGCJjgUZ94"
 
+{
+   "built_at": "2000-01-01T11:21:00.000Z",
+   "download_url": "http://download_url/",
+   "id": "v1.0.1",
+   "is_range": false,
+   "label": "v1.0.1",
+   "major_version": "1",
+   "platform": "vp",
+   "type": "release"
+}

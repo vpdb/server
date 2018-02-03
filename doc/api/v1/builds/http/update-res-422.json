@@ -5,3 +5,22 @@ Content-Type: application/json; charset=utf-8
 Content-Length: 413
 Etag: W/"19d-vU/B6xwQ2P6DigUT3OHMzc3+XAQ"
 
+{
+   "errors": [
+      {
+         "field": "built_at",
+         "message": "Cast to Date failed for value \"never\" at path \"built_at\"",
+         "value": "never"
+      },
+      {
+         "field": "platform",
+         "message": "Invalid platform. Valid platforms are: [ \"vp\" ].",
+         "value": "true"
+      },
+      {
+         "field": "type",
+         "message": "Invalid type. Valid types are: [ \"release\", \"nightly\", \"experimental\" ].",
+         "value": "true"
+      }
+   ]
+}

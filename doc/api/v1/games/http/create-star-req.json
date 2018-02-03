@@ -1,8 +1,9 @@
-POST /v1/games/worlds-fair-jig-saw/star HTTP/2.0
+POST /v1/games/jostle/star HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlazU0c2V3eW1lcyIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MTI6MjIuMzM2WiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MTI6MjIuMzM2WiIsImlydCI6ZmFsc2V9.ZELNi86We4Ebiy73ke9yJBv9fS3eXrPD0KqgjDXdd3s
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa2Q5ZG1lbjU1cyIsImlhdCI6IjIwMTgtMDItMDNUMjI6Mjc6MjkuMDA4WiIsImV4cCI6IjIwMTgtMDItMDNUMjM6Mjc6MjkuMDA4WiIsImlydCI6ZmFsc2V9.0zGIc6q0Vk7jMbOmGjFnMdoMg_Vu7GYv_jQ7Fv0yMOY
 Content-Length: 2
 
-{}
+{
+}

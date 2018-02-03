@@ -1,5 +1,5 @@
-GET /v1/games/long-island/release-name HTTP/2.0
+GET /v1/games/deluxe-baseball/release-name HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla2Q0enU0ejhwcyIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MDg6MzcuNzM5WiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MDg6MzcuNzM5WiIsImlydCI6ZmFsc2V9.5tMH5gzW2qHZWtyKvR-VvQ-Q7khngeIaYCQcLbSujRE
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMjF4OWtlbjU1OSIsImlhdCI6IjIwMTgtMDItMDNUMjI6MjM6NTAuNzg1WiIsImV4cCI6IjIwMTgtMDItMDNUMjM6MjM6NTAuNzg1WiIsImlydCI6ZmFsc2V9.KZlviDmRAvoZ--i7L5YVEQdr6_E--TDZ2q3gwFWrfQA
 

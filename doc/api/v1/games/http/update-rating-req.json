@@ -1,10 +1,10 @@
-PUT /v1/games/music-man/rating HTTP/2.0
+PUT /v1/games/nashville/rating HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMmg5Ym54ejhlOSIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MDk6MDguNTEwWiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MDk6MDguNTEwWiIsImlydCI6ZmFsc2V9.Ve76A2DzkK_EFUoJwwT2d4pP0IiYqz04ibVrbuYLhrk
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlazF5cHlwbnJycyIsImlhdCI6IjIwMTgtMDItMDNUMjI6MjQ6MjUuNDk4WiIsImV4cCI6IjIwMTgtMDItMDNUMjM6MjQ6MjUuNDk4WiIsImlydCI6ZmFsc2V9.WZOBYp1xGUsVLfgrTij7ZJ3P0mjPGaqrB5Wbz4h0jtg
 Content-Length: 11
 
 {
-  "value": 8
+   "value": 8
 }

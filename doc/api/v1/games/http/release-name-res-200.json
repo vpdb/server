@@ -2,6 +2,9 @@
 Access-Control-Allow-Origin: *
 Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Content-Length: 34
-Etag: W/"22-n3BtgHVq+pkAJWU0xQ6wb7FzbVo"
+Content-Length: 37
+Etag: W/"25-w5FBqsrq7paI3OAirbHS1jctnXM"
 
+{
+   "name": "Fabulous Shock Edition"
+}

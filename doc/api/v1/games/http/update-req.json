@@ -1,10 +1,10 @@
-PATCH /v1/games/brave-team HTTP/2.0
+PATCH /v1/games/baseball HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla2Z6djU0eThlcyIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MDg6MjguMTM0WiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MDg6MjguMTM0WiIsImlydCI6ZmFsc2V9.6fRhyDlIuR5f1NnGHxManjWVeuvqJ6ow2qp9lM6-dnU
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMjh6YTF3bnJyOSIsImlhdCI6IjIwMTgtMDItMDNUMjI6MjM6NDEuMDk0WiIsImV4cCI6IjIwMTgtMDItMDNUMjM6MjM6NDEuMDk0WiIsImlydCI6ZmFsc2V9.yY7R7NGNUAjKfUTHlYZy7HCfTPA04yPa1C6_ICmiuCA
 Content-Type: application/json
 Content-Length: 36
 
 {
-  "title": "Hi, I am your new title."
+   "title": "Hi, I am your new title."
 }

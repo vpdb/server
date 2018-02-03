@@ -1,4 +1,4 @@
-GET /v1/games/pontiac/media HTTP/2.0
+GET /v1/games/fast-ball/media HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
 

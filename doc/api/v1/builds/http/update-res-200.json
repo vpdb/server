@@ -5,3 +5,16 @@ Content-Type: application/json; charset=utf-8
 Content-Length: 371
 Etag: W/"173-cQoOjVce2mEkaDtLbwPDP6gXm4E"
 
+{
+   "built_at": "2017-01-01T11:00:00.000Z",
+   "description": "The new future version of Visual Pinball!",
+   "download_url": "https://visualpinball.com/updated-url",
+   "id": "v1.0.0",
+   "is_active": true,
+   "is_range": true,
+   "label": "Updated build label",
+   "major_version": "11",
+   "platform": "vp",
+   "support_url": "https://visualpinball.com/support-url",
+   "type": "nightly"
+}

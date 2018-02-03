@@ -1,5 +1,5 @@
-DELETE /v1/releases/pk3y6wqz8es/star HTTP/2.0
+DELETE /v1/releases/ekwhc8enr59/star HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMjhuc3F3eThlcyIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MTI6MDYuNjQ0WiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MTI6MDYuNjQ0WiIsImlydCI6ZmFsc2V9.eWm0M7_nQO3fqI--0G-4oc3r75J005EMFYnh3-LoI2E
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMjJ0NG1wbjVycyIsImlhdCI6IjIwMTgtMDItMDNUMjI6Mjc6MTkuMjI4WiIsImV4cCI6IjIwMTgtMDItMDNUMjM6Mjc6MTkuMjI4WiIsImlydCI6ZmFsc2V9.SYMVdcyOR6XvFOtcYGPPVa83Of0CKpDGGaS635izUEs
 

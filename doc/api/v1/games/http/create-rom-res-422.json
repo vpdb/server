@@ -5,3 +5,15 @@ Content-Type: application/json; charset=utf-8
 Content-Length: 214
 Etag: W/"d6-uakgnzEDvfG35WaEuy+xWKj0/SM"
 
+{
+   "errors": [
+      {
+         "field": "_file",
+         "message": "File reference must be provided."
+      },
+      {
+         "field": "id",
+         "message": "ID must be provided. Use the name of the ROM file without file extension."
+      }
+   ]
+}

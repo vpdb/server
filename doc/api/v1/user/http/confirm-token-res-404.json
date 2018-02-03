@@ -5,3 +5,6 @@ Content-Type: application/json; charset=utf-8
 Content-Length: 47
 Etag: W/"2f-OopzyGPqfLnkr5jEkkqxnUNHFYo"
 
+{
+   "error": "No such token or token expired."
+}

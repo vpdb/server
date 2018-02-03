@@ -2,6 +2,104 @@
 Access-Control-Allow-Origin: *
 Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Etag: W/"847-8hF8/RQ2NaJpvhie1YGn6UphjxQ"
+Etag: W/"817-AP/HFfsBpE/ljsovcXLas0NaRwQ"
 Content-Encoding: gzip
 
+{
+   "authors": [
+      {
+         "roles": [
+            "creator"
+         ],
+         "user": {
+            "counter": {
+               "comments": 0,
+               "stars": 0
+            },
+            "gravatar_id": "749aa95c2bbe32eda3ee8af0dd158cd5",
+            "id": "e2hqv8qar5s",
+            "name": "GoldaWalker",
+            "username": "GoldaWalker"
+         }
+      }
+   ],
+   "created_at": "2018-02-03T22:23:09.333Z",
+   "created_by": {
+      "counter": {
+         "comments": 0,
+         "stars": 0
+      },
+      "gravatar_id": "749aa95c2bbe32eda3ee8af0dd158cd5",
+      "id": "e2hqv8qar5s",
+      "name": "GoldaWalker",
+      "username": "GoldaWalker"
+   },
+   "game": {
+      "id": "wipe-out",
+      "ipdb": {
+         "mfg": 86,
+         "number": 4870
+      },
+      "manufacturer": "Coffee-Mat Amusement Division",
+      "title": "Wipe-Out",
+      "year": 1976
+   },
+   "id": "eku4n8qnrr9",
+   "moderation": {
+      "auto_approved": true,
+      "history": [
+         {
+            "created_at": "2018-02-03T22:23:09.364Z",
+            "created_by": {
+               "counter": {
+                  "comments": 0,
+                  "stars": 0
+               },
+               "gravatar_id": "749aa95c2bbe32eda3ee8af0dd158cd5",
+               "id": "e2hqv8qar5s",
+               "name": "GoldaWalker",
+               "username": "GoldaWalker"
+            },
+            "event": "approved"
+         }
+      ],
+      "is_approved": true,
+      "is_refused": false
+   },
+   "versions": [
+      {
+         "counter": {
+            "downloads": 0
+         },
+         "file": {
+            "bytes": 2067,
+            "counter": {
+               "downloads": 0
+            },
+            "id": "pkx4amwn5rs",
+            "is_protected": true,
+            "name": "test.directb2s",
+            "url": "http://localhost:7357/storage/v1/files/pkx4amwn5rs.directb2s",
+            "variations": {
+               "full": {
+                  "url": "http://localhost:7357/storage/public/files/full/pkx4amwn5rs.jpg"
+               },
+               "medium": {
+                  "url": "http://localhost:7357/storage/public/files/medium/pkx4amwn5rs.jpg"
+               },
+               "medium-2x": {
+                  "url": "http://localhost:7357/storage/public/files/medium-2x/pkx4amwn5rs.jpg"
+               },
+               "small": {
+                  "url": "http://localhost:7357/storage/public/files/small/pkx4amwn5rs.jpg"
+               },
+               "small-2x": {
+                  "url": "http://localhost:7357/storage/public/files/small-2x/pkx4amwn5rs.jpg"
+               }
+            }
+         },
+         "released_at": "2018-02-03T22:23:09.333Z",
+         "version": "1.0"
+      }
+   ]
+}

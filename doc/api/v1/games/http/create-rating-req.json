@@ -1,10 +1,10 @@
-POST /v1/games/bolero/rating HTTP/2.0
+POST /v1/games/heavyweight/rating HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMjFobXR4eThwcyIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MDk6MDQuMDUyWiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MDk6MDQuMDUyWiIsImlydCI6ZmFsc2V9.4ErL-wcp15ivvttMO37IZnJLaU-TVF6xXwEQ-mKEIwE
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMmFienplbnI1cyIsImlhdCI6IjIwMTgtMDItMDNUMjI6MjQ6MjEuMDE4WiIsImV4cCI6IjIwMTgtMDItMDNUMjM6MjQ6MjEuMDE4WiIsImlydCI6ZmFsc2V9.EVr5WRSnrOaFFVASk6KkHo7E40bP0QHIbSi1PxzCab8
 Content-Length: 11
 
 {
-  "value": 7
+   "value": 7
 }

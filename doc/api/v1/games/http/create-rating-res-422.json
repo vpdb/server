@@ -5,3 +5,12 @@ Content-Type: application/json; charset=utf-8
 Content-Length: 112
 Etag: W/"70-/x5+hnA9DC6WsCx2nTLhSV0MzZQ"
 
+{
+   "errors": [
+      {
+         "field": "value",
+         "message": "Value must be between 1 and 10.",
+         "value": 11
+      }
+   ]
+}

@@ -1,34 +1,34 @@
-PATCH /v1/releases/p2x484ymps HTTP/2.0
+PATCH /v1/releases/ekwyewearrs HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMm5uNzR6bWU5IiwiaWF0IjoiMjAxOC0wMS0yNlQyMzowOTo0OC44NjRaIiwiZXhwIjoiMjAxOC0wMS0yN1QwMDowOTo0OC44NjRaIiwiaXJ0IjpmYWxzZX0.4UsMsiV_rc8_Teksj0QIrle42cv6bcKolqCHuNl6-fw
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa293cDRlYTVycyIsImlhdCI6IjIwMTgtMDItMDNUMjI6MjQ6NTcuNTgyWiIsImV4cCI6IjIwMTgtMDItMDNUMjM6MjQ6NTcuNTgyWiIsImlydCI6ZmFsc2V9.O8Pb31R2MH_GSQQ04T2aRxpyUVkfa2yaeOuFkmV7snQ
 Content-Type: application/json
-Content-Length: 316
+Content-Length: 317
 
 {
-  "name": "Updated name",
-  "description": "Updated description",
-  "acknowledgements": "Updated acknowledgements",
-  "authors": [
-    {
-      "_user": "e23ncxy8es",
-      "roles": [
-        "Some other job"
-      ]
-    }
-  ],
-  "links": [
-    {
-      "label": "first link",
-      "url": "https://vpdb.io/somelink"
-    },
-    {
-      "label": "second link",
-      "url": "https://vpdb.io/someotherlink"
-    }
-  ],
-  "_tags": [
-    "hd",
-    "dof"
-  ]
+   "_tags": [
+      "hd",
+      "dof"
+   ],
+   "acknowledgements": "Updated acknowledgements",
+   "authors": [
+      {
+         "_user": "e29ee4pn5rs",
+         "roles": [
+            "Some other job"
+         ]
+      }
+   ],
+   "description": "Updated description",
+   "links": [
+      {
+         "label": "first link",
+         "url": "https://vpdb.io/somelink"
+      },
+      {
+         "label": "second link",
+         "url": "https://vpdb.io/someotherlink"
+      }
+   ],
+   "name": "Updated name"
 }

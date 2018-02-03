@@ -3,5 +3,22 @@ Access-Control-Allow-Origin: *
 Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
 Content-Length: 315
-Etag: W/"13b-dwYRxxd1wVPchBFJcO2fUuZrLXw"
+Etag: W/"13b-iUkhN9PAJ3KsUwv3aQP7ooiSqnE"
 
+{
+   "bytes": 43,
+   "counter": {
+      "downloads": 0
+   },
+   "created_at": "2018-02-03T22:23:32.326Z",
+   "file_type": "release",
+   "id": "p28hb1warrs",
+   "is_protected": true,
+   "metadata": {
+   },
+   "mime_type": "text/plain",
+   "name": "text.txt",
+   "url": "http://localhost:7357/storage/v1/files/p28hb1warrs.txt",
+   "variations": {
+   }
+}

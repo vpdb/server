@@ -1,16 +1,16 @@
 POST /v1/media HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMmY1Znh6OGU5IiwiaWF0IjoiMjAxOC0wMS0yNlQyMzowODo0Mi4xNzBaIiwiZXhwIjoiMjAxOC0wMS0yN1QwMDowODo0Mi4xNzBaIiwiaXJ0IjpmYWxzZX0.WDPmC20ZFgBafOuJlwYE-9OHMCi4I8s0Bsgv70RO8ag
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMnV1MmVhcjU5IiwiaWF0IjoiMjAxOC0wMi0wM1QyMjoyMzo1NS42ODhaIiwiZXhwIjoiMjAxOC0wMi0wM1QyMzoyMzo1NS42ODhaIiwiaXJ0IjpmYWxzZX0.6wNYKuBJtjrTSJSG747845snIEPrTW5xajvTUDmdfMg
 Content-Type: application/json
-Content-Length: 261
+Content-Length: 263
 
 {
-  "description": "This is a very super high resolution backglass that I have stitched together from four different sources.",
-  "acknowledgements": "- Thanks to @mom for all her patience",
-  "category": "backglass_image",
-  "_file": "ekpztf4y8ps",
-  "_ref": {
-    "game": "manhattan"
-  }
+   "_file": "pkz9a2pn5rs",
+   "_ref": {
+      "game": "blue-streak"
+   },
+   "acknowledgements": "- Thanks to @mom for all her patience",
+   "category": "backglass_image",
+   "description": "This is a very super high resolution backglass that I have stitched together from four different sources."
 }

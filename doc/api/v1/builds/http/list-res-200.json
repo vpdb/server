@@ -5,3 +5,111 @@ Content-Type: application/json; charset=utf-8
 Etag: W/"a1d-pbvbtgES6tvCb34wp/MiIoTxuXI"
 Content-Encoding: gzip
 
+[
+   {
+      "built_at": "2015-12-24T08:46:00.000Z",
+      "download_url": "http://www.vpforums.org/index.php?app=downloads&showfile=11572",
+      "id": "10.0.0",
+      "is_range": false,
+      "label": "v10.0.0",
+      "major_version": "10",
+      "platform": "vp",
+      "type": "release"
+   },
+   {
+      "built_at": "2014-04-29T00:00:00.000Z",
+      "download_url": "http://www.vpforums.org/index.php?app=downloads&showfile=8793",
+      "id": "9.9.0",
+      "is_range": false,
+      "label": "v9.9.0",
+      "major_version": "9",
+      "platform": "vp",
+      "type": "release"
+   },
+   {
+      "built_at": "2014-03-21T00:00:00.000Z",
+      "download_url": "http://www.vpforums.org/index.php?app=downloads&showfile=8793",
+      "id": "9.2.1",
+      "is_range": false,
+      "label": "v9.2.1",
+      "major_version": "9",
+      "platform": "vp",
+      "type": "release"
+   },
+   {
+      "built_at": "2014-04-13T21:36:00.000Z",
+      "download_url": "http://www.vpforums.org/index.php?showtopic=27416&p=261813",
+      "id": "physmod2",
+      "is_range": false,
+      "label": "physmod2",
+      "major_version": "9",
+      "platform": "vp",
+      "type": "experimental"
+   },
+   {
+      "built_at": "2014-05-18T01:24:00.000Z",
+      "download_url": "http://www.vpforums.org/index.php?showtopic=27416&page=32#entry266075",
+      "id": "physmod5",
+      "is_range": false,
+      "label": "physmod5",
+      "major_version": "9",
+      "platform": "vp",
+      "type": "experimental"
+   },
+   {
+      "built_at": "2014-07-21T20:51:00.000Z",
+      "download_url": "http://www.vpforums.org/index.php?showtopic=27604&p=273142",
+      "id": "rubberdemo4",
+      "is_range": false,
+      "label": "rubberdemo4",
+      "major_version": "9",
+      "platform": "vp",
+      "type": "experimental"
+   },
+   {
+      "built_at": "2014-03-04T00:00:00.000Z",
+      "download_url": "https://www.dropbox.com/sh/qx1yng3nm8cv8lr/AACbxkyAHpY1T5xjuum03dbZa/Daily%20VPinball%20Builds/VPinball%209.2.1%20rev932.exe",
+      "id": "9.2.1-r932",
+      "is_range": false,
+      "label": "v9.2.1 rev 932",
+      "major_version": "9",
+      "platform": "vp",
+      "type": "nightly"
+   },
+   {
+      "built_at": "2014-03-21T00:00:00.000Z",
+      "id": "-9.2.1",
+      "is_range": true,
+      "label": "< v9.2.1",
+      "major_version": "9",
+      "platform": "vp",
+      "type": "release"
+   },
+   {
+      "built_at": "2014-04-29T00:00:00.000Z",
+      "id": "-9.9.0",
+      "is_range": true,
+      "label": "< v9.9.0",
+      "major_version": "9",
+      "platform": "vp",
+      "type": "release"
+   },
+   {
+      "built_at": "2009-02-07T15:23:00.000Z",
+      "id": "8.x",
+      "is_range": true,
+      "label": "v8.x",
+      "major_version": "8",
+      "platform": "vp",
+      "type": "release"
+   },
+   {
+      "built_at": "2015-12-31T00:00:00.000Z",
+      "id": "10.x",
+      "is_range": false,
+      "label": "VPX",
+      "major_version": "10",
+      "platform": "vp",
+      "type": "release"
+   }
+]

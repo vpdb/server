@@ -2,6 +2,83 @@
 Access-Control-Allow-Origin: *
 Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Etag: W/"665-Uqdzdr3cMUwyHCM1Ey0DsYaJBjc"
+Etag: W/"66e-8UOA5HFcb0lvYi1suzfyPOK7h8M"
 Content-Encoding: gzip
 
+{
+   "authors": [
+      {
+         "roles": [
+            "creator"
+         ],
+         "user": {
+            "counter": {
+               "comments": 0,
+               "stars": 0
+            },
+            "gravatar_id": "9c1e53d2c2ab8dd41b10975301706b6a",
+            "id": "eke5qmqa559",
+            "name": "HoustonPredovic20",
+            "username": "HoustonPredovic20"
+         }
+      }
+   ],
+   "created_at": "2018-02-03T22:23:06.051Z",
+   "created_by": {
+      "counter": {
+         "comments": 0,
+         "stars": 0
+      },
+      "gravatar_id": "9c1e53d2c2ab8dd41b10975301706b6a",
+      "id": "eke5qmqa559",
+      "name": "HoustonPredovic20",
+      "username": "HoustonPredovic20"
+   },
+   "game": {
+      "id": "monaco",
+      "ipdb": {
+         "mfg": 323,
+         "number": 1613
+      },
+      "manufacturer": "United",
+      "title": "Monaco",
+      "year": 1956
+   },
+   "id": "ek4zr8qnr5s",
+   "versions": [
+      {
+         "counter": {
+            "downloads": 0
+         },
+         "file": {
+            "bytes": 2067,
+            "counter": {
+               "downloads": 0
+            },
+            "id": "ekkzrmwa5r9",
+            "is_protected": true,
+            "name": "test.directb2s",
+            "url": "http://localhost:7357/storage/v1/files/ekkzrmwa5r9.directb2s",
+            "variations": {
+               "full": {
+                  "url": "http://localhost:7357/storage/public/files/full/ekkzrmwa5r9.jpg"
+               },
+               "medium": {
+                  "url": "http://localhost:7357/storage/public/files/medium/ekkzrmwa5r9.jpg"
+               },
+               "medium-2x": {
+                  "url": "http://localhost:7357/storage/public/files/medium-2x/ekkzrmwa5r9.jpg"
+               },
+               "small": {
+                  "url": "http://localhost:7357/storage/public/files/small/ekkzrmwa5r9.jpg"
+               },
+               "small-2x": {
+                  "url": "http://localhost:7357/storage/public/files/small-2x/ekkzrmwa5r9.jpg"
+               }
+            }
+         },
+         "released_at": "2018-02-03T22:23:06.051Z",
+         "version": "1.0"
+      }
+   ]
+}

@@ -1,10 +1,10 @@
-PUT /v1/releases/p2nhhg4ymes/rating HTTP/2.0
+PUT /v1/releases/ekczdyparrs/rating HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa3M5Mmd4em1lOSIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MDk6MjMuMzczWiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MDk6MjMuMzczWiIsImlydCI6ZmFsc2V9.bV2fjv42EJ0AumGNnjSDsQvVaTufxXQeRvRVQSUYmjE
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwazhibXllbjU1cyIsImlhdCI6IjIwMTgtMDItMDNUMjI6MjQ6MzIuMTk0WiIsImV4cCI6IjIwMTgtMDItMDNUMjM6MjQ6MzIuMTk0WiIsImlydCI6ZmFsc2V9.6NhvkIbHr1aVPJLBI-9jJyr1wIpjUYatXcUN4JWvT5k
 Content-Length: 11
 
 {
-  "value": 1
+   "value": 1
 }

@@ -5,3 +5,12 @@ Content-Type: application/json; charset=utf-8
 Content-Length: 209
 Etag: W/"d1-arsHyVwI+5x2hUl1e+k9xXTSjFI"
 
+{
+   "errors": [
+      {
+         "field": "version",
+         "message": "Provided version already exists and you cannot add a version twice. Try updating the version instead of adding a new one.",
+         "value": "1.0.0"
+      }
+   ]
+}

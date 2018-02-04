@@ -11,14 +11,20 @@ class ReleaseVersionFileSerializer extends Serializer {
 		const versionFile = _.pick(doc, ['flavor', 'validation', 'released_at', 'counter']);
 
 		// file
-		versionFile.file = FileSerializer.simple(doc._file, req, opts);
+		if (doc.populated('_file')) {
+			versionFile.file = FileSerializer.simple(doc._file, req, opts);
+		}
 
 		// compat
-		versionFile.compatibility = doc._compatibility.map(build => BuildSerializer.reduced(build, req, opts));
+		if (doc.populated('_compatibility')) {
+			versionFile.compatibility = doc._compatibility.map(build => BuildSerializer.reduced(build, req, opts));
+		}
 
 		// media
-		versionFile.playfield_image = FileSerializer.simple(doc._playfield_image, req, opts);
-		if (doc._playfield_video) {
+		if (doc.populated('_playfield_image')) {
+			versionFile.playfield_image = FileSerializer.simple(doc._playfield_image, req, opts);
+		}
+		if (doc._playfield_video && doc.populated('_playfield_video')) {
 			versionFile.playfield_video = FileSerializer.simple(doc._playfield_video, req, opts);
 		}
 
@@ -32,7 +38,7 @@ class ReleaseVersionFileSerializer extends Serializer {
 
 		// thumb
 		if (opts.thumbPerFile && opts.thumbFormat) {
-			versionFile.thumb = this._getFileThumb(doc, opts);
+			versionFile.thumb = this._getFileThumb(doc, req, opts);
 		}
 
 		return versionFile;

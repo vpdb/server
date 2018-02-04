@@ -43,6 +43,9 @@ class Serializer {
 		if (!doc) {
 			return undefined;
 		}
+		if (!doc._id) {
+			throw new Error('Must be document, given: ' + JSON.stringify(doc));
+		}
 		return this._post(doc, serializer(doc, req, this._defaultOpts(opts)), req, this._defaultOpts(opts));
 	}
 
@@ -54,8 +57,13 @@ class Serializer {
 	 */
 	_post(doc, object, req, opts) {
 
+		if (!object) {
+			return object;
+		}
+
 		// handle moderation field
-		object.moderation = require('./moderation.serializer')._simple(doc.moderation, req, opts);
+		const ModerationSerializer = require('./moderation.serializer');
+		object.moderation = ModerationSerializer._simple(doc.moderation, req, opts);
 
 		// remove excluded fields
 		opts.excludedFields.forEach(field => delete object[field]);
@@ -126,28 +134,29 @@ class Serializer {
 	 * Returns playfield thumb for a given release file.
 	 * Can return null if playfield is not populated or thumbFormat is invalid or not specified.
 	 *
-	 * @param {{ [playfield_image]:{}, [_playfield_image]:{} }} file Table
+	 * @param {Document} versionFile Version file
+	 * @param {Request} req
 	 * @param {{ fullThumbData:boolean, thumbFormat:string }} opts thumbFormat is the variation or "original" if the full link is desired.
 	 * @protected
 	 * @returns {{}|null}
 	 */
-	_getFileThumb(file, opts) {
+	_getFileThumb(versionFile, req, opts) {
+
+		if (!opts.thumbFormat) {
+			return undefined;
+		}
+
+		if (!versionFile.populated('_playfield_image')) {
+			return undefined;
+		}
 
 		let thumbFields = [ 'url', 'width', 'height', 'is_protected' ];
 		if (opts.fullThumbData) {
 			thumbFields = [...thumbFields, 'mime_type', 'bytes', 'file_type'];
 		}
 
-		if (!opts.thumbFormat) {
-			return null;
-		}
-
-		const playfieldImage = this._getPlayfieldImage(file);
-
-		// if not populated, return null
-		if (!playfieldImage || !playfieldImage.metadata) {
-			return null;
-		}
+		const FileSerializer = require('./file.serializer');
+		const playfieldImage = FileSerializer.detailed(versionFile._playfield_image, req, opts);
 
 		if (opts.thumbFormat === 'original') {
 			return _.assign(_.pick(playfieldImage, thumbFields), {
@@ -160,21 +169,6 @@ class Serializer {
 		}
 		return null;
 	}
-
-	/**
-	 * Returns the playfield image property from the table file object.
-	 * @param {{ [playfield_image]:{}, [_playfield_image]:{} }} file Table file
-	 * @protected
-	 * @returns {{}|ObjectId|null}
-	 */
-	_getPlayfieldImage(file) {
-		const playfieldImage = file.playfield_image || file._playfield_image;
-		if (!playfieldImage) {
-			return null;
-		}
-		return playfieldImage.toObject ? playfieldImage.toObject() : playfieldImage;
-	}
-
 }
 
 module.exports = Serializer;

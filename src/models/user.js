@@ -362,9 +362,8 @@ UserSchema.methods.hasRole = function(role) {
 		return false;
 
 	} else {
-		this.roles.includes(role);
+		return this.roles.includes(role);
 	}
-	return UserSchema.statics.toReduced(this);
 };
 
 

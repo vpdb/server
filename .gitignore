@@ -23,6 +23,7 @@ logs
 /vpdb-svg
 
 results
+.nyc_output
 src/config/settings.js
 src/scripts/credentials.js
 test/coverage

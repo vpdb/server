@@ -10,10 +10,14 @@ class RomSerializer extends Serializer {
 		const rom = _.pick(doc, ['id', 'version', 'notes', 'languages', 'rom_files']);
 
 		// file
-		rom.file = FileSerializer.simple(doc._file, req, opts);
+		if (doc.populated('_file')) {
+			rom.file = FileSerializer.simple(doc._file, req, opts);
+		}
 
 		// creator
-		rom.created_by = UserSerializer.reduced(doc._created_by, req, opts);
+		if (doc.populated('_created_by')) {
+			rom.created_by = UserSerializer.reduced(doc._created_by, req, opts);
+		}
 
 		return rom;
 	}

@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const Serializer = require('./serializer');
 const UserSerializer = require('./user.serializer');
-const GameSerializer = require('./release.serializer');
+const GameSerializer = require('./game.serializer');
 const ReleaseSerializer = require('./release.serializer');
 const FileSerializer = require('./file.serializer');
 

@@ -120,11 +120,7 @@ exports.create = function(req, res) {
 
 	}).then(() => {
 
-		if (game.toReduced) {
-			LogEvent.log(req, 'upload_rom', true, { rom: RomSerializer.simple(newRom, req), game: GameSerializer.reduced(game, req) }, { game: game._id });
-		} else {
-			LogEvent.log(req, 'upload_rom', true, { rom: RomSerializer.simple(newRom, req), game: game }, { });
-		}
+		LogEvent.log(req, 'upload_rom', true, { rom: RomSerializer.simple(newRom, req), game: GameSerializer.reduced(game, req) }, { game: game._id });
 
 		return api.success(res, RomSerializer.simple(newRom, req), 201);
 

@@ -65,7 +65,7 @@ exports.updateForRelease = function(req, res) {
  */
 function view(req, res, find, titleAttr) {
 
-	var assert = api.assert(error, 'view', req.user.email, res);
+	const assert = api.assert(error, 'view', req.user.email, res);
 	find(req, res, assert, function(entity, rating) {
 
 		if (rating) {
@@ -86,19 +86,19 @@ function view(req, res, find, titleAttr) {
  */
 function create(req, res, ref, find) {
 
-	var assert = api.assert(error, 'create', req.user.email, res);
+	const assert = api.assert(error, 'create', req.user.email, res);
 	find(req, res, assert, function(entity, duplicateRating) {
 		if (duplicateRating) {
 			return api.fail(res, error('Cannot vote twice. Use PUT in order to update a vote.').warn('create'), 400);
 		}
-		var obj = {
+		const obj = {
 			_from: req.user._id,
 			_ref: {},
 			value: req.body.value,
 			created_at: new Date()
 		};
 		obj._ref[ref] = entity._id;
-		var rating = new Rating(obj);
+		const rating = new Rating(obj);
 
 		rating.validate(function(err) {
 			if (err) {
@@ -123,7 +123,7 @@ function create(req, res, ref, find) {
  */
 function update(req, res, ref, find, titleAttr) {
 
-	var assert = api.assert(error, 'update', req.user.email, res);
+	const assert = api.assert(error, 'update', req.user.email, res);
 	find(req, res, assert, function(entity, rating) {
 		if (!rating) {
 			return api.fail(res, error('No rating of <%s> for "%s" found.', req.user.email, entity[titleAttr]), 404);
@@ -167,7 +167,7 @@ function updateRatedEntity(req, res, ref, entity, rating, status) {
 			logger.log('[rating] User <%s> added new rating for %s %s with %s.', req.user, ref, entity.id, rating.value);
 		}
 
-		LogEvent.log(req, 'rate_' + ref, true, logPayload(rating, entity, ref, status == 200), logRefs(rating, entity, ref), function() {
+		LogEvent.log(req, 'rate_' + ref, true, logPayload(rating, entity, ref, status === 200), logRefs(rating, entity, ref), function() {
 			return api.success(res, result, status);
 		});
 
@@ -187,7 +187,7 @@ function updateRatedEntity(req, res, ref, entity, rating, status) {
 function find(Model, ref, populate) {
 	return function(req, res, assert, callback) {
 
-		var query = Model.findOne({ id: req.params.id });
+		const query = Model.findOne({ id: req.params.id });
 		if (populate) {
 			query.populate(populate);
 		}
@@ -195,7 +195,7 @@ function find(Model, ref, populate) {
 			if (!entity) {
 				return api.fail(res, error('No such %s with ID "%s"', ref, req.params.id), 404);
 			}
-			var q = { _from: req.user._id };
+			const q = { _from: req.user._id };
 			q['_ref.' + ref] = entity._id;
 			Rating.findOne(q, assert(function (rating) {
 				callback(entity, rating);
@@ -205,13 +205,13 @@ function find(Model, ref, populate) {
 }
 
 function logPayload(rating, entity, type, updateOnly) {
-	var payload =  { rating: _.pick(rating.toObject(), [ 'id', 'value' ]), updated: updateOnly };
-	payload[type] = entity.toReduced();
+	const payload = { rating: _.pick(rating.toObject(), ['id', 'value']), updated: updateOnly };
+	payload[type] = entity.toObject();
 	return payload;
 }
 
 function logRefs(star, entity, type) {
-	var ref = {};
+	const ref = {};
 	ref[type] = star._ref[type]._id || star._ref[type];
 	if (type === 'release') {
 		ref.game = entity._game._id;

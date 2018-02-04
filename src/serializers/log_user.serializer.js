@@ -1,6 +1,5 @@
 const _ = require('lodash');
 const Serializer = require('./serializer');
-const FileSerializer = require('./file.serializer');
 const UserSerializer = require('./user.serializer');
 
 class LogUserSerializer extends Serializer {

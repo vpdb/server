@@ -31,7 +31,7 @@ class UserSerializer extends Serializer {
 	 */
 	_simple(doc, req, opts) {
 		const user = this._reduced(doc, req, opts);
-		_.assign(user, _.pick(doc, [ 'location' ]));
+		_.assign(user, _.pick(doc, [ 'username', 'location' ]));
 
 		// counter
 		user.counter = _.pick(doc.counter, ['comments', 'stars']);

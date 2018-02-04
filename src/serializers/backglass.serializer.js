@@ -22,21 +22,25 @@ class BackglassSerializer extends Serializer {
 		const backglass = this._serialize(doc, req, opts, BackglassVersionSerializer.simple.bind(BackglassVersionSerializer));
 
 		// creator
-		backglass.created_by = UserSerializer.reduced(doc._created_by, req, opts);
+		if (doc.populated('_created_by')) {
+			backglass.created_by = UserSerializer.reduced(doc._created_by, req, opts);
+		}
 
 		return backglass;
 	}
 
 	/** @private */
-	_serialize(doc, req, opts, backglassSerializer) {
+	_serialize(doc, req, opts, versionSerializer) {
 		// primitive fields
 		const backglass = _.pick(doc, ['id', 'description', 'acknowledgements', 'created_at']);
 
 		// versions
-		backglass.versions = doc.versions.map(bg => backglassSerializer(bg, req, opts));
+		backglass.versions = doc.versions.map(version => versionSerializer(version, req, opts));
 
 		// game
-		backglass.game = GameSerializer.reduced(doc._game, req, opts);
+		if (doc.populated('_game')) {
+			backglass.game = GameSerializer.reduced(doc._game, req, opts);
+		}
 
 		// authors
 		backglass.authors = doc.authors.map(author => AuthorSerializer.reduced(author, req, opts));

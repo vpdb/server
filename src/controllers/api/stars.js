@@ -81,7 +81,7 @@ exports.get = function(name) {
  */
 function view(req, res, find, titleAttr) {
 
-	var assert = api.assert(error, 'view', req.user.email, res);
+	const assert = api.assert(error, 'view', req.user.email, res);
 	find(req, res, assert, function(entity, star) {
 
 		if (star) {
@@ -102,19 +102,19 @@ function view(req, res, find, titleAttr) {
  */
 function star(req, res, type, find) {
 
-	var assert = api.assert(error, 'create', req.user.email, res);
+	const assert = api.assert(error, 'create', req.user.email, res);
 	find(req, res, assert, function(entity, duplicateStar) {
 		if (duplicateStar) {
 			return api.fail(res, error('Already starred. Cannot star twice, you need to unstar first.').warn('create'), 400);
 		}
-		var obj = {
+		const obj = {
 			_from: req.user._id,
 			_ref: {},
 			type: type,
 			created_at: new Date()
 		};
 		obj._ref[type] = entity._id;
-		var star = new Star(obj);
+		const star = new Star(obj);
 
 		star.save(assert(function() {
 
@@ -139,7 +139,7 @@ function star(req, res, type, find) {
  */
 function unstar(req, res, type, find) {
 
-	var assert = api.assert(error, 'create', req.user.email, res);
+	const assert = api.assert(error, 'create', req.user.email, res);
 	find(req, res, assert, function(entity, star) {
 		if (!star) {
 			return api.fail(res, error('Not starred. You need to star something before you can unstar it.').warn('create'), 400);
@@ -168,7 +168,7 @@ function unstar(req, res, type, find) {
  */
 function find(Model, type, populate) {
 	return function(req, res, assert, callback) {
-		var query = Model.findOne({ id: req.params.id });
+		const query = Model.findOne({ id: req.params.id });
 		if (populate) {
 			query.populate(populate);
 		}
@@ -176,7 +176,7 @@ function find(Model, type, populate) {
 			if (!entity) {
 				return api.fail(res, error('No such %s with ID "%s"', type, req.params.id), 404);
 			}
-			var q = { _from: req.user._id, type: type };
+			const q = { _from: req.user._id, type: type };
 			q['_ref.' + type] = entity._id;
 			Star.findOne(q, assert(function(star) {
 				callback(entity, star);
@@ -186,13 +186,13 @@ function find(Model, type, populate) {
 }
 
 function logPayload(entity, type) {
-	var payload = { };
-	payload[type] = entity.toReduced();
+	const payload = {};
+	payload[type] = entity.toObject();
 	return payload;
 }
 
 function logRefs(star, entity, type) {
-	var ref = {};
+	const ref = {};
 	ref[type] = star._ref[type]._id || star._ref[type];
 	if (type === 'release') {
 		ref.game = entity._game._id;

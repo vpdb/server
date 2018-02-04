@@ -14,6 +14,7 @@ class CommentSerializer extends Serializer {
 		if (doc.populated('_ref.release')) {
 			comment.release = ReleaseSerializer.reduced(doc._ref.release, req, opts);
 		}
+		return comment;
 	}
 }
 

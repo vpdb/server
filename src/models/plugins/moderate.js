@@ -306,34 +306,6 @@ module.exports = function(schema) {
 	};
 
 	/**
-	 * Returns the moderation property API-stripped.
-	 * @returns {{}}
-	 */
-	schema.methods.moderationToObject = function() {
-		let moderation = this.moderation.toObject();
-		let includeHistory = false;
-		if (this.moderation.history) {
-			moderation.history = this.moderation.history.map(h => {
-				let historyItem = h.toObject();
-				if (h._created_by.toReduced) {
-					historyItem.created_by = h._created_by.toReduced();
-					includeHistory = true;
-				}
-				delete historyItem._created_by;
-				delete historyItem.id;
-				delete historyItem._id;
-				return historyItem;
-			});
-		}
-		if (includeHistory) {
-			moderation.history = _.orderBy(moderation.history || [], ['created_at'], ['desc']);
-		} else {
-			delete moderation.history;
-		}
-		return moderation;
-	};
-
-	/**
 	 * Marks the entity as approved.
 	 * @param {User|ObjectId} user User who approved
 	 * @param {string} [message] Optional message

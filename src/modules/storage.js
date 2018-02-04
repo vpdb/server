@@ -407,7 +407,7 @@ class Storage {
 	/**
 	 * Returns the absolute URL of a given file.
 	 * @param {File} file
-	 * @param {object|string} variation or variation name
+	 * @param {object|string} [variation] variation or variation name, main file if not given
 	 * @returns {string|null} URL or null if file is falsy.
 	 */
 	url(file, variation) {

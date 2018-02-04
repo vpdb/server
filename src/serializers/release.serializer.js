@@ -2,6 +2,7 @@ const _ = require('lodash');
 const flavor = require('../modules/flavor');
 const Serializer = require('./serializer');
 const GameSerializer = require('./game.serializer');
+const FileSerializer = require('./file.serializer');
 const AuthorSerializer = require('./author.serializer');
 const ReleaseVersionSerializer = require('./release.version.serializer');
 
@@ -23,22 +24,24 @@ class ReleaseSerializer extends Serializer {
 		const release = _.pick(doc, ['id', 'name', 'created_at', 'released_at', 'counter']);
 
 		// game
-		release.game = GameSerializer.reduced(doc._game, req, opts);
+		if (doc.populated('_game')) {
+			release.game = GameSerializer.reduced(doc._game, req, opts);
+		}
 
 		// authors
 		release.authors = doc.authors.map(author => AuthorSerializer.reduced(author, req, opts));
 
 		// versions
 		release.versions = doc.versions
-			.map(version => ReleaseVersionSerializer.simple(version, req, opts))
+			.map(version => versionSerializer(version, req, opts))
 			.sort(this._sortByDate('released_at'));
 
-		if (stripVersions) {
+		if (stripVersions && doc.populated('versions.files._file')) {
 			release.versions = ReleaseVersionSerializer._strip(release.versions, req, opts);
 		}
 
 		// thumb
-		release.thumb = this._findThumb(doc.versions, opts);
+		release.thumb = this._findThumb(doc.versions, req, opts);
 
 		// star
 		if (opts.starredReleaseIds) {
@@ -57,12 +60,13 @@ class ReleaseSerializer extends Serializer {
 	 *
 	 * Basically it looks at thumbFlavor and thumbFormat and tries to return
 	 * the best match.
-	 * @param versions
+	 * @param {Document[]} versions Version documents
+	 * @param req
 	 * @param {{ thumbFlavor:string, thumbFormat:string, fullThumbData:boolean }} opts thumbFlavor: "orientation:fs,lighting:day", thumbFormat: variation name or "original"
 	 * @private
 	 * @returns {{image: *, flavor: *}}
 	 */
-	_findThumb(versions, opts) {
+	_findThumb(versions, req, opts) {
 
 		opts.thumbFormat = opts.thumbFormat || 'original';
 
@@ -110,11 +114,11 @@ class ReleaseSerializer extends Serializer {
 		}), ['weight'], ['desc']);
 
 		const bestMatch = filesByWeight[0].file;
-		const thumb = this._getFileThumb(bestMatch, opts);
+		const thumb = this._getFileThumb(bestMatch, req, opts);
 		// can be null if invalid thumbFormat was specified
 		if (thumb === null) {
 			return {
-				image: this._getDefaultThumb(bestMatch, opts),
+				image: this._getDefaultThumb(bestMatch, req, opts),
 				flavor: bestMatch.flavor
 			};
 		}
@@ -129,14 +133,17 @@ class ReleaseSerializer extends Serializer {
 	/**
 	 * Returns the default thumb of a file.
 	 *
-	 * @param {{ [playfield_image]:{}, [_playfield_image]:{} }} file Table file
+	 * @param {{ [playfield_image]:{}, [_playfield_image]:{} }} versionFileDoc Table file
+	 * @param req
 	 * @param {{ fullThumbData: boolean }} opts
 	 * @private
 	 * @returns {{}|null}
 	 */
-	_getDefaultThumb(file, opts) {
+	_getDefaultThumb(versionFileDoc, req, opts) {
 
-		let playfieldImage = this._getPlayfieldImage(file);
+		let playfieldImage = versionFileDoc.populated('_playfield_image')
+			? FileSerializer.detailed(versionFileDoc._playfield_image, req, opts)
+			: null;
 		if (!playfieldImage || !playfieldImage.metadata) {
 			return null;
 		}

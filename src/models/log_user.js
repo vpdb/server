@@ -51,25 +51,6 @@ LogUserSchema.plugin(paginate);
 
 
 //-----------------------------------------------------------------------------
-// VIRTUALS
-//-----------------------------------------------------------------------------
-LogUserSchema.virtual('user')
-	.get(function() {
-		if (this.populated('_user') && this._user) {
-			return this._user.toReduced();
-		}
-		return undefined;
-	});
-
-LogUserSchema.virtual('actor')
-	.get(function() {
-		if (this.populated('_actor') && this._actor) {
-			return this._actor.toReduced();
-		}
-		return undefined;
-	});
-
-//-----------------------------------------------------------------------------
 // STATIC METHODS
 //-----------------------------------------------------------------------------
 

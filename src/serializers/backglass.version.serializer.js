@@ -7,14 +7,18 @@ class BackglassVersionSerializer extends Serializer {
 	/** @private */
 	_reduced(doc, req, opts) {
 		const backglassVersion = _.pick(doc, [ 'version', 'changes', 'released_at', 'counter' ]);
-		backglassVersion.file = FileSerializer.reduced(doc._file, req, opts);
+		if (doc.populated('_file')) {
+			backglassVersion.file = FileSerializer.reduced(doc._file, req, opts);
+		}
 		return backglassVersion;
 	}
 
 	/** @private */
 	_simple(doc, req, opts) {
 		const backglassVersion = _.pick(doc, [ 'version', 'changes', 'released_at', 'counter' ]);
-		backglassVersion.file = FileSerializer.simple(doc._file, req, opts);
+		if (doc.populated('_file')) {
+			backglassVersion.file = FileSerializer.simple(doc._file, req, opts);
+		}
 		return backglassVersion;
 	}
 }

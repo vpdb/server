@@ -10,7 +10,9 @@ class GameRequestSerializer extends Serializer {
 		const gameRequest = _.pick(doc, ['id', 'title', 'notes', 'ipdb_number', 'ipdb_title', 'is_closed', 'message', 'created_at']);
 
 		// game
-		gameRequest.game = GameSerializer.reduced(doc._game, req, opts);
+		if (doc.populated('_game')) {
+			gameRequest.game = GameSerializer.reduced(doc._game, req, opts);
+		}
 
 		return gameRequest;
 	}
@@ -20,7 +22,9 @@ class GameRequestSerializer extends Serializer {
 		const gameRequest = this._simple(doc, req, opts);
 
 		// creator
-		gameRequest.created_by = UserSerializer.reduced(doc, req, opts);
+		if (doc.populated('_created_by')) {
+			gameRequest.created_by = UserSerializer.reduced(doc._created_by, req, opts);
+		}
 
 		return gameRequest;
 	}

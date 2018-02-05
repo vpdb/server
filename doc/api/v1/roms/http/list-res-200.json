@@ -1,34 +1,32 @@
 200 OK
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 X-List-Page: 1
 X-List-Size: 10
 X-List-Count: 2
 Content-Type: application/json; charset=utf-8
-Etag: W/"6ba-I5/eTUxPl1E1xOl3bL13O7NMJew"
+Etag: W/"6ea-65k5R4XSSzNi0eZDJhLGxaRsIMs"
 Content-Encoding: gzip
 
 [
    {
       "created_by": {
-         "counter": {
-            "comments": 0,
-            "stars": 0
-         },
-         "gravatar_id": "45c512e245b2c5dc1b4f7bacc2d72d22",
-         "id": "e2d4bmparr9",
-         "name": "Noe69",
-         "username": "Noe69"
+         "gravatar_id": "dccd3566a8232ae6fcd0a5ec5917e30f",
+         "id": "ekvzrov8trs",
+         "name": "FordAbbott",
+         "username": "FordAbbott"
       },
       "file": {
          "bytes": 2096,
+         "cost": 0,
          "counter": {
             "downloads": 0
          },
-         "id": "pk9bymenr59",
+         "id": "e2gxrot8t59",
          "is_protected": true,
+         "mime_type": "application/zip",
          "name": "hulk.zip",
-         "url": "http://localhost:7357/storage/v1/files/pk9bymenr59.zip"
+         "url": "http://localhost:7357/storage/v1/files/e2gxrot8t59.zip",
+         "variations": {
+         }
       },
       "id": "hulk",
       "languages": [
@@ -56,24 +54,24 @@ Content-Encoding: gzip
    },
    {
       "created_by": {
-         "counter": {
-            "comments": 0,
-            "stars": 0
-         },
-         "gravatar_id": "45c512e245b2c5dc1b4f7bacc2d72d22",
-         "id": "e2d4bmparr9",
-         "name": "Noe69",
-         "username": "Noe69"
+         "gravatar_id": "dccd3566a8232ae6fcd0a5ec5917e30f",
+         "id": "ekvzrov8trs",
+         "name": "FordAbbott",
+         "username": "FordAbbott"
       },
       "file": {
          "bytes": 2096,
+         "cost": 0,
          "counter": {
             "downloads": 0
          },
-         "id": "pkwszmea5rs",
+         "id": "ektwr1vmv59",
          "is_protected": true,
+         "mime_type": "application/zip",
          "name": "hulk.zip",
-         "url": "http://localhost:7357/storage/v1/files/pkwszmea5rs.zip"
+         "url": "http://localhost:7357/storage/v1/files/ektwr1vmv59.zip",
+         "variations": {
+         }
       },
       "id": "tz_pa1",
       "languages": [

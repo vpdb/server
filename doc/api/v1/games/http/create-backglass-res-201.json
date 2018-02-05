@@ -1,8 +1,6 @@
 201 Created
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Etag: W/"66e-8UOA5HFcb0lvYi1suzfyPOK7h8M"
+Etag: W/"691-Ao+omcdLiUUkVpFyP3/nL14xDFE"
 Content-Encoding: gzip
 
 {
@@ -12,39 +10,36 @@ Content-Encoding: gzip
             "creator"
          ],
          "user": {
-            "counter": {
-               "comments": 0,
-               "stars": 0
-            },
-            "gravatar_id": "9c1e53d2c2ab8dd41b10975301706b6a",
-            "id": "eke5qmqa559",
-            "name": "HoustonPredovic20",
-            "username": "HoustonPredovic20"
+            "gravatar_id": "fa91ac61baa6be4517ce114cb274af83",
+            "id": "e2qttbtmtr9",
+            "name": "SuzanneLeannon50",
+            "username": "SuzanneLeannon50"
          }
       }
    ],
-   "created_at": "2018-02-03T22:23:06.051Z",
+   "created_at": "2018-02-05T14:26:22.012Z",
    "created_by": {
-      "counter": {
-         "comments": 0,
-         "stars": 0
-      },
-      "gravatar_id": "9c1e53d2c2ab8dd41b10975301706b6a",
-      "id": "eke5qmqa559",
-      "name": "HoustonPredovic20",
-      "username": "HoustonPredovic20"
+      "gravatar_id": "fa91ac61baa6be4517ce114cb274af83",
+      "id": "e2qttbtmtr9",
+      "name": "SuzanneLeannon50",
+      "username": "SuzanneLeannon50"
    },
    "game": {
-      "id": "monaco",
+      "id": "circus",
       "ipdb": {
          "mfg": 323,
-         "number": 1613
+         "number": 519
       },
       "manufacturer": "United",
-      "title": "Monaco",
-      "year": 1956
+      "title": "Circus",
+      "year": 1952
    },
-   "id": "ek4zr8qnr5s",
+   "id": "p27hghtmtrs",
+   "moderation": {
+      "auto_approved": false,
+      "is_approved": false,
+      "is_refused": false
+   },
    "versions": [
       {
          "counter": {
@@ -52,32 +47,34 @@ Content-Encoding: gzip
          },
          "file": {
             "bytes": 2067,
+            "cost": 0,
             "counter": {
                "downloads": 0
             },
-            "id": "ekkzrmwa5r9",
+            "id": "e2rh6bt8t59",
             "is_protected": true,
+            "mime_type": "application/x-directb2s",
             "name": "test.directb2s",
-            "url": "http://localhost:7357/storage/v1/files/ekkzrmwa5r9.directb2s",
+            "url": "http://localhost:7357/storage/v1/files/e2rh6bt8t59.directb2s",
             "variations": {
                "full": {
-                  "url": "http://localhost:7357/storage/public/files/full/ekkzrmwa5r9.jpg"
+                  "url": "http://localhost:7357/storage/public/files/full/e2rh6bt8t59.jpg"
                },
                "medium": {
-                  "url": "http://localhost:7357/storage/public/files/medium/ekkzrmwa5r9.jpg"
+                  "url": "http://localhost:7357/storage/public/files/medium/e2rh6bt8t59.jpg"
                },
                "medium-2x": {
-                  "url": "http://localhost:7357/storage/public/files/medium-2x/ekkzrmwa5r9.jpg"
+                  "url": "http://localhost:7357/storage/public/files/medium-2x/e2rh6bt8t59.jpg"
                },
                "small": {
-                  "url": "http://localhost:7357/storage/public/files/small/ekkzrmwa5r9.jpg"
+                  "url": "http://localhost:7357/storage/public/files/small/e2rh6bt8t59.jpg"
                },
                "small-2x": {
-                  "url": "http://localhost:7357/storage/public/files/small-2x/ekkzrmwa5r9.jpg"
+                  "url": "http://localhost:7357/storage/public/files/small-2x/e2rh6bt8t59.jpg"
                }
             }
          },
-         "released_at": "2018-02-03T22:23:06.051Z",
+         "released_at": "2018-02-05T14:26:22.012Z",
          "version": "1.0"
       }
    ]

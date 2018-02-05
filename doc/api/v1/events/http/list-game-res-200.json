@@ -1,39 +1,33 @@
 200 OK
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 X-List-Page: 1
 X-List-Size: 10
 X-List-Count: 2
 Content-Type: application/json; charset=utf-8
-Etag: W/"1f72-wICEQwFVl4sRxGf6hsGO5AsZIjo"
+Etag: W/"1e89-PDvArJ4of1s3CTtcoFnm99isJJQ"
 Content-Encoding: gzip
 
 [
    {
       "actor": {
-         "counter": {
-            "comments": 0,
-            "stars": 0
-         },
-         "gravatar_id": "d83baee18614e6b549708467e4fa3045",
-         "id": "p2q4g3wa5r9",
-         "name": "ReidKertzmann13",
-         "username": "ReidKertzmann13"
+         "gravatar_id": "e2a423e928aa34bb4a44d33aef463faf",
+         "id": "pkzzy9t8vr9",
+         "name": "Jo59",
+         "username": "Jo59"
       },
       "event": "create_release",
       "is_public": true,
-      "logged_at": "2018-02-03T22:23:27.291Z",
+      "logged_at": "2018-02-05T14:26:46.035Z",
       "payload": {
          "game": {
-            "game_type": "em",
-            "id": "spin-a-card",
+            "game_type": "pm",
+            "id": "hokum",
             "ipdb": {
-               "mfg": 248,
-               "number": 4121
+               "mfg": 328,
+               "number": 5088
             },
-            "manufacturer": "Petaco",
-            "title": "Spin-a-Card",
-            "year": 1969
+            "manufacturer": "Unknown",
+            "title": "Hokum",
+            "year": 1900
          },
          "release": {
             "authors": [
@@ -42,14 +36,10 @@ Content-Encoding: gzip
                      "Table Creator"
                   ],
                   "user": {
-                     "counter": {
-                        "comments": 0,
-                        "stars": 0
-                     },
-                     "gravatar_id": "d83baee18614e6b549708467e4fa3045",
-                     "id": "p2q4g3wa5r9",
-                     "name": "ReidKertzmann13",
-                     "username": "ReidKertzmann13"
+                     "gravatar_id": "e2a423e928aa34bb4a44d33aef463faf",
+                     "id": "pkzzy9t8vr9",
+                     "name": "Jo59",
+                     "username": "Jo59"
                   }
                }
             ],
@@ -59,24 +49,24 @@ Content-Encoding: gzip
                "stars": 0,
                "views": 0
             },
-            "created_at": "2018-02-03T22:23:27.212Z",
+            "created_at": "2018-02-05T14:26:45.948Z",
             "created_by": {
-               "counter": {
-                  "comments": 0,
-                  "stars": 0
-               },
-               "gravatar_id": "d83baee18614e6b549708467e4fa3045",
-               "id": "p2q4g3wa5r9",
-               "name": "ReidKertzmann13",
-               "username": "ReidKertzmann13"
+               "gravatar_id": "e2a423e928aa34bb4a44d33aef463faf",
+               "id": "pkzzy9t8vr9",
+               "name": "Jo59",
+               "username": "Jo59"
             },
             "game": {
-               "id": "spin-a-card",
-               "manufacturer": "Petaco",
-               "title": "Spin-a-Card",
-               "year": 1969
+               "id": "hokum",
+               "ipdb": {
+                  "mfg": 328,
+                  "number": 5088
+               },
+               "manufacturer": "Unknown",
+               "title": "Hokum",
+               "year": 1900
             },
-            "id": "ekzb73wa5r9",
+            "id": "pkes9t8t59",
             "license": "by-sa",
             "links": [
             ],
@@ -88,15 +78,14 @@ Content-Encoding: gzip
                "is_approved": false,
                "is_refused": false
             },
-            "modified_at": "2018-02-03T22:23:27.212Z",
-            "name": "Open-architected Edition",
-            "name_sortable": "Open-architected Edition",
+            "modified_at": "2018-02-05T14:26:45.948Z",
+            "name": "Advanced Edition",
             "rating": {
                "average": 0,
                "score": 0,
                "votes": 0
             },
-            "released_at": "2018-02-03T22:23:27.212Z",
+            "released_at": "2018-02-05T14:26:45.948Z",
             "tags": [
             ],
             "thumb": {
@@ -105,7 +94,7 @@ Content-Encoding: gzip
                   "orientation": "fs"
                },
                "image": {
-                  "url": "http://localhost:7357/storage/public/files/medium/pk873war5s.jpg"
+                  "url": "http://localhost:7357/storage/public/files/medium/e2a4yst8t59.jpg"
                }
             },
             "versions": [
@@ -137,9 +126,10 @@ Content-Encoding: gzip
                            "counter": {
                               "downloads": 0
                            },
-                           "created_at": "2018-02-03T22:23:26.722Z",
+                           "created_at": "2018-02-05T14:26:45.381Z",
                            "file_type": "release",
-                           "id": "pk8qg3war59",
+                           "id": "ekrsz9tmvr9",
+                           "is_active": true,
                            "is_protected": true,
                            "metadata": {
                               "author_email": "_table_email_",
@@ -154,7 +144,7 @@ Content-Encoding: gzip
                            },
                            "mime_type": "application/x-visual-pinball-table",
                            "name": "test-table-0.vpt",
-                           "url": "http://localhost:7357/storage/v1/files/pk8qg3war59.vpt"
+                           "url": "http://localhost:7357/storage/v1/files/ekrsz9tmvr9.vpt"
                         },
                         "flavor": {
                            "lighting": "night",
@@ -162,12 +152,13 @@ Content-Encoding: gzip
                         },
                         "playfield_image": {
                            "bytes": 348,
+                           "cost": 0,
                            "counter": {
                               "downloads": 0
                            },
-                           "created_at": "2018-02-03T22:23:26.925Z",
+                           "created_at": "2018-02-05T14:26:45.643Z",
                            "file_type": "playfield-fs",
-                           "id": "pk873war5s",
+                           "id": "e2a4yst8t59",
                            "is_active": true,
                            "is_protected": true,
                            "metadata": {
@@ -180,38 +171,38 @@ Content-Encoding: gzip
                            },
                            "mime_type": "image/png",
                            "name": "playfield-0.png",
-                           "url": "http://localhost:7357/storage/v1/files/pk873war5s.png",
+                           "url": "http://localhost:7357/storage/v1/files/e2a4yst8t59.png",
                            "variations": {
                               "full": {
-                                 "url": "http://localhost:7357/storage/public/files/full/pk873war5s.jpg"
+                                 "url": "http://localhost:7357/storage/public/files/full/e2a4yst8t59.jpg"
                               },
                               "hyperpin": {
-                                 "url": "http://localhost:7357/storage/public/files/hyperpin/pk873war5s.png"
+                                 "url": "http://localhost:7357/storage/public/files/hyperpin/e2a4yst8t59.png"
                               },
                               "landscape": {
-                                 "url": "http://localhost:7357/storage/public/files/landscape/pk873war5s.jpg"
+                                 "url": "http://localhost:7357/storage/public/files/landscape/e2a4yst8t59.jpg"
                               },
                               "landscape-2x": {
-                                 "url": "http://localhost:7357/storage/public/files/landscape-2x/pk873war5s.jpg"
+                                 "url": "http://localhost:7357/storage/public/files/landscape-2x/e2a4yst8t59.jpg"
                               },
                               "medium": {
-                                 "url": "http://localhost:7357/storage/public/files/medium/pk873war5s.jpg"
+                                 "url": "http://localhost:7357/storage/public/files/medium/e2a4yst8t59.jpg"
                               },
                               "medium-2x": {
-                                 "url": "http://localhost:7357/storage/public/files/medium-2x/pk873war5s.jpg"
+                                 "url": "http://localhost:7357/storage/public/files/medium-2x/e2a4yst8t59.jpg"
                               },
                               "square": {
-                                 "url": "http://localhost:7357/storage/public/files/square/pk873war5s.jpg"
+                                 "url": "http://localhost:7357/storage/public/files/square/e2a4yst8t59.jpg"
                               },
                               "square-2x": {
-                                 "url": "http://localhost:7357/storage/public/files/square-2x/pk873war5s.jpg"
+                                 "url": "http://localhost:7357/storage/public/files/square-2x/e2a4yst8t59.jpg"
                               }
                            }
                         },
-                        "released_at": "2018-02-03T22:23:27.212Z"
+                        "released_at": "2018-02-05T14:26:45.948Z"
                      }
                   ],
-                  "released_at": "2018-02-03T22:23:27.212Z",
+                  "released_at": "2018-02-05T14:26:45.948Z",
                   "version": "1.0.0"
                }
             ]
@@ -220,56 +211,54 @@ Content-Encoding: gzip
    },
    {
       "actor": {
-         "counter": {
-            "comments": 0,
-            "stars": 0
-         },
-         "gravatar_id": "ae880d6c084106295546e199c2e18e42",
-         "id": "e2vxg3wn5r9",
-         "name": "Isabell99",
-         "username": "Isabell99"
+         "gravatar_id": "f6012f030441fd65a3c8473e37cc9d12",
+         "id": "e2eyy9t8t5s",
+         "name": "IsaacLittel",
+         "username": "IsaacLittel"
       },
       "event": "create_game",
       "is_public": true,
-      "logged_at": "2018-02-03T22:23:26.491Z",
+      "logged_at": "2018-02-05T14:26:45.237Z",
       "payload": {
          "game": {
             "backglass": {
                "bytes": 135,
+               "cost": 0,
                "counter": {
                   "downloads": 0
                },
-               "id": "pk3xg3qa5rs",
+               "id": "p2gzy9vmvrs",
                "is_protected": true,
+               "mime_type": "image/png",
                "name": "backglass.png",
-               "url": "http://localhost:7357/storage/v1/files/pk3xg3qa5rs.png",
+               "url": "http://localhost:7357/storage/v1/files/p2gzy9vmvrs.png",
                "variations": {
                   "full": {
-                     "url": "http://localhost:7357/storage/public/files/full/pk3xg3qa5rs.jpg"
+                     "url": "http://localhost:7357/storage/public/files/full/p2gzy9vmvrs.jpg"
                   },
                   "medium": {
-                     "url": "http://localhost:7357/storage/public/files/medium/pk3xg3qa5rs.jpg"
+                     "url": "http://localhost:7357/storage/public/files/medium/p2gzy9vmvrs.jpg"
                   },
                   "medium-2x": {
-                     "url": "http://localhost:7357/storage/public/files/medium-2x/pk3xg3qa5rs.jpg"
+                     "url": "http://localhost:7357/storage/public/files/medium-2x/p2gzy9vmvrs.jpg"
                   },
                   "small": {
-                     "url": "http://localhost:7357/storage/public/files/small/pk3xg3qa5rs.jpg"
+                     "url": "http://localhost:7357/storage/public/files/small/p2gzy9vmvrs.jpg"
                   },
                   "small-2x": {
-                     "url": "http://localhost:7357/storage/public/files/small-2x/pk3xg3qa5rs.jpg"
+                     "url": "http://localhost:7357/storage/public/files/small-2x/p2gzy9vmvrs.jpg"
                   }
                }
             },
-            "game_type": "em",
-            "id": "spin-a-card",
+            "game_type": "pm",
+            "id": "hokum",
             "ipdb": {
-               "mfg": 248,
-               "number": 4121
+               "mfg": 328,
+               "number": 5088
             },
-            "manufacturer": "Petaco",
-            "title": "Spin-a-Card",
-            "year": 1969
+            "manufacturer": "Unknown",
+            "title": "Hokum",
+            "year": 1900
          }
       }
    }

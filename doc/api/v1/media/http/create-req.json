@@ -1,14 +1,14 @@
 POST /v1/media HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMnV1MmVhcjU5IiwiaWF0IjoiMjAxOC0wMi0wM1QyMjoyMzo1NS42ODhaIiwiZXhwIjoiMjAxOC0wMi0wM1QyMzoyMzo1NS42ODhaIiwiaXJ0IjpmYWxzZX0.6wNYKuBJtjrTSJSG747845snIEPrTW5xajvTUDmdfMg
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa3U2eHZtdHJzIiwiaWF0IjoiMjAxOC0wMi0wNVQxNDoyNzoxMC4yMDFaIiwiZXhwIjoiMjAxOC0wMi0wNVQxNToyNzoxMC4yMDFaIiwiaXJ0IjpmYWxzZX0.SBEA1zUjMJIK5oF74y6Kz7i3xFZsVyKjc-Zj5iqXIDQ
 Content-Type: application/json
-Content-Length: 263
+Content-Length: 261
 
 {
-   "_file": "pkz9a2pn5rs",
+   "_file": "e25mxt8t5s",
    "_ref": {
-      "game": "blue-streak"
+      "game": "cross-fire"
    },
    "acknowledgements": "- Thanks to @mom for all her patience",
    "category": "backglass_image",

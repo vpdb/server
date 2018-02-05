@@ -1,14 +1,14 @@
 PATCH /v1/user HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa3E5c2RlYXI1OSIsImlhdCI6IjIwMTgtMDItMDNUMjI6Mjc6MzQuMDk2WiIsImV4cCI6IjIwMTgtMDItMDNUMjM6Mjc6MzQuMDk2WiIsImlydCI6ZmFsc2V9.6BCy0lgGLCPh5Ctbk_m7XipPdfGxxovRHfPJyaLjVWk
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla21wZWtubXRycyIsImlhdCI6IjIwMTgtMDItMDVUMTQ6MzA6MTcuMzk0WiIsImV4cCI6IjIwMTgtMDItMDVUMTU6MzA6MTcuMzk0WiIsImlydCI6ZmFsc2V9.BTyoDljZRQoi3Ei8A-ETvkw4SJrExMvW7gVOfdiWp3s
 Content-Type: application/json
-Content-Length: 134
+Content-Length: 135
 
 {
-   "current_password": "TUGpbEGUBg",
-   "email": "aric34@gmail.com",
-   "location": "Cristianland",
-   "name": "Shayne Gaylord",
-   "password": "7hX81WcqMI"
+   "current_password": "VfHjLg2oMm",
+   "email": "kristina94@yahoo.com",
+   "location": "West Kaylee",
+   "name": "Sunny Graham",
+   "password": "PnRwi8Eukz"
 }

@@ -1,8 +1,6 @@
 200 OK
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Etag: W/"77d-LqIouo03zZiIREbtpst0aFDc60Y"
+Etag: W/"78b-J0rPCKMW0EdNqamuLiUMCl9l/Sw"
 Content-Encoding: gzip
 
 {
@@ -11,18 +9,19 @@ Content-Encoding: gzip
       "downloads": 0,
       "stars": 0
    },
-   "created_at": "2018-02-03T22:27:34.088Z",
-   "email": "marietta_schroeder@gmail.com",
+   "created_at": "2018-02-05T14:30:17.384Z",
+   "email": "dereck85@gmail.com",
    "email_status": {
       "code": "pending_update",
-      "expires_at": "2018-02-04T22:27:34.504Z",
-      "value": "aric34@gmail.com"
+      "expires_at": "2018-02-06T14:30:17.892Z",
+      "token": "V8NTiNNN0Uclfqgj",
+      "value": "kristina94@yahoo.com"
    },
-   "gravatar_id": "16dcca787601988ecaf344feadabf560",
-   "id": "pkq9sdear59",
+   "gravatar_id": "0c7000c64b12154d35e8998b89ed8d74",
+   "id": "ekmpeknmtrs",
    "is_active": true,
-   "location": "Cristianland",
-   "name": "Shayne Gaylord",
+   "location": "West Kaylee",
+   "name": "Sunny Graham",
    "permissions": {
       "backglasses": [
          "add",
@@ -109,5 +108,5 @@ Content-Encoding: gzip
    "roles": [
       "member"
    ],
-   "username": "EldridgeGleichner"
+   "username": "TaliaMoen"
 }

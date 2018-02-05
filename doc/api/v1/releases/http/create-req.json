@@ -1,19 +1,19 @@
 POST /v1/releases HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMjc0czllbnJycyIsImlhdCI6IjIwMTgtMDItMDNUMjI6MjQ6MzguNDA2WiIsImV4cCI6IjIwMTgtMDItMDNUMjM6MjQ6MzguNDA2WiIsImlydCI6ZmFsc2V9.bscLgkd58EfQPdgCbpQMVovLch-bHX7qTZYuYUjDW2w
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa3g5bjM4dDVzIiwiaWF0IjoiMjAxOC0wMi0wNVQxNDo0OTo1OC4xMTBaIiwiZXhwIjoiMjAxOC0wMi0wNVQxNTo0OTo1OC4xMTBaIiwiaXJ0IjpmYWxzZX0.P2sQll5-fLyXVf5qxrcHRSmATxvBRzr48G-I_WLxyTc
 Content-Type: application/json
-Content-Length: 548
+Content-Length: 534
 
 {
-   "_game": "elektro-bomber-brillant-type-1",
+   "_game": "iron-man-classic",
    "_tags": [
       "hd",
       "dof"
    ],
    "authors": [
       {
-         "_user": "p274s9enrrs",
+         "_user": "pkx9n38t5s",
          "roles": [
             "Table Creator"
          ]
@@ -28,8 +28,8 @@ Content-Length: 548
                "_compatibility": [
                   "9.9.0"
                ],
-               "_file": "ek2939ear5s",
-               "_playfield_image": "ekp939enrr9",
+               "_file": "ekvz8ndmvrs",
+               "_playfield_image": "e2tsma38v5s",
                "flavor": {
                   "lighting": "night",
                   "orientation": "fs"
@@ -40,8 +40,8 @@ Content-Length: 548
                "_compatibility": [
                   "9.9.0"
                ],
-               "_file": "pkb93spa5r9",
-               "_playfield_image": "pkyo9pn5rs",
+               "_file": "pknz8a38tr9",
+               "_playfield_image": "pk79mnd8t59",
                "flavor": {
                   "lighting": "day",
                   "orientation": "fs"

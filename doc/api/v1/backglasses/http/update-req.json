@@ -1,12 +1,12 @@
-PATCH /v1/backglasses/pksbfmwn55s HTTP/2.0
+PATCH /v1/backglasses/pk7bchv8t5s HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa2Vlcm1xbjU1OSIsImlhdCI6IjIwMTgtMDItMDNUMjI6MjM6MDYuMzgwWiIsImV4cCI6IjIwMTgtMDItMDNUMjM6MjM6MDYuMzgwWiIsImlydCI6ZmFsc2V9.HMPw3cBO_bBOEmUTiEHGtq1iy91_jLtSIWckY3EjKhs
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa213NmJ0OHRycyIsImlhdCI6IjIwMTgtMDItMDVUMTQ6MjY6MjIuNDA3WiIsImV4cCI6IjIwMTgtMDItMDVUMTU6MjY6MjIuNDA3WiIsImlydCI6ZmFsc2V9.2Pxy1TmmfXzmsMsIp9hbZ-w52rqN87H4QgQ3KsYKyYM
 Content-Type: application/json
-Content-Length: 175
+Content-Length: 167
 
 {
-   "_game": "deadville-one-ball",
+   "_game": "black-reed",
    "acknowledgements": "Thanks to @mom for supporting me.",
    "description": "It is a fantasy backglass that does not contain any more spelling errors."
 }

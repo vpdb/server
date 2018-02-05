@@ -1,4 +1,4 @@
-GET /v1/games/spin-a-card/events HTTP/2.0
+GET /v1/games/hokum/events HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
 

@@ -1,22 +1,16 @@
 201 Created
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Content-Length: 308
-Etag: W/"134-8DKX2rIa0GTHlkAS6gPQoREOTQA"
+Content-Length: 266
+Etag: W/"10a-H453cC5JGdrZvI99MLkd3kSOOu8"
 
 {
-   "created_at": "2018-02-03T22:23:25.098Z",
+   "created_at": "2018-02-05T14:26:44.344Z",
    "from": {
-      "counter": {
-         "comments": 1,
-         "stars": 0
-      },
-      "gravatar_id": "d4fc02497453c7e9f035bf91beb64ca7",
-      "id": "ekhqf3wa559",
-      "name": "JulesSawayn",
-      "username": "JulesSawayn"
+      "gravatar_id": "f56a9917b81e8b4ffffa339a8b4ebe20",
+      "id": "ek8p1ytmtr9",
+      "name": "Dennis66",
+      "username": "Dennis66"
    },
-   "id": "e2ra3qnrr9",
-   "message": "Decentralized exuding paradigm"
+   "id": "ek6hhstmv59",
+   "message": "Multi-channelled next generation service-desk"
 }

@@ -1,10 +1,8 @@
 200 OK
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
 Content-Length: 45
-Etag: W/"2d-S+5Xa1KD/Ez+3W+n0s4N6bh2g5c"
+Etag: W/"2d-y57eeuFaf7Gesk0z7mpih7bDaDE"
 
 {
-   "created_at": "2018-02-03T22:27:31.208Z"
+   "created_at": "2018-02-05T14:30:14.962Z"
 }

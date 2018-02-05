@@ -1,7 +1,7 @@
 PATCH /v1/builds/v1.0.0 HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa2ZmZHFhcnJzIiwiaWF0IjoiMjAxOC0wMi0wM1QyMjoyMzoyMi44NTNaIiwiZXhwIjoiMjAxOC0wMi0wM1QyMzoyMzoyMi44NTNaIiwiaXJ0IjpmYWxzZX0.YOff1Z-SjA_a08a-dr15uk9KRtdQ3l_fjfU5aeY0Brs
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwazR6MXl0bXY1OSIsImlhdCI6IjIwMTgtMDItMDVUMTQ6MjY6NDIuMDU2WiIsImV4cCI6IjIwMTgtMDItMDVUMTU6MjY6NDIuMDU2WiIsImlydCI6ZmFsc2V9.Jr807xcjDPP3HiHCjMJfYH39qu4UtE3oOG_SuHPjg1Y
 Content-Type: application/json
 Content-Length: 323
 

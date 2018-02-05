@@ -1,7 +1,7 @@
-PATCH /v1/releases/ekwyewearrs HTTP/2.0
+PATCH /v1/releases/pk3bm6d8t5s HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa293cDRlYTVycyIsImlhdCI6IjIwMTgtMDItMDNUMjI6MjQ6NTcuNTgyWiIsImV4cCI6IjIwMTgtMDItMDNUMjM6MjQ6NTcuNTgyWiIsImlydCI6ZmFsc2V9.O8Pb31R2MH_GSQQ04T2aRxpyUVkfa2yaeOuFkmV7snQ
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwazdicWczOHQ1OSIsImlhdCI6IjIwMTgtMDItMDVUMTQ6NTA6MTUuOTQ0WiIsImV4cCI6IjIwMTgtMDItMDVUMTU6NTA6MTUuOTQ0WiIsImlydCI6ZmFsc2V9.eWvwCOKZue17_rTu1GKyExG3jyaHAn-WfWXoNAKFBOs
 Content-Type: application/json
 Content-Length: 317
 
@@ -13,7 +13,7 @@ Content-Length: 317
    "acknowledgements": "Updated acknowledgements",
    "authors": [
       {
-         "_user": "e29ee4pn5rs",
+         "_user": "p22zw638trs",
          "roles": [
             "Some other job"
          ]

@@ -1,10 +1,10 @@
-POST /v1/releases/e2abvdwnr5s/comments HTTP/2.0
+POST /v1/releases/pkqs2st8tr9/comments HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla2hxZjN3YTU1OSIsImlhdCI6IjIwMTgtMDItMDNUMjI6MjM6MjMuMzgxWiIsImV4cCI6IjIwMTgtMDItMDNUMjM6MjM6MjMuMzgxWiIsImlydCI6ZmFsc2V9.5AUPsbn8rILz2XnGkVanKkxtfJHCc6_UdopCO6IwKfA
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlazhwMXl0bXRyOSIsImlhdCI6IjIwMTgtMDItMDVUMTQ6MjY6NDIuNjAyWiIsImV4cCI6IjIwMTgtMDItMDVUMTU6MjY6NDIuNjAyWiIsImlydCI6ZmFsc2V9.LVrAfG4m4BR7B5iSLEAelzx-z_Ns16vLNkUJbnkUS00
 Content-Type: application/json
-Content-Length: 44
+Content-Length: 59
 
 {
-   "message": "Decentralized exuding paradigm"
+   "message": "Multi-channelled next generation service-desk"
 }

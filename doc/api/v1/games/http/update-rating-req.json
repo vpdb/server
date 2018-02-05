@@ -1,8 +1,8 @@
-PUT /v1/games/nashville/rating HTTP/2.0
+PUT /v1/games/kings-of-the-road/rating HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlazF5cHlwbnJycyIsImlhdCI6IjIwMTgtMDItMDNUMjI6MjQ6MjUuNDk4WiIsImV4cCI6IjIwMTgtMDItMDNUMjM6MjQ6MjUuNDk4WiIsImlydCI6ZmFsc2V9.WZOBYp1xGUsVLfgrTij7ZJ3P0mjPGaqrB5Wbz4h0jtg
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMmhzMmV0bXY1cyIsImlhdCI6IjIwMTgtMDItMDVUMTQ6Mjc6MzEuNDQ0WiIsImV4cCI6IjIwMTgtMDItMDVUMTU6Mjc6MzEuNDQ0WiIsImlydCI6ZmFsc2V9.ZcxqdUvE06FTbKdXqo95OmFe-YkbfwBLP9zv0-vdKMw
 Content-Length: 11
 
 {

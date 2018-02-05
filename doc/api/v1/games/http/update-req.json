@@ -1,7 +1,7 @@
-PATCH /v1/games/baseball HTTP/2.0
+PATCH /v1/games/numbers HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMjh6YTF3bnJyOSIsImlhdCI6IjIwMTgtMDItMDNUMjI6MjM6NDEuMDk0WiIsImV4cCI6IjIwMTgtMDItMDNUMjM6MjM6NDEuMDk0WiIsImlydCI6ZmFsc2V9.yY7R7NGNUAjKfUTHlYZy7HCfTPA04yPa1C6_ICmiuCA
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla3p4ZHN0bXQ1OSIsImlhdCI6IjIwMTgtMDItMDVUMTQ6MjY6NTcuNDQzWiIsImV4cCI6IjIwMTgtMDItMDVUMTU6MjY6NTcuNDQzWiIsImlydCI6ZmFsc2V9.rNvPgWDYLkWEAHR497efr-oxQZAjPvNjnpaZzwn3Lfw
 Content-Type: application/json
 Content-Length: 36
 

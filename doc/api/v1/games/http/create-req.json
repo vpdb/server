@@ -1,23 +1,36 @@
 POST /v1/games HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMjNwcG9xbnJyOSIsImlhdCI6IjIwMTgtMDItMDNUMjI6MjM6MzcuNzQ5WiIsImV4cCI6IjIwMTgtMDItMDNUMjM6MjM6MzcuNzQ5WiIsImlydCI6ZmFsc2V9.nqMjle1ujgcQ91KXJ7ys7U5z8f1NJsxxFLjeX4eVzVM
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla3hyZzl2OHQ1OSIsImlhdCI6IjIwMTgtMDItMDVUMTQ6MjY6NTQuNjgzWiIsImV4cCI6IjIwMTgtMDItMDVUMTU6MjY6NTQuNjgzWiIsImlydCI6ZmFsc2V9.VeNnlQPosqsAvyjaISPxDcqvex1OgsfjWghFL0MZi9g
 Content-Type: application/json
-Content-Length: 490
+Content-Length: 661
 
 {
-   "_backglass": "p2h5own55s",
+   "_backglass": "p2v569vmtrs",
    "artists": [
-      "Seamus McLaughlin"
+      "Pam Erickson"
    ],
+   "designers": [
+      "Edward Tomaszewski"
+   ],
+   "features": "Flippers (4), Pop bumpers (3), 5-bank drop targets (1), Spinning target (1), Standup targets (10).",
    "game_type": "ss",
-   "id": "walk-n-the-ball",
+   "id": "laser-cue",
    "ipdb": {
-      "mfg": 252,
-      "number": 6053
+      "mfg": 351,
+      "mpu": 4,
+      "number": 1414,
+      "rating": "7.2"
    },
-   "manufacturer": "Pinstar",
-   "notes": "This game was never produced.Artist Seamus McLaughlin told us that the images presented here are of a concept drawing on which he had been working while doing the artwork for Pinstar's 1985 'Gamatron'. He had been in contact with Steve Kirk in the idea of some new games for Pinstar.",
-   "title": "Walk 'N The Ball",
-   "year": 1985
+   "manufacturer": "Williams",
+   "model_number": "520",
+   "notes": "Originally named 'World Hockey'.Reportedly, a prototype version of this game had all playfield inserts marked as playing cards instead of billiard balls and the accompanying game manual referred to these cards.",
+   "produced_units": 2800,
+   "themes": [
+      "Billiards",
+      "Outer Space",
+      "Fantasy"
+   ],
+   "title": "Laser Cue",
+   "year": 1984
 }

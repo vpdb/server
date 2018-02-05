@@ -1,56 +1,54 @@
 200 OK
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Etag: W/"93d-bCS01tWno7yK7Ii8nBxN3lNsTfM"
+Etag: W/"659-uhRgKiEP+A1XemxdZZ5d/FVoj6E"
 Content-Encoding: gzip
 
 {
-   "artists": [
-   ],
    "backglass": {
       "bytes": 135,
+      "cost": 0,
       "counter": {
          "downloads": 0
       },
-      "id": "p2zsnoqa5rs",
+      "id": "p2r439tmtrs",
       "is_protected": true,
+      "mime_type": "image/png",
       "name": "backglass.png",
-      "url": "http://localhost:7357/storage/v1/files/p2zsnoqa5rs.png",
+      "url": "http://localhost:7357/storage/v1/files/p2r439tmtrs.png",
       "variations": {
          "full": {
-            "bytes": 2448,
+            "bytes": 3407,
             "height": 512,
             "mime_type": "image/jpeg",
-            "url": "http://localhost:7357/storage/public/files/full/p2zsnoqa5rs.jpg",
+            "url": "http://localhost:7357/storage/public/files/full/p2r439tmtrs.jpg",
             "width": 640
          },
          "medium": {
             "bytes": 1187,
             "height": 291,
             "mime_type": "image/jpeg",
-            "url": "http://localhost:7357/storage/public/files/medium/p2zsnoqa5rs.jpg",
+            "url": "http://localhost:7357/storage/public/files/medium/p2r439tmtrs.jpg",
             "width": 364
          },
          "medium-2x": {
             "bytes": 3081,
             "height": 582,
             "mime_type": "image/jpeg",
-            "url": "http://localhost:7357/storage/public/files/medium-2x/p2zsnoqa5rs.jpg",
+            "url": "http://localhost:7357/storage/public/files/medium-2x/p2r439tmtrs.jpg",
             "width": 728
          },
          "small": {
             "bytes": 835,
             "height": 202,
             "mime_type": "image/jpeg",
-            "url": "http://localhost:7357/storage/public/files/small/p2zsnoqa5rs.jpg",
+            "url": "http://localhost:7357/storage/public/files/small/p2r439tmtrs.jpg",
             "width": 253
          },
          "small-2x": {
             "bytes": 1775,
             "height": 404,
             "mime_type": "image/jpeg",
-            "url": "http://localhost:7357/storage/public/files/small-2x/p2zsnoqa5rs.jpg",
+            "url": "http://localhost:7357/storage/public/files/small-2x/p2r439tmtrs.jpg",
             "width": 505
          }
       }
@@ -62,42 +60,19 @@ Content-Encoding: gzip
       "stars": 0,
       "views": 0
    },
-   "created_at": "2018-02-03T22:23:41.289Z",
-   "designers": [
-   ],
-   "features": "3 outs ends game.",
    "game_type": "em",
-   "id": "baseball",
+   "id": "numbers",
    "ipdb": {
-      "mfg": 342,
-      "number": 2902
+      "mfg": 17,
+      "number": 4306
    },
-   "keywords": [
-   ],
-   "manufacturer": "Western Equipment & Supply Company",
-   "metrics": {
-      "popularity": 0
-   },
-   "notes": "We previously showed an unsubstantiated Manufacturer Date of 1936 for this game. However, an article in Billboard dated Jul-10-1948 page 106 reprinted an article from its pages dated Jul-2-1938 stating that Jimmy Johnson, head of Western Equipment & Supply, referred to this game as \"new\" and that it was a leading seller in the week preceding the Fourth of July. Based on this information, we have changed the Manufacturer Date to 1938.",
-   "owner": "Western Equipment & Supply Company of Chicago, Illinois, USA",
-   "pinside": {
-      "ids": [
-      ],
-      "ranks": [
-      ]
-   },
+   "manufacturer": "Allied Amusement Company",
+   "owner": "Allied Amusement Company of Los Angeles, California, USA",
    "rating": {
       "average": 0,
       "score": 0,
       "votes": 0
    },
-   "short": [
-   ],
-   "themes": [
-      "Sports",
-      "Baseball"
-   ],
    "title": "Hi, I am your new title.",
-   "title_sortable": "Hi, I am your new title.",
-   "year": 1938
+   "year": 1935
 }

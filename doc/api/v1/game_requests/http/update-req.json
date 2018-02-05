@@ -1,7 +1,7 @@
-PATCH /v1/game_requests/ekos4oqnr59 HTTP/2.0
+PATCH /v1/game_requests/ekfwv9tmvrs HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwazF5eG93YXI1cyIsImlhdCI6IjIwMTgtMDItMDNUMjI6MjM6MzUuMTQzWiIsImV4cCI6IjIwMTgtMDItMDNUMjM6MjM6MzUuMTQzWiIsImlydCI6ZmFsc2V9.mquG6SPVDvJFro2XQk3zkBTda15yrsyLP74Zhi8HGzM
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMnR4dHN0bXZyOSIsImlhdCI6IjIwMTgtMDItMDVUMTQ6MjY6NTIuNTM3WiIsImV4cCI6IjIwMTgtMDItMDVUMTU6MjY6NTIuNTM3WiIsImlydCI6ZmFsc2V9.tYvD8dd0k2eymwh0XzT4GsxBn8_3coLyP-QVNZTj2CU
 Content-Type: application/json
 Content-Length: 125
 

@@ -1,22 +1,24 @@
 201 Created
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Content-Length: 696
-Etag: W/"2b8-SzaJWfcv8aLPD9OVfvvFHY7Km1U"
+Content-Length: 758
+Etag: W/"2f6-R1Hi0Ya5K7xWttH4LdSipDc1Eao"
 
 {
    "file": {
       "bytes": 2096,
+      "cost": 0,
       "counter": {
          "downloads": 0
       },
-      "id": "e2n937pn55s",
+      "id": "p2ozx1t8v59",
       "is_protected": true,
+      "mime_type": "application/zip",
       "name": "hulk.zip",
-      "url": "http://localhost:7357/storage/v1/files/e2n937pn55s.zip"
+      "url": "http://localhost:7357/storage/v1/files/p2ozx1t8v59.zip",
+      "variations": {
+      }
    },
-   "id": "riviera-golf_10",
+   "id": "hot-tip_10",
    "languages": [
       "en-US"
    ],

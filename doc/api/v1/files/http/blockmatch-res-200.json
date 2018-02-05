@@ -1,8 +1,6 @@
 200 OK
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Etag: W/"973-bwb6ceAk9qsTepIreF4Tj6qKzjc"
+Etag: W/"9ba-shFcZaZOE6urDq/Q5ERhBhIL+Es"
 Content-Encoding: gzip
 
 {
@@ -19,10 +17,11 @@ Content-Encoding: gzip
          "counter": {
             "downloads": 0
          },
-         "id": "e2fb8mqar59",
+         "id": "pkxshzv8vrs",
          "is_protected": true,
+         "mime_type": "application/x-visual-pinball-table",
          "name": "test-table-0.vpt",
-         "url": "http://localhost:7357/storage/v1/files/e2fb8mqar59.vpt",
+         "url": "http://localhost:7357/storage/v1/files/pkxshzv8vrs.vpt",
          "variations": {
          }
       },
@@ -30,12 +29,16 @@ Content-Encoding: gzip
          "lighting": "night",
          "orientation": "fs"
       },
-      "released_at": "2018-02-03T22:23:12.870Z"
+      "released_at": "2018-02-05T14:26:29.033Z"
    },
    "game": {
-      "id": "golden-game",
-      "manufacturer": "Splin S.A.",
-      "title": "Golden Game",
+      "id": "oMgbdiN",
+      "ipdb": {
+         "mfg": 328,
+         "number": 4903
+      },
+      "manufacturer": "Unknown",
+      "title": "Unknown",
       "year": 1900
    },
    "matches": [
@@ -55,10 +58,11 @@ Content-Encoding: gzip
                "counter": {
                   "downloads": 0
                },
-               "id": "pkeykdqa559",
+               "id": "ekm4yvmt5s",
                "is_protected": true,
+               "mime_type": "application/x-visual-pinball-table",
                "name": "test-table-0.vpt",
-               "url": "http://localhost:7357/storage/v1/files/pkeykdqa559.vpt",
+               "url": "http://localhost:7357/storage/v1/files/ekm4yvmt5s.vpt",
                "variations": {
                }
             },
@@ -66,13 +70,17 @@ Content-Encoding: gzip
                "lighting": "night",
                "orientation": "fs"
             },
-            "released_at": "2018-02-03T22:23:15.529Z"
+            "released_at": "2018-02-05T14:26:31.193Z"
          },
          "game": {
-            "id": "black-jack",
-            "manufacturer": "Bally",
-            "title": "Black Jack",
-            "year": 1976
+            "id": "tally-ho",
+            "ipdb": {
+               "mfg": 117,
+               "number": 2494
+            },
+            "manufacturer": "Exhibit",
+            "title": "Tally Ho",
+            "year": 1947
          },
          "matchedBytes": 82498,
          "matchedCount": 17,
@@ -83,23 +91,19 @@ Content-Encoding: gzip
                      "Table Creator"
                   ],
                   "user": {
-                     "counter": {
-                        "comments": 0,
-                        "stars": 0
-                     },
-                     "gravatar_id": "182ebc2a79364e09ae6b1675c20850f6",
-                     "id": "e2t478wa559",
-                     "name": "AidanSchmeler61",
-                     "username": "AidanSchmeler61"
+                     "gravatar_id": "6fe6d7c5625e88c2d158f78065b1158d",
+                     "id": "p2nukztmvr9",
+                     "name": "EsmeraldaHickle",
+                     "username": "EsmeraldaHickle"
                   }
                }
             ],
-            "created_at": "2018-02-03T22:23:15.529Z",
-            "id": "ekw92dwnr59",
-            "name": "Versatile Edition"
+            "created_at": "2018-02-05T14:26:31.193Z",
+            "id": "e2ubxzt8trs",
+            "name": "Multi-lateral Edition"
          },
          "version": {
-            "released_at": "2018-02-03T22:23:15.529Z",
+            "released_at": "2018-02-05T14:26:31.193Z",
             "version": "1.0.0"
          }
       }
@@ -111,23 +115,19 @@ Content-Encoding: gzip
                "Table Creator"
             ],
             "user": {
-               "counter": {
-                  "comments": 0,
-                  "stars": 0
-               },
-               "gravatar_id": "182ebc2a79364e09ae6b1675c20850f6",
-               "id": "e2t478wa559",
-               "name": "AidanSchmeler61",
-               "username": "AidanSchmeler61"
+               "gravatar_id": "6fe6d7c5625e88c2d158f78065b1158d",
+               "id": "p2nukztmvr9",
+               "name": "EsmeraldaHickle",
+               "username": "EsmeraldaHickle"
             }
          }
       ],
-      "created_at": "2018-02-03T22:23:12.870Z",
-      "id": "ekxd8wa559",
-      "name": "Adaptive Edition"
+      "created_at": "2018-02-05T14:26:29.033Z",
+      "id": "p25zyvmvrs",
+      "name": "Up-sized Edition"
    },
    "version": {
-      "released_at": "2018-02-03T22:23:12.870Z",
+      "released_at": "2018-02-05T14:26:29.033Z",
       "version": "1.0.0"
    }
 }

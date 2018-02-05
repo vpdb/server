@@ -1,14 +1,12 @@
 200 OK
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
 Content-Length: 213
-Etag: W/"d5-lUd96+FIgxoce4Abn5p07ldo0us"
+Etag: W/"d5-//4fib+qWCGx7VQDqBIpSYoSL+s"
 
 {
-   "created_at": "2018-02-03T22:27:33.615Z",
-   "expires_at": "2018-02-03T22:27:34.617Z",
-   "id": "e2dny3parr9",
+   "created_at": "2018-02-05T14:30:16.896Z",
+   "expires_at": "2018-02-05T14:30:17.899Z",
+   "id": "pkfhekn8v59",
    "is_active": false,
    "label": "My Renamed Application",
    "scopes": [

@@ -1,9 +1,9 @@
-POST /v1/releases/ekxbrpa55s/versions HTTP/2.0
+POST /v1/releases/p28u838v59/versions HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwazR0dWVwYXI1OSIsImlhdCI6IjIwMTgtMDItMDNUMjI6MjU6MzEuNzExWiIsImV4cCI6IjIwMTgtMDItMDNUMjM6MjU6MzEuNzExWiIsImlydCI6ZmFsc2V9.Vo2siS-gxtU0Ft82tFOROo21DVGAi07gL28BfzN9Flc
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla2tzazgzbXY1OSIsImlhdCI6IjIwMTgtMDItMDVUMTQ6NTA6NDMuMTI4WiIsImV4cCI6IjIwMTgtMDItMDVUMTU6NTA6NDMuMTI4WiIsImlydCI6ZmFsc2V9.d2uKSM8OJ4ppLbrf7ODn7hDCvPbZUvP0E23-L6vTJo0
 Content-Type: application/json
-Content-Length: 192
+Content-Length: 191
 
 {
    "changes": "*Second release.*",
@@ -12,8 +12,8 @@ Content-Length: 192
          "_compatibility": [
             "9.9.0"
          ],
-         "_file": "ekpyb5pnrrs",
-         "_playfield_image": "p2cbzrearrs",
+         "_file": "e24zf83mtr9",
+         "_playfield_image": "ekht83mvrs",
          "flavor": {
             "lighting": "night",
             "orientation": "fs"

@@ -1,5 +1,5 @@
-GET /v1/games/deluxe-baseball/release-name HTTP/2.0
+GET /v1/games/alarm/release-name HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMjF4OWtlbjU1OSIsImlhdCI6IjIwMTgtMDItMDNUMjI6MjM6NTAuNzg1WiIsImV4cCI6IjIwMTgtMDItMDNUMjM6MjM6NTAuNzg1WiIsImlydCI6ZmFsc2V9.KZlviDmRAvoZ--i7L5YVEQdr6_E--TDZ2q3gwFWrfQA
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla29zNTR2bXRycyIsImlhdCI6IjIwMTgtMDItMDVUMTQ6Mjc6MDYuNDU2WiIsImV4cCI6IjIwMTgtMDItMDVUMTU6Mjc6MDYuNDU2WiIsImlydCI6ZmFsc2V9.xLd_xal2NfcxJHrGtcPOBIXPdKsw-hcMLJLEdTbZ0bM
 

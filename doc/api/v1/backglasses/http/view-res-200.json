@@ -1,8 +1,6 @@
 200 OK
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Etag: W/"817-AP/HFfsBpE/ljsovcXLas0NaRwQ"
+Etag: W/"7ad-5DvwsX7G6TgMdvzIZiEWR502rHw"
 Content-Encoding: gzip
 
 {
@@ -12,53 +10,41 @@ Content-Encoding: gzip
             "creator"
          ],
          "user": {
-            "counter": {
-               "comments": 0,
-               "stars": 0
-            },
-            "gravatar_id": "749aa95c2bbe32eda3ee8af0dd158cd5",
-            "id": "e2hqv8qar5s",
-            "name": "GoldaWalker",
-            "username": "GoldaWalker"
+            "gravatar_id": "e4db930abc07c9ed0af148d9134f7f48",
+            "id": "e2zqmbt8t59",
+            "name": "SvenShields98",
+            "username": "SvenShields98"
          }
       }
    ],
-   "created_at": "2018-02-03T22:23:09.333Z",
+   "created_at": "2018-02-05T14:26:25.511Z",
    "created_by": {
-      "counter": {
-         "comments": 0,
-         "stars": 0
-      },
-      "gravatar_id": "749aa95c2bbe32eda3ee8af0dd158cd5",
-      "id": "e2hqv8qar5s",
-      "name": "GoldaWalker",
-      "username": "GoldaWalker"
+      "gravatar_id": "e4db930abc07c9ed0af148d9134f7f48",
+      "id": "e2zqmbt8t59",
+      "name": "SvenShields98",
+      "username": "SvenShields98"
    },
    "game": {
-      "id": "wipe-out",
+      "id": "pinball-action",
       "ipdb": {
-         "mfg": 86,
-         "number": 4870
+         "mfg": 515,
+         "number": 5252
       },
-      "manufacturer": "Coffee-Mat Amusement Division",
-      "title": "Wipe-Out",
-      "year": 1976
+      "manufacturer": "U.S Tehkan Inc.",
+      "title": "Pinball Action",
+      "year": 1900
    },
-   "id": "eku4n8qnrr9",
+   "id": "p22qdbvmtrs",
    "moderation": {
       "auto_approved": true,
       "history": [
          {
-            "created_at": "2018-02-03T22:23:09.364Z",
+            "created_at": "2018-02-05T14:26:25.536Z",
             "created_by": {
-               "counter": {
-                  "comments": 0,
-                  "stars": 0
-               },
-               "gravatar_id": "749aa95c2bbe32eda3ee8af0dd158cd5",
-               "id": "e2hqv8qar5s",
-               "name": "GoldaWalker",
-               "username": "GoldaWalker"
+               "gravatar_id": "e4db930abc07c9ed0af148d9134f7f48",
+               "id": "e2zqmbt8t59",
+               "name": "SvenShields98",
+               "username": "SvenShields98"
             },
             "event": "approved"
          }
@@ -73,32 +59,34 @@ Content-Encoding: gzip
          },
          "file": {
             "bytes": 2067,
+            "cost": 0,
             "counter": {
                "downloads": 0
             },
-            "id": "pkx4amwn5rs",
+            "id": "e2nxdhvmtr9",
             "is_protected": true,
+            "mime_type": "application/x-directb2s",
             "name": "test.directb2s",
-            "url": "http://localhost:7357/storage/v1/files/pkx4amwn5rs.directb2s",
+            "url": "http://localhost:7357/storage/v1/files/e2nxdhvmtr9.directb2s",
             "variations": {
                "full": {
-                  "url": "http://localhost:7357/storage/public/files/full/pkx4amwn5rs.jpg"
+                  "url": "http://localhost:7357/storage/public/files/full/e2nxdhvmtr9.jpg"
                },
                "medium": {
-                  "url": "http://localhost:7357/storage/public/files/medium/pkx4amwn5rs.jpg"
+                  "url": "http://localhost:7357/storage/public/files/medium/e2nxdhvmtr9.jpg"
                },
                "medium-2x": {
-                  "url": "http://localhost:7357/storage/public/files/medium-2x/pkx4amwn5rs.jpg"
+                  "url": "http://localhost:7357/storage/public/files/medium-2x/e2nxdhvmtr9.jpg"
                },
                "small": {
-                  "url": "http://localhost:7357/storage/public/files/small/pkx4amwn5rs.jpg"
+                  "url": "http://localhost:7357/storage/public/files/small/e2nxdhvmtr9.jpg"
                },
                "small-2x": {
-                  "url": "http://localhost:7357/storage/public/files/small-2x/pkx4amwn5rs.jpg"
+                  "url": "http://localhost:7357/storage/public/files/small-2x/e2nxdhvmtr9.jpg"
                }
             }
          },
-         "released_at": "2018-02-03T22:23:09.333Z",
+         "released_at": "2018-02-05T14:26:25.511Z",
          "version": "1.0"
       }
    ]

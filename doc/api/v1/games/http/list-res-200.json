@@ -1,58 +1,58 @@
 200 OK
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 X-List-Page: 1
 X-List-Size: 12
 X-List-Count: 10
 Content-Type: application/json; charset=utf-8
-Etag: W/"3b41-Hdq/JXXxnTMPnl4418hLrpZBBz0"
+Etag: W/"3db6-K9VIHAkkD1bY3TWzM7/rXzoSVlw"
 Content-Encoding: gzip
 
 [
    {
       "backglass": {
          "bytes": 135,
+         "cost": 0,
          "counter": {
             "downloads": 0
          },
-         "id": "p2py3oqa55s",
+         "id": "e2u9k4tmtrs",
          "is_protected": true,
+         "mime_type": "image/png",
          "name": "backglass.png",
-         "url": "http://localhost:7357/storage/v1/files/p2py3oqa55s.png",
+         "url": "http://localhost:7357/storage/v1/files/e2u9k4tmtrs.png",
          "variations": {
             "full": {
-               "bytes": 2448,
+               "bytes": 2447,
                "height": 512,
                "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/full/p2py3oqa55s.jpg",
+               "url": "http://localhost:7357/storage/public/files/full/e2u9k4tmtrs.jpg",
                "width": 640
             },
             "medium": {
-               "bytes": 1188,
+               "bytes": 1515,
                "height": 291,
                "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/medium/p2py3oqa55s.jpg",
+               "url": "http://localhost:7357/storage/public/files/medium/e2u9k4tmtrs.jpg",
                "width": 364
             },
             "medium-2x": {
-               "bytes": 3082,
+               "bytes": 4358,
                "height": 582,
                "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/medium-2x/p2py3oqa55s.jpg",
+               "url": "http://localhost:7357/storage/public/files/medium-2x/e2u9k4tmtrs.jpg",
                "width": 728
             },
             "small": {
-               "bytes": 836,
+               "bytes": 991,
                "height": 202,
                "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/small/p2py3oqa55s.jpg",
+               "url": "http://localhost:7357/storage/public/files/small/e2u9k4tmtrs.jpg",
                "width": 253
             },
             "small-2x": {
-               "bytes": 1776,
+               "bytes": 2399,
                "height": 404,
                "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/small-2x/p2py3oqa55s.jpg",
+               "url": "http://localhost:7357/storage/public/files/small-2x/e2u9k4tmtrs.jpg",
                "width": 505
             }
          }
@@ -65,254 +65,66 @@ Content-Encoding: gzip
          "views": 0
       },
       "game_type": "em",
-      "id": "1940-rebound",
+      "id": "battle",
       "ipdb": {
-         "mfg": 117,
-         "number": 1928
+         "mfg": 47,
+         "number": 199
       },
-      "manufacturer": "Exhibit",
+      "manufacturer": "Bally",
       "rating": {
          "average": 0,
          "score": 0,
          "votes": 0
       },
-      "title": "1940 Rebound",
-      "year": 1939
+      "title": "Battle",
+      "year": 1935
    },
    {
       "backglass": {
          "bytes": 135,
+         "cost": 0,
          "counter": {
             "downloads": 0
          },
-         "id": "ekxb2ea5r9",
+         "id": "ekd91st8tr9",
          "is_protected": true,
+         "mime_type": "image/png",
          "name": "backglass.png",
-         "url": "http://localhost:7357/storage/v1/files/ekxb2ea5r9.png",
-         "variations": {
-            "full": {
-               "url": "http://localhost:7357/storage/public/files/full/ekxb2ea5r9.jpg"
-            },
-            "medium": {
-               "url": "http://localhost:7357/storage/public/files/medium/ekxb2ea5r9.jpg"
-            },
-            "medium-2x": {
-               "url": "http://localhost:7357/storage/public/files/medium-2x/ekxb2ea5r9.jpg"
-            },
-            "small": {
-               "url": "http://localhost:7357/storage/public/files/small/ekxb2ea5r9.jpg"
-            },
-            "small-2x": {
-               "url": "http://localhost:7357/storage/public/files/small-2x/ekxb2ea5r9.jpg"
-            }
-         }
-      },
-      "counter": {
-         "comments": 0,
-         "downloads": 0,
-         "releases": 0,
-         "stars": 0,
-         "views": 0
-      },
-      "game_type": "em",
-      "id": "dragonette",
-      "ipdb": {
-         "mfg": 93,
-         "number": 730
-      },
-      "manufacturer": "Gottlieb",
-      "rating": {
-         "average": 0,
-         "score": 0,
-         "votes": 0
-      },
-      "title": "Dragonette",
-      "year": 1954
-   },
-   {
-      "backglass": {
-         "bytes": 135,
-         "counter": {
-            "downloads": 0
-         },
-         "id": "e2z8own559",
-         "is_protected": true,
-         "name": "backglass.png",
-         "url": "http://localhost:7357/storage/v1/files/e2z8own559.png",
+         "url": "http://localhost:7357/storage/v1/files/ekd91st8tr9.png",
          "variations": {
             "full": {
                "bytes": 2448,
                "height": 512,
                "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/full/e2z8own559.jpg",
+               "url": "http://localhost:7357/storage/public/files/full/ekd91st8tr9.jpg",
                "width": 640
             },
             "medium": {
                "bytes": 1188,
                "height": 291,
                "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/medium/e2z8own559.jpg",
+               "url": "http://localhost:7357/storage/public/files/medium/ekd91st8tr9.jpg",
                "width": 364
             },
             "medium-2x": {
                "bytes": 3082,
                "height": 582,
                "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/medium-2x/e2z8own559.jpg",
+               "url": "http://localhost:7357/storage/public/files/medium-2x/ekd91st8tr9.jpg",
                "width": 728
             },
             "small": {
                "bytes": 836,
                "height": 202,
                "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/small/e2z8own559.jpg",
+               "url": "http://localhost:7357/storage/public/files/small/ekd91st8tr9.jpg",
                "width": 253
             },
             "small-2x": {
                "bytes": 1776,
                "height": 404,
                "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/small-2x/e2z8own559.jpg",
-               "width": 505
-            }
-         }
-      },
-      "counter": {
-         "comments": 0,
-         "downloads": 0,
-         "releases": 0,
-         "stars": 0,
-         "views": 0
-      },
-      "game_type": "pm",
-      "id": "hy-skor",
-      "ipdb": {
-         "mfg": 102,
-         "number": 3918
-      },
-      "manufacturer": "Device Manufacturers, Incorporated",
-      "rating": {
-         "average": 0,
-         "score": 0,
-         "votes": 0
-      },
-      "title": "Hy-Skor",
-      "year": 1931
-   },
-   {
-      "backglass": {
-         "bytes": 135,
-         "counter": {
-            "downloads": 0
-         },
-         "id": "pkmhc1qn5rs",
-         "is_protected": true,
-         "name": "backglass.png",
-         "url": "http://localhost:7357/storage/v1/files/pkmhc1qn5rs.png",
-         "variations": {
-            "full": {
-               "bytes": 2448,
-               "height": 512,
-               "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/full/pkmhc1qn5rs.jpg",
-               "width": 640
-            },
-            "medium": {
-               "bytes": 1188,
-               "height": 291,
-               "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/medium/pkmhc1qn5rs.jpg",
-               "width": 364
-            },
-            "medium-2x": {
-               "bytes": 3082,
-               "height": 582,
-               "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/medium-2x/pkmhc1qn5rs.jpg",
-               "width": 728
-            },
-            "small": {
-               "bytes": 836,
-               "height": 202,
-               "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/small/pkmhc1qn5rs.jpg",
-               "width": 253
-            },
-            "small-2x": {
-               "bytes": 1776,
-               "height": 404,
-               "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/small-2x/pkmhc1qn5rs.jpg",
-               "width": 505
-            }
-         }
-      },
-      "counter": {
-         "comments": 0,
-         "downloads": 0,
-         "releases": 0,
-         "stars": 0,
-         "views": 0
-      },
-      "game_type": "pm",
-      "id": "la-comete",
-      "ipdb": {
-         "mfg": 328,
-         "number": 6121
-      },
-      "manufacturer": "Unknown",
-      "rating": {
-         "average": 0,
-         "score": 0,
-         "votes": 0
-      },
-      "title": "La Comete",
-      "year": 1900
-   },
-   {
-      "backglass": {
-         "bytes": 135,
-         "counter": {
-            "downloads": 0
-         },
-         "id": "e2r22en559",
-         "is_protected": true,
-         "name": "backglass.png",
-         "url": "http://localhost:7357/storage/v1/files/e2r22en559.png",
-         "variations": {
-            "full": {
-               "bytes": 2448,
-               "height": 512,
-               "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/full/e2r22en559.jpg",
-               "width": 640
-            },
-            "medium": {
-               "bytes": 1188,
-               "height": 291,
-               "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/medium/e2r22en559.jpg",
-               "width": 364
-            },
-            "medium-2x": {
-               "bytes": 3082,
-               "height": 582,
-               "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/medium-2x/e2r22en559.jpg",
-               "width": 728
-            },
-            "small": {
-               "bytes": 836,
-               "height": 202,
-               "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/small/e2r22en559.jpg",
-               "width": 253
-            },
-            "small-2x": {
-               "bytes": 1776,
-               "height": 404,
-               "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/small-2x/e2r22en559.jpg",
+               "url": "http://localhost:7357/storage/public/files/small-2x/ekd91st8tr9.jpg",
                "width": 505
             }
          }
@@ -325,135 +137,51 @@ Content-Encoding: gzip
          "views": 0
       },
       "game_type": "em",
-      "id": "mystic",
+      "id": "best-bet",
       "ipdb": {
-         "mfg": 243,
-         "number": 1649
+         "mfg": 332,
+         "number": 5592
       },
-      "manufacturer": "Pacific Manufacturing Corporation (1937)",
+      "manufacturer": "Victory Sales Company (1946-1949)",
       "rating": {
          "average": 0,
          "score": 0,
          "votes": 0
       },
-      "title": "Mystic",
-      "year": 1937
+      "title": "Best Bet",
+      "year": 1947
    },
    {
       "backglass": {
          "bytes": 135,
+         "cost": 0,
          "counter": {
             "downloads": 0
          },
-         "id": "e2zo1qa55s",
+         "id": "ekxb44v8t59",
          "is_protected": true,
+         "mime_type": "image/png",
          "name": "backglass.png",
-         "url": "http://localhost:7357/storage/v1/files/e2zo1qa55s.png",
-         "variations": {
-            "full": {
-               "bytes": 2448,
-               "height": 512,
-               "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/full/e2zo1qa55s.jpg",
-               "width": 640
-            },
-            "medium": {
-               "bytes": 1188,
-               "height": 291,
-               "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/medium/e2zo1qa55s.jpg",
-               "width": 364
-            },
-            "medium-2x": {
-               "bytes": 3082,
-               "height": 582,
-               "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/medium-2x/e2zo1qa55s.jpg",
-               "width": 728
-            },
-            "small": {
-               "bytes": 836,
-               "height": 202,
-               "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/small/e2zo1qa55s.jpg",
-               "width": 253
-            },
-            "small-2x": {
-               "bytes": 1776,
-               "height": 404,
-               "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/small-2x/e2zo1qa55s.jpg",
-               "width": 505
-            }
-         }
-      },
-      "counter": {
-         "comments": 0,
-         "downloads": 0,
-         "releases": 0,
-         "stars": 0,
-         "views": 0
-      },
-      "game_type": "em",
-      "id": "rondeevoo",
-      "ipdb": {
-         "mfg": 323,
-         "number": 2014
-      },
-      "manufacturer": "United",
-      "rating": {
-         "average": 0,
-         "score": 0,
-         "votes": 0
-      },
-      "title": "Rondeevoo",
-      "year": 1948
-   },
-   {
-      "backglass": {
-         "bytes": 135,
-         "counter": {
-            "downloads": 0
-         },
-         "id": "ekubmoqar5s",
-         "is_protected": true,
-         "name": "backglass.png",
-         "url": "http://localhost:7357/storage/v1/files/ekubmoqar5s.png",
+         "url": "http://localhost:7357/storage/v1/files/ekxb44v8t59.png",
          "variations": {
             "full": {
                "bytes": 3407,
                "height": 512,
                "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/full/ekubmoqar5s.jpg",
+               "url": "http://localhost:7357/storage/public/files/full/ekxb44v8t59.jpg",
                "width": 640
             },
             "medium": {
-               "bytes": 1187,
-               "height": 291,
-               "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/medium/ekubmoqar5s.jpg",
-               "width": 364
+               "url": "http://localhost:7357/storage/public/files/medium/ekxb44v8t59.jpg"
             },
             "medium-2x": {
-               "bytes": 3081,
-               "height": 582,
-               "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/medium-2x/ekubmoqar5s.jpg",
-               "width": 728
+               "url": "http://localhost:7357/storage/public/files/medium-2x/ekxb44v8t59.jpg"
             },
             "small": {
-               "bytes": 835,
-               "height": 202,
-               "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/small/ekubmoqar5s.jpg",
-               "width": 253
+               "url": "http://localhost:7357/storage/public/files/small/ekxb44v8t59.jpg"
             },
             "small-2x": {
-               "bytes": 1775,
-               "height": 404,
-               "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/small-2x/ekubmoqar5s.jpg",
-               "width": 505
+               "url": "http://localhost:7357/storage/public/files/small-2x/ekxb44v8t59.jpg"
             }
          }
       },
@@ -465,150 +193,11 @@ Content-Encoding: gzip
          "views": 0
       },
       "game_type": "em",
-      "id": "screwball",
+      "id": "gold-rush",
       "ipdb": {
-         "mfg": 130,
-         "number": 2074
-      },
-      "manufacturer": "Genco",
-      "rating": {
-         "average": 0,
-         "score": 0,
-         "votes": 0
-      },
-      "title": "Screwball",
-      "year": 1948
-   },
-   {
-      "backglass": {
-         "bytes": 135,
-         "counter": {
-            "downloads": 0
-         },
-         "id": "ek3sgoqa559",
-         "is_protected": true,
-         "name": "backglass.png",
-         "url": "http://localhost:7357/storage/v1/files/ek3sgoqa559.png",
-         "variations": {
-            "full": {
-               "bytes": 2448,
-               "height": 512,
-               "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/full/ek3sgoqa559.jpg",
-               "width": 640
-            },
-            "medium": {
-               "bytes": 1188,
-               "height": 291,
-               "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/medium/ek3sgoqa559.jpg",
-               "width": 364
-            },
-            "medium-2x": {
-               "bytes": 3082,
-               "height": 582,
-               "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/medium-2x/ek3sgoqa559.jpg",
-               "width": 728
-            },
-            "small": {
-               "bytes": 836,
-               "height": 202,
-               "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/small/ek3sgoqa559.jpg",
-               "width": 253
-            },
-            "small-2x": {
-               "bytes": 1776,
-               "height": 404,
-               "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/small-2x/ek3sgoqa559.jpg",
-               "width": 505
-            }
-         }
-      },
-      "counter": {
-         "comments": 0,
-         "downloads": 0,
-         "releases": 0,
-         "stars": 0,
-         "views": 0
-      },
-      "game_type": "em",
-      "id": "sea-breeze",
-      "ipdb": {
-         "mfg": 363,
-         "number": 4550
-      },
-      "manufacturer": "North Star Coin Machine Company",
-      "rating": {
-         "average": 0,
-         "score": 0,
-         "votes": 0
-      },
-      "title": "Sea Breeze",
-      "year": 1949
-   },
-   {
-      "backglass": {
-         "bytes": 135,
-         "counter": {
-            "downloads": 0
-         },
-         "id": "p2tbo1wn5r9",
-         "is_protected": true,
-         "name": "backglass.png",
-         "url": "http://localhost:7357/storage/v1/files/p2tbo1wn5r9.png",
-         "variations": {
-            "full": {
-               "bytes": 2448,
-               "height": 512,
-               "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/full/p2tbo1wn5r9.jpg",
-               "width": 640
-            },
-            "medium": {
-               "bytes": 1188,
-               "height": 291,
-               "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/medium/p2tbo1wn5r9.jpg",
-               "width": 364
-            },
-            "medium-2x": {
-               "bytes": 3082,
-               "height": 582,
-               "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/medium-2x/p2tbo1wn5r9.jpg",
-               "width": 728
-            },
-            "small": {
-               "bytes": 836,
-               "height": 202,
-               "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/small/p2tbo1wn5r9.jpg",
-               "width": 253
-            },
-            "small-2x": {
-               "bytes": 1776,
-               "height": 404,
-               "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/small-2x/p2tbo1wn5r9.jpg",
-               "width": 505
-            }
-         }
-      },
-      "counter": {
-         "comments": 0,
-         "downloads": 0,
-         "releases": 0,
-         "stars": 0,
-         "views": 0
-      },
-      "game_type": "em",
-      "id": "sunny",
-      "ipdb": {
-         "mfg": 352,
-         "number": 2421
+         "mfg": 351,
+         "number": 1036,
+         "rating": 7.1
       },
       "manufacturer": "Williams",
       "rating": {
@@ -616,53 +205,55 @@ Content-Encoding: gzip
          "score": 0,
          "votes": 0
       },
-      "title": "Sunny",
-      "year": 1947
+      "title": "Gold Rush",
+      "year": 1971
    },
    {
       "backglass": {
          "bytes": 135,
+         "cost": 0,
          "counter": {
             "downloads": 0
          },
-         "id": "e27z6oqarrs",
+         "id": "pk3xosv8t59",
          "is_protected": true,
+         "mime_type": "image/png",
          "name": "backglass.png",
-         "url": "http://localhost:7357/storage/v1/files/e27z6oqarrs.png",
+         "url": "http://localhost:7357/storage/v1/files/pk3xosv8t59.png",
          "variations": {
             "full": {
                "bytes": 2448,
                "height": 512,
                "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/full/e27z6oqarrs.jpg",
+               "url": "http://localhost:7357/storage/public/files/full/pk3xosv8t59.jpg",
                "width": 640
             },
             "medium": {
                "bytes": 1187,
                "height": 291,
                "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/medium/e27z6oqarrs.jpg",
+               "url": "http://localhost:7357/storage/public/files/medium/pk3xosv8t59.jpg",
                "width": 364
             },
             "medium-2x": {
                "bytes": 3081,
                "height": 582,
                "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/medium-2x/e27z6oqarrs.jpg",
+               "url": "http://localhost:7357/storage/public/files/medium-2x/pk3xosv8t59.jpg",
                "width": 728
             },
             "small": {
                "bytes": 835,
                "height": 202,
                "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/small/e27z6oqarrs.jpg",
+               "url": "http://localhost:7357/storage/public/files/small/pk3xosv8t59.jpg",
                "width": 253
             },
             "small-2x": {
                "bytes": 1775,
                "height": 404,
                "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/small-2x/e27z6oqarrs.jpg",
+               "url": "http://localhost:7357/storage/public/files/small-2x/pk3xosv8t59.jpg",
                "width": 505
             }
          }
@@ -675,18 +266,450 @@ Content-Encoding: gzip
          "views": 0
       },
       "game_type": "em",
-      "id": "triple-action",
+      "id": "grand-slam",
       "ipdb": {
-         "mfg": 130,
-         "number": 2650
+         "mfg": 350,
+         "number": 1077
       },
-      "manufacturer": "Genco",
+      "manufacturer": "Williams",
       "rating": {
          "average": 0,
          "score": 0,
          "votes": 0
       },
-      "title": "Triple Action",
+      "title": "Grand Slam",
+      "year": 1964
+   },
+   {
+      "backglass": {
+         "bytes": 135,
+         "cost": 0,
+         "counter": {
+            "downloads": 0
+         },
+         "id": "p2uz2xt8trs",
+         "is_protected": true,
+         "mime_type": "image/png",
+         "name": "backglass.png",
+         "url": "http://localhost:7357/storage/v1/files/p2uz2xt8trs.png",
+         "variations": {
+            "full": {
+               "bytes": 2448,
+               "height": 512,
+               "mime_type": "image/jpeg",
+               "url": "http://localhost:7357/storage/public/files/full/p2uz2xt8trs.jpg",
+               "width": 640
+            },
+            "medium": {
+               "bytes": 1188,
+               "height": 291,
+               "mime_type": "image/jpeg",
+               "url": "http://localhost:7357/storage/public/files/medium/p2uz2xt8trs.jpg",
+               "width": 364
+            },
+            "medium-2x": {
+               "bytes": 3082,
+               "height": 582,
+               "mime_type": "image/jpeg",
+               "url": "http://localhost:7357/storage/public/files/medium-2x/p2uz2xt8trs.jpg",
+               "width": 728
+            },
+            "small": {
+               "bytes": 836,
+               "height": 202,
+               "mime_type": "image/jpeg",
+               "url": "http://localhost:7357/storage/public/files/small/p2uz2xt8trs.jpg",
+               "width": 253
+            },
+            "small-2x": {
+               "bytes": 1776,
+               "height": 404,
+               "mime_type": "image/jpeg",
+               "url": "http://localhost:7357/storage/public/files/small-2x/p2uz2xt8trs.jpg",
+               "width": 505
+            }
+         }
+      },
+      "counter": {
+         "comments": 0,
+         "downloads": 0,
+         "releases": 0,
+         "stars": 0,
+         "views": 0
+      },
+      "game_type": "em",
+      "id": "jockey-club",
+      "ipdb": {
+         "mfg": 421,
+         "number": 5692
+      },
+      "manufacturer": "Electro-Ball Company",
+      "rating": {
+         "average": 0,
+         "score": 0,
+         "votes": 0
+      },
+      "title": "Jockey Club",
+      "year": 1935
+   },
+   {
+      "backglass": {
+         "bytes": 135,
+         "cost": 0,
+         "counter": {
+            "downloads": 0
+         },
+         "id": "ekyhh4vmv5s",
+         "is_protected": true,
+         "mime_type": "image/png",
+         "name": "backglass.png",
+         "url": "http://localhost:7357/storage/v1/files/ekyhh4vmv5s.png",
+         "variations": {
+            "full": {
+               "bytes": 2448,
+               "height": 512,
+               "mime_type": "image/jpeg",
+               "url": "http://localhost:7357/storage/public/files/full/ekyhh4vmv5s.jpg",
+               "width": 640
+            },
+            "medium": {
+               "bytes": 1188,
+               "height": 291,
+               "mime_type": "image/jpeg",
+               "url": "http://localhost:7357/storage/public/files/medium/ekyhh4vmv5s.jpg",
+               "width": 364
+            },
+            "medium-2x": {
+               "bytes": 3082,
+               "height": 582,
+               "mime_type": "image/jpeg",
+               "url": "http://localhost:7357/storage/public/files/medium-2x/ekyhh4vmv5s.jpg",
+               "width": 728
+            },
+            "small": {
+               "bytes": 836,
+               "height": 202,
+               "mime_type": "image/jpeg",
+               "url": "http://localhost:7357/storage/public/files/small/ekyhh4vmv5s.jpg",
+               "width": 253
+            },
+            "small-2x": {
+               "bytes": 1776,
+               "height": 404,
+               "mime_type": "image/jpeg",
+               "url": "http://localhost:7357/storage/public/files/small-2x/ekyhh4vmv5s.jpg",
+               "width": 505
+            }
+         }
+      },
+      "counter": {
+         "comments": 0,
+         "downloads": 0,
+         "releases": 0,
+         "stars": 0,
+         "views": 0
+      },
+      "game_type": "em",
+      "id": "majestic",
+      "ipdb": {
+         "mfg": 47,
+         "number": 4150
+      },
+      "manufacturer": "Bally",
+      "rating": {
+         "average": 0,
+         "score": 0,
+         "votes": 0
+      },
+      "title": "Majestic",
+      "year": 1935
+   },
+   {
+      "backglass": {
+         "bytes": 135,
+         "cost": 0,
+         "counter": {
+            "downloads": 0
+         },
+         "id": "p2vz94v8v5s",
+         "is_protected": true,
+         "mime_type": "image/png",
+         "name": "backglass.png",
+         "url": "http://localhost:7357/storage/v1/files/p2vz94v8v5s.png",
+         "variations": {
+            "full": {
+               "bytes": 3408,
+               "height": 512,
+               "mime_type": "image/jpeg",
+               "url": "http://localhost:7357/storage/public/files/full/p2vz94v8v5s.jpg",
+               "width": 640
+            },
+            "medium": {
+               "bytes": 1188,
+               "height": 291,
+               "mime_type": "image/jpeg",
+               "url": "http://localhost:7357/storage/public/files/medium/p2vz94v8v5s.jpg",
+               "width": 364
+            },
+            "medium-2x": {
+               "bytes": 3082,
+               "height": 582,
+               "mime_type": "image/jpeg",
+               "url": "http://localhost:7357/storage/public/files/medium-2x/p2vz94v8v5s.jpg",
+               "width": 728
+            },
+            "small": {
+               "bytes": 836,
+               "height": 202,
+               "mime_type": "image/jpeg",
+               "url": "http://localhost:7357/storage/public/files/small/p2vz94v8v5s.jpg",
+               "width": 253
+            },
+            "small-2x": {
+               "bytes": 1776,
+               "height": 404,
+               "mime_type": "image/jpeg",
+               "url": "http://localhost:7357/storage/public/files/small-2x/p2vz94v8v5s.jpg",
+               "width": 505
+            }
+         }
+      },
+      "counter": {
+         "comments": 0,
+         "downloads": 0,
+         "releases": 0,
+         "stars": 0,
+         "views": 0
+      },
+      "game_type": "pm",
+      "id": "official-counter",
+      "ipdb": {
+         "mfg": 218,
+         "number": 1694
+      },
+      "manufacturer": "Mills Novelty Company",
+      "rating": {
+         "average": 0,
+         "score": 0,
+         "votes": 0
+      },
+      "title": "Official (Counter)",
+      "year": 1932
+   },
+   {
+      "backglass": {
+         "bytes": 135,
+         "cost": 0,
+         "counter": {
+            "downloads": 0
+         },
+         "id": "p2x9xtmtrs",
+         "is_protected": true,
+         "mime_type": "image/png",
+         "name": "backglass.png",
+         "url": "http://localhost:7357/storage/v1/files/p2x9xtmtrs.png",
+         "variations": {
+            "full": {
+               "bytes": 2448,
+               "height": 512,
+               "mime_type": "image/jpeg",
+               "url": "http://localhost:7357/storage/public/files/full/p2x9xtmtrs.jpg",
+               "width": 640
+            },
+            "medium": {
+               "bytes": 1187,
+               "height": 291,
+               "mime_type": "image/jpeg",
+               "url": "http://localhost:7357/storage/public/files/medium/p2x9xtmtrs.jpg",
+               "width": 364
+            },
+            "medium-2x": {
+               "bytes": 3081,
+               "height": 582,
+               "mime_type": "image/jpeg",
+               "url": "http://localhost:7357/storage/public/files/medium-2x/p2x9xtmtrs.jpg",
+               "width": 728
+            },
+            "small": {
+               "bytes": 835,
+               "height": 202,
+               "mime_type": "image/jpeg",
+               "url": "http://localhost:7357/storage/public/files/small/p2x9xtmtrs.jpg",
+               "width": 253
+            },
+            "small-2x": {
+               "bytes": 1775,
+               "height": 404,
+               "mime_type": "image/jpeg",
+               "url": "http://localhost:7357/storage/public/files/small-2x/p2x9xtmtrs.jpg",
+               "width": 505
+            }
+         }
+      },
+      "counter": {
+         "comments": 0,
+         "downloads": 0,
+         "releases": 0,
+         "stars": 0,
+         "views": 0
+      },
+      "game_type": "pm",
+      "id": "olympic-doubles",
+      "ipdb": {
+         "mfg": 238,
+         "number": 5362
+      },
+      "manufacturer": "Olympic Games Manufacturing Company",
+      "rating": {
+         "average": 0,
+         "score": 0,
+         "votes": 0
+      },
+      "title": "Olympic Doubles",
+      "year": 1932
+   },
+   {
+      "backglass": {
+         "bytes": 135,
+         "cost": 0,
+         "counter": {
+            "downloads": 0
+         },
+         "id": "pkuhy4tmt5s",
+         "is_protected": true,
+         "mime_type": "image/png",
+         "name": "backglass.png",
+         "url": "http://localhost:7357/storage/v1/files/pkuhy4tmt5s.png",
+         "variations": {
+            "full": {
+               "bytes": 3408,
+               "height": 512,
+               "mime_type": "image/jpeg",
+               "url": "http://localhost:7357/storage/public/files/full/pkuhy4tmt5s.jpg",
+               "width": 640
+            },
+            "medium": {
+               "bytes": 1187,
+               "height": 291,
+               "mime_type": "image/jpeg",
+               "url": "http://localhost:7357/storage/public/files/medium/pkuhy4tmt5s.jpg",
+               "width": 364
+            },
+            "medium-2x": {
+               "bytes": 3081,
+               "height": 582,
+               "mime_type": "image/jpeg",
+               "url": "http://localhost:7357/storage/public/files/medium-2x/pkuhy4tmt5s.jpg",
+               "width": 728
+            },
+            "small": {
+               "bytes": 835,
+               "height": 202,
+               "mime_type": "image/jpeg",
+               "url": "http://localhost:7357/storage/public/files/small/pkuhy4tmt5s.jpg",
+               "width": 253
+            },
+            "small-2x": {
+               "bytes": 1775,
+               "height": 404,
+               "mime_type": "image/jpeg",
+               "url": "http://localhost:7357/storage/public/files/small-2x/pkuhy4tmt5s.jpg",
+               "width": 505
+            }
+         }
+      },
+      "counter": {
+         "comments": 0,
+         "downloads": 0,
+         "releases": 0,
+         "stars": 0,
+         "views": 0
+      },
+      "game_type": "em",
+      "id": "special-entry-1948",
+      "ipdb": {
+         "mfg": 47,
+         "number": 5570
+      },
+      "manufacturer": "Bally",
+      "rating": {
+         "average": 0,
+         "score": 0,
+         "votes": 0
+      },
+      "title": "Special Entry 1948",
       "year": 1948
+   },
+   {
+      "backglass": {
+         "bytes": 135,
+         "cost": 0,
+         "counter": {
+            "downloads": 0
+         },
+         "id": "p27yzxv8vr9",
+         "is_protected": true,
+         "mime_type": "image/png",
+         "name": "backglass.png",
+         "url": "http://localhost:7357/storage/v1/files/p27yzxv8vr9.png",
+         "variations": {
+            "full": {
+               "bytes": 2448,
+               "height": 512,
+               "mime_type": "image/jpeg",
+               "url": "http://localhost:7357/storage/public/files/full/p27yzxv8vr9.jpg",
+               "width": 640
+            },
+            "medium": {
+               "bytes": 1188,
+               "height": 291,
+               "mime_type": "image/jpeg",
+               "url": "http://localhost:7357/storage/public/files/medium/p27yzxv8vr9.jpg",
+               "width": 364
+            },
+            "medium-2x": {
+               "bytes": 3081,
+               "height": 582,
+               "mime_type": "image/jpeg",
+               "url": "http://localhost:7357/storage/public/files/medium-2x/p27yzxv8vr9.jpg",
+               "width": 728
+            },
+            "small": {
+               "bytes": 836,
+               "height": 202,
+               "mime_type": "image/jpeg",
+               "url": "http://localhost:7357/storage/public/files/small/p27yzxv8vr9.jpg",
+               "width": 253
+            },
+            "small-2x": {
+               "bytes": 1776,
+               "height": 404,
+               "mime_type": "image/jpeg",
+               "url": "http://localhost:7357/storage/public/files/small-2x/p27yzxv8vr9.jpg",
+               "width": 505
+            }
+         }
+      },
+      "counter": {
+         "comments": 0,
+         "downloads": 0,
+         "releases": 0,
+         "stars": 0,
+         "views": 0
+      },
+      "game_type": "pm",
+      "id": "the-pilot",
+      "ipdb": {
+         "mfg": 229,
+         "number": 1787
+      },
+      "manufacturer": "National Pin Games Manufacturing Company",
+      "rating": {
+         "average": 0,
+         "score": 0,
+         "votes": 0
+      },
+      "title": "The Pilot",
+      "year": 1932
    }
 ]

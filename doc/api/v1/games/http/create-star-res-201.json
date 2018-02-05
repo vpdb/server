@@ -1,11 +1,9 @@
 201 Created
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
 Content-Length: 64
-Etag: W/"40-zxApXjMv5oSq5eLSsRY849qhMJs"
+Etag: W/"40-jDa1KlilhR+KvxqujKcjI4vv2tU"
 
 {
-   "created_at": "2018-02-03T22:27:29.342Z",
+   "created_at": "2018-02-05T14:30:13.178Z",
    "total_stars": 1
 }

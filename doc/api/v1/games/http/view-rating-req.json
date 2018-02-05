@@ -1,5 +1,5 @@
-GET /v1/games/paragon/rating HTTP/2.0
+GET /v1/games/metallica-premium-monsters/rating HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMnRzcXpwYXJyOSIsImlhdCI6IjIwMTgtMDItMDNUMjI6MjQ6MjQuMTczWiIsImV4cCI6IjIwMTgtMDItMDNUMjM6MjQ6MjQuMTczWiIsImlydCI6ZmFsc2V9.XAgoJAx8KwVkP0zh6p_WHLQsK_ZmEqitSKNcvBui73Y
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa3lzMXF2OHY1cyIsImlhdCI6IjIwMTgtMDItMDVUMTQ6Mjc6MzAuMjc5WiIsImV4cCI6IjIwMTgtMDItMDVUMTU6Mjc6MzAuMjc5WiIsImlydCI6ZmFsc2V9.-_DSjxtFdm6IQ9cIXb-nJgceXM3qIGMi0tfA-_toHeY
 

@@ -1,25 +1,23 @@
 200 OK
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Etag: W/"84e-YTMUl1fgJFIWkwiJDyRwLADGRfE"
+Etag: W/"845-uk+lm7Y4nlGDZKQhzD9RkCtMsCk"
 Content-Encoding: gzip
 
 {
-   "expires": "2018-02-03T23:27:33.122Z",
-   "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMjd5ejNlbjU1OSIsImlhdCI6IjIwMTgtMDItMDNUMjI6Mjc6MzMuMTIyWiIsImV4cCI6IjIwMTgtMDItMDNUMjM6Mjc6MzMuMTIyWiIsImlydCI6ZmFsc2V9.SffEwnWWzuMF7x62ojA-Z3t6Gmqqbg0a0xnk1-xAuwo",
+   "expires": "2018-02-05T15:30:16.445Z",
+   "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa253cWtubXZycyIsImlhdCI6IjIwMTgtMDItMDVUMTQ6MzA6MTYuNDQ1WiIsImV4cCI6IjIwMTgtMDItMDVUMTU6MzA6MTYuNDQ1WiIsImlydCI6ZmFsc2V9.vbCu8jGtoQj_gmHEvPnHXyWGVtSNkr6R5RiGKNMgU-k",
    "user": {
       "counter": {
          "comments": 0,
          "downloads": 0,
          "stars": 0
       },
-      "created_at": "2018-02-03T22:27:32.998Z",
-      "email": "estevan.goyette@yahoo.com",
-      "gravatar_id": "a703e3b0d6071aa484b26e014ada97ce",
-      "id": "p27yz3en559",
+      "created_at": "2018-02-05T14:30:16.328Z",
+      "email": "beulah31@yahoo.com",
+      "gravatar_id": "5c6adf2e75e3f85072079f3d4a5453c8",
+      "id": "pknwqknmvrs",
       "is_active": true,
-      "name": "Barbara41",
+      "name": "Benton57",
       "permissions": {
          "backglasses": [
             "add",
@@ -106,6 +104,6 @@ Content-Encoding: gzip
       "roles": [
          "member"
       ],
-      "username": "Barbara41"
+      "username": "Benton57"
    }
 }

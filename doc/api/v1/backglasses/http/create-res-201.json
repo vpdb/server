@@ -1,8 +1,6 @@
 201 Created
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Etag: W/"b32-CoALa1YuzP11EDxCAneb7Y9OHYw"
+Etag: W/"b90-D+0OH0klKyf8ez1HWSgaAChodSA"
 Content-Encoding: gzip
 
 {
@@ -13,40 +11,37 @@ Content-Encoding: gzip
             "creator"
          ],
          "user": {
-            "counter": {
-               "comments": 0,
-               "stars": 0
-            },
-            "gravatar_id": "9c1e53d2c2ab8dd41b10975301706b6a",
-            "id": "eke5qmqa559",
-            "name": "HoustonPredovic20",
-            "username": "HoustonPredovic20"
+            "gravatar_id": "fa91ac61baa6be4517ce114cb274af83",
+            "id": "e2qttbtmtr9",
+            "name": "SuzanneLeannon50",
+            "username": "SuzanneLeannon50"
          }
       }
    ],
-   "created_at": "2018-02-03T22:23:05.670Z",
+   "created_at": "2018-02-05T14:26:21.653Z",
    "created_by": {
-      "counter": {
-         "comments": 0,
-         "stars": 0
-      },
-      "gravatar_id": "9c1e53d2c2ab8dd41b10975301706b6a",
-      "id": "eke5qmqa559",
-      "name": "HoustonPredovic20",
-      "username": "HoustonPredovic20"
+      "gravatar_id": "fa91ac61baa6be4517ce114cb274af83",
+      "id": "e2qttbtmtr9",
+      "name": "SuzanneLeannon50",
+      "username": "SuzanneLeannon50"
    },
    "description": "Photoshopped the super hires backglass together from four different sources!",
    "game": {
-      "id": "monaco",
+      "id": "circus",
       "ipdb": {
          "mfg": 323,
-         "number": 1613
+         "number": 519
       },
       "manufacturer": "United",
-      "title": "Monaco",
-      "year": 1956
+      "title": "Circus",
+      "year": 1952
    },
-   "id": "p2pxe8warrs",
+   "id": "pkoxnbvmv5s",
+   "moderation": {
+      "auto_approved": false,
+      "is_approved": false,
+      "is_refused": false
+   },
    "versions": [
       {
          "changes": "Initial release",
@@ -55,32 +50,34 @@ Content-Encoding: gzip
          },
          "file": {
             "bytes": 2067,
+            "cost": 0,
             "counter": {
                "downloads": 0
             },
-            "id": "e2f9p8qa5r9",
+            "id": "ekk4ahvmvrs",
             "is_protected": true,
+            "mime_type": "application/x-directb2s",
             "name": "test.directb2s",
-            "url": "http://localhost:7357/storage/v1/files/e2f9p8qa5r9.directb2s",
+            "url": "http://localhost:7357/storage/v1/files/ekk4ahvmvrs.directb2s",
             "variations": {
                "full": {
-                  "url": "http://localhost:7357/storage/public/files/full/e2f9p8qa5r9.jpg"
+                  "url": "http://localhost:7357/storage/public/files/full/ekk4ahvmvrs.jpg"
                },
                "medium": {
-                  "url": "http://localhost:7357/storage/public/files/medium/e2f9p8qa5r9.jpg"
+                  "url": "http://localhost:7357/storage/public/files/medium/ekk4ahvmvrs.jpg"
                },
                "medium-2x": {
-                  "url": "http://localhost:7357/storage/public/files/medium-2x/e2f9p8qa5r9.jpg"
+                  "url": "http://localhost:7357/storage/public/files/medium-2x/ekk4ahvmvrs.jpg"
                },
                "small": {
-                  "url": "http://localhost:7357/storage/public/files/small/e2f9p8qa5r9.jpg"
+                  "url": "http://localhost:7357/storage/public/files/small/ekk4ahvmvrs.jpg"
                },
                "small-2x": {
-                  "url": "http://localhost:7357/storage/public/files/small-2x/e2f9p8qa5r9.jpg"
+                  "url": "http://localhost:7357/storage/public/files/small-2x/ekk4ahvmvrs.jpg"
                }
             }
          },
-         "released_at": "2018-02-03T22:23:05.670Z",
+         "released_at": "2018-02-05T14:26:21.653Z",
          "version": "1.0"
       },
       {
@@ -90,32 +87,34 @@ Content-Encoding: gzip
          },
          "file": {
             "bytes": 2067,
+            "cost": 0,
             "counter": {
                "downloads": 0
             },
-            "id": "p2k4pmwn5r9",
+            "id": "pkf4ahvmvr9",
             "is_protected": true,
+            "mime_type": "application/x-directb2s",
             "name": "test.directb2s",
-            "url": "http://localhost:7357/storage/v1/files/p2k4pmwn5r9.directb2s",
+            "url": "http://localhost:7357/storage/v1/files/pkf4ahvmvr9.directb2s",
             "variations": {
                "full": {
-                  "url": "http://localhost:7357/storage/public/files/full/p2k4pmwn5r9.jpg"
+                  "url": "http://localhost:7357/storage/public/files/full/pkf4ahvmvr9.jpg"
                },
                "medium": {
-                  "url": "http://localhost:7357/storage/public/files/medium/p2k4pmwn5r9.jpg"
+                  "url": "http://localhost:7357/storage/public/files/medium/pkf4ahvmvr9.jpg"
                },
                "medium-2x": {
-                  "url": "http://localhost:7357/storage/public/files/medium-2x/p2k4pmwn5r9.jpg"
+                  "url": "http://localhost:7357/storage/public/files/medium-2x/pkf4ahvmvr9.jpg"
                },
                "small": {
-                  "url": "http://localhost:7357/storage/public/files/small/p2k4pmwn5r9.jpg"
+                  "url": "http://localhost:7357/storage/public/files/small/pkf4ahvmvr9.jpg"
                },
                "small-2x": {
-                  "url": "http://localhost:7357/storage/public/files/small-2x/p2k4pmwn5r9.jpg"
+                  "url": "http://localhost:7357/storage/public/files/small-2x/pkf4ahvmvr9.jpg"
                }
             }
          },
-         "released_at": "2018-02-03T22:23:05.670Z",
+         "released_at": "2018-02-05T14:26:21.653Z",
          "version": "1.1"
       }
    ]

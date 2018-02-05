@@ -1,4 +1,4 @@
-GET /v1/releases/p24zfaea559?thumb_flavor=orientation:fs HTTP/2.0
+GET /v1/releases/e2x2218tr9?thumb_flavor=orientation:fs HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
 

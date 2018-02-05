@@ -1,10 +1,8 @@
 404 Not Found
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Content-Length: 91
-Etag: W/"5b-O/VYtT6vRJslovdWLCkKzuwuGto"
+Content-Length: 97
+Etag: W/"61-Nvb4i4fHb6ornu4CDwtU0ZA5hgI"
 
 {
-   "error": "No star for <linnea_blanda27@hotmail.com> for \"cullen67@gmail.com\" found."
+   "error": "No star for <jamal.mosciski@gmail.com> for \"lucy_johnston67@hotmail.com\" found."
 }

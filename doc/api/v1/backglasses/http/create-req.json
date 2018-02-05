@@ -1,16 +1,16 @@
 POST /v1/backglasses HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla2U1cW1xYTU1OSIsImlhdCI6IjIwMTgtMDItMDNUMjI6MjM6MDQuNTI1WiIsImV4cCI6IjIwMTgtMDItMDNUMjM6MjM6MDQuNTI1WiIsImlydCI6ZmFsc2V9.qWWk-I8FhMES0OfZOaIIEuhuNGxnXvpI7NI0VGJg8G8
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMnF0dGJ0bXRyOSIsImlhdCI6IjIwMTgtMDItMDVUMTQ6MjY6MjAuNjM4WiIsImV4cCI6IjIwMTgtMDItMDVUMTU6MjY6MjAuNjM4WiIsImlydCI6ZmFsc2V9.WVrbWNkfQnOg18OhTOnwvJpdOOkZq5z3U-pniZZ0WdU
 Content-Type: application/json
 Content-Length: 458
 
 {
-   "_game": "monaco",
+   "_game": "circus",
    "acknowledgements": "- Thanks @mom for supporting my late hours\n- Thanks @dad for supporting @mom!",
    "authors": [
       {
-         "_user": "eke5qmqa559",
+         "_user": "e2qttbtmtr9",
          "roles": [
             "creator"
          ]
@@ -19,12 +19,12 @@ Content-Length: 458
    "description": "Photoshopped the super hires backglass together from four different sources!",
    "versions": [
       {
-         "_file": "e2f9p8qa5r9",
+         "_file": "ekk4ahvmvrs",
          "changes": "Initial release",
          "version": "1.0"
       },
       {
-         "_file": "p2k4pmwn5r9",
+         "_file": "pkf4ahvmvr9",
          "changes": "- Backglass is now even more high res!\n- It blinks more.",
          "version": "1.1"
       }

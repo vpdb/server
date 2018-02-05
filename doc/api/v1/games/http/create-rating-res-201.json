@@ -1,12 +1,10 @@
 201 Created
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
 Content-Length: 119
-Etag: W/"77-elesnQ5GIweTfbXN3JyC9SLqXiI"
+Etag: W/"77-YOvB2hOvHVzI9BI1k1PEzuhHWFQ"
 
 {
-   "created_at": "2018-02-03T22:24:22.877Z",
+   "created_at": "2018-02-05T14:27:29.264Z",
    "game": {
       "average": 7,
       "score": 4.75,

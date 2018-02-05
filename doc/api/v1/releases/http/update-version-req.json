@@ -1,9 +1,9 @@
-PATCH /v1/releases/pk8h4uea55s/versions/1.0.0 HTTP/2.0
+PATCH /v1/releases/p2xf3dmt5s/versions/1.0.0 HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa256ODVlYTVycyIsImlhdCI6IjIwMTgtMDItMDNUMjI6MjU6NTIuMTg4WiIsImV4cCI6IjIwMTgtMDItMDNUMjM6MjU6NTIuMTg4WiIsImlydCI6ZmFsc2V9.xAyqrWJQeBM-aR_lAQlbxZ2Y-uLQit85MBF2KYZGhN8
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMjhoejNkbXRyOSIsImlhdCI6IjIwMTgtMDItMDVUMTQ6NTE6MDAuOTM1WiIsImV4cCI6IjIwMTgtMDItMDVUMTU6NTE6MDAuOTM1WiIsImlydCI6ZmFsc2V9.kYWUlN5De9o_C-PGPMxeNmi1T5Gnl3K_sn825SbnXdk
 Content-Type: application/json
-Content-Length: 166
+Content-Length: 167
 
 {
    "changes": "New changes.",
@@ -12,8 +12,8 @@ Content-Length: 166
          "_compatibility": [
             "9.9.0"
          ],
-         "_file": "pk2s4fpa5rs",
-         "_playfield_image": "ekteupa5r9",
+         "_file": "e2rhuddmt5s",
+         "_playfield_image": "e27budd8v5s",
          "flavor": {
             "lighting": "day",
             "orientation": "fs"

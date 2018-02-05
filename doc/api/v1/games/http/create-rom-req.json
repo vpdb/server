@@ -1,13 +1,13 @@
-POST /v1/games/riviera-golf/roms HTTP/2.0
+POST /v1/games/hot-tip/roms HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlazM3ZW5ycnMiLCJpYXQiOiIyMDE4LTAyLTAzVDIyOjI3OjEyLjgzN1oiLCJleHAiOiIyMDE4LTAyLTAzVDIzOjI3OjEyLjgzN1oiLCJpcnQiOmZhbHNlfQ.MMItiiHlC7Jwp5tBcmNB9nJRi-wC7C6AbqS2XDlphd8
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa2NlOTF2bXY1OSIsImlhdCI6IjIwMTgtMDItMDVUMTQ6Mjk6NTguNTk3WiIsImV4cCI6IjIwMTgtMDItMDVUMTU6Mjk6NTguNTk3WiIsImlydCI6ZmFsc2V9.Or0QV_RBmPbCnV6txOALHRJBO2FV7X2E-bU83JaD_QY
 Content-Type: application/json
-Content-Length: 112
+Content-Length: 107
 
 {
-   "_file": "e2n937pn55s",
-   "id": "riviera-golf_10",
+   "_file": "p2ozx1t8v59",
+   "id": "hot-tip_10",
    "languages": [
       "en-US"
    ],

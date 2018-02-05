@@ -1,14 +1,14 @@
-POST /v1/games/monaco/backglasses HTTP/2.0
+POST /v1/games/circus/backglasses HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla2U1cW1xYTU1OSIsImlhdCI6IjIwMTgtMDItMDNUMjI6MjM6MDQuNTI1WiIsImV4cCI6IjIwMTgtMDItMDNUMjM6MjM6MDQuNTI1WiIsImlydCI6ZmFsc2V9.qWWk-I8FhMES0OfZOaIIEuhuNGxnXvpI7NI0VGJg8G8
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMnF0dGJ0bXRyOSIsImlhdCI6IjIwMTgtMDItMDVUMTQ6MjY6MjAuNjM4WiIsImV4cCI6IjIwMTgtMDItMDVUMTU6MjY6MjAuNjM4WiIsImlydCI6ZmFsc2V9.WVrbWNkfQnOg18OhTOnwvJpdOOkZq5z3U-pniZZ0WdU
 Content-Type: application/json
-Content-Length: 109
+Content-Length: 110
 
 {
    "authors": [
       {
-         "_user": "eke5qmqa559",
+         "_user": "e2qttbtmtr9",
          "roles": [
             "creator"
          ]
@@ -16,7 +16,7 @@ Content-Length: 109
    ],
    "versions": [
       {
-         "_file": "ekkzrmwa5r9",
+         "_file": "e2rh6bt8t59",
          "version": "1.0"
       }
    ]

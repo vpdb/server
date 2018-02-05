@@ -1,11 +1,9 @@
 200 OK
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 X-List-Page: 1
 X-List-Size: 10
 X-List-Count: 1
 Content-Type: application/json; charset=utf-8
-Etag: W/"52e-Vu5PM/9NHDY6DLXVEomTXUPbTZI"
+Etag: W/"590-pd6PwVfjXAB2TzEWLAyPAvdcVcU"
 Content-Encoding: gzip
 
 [
@@ -16,19 +14,20 @@ Content-Encoding: gzip
                "creator"
             ],
             "user": {
-               "counter": {
-                  "comments": 0,
-                  "stars": 0
-               },
-               "gravatar_id": "749aa95c2bbe32eda3ee8af0dd158cd5",
-               "id": "e2hqv8qar5s",
-               "name": "GoldaWalker",
-               "username": "GoldaWalker"
+               "gravatar_id": "e4db930abc07c9ed0af148d9134f7f48",
+               "id": "e2zqmbt8t59",
+               "name": "SvenShields98",
+               "username": "SvenShields98"
             }
          }
       ],
-      "created_at": "2018-02-03T22:23:08.938Z",
-      "id": "e23amwarr9",
+      "created_at": "2018-02-05T14:26:25.184Z",
+      "id": "p23bdbtmvr9",
+      "moderation": {
+         "auto_approved": true,
+         "is_approved": true,
+         "is_refused": false
+      },
       "versions": [
          {
             "counter": {
@@ -36,32 +35,34 @@ Content-Encoding: gzip
             },
             "file": {
                "bytes": 2067,
+               "cost": 0,
                "counter": {
                   "downloads": 0
                },
-               "id": "pkynmwn55s",
+               "id": "ekrdht8trs",
                "is_protected": true,
+               "mime_type": "application/x-directb2s",
                "name": "test.directb2s",
-               "url": "http://localhost:7357/storage/v1/files/pkynmwn55s.directb2s",
+               "url": "http://localhost:7357/storage/v1/files/ekrdht8trs.directb2s",
                "variations": {
                   "full": {
-                     "url": "http://localhost:7357/storage/public/files/full/pkynmwn55s.jpg"
+                     "url": "http://localhost:7357/storage/public/files/full/ekrdht8trs.jpg"
                   },
                   "medium": {
-                     "url": "http://localhost:7357/storage/public/files/medium/pkynmwn55s.jpg"
+                     "url": "http://localhost:7357/storage/public/files/medium/ekrdht8trs.jpg"
                   },
                   "medium-2x": {
-                     "url": "http://localhost:7357/storage/public/files/medium-2x/pkynmwn55s.jpg"
+                     "url": "http://localhost:7357/storage/public/files/medium-2x/ekrdht8trs.jpg"
                   },
                   "small": {
-                     "url": "http://localhost:7357/storage/public/files/small/pkynmwn55s.jpg"
+                     "url": "http://localhost:7357/storage/public/files/small/ekrdht8trs.jpg"
                   },
                   "small-2x": {
-                     "url": "http://localhost:7357/storage/public/files/small-2x/pkynmwn55s.jpg"
+                     "url": "http://localhost:7357/storage/public/files/small-2x/ekrdht8trs.jpg"
                   }
                }
             },
-            "released_at": "2018-02-03T22:23:08.938Z",
+            "released_at": "2018-02-05T14:26:25.184Z",
             "version": "1.0"
          }
       ]

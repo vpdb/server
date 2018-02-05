@@ -1,19 +1,17 @@
 201 Created
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
 Content-Length: 250
-Etag: W/"fa-CG8d9jd0oHE8hXJ9ZtSVMErY9/c"
+Etag: W/"fa-tQrovOWtwdQV7xlgV3kjHoUQd20"
 
 {
-   "created_at": "2018-02-03T22:27:32.931Z",
-   "expires_at": "2019-02-03T22:27:32.931Z",
-   "id": "p28hzden5r9",
+   "created_at": "2018-02-05T14:30:16.268Z",
+   "expires_at": "2019-02-05T14:30:16.268Z",
+   "id": "ekg4qkamv59",
    "is_active": true,
    "label": "My Application",
    "scopes": [
       "all"
    ],
-   "token": "44a7041737af1df4d292aeea296b4919",
+   "token": "62fac97d5ae99b7c295b56bf650ae76d",
    "type": "personal"
 }

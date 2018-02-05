@@ -1,32 +1,28 @@
 200 OK
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Etag: W/"6d5-8YuakpAZXCcFZQ1NOihX6lfHnGs"
+Etag: W/"6d3-Mfp+VO0YFJictk9DRGQ/Wf1WHxU"
 Content-Encoding: gzip
 
 [
    {
       "category": "backglass_image",
-      "created_at": "2018-02-03T22:24:00.511Z",
+      "created_at": "2018-02-05T14:27:14.659Z",
       "created_by": {
-         "counter": {
-            "comments": 0,
-            "stars": 0
-         },
-         "gravatar_id": "8c6f6e440edb7deb99d4485fe901ba68",
-         "id": "pkb9c2pn5rs",
-         "name": "Ethyl13",
-         "username": "Ethyl13"
+         "gravatar_id": "1fed2edc3a808f0144d2a93b88b4c753",
+         "id": "ekz934t8t5s",
+         "name": "ConnorSwaniawski",
+         "username": "ConnorSwaniawski"
       },
       "file": {
          "bytes": 135,
+         "cost": 0,
          "counter": {
             "downloads": 0
          },
-         "created_at": "2018-02-03T22:23:59.286Z",
+         "created_at": "2018-02-05T14:27:13.474Z",
          "file_type": "backglass",
-         "id": "pk7972par5s",
+         "id": "pk1sd4t8v59",
+         "is_active": true,
          "is_protected": true,
          "metadata": {
             "depth": 8,
@@ -38,45 +34,45 @@ Content-Encoding: gzip
          },
          "mime_type": "image/png",
          "name": "backglass.png",
-         "url": "http://localhost:7357/storage/v1/files/pk7972par5s.png",
+         "url": "http://localhost:7357/storage/v1/files/pk1sd4t8v59.png",
          "variations": {
             "full": {
                "bytes": 2448,
                "height": 512,
                "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/full/pk7972par5s.jpg",
+               "url": "http://localhost:7357/storage/public/files/full/pk1sd4t8v59.jpg",
                "width": 640
             },
             "medium": {
                "bytes": 1188,
                "height": 291,
                "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/medium/pk7972par5s.jpg",
+               "url": "http://localhost:7357/storage/public/files/medium/pk1sd4t8v59.jpg",
                "width": 364
             },
             "medium-2x": {
                "bytes": 3082,
                "height": 582,
                "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/medium-2x/pk7972par5s.jpg",
+               "url": "http://localhost:7357/storage/public/files/medium-2x/pk1sd4t8v59.jpg",
                "width": 728
             },
             "small": {
                "bytes": 836,
                "height": 202,
                "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/small/pk7972par5s.jpg",
+               "url": "http://localhost:7357/storage/public/files/small/pk1sd4t8v59.jpg",
                "width": 253
             },
             "small-2x": {
                "bytes": 1776,
                "height": 404,
                "mime_type": "image/jpeg",
-               "url": "http://localhost:7357/storage/public/files/small-2x/pk7972par5s.jpg",
+               "url": "http://localhost:7357/storage/public/files/small-2x/pk1sd4t8v59.jpg",
                "width": 505
             }
          }
       },
-      "id": "ekpymkearr9"
+      "id": "pkr9o4vmvr9"
    }
 ]

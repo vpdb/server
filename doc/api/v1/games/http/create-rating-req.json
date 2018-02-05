@@ -1,8 +1,8 @@
-POST /v1/games/heavyweight/rating HTTP/2.0
+POST /v1/games/arc-en-ciel/rating HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMmFienplbnI1cyIsImlhdCI6IjIwMTgtMDItMDNUMjI6MjQ6MjEuMDE4WiIsImV4cCI6IjIwMTgtMDItMDNUMjM6MjQ6MjEuMDE4WiIsImlydCI6ZmFsc2V9.EVr5WRSnrOaFFVASk6KkHo7E40bP0QHIbSi1PxzCab8
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa2doN3d2bXRyOSIsImlhdCI6IjIwMTgtMDItMDVUMTQ6Mjc6MjcuNTg3WiIsImV4cCI6IjIwMTgtMDItMDVUMTU6Mjc6MjcuNTg3WiIsImlydCI6ZmFsc2V9.AaVt5pDJeqYjuNWKh_cW5YdkxiQ_IbwiMsl4-kaff34
 Content-Length: 11
 
 {

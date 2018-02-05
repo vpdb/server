@@ -1,17 +1,17 @@
-PUT /v1/users/p2tys3ea5rs HTTP/2.0
+PUT /v1/users/p2bee2nmv59 HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa2h6czNlbnJyOSIsImlhdCI6IjIwMTgtMDItMDNUMjI6Mjc6MzMuOTc3WiIsImV4cCI6IjIwMTgtMDItMDNUMjM6Mjc6MzMuOTc3WiIsImlydCI6ZmFsc2V9.KUSKNpIUrIN05GcMoom1EOwJAMVI7wP9OnOBBHh30HI
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMnZxcDJuOHY1cyIsImlhdCI6IjIwMTgtMDItMDVUMTQ6MzA6MTcuMjg5WiIsImV4cCI6IjIwMTgtMDItMDVUMTU6MzA6MTcuMjg5WiIsImlydCI6ZmFsc2V9.B7sv8DjMgCr2idITBCmsODrDCkl5WkV_VzT0Uv__xrc
 Content-Type: application/json
-Content-Length: 138
+Content-Length: 133
 
 {
    "_plan": "free",
-   "email": "roy_johns@yahoo.com",
+   "email": "heloise_heller@yahoo.com",
    "is_active": true,
-   "name": "AdriannaHartmann",
+   "name": "DaynaMetz86",
    "roles": [
       "member"
    ],
-   "username": "AdriannaHartmann"
+   "username": "DaynaMetz86"
 }

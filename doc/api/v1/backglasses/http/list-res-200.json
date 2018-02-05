@@ -1,11 +1,9 @@
 200 OK
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 X-List-Page: 1
 X-List-Size: 10
 X-List-Count: 2
 Content-Type: application/json; charset=utf-8
-Etag: W/"bd0-ljKOMP6271pcvutplEIEKl9DkL4"
+Etag: W/"c91-w7ybd6rAUVt4H0chQQLBTkr5HGA"
 Content-Encoding: gzip
 
 [
@@ -16,29 +14,30 @@ Content-Encoding: gzip
                "creator"
             ],
             "user": {
-               "counter": {
-                  "comments": 0,
-                  "stars": 0
-               },
-               "gravatar_id": "749aa95c2bbe32eda3ee8af0dd158cd5",
-               "id": "e2hqv8qar5s",
-               "name": "GoldaWalker",
-               "username": "GoldaWalker"
+               "gravatar_id": "e4db930abc07c9ed0af148d9134f7f48",
+               "id": "e2zqmbt8t59",
+               "name": "SvenShields98",
+               "username": "SvenShields98"
             }
          }
       ],
-      "created_at": "2018-02-03T22:23:09.185Z",
+      "created_at": "2018-02-05T14:26:25.363Z",
       "game": {
-         "id": "wipe-out",
+         "id": "pinball-action",
          "ipdb": {
-            "mfg": 86,
-            "number": 4870
+            "mfg": 515,
+            "number": 5252
          },
-         "manufacturer": "Coffee-Mat Amusement Division",
-         "title": "Wipe-Out",
-         "year": 1976
+         "manufacturer": "U.S Tehkan Inc.",
+         "title": "Pinball Action",
+         "year": 1900
       },
-      "id": "p21yamqar5s",
+      "id": "pk5sdhtmt59",
+      "moderation": {
+         "auto_approved": true,
+         "is_approved": true,
+         "is_refused": false
+      },
       "versions": [
          {
             "counter": {
@@ -46,32 +45,34 @@ Content-Encoding: gzip
             },
             "file": {
                "bytes": 2067,
+               "cost": 0,
                "counter": {
                   "downloads": 0
                },
-               "id": "pkaynmwarrs",
+               "id": "e2k93btmt59",
                "is_protected": true,
+               "mime_type": "application/x-directb2s",
                "name": "test.directb2s",
-               "url": "http://localhost:7357/storage/v1/files/pkaynmwarrs.directb2s",
+               "url": "http://localhost:7357/storage/v1/files/e2k93btmt59.directb2s",
                "variations": {
                   "full": {
-                     "url": "http://localhost:7357/storage/public/files/full/pkaynmwarrs.jpg"
+                     "url": "http://localhost:7357/storage/public/files/full/e2k93btmt59.jpg"
                   },
                   "medium": {
-                     "url": "http://localhost:7357/storage/public/files/medium/pkaynmwarrs.jpg"
+                     "url": "http://localhost:7357/storage/public/files/medium/e2k93btmt59.jpg"
                   },
                   "medium-2x": {
-                     "url": "http://localhost:7357/storage/public/files/medium-2x/pkaynmwarrs.jpg"
+                     "url": "http://localhost:7357/storage/public/files/medium-2x/e2k93btmt59.jpg"
                   },
                   "small": {
-                     "url": "http://localhost:7357/storage/public/files/small/pkaynmwarrs.jpg"
+                     "url": "http://localhost:7357/storage/public/files/small/e2k93btmt59.jpg"
                   },
                   "small-2x": {
-                     "url": "http://localhost:7357/storage/public/files/small-2x/pkaynmwarrs.jpg"
+                     "url": "http://localhost:7357/storage/public/files/small-2x/e2k93btmt59.jpg"
                   }
                }
             },
-            "released_at": "2018-02-03T22:23:09.185Z",
+            "released_at": "2018-02-05T14:26:25.363Z",
             "version": "1.0"
          }
       ]
@@ -83,29 +84,30 @@ Content-Encoding: gzip
                "creator"
             ],
             "user": {
-               "counter": {
-                  "comments": 0,
-                  "stars": 0
-               },
-               "gravatar_id": "749aa95c2bbe32eda3ee8af0dd158cd5",
-               "id": "e2hqv8qar5s",
-               "name": "GoldaWalker",
-               "username": "GoldaWalker"
+               "gravatar_id": "e4db930abc07c9ed0af148d9134f7f48",
+               "id": "e2zqmbt8t59",
+               "name": "SvenShields98",
+               "username": "SvenShields98"
             }
          }
       ],
-      "created_at": "2018-02-03T22:23:08.938Z",
+      "created_at": "2018-02-05T14:26:25.184Z",
       "game": {
-         "id": "wipe-out",
+         "id": "pinball-action",
          "ipdb": {
-            "mfg": 86,
-            "number": 4870
+            "mfg": 515,
+            "number": 5252
          },
-         "manufacturer": "Coffee-Mat Amusement Division",
-         "title": "Wipe-Out",
-         "year": 1976
+         "manufacturer": "U.S Tehkan Inc.",
+         "title": "Pinball Action",
+         "year": 1900
       },
-      "id": "e23amwarr9",
+      "id": "p23bdbtmvr9",
+      "moderation": {
+         "auto_approved": true,
+         "is_approved": true,
+         "is_refused": false
+      },
       "versions": [
          {
             "counter": {
@@ -113,32 +115,34 @@ Content-Encoding: gzip
             },
             "file": {
                "bytes": 2067,
+               "cost": 0,
                "counter": {
                   "downloads": 0
                },
-               "id": "pkynmwn55s",
+               "id": "ekrdht8trs",
                "is_protected": true,
+               "mime_type": "application/x-directb2s",
                "name": "test.directb2s",
-               "url": "http://localhost:7357/storage/v1/files/pkynmwn55s.directb2s",
+               "url": "http://localhost:7357/storage/v1/files/ekrdht8trs.directb2s",
                "variations": {
                   "full": {
-                     "url": "http://localhost:7357/storage/public/files/full/pkynmwn55s.jpg"
+                     "url": "http://localhost:7357/storage/public/files/full/ekrdht8trs.jpg"
                   },
                   "medium": {
-                     "url": "http://localhost:7357/storage/public/files/medium/pkynmwn55s.jpg"
+                     "url": "http://localhost:7357/storage/public/files/medium/ekrdht8trs.jpg"
                   },
                   "medium-2x": {
-                     "url": "http://localhost:7357/storage/public/files/medium-2x/pkynmwn55s.jpg"
+                     "url": "http://localhost:7357/storage/public/files/medium-2x/ekrdht8trs.jpg"
                   },
                   "small": {
-                     "url": "http://localhost:7357/storage/public/files/small/pkynmwn55s.jpg"
+                     "url": "http://localhost:7357/storage/public/files/small/ekrdht8trs.jpg"
                   },
                   "small-2x": {
-                     "url": "http://localhost:7357/storage/public/files/small-2x/pkynmwn55s.jpg"
+                     "url": "http://localhost:7357/storage/public/files/small-2x/ekrdht8trs.jpg"
                   }
                }
             },
-            "released_at": "2018-02-03T22:23:08.938Z",
+            "released_at": "2018-02-05T14:26:25.184Z",
             "version": "1.0"
          }
       ]

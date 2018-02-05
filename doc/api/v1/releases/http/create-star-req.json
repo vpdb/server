@@ -1,8 +1,8 @@
-POST /v1/releases/ekzzqmpa55s/star HTTP/2.0
+POST /v1/releases/pkegotmtrs/star HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMjJ0NG1wbjVycyIsImlhdCI6IjIwMTgtMDItMDNUMjI6Mjc6MTkuMjI4WiIsImV4cCI6IjIwMTgtMDItMDNUMjM6Mjc6MTkuMjI4WiIsImlydCI6ZmFsc2V9.SYMVdcyOR6XvFOtcYGPPVa83Of0CKpDGGaS635izUEs
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMmVuMXY4dnJzIiwiaWF0IjoiMjAxOC0wMi0wNVQxNDozMDowNC44MzVaIiwiZXhwIjoiMjAxOC0wMi0wNVQxNTozMDowNC44MzVaIiwiaXJ0IjpmYWxzZX0.1Pw2qyOm2AfLNu6xb4R6a-MNJpz9YtoQrNREk7X0SzY
 Content-Length: 2
 
 {

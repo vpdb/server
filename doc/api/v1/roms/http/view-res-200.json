@@ -1,20 +1,14 @@
 200 OK
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Content-Length: 966
-Etag: W/"3c6-b/jDx8YjUKGPoBTZX2/oxJxlqCA"
+Content-Length: 922
+Etag: W/"39a-NgDYSHhpIF91Sj6Cy0Ac+U5jxy0"
 
 {
    "created_by": {
-      "counter": {
-         "comments": 0,
-         "stars": 0
-      },
-      "gravatar_id": "b0ca4d58a6e657eb9be6e32fe89af4dd",
-      "id": "pkqdcearr9",
-      "name": "Carolina8",
-      "username": "Carolina8"
+      "gravatar_id": "e40f911ca81e9e99c36585a33100673c",
+      "id": "pk2r9ot8t5s",
+      "name": "Simone28",
+      "username": "Simone28"
    },
    "game": {
       "counter": {
@@ -24,20 +18,21 @@ Etag: W/"3c6-b/jDx8YjUKGPoBTZX2/oxJxlqCA"
          "stars": 0,
          "views": 0
       },
-      "game_type": "pm",
-      "id": "riviera-golf",
+      "game_type": "em",
+      "id": "hot-tip",
       "ipdb": {
-         "mfg": 328,
-         "number": 6327
+         "mfg": 351,
+         "number": 1251,
+         "rating": 7.6
       },
-      "manufacturer": "Unknown",
+      "manufacturer": "Williams",
       "rating": {
          "average": 0,
          "score": 0,
          "votes": 0
       },
-      "title": "Riviera Golf",
-      "year": 1900
+      "title": "Hot Tip",
+      "year": 1977
    },
    "id": "hulk6",
    "languages": [

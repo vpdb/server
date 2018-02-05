@@ -1,8 +1,6 @@
 201 Created
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Etag: W/"49c-dcxfhEDzc7Xmu6lCxVh8WBgT94A"
+Etag: W/"4bb-ntVV3jqvIGOIYCIu/98vwq2+f1s"
 Content-Encoding: gzip
 
 {
@@ -11,17 +9,18 @@ Content-Encoding: gzip
       "downloads": 0,
       "stars": 0
    },
-   "created_at": "2018-02-03T22:27:34.392Z",
-   "email": "madison94@hotmail.com",
+   "created_at": "2018-02-05T14:30:17.782Z",
+   "email": "tommie55@hotmail.com",
    "email_status": {
       "code": "pending_registration",
-      "expires_at": "2018-02-04T22:27:34.392Z",
-      "value": "madison94@hotmail.com"
+      "expires_at": "2018-02-06T14:30:17.782Z",
+      "token": "n0Oh9s9ZBq2POtuy",
+      "value": "tommie55@hotmail.com"
    },
-   "gravatar_id": "38d4eb59adb08a8595a72824ce7077bc",
-   "id": "p2ors3pnrrs",
+   "gravatar_id": "292e680d5fcaca1a66aca3e7496676a7",
+   "id": "p25gp2n8tr9",
    "is_active": false,
-   "name": "MadilynPagac99",
+   "name": "BrendenBrekke82",
    "plan": {
       "app_tokens_enabled": false,
       "id": "free",
@@ -46,5 +45,5 @@ Content-Encoding: gzip
    "roles": [
       "member"
    ],
-   "username": "MadilynPagac99"
+   "username": "BrendenBrekke82"
 }

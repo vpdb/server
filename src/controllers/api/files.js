@@ -252,7 +252,7 @@ function splitReleaseFile(req, release, fileId, result) {
 				result.version = _.pick(version.toObject(), ['version', 'released_at']);
 				let f = versionFile.toObject();
 				result.file = _.pick(f, ['released_at', 'flavor' ]);
-				result.file.compatibility = f.compatibility.map(c => _.pick(c, ['id', 'label' ]));
+				result.file.compatibility = f._compatibility.map(c => _.pick(c, ['id', 'label' ]));
 				result.file.file = FileSerializer.simple(versionFile._file, req);
 			}
 		});

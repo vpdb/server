@@ -22,7 +22,7 @@ class BackglassSerializer extends Serializer {
 		const backglass = this._serialize(doc, req, opts, BackglassVersionSerializer.simple.bind(BackglassVersionSerializer));
 
 		// creator
-		if (doc.populated('_created_by')) {
+		if (this._populated(doc, '_created_by')) {
 			backglass.created_by = UserSerializer.reduced(doc._created_by, req, opts);
 		}
 
@@ -38,12 +38,14 @@ class BackglassSerializer extends Serializer {
 		backglass.versions = doc.versions.map(version => versionSerializer(version, req, opts));
 
 		// game
-		if (doc.populated('_game')) {
+		if (this._populated(doc, '_game')) {
 			backglass.game = GameSerializer.reduced(doc._game, req, opts);
 		}
 
 		// authors
-		backglass.authors = doc.authors.map(author => AuthorSerializer.reduced(author, req, opts));
+		if (this._populated(doc, 'authors._user')) {
+			backglass.authors = doc.authors.map(author => AuthorSerializer.reduced(author, req, opts));
+		}
 
 		return backglass;
 	}

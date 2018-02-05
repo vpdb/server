@@ -58,7 +58,7 @@ describe('The VPDB `blockmatch` API', function() {
 			});
 		});
 
-		it.only('should match the file from a different release', function(done) {
+		it('should match the file from a different release', function(done) {
 
 			hlp.release.createRelease('moderator', request, function(release1) {
 				hlp.release.createRelease('moderator', request, { alternateVpt: true }, function(release2) {

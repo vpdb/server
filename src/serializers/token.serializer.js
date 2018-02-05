@@ -6,7 +6,9 @@ class TokenSerializer extends Serializer {
 
 	/** @protected */
 	_simple(doc, req, opts) {
-		const token = _.pick(doc, ['id', 'label', 'type', 'scopes', 'provider', 'is_active', 'last_used_at', 'expires_at', 'created_at']);
+		const token = _.pick(doc, ['id', 'label', 'type', 'provider', 'is_active', 'last_used_at', 'expires_at', 'created_at']);
+
+		token.scopes = doc.scopes.toObject();
 
 		// parse name for browser string
 		const browser = userAgentParser(doc.label);

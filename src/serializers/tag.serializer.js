@@ -9,7 +9,7 @@ class TagSerializer extends Serializer {
 		const tag = _.pick(doc, ['id', 'name', 'description']);
 
 		// created_by
-		if (doc.populated('_created_by')) {
+		if (this._populated(doc, '_created_by')) {
 			tag.created_by = UserSerializer.reduced(tag._created_by, req, opts);
 		}
 

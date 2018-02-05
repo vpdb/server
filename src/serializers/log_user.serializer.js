@@ -6,15 +6,17 @@ class LogUserSerializer extends Serializer {
 
 	/** @protected */
 	_simple(doc, req, opts) {
-		const logUser = _.pick(doc, ['event', 'payload', 'result', 'message', 'logged_at']);
+		const logUser = _.pick(doc, ['event', 'result', 'message', 'logged_at']);
+
+		logUser.payload = doc.payload;
 
 		// actor
-		if (doc.populated('_actor')) {
+		if (this._populated(doc, '_actor')) {
 			logUser.actor = UserSerializer.reduced(doc._actor, req, opts);
 		}
 
 		// creator
-		if (doc.populated('_user')) {
+		if (this._populated(doc, '_user')) {
 			logUser.user = UserSerializer.reduced(doc._user, req, opts);
 		}
 

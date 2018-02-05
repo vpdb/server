@@ -12,7 +12,7 @@ class UserSerializer extends Serializer {
 	 * @protected
 	 */
 	_reduced(doc, req, opts) {
-		const user = _.pick(doc, ['id', 'name']);
+		const user = _.pick(doc, ['id', 'name', 'username']);
 
 		// gravatar
 		user.gravatar_id = doc.email ? crypto.createHash('md5').update(doc.email.toLowerCase()).digest('hex') : null;
@@ -31,10 +31,10 @@ class UserSerializer extends Serializer {
 	 */
 	_simple(doc, req, opts) {
 		const user = this._reduced(doc, req, opts);
-		_.assign(user, _.pick(doc, [ 'username', 'location' ]));
+		_.assign(user, _.pick(doc, ['location']));
 
 		// counter
-		user.counter = _.pick(doc.counter, ['comments', 'stars']);
+		user.counter = _.pick(doc.counter.toObject(), ['comments', 'stars']);
 
 		return user;
 	}
@@ -44,8 +44,12 @@ class UserSerializer extends Serializer {
 	 * @protected
 	 */
 	_detailed(doc, req, opts) {
-		const user = this._reduced(doc, req, opts);
-		_.assign(user, _.pick(doc, ['email', 'is_active', 'provider', 'roles', 'created_at', 'preferences', 'counter', 'email_status']));
+		const user = this._simple(doc, req, opts);
+		_.assign(user, _.pick(doc, ['email', 'email_status', 'is_active', 'provider', 'created_at']));
+
+		user.roles = doc.roles.toObject();
+		user.preferences = doc.preferences.toObject();
+		user.counter = doc.counter.toObject();
 
 		// plan
 		const plan = _.find(config.vpdb.quota.plans, p => p.id === doc._plan);
@@ -69,24 +73,35 @@ class UserSerializer extends Serializer {
 		}
 
 		// provider data
-		if (!_.isEmpty(user.github)) {
+		if (!_.isEmpty(doc.github)) {
 			user.github = {
-				id: user.github.id,
-				username: user.github.login,
-				email: user.github.email,
-				avatar_url: user.github.avatar_url,
-				html_url: user.github.html_url
+				id: doc.github.id,
+				username: doc.github.login,
+				email: doc.github.email,
+				avatar_url: doc.github.avatar_url,
+				html_url: doc.github.html_url
 			};
 		}
-		if (!_.isEmpty(user.google)) {
-			user.google ={
-				id: user.google.id,
-				username: user.google.login,
-				email: user.google.email,
-				avatar_url: user.avatar_url,
-				html_url: user.google.html_url
+		if (!_.isEmpty(doc.google)) {
+			user.google = {
+				id: doc.google.id,
+				username: doc.google.login,
+				email: doc.google.email,
+				avatar_url: doc.google.avatar_url,
+				html_url: doc.google.html_url
 			};
 		}
+		config.vpdb.passport.ipboard.forEach(ipb => {
+			if (!_.isEmpty(doc[ipb.id])) {
+				user[ipb.id] = {
+					id: doc[ipb.id].id,
+					username: doc[ipb.id].username,
+					email: doc[ipb.id].email,
+					avatar_url: doc[ipb.id].avatar,
+					html_url: doc[ipb.id].profileUrl
+				};
+			}
+		});
 		return user;
 	}
 

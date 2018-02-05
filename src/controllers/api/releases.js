@@ -38,6 +38,7 @@ const api = require('./api');
 
 const GameSerializer = require('../../serializers/game.serializer');
 const ReleaseSerializer = require('../../serializers/release.serializer');
+const ReleaseVersionFileSerializer = require('../../serializers/release.version.file.serializer');
 
 const acl = require('../../acl');
 const error = require('../../modules/error')('api', 'release');
@@ -564,10 +565,10 @@ exports.validateFile = function(req, res) {
 
 	}).then(release => {
 
-		version = _.find(ReleaseSerializer.detailed(release, req).versions, { version: req.params.version });
-		file = _.find(version.files, f => f.file.id === req.params.file);
+		version = _.find(release.versions, { version: req.params.version });
+		file = _.find(version.files, f => f._file.id === req.params.file);
 
-		api.success(res, file.validation, 200);
+		api.success(res, ReleaseVersionFileSerializer.detailed(file, req).validation, 200);
 
 		// log event
 		LogEvent.log(req, 'validate_release', false,

@@ -14,8 +14,9 @@ class ReleaseVersionSerializer extends Serializer {
 
 	/** @protected */
 	_detailed(doc, req, opts) {
-		const version = this._simple(doc, req, opts);
-		_.assign(version, _.pick(doc, [ 'changes', 'counter' ]));
+		const version = _.pick(doc, [ 'version', 'released_at', 'changes' ]);
+		version.counter = doc.counter.toObject();
+		version.files = doc.files.map(versionFile => ReleaseVersionFileSerializer.detailed(versionFile, req, opts));
 		return version;
 	}
 

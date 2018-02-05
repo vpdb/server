@@ -8,13 +8,20 @@ class GameSerializer extends Serializer {
 
 	/** @protected */
 	_reduced(doc, req, opts) {
-		return _.pick(doc, ['id', 'title', 'manufacturer', 'year', 'ipdb']);
+		const game = _.pick(doc, ['id', 'title', 'manufacturer', 'year' ]);
+		if (doc.ipdb) {
+			game.ipdb = doc.ipdb.toObject();
+		}
+		return game;
 	}
 
 	/** @protected */
 	_simple(doc, req, opts) {
 		const game = this._reduced(doc, req, opts);
-		_.assign(game, _.pick(doc, ['game_type', 'backglass', 'logo', 'counter', 'rating']));
+
+		game.game_type = doc.game_type;
+		game.counter = doc.counter.toObject();
+		game.rating = doc.rating.toObject();
 
 		// restrictions
 		const restrictions = {};
@@ -37,12 +44,12 @@ class GameSerializer extends Serializer {
 		}
 
 		// backglass
-		if (doc.populated('_backglass')) {
+		if (this._populated(doc, '_backglass')) {
 			game.backglass = FileSerializer.simple(doc._backglass, req, opts);
 		}
 
 		// logo
-		if (doc.populated('_logo')) {
+		if (this._populated(doc, '_logo')) {
 			game.logo = FileSerializer.simple(doc._logo, req, opts);
 		}
 

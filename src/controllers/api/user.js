@@ -236,7 +236,7 @@ exports.update = function(req, res) {
 
 		// return result now and send email afterwards
 		if (testMode && req.body.returnEmailToken) {
-			return api.success(res, _.extend(UserSerializer.detailed(user, req), acls, { email_token: user.email_status.token }), 200);
+			return api.success(res, _.extend(UserSerializer.detailed(user, req), acls, { email_token: user.email_status.toObject().token }), 200);
 		}
 
 		return api.success(res, _.extend(UserSerializer.detailed(user, req), acls), 200);

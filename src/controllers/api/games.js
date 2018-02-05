@@ -451,7 +451,7 @@ exports.view = function(req, res) {
 	}).then(() => {
 
 		// retrieve linked releases
-		let opts;
+		let opts = {};
 		return Release.restrictedQuery(req, game, { _game: game._id }).then(rlsQuery => {
 
 			if (!rlsQuery) {
@@ -464,12 +464,13 @@ exports.view = function(req, res) {
 				if (!req.user) {
 					return null;
 				}
-				return Star.find({ type: 'release', _from: req.user._id }, '_ref.release').exec().then(stars => {
-					return _.map(_.map(_.map(stars, '_ref'), 'release'), id => id.toString());
-				});
+				return Star
+					.find({ type: 'release', _from: req.user._id }, '_ref.release')
+					.exec()
+					.then(stars => stars.map(star => star._ref.release.id.toString()));
 
 			}).then(starredReleaseIds => {
-				opts = { starredReleaseIds: starredReleaseIds };
+				opts.starredReleaseIds = starredReleaseIds;
 				return Release.find(Release.approvedQuery(rlsQuery))
 					.populate({ path: '_tags' })
 					.populate({ path: '_created_by' })
@@ -483,7 +484,7 @@ exports.view = function(req, res) {
 
 		}).then(releases => {
 			opts.excludedFields = [ 'game' ];
-			result.releases = _.map(releases, release => ReleaseSerializer.detailed(release, req, opts));
+			result.releases = releases.map(release => ReleaseSerializer.detailed(release, req, opts));
 			return null;
 		});
 
@@ -504,7 +505,8 @@ exports.view = function(req, res) {
 				.exec();
 
 		}).then(backglasses => {
-			result.backglasses = backglasses.map(backglass => _.omit(BackglassSerializer.simple(backglass, req), 'game'));
+			result.backglasses = backglasses.map(backglass => BackglassSerializer.simple(backglass, req, { excludedFields: [ 'game' ] }));
+			return null;
 		});
 
 	}).then(() => {

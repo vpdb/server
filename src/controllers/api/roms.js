@@ -43,7 +43,7 @@ const GameSerializer = require('../../serializers/game.serializer');
 exports.create = function(req, res) {
 
 	let validFields = ['id', 'version', 'notes', 'languages', '_file'];
-	let newRom, game;
+	let newRom, game, gameRef;
 	return Promise.try(() => {
 
 		if (!req.params.gameId && !req.body._ipdb_number) {
@@ -74,6 +74,7 @@ exports.create = function(req, res) {
 		if (game) {
 			rom._game = game._id;
 			rom._ipdb_number = game.ipdb.number;
+			gameRef = GameSerializer.reduced(game, req);
 
 		} else {
 			if (req.params.gameId) {
@@ -81,6 +82,7 @@ exports.create = function(req, res) {
 			}
 			game = { ipdb: { number: req.body._ipdb_number }};
 			rom._ipdb_number = req.body._ipdb_number;
+			gameRef = game;
 		}
 		return Rom.getInstance(rom);
 
@@ -120,7 +122,7 @@ exports.create = function(req, res) {
 
 	}).then(() => {
 
-		LogEvent.log(req, 'upload_rom', true, { rom: RomSerializer.simple(newRom, req), game: GameSerializer.reduced(game, req) }, { game: game._id });
+		LogEvent.log(req, 'upload_rom', true, { rom: RomSerializer.simple(newRom, req), game: gameRef }, { game: game._id });
 
 		return api.success(res, RomSerializer.simple(newRom, req), 201);
 

@@ -101,6 +101,29 @@ class Serializer {
 		return this.simple(doc, req, opts);
 	}
 
+	/**
+	 * Checks if a field is populated.
+	 *
+	 * Note that this doesn't work for nested paths where fields are arrays,
+	 * e.g. check for 'files._file' doesn't work in the "versions" serializer
+	 * (but 'versions.files._file' from the root works).
+	 *
+	 * @param doc Document to check
+	 * @param field Field to check
+	 * @returns {boolean}
+	 * @protected
+	 */
+	_populated(doc, field) {
+		if (doc.populated(field)) {
+			return true;
+		}
+		let obj = _.get(doc, field);
+		if (_.isArray(obj) && obj.length > 0) {
+			obj = obj[0];
+		}
+		return obj && obj._id;
+	}
+
 	/** @protected */
 	_defaultOpts(opts) {
 		return _.defaultsDeep(opts || {}, {
@@ -146,7 +169,7 @@ class Serializer {
 			return undefined;
 		}
 
-		if (!versionFile.populated('_playfield_image')) {
+		if (!this._populated(versionFile, '_playfield_image')) {
 			return undefined;
 		}
 

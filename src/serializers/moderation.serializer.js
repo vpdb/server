@@ -15,12 +15,11 @@ class ModerationSerializer extends Serializer {
 		const includeHistory = _.isArray(doc.history) && doc.history[0] && doc.history[0]._created_by._id;
 		const moderation = _.pick(doc, ['is_approved', 'is_refused', 'auto_approved']);
 		if (includeHistory) {
-			const creatorPopulated = doc.populated('history._created_by');
 			moderation.history = doc.history.map(h => {
 				return {
 					event: h.event,
 					created_at: h.created_at,
-					created_by: creatorPopulated ? UserSerializer.reduced(h._created_by, req, opts) : undefined
+					created_by: UserSerializer.reduced(h._created_by, req, opts)
 				};
 			});
 		}

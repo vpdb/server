@@ -296,7 +296,7 @@ exports.list = function(req, res) {
 
 	}).spread((results, count) => {
 
-		let backglasses = results.map(bg => BackglassSerializer.reduced(bg, req, serializerOpts));
+		let backglasses = results.map(bg => BackglassSerializer.simple(bg, req, serializerOpts));
 		api.success(res, backglasses, 200, api.paginationOpts(pagination, count));
 
 	}).catch(api.handleError(res, error, 'Error listing backglasses'));

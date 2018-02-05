@@ -4,6 +4,8 @@ const Serializer = require('./serializer');
 const GameSerializer = require('./game.serializer');
 const FileSerializer = require('./file.serializer');
 const AuthorSerializer = require('./author.serializer');
+const UserSerializer = require('./user.serializer');
+const TagSerializer = require('./tag.serializer');
 const ReleaseVersionSerializer = require('./release.version.serializer');
 
 class ReleaseSerializer extends Serializer {
@@ -15,33 +17,61 @@ class ReleaseSerializer extends Serializer {
 
 	/** @protected */
 	_detailed(doc, req, opts) {
-		return this._serialize(doc, req, opts, ReleaseVersionSerializer.detailed.bind(ReleaseVersionSerializer), false);
+		return this._serialize(doc, req, opts, ReleaseVersionSerializer.detailed.bind(ReleaseVersionSerializer), false,
+			['description', 'acknowledgements', 'license', 'modified_at' ]);
 	}
 
 	/** @private */
-	_serialize(doc, req, opts, versionSerializer, stripVersions) {
+	_serialize(doc, req, opts, versionSerializer, stripVersions, additionalFields) {
+
+		additionalFields = additionalFields || [];
+
 		// primitive fields
-		const release = _.pick(doc, ['id', 'name', 'created_at', 'released_at', 'counter']);
+		const release = _.pick(doc, ['id', 'name', 'created_at', 'released_at', 'rating', ...additionalFields]);
+
+		release.metrics = doc.metrics.toObject();
+		release.counter = doc.counter.toObject();
 
 		// game
-		if (doc.populated('_game')) {
+		if (this._populated(doc, '_game')) {
 			release.game = GameSerializer.reduced(doc._game, req, opts);
 		}
 
+		// tags
+		if (this._populated(doc, '_tags')) {
+			release.tags = doc._tags.map(tag => TagSerializer.simple(tag, req, opts));
+		}
+
+		// links
+		if (_.isArray(doc.links)) {
+			release.links = doc.links.map(link => _.pick(link, ['label', 'url']));
+		} else {
+			release.links = [];
+		}
+
+		// creator
+		if (this._populated(doc, '_created_by')) {
+			release.created_by = UserSerializer.reduced(doc._created_by, req, opts);
+		}
+
 		// authors
-		release.authors = doc.authors.map(author => AuthorSerializer.reduced(author, req, opts));
+		if (this._populated(doc, 'authors._user')) {
+			release.authors = doc.authors.map(author => AuthorSerializer.reduced(author, req, opts));
+		}
 
 		// versions
 		release.versions = doc.versions
 			.map(version => versionSerializer(version, req, opts))
 			.sort(this._sortByDate('released_at'));
 
-		if (stripVersions && doc.populated('versions.files._file')) {
+		if (stripVersions && this._populated(doc, 'versions.files._file')) {
 			release.versions = ReleaseVersionSerializer._strip(release.versions, req, opts);
 		}
 
 		// thumb
-		release.thumb = this._findThumb(doc.versions, req, opts);
+		if (opts.thumbFlavor || opts.thumbFormat) {
+			release.thumb = this._findThumb(doc.versions, req, opts);
+		}
 
 		// star
 		if (opts.starredReleaseIds) {
@@ -77,10 +107,6 @@ class ReleaseSerializer extends Serializer {
 
 		// get all table files
 		const files = _.flatten(_.map(versions, 'files')).filter(file => file.flavor);
-		console.log(_.flatten(_.map(versions, 'files')));
-		console.log('Number of versions = %s', versions.length);
-		console.log('Number of files = %s', files.length);
-
 		// console.log('flavorParams: %j, flavorDefaults: %j', flavorParams, flavorDefaults);
 
 		// assign weights to each file depending on parameters
@@ -141,7 +167,7 @@ class ReleaseSerializer extends Serializer {
 	 */
 	_getDefaultThumb(versionFileDoc, req, opts) {
 
-		let playfieldImage = versionFileDoc.populated('_playfield_image')
+		let playfieldImage = this._populated(versionFileDoc, '_playfield_image')
 			? FileSerializer.detailed(versionFileDoc._playfield_image, req, opts)
 			: null;
 		if (!playfieldImage || !playfieldImage.metadata) {
@@ -167,7 +193,7 @@ class ReleaseSerializer extends Serializer {
 	 * @returns {Array}
 	 */
 	_getFlavorNames(opts) {
-		return _.uniq([ ...(opts.thumbFlavor || '').split(',').map(f => f.split(':')[0]), 'orientation', 'lighting' ]);
+		return _.compact(_.uniq([ ...(opts.thumbFlavor || '').split(',').map(f => f.split(':')[0]), 'orientation', 'lighting' ]));
 	}
 }
 

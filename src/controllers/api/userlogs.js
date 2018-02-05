@@ -81,7 +81,7 @@ exports.list = function(req, res) {
 			if (providerInfo[log.payload.provider]) {
 				log.payload.providerInfo = providerInfo[log.payload.provider];
 			}
-			return LogUserSerializer.simple(log, req);
+			return LogUserSerializer.detailed(log, req);
 		});
 		return api.success(res, logs, 200, api.paginationOpts(pagination, result.total));
 	});

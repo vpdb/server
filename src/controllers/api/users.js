@@ -75,7 +75,7 @@ exports.create = function(req, res) {
 
 		// return result now and send email afterwards
 		if (testMode && req.body.returnEmailToken) {
-			api.success(res, _.extend(UserSerializer.detailed(user, req), { email_token: user.email_status.token }), 201);
+			api.success(res, _.extend(UserSerializer.detailed(user, req), { email_token: user.email_status.toObject().token }), 201);
 
 		} else {
 			api.success(res, UserSerializer.detailed(user, req), 201);

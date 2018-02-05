@@ -57,13 +57,9 @@ TagSchema.path('name').validate(function(name) {
 	return _.isString(name) && validator.isLength(name ? name.trim() : '', 2);
 }, 'Name must contain at least two characters.');
 
-TagSchema.path('name').validate(function(name, done) {
-	mongoose.model('Tag').findOne({ name: name }, function(err, tag) {
-		/* istanbul ignore if */
-		if (err) {
-			logger.error('Error checking for unique tag name: %s', err.message);
-		}
-		done(!err && !tag);
+TagSchema.path('name').validate(function(name) {
+	return mongoose.model('Tag').findOne({ name: name }).exec().then(tag => {
+		return !tag;
 	});
 }, 'The {PATH} "{VALUE}" is already taken.');
 

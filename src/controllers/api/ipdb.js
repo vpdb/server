@@ -28,7 +28,7 @@ exports.view = function(req, res) {
 		return ipdb.details(req.params.id, { offline: req.query.dryrun });
 
 	}).then(game => {
-		api.success(res, game);
+		return api.success(res, game);
 
 	}).catch(api.handleError(res, error, 'Error retrieving data from IPDB'));
 };

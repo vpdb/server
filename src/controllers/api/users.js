@@ -244,7 +244,7 @@ exports.list = function(req, res) {
 	}).then(users => {
 		// reduce
 		users = users.map(user => canGetFullDetails ? UserSerializer.detailed(user, req) : UserSerializer.simple(user, req));
-		api.success(res, users);
+		return api.success(res, users);
 
 	}).catch(api.handleError(res, error, 'Error listing users'));
 };

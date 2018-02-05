@@ -253,7 +253,7 @@ exports.update = function(req, res) {
 	}).then(() => {
 
 		LogEvent.log(req, 'update_game', false, LogEvent.diff(oldGame, body), { game: game._id });
-		api.success(res, GameSerializer.detailed(game, req), 200);
+		return api.success(res, GameSerializer.detailed(game, req), 200);
 
 	}).catch(api.handleError(res, error, 'Error updating game'));
 };
@@ -306,7 +306,7 @@ exports.del = function(req, res) {
 		// log event
 		LogEvent.log(req, 'delete_game', false, { game: _.omit(GameSerializer.simple(game, req), [ 'rating', 'counter' ]) }, { game: game._id });
 
-		api.success(res, null, 204);
+		return api.success(res, null, 204);
 
 	}).catch(api.handleError(res, error, 'Error deleting game'));
 };
@@ -419,7 +419,7 @@ exports.list = function(req, res) {
 	}).spread((results, count) => {
 
 		let games = results.map(game => GameSerializer.simple(game, req));
-		api.success(res, games, 200, api.paginationOpts(pagination, count));
+		return api.success(res, games, 200, api.paginationOpts(pagination, count));
 
 	}).catch(api.handleError(res, error, 'Error listing games'));
 };
@@ -546,7 +546,7 @@ exports.releaseName = function(req, res) {
 			words.push(game.keywords[Math.floor(Math.random() * game.keywords.length)]);
 		}
 		words.push('edition');
-		api.success(res, { name:words.map(w => w.toLowerCase()).map(_.upperFirst).join(' ') }, 200);
+		return api.success(res, { name:words.map(w => w.toLowerCase()).map(_.upperFirst).join(' ') }, 200);
 
 	}).catch(api.handleError(res, error, 'Error generating release name'));
 };

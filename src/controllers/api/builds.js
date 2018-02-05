@@ -54,7 +54,7 @@ exports.list = function(req, res) {
 
 		// reduce
 		builds = _.map(builds, build => BuildSerializer.simple(build, req));
-		api.success(res, builds);
+		return api.success(res, builds);
 
 	}).catch(api.handleError(res, error, 'Error listing builds'));
 };
@@ -224,6 +224,8 @@ exports.del = function(req, res) {
 
 		// log event
 		LogEvent.log(req, 'delete_build', false, BuildSerializer.simple(build, req), { build: build._id });
+
+		return null;
 
 	}).catch(api.handleError(res, error, 'Error deleting tag'));
 };

@@ -180,7 +180,7 @@ exports.list = function(opts) {
 		}).spread((results, count) => {
 
 			let logs = results.map(log => fullDetails ? LogEventSerializer.detailed(log, req) : LogEventSerializer.simple(log, req));
-			api.success(res, logs, 200, api.paginationOpts(pagination, count));
+			return api.success(res, logs, 200, api.paginationOpts(pagination, count));
 
 		}).catch(api.handleError(res, error, 'Error listing events'));
 	};

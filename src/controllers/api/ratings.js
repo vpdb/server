@@ -69,9 +69,9 @@ function view(req, res, find, titleAttr) {
 	find(req, res, assert, function(entity, rating) {
 
 		if (rating) {
-			api.success(res, _.pick(rating, ['value', 'created_at', 'modified_at' ]));
+			return api.success(res, _.pick(rating, ['value', 'created_at', 'modified_at' ]));
 		} else {
-			api.fail(res, error('No rating of <%s> for "%s" found.', req.user.email, entity[titleAttr]), 404);
+			return api.fail(res, error('No rating of <%s> for "%s" found.', req.user.email, entity[titleAttr]), 404);
 		}
 	});
 }

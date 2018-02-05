@@ -43,7 +43,7 @@ exports.list = function(req, res) {
 
 		// reduce
 		tags = _.map(tags, tag => TagSerializer.simple(tag, req));
-		api.success(res, tags);
+		return api.success(res, tags);
 
 	}).catch(api.handleError(res, error, 'Error listing tags'));
 };
@@ -120,7 +120,7 @@ exports.del = function(req, res) {
 	}).then(function() {
 
 		logger.info('[api|tag:delete] Tag "%s" (%s) successfully deleted.', tag.name, tag._id);
-		api.success(res, null, 204);
+		return api.success(res, null, 204);
 
 	}).catch(api.handleError(res, error, 'Error deleting tag'));
 };

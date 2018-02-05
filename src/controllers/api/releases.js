@@ -338,6 +338,8 @@ exports.addVersion = function(req, res) {
 			}
 		});
 
+		return null;
+
 	}).catch(api.handleError(res, error, 'Error updating release'));
 };
 
@@ -577,6 +579,8 @@ exports.validateFile = function(req, res) {
 		);
 
 		mailer.releaseValidated(release._created_by, req.user, release._game, release, file);
+
+		return null;
 
 	}).catch(api.handleError(res, error, 'Error validating release file.', /^versions\.\d+\.files\.\d+\.validation\./));
 };
@@ -818,7 +822,7 @@ exports.list = function(req, res) {
 			return release;
 		});
 
-		api.success(res, releases, 200, api.paginationOpts(pagination, count));
+		return api.success(res, releases, 200, api.paginationOpts(pagination, count));
 
 	}).catch(api.handleError(res, error, 'Error listing releases'));
 };
@@ -940,7 +944,7 @@ exports.del = function(req, res) {
 			{ release: release._id, game: release._game }
 		);
 
-		api.success(res, null, 204);
+		return api.success(res, null, 204);
 
 	}).catch(api.handleError(res, error, 'Error deleting release'));
 };
@@ -998,7 +1002,7 @@ exports.moderate = function(req, res) {
 		return null;
 
 	}).then(() => {
-		api.success(res, moderation, 200);
+		return api.success(res, moderation, 200);
 
 	}).catch(api.handleError(res, error, 'Error moderating release'));
 };

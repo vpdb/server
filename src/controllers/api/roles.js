@@ -66,5 +66,5 @@ exports.list = function(req, res) {
 			parents: [ ]
 		},
 	];
-	api.success(res, roles);
+	return api.success(res, roles);
 };

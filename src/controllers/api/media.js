@@ -138,7 +138,7 @@ exports.del = function(req, res) {
 
 	}).then(() => {
 		logger.info('[api|medium:delete] Medium "%s" successfully deleted.', medium.id);
-		api.success(res, null, 204);
+		return api.success(res, null, 204);
 
 	}).catch(api.handleError(res, error, 'Error deleting medium'));
 };

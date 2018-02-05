@@ -130,7 +130,7 @@ exports.create = function(req, res) {
 		});
 
 		// return object
-		api.success(res, BackglassSerializer.detailed(populatedBackglass, req), 201);
+		return api.success(res, BackglassSerializer.detailed(populatedBackglass, req), 201);
 
 	}).catch(api.handleError(res, error, 'Error creating backglass'));
 };
@@ -210,7 +210,7 @@ exports.update = function(req, res) {
 			{ backglass: backglass._id, game: backglass._game._id }
 		);
 
-		api.success(res, BackglassSerializer.detailed(backglass, req), 200);
+		return api.success(res, BackglassSerializer.detailed(backglass, req), 200);
 
 	}).catch(api.handleError(res, error, 'Error updating backglass'));
 };
@@ -297,7 +297,7 @@ exports.list = function(req, res) {
 	}).spread((results, count) => {
 
 		let backglasses = results.map(bg => BackglassSerializer.simple(bg, req, serializerOpts));
-		api.success(res, backglasses, 200, api.paginationOpts(pagination, count));
+		return api.success(res, backglasses, 200, api.paginationOpts(pagination, count));
 
 	}).catch(api.handleError(res, error, 'Error listing backglasses'));
 };
@@ -397,7 +397,7 @@ exports.del = function(req, res) {
 			game: backglass._game._id
 		});
 
-		api.success(res, null, 204);
+		return api.success(res, null, 204);
 
 	}).catch(api.handleError(res, error, 'Error deleting backglass'));
 };
@@ -440,7 +440,7 @@ exports.moderate = function(req, res) {
 		return null;
 
 	}).then(() => {
-		api.success(res, moderation, 200);
+		return api.success(res, moderation, 200);
 
 	}).catch(api.handleError(res, error, 'Error moderating backglass'));
 };

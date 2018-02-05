@@ -85,9 +85,9 @@ function view(req, res, find, titleAttr) {
 	find(req, res, assert, function(entity, star) {
 
 		if (star) {
-			api.success(res, _.pick(star, ['created_at']));
+			return api.success(res, _.pick(star, ['created_at']));
 		} else {
-			api.fail(res, error('No star for <%s> for "%s" found.', req.user.email, entity[titleAttr]), 404);
+			return api.fail(res, error('No star for <%s> for "%s" found.', req.user.email, entity[titleAttr]), 404);
 		}
 	});
 }

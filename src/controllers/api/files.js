@@ -102,7 +102,7 @@ exports.del = function(req, res) {
 	}).then(() => {
 
 		logger.info('[api|file:delete] File "%s" (%s) successfully removed.', file.name, file.id);
-		api.success(res, null, 204);
+		return api.success(res, null, 204);
 
 	}).catch(api.handleError(res, error, 'Error deleting file'));
 
@@ -226,7 +226,7 @@ exports.blockmatch = function(req, res) {
 			result.matches = _.filter(result.matches, m => m.release.id !== release.id);
 		}
 		result.matches = _.sortBy(result.matches, m => -(m.countPercentage + m.bytesPercentage));
-		api.success(res, result);
+		return api.success(res, result);
 
 	}).catch(api.handleError(res, error, 'Error retrieving block matches for file'));
 };

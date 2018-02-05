@@ -19,12 +19,12 @@
 
 'use strict';
 
-var _ = require('lodash');
-var logger = require('winston');
+const _ = require('lodash');
+const logger = require('winston');
 
-var api = require('../api/api');
-var auth = require('../auth');
-var error = require('../../modules/error')('storage', 'user');
+const api = require('../api/api');
+const auth = require('../auth');
+const error = require('../../modules/error')('storage', 'user');
 
 /**
  * Creates one or more storage tokens that can be used in an URL.
@@ -36,12 +36,12 @@ exports.authenticate = function(req, res) {
 	if (!req.body && req.body.paths) {
 		return api.fail(res, error().errors([{ message: 'You must provide the paths of the storage tokens.', path: 'paths' }]), 400);
 	}
-	var paths = !_.isArray(req.body.paths) ? [ req.body.paths ] : req.body.paths;
-	var tokens = {};
-	var now = new Date();
+	const paths = !_.isArray(req.body.paths) ? [req.body.paths] : req.body.paths;
+	const tokens = {};
+	const now = new Date();
 	paths.forEach(function(path) {
 		tokens[path] = auth.generateStorageToken(req.user, now, path);
 	});
 	logger.info('[storage] Generated %d auth tokens for user <%s>.', _.keys(tokens).length, req.user.email);
-	api.success(res, tokens);
+	return api.success(res, tokens);
 };

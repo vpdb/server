@@ -198,7 +198,7 @@ exports.list = function(req, res) {
 	}).spread((results, count) => {
 
 		let roms = results.map(rom => RomSerializer.simple(rom, req));
-		api.success(res, roms, 200, api.paginationOpts(pagination, count));
+		return api.success(res, roms, 200, api.paginationOpts(pagination, count));
 
 	}).catch(api.handleError(res, error, 'Error listing ROMs'));
 };

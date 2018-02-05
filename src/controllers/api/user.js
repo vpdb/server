@@ -63,7 +63,7 @@ exports.view = function(req, res) {
 		return quota.getCurrent(req.user);
 
 	}).then(quota => {
-		api.success(res, _.extend(UserSerializer.detailed(req.user, req), acls, { quota: quota }), 200);
+		return api.success(res, _.extend(UserSerializer.detailed(req.user, req), acls, { quota: quota }), 200);
 
 	}).catch(api.handleError(res, error, 'Error retrieving user'));
 };
@@ -386,7 +386,7 @@ exports.authenticate = function(req, res) {
 		});
 
 	}).then(result => {
-		api.success(res, result, 200);
+		return api.success(res, result, 200);
 
 	}).catch(err => {
 		if (antiBruteForce) {
@@ -476,6 +476,8 @@ exports.confirm = function(req, res) {
 			mailer.welcomeLocal(user);
 		}
 
+		return null;
+
 	}).catch(api.handleError(res, error, 'Error confirming user email'));
 };
 
@@ -542,7 +544,7 @@ function passportCallback(req, res) {
 
 		logger.info('[api|%s:authenticate] User <%s> successfully authenticated.', req.params.strategy, user.email);
 		getACLs(user).then(acls => {
-			api.success(res, {
+			return api.success(res, {
 				token: token,
 				expires: expires,
 				user: _.extend(UserSerializer.detailed(user, req), acls)

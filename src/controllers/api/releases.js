@@ -803,11 +803,7 @@ exports.list = function(req, res) {
 				serializerOpts.starred = !!starMap.get(release._id.toString());
 			}
 			serializerOpts.fileIds = fileIds;
-			if (req.tokenType === 'application') {
-				serializerOpts.includeProviderId = req.tokenProvider;
-			}
 			release = ReleaseSerializer.simple(release, req, serializerOpts);
-			//release = Release.toSimple(release, transformOpts);
 
 			// if flavor specified, filter returned files to match filter
 			if (!_.isUndefined(req.query.flavor)) {

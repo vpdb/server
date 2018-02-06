@@ -157,8 +157,16 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 						}
 
 						// oauth provider user id header provided
-						if (req.headers[providerUserIdHeader]) {
-							return User.findOne({ [appToken.provider + '.id' ]: req.headers[providerUserIdHeader] }).then(user => {
+						const providerUserId = req.headers[providerUserIdHeader];
+						if (providerUserId) {
+							// id might be string but int in db and vice versa
+							let query;
+							if (parseInt(providerUserId).toString() === providerUserId.toString()) {
+								query = { $in: [ parseInt(providerUserId), providerUserId.toString() ]}
+							} else {
+								query = providerUserId;
+							}
+							return User.findOne({ [appToken.provider + '.id' ]: query }).then(user => {
 								if (!user) {
 									throw new error('No user with ID "%s" for provider "%s".', req.headers[providerUserIdHeader], appToken.provider).status(400);
 								}

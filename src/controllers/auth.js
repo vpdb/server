@@ -136,7 +136,7 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 					req.tokenProvider = appToken.provider;
 
 					// if this resource is a service resource, we don't need a user ID. But make sure no permissions needed.
-					if (scope.isValid([ scope.SERVICE ], requiredScopes) && !resource && !permission) {
+					if (requiredScopes && scope.isValid([ scope.SERVICE ], requiredScopes) && !resource && !permission) {
 						return appToken.update({ last_used_at: new Date() }).then(() => null);
 					}
 

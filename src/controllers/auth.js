@@ -159,10 +159,10 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 						// oauth provider user id header provided
 						const providerUserId = req.headers[providerUserIdHeader];
 						if (providerUserId) {
-							// id might be string but int in db and vice versa
+							// id might be string but int in db or vice versa
 							let query;
 							if (parseInt(providerUserId).toString() === providerUserId.toString()) {
-								query = { $in: [ parseInt(providerUserId), providerUserId.toString() ]}
+								query = { $in: [ parseInt(providerUserId), providerUserId.toString() ]};
 							} else {
 								query = providerUserId;
 							}

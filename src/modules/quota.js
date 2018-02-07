@@ -120,19 +120,59 @@ class Quota {
 	 * @param {function} [callback] Callback with `err` and `isAllowed`
 	 * @returns {Promise.<boolean>}
 	 */
-	isAllowed(req, res, files, callback) {
+	isAllowed(req, res, files) {
 
 		if (!_.isArray(files)) {
 			files = [ files ];
 		}
 
+		// deny access to anon (wouldn't be here if there were only free files)
+		if (!req.user) {
+			return Promise.resolve(false);
+		}
+
 		let plan = req.user.planConfig;
+		if (!plan) {
+			return Promise.reject(error('No quota defined for plan "%s"', req.user._plan));
+		}
 
 		// allow unlimited plans
 		if (plan.unlimited === true) {
-			return Promise.resolve(true).nodeify(callback);
+			return Promise.resolve(true);
 		}
 
+		const sum = this.getTotalCost(files);
+
+		// don't even check quota if weight is 0
+		if (sum === 0) {
+			return Promise.resolve(true);
+		}
+
+		// https://github.com/apigee-127/volos/tree/master/quota/common#quotaapplyoptions-callback
+		return this.quota[plan.per].applyAsync({
+			identifier: req.user.id,
+			weight: sum,
+			allow: plan.credits
+
+		}).then(result => {
+			logger.info('[quota] Quota check for %s credit(s) %s on <%s> for %d file(s) with %d quota left for another %d seconds (plan allows %s per %s).', sum, result.isAllowed ? 'passed' : 'FAILED', req.user.email, files.length, result.allowed - result.used, Math.round(result.expiryTime / 1000), plan.credits, plan.per);
+			res.set({
+				'X-RateLimit-Limit': result.allowed,
+				'X-RateLimit-Remaining': result.allowed - result.used,
+				'X-RateLimit-Reset': result.expiryTime
+			});
+			return result.isAllowed;
+
+		});
+	}
+
+
+	/**
+	 * Sums up the const of a given list of files.
+	 * @param files Files
+	 * @returns {number}
+	 */
+	getTotalCost(files) {
 		let file, sum = 0;
 		for (let i = 0; i < files.length; i++) {
 			file = files[i];
@@ -143,38 +183,9 @@ class Quota {
 				continue;
 			}
 
-			// deny access to anon (wouldn't be here if there were only free files)
-			if (!req.user) {
-				return Promise.resolve(false).nodeify(callback);
-			}
-
-			if (!plan) {
-				return Promise.reject(error('No quota defined for plan "%s"', req.user._plan)).nodeify(callback);
-			}
-
 			sum += cost;
 		}
-
-		// don't even check quota if weight is 0
-		if (sum === 0) {
-			return Promise.resolve(true).nodeify(callback);
-		}
-
-		// https://github.com/apigee-127/volos/tree/master/quota/common#quotaapplyoptions-callback
-		return this.quota[plan.per].applyAsync({
-			identifier: req.user.id,
-			weight: sum,
-			allow: plan.credits
-		})
-			.then(result => {
-				logger.info('[quota] Quota check for %s credit(s) %s on <%s> for %d file(s) with %d quota left for another %d seconds (plan allows %s per %s).', sum, result.isAllowed ? 'passed' : 'FAILED', req.user.email, files.length, result.allowed - result.used, Math.round(result.expiryTime / 1000), plan.credits, plan.per);
-				res.set({
-					'X-RateLimit-Limit': result.allowed,
-					'X-RateLimit-Remaining': result.allowed - result.used,
-					'X-RateLimit-Reset': result.expiryTime
-				});
-				return result.isAllowed;
-			}).nodeify(callback);
+		return sum;
 	}
 
 	/**

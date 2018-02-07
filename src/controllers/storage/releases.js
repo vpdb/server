@@ -65,13 +65,153 @@ const api = require('../api/api');
  */
 exports.download = function(req, res) {
 
+	collectFiles(req, res, false).spread((release, requestedFiles) => {
+
+		// create zip stream
+		let archive = archiver('zip');
+		let gameName = release._game.title;
+		if (release._game.year && release._game.manufacturer) {
+			gameName += ' (' + release._game.manufacturer + ' ' + release._game.year + ')';
+		}
+
+		res.status(200);
+		res.set({
+			'Content-Type': 'application/zip',
+			'Content-Disposition': 'attachment; filename="' + gameName + '.zip"' // todo add release name and authors to zip filename
+		});
+		archive.pipe(res);
+
+		// add tables to stream
+		let releaseFiles = [];
+		return Promise.each(requestedFiles, file => {
+
+			let name = '';
+			let path = '';
+			let filename;
+			switch (file.file_type) {
+				case 'logo':
+					name = 'PinballX/Media/Visual Pinball/Wheel Images/' + gameName + file.getExt();
+					break;
+
+				case 'backglass':
+					if (file.getMimeCategory() === 'image') {
+						name = 'PinballX/Media/Visual Pinball/Backglass Images/' + gameName + file.getExt();
+					}
+					if (file.getMimeCategory() === 'directb2s') {
+						name = 'Visual Pinball/Tables/' + gameName + file.getExt();
+					}
+					break;
+
+				case 'playfield-fs':
+				case 'playfield-ws':
+					if (file.getMimeCategory() === 'image') {
+						name = 'PinballX/Media/Visual Pinball/Table Images/' + gameName + file.getExt();
+						path = file.getPath('hyperpin');
+					}
+					if (file.getMimeCategory() === 'video') {
+						name = 'PinballX/Media/Visual Pinball/Table Videos/' + gameName + file.getExt();
+						path = file.getPath();
+					}
+					break;
+
+				case 'release':
+					switch (file.getMimeCategory()) {
+						case 'table':
+							filename = getTableFilename(req.user, release, file, releaseFiles);
+							releaseFiles.push(filename);
+							name = 'Visual Pinball/Tables/' + filename;
+							break;
+
+						case 'audio':
+							name = 'Visual Pinball/Music/' + file.name;
+							break;
+
+						case 'script':
+							name = 'Visual Pinball/Scripts/' + file.name;
+							break;
+
+						case 'archive':
+							if (file.metadata && _.isArray(file.metadata.entries)) {
+								if (/rar/i.test(file.getMimeSubtype())) {
+									return streamZipfile(file, archive);
+								}
+								if (/zip/i.test(file.getMimeSubtype())) {
+									return streamRarfile(file, archive);
+								}
+							}
+
+							// otherwise, add as normal file
+							name = 'Visual Pinball/Tables/' + file.name;
+							break;
+
+						default:
+							name = 'Visual Pinball/Tables/' + file.name;
+					}
+					break;
+
+				case 'rom':
+					name = 'Visual Pinball/VPinMAME/roms/' + file.name;
+					break;
+			}
+			// per default, put files into the root folder.
+			name = name || file.name;
+			archive.append(fs.createReadStream(path || file.getPath()), {
+				name: name,
+				date: file.created_at
+			});
+			return null;
+
+		}).then(() => {
+			if (release.description) {
+				archive.append(release.description, { name: 'README.txt' });
+			}
+			if (release.acknowledgements) {
+				archive.append(release.acknowledgements, { name: 'CREDITS.txt' });
+			}
+			archive.finalize();
+			logger.info('Archive successfully created.');
+		});
+
+	}).catch(api.handleError(res, error, 'Error serving file'));
+};
+
+
+/**
+ * This does all the checks and returns 200 if all okay but doesn't actually serve
+ * anything.
+ *
+ * The goal is so the webapp can check first if the download works and display an error
+ * nicely, instead of sending the client to the backend where it will get a JSON error.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.checkDownload = function(req, res) {
+	collectFiles(req, res, true).then(() => {
+		res.set('Content-Length', 0);
+		return res.status(200).end();
+	}).catch(err => {
+		res.set('Content-Length', 0);
+		res.set('X-Error', err.message);
+		return res.status(err.code).end();
+	});
+};
+
+/**
+ * Collects and checks all files based on the HTTP request.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ * @param {boolean} dryRun If true, don't update counters and don't apply quota.
+ */
+function collectFiles(req, res, dryRun) {
 	let body = null;
 	let release;
 	let counters = [];
 	let requestedFiles = [];
 	let requestedFileIds;
 	let numTables = 0;
-	Promise.try(() => {
+	return Promise.try(() => {
 
 		if (req.query.body) {
 			try {
@@ -217,7 +357,12 @@ exports.download = function(req, res) {
 		}
 
 		// check the quota
-		return quota.isAllowed(req, res, requestedFiles);
+		if (!dryRun) {
+			return quota.isAllowed(req, res, requestedFiles);
+		}
+
+		// on dry run, do the math
+		return quota.getCurrent(req.user).then(q => q.unlimited || quota.getTotalCost(requestedFiles) <= q.remaining);
 
 	}).then(granted => {
 		if (!granted) {
@@ -225,113 +370,10 @@ exports.download = function(req, res) {
 		}
 
 		// update counters
-		return Promise.all(counters);
+		return !dryRun ? Promise.all(counters) : null;
 
-	}).then(() => {
-
-		// create zip stream
-		let archive = archiver('zip');
-		let gameName = release._game.full_title;
-
-		res.status(200);
-		res.set({
-			'Content-Type': 'application/zip',
-			'Content-Disposition': 'attachment; filename="' + gameName + '.zip"' // todo add release name and authors to zip filename
-		});
-		archive.pipe(res);
-
-		// add tables to stream
-		let releaseFiles = [];
-		Promise.each(requestedFiles, file => {
-
-			let name = '';
-			let path = '';
-			switch (file.file_type) {
-				case 'logo':
-					name = 'PinballX/Media/Visual Pinball/Wheel Images/' + gameName + file.getExt();
-					break;
-
-				case 'backglass':
-					if (file.getMimeCategory() === 'image') {
-						name = 'PinballX/Media/Visual Pinball/Backglass Images/' + gameName + file.getExt();
-					}
-					if (file.getMimeCategory() === 'directb2s') {
-						name = 'Visual Pinball/Tables/' + gameName + file.getExt();
-					}
-					break;
-
-				case 'playfield-fs':
-				case 'playfield-ws':
-					if (file.getMimeCategory() === 'image') {
-						name = 'PinballX/Media/Visual Pinball/Table Images/' + gameName + file.getExt();
-						path = file.getPath('hyperpin');
-					}
-					if (file.getMimeCategory() === 'video') {
-						name = 'PinballX/Media/Visual Pinball/Table Videos/' + gameName + file.getExt();
-						path = file.getPath();
-					}
-					break;
-
-				case 'release':
-					switch (file.getMimeCategory()) {
-						case 'table':
-							var filename = getTableFilename(req.user, release, file, releaseFiles);
-							releaseFiles.push(filename);
-							name = 'Visual Pinball/Tables/' + filename;
-							break;
-
-						case 'audio':
-							name = 'Visual Pinball/Music/' + file.name;
-							break;
-
-						case 'script':
-							name = 'Visual Pinball/Scripts/' + file.name;
-							break;
-
-						case 'archive':
-							if (file.metadata && _.isArray(file.metadata.entries)) {
-								if (/rar/i.test(file.getMimeSubtype())) {
-									return streamZipfile(file, archive);
-								}
-								if (/zip/i.test(file.getMimeSubtype())) {
-									return streamRarfile(file, archive);
-								}
-							}
-
-							// otherwise, add as normal file
-							name = 'Visual Pinball/Tables/' + file.name;
-							break;
-
-						default:
-							name = 'Visual Pinball/Tables/' + file.name;
-					}
-					break;
-
-				case 'rom':
-					name = 'Visual Pinball/VPinMAME/roms/' + file.name;
-					break;
-			}
-			// per default, put files into the root folder.
-			name = name || file.name;
-			archive.append(fs.createReadStream(path || file.getPath()), {
-				name: name,
-				date: file.created_at
-			});
-			return null;
-
-		}).then(() => {
-			if (release.description) {
-				archive.append(release.description, { name: 'README.txt' });
-			}
-			if (release.acknowledgements) {
-				archive.append(release.acknowledgements, { name: 'CREDITS.txt' });
-			}
-			archive.finalize();
-			logger.info('Archive successfully created.');
-		});
-
-	}).catch(api.handleError(res, error, 'Error serving file'));
-};
+	}).then(() => [ release, requestedFiles ]);
+}
 
 /**
  * Returns the name of the table file within the zip archive, depending on the
@@ -345,11 +387,11 @@ exports.download = function(req, res) {
  */
 function getTableFilename(user, release, file, releaseFiles) {
 
-	var userPrefs = user.preferences || {};
-	var tableName = userPrefs.tablefile_name || '{game_title} ({game_manufacturer} {game_year})';
-	var flavorTags = userPrefs.flavor_tags || flavor.defaultFileTags();
+	const userPrefs = user.preferences || {};
+	const tableName = userPrefs.tablefile_name || '{game_title} ({game_manufacturer} {game_year})';
+	const flavorTags = userPrefs.flavor_tags || flavor.defaultFileTags();
 
-	var data = {
+	const data = {
 		game_title: release._game.title,
 		game_manufacturer: release._game.manufacturer,
 		game_year: release._game.year,
@@ -361,12 +403,12 @@ function getTableFilename(user, release, file, releaseFiles) {
 		original_filename: path.basename(file.name).replace(/\.[^/.]+$/, '')
 	};
 
-	var filebase = tableName.replace(/(\{\s*([^}\s]+)\s*})/g, function(m1, m2, m3) {
+	const filebase = tableName.replace(/(\{\s*([^}\s]+)\s*})/g, function(m1, m2, m3) {
 		return _.isUndefined(data[m3]) ? m1 : data[m3];
 	});
 
 	// check for already used names and suffix with (n)
-	var newFilename, n = 0;
+	let newFilename, n = 0;
 	if (_.includes(releaseFiles, filebase + file.getExt())) {
 		do {
 			n++;

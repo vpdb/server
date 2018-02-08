@@ -187,7 +187,7 @@ exports.download = function(req, res) {
  * @param {Response} res
  */
 exports.checkDownload = function(req, res) {
-	collectFiles(req, res, true).then(() => {
+	return collectFiles(req, res, true).then(() => {
 		res.set('Content-Length', 0);
 		return res.status(200).end();
 	}).catch(err => {

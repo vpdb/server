@@ -43,7 +43,12 @@ exports.auth = function(controllerFct, resource, permission, scopes, planConfig)
 	return function(req, res) {
 		auth.auth(req, res, resource, permission, scopes, planConfig)
 			.then(() => controllerFct(req, res))
-			.catch(err => exports.fail(res, err, err.code));
+			.catch(err => {
+				if (req.method.toLowerCase() === 'head') {
+					res.set('X-Error', err.message);
+				}
+				exports.fail(res, err, err.code)
+			});
 	};
 };
 

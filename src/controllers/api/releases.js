@@ -34,6 +34,7 @@ const Build = require('mongoose').model('Build');
 const Game = require('mongoose').model('Game');
 const Star = require('mongoose').model('Star');
 const File = require('mongoose').model('File');
+const User = require('mongoose').model('User');
 const api = require('./api');
 
 const GameSerializer = require('../../serializers/game.serializer');
@@ -686,6 +687,29 @@ exports.list = function(req, res) {
 			});
 		}
 		return null;
+
+	}).then(() => {
+
+		// todo filter by user id
+
+		// filter by provider user id
+		if (req.query.provider_user) {
+			if (req.tokenType !== 'application') {
+				throw error('Must be authenticated with provider token in order to filter by provider user ID.').status(400);
+			}
+			let userQuery;
+			if (parseInt(req.query.provider_user).toString() === req.query.provider_user.toString()) {
+				userQuery = { $in: [ parseInt(req.query.provider_user), req.query.provider_user.toString() ]}
+			} else {
+				userQuery = req.query.provider_user;
+			}
+			return User.findOne({ [req.tokenProvider + '.id' ]: userQuery }).then(user => {
+				if (user) {
+					query.push({ 'authors._user': user._id.toString() })
+				}
+			});
+
+		}
 
 	}).then(() => {
 

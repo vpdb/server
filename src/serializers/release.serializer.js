@@ -24,10 +24,12 @@ class ReleaseSerializer extends Serializer {
 	/** @private */
 	_serialize(doc, req, opts, versionSerializer, stripVersions, additionalFields) {
 
+		const requestedFields = _.intersection(['description'], (req.query.include_fields || '').split(','));
 		additionalFields = additionalFields || [];
+		const fields = ['id', 'name', 'created_at', 'released_at', 'rating', ...additionalFields, ...requestedFields];
 
 		// primitive fields
-		const release = _.pick(doc, ['id', 'name', 'created_at', 'released_at', 'rating', ...additionalFields]);
+		const release = _.pick(doc, fields);
 
 		release.metrics = doc.metrics.toObject();
 		release.counter = doc.counter.toObject();
@@ -70,7 +72,7 @@ class ReleaseSerializer extends Serializer {
 
 		// thumb
 		if (opts.thumbFlavor || opts.thumbFormat) {
-			release.thumb = this._findThumb(doc.versions, req, opts);
+			release.thumb = this.findThumb(doc.versions, req, opts);
 		}
 
 		// star
@@ -96,7 +98,7 @@ class ReleaseSerializer extends Serializer {
 	 * @private
 	 * @returns {{image: *, flavor: *}}
 	 */
-	_findThumb(versions, req, opts) {
+	findThumb(versions, req, opts) {
 
 		opts.thumbFormat = opts.thumbFormat || 'original';
 

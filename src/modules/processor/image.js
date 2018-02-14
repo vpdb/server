@@ -85,6 +85,11 @@ function ImageProcessor() {
 	};
 }
 
+ImageProcessor.prototype.getReleaseThumbFormats = function() {
+	return [ ...this.variations['playfield'], ...this.variations['playfield-fs'], ...this.variations['playfield-ws']]
+		.map(v => v.name);
+};
+
 ImageProcessor.prototype.metadata = function(file, variation) {
 
 	return Promise.try(function() {

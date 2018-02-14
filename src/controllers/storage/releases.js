@@ -32,6 +32,9 @@ const Rom = require('mongoose').model('Rom');
 const Medium = require('mongoose').model('Medium');
 const Backglass = require('mongoose').model('Backglass');
 
+const ReleaseSerializer = require('../../serializers/release.serializer');
+const ImageProcessor = require('../../modules/processor/image');
+
 const quota = require('../../modules/quota');
 const flavor = require('../../modules/flavor');
 const error = require('../../modules/error')('storage', 'release');
@@ -195,6 +198,35 @@ exports.checkDownload = function(req, res) {
 		res.set('X-Error', err.message);
 		return res.status(err.code).end();
 	});
+};
+
+exports.thumbRedirect = function(req, res) {
+	const validFormats = ImageProcessor.getReleaseThumbFormats();
+	const format = req.query.format && validFormats.includes(req.query.format) ? req.query.format : 'medium';
+
+	return Promise.try(() => {
+		// retrieve release
+		return Release.findOne({ id: req.params.release_id })
+			.populate('versions.files._playfield_image')
+			.exec();
+
+	}).then(release => {
+
+		// fail if no release
+		if (!release) {
+			throw error('No such release with ID "%s".', req.params.id).status(404);
+		}
+
+		const thumb = ReleaseSerializer.findThumb(release.versions, req, { thumbFormat: format });
+		if (!thumb) {
+			throw error('Cannot find thumb in format "%s".', format).status(404);
+		}
+
+		res.writeHead(302, { 'Location': thumb.image.url });
+		res.end();
+
+	}).catch(api.handleError(res, error, 'Error updating version', /^versions\.\d+\./));
+
 };
 
 /**

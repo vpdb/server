@@ -27,4 +27,5 @@ exports.register = function(app, api, storage) {
 	app.get(settings.storageProtectedPath('/releases/:release_id'), api.auth(storage.releases.download, 'files', 'download', [ scope.ALL ]));
 	app.head(settings.storageProtectedPath('/releases/:release_id'), api.auth(storage.releases.checkDownload, 'files', 'download', [ scope.ALL ]));
 	app.post(settings.storageProtectedPath('/releases/:release_id'), api.auth(storage.releases.download, 'files', 'download', [ scope.ALL ]));
+	app.get(settings.storageProtectedPath('/releases/:release_id/thumb'), api.anon(storage.releases.thumbRedirect));
 };

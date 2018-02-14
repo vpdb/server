@@ -489,6 +489,8 @@ exports.updateVersion = function(req, res) {
 			}
 		});
 
+		return null;
+
 	}).catch(api.handleError(res, error, 'Error updating version', /^versions\.\d+\./));
 };
 

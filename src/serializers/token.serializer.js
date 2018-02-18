@@ -13,7 +13,7 @@ class TokenSerializer extends Serializer {
 		// parse name for browser string
 		const browser = userAgentParser(doc.label);
 		if (browser.browser.name && browser.os.name) {
-			doc.browser = browser;
+			token.browser = browser;
 		}
 		return token;
 	}

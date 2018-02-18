@@ -40,6 +40,9 @@ exports.values = {
 	'playfield-ws': {
 		mimeTypes: [ 'image/jpeg', 'image/png', 'video/mp4', 'video/x-flv', 'video/avi', 'video/x-f4v' ]
 	},
+	'landscape': {
+		mimeTypes: [ 'image/jpeg', 'image/png' ]
+	},
 	'release': {
 		mimeTypes: [ 'application/x-visual-pinball-table', 'application/x-visual-pinball-table-x', 'text/plain', 'application/vbscript', 'audio/mpeg', 'audio/mp3', 'application/zip', 'application/rar', 'application/x-rar-compressed', 'application/x-zip-compressed' ]
 	},

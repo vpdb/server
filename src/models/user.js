@@ -349,7 +349,14 @@ UserSchema.methods.hashPassword = function(password) {
 	if (!password) {
 		return '';
 	}
+	if (!this.password_salt) {
+		return '';
+	}
 	return crypto.createHmac('sha1', this.password_salt).update(password).digest('hex');
+};
+
+UserSchema.methods.passwordSet = function() {
+	return this.password_salt && this.password_hash;
 };
 
 UserSchema.methods.hasRole = function(role) {

@@ -64,8 +64,15 @@ exports.create = function(req, res) {
 		}
 
 		// in any case, if a password is supplied, check it.
-		if (req.body.password && !req.user.authenticate(req.body.password)) {
-			throw error('Wrong password.').warn('create-token').status(401);
+		if (req.body.password) {
+
+			if (!req.user.passwordSet()) {
+				throw error('First set a password under your profile before adding tokens.').status(400);
+			}
+
+			if (!req.user.authenticate(req.body.password)) {
+				throw error('Wrong password.').warn('create-token').status(401);
+			}
 		}
 
 		// for application tokens, check additional permissions.

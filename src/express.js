@@ -68,7 +68,8 @@ exports.configure = function(app, raygunClient) {
 		// setup CORS
 		const cors = require('cors');
 		app.use(cors({
-			exposedHeaders: 'Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size' }));
+			exposedHeaders: 'Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size,Content-Disposition'
+		}));
 	}
 
 	// general stuff

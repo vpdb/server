@@ -23,9 +23,9 @@ const _ = require('lodash');
 const mongoose = require('mongoose');
 const Release = mongoose.model('Release');
 
-module.exports.up = function(grunt) {
+module.exports.up = function() {
 	return Release.find().exec().then(releases => {
-		grunt.log.write('Adding released_at to %s releases...', releases.length);
+		console.log('Adding released_at to %s releases...', releases.length);
 		return Promise.each(releases, release => {
 			if (!release.license) {
 				release.license = 'by-sa';

@@ -25,7 +25,7 @@ const Game = mongoose.model('Game');
 const Medium = mongoose.model('Medium');
 const gameCtrl = require('../controllers/api/games');
 
-module.exports.up = function(grunt) {
+module.exports.up = function() {
 
 	return Game.find().populate('_media.logo').populate('_media.backglass').exec().then(games => {
 		return Promise.each(games, game => {
@@ -35,11 +35,11 @@ module.exports.up = function(grunt) {
 				const mediumBackglass = _.find(media, m => m.file.file_type === 'backglass' && m._file.getMimeCategory() === 'image');
 
 				if (!mediumLogo && game._media.logo) {
-					grunt.log.writeln('Copying wheel image for game "%s"...', game.title);
+					console.log('Copying wheel image for game "%s"...', game.title);
 					copies.push(gameCtrl._copyMedia(game._created_by, game, game._media.logo, 'wheel_image'));
 				}
 				if (!mediumBackglass) {
-					grunt.log.writeln('Copying backglass for game "%s"...', game.title);
+					console.log('Copying backglass for game "%s"...', game.title);
 					copies.push(gameCtrl._copyMedia(game._created_by, game, game._media.backglass, 'backglass_image', bg => bg.metadata.size.width * bg.metadata.size.height > 647000));
 				}
 				return Promise.all(copies);

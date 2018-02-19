@@ -22,7 +22,7 @@
 const mongoose = require('mongoose');
 const Rom = mongoose.model('Rom');
 
-module.exports.up = function(grunt) {
+module.exports.up = function() {
 
 	return new Promise((resolve, reject) => {
 		Rom.collection.find({}, function(err, cursor) {
@@ -33,7 +33,7 @@ module.exports.up = function(grunt) {
 		});
 
 	}).then(roms => {
-		grunt.log.write('Got %s ROMs. Copying language to array: [ ', roms.length);
+		process.stdout.write('Got %s ROMs. Copying language to array: [ ', roms.length);
 		return Promise.each(roms, rom => {
 			if (rom.language) {
 				return new Promise((resolve, reject) => {
@@ -44,7 +44,7 @@ module.exports.up = function(grunt) {
 						if (err) {
 							return reject(err);
 						}
-						grunt.log.write('%s ', rom.id);
+						process.stdout.write('%s ', rom.id);
 						resolve(result);
 					});
 				});
@@ -52,6 +52,6 @@ module.exports.up = function(grunt) {
 		});
 
 	}).then(() => {
-		grunt.log.writeln('] done!');
+		console.log('] done!');
 	});
 };

@@ -33,7 +33,7 @@ const variations = {
 	directb2s: processors.directb2s.variations
 };
 
-module.exports.up = function(grunt) {
+module.exports.up = function() {
 
 	return File.find({ mime_type: 'application/x-directb2s'}).exec().then(files => Promise.each(files, file => {
 
@@ -43,7 +43,7 @@ module.exports.up = function(grunt) {
 		if (!processor) {
 			return;
 		}
-		grunt.log.writeln('Processing %s...', file.name);
+		console.log('Processing %s...', file.name);
 
 		// process pass 1
 		if (variations[mimeCategory] && variations[mimeCategory][file.file_type]) {
@@ -51,7 +51,7 @@ module.exports.up = function(grunt) {
 			return Promise.each(variations[mimeCategory][file.file_type], variation => {
 				let original = file.getPath(variation);
 				let dest = file.getPath(variation, '_reprocessing');
-				grunt.log.writeln('   -> %s: %s', variation.name, dest);
+				console.log('   -> %s: %s', variation.name, dest);
 				return processor.pass1(file.getPath(), dest, file, variation).then(() => {
 					if (fs.existsSync(original)) {
 						fs.unlinkSync(original);
@@ -59,11 +59,11 @@ module.exports.up = function(grunt) {
 					fs.renameSync(dest, original);
 				})
 				.then(() => storage.onProcessed(file, variation, processor))
-				.catch(err => grunt.log.writeln('ERROR: %s', err.message));
+				.catch(err => console.log('ERROR: %s', err.message));
 			});
 		}
 
 	})).then(() => {
-		grunt.log.writeln('All DirectB2S backglasses processed.');
+		console.log('All DirectB2S backglasses processed.');
 	});
 };

@@ -26,52 +26,33 @@ const Token = mongoose.model('Token');
  * This does the following for each stored token:
  *
  * - if type == "login": change to "personal", set scopes: ["login"]
- * - if type == "application": change to "personal", set scopes: ["all"]
- * @param grunt
+ * - if type == "access": change to "personal", set scopes: ["all"]
  */
-module.exports.up = function(grunt) {
+module.exports.up = function() {
 
 	let counter = 0;
-	return new Promise((resolve, reject) => {
-		Token.collection.find({}, function(err, cursor) {
-			if (err) {
-				return reject(err);
-			}
-			resolve(cursor.toArray());
-		});
 
-	}).then(tokens => {
-		grunt.log.writeln('Got %s tokens, migrating to new scopes.', tokens.length);
+	return Token.find({}).exec().then(tokens => {
+
+		console.log('Got %s tokens, migrating to new scopes.', tokens.length);
 		return Promise.each(tokens, token => {
 			if (token.type === 'login') {
-				return new Promise((resolve, reject) => {
-					Token.collection.updateOne({ _id: token._id }, {
-						$set: { type: 'personal', scopes: [ 'login' ] }
-					}, (err, result) => {
-						if (err) {
-							return reject(err);
-						}
-						counter++;
-						resolve(result);
-					});
-				});
+				counter++;
+				token.type = 'personal';
+				token.scopes = ['login'];
+				return token.save();
 			}
-			if (token.type === 'application') {
-				return new Promise((resolve, reject) => {
-					Token.collection.updateOne({ _id: token._id }, {
-						$set: { type: 'personal', scopes: [ 'all' ] }
-					}, (err, result) => {
-						if (err) {
-							return reject(err);
-						}
-						counter++;
-						resolve(result);
-					});
-				});
+			if (token.type === 'access') {
+				counter++;
+				token.type = 'personal';
+				token.scopes = ['all'];
+				return token.save();
 			}
+			return null;
 		});
 
 	}).then(() => {
-		grunt.log.writeln('Updated %s tokens.', counter);
+		console.log('Updated %s tokens.', counter);
+		return null;
 	});
 };

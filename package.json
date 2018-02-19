@@ -109,7 +109,6 @@
 		"html2jade": "0.8.6",
 		"json-stable-stringify": "^1.0.1",
 		"kss": "2.4.0",
-		"load-grunt-tasks": "3.5.2",
 		"markdown-it": "8.4.0",
 		"metalsmith": "2.3.0",
 		"metalsmith-collections": "0.7.0",

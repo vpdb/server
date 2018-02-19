@@ -19,6 +19,7 @@
 
 'use strict';
 
+Promise = require('bluebird');
 const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
@@ -27,54 +28,50 @@ const Git = require('nodegit');
 
 const config = require('../modules/settings').current;
 
+const argv = require('yargs').argv;
+
 mongoose.Promise = Promise;
 
-module.exports = function(grunt) {
+let scriptFolder = path.resolve(__dirname, '../migrations');
 
-	let scriptFolder = path.resolve(__dirname, '../migrations');
+const runNumber = argv['run-number'];
+let fromFolder = argv.from;
+let toFolder = argv.to || '.';
 
-	grunt.registerTask('migrate', function() {
+Promise.try(() => {
 
-		let done = this.async();
-		let runNumber = grunt.option('run-number');
-		let fromFolder = grunt.option('from');
-		let toFolder = grunt.option('to') || '.';
-
-		// only run one script?
-		if (runNumber) {
-			let scripts = fs.readdirSync(scriptFolder);
-			let prefix = _.padStart(runNumber, 2, '0') + '-';
-			let script = _.find(scripts, filename => filename.startsWith(prefix));
-			if (!script) {
-				throw new Error('No script found starting with ' + prefix);
-			}
-			return Promise.try(bootstrapDatabase).then(() => {
-				grunt.log.writeln('Executing migrating script %s...', script);
-				let migrate = require(path.resolve(scriptFolder, script));
-				return migrate.up(grunt);
-
-			}).nodeify(done);
+	// only run one script?
+	if (runNumber) {
+		let scripts = fs.readdirSync(scriptFolder);
+		let prefix = _.padStart(runNumber, 2, '0') + '-';
+		let script = _.find(scripts, filename => filename.startsWith(prefix));
+		if (!script) {
+			throw new Error('No script found starting with ' + prefix);
 		}
+		return Promise.try(bootstrapDatabase).then(() => {
+			console.log('Executing migrating script %s...', script);
+			let migrate = require(path.resolve(scriptFolder, script));
+			return migrate.up();
+		});
+	}
 
-		if (!fromFolder) {
-			throw new Error('Must specify --from option when migrating.');
-		}
-		fromFolder = path.resolve(fromFolder);
-		toFolder = path.resolve(toFolder);
+	if (!fromFolder) {
+		throw new Error('Must specify --from option when migrating.');
+	}
+	fromFolder = path.resolve(fromFolder);
+	toFolder = path.resolve(toFolder);
 
-		if (fromFolder === toFolder) {
-			grunt.log.writeln('Migration source and destination identical, skipping.');
-			return done();
-		}
+	if (fromFolder === toFolder) {
+		console.log('Migration source and destination identical, skipping.');
+		return;
+	}
 
-		let fromRepo, toRepo, fromCommit, toCommit, foundFromCommit = false;
-		return Promise.try(() => {
-			return bootstrapDatabase();
+	let fromRepo, toRepo, fromCommit, toCommit, foundFromCommit = false;
 
-		}).then(() => {
-			return Git.Repository.open(fromFolder);
+	return bootstrapDatabase()
+		.then(() => Git.Repository.open(fromFolder))
+		.then(repo => {
 
-		}).then(repo => {
 			fromRepo = repo;
 			return Git.Repository.open(toFolder);
 
@@ -110,24 +107,31 @@ module.exports = function(grunt) {
 		}).then(commits => {
 
 			if (!foundFromCommit) {
-				grunt.log.writeln('Initial commit not found, aborting (this can happen on a force push).');
+				console.log('Initial commit not found, aborting (this can happen on a force push).');
 				return;
 			}
 			let scripts = fs.readdirSync(scriptFolder);
-			grunt.log.writeln('Found %s commits between %s and %s.', commits.length, fromCommit.sha().substring(0, 7), toCommit.sha().substring(0, 7));
+			console.log('Found %s commits between %s and %s.', commits.length, fromCommit.sha().substring(0, 7), toCommit.sha().substring(0, 7));
 			return Promise.each(_.reverse(commits), commit => {
 				let script = _.find(scripts, filename => commit.sha().startsWith(filename.split('-')[1]));
 				if (!script) {
 					return;
 				}
-				grunt.log.writeln('Executing migrating script %s for commit %s...', script, commit.sha());
+				console.log('Executing migrating script %s for commit %s...', script, commit.sha());
 				let migrate = require(path.resolve(scriptFolder, script));
-				return migrate.up(grunt);
+				return migrate.up();
 			});
 
-		}).nodeify(done);
-	});
-};
+		}).then(() => {
+			console.log('Migrations done!');
+			mongoose.connection.close();
+		});
+
+}).catch(err => {
+	console.error('Migration error.');
+	console.error(err.stack);
+	process.exit(1);
+});
 
 /**
  * Connectes to MongoDB and boostraps all models.
@@ -136,7 +140,10 @@ module.exports = function(grunt) {
 function bootstrapDatabase() {
 	return Promise.try(() => {
 		// bootstrap db connection
-		return mongoose.connect(config.vpdb.db, { server: { socketOptions: { keepAlive: 1 } }, promiseLibrary: require('bluebird') });
+		return mongoose.connect(config.vpdb.db, {
+			server: { socketOptions: { keepAlive: 1 } },
+			promiseLibrary: require('bluebird')
+		});
 
 	}).then(() => {
 		// bootstrap models

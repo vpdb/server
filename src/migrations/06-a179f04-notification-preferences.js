@@ -22,9 +22,9 @@
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
 
-module.exports.up = function(grunt) {
+module.exports.up = function() {
 	return User.find().exec().then(users => {
-		grunt.log.write('Setting moderation notification flag for %s users.', users.length);
+		console.log('Setting moderation notification flag for %s users.', users.length);
 		return Promise.each(users, user => {
 			if (user.preferences) {
 				user.preferences.notify_release_moderation_status = true;

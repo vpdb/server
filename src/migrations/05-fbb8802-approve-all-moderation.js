@@ -24,12 +24,12 @@ const Release = mongoose.model('Release');
 const Backglass = mongoose.model('Backglass');
 const Rom = mongoose.model('Rom');
 
-module.exports.up = function(grunt) {
-	return Promise.each([ Release, Backglass, Rom ], model => migrate(model, grunt));
+module.exports.up = function() {
+	return Promise.each([ Release, Backglass, Rom ], model => migrate(model));
 };
 
-function migrate(model, grunt) {
-	grunt.log.writeln('Migrating moderations for %s...', model.modelName);
+function migrate(model) {
+	console.log('Migrating moderations for %s...', model.modelName);
 	return model.find().exec().then(entities => {
 		return Promise.each(entities, entity => {
 			if (!entity.moderation.is_approved && !entity.moderation.is_refused && !entity.moderation.auto_approved && !entity.moderation.history.length) {

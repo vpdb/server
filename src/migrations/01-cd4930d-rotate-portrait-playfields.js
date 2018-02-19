@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const File = mongoose.model('File');
 const processor = require('../modules/processor/image');
 
-module.exports.up = function(grunt) {
+module.exports.up = function() {
 
 	return Promise.each(File.find({ file_type: 'playfield-fs' }).exec(), file => {
 
@@ -28,7 +28,7 @@ module.exports.up = function(grunt) {
 
 				// setup success handler
 				writeStream.on('finish', function() {
-					grunt.log.writeln(file.name);
+					console.log(file.name);
 					resolve();
 				});
 				writeStream.on('error', reject);

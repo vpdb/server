@@ -23,12 +23,12 @@ const mongoose = require('mongoose');
 const Game = mongoose.model('Game');
 const Release = mongoose.model('Release');
 
-module.exports.up = function(grunt) {
+module.exports.up = function() {
 
-	return migrateGames(grunt).then(() => migrateReleases(grunt));
+	return migrateGames().then(() => migrateReleases());
 };
 
-function migrateGames(grunt) {
+function migrateGames() {
 	return new Promise((resolve, reject) => {
 		Game.collection.find({}, function(err, cursor) {
 			if (err) {
@@ -38,7 +38,7 @@ function migrateGames(grunt) {
 		});
 
 	}).then(games => {
-		grunt.log.write('Got %s games for flattening: [ ', games.length);
+		process.stdout.write('Got %s games for flattening: [ ', games.length);
 		return Promise.each(games, game => {
 			if (game._media) {
 				return new Promise((resolve, reject) => {
@@ -55,7 +55,7 @@ function migrateGames(grunt) {
 						if (err) {
 							return reject(err);
 						}
-						grunt.log.write('%s ', game.id);
+						process.stdout.write('%s ', game.id);
 						resolve(result);
 					});
 				});
@@ -63,11 +63,11 @@ function migrateGames(grunt) {
 		});
 
 	}).then(() => {
-		grunt.log.writeln('] done!');
+		console.log('] done!');
 	});
 }
 
-function migrateReleases(grunt) {
+function migrateReleases() {
 	return new Promise((resolve, reject) => {
 		Release.collection.find({}, function(err, cursor) {
 			if (err) {
@@ -77,7 +77,7 @@ function migrateReleases(grunt) {
 		});
 
 	}).then(releases => {
-		grunt.log.write('Got %s releases for flattening: [ ', releases.length);
+		process.stdout.write('Got %s releases for flattening: [ ', releases.length);
 		return Promise.each(releases, release => {
 			let set = {};
 			let unset = {};
@@ -102,13 +102,13 @@ function migrateReleases(grunt) {
 					if (err) {
 						return reject(err);
 					}
-					grunt.log.write('%s ', release.id);
+					process.stdout.write('%s ', release.id);
 					resolve(result);
 				});
 			});
 		});
 
 	}).then(() => {
-		grunt.log.writeln('] done!');
+		console.log('] done!');
 	});
 }

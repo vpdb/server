@@ -66,7 +66,7 @@ LogUserSchema.statics.log = function(req, user, result, event, payload, actor, m
 	const LogUser = mongoose.model('LogUser');
 	actor = actor || user;
 	const log = new LogUser({
-		_user: user,
+		_user: user._id || user,
 		_actor: actor,
 		event: event,
 		payload: payload,

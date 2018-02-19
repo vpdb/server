@@ -1147,7 +1147,7 @@ describe('The VPDB `user` API', function() {
 			});
 		});
 
-		it('should show add a new user with an unknown email address', done => {
+		it('should add a new user with an unknown email address', done => {
 			request
 				.put('/api/v1/users')
 				.with(appToken)
@@ -1161,7 +1161,7 @@ describe('The VPDB `user` API', function() {
 			});
 		});
 
-		it('should show update a user with a known email address', done => {
+		it('should update a user with a known email address', done => {
 			request
 				.put('/api/v1/users')
 				.with(appToken)
@@ -1174,7 +1174,7 @@ describe('The VPDB `user` API', function() {
 				});
 		});
 
-		it('should show update a user with an existing provider ID', done => {
+		it('should update a user with an existing provider ID', done => {
 			request
 				.put('/api/v1/users')
 				.with(appToken)

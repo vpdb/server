@@ -21,9 +21,8 @@ DIRNAME=${BRANCH}-${HEAD_REV}
 repo_clone ${DIRNAME}
 repo_checkout_branch ${DIRNAME} ${BRANCH}
 
-# 2. install node packages and build
+# 2. install node packages
 npm_install_copy ${DIRNAME}
-grunt_build ${DIRNAME}
 
 # 3. change symlink
 repo_link ${DIRNAME}

@@ -466,27 +466,21 @@ For client documentation, check the [deployment guide](DEPLOY.md).
 
 ### Create file structure
 
-	sudo mkdir -p /var/www/production/shared/logs /var/www/production/shared/cache /var/www/production/shared/data /var/www/production/config
-	sudo mkdir -p /var/www/staging/shared/logs /var/www/staging/shared/cache /var/www/staging/shared/data /var/www/staging/config
+	sudo mkdir -p /var/www/server/production/shared/logs /var/www/server/production/config
+	sudo mkdir -p /var/www/website/production/shared/logs /var/www/website/production/config
+	sudo mkdir -p /var/www/server/staging/shared/logs /var/www/server/staging/config
+	sudo mkdir -p /var/www/website/staging/shared/logs /var/www/website/staging/config
 
-	sudo chmod 770 /var/www /var/www/production /var/www/staging -R
+	sudo chmod 770 /var/www /var/www/server/production /var/www/server/staging -R
 
-The `shared` folder contains the following:
-
-* `logs` - Log files from the workers and naught
-* `data` - User-generated files.
-* `cache` - Auto-generated files.
-
-Note that the deployment files in `/var/www/[production|staging]/current` are read-only (and owned by the `deployer`
-user). All data *written* by the app (the `www-data` user) goes into either `cache` or `data` of the `shared`
-folder.
+Note that the deployment files in `/var/www/server/[production|staging]/current` are read-only (and owned by the 
+`deployer` user). All data *written* by the app goes into a separate `data` folder.
 
 ### Create deployment user
 
-	sudo adduser deployer --home /repos --shell /bin/bash --ingroup www-data --disabled-password
-	sudo chown deployer:www-data /var/www /repos -R
-	sudo chown www-data:www-data /var/www/production/shared/cache /var/www/production/shared/data -R
-	sudo chown www-data:www-data /var/www/staging/shared/cache /var/www/staging/shared/data -R
+	sudo adduser deployer --home /home/deployer --shell /bin/bash --ingroup www-data --disabled-password
+	sudo mkdir /staging /production
+	sudo chown deployer:www-data /var/www /staging /production -R
 
 	sudo su - deployer
 	mkdir .ssh
@@ -499,19 +493,20 @@ Paste your pub key in there.
 
 Still as user `deployer`:
 
-	cd ~
-	git clone --mirror https://github.com/vpdb/backend.git staging
-	git clone --mirror https://github.com/vpdb/backend.git production
-	chmod 700 /repos/production /repos/staging
+	git clone --mirror https://github.com/vpdb/server.git /staging/server.git
+	git clone --mirror https://github.com/vpdb/website.git /staging/website.git
+	git clone --mirror https://github.com/vpdb/backend.git /production/server.git
+	git clone --mirror https://github.com/vpdb/website.git /production/website.git
+	chmod 700 /production/server.git /staging/server.git
 
 Setup deployment hooks:
 
-	cd ~
-	git clone https://github.com/vpdb/backend.git source
-	ln -s ~/source/deploy/hooks/post-receive-production ~/production/hooks/post-receive
-	ln -s ~/source/deploy/hooks/post-receive-staging ~/staging/hooks/post-receive
-	ln -s ~/source/deploy/hooks/common ~/production/hooks/common
-	ln -s ~/source/deploy/hooks/common ~/staging/hooks/common
+	git clone https://github.com/vpdb/server.git ~/vpdb-server
+	git clone https://github.com/vpdb/website.git ~/vpdb-website
+	ln -s ~/vpdb-server/deploy/hooks/post-receive-production /production/server.git/hooks/post-receive
+	ln -s ~/vpdb-server/deploy/hooks/post-receive-staging /staging/server.git/hooks/post-receive
+	ln -s ~/vpdb-server/deploy/hooks/common /production/server.git/hooks/common
+	ln -s ~/vpdb-server/deploy/hooks/common /staging/server.git/hooks/common
 
 Also add `scripts` folder to the path for easy deployment commands.
 

@@ -22,9 +22,8 @@ echo Deploying version ${LAST_TAG}...
 repo_clone ${LAST_TAG}
 repo_checkout_tag ${LAST_TAG}
 
-# 2. install node packages and build
+# 2. install node packages
 npm_install ${LAST_TAG}
-grunt_build ${LAST_TAG}
 
 # 3. change symlink
 repo_link ${LAST_TAG}

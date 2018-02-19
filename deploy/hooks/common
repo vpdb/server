@@ -3,7 +3,7 @@
 ################ config start ################
 
 KEEP_DEPLOYMENTS=5
-DEPLOY_ROOT=/var/www
+DEPLOY_ROOT=/var/www/server
 
 ################  config end  ################
 
@@ -81,9 +81,6 @@ npm_install() {
 	cd ${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
 	npm install --no-optional
 	test $? -eq 0 || rollback_abort $1 "Failed to run npm install. Manually fix and relaunch deployment.".
-	echo "Installing Bower dependencies..."
-	bower install --force-latest
-	test $? -eq 0 || rollback_abort $1 "Failed to run bower install. Manually fix and relaunch deployment.".
 }
 
 npm_install_copy() {
@@ -95,16 +92,6 @@ npm_install_copy() {
 	cd ${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
 	npm install --no-optional
 	test $? -eq 0 || rollback_abort $1 "Failed to run npm install. Manually fix and relaunch deployment.".
-	echo "Installing Bower dependencies..."
-	bower install --force-latest
-	test $? -eq 0 || rollback_abort $1 "Failed to run bower install. Manually fix and relaunch deployment.".
-}
-
-grunt_build() {
-	cd ${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
-	echo "Running build with Grunt..."
-	APP_SETTINGS=${DEPLOY_ROOT}/${DEPLOY_ENV}/settings.js APP_NAME=${DEPLOY_ENV} NODE_ENV=production grunt build
-	test $? -eq 0 || abort $1 "Grunt build failed. Fix and redeploy."
 }
 
 repo_link() {
@@ -145,7 +132,7 @@ repo_link() {
 
 	echo Running migration scripts...
 	cd ${dest}
-	APP_SETTINGS=${currentSettings} APP_NAME=${DEPLOY_ENV} NODE_ENV=production grunt migrate --from=${DEPLOY_ROOT}/${DEPLOY_ENV}/current
+	APP_SETTINGS=${currentSettings} APP_NAME=${DEPLOY_ENV} NODE_ENV=production node ${dest}/src/scripts/migrate.js --from=${DEPLOY_ROOT}/${DEPLOY_ENV}/current
     test $? -eq 0 || abort $1 "Migration failed. Fix and redeploy."
 
 	echo Swapping code...

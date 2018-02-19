@@ -37,7 +37,7 @@ function Settings() {
 		logger.error(e.stack);
 		throw e;
 	}
-	const filePath = path_.isAbsolute(process.env.APP_SETTINGS) ? process.env.APP_SETTINGS : path_.resolve(process.cwd(), process.env.APP_SETTINGS);
+	let filePath = path_.isAbsolute(process.env.APP_SETTINGS) ? process.env.APP_SETTINGS : path_.resolve(process.cwd(), process.env.APP_SETTINGS);
 
 	/* istanbul ignore next */
 	if (!fs.existsSync(filePath)) {
@@ -56,21 +56,21 @@ function Settings() {
 Settings.prototype.validate = function() {
 
 	logger.info('[settings] Validating settings at %s', this.filePath);
-	const settings = this.current;
+	let settings = this.current;
 
-	const validate = function(validation, setting, path) {
+	let validate = function(validation, setting, path) {
 		let success = true;
 		let validationError, p, i, j;
-		const logError = function(p, error, setting) {
+		let logError = function(p, error, setting) {
 			setting = !_.isUndefined(error.setting) ? error.setting : setting;
-			const s = _.isObject(setting) ? JSON.stringify(setting) : setting;
+			let s = _.isObject(setting) ? JSON.stringify(setting) : setting;
 			if (_.isObject(error)) {
 				logger.error('[settings] %s.%s [KO]: %s (%s).', p, error.path, error.message, s);
 			} else {
 				logger.error('[settings] %s [KO]: %s (%s).', p, error, s);
 			}
 		};
-		for (var s in validation) {
+		for (let s in validation) {
 			if (validation.hasOwnProperty(s)) {
 				p = (path + '.' + s).substr(1);
 
@@ -137,24 +137,24 @@ Settings.prototype.validate = function() {
 /* istanbul ignore next */
 Settings.prototype.migrate = function(callback) {
 
-	const settingsCurrName = path_.basename(this.filePath);
-	const settingsDistPath = path_.resolve(__dirname, '../config/settings-dist.js');
+	let settingsCurrName = path_.basename(this.filePath);
+	let settingsDistPath = path_.resolve(__dirname, '../config/settings-dist.js');
 	// eslint-disable-next-line
-	const nl = /\x0d\x0a/gi;
-	const settingsDist = fs.readFileSync(settingsDistPath, { encoding: 'utf8' }).trim().replace(nl, '\n');
-	const settingsCurr = fs.readFileSync(this.filePath, { encoding: 'utf8' }).trim().replace(nl, '\n');
-	const result = { added: [], errors: [] };
+	let nl = /\x0d\x0a/gi;
+	let settingsDist = fs.readFileSync(settingsDistPath, { encoding: 'utf8' }).trim().replace(nl, '\n');
+	let settingsCurr = fs.readFileSync(this.filePath, { encoding: 'utf8' }).trim().replace(nl, '\n');
+	let result = { added: [], errors: [] };
 
 	if (settingsCurr !== settingsDist) {
 
 		logger.info('[settings] Checking for new settings.');
 
 		// 1. retrieve added properties
-		const oldTree = {};
-		const newTree = {};
+		let oldTree = {};
+		let newTree = {};
 		eval(settingsCurr.replace(/module\.exports\s*=\s*\{/, 'oldTree = {')); // jshint ignore:line
 		eval(settingsDist.replace(/module\.exports\s*=\s*\{/, 'newTree = {')); // jshint ignore:line
-		const newProps = diff(oldTree, newTree);
+		let newProps = diff(oldTree, newTree);
 		if (newProps.length === 0) {
 			logger.info('[settings] No new settings found.');
 			return callback(result);
@@ -162,7 +162,7 @@ Settings.prototype.migrate = function(callback) {
 		logger.info('[settings] Found new settings: [' + newProps.join(', ') + ']');
 
 		// 2. retrieve code blocks of added properties
-		const nodesNew = analyze(uglify.minify(settingsDist, {
+		let nodesNew = analyze(uglify.minify(settingsDist, {
 			compress: false,
 			mangle: false,
 			output: {
@@ -173,12 +173,12 @@ Settings.prototype.migrate = function(callback) {
 
 		// 3. inject code blocks into settings.js
 		let settingsPatched = _.clone(settingsCurr);
-		const settingsNew = _.pick(nodesNew, newProps);
-		const settingsNewKeys = _.keys(settingsNew);
+		let settingsNew = _.pick(nodesNew, newProps);
+		let settingsNewKeys = _.keys(settingsNew);
 		let ast;
 		for (let i = 0; i < settingsNewKeys.length; i++) {
-			const path = settingsNewKeys[i]; // path in settings to be added
-			const node = settingsNew[path];  // ast node corresponding to the setting to be added
+			let path = settingsNewKeys[i]; // path in settings to be added
+			let node = settingsNew[path];  // ast node corresponding to the setting to be added
 			try {
 				// analyze current settings, so we know where to inject
 				ast = analyze(uglify.minify(settingsPatched, {
@@ -205,10 +205,10 @@ Settings.prototype.migrate = function(callback) {
 			if (!ast[path]) {
 				logger.info('[settings] Patching %s with setting "%s"', settingsCurrName, path);
 
-				const comment = node.start.comments_before.length > 0;
-				const start = comment ? node.start.comments_before[0].pos : node.start.pos;
-				const len = comment ? node.end.endpos - start : node.end.endpos - start;
-				const codeBlock = settingsDist.substr(start, len);
+				let comment = node.start.comments_before.length > 0;
+				let start = comment ? node.start.comments_before[0].pos : node.start.pos;
+				let len = comment ? node.end.endpos - start : node.end.endpos - start;
+				let codeBlock = settingsDist.substr(start, len);
 				//				logger.info('start: %d, len: %d, hasComment: %s', start, len, comment);
 				//				logger.info('\n===============\n%s\n===============\n', util.inspect(node, false, 10, true));
 				//				logger.info('settingsDist:\n%s', settingsDist);
@@ -280,7 +280,7 @@ Settings.prototype.migrate = function(callback) {
  * @returns {Object}
  */
 function analyze(tree, path, node) {
-	const nodes = {};
+	let nodes = {};
 	if (node) {
 		nodes[path] = node;
 	}
@@ -289,7 +289,7 @@ function analyze(tree, path, node) {
 		_.extend(nodes, analyze(tree.right, path));
 	} else if (tree.properties) {
 		for (i = 0; i < tree.properties.length; i++) {
-			const nextPath = (path ? path + '.' : '') + tree.properties[i].key;
+			let nextPath = (path ? path + '.' : '') + tree.properties[i].key;
 			_.extend(nodes, analyze(tree.properties[i].value, nextPath, tree.properties[i]));
 		}
 	} else if (tree.body) {
@@ -316,15 +316,15 @@ function analyze(tree, path, node) {
  */
 function diff(oldTree, newTree, parent) {
 	parent = parent ? parent : '';
-	const newProps = _.difference(_.keys(newTree), _.keys(oldTree));
-	const comProps = _.intersection(_.keys(newTree), _.keys(oldTree));
+	let newProps = _.difference(_.keys(newTree), _.keys(oldTree));
+	let comProps = _.intersection(_.keys(newTree), _.keys(oldTree));
 	let newValues = _.map(newProps, function(key) {
 		return parent ? parent + '.' + key : key;
 	});
 	for (let i = 0; i < comProps.length; i++) {
-		const prop = oldTree[comProps[i]];
+		let prop = oldTree[comProps[i]];
 		if (_.isObject(prop)) {
-			const p = parent ? parent + '.' + comProps[i] : comProps[i];
+			let p = parent ? parent + '.' + comProps[i] : comProps[i];
 			newValues = newValues.concat(diff(oldTree[comProps[i]], newTree[comProps[i]], p));
 		}
 	}
@@ -333,9 +333,9 @@ function diff(oldTree, newTree, parent) {
 
 function patch(settingsPatched, codeBlock, pos, parentPath) {
 //	console.log('PATCHING:\n--- code ---\n%s\n--- /code ---\nat pos %d below "%s"', codeBlock, pos, parentPath);
-	const before = settingsPatched.substr(0, pos);
-	const after = settingsPatched.substr(pos);
-	const level = parentPath ? parentPath.split('.').length : 0;
+	let before = settingsPatched.substr(0, pos);
+	let after = settingsPatched.substr(pos);
+	let level = parentPath ? parentPath.split('.').length : 0;
 	let indent = '';
 	for (let i = 0; i < level; i++) {
 		indent += '\t';
@@ -486,10 +486,10 @@ Settings.prototype.clientConfig = function() {
 };
 
 Settings.prototype.clientConfigName = function() {
-	const data = util.inspect(this.clientConfig());
-	const md5sum = crypto.createHash('md5');
+	let data = util.inspect(this.clientConfig());
+	let md5sum = crypto.createHash('md5');
 	md5sum.update(data);
-	const hash = md5sum.digest('hex').substr(0, 7);
+	let hash = md5sum.digest('hex').substr(0, 7);
 	return 'config_' + hash + '.js';
 };
 

@@ -171,7 +171,12 @@ exports.createOrUpdate = function(req, res) {
 				name: name,
 				email: req.body.email,
 				emails: [req.body.email],
-				[provider]: _.assign({ id: req.body.provider_id }, req.body.provider_profile || {})
+				[provider]: _.assign(req.body.provider_profile || {}, {
+					id: req.body.provider_id,
+					email: req.body.email,
+					username: name,
+					displayName: req.body.username
+				})
 			};
 
 			return User.createUser(newUser, false).then(newUser => {

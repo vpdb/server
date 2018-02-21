@@ -22,7 +22,14 @@ post:
       body:
         role/anon:
           example: !include http/post-res-422.json
+put:
+  is: [ protected]
+  description: |
+    Updates or creates a new user.
 
+    This is a service-only resource, meaning it's only accessible with a
+    provider token of a registered provider. The goal is for a provider site to
+    be able to create new users.
 get:
   is: [ protected ]
   securedBy: [ jwt: { scopes: [ ADMIN, MEMBER ] } ]

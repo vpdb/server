@@ -701,13 +701,13 @@ exports.list = function(req, res) {
 			}
 			let userQuery;
 			if (parseInt(req.query.provider_user).toString() === req.query.provider_user.toString()) {
-				userQuery = { $in: [ parseInt(req.query.provider_user), req.query.provider_user.toString() ]}
+				userQuery = { $in: [ parseInt(req.query.provider_user), req.query.provider_user.toString() ]};
 			} else {
 				userQuery = req.query.provider_user;
 			}
 			return User.findOne({ [req.tokenProvider + '.id' ]: userQuery }).then(user => {
 				if (user) {
-					query.push({ 'authors._user': user._id.toString() })
+					query.push({ 'authors._user': user._id.toString() });
 				}
 			});
 

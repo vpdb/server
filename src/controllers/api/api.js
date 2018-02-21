@@ -47,7 +47,7 @@ exports.auth = function(controllerFct, resource, permission, scopes, planConfig)
 				if (req.method.toLowerCase() === 'head') {
 					res.set('X-Error', err.message);
 				}
-				exports.fail(res, err, err.code)
+				exports.fail(res, err, err.code);
 			});
 	};
 };

@@ -78,6 +78,23 @@ get:
           example: !include http/list-res-200.json
 
 /{token_id}:
+  get:
+    securedBy: [ ]
+    description: |
+      Returns details of a given token.
+
+      Note that the token ID in this case is the token itself. This can be used
+      by third party apps to check if a token given by a user is valid and has
+      the needed scopes.
+
+    body:
+      role/admin:
+        example: !include http/view-req.json
+    responses:
+      200:
+        body:
+          role/admin:
+            example: !include http/view-res-200.json
   patch:
     is: [ protected ]
     securedBy: [ jwt: { scopes: [ MEMBER ] } ]

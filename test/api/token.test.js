@@ -382,6 +382,90 @@ describe('The VPDB `Token` API', function() {
 
 	});
 
+	describe('when checking a token', () => {
+		before(function(done) {
+			hlp.setupUsers(request, {
+				admin: { roles: [ 'admin' ] }
+			}, done);
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should fail for a random string', done => {
+			request
+				.get('/api/v1/tokens/12345')
+				.end(hlp.status(404, 'invalid token', done));
+		});
+
+		it('should fail for invalid application token', done => {
+			request
+				.get('/api/v1/tokens/663cc8bfff8112d28ed86b2853d9a9a8')
+				.end(hlp.status(404, 'invalid token', done));
+		});
+
+		it('should return data for valid application token', done => {
+			request
+				.post('/api/v1/tokens')
+				.as('admin')
+				.send({ label: 'Test Application', password: hlp.getUser('admin').password, provider: 'github', type: 'application', scopes: [ 'community', 'service' ] })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					expect(res.body.id).to.be.ok();
+					expect(res.body.token).to.be.ok();
+					request
+						.get('/api/v1/tokens/' + res.body.token)
+						.save({ path: 'tokens/view'})
+						.end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							expect(res.body.label).to.be('Test Application');
+							expect(res.body.type).to.be('application');
+							expect(res.body.scopes).to.eql(['community', 'service']);
+							expect(res.body.is_active).to.be(true);
+							expect(res.body.provider).to.be('github');
+							done();
+						});
+				});
+		});
+
+		it('should return data for valid provider token', done => {
+			request
+				.post('/api/v1/tokens')
+				.as('admin')
+				.send({ label: 'My Application', password: hlp.getUser('admin').password, type: 'personal', scopes: [ 'community' ] })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					expect(res.body.id).to.be.ok();
+					expect(res.body.token).to.be.ok();
+					request
+						.get('/api/v1/tokens/' + res.body.token)
+						.end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							expect(res.body.label).to.be('My Application');
+							expect(res.body.type).to.be('personal');
+							expect(res.body.scopes).to.eql(['community']);
+							expect(res.body.is_active).to.be(true);
+							expect(res.body.for_user).to.be(hlp.getUser('admin').id);
+							done();
+						});
+				});
+		});
+
+		it('should return data for valid JWT', done => {
+			request
+				.get('/api/v1/tokens/' + hlp.getUser('admin').token)
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body.type).to.be('jwt');
+					expect(res.body.scopes).to.eql(['all']);
+					expect(res.body.is_active).to.be(true);
+					expect(res.body.for_user).to.be(hlp.getUser('admin').id);
+					done();
+				});
+		});
+	});
+
 	describe('when listing tokens', function() {
 
 		before(function(done) {

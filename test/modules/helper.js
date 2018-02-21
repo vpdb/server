@@ -720,6 +720,7 @@ exports._createUser = function(request, name, config) {
 							return next(res.body.error);
 						}
 						request.tokens[name] = res.body.token;
+						that.users[name].token = res.body.token;
 
 						// 3. update user
 						debug('%s <%s>: Updating user...', name, user.email);

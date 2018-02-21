@@ -21,6 +21,7 @@
 
 const _ = require('lodash');
 const logger = require('winston');
+const jwt = require('jwt-simple');
 
 const error = require('../../modules/error')('api', 'token');
 const api = require('./api');
@@ -28,6 +29,9 @@ const acl = require('../../acl');
 const scope = require('../../scope');
 const Token = require('mongoose').model('Token');
 const TokenSerializer = require('../../serializers/token.serializer');
+
+const settings = require('../../modules/settings');
+const config = settings.current;
 
 exports.create = function(req, res) {
 
@@ -107,6 +111,67 @@ exports.create = function(req, res) {
 	}).then(() =>  {
 		logger.info('[api|token:create] Token "%s" successfully created.', newToken.label);
 		return api.success(res, TokenSerializer.detailed(newToken, req), 201);
+
+	}).catch(api.handleError(res, error, 'Error creating token'));
+};
+
+exports.view = function(req, res) {
+
+	const token = req.params.id;
+	return Promise.try(() => {
+
+		// app token?
+		if (/[0-9a-f]{32,}/i.test(token)) {
+
+			return Token.findOne({ token: token }).populate('_created_by').exec().then(appToken => {
+
+				// fail if not found
+				if (!appToken) {
+					throw error('Invalid token.').status(404);
+				}
+
+				const tokenInfo = {};
+				tokenInfo.label = appToken.label;
+				tokenInfo.type = appToken.type;
+				tokenInfo.scopes = appToken.scopes;
+				tokenInfo.created_at = appToken.created_at;
+				tokenInfo.expires_at = appToken.expires_at;
+				tokenInfo.is_active = appToken.is_active;
+
+				// additional props for application token
+				if (appToken.type === 'application') {
+					tokenInfo.provider = appToken.provider;
+				} else {
+					tokenInfo.for_user = appToken._created_by.id;
+				}
+
+				return tokenInfo;
+			});
+
+		// Otherwise, assume it's a JWT.
+		} else {
+
+			// decode
+			let decoded;
+			try {
+				decoded = jwt.decode(token, config.vpdb.secret, false, 'HS256');
+			} catch (e) {
+				throw error('Invalid token.').status(404);
+			}
+			const tokenInfo = {};
+			tokenInfo.type = decoded.irt ? 'jwt-refreshed' : 'jwt';
+			tokenInfo.scopes = ['all'];
+			tokenInfo.expires_at = new Date(decoded.exp);
+			tokenInfo.is_active = true; // JTWs cannot be revoked, so they are always active
+			tokenInfo.for_user = decoded.iss;
+			if (decoded.path) {
+				tokenInfo.for_path = decoded.path;
+			}
+			return tokenInfo;
+		}
+
+	}).then(tokenInfo => {
+		return api.success(res, tokenInfo, 200);
 
 	}).catch(api.handleError(res, error, 'Error creating token'));
 };

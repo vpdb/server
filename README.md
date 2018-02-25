@@ -152,6 +152,10 @@ Code is also run through Code Climate, with the following result: [![Code Climat
 
 Thanks also to JetBrains for their awesome IDE and support of the Open Source Community!
 
+<a title="Realtime application protection" href="https://www.sqreen.io/?utm_source=badge"><img width="150" src="https://s3-eu-west-1.amazonaws.com/sqreen-assets/badges/20171107/sqreen-light-badge.svg" alt="Sqreen | Runtime Application Protection" /></a>
+
+Finally, big shouts to Sqreen for their excellent security services protecting our host at vpdb.io!
+
 
 ## License
 

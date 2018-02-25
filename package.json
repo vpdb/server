@@ -21,7 +21,8 @@
 	"scripts": {
 		"start": "node app.js",
 		"serve:dev": "nodemon --config deploy/nodemon/dev.json --exec npm start",
-		"serve:test": "node app.js",
+		"serve:test": "nyc --reporter=lcov --reporter=html node app.js",
+		"serve:test:debug": "node --inspect app.js",
 		"serve:protractor": "cross-env NODE_ENV=test APP_SETTINGS=src/config/settings-protractor.js PORT=7357 APP_NAME=local run-s test:dropdbs start",
 		"build:lint": "eslint src/**/*.js",
 		"test:dropdbs": "node deploy/tools/dropdb",
@@ -31,6 +32,7 @@
 		"test:mocha": "mocha --reporter spec --timeout 120000 test/**/*.test.js",
 		"test:run": "run-s test:wait test:mocha test:finish",
 		"test:serve": "cross-env NODE_ENV=test APP_SETTINGS=src/config/settings-test.js PORT=7357 APP_NAME=local run-s build:lint test:dropdbs test:rimraf serve:test",
+		"test:serve:debug": "cross-env NODE_ENV=test APP_SETTINGS=src/config/settings-test.js PORT=7357 APP_NAME=local run-s test:dropdbs test:rimraf serve:test:debug",
 		"test:ci": "run-p test:serve test:run"
 	},
 	"dependencies": {

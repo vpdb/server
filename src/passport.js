@@ -132,53 +132,45 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 		let name, emails;
 		Promise.try(() => {
 
-			if (!profile.displayName && !profile.username) {
-				logger.warn('[passport|%s] Profile data does contain neither display name nor username: %s', logtag, JSON.stringify(profile));
-				name = profile.emails[0].value.substr(0, profile.emails[0].value.indexOf('@'));
-			} else {
-				name = profile.displayName || profile.username;
-			}
-			name = exports.removeDiacritics(name).replace(/[^0-9a-z ]+/gi, '');
-
 			// create query condition
 			emails = profile.emails.map(e => e.value);
 			const query = {
 				$or: [
 					{ [provider + '.id']: profile.id },
-					{ email: { $in: emails } },
-					{ emails: { $in: emails } },
-					{ validated_emails: { $in: emails } }
+					{ emails: { $in: emails } },           // emails from other providers
+					{ validated_emails: { $in: emails } }  // emails the user manually validated during sign-up or email change
 				]
 			};
 			logger.info('[passport|%s] Checking for existing user: %s', logtag, JSON.stringify(query));
-			return User.findOne(query).exec();
+			return User.find(query).exec();
+
+		}).then(users => {
+
+			if (users.length > 2) {
+				logger.error('[passport|%s] Got %s matches for user: [ %s ] with %s ID %s and emails [ %s ].',
+					logtag, users.length, users.map(u => u.id).join(', '), provider, profile.id, emails.join(', '));
+				throw error('Too many hits when matching user.');
+			}
+
+			if (users.length === 2) {
+				logger.warn('[passport|%s] Got %s matches for user: [ %s ] with %s ID %s and emails [ %s ].',
+					logtag, users.length, users.map(u => u.id).join(', '), provider, profile.id, emails.join(', '));
+				if (req.query.merge) {
+					return User.mergeUsers(users[0], users[1]);
+				} else {
+					throw error('Conflicted users, must merge.').status(409);
+				}
+			}
+
+			if (users.length === 1) {
+				return users[0];
+			}
+
+			return null;
 
 		}).then(user => {
 
-			/*
-			 * FIXME
-			 *
-			 * In theory we can have multiple hits here:
-			 *  1. User signs up with email1 (entry 1 created with email1)
-			 *  2. User authenticates via GitHub with email2 (entry 2 created with email2)
-			 *  3. User changes email2 on GitHub to email1
-			 *  4. User again authenticates via GitHub. We'll get 2 rows now:
-			 *     1. Entry 1 through match by email1
-			 *     2. Entry 2 through match by GitHub ID
-			 *
-			 *  (Order of 1. and 2. is interchangeable.)
-			 *  Right now, one of two things happens:
-			 *
-			 *  - If entry 1 happens to be the first returned, the local entry 1
-			 *    will be extended with the GitHub profile and user is logged locally.
-			 *  - If entry 2 happens to be the one, entry 2 will have its email
-			 *    updated, resulting in two entries with the same email in the
-			 *    database (or more likely, a unique constraint exception).
-			 *
-			 *  The "quick" solution would be to make sure to treat only entry 1,
-			 *  resulting in entry 2 becoming a zombie.
-			 *  The "right" solution would be to merge the two profiles.
-			 */
+			// if user exists, update and return.
 			if (user) {
 				if (!user[provider]) {
 					LogUser.success(req, user, 'authenticate', { provider: provider, profile: profile._json });
@@ -200,6 +192,17 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 				// save and return
 				return user.save();
 			}
+
+			// otherwise, create new user.
+
+			// compute username
+			if (!profile.displayName && !profile.username) {
+				logger.warn('[passport|%s] Profile data does contain neither display name nor username: %s', logtag, JSON.stringify(profile));
+				name = profile.emails[0].value.substr(0, profile.emails[0].value.indexOf('@'));
+			} else {
+				name = profile.displayName || profile.username;
+			}
+			name = exports.removeDiacritics(name).replace(/[^0-9a-z ]+/gi, '');
 
 			// check if username doesn't conflict
 			let newUser;

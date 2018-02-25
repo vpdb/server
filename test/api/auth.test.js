@@ -605,6 +605,51 @@ describe('The authentication engine of the VPDB API', function() {
 				}, true));
 		});
 
+		it('should fail when the oauth email changes to an existing address', done => {
+			request
+				.post('/api/v1/authenticate/mock')
+				.send({
+					provider: 'github',
+					profile: {
+						provider: 'github',
+						id: '12345',
+						displayName: 'User changing email',
+						username: 'mailchanger',
+						profileUrl: 'https://github.com/mailchanger',
+						emails: [
+							{ value: 'first.email@vpdb.io' }
+						],
+						_raw: '(not mocked)', _json: { not: 'mocked '}
+					}
+				}).end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+
+				request
+					.post('/api/v1/users')
+					.send(_.extend(hlp.genUser({ roles: ['member'], email: 'second.email@vpdb.io' }), { skipEmailConfirmation: true }, ))
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 201);
+						hlp.doomUser(res.body.id);
+						request
+							.post('/api/v1/authenticate/mock')
+							.send({
+								provider: 'github',
+								profile: {
+									provider: 'github',
+									id: '12345',
+									displayName: 'User changing email',
+									username: 'mailchanger',
+									profileUrl: 'https://github.com/mailchanger',
+									emails: [
+										{ value: 'second.email@vpdb.io' }
+									],
+									_raw: '(not mocked)', _json: { not: 'mocked '}
+								}
+							}).end(hlp.status(409, done));
+					});
+			});
+		})
+
 	});
 
 	describe('when authenticating via IPB', function() {

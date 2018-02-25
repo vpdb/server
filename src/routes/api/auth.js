@@ -51,5 +51,5 @@ exports.register = function(app, api) {
 	});
 
 	// oauth callback
-	app.get(settings.apiPath('/authenticate/:strategy'), api.user.authenticateOAuth2);
+	app.get(settings.apiPath('/authenticate/:strategy'), api.anon(api.user.authenticateOAuth2));
 };

@@ -31,6 +31,7 @@ const metrics = require('./plugins/metrics');
 
 const config = require('../modules/settings').current;
 const flavor = require('../modules/flavor');
+const mailer = require('../modules/mailer');
 const Schema = mongoose.Schema;
 
 
@@ -420,6 +421,199 @@ UserSchema.statics.createUser = function(userObj, confirmUserEmail) {
 		logger.info('[model|user] %s <%s> successfully created with ID "%s" and plan "%s".', count ? 'User' : 'Root user', user.email, user.id, user._plan);
 		return user;
 	});
+};
+
+UserSchema.statics.mergeUsers = function(user1, user2, scenario, req) {
+
+	// 1. decide which to keep
+	let keepUser, mergeUser;
+	if (req.user && req.user.id === user1.id) {
+		keepUser = user1;
+		mergeUser = user2;
+	} else {
+		keepUser = user2;
+		mergeUser = user1;
+	}
+
+	logger.info('[model|user]: Merging %s into %s...', mergeUser.toString(), keepUser.toString());
+
+	// 2. update references
+	return Promise.all([
+		mongoose.model('Backglass').update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() }),
+		mongoose.model('Build').update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() }),
+		mongoose.model('Comment').update({ _from: mergeUser._id.toString() }, { _from: keepUser._id.toString() }),
+		mongoose.model('File').update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() }),
+		mongoose.model('Game').update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() }),
+		mongoose.model('GameRequest').update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() }),
+		mongoose.model('LogEvent').update({ _actor: mergeUser._id.toString() }, { _actor: keepUser._id.toString() }),
+		mongoose.model('LogEvent').update({ '_ref.user': mergeUser._id.toString() }, { '_ref.user': keepUser._id.toString() }),
+		mongoose.model('LogUser').update({ _user: mergeUser._id.toString() }, { _user: keepUser._id.toString() }),
+		mongoose.model('LogUser').update({ _actor: mergeUser._id.toString() }, { _actor: keepUser._id.toString() }),
+		mongoose.model('Medium').update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() }),
+		mongoose.model('Release').update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() }),
+		mongoose.model('Rom').update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() }),
+		mongoose.model('Tag').update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() }),
+		mongoose.model('Token').update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() }),
+
+	]).then(result => {
+
+		console.log('Updated direct references:', result);
+
+		// 2.1 update release versions
+		return mongoose.model('Release').find({ 'authors._user': mergeUser._id.toString() }).exec().then(releases => {
+			return Promise.all(releases.map(release => {
+				release.authors.forEach(author => {
+					if (author._user.equals(mergeUser._id)) {
+						author._user = keepUser._id;
+					}
+				});
+				return release.save();
+			}));
+
+		}).then(() => mongoose.model('Release').find({ 'versions.files.validation._validated_by': mergeUser._id.toString() }).exec().then(releases => {
+
+			// 2.2 update release validation
+			return Promise.all(releases.map(release => {
+				release.files.forEach(releaseFile => {
+					if (releaseFile.validation._validated_by.equals(mergeUser._id)) {
+						releaseFile.validation._validated_by = keepUser._id;
+					}
+				});
+				return release.save();
+			}));
+
+		})).then(() => mongoose.model('Release').find({ 'moderation.history._created_by': mergeUser._id.toString() }).exec().then(releases => {
+
+			// 2.3 release moderation
+			return Promise.all(releases.map(release => {
+				release.moderation.history.forEach(historyItem => {
+					if (historyItem._created_by.equals(mergeUser._id)) {
+						historyItem._created_by = keepUser._id;
+					}
+				});
+				return release.save();
+			}));
+
+		})).then(() => mongoose.model('Backglass').find({ 'moderation.history._created_by': mergeUser._id.toString() }).exec().then(backglasses => {
+
+			// 2.4 backglass moderation
+			return Promise.all(backglasses.map(backglass => {
+				backglass.moderation.history.forEach(historyItem => {
+					if (historyItem._created_by.equals(mergeUser._id)) {
+						historyItem._created_by = keepUser._id;
+					}
+				});
+				return backglass.save();
+			}));
+		}));
+
+	}).then(() => {
+
+		// 2.5 ratings. first, update user id of all ratings
+		return mongoose.model('Rating').update({ _from: mergeUser._id.toString() }, { _from: keepUser._id.toString() }).then(() => {
+
+			// then, remove duplicate ratings
+			const map = new Map();
+			return mongoose.model('Rating').find({ _from: mergeUser._id.toString() }).exec().then(ratings => {
+				// put ratings for the same thing into a map
+				ratings.forEach(rating => {
+					const key = _.keys(rating._ref).sort().join(',') + ':' + _.values(rating._ref).sort().join(',');
+					map.set(key, (map.get(key) || []).push(rating));
+				});
+				// remove dupes
+				const queries = [];
+				map.values().filter(ratings => ratings.length > 1).forEach(dupeRatings => {
+					// update first
+					const first = dupeRatings.shift();
+					queries.push(first.update({ value: Math.round(_.sum(dupeRatings.map(r => r.value)) / dupeRatings.length) }));
+					// delete the rest
+					dupeRatings.forEach(r => queries.push(r.remove()));
+				});
+				return Promise.all(queries);
+			});
+		});
+
+	}).then(() => {
+
+		// 2.6 stars: first, update user id of all stars
+		return mongoose.model('Star').update({ _from: mergeUser._id.toString() }, { _from: keepUser._id.toString() }).then(() => {
+
+			// then, remove duplicate stars
+			const map = new Map();
+			return mongoose.model('Star').find({ _from: mergeUser._id.toString() }).exec().then(stars => {
+				// put ratings for the same thing into a map
+				stars.forEach(star => {
+					const key = _.keys(star._ref).sort().join(',') + ':' + _.values(star._ref).sort().join(',');
+					map.set(key, (map.get(key) || []).push(star));
+				});
+				// remove dupes
+				const queries = [];
+				map.values().filter(ratings => ratings.length > 1).forEach(dupeStars => {
+					// keep first
+					dupeStars.shift();
+					// delete the rest
+					dupeStars.forEach(r => queries.push(r.remove()));
+				});
+				return Promise.all(queries);
+			});
+		});
+
+	}).then(() => {
+
+		// 3. merge data
+		config.vpdb.quota.plans.forEach(plan => { // we assume that in the settings, the plans are sorted by increasing value
+			if ([keepUser._plan, mergeUser._plan].includes(plan.id)) {
+				keepUser._plan = plan.id;
+			}
+		});
+		keepUser.emails = _.uniq([...keepUser.emails, ...mergeUser.emails]);
+		keepUser.roles = _.uniq([...keepUser.roles, ...mergeUser.roles]);
+		if (mergeUser.password_hash && !keepUser.password_hash) {
+			keepUser.password_hash = mergeUser.password_hash;
+			keepUser.password_salt = mergeUser.password_salt;
+		}
+		if (mergeUser.location && !keepUser.location) {
+			keepUser.location = mergeUser.location;
+		}
+		keepUser.credits = keepUser.credits + mergeUser.credits;
+		keepUser.counter.comments = keepUser.counter.comments + mergeUser.counter.comments;
+		keepUser.counter.downloads = keepUser.counter.downloads + mergeUser.counter.downloads;
+		keepUser.counter.stars = keepUser.counter.stars + mergeUser.counter.stars;
+		keepUser.validated_emails = _.uniq([...keepUser.validated_emails, ...mergeUser.validated_emails]);
+		if (mergeUser.github && !keepUser.github) {
+			keepUser.github = mergeUser.github;
+		}
+		if (mergeUser.google && !keepUser.google) {
+			keepUser.google = mergeUser.google;
+		}
+		config.vpdb.passport.ipboard.forEach(ips => {
+			if (mergeUser[ips.id] && !keepUser[ips.id]) {
+				keepUser[ips.id] = mergeUser[ips.id];
+			}
+		});
+		return keepUser.save();
+
+	}).then(() => {
+
+		// 4. log
+		mongoose.model('LogUser').success(req, keepUser, 'merge_users', { kept: keepUser, merged: mergeUser });
+
+		// 5. notify
+		switch (scenario) {
+			default:
+				// TODO
+				return mailer.userMergedDeleted(keepUser, mergeUser, 'Reason follows')
+					.then(() => mailer.userMergedKept(keepUser, mergeUser, 'Reason follows'));
+		}
+
+	}).then(() => {
+
+		logger.info('[model|user]: Done merging, removing merged user.');
+
+		// 6. delete merged user
+		return mergeUser.remove();
+
+	}).then(() => keepUser);
 };
 
 //-----------------------------------------------------------------------------

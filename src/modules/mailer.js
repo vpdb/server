@@ -306,6 +306,23 @@ exports.releaseModerationCommented = function(user, release, message) {
 	});
 };
 
+exports.userMergedKept = function(userKept, userMerged, message) {
+	const subject = 'Another VPDB account has been merged into yours';
+	return sendEmail(userKept, subject, 'user-merged-kept', {
+		user: userKept,
+		userDeleted: userMerged,
+		message: message,
+	});
+};
+
+exports.userMergedDeleted = function(userKept, userMerged, message) {
+	const subject = 'Your VPDB account has been merged into another one';
+	return sendEmail(userKept, subject, 'user-merged-deleted', {
+		user: userMerged,
+		userKept: userKept,
+		message: message,
+	});
+};
 
 /**
  * Sends an email.

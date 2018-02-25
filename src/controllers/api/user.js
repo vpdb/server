@@ -527,9 +527,12 @@ exports.authenticateOAuth2Mock = function(req, res) {
 function passportCallback(req, res) {
 	return function(err, user, info) {
 		if (err) {
-			return api.fail(res, error(err, 'Authentication failed: %j', err.oauthError)
-				.warn('authenticate', req.params.strategy),
-			401);
+			if (err.oauthError) {
+				return api.fail(res, error(err, 'Authentication failed: %j', err.oauthError).warn('authenticate', req.params.strategy), err.code || 401);
+			} else {
+				return api.fail(res, err);
+			}
+
 		}
 		if (!user) {
 			return api.fail(res, error('No user object in passport callback. More info: %j', info)

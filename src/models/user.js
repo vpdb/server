@@ -426,6 +426,9 @@ UserSchema.statics.createUser = function(userObj, confirmUserEmail) {
 UserSchema.statics.mergeUsers = function(keepUser, mergeUser, explanation, req) {
 
 	logger.info('[model|user]: Merging %s into %s...', mergeUser.toString(), keepUser.toString());
+	if (keepUser.id === mergeUser.id) {
+		return Promise.reject('Cannot merge user ' + keepUser.id + ' into itself!');
+	}
 
 	// 1. update references
 	return Promise.all([
@@ -556,6 +559,7 @@ UserSchema.statics.mergeUsers = function(keepUser, mergeUser, explanation, req) 
 				keepUser._plan = plan.id;
 			}
 		});
+		keepUser.is_active = keepUser.is_active && mergeUser.is_active; // both must be active to stay active
 		keepUser.emails = _.uniq([...keepUser.emails, ...mergeUser.emails]);
 		keepUser.roles = _.uniq([...keepUser.roles, ...mergeUser.roles]);
 		if (mergeUser.password_hash && !keepUser.password_hash) {
@@ -589,8 +593,11 @@ UserSchema.statics.mergeUsers = function(keepUser, mergeUser, explanation, req) 
 		mongoose.model('LogUser').success(req, keepUser, 'merge_users', { kept: keepUser, merged: mergeUser });
 
 		// 4. notify
-		return mailer.userMergedDeleted(keepUser, mergeUser, explanation)
-			.then(() => mailer.userMergedKept(keepUser, mergeUser, explanation));
+		if (explanation) {
+			return mailer.userMergedDeleted(keepUser, mergeUser, explanation)
+				.then(() => mailer.userMergedKept(keepUser, mergeUser, explanation));
+		}
+		return null;
 
 	}).then(() => {
 

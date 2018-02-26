@@ -130,15 +130,25 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 			return callback(null, false, { message: 'Received profile from ' + logtag + ' does not contain user id.' });
 		}
 
-		let name, emails;
+		let name, localCredentials;
+		const emails = profile.emails.map(e => e.value);
 		Promise.try(() => {
+			// there might be "pending_registration" account(s) that match the received email addresses.
+			// in this case, we save the credentials for later and delete the account(s).
+			return User.find({ email: { $in: emails }, 'email_status.code': 'pending_registration' })
+				.then(users => Promise.each(users, user => {
+					if (!localCredentials && user.password_hash) {
+						localCredentials = _.pick(user, 'password_hash', 'password_salt');
+					}
+					logger.warn('[passport|%s] Deleting local user %s with pending registration (match by [ %s ]).', logtag, user.toString(), emails.join(', '));
+					return user.remove();
+				}));
 
-			// create query condition
-			emails = profile.emails.map(e => e.value);
+		}).then(() => {
+			// then, find users that match either a confirmed email or provider ID
 			const query = {
 				$or: [
 					{ [provider + '.id']: profile.id },
-					{ email: { $in: emails } },            // when email validation is disabled, that's all we have
 					{ emails: { $in: emails } },           // emails from other providers
 					{ validated_emails: { $in: emails } }  // emails the user manually validated during sign-up or email change
 				]
@@ -148,27 +158,25 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 
 		}).then(users => {
 
-			if (users.length > 2) {
-				logger.error('[passport|%s] Got %s matches for user: [ %s ] with %s ID %s and emails [ %s ].',
-					logtag, users.length, users.map(u => u.id).join(', '), provider, profile.id, emails.join(', '));
-				throw error('Too many hits when matching user.');
-			}
-
-			if (users.length === 2) {
-				logger.warn('[passport|%s] Got %s matches for user: [ %s ] with %s ID %s and emails [ %s ].',
+			// this can be more than 2 even, e.g. if three local accounts were registered and the oauth profile contains all of them emails
+			if (users.length > 1) {
+				logger.info('[passport|%s] Got %s matches for user: [ %s ] with %s ID %s and emails [ %s ].',
 					logtag, users.length, users.map(u => u.id).join(', '), provider, profile.id, emails.join(', '));
 
-				// TODO treat special cases: is_active: false, email_status.code: pending_registration
-				
 				const explanation = `The email address we've received from the OAuth provider you've just logged was already in our database. This can happen when you change the email address at the provider's to one you've already used at VPDB under a different account.`;
+				// if the user provided a user ID to merge, do it
 				if (req.query.merged_user_id) {
-					if (users.map(u => u.id).includes(req.query.merged_user_id)) {
-						return req.query.merged_user_id === users[0].id
-							? User.mergeUsers(users[0], users[1], explanation, req)
-							: User.mergeUsers(users[1], users[0], explanation, req);
+					const keepUser = _.find(users, u => u.id === req.query.merged_user_id);
+					if (keepUser) {
+						const otherUsers = _.find(users, u => u.id !== req.query.merged_user_id);
+						// merge users
+						return Promise
+							.each(otherUsers, otherUser => User.mergeUsers(keepUser, otherUser, explanation, req))
+							.then(() => keepUser);
 					} else {
 						throw error('Provided user ID does not match any of the conflicting users.').status(400);
 					}
+				// otherwise, fail and ask the user to provide the user ID
 				} else {
 					throw error('Conflicted users, must merge.')
 						.data({ explanation: explanation, users: users.map(u => UserSerializer.detailed(u, req)) })
@@ -176,15 +184,17 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 				}
 			}
 
+			// if only one user matched, we're good
 			if (users.length === 1) {
 				return users[0];
 			}
 
+			// otherwise it'll be created
 			return null;
 
 		}).then(user => {
 
-			// if user exists, update and return.
+			// if user found, update and return.
 			if (user) {
 				if (!user[provider]) {
 					LogUser.success(req, user, 'authenticate', { provider: provider, profile: profile._json });
@@ -201,6 +211,12 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 				// optional data
 				if (!user.thumb && profile.photos && profile.photos.length > 0) {
 					user.thumb = profile.photos[0].value;
+				}
+
+				// update credentials from "pending_registration" if none set
+				if (localCredentials && !user.password_hash) {
+					user.password_hash = localCredentials.password_hash;
+					user.password_salt = localCredentials.password_salt;
 				}
 
 				// save and return
@@ -227,12 +243,19 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 				newUser = {
 					provider: provider,
 					name: name,
-					email: profile.emails[0].value
+					email: profile.emails[0].value,
 				};
 				// optional data
 				if (profile.photos && profile.photos.length > 0) {
 					newUser.thumb = profile.photos[0].value;
 				}
+
+				// credentials from deleted "pending_registration" account
+				if (localCredentials) {
+					newUser.password_hash = localCredentials.password_hash;
+					newUser.password_salt = localCredentials.password_salt;
+				}
+
 				newUser[provider] = profile._json; // save original data to separate field
 				newUser.emails = _.uniq(emails);
 

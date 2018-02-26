@@ -541,6 +541,16 @@ function passportCallback(req, res) {
 			500);
 		}
 
+		// fail if user inactive
+		if (!user.is_active) {
+			LogUser.failure(req, user, 'authenticate', { provider: 'local' }, null, 'Inactive account.');
+			throw error('User <%s> is disabled, refusing access', user.email)
+				.display('Inactive account. Please contact an administrator')
+				.warn('authenticate')
+				.status(403);
+		}
+
+		// generate token and return.
 		const now = new Date();
 		const expires = new Date(now.getTime() + config.vpdb.apiTokenLifetime);
 		const token = auth.generateApiToken(user, now, false);

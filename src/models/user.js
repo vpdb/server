@@ -423,21 +423,11 @@ UserSchema.statics.createUser = function(userObj, confirmUserEmail) {
 	});
 };
 
-UserSchema.statics.mergeUsers = function(user1, user2, scenario, req) {
-
-	// 1. decide which to keep
-	let keepUser, mergeUser;
-	if (req.user && req.user.id === user1.id) {
-		keepUser = user1;
-		mergeUser = user2;
-	} else {
-		keepUser = user2;
-		mergeUser = user1;
-	}
+UserSchema.statics.mergeUsers = function(keepUser, mergeUser, explanation, req) {
 
 	logger.info('[model|user]: Merging %s into %s...', mergeUser.toString(), keepUser.toString());
 
-	// 2. update references
+	// 1. update references
 	return Promise.all([
 		mongoose.model('Backglass').update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() }),
 		mongoose.model('Build').update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() }),
@@ -459,7 +449,7 @@ UserSchema.statics.mergeUsers = function(user1, user2, scenario, req) {
 
 		console.log('Updated direct references:', result);
 
-		// 2.1 update release versions
+		// 1.1 update release versions
 		return mongoose.model('Release').find({ 'authors._user': mergeUser._id.toString() }).exec().then(releases => {
 			return Promise.all(releases.map(release => {
 				release.authors.forEach(author => {
@@ -472,7 +462,7 @@ UserSchema.statics.mergeUsers = function(user1, user2, scenario, req) {
 
 		}).then(() => mongoose.model('Release').find({ 'versions.files.validation._validated_by': mergeUser._id.toString() }).exec().then(releases => {
 
-			// 2.2 update release validation
+			// 1.2 update release validation
 			return Promise.all(releases.map(release => {
 				release.files.forEach(releaseFile => {
 					if (releaseFile.validation._validated_by.equals(mergeUser._id)) {
@@ -484,7 +474,7 @@ UserSchema.statics.mergeUsers = function(user1, user2, scenario, req) {
 
 		})).then(() => mongoose.model('Release').find({ 'moderation.history._created_by': mergeUser._id.toString() }).exec().then(releases => {
 
-			// 2.3 release moderation
+			// 1.3 release moderation
 			return Promise.all(releases.map(release => {
 				release.moderation.history.forEach(historyItem => {
 					if (historyItem._created_by.equals(mergeUser._id)) {
@@ -496,7 +486,7 @@ UserSchema.statics.mergeUsers = function(user1, user2, scenario, req) {
 
 		})).then(() => mongoose.model('Backglass').find({ 'moderation.history._created_by': mergeUser._id.toString() }).exec().then(backglasses => {
 
-			// 2.4 backglass moderation
+			// 1.4 backglass moderation
 			return Promise.all(backglasses.map(backglass => {
 				backglass.moderation.history.forEach(historyItem => {
 					if (historyItem._created_by.equals(mergeUser._id)) {
@@ -509,7 +499,7 @@ UserSchema.statics.mergeUsers = function(user1, user2, scenario, req) {
 
 	}).then(() => {
 
-		// 2.5 ratings. first, update user id of all ratings
+		// 1.5 ratings. first, update user id of all ratings
 		return mongoose.model('Rating').update({ _from: mergeUser._id.toString() }, { _from: keepUser._id.toString() }).then(() => {
 
 			// then, remove duplicate ratings
@@ -535,7 +525,7 @@ UserSchema.statics.mergeUsers = function(user1, user2, scenario, req) {
 
 	}).then(() => {
 
-		// 2.6 stars: first, update user id of all stars
+		// 1.6 stars: first, update user id of all stars
 		return mongoose.model('Star').update({ _from: mergeUser._id.toString() }, { _from: keepUser._id.toString() }).then(() => {
 
 			// then, remove duplicate stars
@@ -560,7 +550,7 @@ UserSchema.statics.mergeUsers = function(user1, user2, scenario, req) {
 
 	}).then(() => {
 
-		// 3. merge data
+		// 2. merge data
 		config.vpdb.quota.plans.forEach(plan => { // we assume that in the settings, the plans are sorted by increasing value
 			if ([keepUser._plan, mergeUser._plan].includes(plan.id)) {
 				keepUser._plan = plan.id;
@@ -595,22 +585,18 @@ UserSchema.statics.mergeUsers = function(user1, user2, scenario, req) {
 
 	}).then(() => {
 
-		// 4. log
+		// 3. log
 		mongoose.model('LogUser').success(req, keepUser, 'merge_users', { kept: keepUser, merged: mergeUser });
 
-		// 5. notify
-		switch (scenario) {
-			default:
-				// TODO
-				return mailer.userMergedDeleted(keepUser, mergeUser, 'Reason follows')
-					.then(() => mailer.userMergedKept(keepUser, mergeUser, 'Reason follows'));
-		}
+		// 4. notify
+		return mailer.userMergedDeleted(keepUser, mergeUser, explanation)
+			.then(() => mailer.userMergedKept(keepUser, mergeUser, explanation));
 
 	}).then(() => {
 
 		logger.info('[model|user]: Done merging, removing merged user.');
 
-		// 6. delete merged user
+		// 5. delete merged user
 		return mergeUser.remove();
 
 	}).then(() => keepUser);

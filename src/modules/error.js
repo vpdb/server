@@ -19,11 +19,11 @@
 
 'use strict';
 
-var _ = require('lodash');
-var util = require('util');
-var verr = require('verror');
-var logger = require('winston');
-var extsprintf = require('extsprintf');
+const _ = require('lodash');
+const util = require('util');
+const verr = require('verror');
+const logger = require('winston');
+const extsprintf = require('extsprintf');
 
 /**
  * A wrapper for VError that adds pre-configured logging prefixes.
@@ -67,14 +67,14 @@ Err.prototype.warn = function() {
  */
 Err.prototype._log = function(fct, args) {
 
-	var that = this;
-	var log = function() {
+	const that = this;
+	const log = function() {
 		fct(that.toString());
 
 		// also log validation errors; if not desired, launch your log()/warn() before errors().
 		if (that.errs) {
-			var errs = _.values(that.errs);
-			for (var i = 0; i < errs.length; i++) {
+			const errs = _.values(that.errs);
+			for (let i = 0; i < errs.length; i++) {
 				fct(that.name + ': Validation: ' + JSON.stringify(errs[i]));
 			}
 		}
@@ -82,8 +82,8 @@ Err.prototype._log = function(fct, args) {
 
 	if (_.values(args).length) {
 		// clone current prefixes
-		var prefixes = this.prefixes.slice(0).concat(_.values(args));
-		var oldName = this.name;
+		const prefixes = this.prefixes.slice(0).concat(_.values(args));
+		const oldName = this.name;
 
 		this.name = '[' + prefixes.join('|') + ']';
 		log();
@@ -114,6 +114,15 @@ Err.prototype.display = function() {
 	} catch (e) {
 		this.displayMessage = arguments[0];
 	}
+	return this;
+};
+
+/**
+ * Adds an additional `data` property to the returned body for structured info.
+ * @param {object} data
+ */
+Err.prototype.data = function(data) {
+	this.data = data;
 	return this;
 };
 
@@ -172,7 +181,7 @@ Err.prototype._stripFields = function() {
 	} else if (_.isObject(this.errs)) {
 		// todo use https://github.com/lodash/lodash/issues/169 when merged
 		_.forEach(this.errs, (error, path) => {
-			var newPath = path.replace(this.fieldPrefix, '');
+			const newPath = path.replace(this.fieldPrefix, '');
 			if (newPath != path) {
 				this.errs[newPath] = error;
 				delete this.errs[path];
@@ -208,10 +217,10 @@ function ErrWrapper(args) {
  */
 ErrWrapper.prototype.error = function() {
 
-	var err = Object.create(Err.prototype);
+	const err = Object.create(Err.prototype);
 	Err.apply(err, _.values(arguments));
 
-	var args = this.args || [];
+	const args = this.args || [];
 	if (args.length > 0) {
 		err.prefixes = args;
 		err.name = '[' + args.join('|') + ']';
@@ -228,6 +237,6 @@ ErrWrapper.prototype.error = function() {
  * @returns {ErrWrapper.error}
  */
 module.exports = function() {
-	var wrapper = new ErrWrapper(_.values(arguments));
+	const wrapper = new ErrWrapper(_.values(arguments));
 	return ErrWrapper.prototype.error.bind(wrapper);
 };

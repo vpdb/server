@@ -156,11 +156,11 @@ exports.fail = function(res, err, code) {
 					value: error.value
 				};
 			}), _.isEqual);
-			res.status(code).json(_.assignIn({ errors: _.sortBy(arr, 'field') }, body));
+			res.status(code).json(_.assignIn({ errors: _.sortBy(arr, 'field'), data: err.data || undefined }, body));
 		} else if (_.isFunction(err.msg)) {
-			res.status(code).json(_.assignIn({ error: err.msg() }, body));
+			res.status(code).json(_.assignIn({ error: err.msg(), data: err.data || undefined }, body));
 		} else {
-			res.status(code).json(_.assignIn({ error: err.message }, body));
+			res.status(code).json(_.assignIn({ error: err.message, data: err.data || undefined }, body));
 			logger.error(err.stack);
 		}
 	}).catch(err => logger.error(err.stack));

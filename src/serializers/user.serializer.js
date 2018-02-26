@@ -71,6 +71,7 @@ class UserSerializer extends Serializer {
 		} else {
 			delete user.email_status.token;
 		}
+		user.providers = [];
 
 		// provider data
 		if (!_.isEmpty(doc.github)) {
@@ -81,6 +82,7 @@ class UserSerializer extends Serializer {
 				avatar_url: doc.github.avatar_url,
 				html_url: doc.github.html_url
 			};
+			user.providers.push('github');
 		}
 		if (!_.isEmpty(doc.google)) {
 			user.google = {
@@ -90,6 +92,7 @@ class UserSerializer extends Serializer {
 				avatar_url: doc.google.avatar_url,
 				html_url: doc.google.html_url
 			};
+			user.providers.push('google');
 		}
 		config.vpdb.passport.ipboard.forEach(ipb => {
 			if (!_.isEmpty(doc[ipb.id])) {
@@ -100,8 +103,12 @@ class UserSerializer extends Serializer {
 					avatar_url: doc[ipb.id].avatar,
 					html_url: doc[ipb.id].profileUrl
 				};
+				user.providers.push(ipb.id);
 			}
 		});
+		if (doc.password_hash) {
+			user.providers.push('local');
+		}
 		return user;
 	}
 

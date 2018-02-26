@@ -31,6 +31,7 @@ const IPBoard4Strategy = require('./modules/passport-ipboard4').Strategy;
 const error = require('./modules/error')('passport');
 const mailer = require('./modules/mailer');
 const settings = require('./modules/settings');
+const UserSerializer = require('./serializers/user.serializer');
 const config = settings.current;
 const User = mongoose.model('User');
 const LogUser = mongoose.model('LogUser');
@@ -155,10 +156,19 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 			if (users.length === 2) {
 				logger.warn('[passport|%s] Got %s matches for user: [ %s ] with %s ID %s and emails [ %s ].',
 					logtag, users.length, users.map(u => u.id).join(', '), provider, profile.id, emails.join(', '));
-				if (req.query.merge) {
-					return User.mergeUsers(users[0], users[1]);
+				const explanation = `The email address we've received from the OAuth provider you've just logged was already in our database. This can happen when you change the email address at the provider's to one you've already used at VPDB under a different account.`;
+				if (req.query.merged_user_id) {
+					if (users.map(u => u.id).includes(req.query.merged_user_id)) {
+						return req.query.merged_user_id === users[0].id
+							? User.mergeUsers(users[0], users[1], explanation, req)
+							: User.mergeUsers(users[1], users[0], explanation, req);
+					} else {
+						throw error('Provided user ID does not match any of the conflicting users.').status(400);
+					}
 				} else {
-					throw error('Conflicted users, must merge.').status(409);
+					throw error('Conflicted users, must merge.')
+						.data({ explanation: explanation, a: UserSerializer.detailed(users[0], req), b: UserSerializer.detailed(users[1], req) })
+						.status(409);
 				}
 			}
 

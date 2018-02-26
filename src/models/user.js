@@ -512,7 +512,7 @@ UserSchema.statics.mergeUsers = function(keepUser, mergeUser, explanation, req) 
 				});
 				// remove dupes
 				const queries = [];
-				map.values().filter(ratings => ratings.length > 1).forEach(dupeRatings => {
+				Array.from(map.values()).filter(ratings => ratings.length > 1).forEach(dupeRatings => {
 					// update first
 					const first = dupeRatings.shift();
 					queries.push(first.update({ value: Math.round(_.sum(dupeRatings.map(r => r.value)) / dupeRatings.length) }));
@@ -538,7 +538,7 @@ UserSchema.statics.mergeUsers = function(keepUser, mergeUser, explanation, req) 
 				});
 				// remove dupes
 				const queries = [];
-				map.values().filter(ratings => ratings.length > 1).forEach(dupeStars => {
+				Array.from(map.values()).filter(ratings => ratings.length > 1).forEach(dupeStars => {
 					// keep first
 					dupeStars.shift();
 					// delete the rest
@@ -565,7 +565,7 @@ UserSchema.statics.mergeUsers = function(keepUser, mergeUser, explanation, req) 
 		if (mergeUser.location && !keepUser.location) {
 			keepUser.location = mergeUser.location;
 		}
-		keepUser.credits = keepUser.credits + mergeUser.credits;
+		keepUser.credits = (keepUser.credits || 0) + (mergeUser.credits || 0);
 		keepUser.counter.comments = keepUser.counter.comments + mergeUser.counter.comments;
 		keepUser.counter.downloads = keepUser.counter.downloads + mergeUser.counter.downloads;
 		keepUser.counter.stars = keepUser.counter.stars + mergeUser.counter.stars;

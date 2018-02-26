@@ -138,6 +138,7 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 			const query = {
 				$or: [
 					{ [provider + '.id']: profile.id },
+					{ email: { $in: emails } },            // when email validation is disabled, that's all we have
 					{ emails: { $in: emails } },           // emails from other providers
 					{ validated_emails: { $in: emails } }  // emails the user manually validated during sign-up or email change
 				]
@@ -156,6 +157,9 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 			if (users.length === 2) {
 				logger.warn('[passport|%s] Got %s matches for user: [ %s ] with %s ID %s and emails [ %s ].',
 					logtag, users.length, users.map(u => u.id).join(', '), provider, profile.id, emails.join(', '));
+
+				// TODO treat special cases: is_active: false, email_status.code: pending_registration
+				
 				const explanation = `The email address we've received from the OAuth provider you've just logged was already in our database. This can happen when you change the email address at the provider's to one you've already used at VPDB under a different account.`;
 				if (req.query.merged_user_id) {
 					if (users.map(u => u.id).includes(req.query.merged_user_id)) {
@@ -167,7 +171,7 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 					}
 				} else {
 					throw error('Conflicted users, must merge.')
-						.data({ explanation: explanation, a: UserSerializer.detailed(users[0], req), b: UserSerializer.detailed(users[1], req) })
+						.data({ explanation: explanation, users: users.map(u => UserSerializer.detailed(u, req)) })
 						.status(409);
 				}
 			}

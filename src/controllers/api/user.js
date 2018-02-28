@@ -482,7 +482,7 @@ exports.confirm = function(req, res) {
 
 				// otherwise we need to manually merge.
 				const explanation = `During the email validation, another account with the same email was created and validated. If that wasn't you, you should be worried an contact us immediately!`;
-				return User.tryMergeUsers(mergeUsers, explanation, req, error);
+				return User.tryMergeUsers([ user, ...mergeUsers ], explanation, req, error);
 			});
 		});
 

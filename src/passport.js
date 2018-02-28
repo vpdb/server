@@ -31,7 +31,6 @@ const IPBoard4Strategy = require('./modules/passport-ipboard4').Strategy;
 const error = require('./modules/error')('passport');
 const mailer = require('./modules/mailer');
 const settings = require('./modules/settings');
-const UserSerializer = require('./serializers/user.serializer');
 const config = settings.current;
 const User = mongoose.model('User');
 const LogUser = mongoose.model('LogUser');

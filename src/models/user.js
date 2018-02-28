@@ -442,7 +442,7 @@ UserSchema.statics.tryMergeUsers = function(mergeUsers, explanation, req, error)
 			logger.info('[model|user] Merging users [ %s ] into %s as per query parameter.', otherUsers.map(u => u.id).join(', '), keepUser.toString());
 			// merge users
 			return Promise
-				.each(otherUsers, otherUser => User.mergeUsers(keepUser, otherUser, explanation, req))
+				.each(otherUsers, otherUser => UserSchema.statics.mergeUsers(keepUser, otherUser, explanation, req))
 				.then(() => keepUser);
 		} else {
 			throw error('Provided user ID does not match any of the conflicting users.').status(400);
@@ -450,7 +450,7 @@ UserSchema.statics.tryMergeUsers = function(mergeUsers, explanation, req, error)
 	} else {
 		// otherwise, fail and query merge resolution
 		throw error('Conflicted users, must merge.')
-			.data({ explanation: explanation, users: [ ...user, ...mergeUsers].map(u => UserSerializer.detailed(u, req)) })
+			.data({ explanation: explanation, users: mergeUsers.map(u => UserSerializer.detailed(u, req)) })
 			.status(409);
 	}
 };

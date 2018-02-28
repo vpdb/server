@@ -60,8 +60,8 @@ exports.create = function(req, res) {
 
 		// TODO make sure newUser.email is sane (comes from user directly)
 		return User.findOne({ $or: [
-			{ emails: { $in: newUser.email } },
-			{ validated_emails: { $in: newUser.email } }
+			{ emails: newUser.email },
+			{ validated_emails: newUser.email }
 		] }).exec();
 
 	}).then(user => {

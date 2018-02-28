@@ -446,10 +446,10 @@ exports.confirm = function(req, res) {
 		return User.find({
 			$or: [
 				{ email: user.email },
-				{ emails: { $in: user.email } },
-				{ validated_emails: { $in: user.email } }
+				{ emails: user.email },
+				{ validated_emails: user.email }
 			],
-			$ne: { id: user.id }
+			id: { $ne: user.id }
 		}).exec().then(otherUsers => {
 			const deleteUsers = [];
 			const mergeUsers = [];

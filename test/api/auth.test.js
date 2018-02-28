@@ -623,6 +623,7 @@ describe('The authentication engine of the VPDB API', function() {
 					}
 				}).end(function(err, res) {
 					hlp.expectStatus(err, res, 200);
+					hlp.doomUser(res.body.user.id);
 
 				request
 					.post('/api/v1/users')

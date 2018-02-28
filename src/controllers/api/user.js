@@ -440,12 +440,60 @@ exports.confirm = function(req, res) {
 				.status(404);
 		}
 
-		currentCode = user.email_status.code;
+		// now we have a valid user that is either pending registration or update.
+		// BUT meanwhile there might have been an oauth account creation with the same email,
+		// or even another unconfirmed local account. so check if we need to merge or delete.
+		return User.find({
+			$or: [
+				{ email: user.email },
+				{ emails: { $in: user.email } },
+				{ validated_emails: { $in: user.email } }
+			],
+			$ne: { id: user.id }
+		}).exec().then(otherUsers => {
+			const deleteUsers = [];
+			const mergeUsers = [];
 
+			otherUsers.forEach(otherUser => {
+				// other "pending_registration" accounts are deleted, they don't have anything merge-worthy, and we already have local credentials.
+				if (otherUser.email_status && otherUser.email_status.code === 'pending_registration') {
+					deleteUsers.push(otherUser);
+				}
+				// other "pending_update" accounts are ignored and will be treated when confirmed
+				if (otherUser.email_status && otherUser.email_status.code === 'pending_update') {
+					return;
+				}
+				// the rest needs merging
+				mergeUsers.push(otherUser);
+			});
+			logger.log('[api|user:confirm] Found %s confirmed and %s unconfirmed dupe users for %s.', mergeUsers.length, deleteUsers.length, user.email);
+
+			return Promise.all(deleteUsers.map(u => u.remove())).then(() => {
+
+				// no dupes, let's continue.
+				if (mergeUsers.length === 0) {
+					return user;
+				}
+
+				// auto-merge if only one user without credentials
+				if (mergeUsers.length === 1 && mergeUsers[0].provider !== 'local') {
+					return User.mergeUsers(user, mergeUsers[0], null, req);
+				}
+
+				// otherwise we need to manually merge.
+				const explanation = `During the email validation, another account with the same email was created and validated. If that wasn't you, you should be worried an contact us immediately!`;
+				return User.tryMergeUsers(mergeUsers, explanation, req, error);
+			});
+		});
+
+	}).then(u => {
+
+		user = u;
+		currentCode = user.email_status.code;
 		if (currentCode === 'pending_registration') {
 			user.is_active = true;
 			logger.log('[api|user:confirm] User email <%s> for pending registration confirmed.', user.email);
-			successMsg = 'Email successully validated. You may login now.';
+			successMsg = 'Email successfully validated. You may login now.';
 			logEvent = 'registration_email_confirmed';
 
 		} else if (currentCode === 'pending_update') {
@@ -460,6 +508,8 @@ exports.confirm = function(req, res) {
 				.display('Internal server error, please contact an administrator.')
 				.log();
 		}
+
+	}).then(() => {
 		user.email_status = { code: 'confirmed' };
 		user.validated_emails = user.validated_emails || [];
 		user.validated_emails.push(user.email);

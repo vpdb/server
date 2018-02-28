@@ -135,6 +135,8 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 		Promise.try(() => {
 			// there might be "pending_registration" account(s) that match the received email addresses.
 			// in this case, we save the credentials for later and delete the account(s).
+			// note that "pending_update" accounts are dealt with when they are confirmed.
+			// TODO why not deal with "pending_registration" at confirmation as well? makes sense not to set the password before the mail was confirmed...
 			return User.find({ email: { $in: emails }, 'email_status.code': 'pending_registration' })
 				.then(users => Promise.each(users, user => {
 					if (!localCredentials && user.password_hash) {
@@ -146,6 +148,7 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 
 		}).then(() => {
 			// then, find users that match either a confirmed email or provider ID
+			// we explicitly don't go after user.email, because if it's confirmed it's in user.validated_emails.
 			const query = {
 				$or: [
 					{ [provider + '.id']: profile.id },
@@ -158,39 +161,23 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 
 		}).then(users => {
 
-			// this can be more than 2 even, e.g. if three local accounts were registered and the oauth profile contains all of them emails
-			if (users.length > 1) {
-				logger.info('[passport|%s] Got %s matches for user: [ %s ] with %s ID %s and emails [ %s ].',
-					logtag, users.length, users.map(u => u.id).join(', '), provider, profile.id, emails.join(', '));
-
-				const explanation = `The email address we've received from the OAuth provider you've just logged was already in our database. This can happen when you change the email address at the provider's to one you've already used at VPDB under a different account.`;
-				// if the user provided a user ID to merge, do it
-				if (req.query.merged_user_id) {
-					const keepUser = _.find(users, u => u.id === req.query.merged_user_id);
-					if (keepUser) {
-						const otherUsers = _.find(users, u => u.id !== req.query.merged_user_id);
-						// merge users
-						return Promise
-							.each(otherUsers, otherUser => User.mergeUsers(keepUser, otherUser, explanation, req))
-							.then(() => keepUser);
-					} else {
-						throw error('Provided user ID does not match any of the conflicting users.').status(400);
-					}
-				// otherwise, fail and ask the user to provide the user ID
-				} else {
-					throw error('Conflicted users, must merge.')
-						.data({ explanation: explanation, users: users.map(u => UserSerializer.detailed(u, req)) })
-						.status(409);
-				}
+			// no user match means new user, so we're good
+			if (users.length === 0) {
+				return null;
 			}
 
-			// if only one user matched, we're good
+			// if only one user matched, it'll be updated
 			if (users.length === 1) {
 				return users[0];
 			}
 
-			// otherwise it'll be created
-			return null;
+			// otherwise, try to merge.
+			// this can be more than 2 even, e.g. if three local accounts were registered and the oauth profile contains all of them emails
+			logger.info('[passport|%s] Got %s matches for user: [ %s ] with %s ID %s and emails [ %s ].',
+				logtag, users.length, users.map(u => u.id).join(', '), provider, profile.id, emails.join(', '));
+
+			const explanation = `The email address we've received from the OAuth provider you've just logged was already in our database. This can happen when you change the email address at the provider's to one you've already used at VPDB under a different account.`;
+			return User.tryMergeUsers(users, explanation, req, error);
 
 		}).then(user => {
 

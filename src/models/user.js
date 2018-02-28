@@ -29,6 +29,7 @@ const randomstring = require('randomstring');
 const uniqueValidator = require('mongoose-unique-validator');
 const metrics = require('./plugins/metrics');
 
+const UserSerializer = require('../serializers/user.serializer');
 const config = require('../modules/settings').current;
 const flavor = require('../modules/flavor');
 const mailer = require('../modules/mailer');
@@ -423,6 +424,46 @@ UserSchema.statics.createUser = function(userObj, confirmUserEmail) {
 	});
 };
 
+
+/**
+ * Tries to merge a bunch of users based on request parameters.
+ *
+ * @param mergeUsers Merge candidates
+ * @param explanation Explanation in case no user ID provided in request
+ * @param req Request object
+ * @param error Error helper
+ * @return Promise<user> Merged user on success, rejects on error
+ */
+UserSchema.statics.tryMergeUsers = function(mergeUsers, explanation, req, error) {
+	if (req.query.merged_user_id) {
+		const keepUser = _.find(mergeUsers, u => u.id === req.query.merged_user_id);
+		if (keepUser) {
+			const otherUsers = mergeUsers.filter(u => u.id !== req.query.merged_user_id);
+			logger.info('[model|user] Merging users [ %s ] into %s as per query parameter.', otherUsers.map(u => u.id).join(', '), keepUser.toString());
+			// merge users
+			return Promise
+				.each(otherUsers, otherUser => User.mergeUsers(keepUser, otherUser, explanation, req))
+				.then(() => keepUser);
+		} else {
+			throw error('Provided user ID does not match any of the conflicting users.').status(400);
+		}
+	} else {
+		// otherwise, fail and query merge resolution
+		throw error('Conflicted users, must merge.')
+			.data({ explanation: explanation, users: [ ...user, ...mergeUsers].map(u => UserSerializer.detailed(u, req)) })
+			.status(409);
+	}
+};
+
+/**
+ * Merges one user into another.
+ *
+ * @param keepUser User to keep
+ * @param mergeUser User to merge into the other and then delete
+ * @param explanation Explanation to put into mail, if null no mail is sent.
+ * @param req Request object
+ * @returns {*|Promise}
+ */
 UserSchema.statics.mergeUsers = function(keepUser, mergeUser, explanation, req) {
 
 	logger.info('[model|user]: Merging %s into %s...', mergeUser.toString(), keepUser.toString());

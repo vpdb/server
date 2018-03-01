@@ -13,6 +13,7 @@ class ApiClient {
 
 		this._users = new Map();
 		this._tokens = new Map();
+		this._tearDown = [];
 
 		const scheme = opts.scheme || process.env.HTTP_SCHEME || 'http';
 		const host = opts.host || process.env.HOST || 'localhost';
@@ -75,18 +76,33 @@ class ApiClient {
 	 * Note that this must be run when there's no user in the database, i.e.
 	 * after {@link teardownUsers} has been run.
 	 *
-	 * @param  {Object.<string, Object>} users Users with name and attributes
+	 * @param  {Object.<string, Object>} [users] Users with name and attributes
 	 * @return {Promise<void>}
 	 */
 	async setupUsers(users) {
 
 		// create root user first
-		await this.createUser('__root', { roles: ['root', 'mocha' ] });
+		await this.createUser('__root', { name: 'root', email: 'root@vpdb.io', roles: ['root', 'mocha' ] });
 
 		// create other users
-		keys(users).forEach(async () => {
+		for (let key of keys(users || {})) {
 			await this.createUser(key, users[key])
-		});
+		};
+	}
+
+	getUser(user) {
+		if (!this._users.has(user)) {
+			throw Error('User "' + user + '" has not been created.');
+		}
+		return this._users.get(user);
+	}
+
+	/**
+	 * Uses the root user token to authenticate.
+	 * @return {ApiClient}
+	 */
+	asRoot() {
+		return this.as('__root');
 	}
 
 	/**
@@ -100,20 +116,21 @@ class ApiClient {
 	 */
 	as(user) {
 		if (!this._users.has(user)) {
-			throw new Error('User "' + user + '" has not been created.');
+			throw new Error('User "' + user + '" has not been created ([ ' + Array.from(this._users.keys()).join(', ') + ' ]).');
 		}
 		if (!this._tokens.has(user)) {
 			throw new Error('No token or user "' + user + '".');
 		}
-		return this.withHeader(this._authHeader, this._tokens.get(user));
+		return this.withToken(this._tokens.get(user));
 	}
 
 	/**
-	 * Uses the root user token to authenticate.
-	 * @return {ApiClient}
+	 * Use the given token as authentication bearer token.
+	 * @param {string} token Token
+	 * @returns {ApiClient}
 	 */
-	asRoot() {
-		return this.as('__root');
+	withToken(token) {
+		return this.withHeader(this._authHeader, 'Bearer ' + token);
 	}
 
 	/**
@@ -130,6 +147,7 @@ class ApiClient {
 		return this;
 	}
 
+
 	/**
 	 * Posts a resource to the VPDB backend.
 	 * @param {string} path API path, usually starting with "/v1/..."
@@ -139,7 +157,7 @@ class ApiClient {
 	 * @return {Promise<*>}
 	 */
 	async post(path, data, expectedStatus, contains) {
-		return this._request({
+		return await this._request({
 			url: path,
 			method: 'post',
 			data: data
@@ -154,7 +172,7 @@ class ApiClient {
 	 * @return {Promise<*>}
 	 */
 	async get(path, expectedStatus, contains) {
-		return this._request({
+		return await this._request({
 			url: path,
 			method: 'get',
 		}, expectedStatus, contains);
@@ -169,7 +187,7 @@ class ApiClient {
 	 * @return {Promise<*>}
 	 */
 	async put(path, data, expectedStatus, contains) {
-		return this._request({
+		return await this._request({
 			url: path,
 			method: 'put',
 			data: data
@@ -185,7 +203,7 @@ class ApiClient {
 	 * @return {Promise<*>}
 	 */
 	async patch(path, data, expectedStatus, contains) {
-		return this._request({
+		return await this._request({
 			url: path,
 			method: 'patch',
 			data: data
@@ -200,9 +218,9 @@ class ApiClient {
 	 * @return {Promise<*>}
 	 */
 	async del(path, expectedStatus, contains) {
-		return this._request({
+		return await this._request({
 			url: path,
-			method: 'get',
+			method: 'delete',
 		}, expectedStatus, contains);
 	}
 
@@ -213,21 +231,22 @@ class ApiClient {
 	 * @return {Promise<*>}
 	 */
 	async head(path, expectedStatus) {
-		return this._request({
+		return await this._request({
 			url: path,
 			method: 'head',
 		}, expectedStatus);
 	}
 
 	/**
-	 * Deletes are previously created users from the backend.
+	 * Deletes are previously entities marked as tear down.
 	 * @return {Promise<void>}
 	 */
-	async teardownUsers() {
-		// start from bottom, so root user should be last
-		this._users.keys().reverse().forEach(async user => {
-			await this.asRoot().del('/api/v1/users/' + this._users.get(user).id, 204);
-		});
+	async teardown() {
+		for (let path of this._tearDown.reverse()) {
+			await this.asRoot().del(path, 204);
+		}
+		this._users.clear();
+		this._tokens.clear();
 	}
 
 	/**
@@ -258,6 +277,7 @@ class ApiClient {
 		let res = await this.post('/v1/users', user, 201);
 		user = assign(user, res.data);
 		this._users.set(name, assign(user, { _plan: user.plan.id }));
+		this.tearDownUser(user.id);
 
 		// can't get token for unconfirmed user
 		if (!user.skipEmailConfirmation) {
@@ -279,23 +299,24 @@ class ApiClient {
 	 * Creates a OAuth user to be deleted on teardown.
 	 *
 	 * @param {string} name User reference
+	 * @param {string} provider Provider ID. Must be one of the configured OAuth providers, currently: [ "github", "ipbtest" ].
 	 * @param {Object} [attrs] User attributes to set
 	 * @param {string} [attrs.name] Username
 	 * @param {string} [attrs.emails] List of email addresses
 	 * @param {string[]} [attrs.roles] User roles
 	 * @param {string} [attrs._plan] User roles
-	 * @param {string} provider Provider ID. Must be one of the configured OAuth providers, currently: [ "github", "ipbtest" ].
 	 * @return {Promise<*>} Created user
 	 */
-	async createOAuthUser(name, attrs, provider) {
+	async createOAuthUser(name, provider, attrs) {
 
 		// 1. create user
 		let user = this._generateOAuthUser(attrs, provider);
 
-		let res = await this.post('/v1/authenticate/mock', user, 201);
+		let res = await this.post('/v1/authenticate/mock', user, 200);
 		user = assign(user, res.data.user);
 		this._users.set(name, assign(user, { _plan: user.plan.id }));
 		this._tokens.set(name, res.data.token);
+		this.tearDownUser(user.id);
 
 		// 2. update user
 		user = assign(user, attrs);
@@ -304,22 +325,33 @@ class ApiClient {
 		return user;
 	}
 
-	doomUser(userId) {
-		if (!this._users.values().find(u => u.id === userId)) {
-			// we don't have the user object, but we don't need it.
-			// also we don't need to track a user reference, so we use the user id instead.
-			this._users.set(userId, { id: userId });
-		}
+	/**
+	 * Marks a user to be deleted in teardown.
+	 * @param {string} userId User ID
+	 */
+	tearDownUser(userId) {
+		this._tearDown.push('/v1/users/' + userId);
 	}
 
+	/**
+	 * Executes a request with the given config.
+	 *
+	 * @param config Request-specific config
+	 * @param {number} [expectedStatus] If set, will fail on other statues
+	 * @param {string} [contains] If set, checks that the returned error contains the given string
+	 * @returns {Promise<*>}
+	 * @private
+	 */
 	async _request(config, expectedStatus, contains) {
-		const res = await this.api.request(assign(this._getConfig(), config));
+		const mergedConfig = assign(this._getConfig(), config);
+		this._config = {};
+		const res = await this.api.request(mergedConfig);
 		if (expectedStatus) {
-			if (res.status !== code) {
-				console.log(res.data);
-				throw new Error('Expected returned status code ' + res.status + ' to be ' + code + '.');
+			if (res.status !== expectedStatus) {
+				console.log(this._logResponse(res));
+				throw new Error('Expected returned status code ' + res.status + ' to be ' + expectedStatus + '.');
 			}
-			if (contains && res.data.error.toLowerCase().contains(contains.toLowerCase())) {
+			if (contains && !res.data.error.toLowerCase().includes(contains.toLowerCase())) {
 				throw new Error('Expected returned error message "' + res.data.error + '" to contain "' + contains + '".');
 			}
 		}
@@ -350,6 +382,7 @@ class ApiClient {
 	}
 
 	_generateOAuthUser(attrs, provider) {
+		attrs = attrs || {};
 		const gen = this._generateUser(attrs);
 		return {
 			provider: provider,
@@ -363,6 +396,24 @@ class ApiClient {
 			}
 		};
 	}
+
+	_logResponse(res) {
+		let err = '';
+		err += '\n--> ' + res.request._header.replace(/\n/g, '\n--> ');
+		if (res.config.data) {
+			err += '\n--> ' + res.config.data;
+		}
+		err += '\n<-- ' + res.status + ' ' + res.statusText;
+		Object.keys(res.headers).forEach(name => {
+			err += '\n<-- ' + name + ' ' + res.headers[name];
+		});
+		if (res.data) {
+			err += '\n<--';
+			err += '\n<-- ' + JSON.stringify(res.data, null, '  ').replace(/\n/g, '\n--> ');
+		}
+		return err;
+	}
+
 }
 
 module.exports = ApiClient;

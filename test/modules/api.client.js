@@ -1,9 +1,12 @@
+const util = require('util');
 const axios = require('axios');
 const faker = require('faker');
 const randomstring = require('randomstring');
 const assign = require('lodash').assign;
 const pick = require('lodash').pick;
 const keys = require('lodash').keys;
+
+const ApiClientResult = require('./api.client.result');
 
 class ApiClient {
 
@@ -64,10 +67,11 @@ class ApiClient {
 		 * @private
 		 */
 		this._config = {};
-
-		this.api = axios.create({
-			baseURL: scheme + '://' + host + ':' + port + path
-		});
+		this._baseConfig = {
+			baseURL: scheme + '://' + host + ':' + port + path,
+			validateStatus: status => status >= 200
+		};
+		this.api = axios.create();
 	}
 
 	/**
@@ -87,7 +91,7 @@ class ApiClient {
 		// create other users
 		for (let key of keys(users || {})) {
 			await this.createUser(key, users[key])
-		};
+		}
 	}
 
 	getUser(user) {
@@ -95,6 +99,13 @@ class ApiClient {
 			throw Error('User "' + user + '" has not been created.');
 		}
 		return this._users.get(user);
+	}
+
+	getToken(user) {
+		if (!this._tokens.has(user)) {
+			throw Error('No available token for user "' + user + '".');
+		}
+		return this._tokens.get(user);
 	}
 
 	/**
@@ -147,94 +158,102 @@ class ApiClient {
 		return this;
 	}
 
+	/**
+	 * Saves the response to the documentation folder.
+	 * @param {Object} opts Options
+	 * @param {Object} opts.path Where to save the response
+	 * @return {ApiClient}
+	 */
+	saveResponse(opts) {
+		return this;
+	}
+
+	/**
+	 * Saves request and response to the documentation folder.
+	 * @param {Object} opts Options
+	 * @param {Object} opts.path Where to save the response
+	 * @return {ApiClient}
+	 */
+	save(opts) {
+		return this;
+	}
 
 	/**
 	 * Posts a resource to the VPDB backend.
 	 * @param {string} path API path, usually starting with "/v1/..."
-	 * @param {mixed} data Request body
-	 * @param {number} [expectedStatus] If set, will fail on other statues
-	 * @param {string} [contains] If set, checks that the returned error contains the given string
-	 * @return {Promise<*>}
+	 * @param {Object} data Request body
+	 * @returns {Promise<ApiClientResult>}
 	 */
-	async post(path, data, expectedStatus, contains) {
+	async post(path, data) {
 		return await this._request({
 			url: path,
 			method: 'post',
 			data: data
-		}, expectedStatus, contains);
+		});
 	}
 
 	/**
 	 * Gets a resource from the VPDB backend.
 	 * @param {string} path API path, usually starting with "/v1/..."
-	 * @param {number} [expectedStatus] If set, will fail on other statues
-	 * @param {string} [contains] If set, checks that the returned error contains the given string
-	 * @return {Promise<*>}
+	 * @returns {Promise<ApiClientResult>}
 	 */
-	async get(path, expectedStatus, contains) {
+	async get(path) {
 		return await this._request({
 			url: path,
 			method: 'get',
-		}, expectedStatus, contains);
+		});
 	}
 
 	/**
 	 * Puts a resource to the VPDB backend.
 	 * @param {string} path API path, usually starting with "/v1/..."
-	 * @param {mixed} data Request body
-	 * @param {number} [expectedStatus] If set, will fail on other statues
-	 * @param {string} [contains] If set, checks that the returned error contains the given string
-	 * @return {Promise<*>}
+	 * @param {Object} data Request body
+	 * @returns {Promise<ApiClientResult>}
 	 */
-	async put(path, data, expectedStatus, contains) {
+	async put(path, data) {
 		return await this._request({
 			url: path,
 			method: 'put',
 			data: data
-		}, expectedStatus, contains);
+		});
 	}
 
 	/**
 	 * Patches a resource at the VPDB backend.
 	 * @param {string} path API path, usually starting with "/v1/..."
-	 * @param {mixed} data Request body
-	 * @param {number} [expectedStatus] If set, will fail on other statues
-	 * @param {string} [contains] If set, checks that the returned error contains the given string
-	 * @return {Promise<*>}
+	 * @param {Object} data Request body
+	 * @returns {Promise<ApiClientResult>}
 	 */
-	async patch(path, data, expectedStatus, contains) {
+	async patch(path, data) {
 		return await this._request({
 			url: path,
 			method: 'patch',
 			data: data
-		}, expectedStatus, contains);
+		});
 	}
 
 	/**
 	 * Deletes a resource at the VPDB backend.
 	 * @param {string} path API path, usually starting with "/v1/..."
-	 * @param {number} [expectedStatus] If set, will fail on other statues
-	 * @param {string} [contains] If set, checks that the returned error contains the given string
-	 * @return {Promise<*>}
+	 * @returns {Promise<ApiClientResult>}
 	 */
-	async del(path, expectedStatus, contains) {
+	async del(path) {
 		return await this._request({
 			url: path,
 			method: 'delete',
-		}, expectedStatus, contains);
+		});
 	}
 
 	/**
 	 * Gets the response headers from a resource at the VPDB backend.
 	 * @param {string} path API path, usually starting with "/v1/..."
-	 * @param {number} [expectedStatus] If set, will fail on other statues
-	 * @return {Promise<*>}
+	 * @returns {Promise<ApiClientResult>}
 	 */
-	async head(path, expectedStatus) {
+	async head(path) {
 		return await this._request({
 			url: path,
 			method: 'head',
-		}, expectedStatus);
+		});
 	}
 
 	/**
@@ -333,39 +352,27 @@ class ApiClient {
 		this._tearDown.push('/v1/users/' + userId);
 	}
 
+	dump(res, title) {
+		if (res.data) {
+			console.log('%s (%d): %s', title || 'RESPONSE', res.status, util.inspect(res.body, null, null, true));
+		} else {
+			console.log('%s: %s', title || 'RESPONSE', util.inspect(res, null, null, true));
+		}
+	};
+
 	/**
 	 * Executes a request with the given config.
 	 *
-	 * @param config Request-specific config
-	 * @param {number} [expectedStatus] If set, will fail on other statues
-	 * @param {string} [contains] If set, checks that the returned error contains the given string
-	 * @returns {Promise<*>}
+	 * @param requestConfig Request-specific config
+	 * @returns {Promise<ApiClientResult>}
 	 * @private
 	 */
-	async _request(config, expectedStatus, contains) {
-		const mergedConfig = assign(this._getConfig(), config);
+	async _request(requestConfig) {
+		const config = {};
+		assign(config, this._baseConfig, this._config, requestConfig);
 		this._config = {};
-		const res = await this.api.request(mergedConfig);
-		if (expectedStatus) {
-			if (res.status !== expectedStatus) {
-				console.log(this._logResponse(res));
-				throw new Error('Expected returned status code ' + res.status + ' to be ' + expectedStatus + '.');
-			}
-			if (contains && !res.data.error.toLowerCase().includes(contains.toLowerCase())) {
-				throw new Error('Expected returned error message "' + res.data.error + '" to contain "' + contains + '".');
-			}
-		}
-		return res;
-	}
-
-	/**
-	 * Returns request-specific options.
-	 * @private
-	 */
-	_getConfig() {
-		return assign({
-			validateStatus: status => status >= 200
-		}, this._config);
+		const res = await this.api.request(config);
+		return new ApiClientResult(res);
 	}
 
 	_generateUser(attrs) {
@@ -397,22 +404,7 @@ class ApiClient {
 		};
 	}
 
-	_logResponse(res) {
-		let err = '';
-		err += '\n--> ' + res.request._header.replace(/\n/g, '\n--> ');
-		if (res.config.data) {
-			err += '\n--> ' + res.config.data;
-		}
-		err += '\n<-- ' + res.status + ' ' + res.statusText;
-		Object.keys(res.headers).forEach(name => {
-			err += '\n<-- ' + name + ' ' + res.headers[name];
-		});
-		if (res.data) {
-			err += '\n<--';
-			err += '\n<-- ' + JSON.stringify(res.data, null, '  ').replace(/\n/g, '\n--> ');
-		}
-		return err;
-	}
+
 
 }
 

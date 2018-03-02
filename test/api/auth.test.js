@@ -6,224 +6,167 @@ const expect = require('expect.js');
 const jwt = require('jwt-simple');
 const config = require('../../src/config/settings-test');
 
+const ApiClient = require('../modules/api.client');
+
 const superagentTest = require('../modules/superagent-test');
 const hlp = require('../modules/helper');
 
+const api = new ApiClient();
+
 superagentTest(request);
 
-describe('The authentication engine of the VPDB API', function() {
+describe('The authentication engine of the VPDB API', () => {
 
-	before(function(done) {
-		hlp.setupUsers(request, {
+	let res;
+	before(async () => {
+		await api.setupUsers({
 			admin: { roles: ['admin'], _plan: 'subscribed' },
 			member: { roles: [ 'member' ] },
 			disabled: { roles: [ 'member' ], is_active: false },
 			subscribed: { roles: [ 'member' ], _plan: 'subscribed' },
 			subscribed1: { roles: [ 'member' ], _plan: 'subscribed' }
-		}, done);
+		});
 	});
 
-	after(function(done) {
-		hlp.teardownUsers(request, done);
+	after(async () => await api.teardown());
+
+	it('should deny access to the user profile if there is no token in the header', async () => {
+		await api.get('/v1/user').then(res => res.expectStatus(401));
 	});
 
-	it('should deny access to the user profile if there is no token in the header', function(done) {
-		request
-			.get('/api/v1/user')
-			.end(hlp.status(401, done));
-	});
+	describe('when sending an authentication request using user/password', () => {
 
-	describe('when sending an authentication request using user/password', function() {
-
-		it('should fail if no credentials are posted', function(done) {
-			request
-				.post('/api/v1/authenticate')
-				.saveResponse({ path: 'auth/local' })
-				.send({})
-				.end(hlp.status(400, 'must supply a username', done));
+		it('should fail if no credentials are posted', async () => {
+			await api.saveResponse({ path: 'auth/local' })
+				.post('/v1/authenticate', {})
+				.then(res => res.expectError(400, 'must supply a username'));
 		});
 
-		it('should fail if username is non-existent', function(done) {
-			request
-				.post('/api/v1/authenticate')
-				.saveResponse({ path: 'auth/local' })
-				.send({ username: '_______________', password: 'xxx' })
-				.end(hlp.status(401, 'Wrong username or password', done));
+		it('should fail if username is non-existent', async () => {
+			await api.saveResponse({ path: 'auth/local' })
+				.post('/v1/authenticate', { username: '_______________', password: 'xxx' })
+				.then(res => res.expectError(401, 'Wrong username or password'));
 		});
 
-		it('should fail if username exists but wrong password is supplied', function(done) {
-			request
-				.post('/api/v1/authenticate')
-				.send({ username: hlp.getUser('member').name, password: 'xxx' })
-				.end(hlp.status(401, 'Wrong username or password', done));
+		it('should fail if username exists but wrong password is supplied', async () => {
+			await api.post('/v1/authenticate', { username: api.getUser('member').name, password: 'xxx' })
+				.then(res => res.expectError(401, 'Wrong username or password'));
 		});
 
-		it('should fail if credentials are correct but user is disabled', function(done) {
-			request
-				.post('/api/v1/authenticate')
-				.send({ username: hlp.getUser('disabled').name, password: hlp.getUser('disabled').password })
-				.end(hlp.status(403, 'Inactive account', done));
+		it('should fail if credentials are correct but user is disabled', async () => {
+			await api.post('/v1/authenticate', { username: api.getUser('disabled').name, password: api.getUser('disabled').password })
+				.then(res => res.expectError(403, 'Inactive account'));
 		});
 
-		it('should succeed if credentials are correct', function(done) {
-			request
-				.post('/api/v1/authenticate')
-				.save({ path: 'auth/local' })
-				.send({ username: hlp.getUser('member').name, password: hlp.getUser('member').password })
-				.end(hlp.status(200, done));
+		it('should succeed if credentials are correct', async () => {
+			await api.save({ path: 'auth/local' })
+				.post('/v1/authenticate', { username: api.getUser('member').name, password: api.getUser('member').password })
+				.then(res => res.expectStatus(200));
 		});
 
 	});
 
-	describe('when sending an authentication request using a login token', function() {
+	describe('when sending an authentication request using a login token', () => {
 
-		it('should fail if the token is incorrect', function(done) {
-			request
-				.post('/api/v1/authenticate')
-				.send({ token: 'lol-i-am-an-incorrect-token!' })
-				.end(hlp.status(400, 'incorrect login token', done));
+		it('should fail if the token is incorrect', async () => {
+			await api.post('/v1/authenticate', { token: 'lol-i-am-an-incorrect-token!' })
+				.then(res => res.expectError(400, 'incorrect login token'));
 		});
 
-		it('should fail if the token does not exist', function(done) {
-			request
-				.post('/api/v1/authenticate')
-				.send({ token: 'aaaabbbbccccddddeeeeffff00001111' })
-				.end(hlp.status(401, 'invalid token', done));
+		it('should fail if the token does not exist', async () => {
+			await api.post('/v1/authenticate', { token: 'aaaabbbbccccddddeeeeffff00001111' })
+				.then(res => res.expectError(401, 'invalid token'));
 		});
 
-		it('should fail if the token is not a login token', function(done) {
+		it('should fail if the token is not a login token', async () => {
+			res = await api.as('subscribed')
+				.post('/v1/tokens', { label: 'Access token', password: api.getUser('subscribed').password, scopes: [ 'all' ] })
+				.then(res => res.expectStatus(201));
 
-			request
-				.post('/api/v1/tokens')
-				.as('subscribed')
-				.send({ label: 'Access token', password: hlp.getUser('subscribed').password, scopes: [ 'all' ] })
-				.end(function(err, res) {
-					hlp.expectStatus(err, res, 201);
-
-					request
-						.post('/api/v1/authenticate')
-						.send({ token: res.body.token })
-						.end(hlp.status(401, 'must exclusively be "login"', done));
-				});
+			await api.post('/v1/authenticate', { token: res.data.token })
+				.then(res => res.expectError(401, 'must exclusively be "login"'));
 		});
 
-		it('should fail if the token is expired', function() {
+		it('should fail if the token is expired', async () => {
+			res = await api.as('member')
+				.post('/v1/tokens', { password: api.getUser('member').password, scopes: [ 'login' ] })
+				.then(res => res.expectStatus(201));
+			const token = res.data.token;
 
-			let token;
-			return request
-				.post('/api/v1/tokens')
-				.as('member')
-				.send({ password: hlp.getUser('member').password, scopes: [ 'login' ] })
-				.then(res => {
+			await api.as('member')
+				.patch('/v1/tokens/' + res.data.id, { expires_at: new Date(new Date().getTime() - 86400000)})
+				.then(res => res.expectStatus(200));
 
-					hlp.expectStatus(res, 201);
-					token = res.body.token;
-					return request
-						.patch('/api/v1/tokens/' + res.body.id)
-						.as('member')
-						.send({ expires_at: new Date(new Date().getTime() - 86400000)})
-						.promise();
-
-				}).then(res => {
-					hlp.expectStatus(res, 200);
-					return request
-						.post('/api/v1/authenticate')
-						.send({ token: token })
-						.promise();
-
-				}).then(hlp.status(401, 'token has expired'));
+			await api.post('/v1/authenticate', { token: token })
+				.then(res => res.expectError(401, 'token has expired'));
 		});
 
-		it('should fail if the token is inactive', function() {
-
-			let token;
-			return request
-				.post('/api/v1/tokens')
-				.as('member')
-				.send({ password: hlp.getUser('member').password, scopes: [ 'login' ] })
-				.then(res => {
-
-					hlp.expectStatus(res, 201);
-					token = res.body.token;
-					return request
-						.patch('/api/v1/tokens/' + res.body.id)
-						.as('member')
-						.send({ is_active: false })
-						.promise();
-
-				}).then(res => {
-					hlp.expectStatus(res, 200);
-					return request
-						.post('/api/v1/authenticate')
-						.send({ token: token })
-						.promise();
-
-				}).then(hlp.status(401, 'token is inactive'));
+		it('should fail if the token is inactive', async () => {
+			res = await api.as('member')
+				.post('/v1/tokens', { password: api.getUser('member').password, scopes: [ 'login' ] })
+				.then(res => res.expectStatus(201));
+			const token = res.data.token;
+			await api.as('member')
+				.patch('/v1/tokens/' + res.data.id, { is_active: false })
+				.then(res => res.expectStatus(200));
+			await api.post('/v1/authenticate', { token: token })
+				.then(res => res.expectError(401, 'token is inactive'));
 		});
 
-		it('should succeed if the token is valid', function(done) {
-
-			request
-				.post('/api/v1/tokens')
-				.as('member')
-				.set('User-Agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1) Gecko/20061024 Firefox/2.0 (Swiftfox)')
-				.send({ password: hlp.getUser('member').password, scopes: [ 'login' ] })
-				.end(function(err, res) {
-
-					hlp.expectStatus(err, res, 201);
-					request
-						.post('/api/v1/authenticate')
-						.send({ token: res.body.token })
-						.end(hlp.status(200, done));
-				});
+		it('should succeed if the token is valid', async () => {
+			res = await api.as('member')
+				.withHeader('User-Agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1) Gecko/20061024 Firefox/2.0 (Swiftfox)')
+				.post('/v1/tokens', { password: api.getUser('member').password, scopes: [ 'login' ] })
+				.then(res => res.expectStatus(201));
+			await api.post('/v1/authenticate', { token: res.data.token })
+				.then(res => res.expectStatus(200));
 		});
 	});
 
-	describe('when a JWT is provided in the header', function() {
+	describe('when a JWT is provided in the header', () => {
 
-		it('should grant access to the user profile if the token is valid', function(done) {
-			request
-				.get('/api/v1/user')
-				.set('Authorization', 'Bearer ' + request.tokens.member)
-				.end(hlp.status(200, done));
+		it('should grant access to the user profile if the token is valid', async () => {
+			await api
+				.withHeader('Authorization', 'Bearer ' + api.getToken('member'))
+				.get('/v1/user')
+				.then(res => res.expectStatus(200));
 		});
 
-		it('should fail if the authorization header has no type', function(done) {
-			request
-				.get('/api/v1/user')
-				.set('Authorization', request.tokens.member)
-				.end(hlp.status(401, 'Bad Authorization header', done));
+		it('should fail if the authorization header has no type', async () => {
+			await api
+				.withHeader('Authorization', api.getToken('member'))
+				.get('/v1/user')
+				.then(res => res.expectError(401, 'Bad Authorization header'));
 		});
 
-		it('should fail if the authorization header has a different type than "Bearer"', function(done) {
-			request
-				.get('/api/v1/user')
-				.set('Authorization', 'Token ' + request.tokens.member)
-				.end(hlp.status(401, 'Bad Authorization header', done));
+		it('should fail if the authorization header has a different type than "Bearer"', async () => {
+			await api
+				.withHeader('Authorization', 'Token ' + api.getToken('member'))
+				.get('/v1/user')
+				.then(res => res.expectError(401, 'Bad Authorization header'));
 		});
 
-		it('should fail if the token is corrupt or unreadable', function(done) {
-			request
-				.get('/api/v1/user')
-				.set('Authorization', 'Bearer abcd.123.xyz')
-				.end(hlp.status(401, 'Bad JSON Web Token', done));
+		it('should fail if the token is corrupt or unreadable', async () => {
+			await api
+				.withHeader('Authorization', 'Bearer abcd.123.xyz')
+				.get('/v1/user')
+				.then(res => res.expectError(401, 'Bad JSON Web Token'));
 		});
 
-		it('should fail if the token has expired', function(done) {
+		it('should fail if the token has expired', async () => {
 			let now = new Date();
 			let token = jwt.encode({
-				iss: hlp.getUser('member').id,
+				iss: api.getUser('member').id,
 				iat: now,
 				exp: new Date(now.getTime() - 100), // expired
 				irt: false
 			}, config.vpdb.secret);
-			request
-				.get('/api/v1/user')
-				.set('Authorization', 'Bearer ' + token)
-				.end(hlp.status(401, 'token has expired', done));
+			await api.withToken(token)
+				.get('/v1/user')
+				.then(res => res.expectError(401, 'token has expired'));
 		});
 
-		it('should fail if the user does not exist', function(done) {
+		it('should fail if the user does not exist', async () => {
 			let now = new Date();
 			let token = jwt.encode({
 				iss: -1, // invalid
@@ -231,20 +174,18 @@ describe('The authentication engine of the VPDB API', function() {
 				exp: new Date(now.getTime() + config.vpdb.storageTokenLifetime),
 				irt: false
 			}, config.vpdb.secret);
-			request
-				.get('/api/v1/user')
-				.set('Authorization', 'Bearer ' + token)
-				.end(hlp.status(403, 'no user with id', done));
+			await api.withToken(token)
+				.get('/v1/user')
+				.then(res => res.expectError(403, 'no user with id'));
 		});
 	});
 
 	describe('when a personal token is provided in the header', function() {
 
-		it('should fail if the token is invalid', function(done) {
-			request
-				.get('/api/v1/user')
-				.set('Authorization', 'Bearer 688f4864ca7be0fe4bfe866acbf6b151')
-				.end(hlp.status(401, 'invalid app token', done));
+		it('should fail if the token is invalid', async () => {
+			await api.withToken('688f4864ca7be0fe4bfe866acbf6b151')
+				.get('/v1/user')
+				.then(res => res.expectError(401, 'invalid app token'));
 		});
 
 		it('should fail if the user has the wrong plan', function(done) {

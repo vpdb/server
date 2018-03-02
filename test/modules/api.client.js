@@ -5,6 +5,7 @@ const randomstring = require('randomstring');
 const assign = require('lodash').assign;
 const pick = require('lodash').pick;
 const keys = require('lodash').keys;
+const get = require('lodash').get;
 
 const ApiClientResult = require('./api.client.result');
 
@@ -16,12 +17,14 @@ class ApiClient {
 
 		this._users = new Map();
 		this._tokens = new Map();
+		this._actions = [];
 		this._tearDown = [];
 
 		const scheme = opts.scheme || process.env.HTTP_SCHEME || 'http';
 		const host = opts.host || process.env.HOST || 'localhost';
 		const port = opts.port || process.env.PORT || 7357;
 		const path = opts.path || process.env.API_PATH || '/api';
+		this._baseUrl = scheme + '://' + host + ':' + port;
 
 		this._authHeader = opts.authHeader || process.env.AUTH_HEADER || 'Authorization';
 
@@ -68,7 +71,7 @@ class ApiClient {
 		 */
 		this._config = {};
 		this._baseConfig = {
-			baseURL: scheme + '://' + host + ':' + port + path,
+			baseURL: this._baseUrl + path,
 			validateStatus: status => status >= 200
 		};
 		this.api = axios.create();
@@ -106,6 +109,16 @@ class ApiClient {
 			throw Error('No available token for user "' + user + '".');
 		}
 		return this._tokens.get(user);
+	}
+
+	/**
+	 * Sets which API to use for the request.
+	 * @param {"api"|"storage"} api Which API to use
+	 * @return {ApiClient}
+	 */
+	on(api) {
+		this._config.baseURL = this._baseUrl + '/' + api
+		return this;
 	}
 
 	/**
@@ -159,6 +172,16 @@ class ApiClient {
 	}
 
 	/**
+	 * Sets the query parameters in the URL of the request.
+	 * @param {Object<string, string>} params
+	 * @returns {ApiClient}
+	 */
+	withQuery(params) {
+		this._config.params = params;
+		return this;
+	}
+
+	/**
 	 * Saves the response to the documentation folder.
 	 * @param {Object} opts Options
 	 * @param {Object} opts.path Where to save the response
@@ -175,6 +198,16 @@ class ApiClient {
 	 * @return {ApiClient}
 	 */
 	save(opts) {
+		return this;
+	}
+
+	markTeardown(pathToId) {
+		this._actions.push(res => {
+			this._tearDown.push({
+				authHeader: res.config.headers.Authorization,
+				url: res.config.url + '/' + get(res.data, pathToId)
+			});
+		});
 		return this;
 	}
 
@@ -262,7 +295,14 @@ class ApiClient {
 	 */
 	async teardown() {
 		for (let entity of this._tearDown.reverse()) {
-			await this.as(entity.user).del(entity.path).then(res => res.expectStatus(204));
+			let req;
+			if (entity.user) {
+				req = this.as(entity.user);
+			}
+			if (entity.authHeader) {
+				req = this.withHeader(this._authHeader, entity.authHeader);
+			}
+			await req.del(entity.path || entity.url).then(res => res.expectStatus(204));
 		}
 		this._users.clear();
 		this._tokens.clear();
@@ -345,20 +385,28 @@ class ApiClient {
 	}
 
 	/**
+	 * Creates a storage token for a given user and path.
+	 *
+	 * @param {string} user User reference
+	 * @param {string} path Absolute path, usually prefixed with `/storage`.
+	 * @returns {Promise<string>} The created token
+	 */
+	async retrieveStorageToken(user, path) {
+		return await this.as(user)
+			.on('storage')
+			.post('/v1/authenticate', { paths: path })
+			.then(res => {
+				res.expectStatus(200);
+				return res.data[path];
+			});
+	};
+
+	/**
 	 * Marks a user to be deleted in teardown.
 	 * @param {string} userId User ID
 	 */
 	tearDownUser(userId) {
 		this._tearDown.push({ user: '__root', path: '/v1/users/' + userId });
-	}
-
-	/**
-	 * Marks a token to be deleted in teardown.
-	 * @param {string} user User reference
-	 * @param {string} tokenId User ID
-	 */
-	tearDownToken(user, tokenId) {
-		this._tearDown.push({ user: user, path: '/v1/tokens/' + tokenId });
 	}
 
 	/**
@@ -368,7 +416,7 @@ class ApiClient {
 	 */
 	dump(res, title) {
 		if (res.data) {
-			console.log('%s (%d): %s', title || 'RESPONSE', res.status, util.inspect(res.body, null, null, true));
+			console.log('%s (%d): %s', title || 'RESPONSE', res.status, util.inspect(res.data, null, null, true));
 		} else {
 			console.log('%s: %s', title || 'RESPONSE', util.inspect(res, null, null, true));
 		}
@@ -386,6 +434,8 @@ class ApiClient {
 		assign(config, this._baseConfig, this._config, requestConfig);
 		this._config = {};
 		const res = await this.api.request(config);
+		this._actions.forEach(action => action(res));
+		this._actions = [];
 		return new ApiClientResult(res);
 	}
 

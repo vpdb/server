@@ -154,8 +154,8 @@ describe('The authentication engine of the VPDB API', () => {
 		});
 
 		it('should fail if the token has expired', async () => {
-			let now = new Date();
-			let token = jwt.encode({
+			const now = new Date();
+			const token = jwt.encode({
 				iss: api.getUser('member').id,
 				iat: now,
 				exp: new Date(now.getTime() - 100), // expired
@@ -167,8 +167,8 @@ describe('The authentication engine of the VPDB API', () => {
 		});
 
 		it('should fail if the user does not exist', async () => {
-			let now = new Date();
-			let token = jwt.encode({
+			const now = new Date();
+			const token = jwt.encode({
 				iss: -1, // invalid
 				iat: now,
 				exp: new Date(now.getTime() + config.vpdb.storageTokenLifetime),
@@ -188,56 +188,42 @@ describe('The authentication engine of the VPDB API', () => {
 				.then(res => res.expectError(401, 'invalid app token'));
 		});
 
-		it('should fail if the user has the wrong plan', function(done) {
+		it('should fail if the user has the wrong plan', async () => {
 
 			// 1. create token for subscribed user
-			request
-				.post('/api/v1/tokens')
-				.as('subscribed1')
-				.send({ label: 'After plan downgrade token', password: hlp.getUser('subscribed1').password, scopes: [ 'all' ] })
-				.end(function(err, res) {
-					hlp.expectStatus(err, res, 201);
+			res = await api.as('subscribed1')
+				.post('/v1/tokens', { label: 'After plan downgrade token', password: api.getUser('subscribed1').password, scopes: [ 'all' ] })
+				.then(res => res.expectStatus(201));
+			const token = res.data.token;
+			api.tearDownToken('subscribed', res.data.id);
 
-					// 2. downgrade user to free
-					const token = res.body.token;
-					const user = hlp.getUser('subscribed1');
-					user._plan = 'free';
-					request
-						.put('/api/v1/users/' + user.id)
-						.as('__superuser')
-						.send(_.pick(user, [ 'name', 'email', 'username', 'is_active', 'roles', '_plan' ]))
-						.end(function(err, res) {
-							hlp.expectStatus(err, res, 200);
+			// 2. downgrade user to free
+			const user = api.getUser('subscribed1');
+			user._plan = 'free';
+			await api.asRoot()
+				.put('/v1/users/' + user.id, _.pick(user, [ 'name', 'email', 'username', 'is_active', 'roles', '_plan' ]))
+				.then(res => res.expectStatus(200));
 
-							// 3. fail with app token
-							request
-								.get('/api/v1/user')
-								.set('Authorization', 'Bearer ' + token)
-								.end(hlp.status(401, 'does not allow the use of app tokens', done));
-						});
-				});
+			// 3. fail with app token
+			await api.withToken(token)
+				.get('/v1/user')
+				.then(res => res.expectError(401, 'does not allow the use of app tokens'));
 		});
 
-		it('should fail if the token is inactive', function(done) {
-			request
-				.post('/api/v1/tokens')
-				.as('subscribed')
-				.send({ label: 'Inactive token', password: hlp.getUser('subscribed').password, scopes: [ 'all' ] })
-				.end(function(err, res) {
-					hlp.expectStatus(err, res, 201);
-					const token = res.body.token;
-					request
-						.patch('/api/v1/tokens/' + res.body.id)
-						.as('subscribed')
-						.send({ is_active: false })
-						.end(function(err, res) {
-							hlp.expectStatus(err, res, 200);
-							request
-								.get('/api/v1/user')
-								.set('Authorization', 'Bearer ' + token)
-								.end(hlp.status(401, 'is inactive', done));
-						});
-				});
+		it.only('should fail if the token is inactive', async () => {
+			res = await api.as('subscribed')
+				.post('/v1/tokens', { label: 'Inactive token', password: api.getUser('subscribed').password, scopes: [ 'all' ] })
+				.then(res => res.expectStatus(201));
+			const token = res.data.token;
+			api.tearDownToken('subscribed', res.data.id);
+
+			await api.as('subscribed')
+				.patch('/v1/tokens/' + res.data.id, { is_active: false })
+				.then(res => res.expectStatus(200));
+
+			await api.withToken(token)
+				.get('/v1/user')
+				.then(res => res.expectError(401, 'is inactive'));
 		});
 
 		it('should fail if the token is expired', function(done) {
@@ -294,53 +280,34 @@ describe('The authentication engine of the VPDB API', () => {
 	describe('when an application token is provided in the header', () => {
 		let oauthUser1, oauthUser2;
 		let appToken;
-		before(done => {
-			request
-				.post('/api/v1/authenticate/mock')
-				.send({
-					provider: 'ipboard',
-					providerName: 'ipbtest',
-					profile: { provider: 'ipbtest', id: '2', username: 'test', displayName: 'test i am', profileUrl: 'http://localhost:8088/index.php?showuser=2', emails: [ { value: 'test@vpdb.io' } ], photos: [ { value: 'http://localhost:8088/uploads/' } ] }
-				}).end((err, res) => {
-					hlp.expectStatus(err, res, 200);
-					hlp.doomUser(res.body.user.id);
-					oauthUser1 = res.body.user;
-					request
-						.post('/api/v1/authenticate/mock')
-						.send({
-							provider: 'github',
-							providerName: 'github',
-							profile: { provider: 'github', id: '23', username: 'githubuser', displayName: 'test i am', profileUrl: 'http://localhost:8088/index.php?showuser=2', emails: [ { value: 'test2@vpdb.io' } ], photos: [ { value: 'http://localhost:8088/uploads/' } ] }
-						}).end((err, res) => {
-							hlp.expectStatus(err, res, 200);
-							hlp.doomUser(res.body.user.id);
-							oauthUser2 = res.body.user;
-							request
-								.post('/api/v1/tokens')
-								.as('admin')
-								.send({ label: 'Auth test token', password: hlp.getUser('admin').password, provider: 'ipbtest', type: 'application', scopes: [ 'community', 'service' ] })
-								.end((err, res) => {
-									hlp.expectStatus(err, res, 201);
-									appToken = res.body.token;
-									done();
-							});
-						});
-				});
+
+		before(async () => {
+
+			await client.setupUsers({
+				admin: { roles: ['admin'], _plan: 'subscribed' }
+			});
+			oauthUser1 = await client.createOAuthUser('oauth1', 'ipbtest');
+			oauthUser2 = await client.createOAuthUser('oauth2', 'ipbtest');
+
+			let res = await client.as('admin').post('/v1/tokens', {
+				label: 'Auth test token',
+				password: client.getUser('admin').password,
+				provider: 'ipbtest', type: 'application',
+				scopes: [ 'community', 'service' ]
+			}, 201);
+			appToken = res.data.token;
 		});
 
-		it('should fail when no user header is provided', done => {
-			request
-				.get('/api/v1/user')
-				.with(appToken)
-				.end(hlp.status(400, 'must provide "x-vpdb-user-id" or "x-user-id" header', done));
+		after(async () => {
+			await client.teardown();
 		});
 
-		it('should fail when a non-existent vpdb user header is provided', done => {
-			request
-				.get('/api/v1/user')
-				.with(appToken)
-				.set('X-Vpdb-User-Id', 'blürpsl')
-				.end(hlp.status(400, 'no user with id', done));
+		it('should fail when no user header is provided', async () => {
+			await client.withToken(appToken).get('/v1/user', 400, 'must provide "x-vpdb-user-id" or "x-user-id" header');
+		});
+
+		it('should fail when a non-existent vpdb user header is provided', async () => {
+			await client.withToken(appToken).withHeader('X-Vpdb-User-Id', 'blürpsl').get('/v1/user', 400, 'no user with id');
 		});
 
 		it('should fail with a vpdb user header of a different provider', done => {

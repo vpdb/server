@@ -261,8 +261,8 @@ class ApiClient {
 	 * @return {Promise<void>}
 	 */
 	async teardown() {
-		for (let path of this._tearDown.reverse()) {
-			await this.asRoot().del(path, 204);
+		for (let entity of this._tearDown.reverse()) {
+			await this.as(entity.user).del(entity.path).then(res => res.expectStatus(204));
 		}
 		this._users.clear();
 		this._tokens.clear();
@@ -349,9 +349,23 @@ class ApiClient {
 	 * @param {string} userId User ID
 	 */
 	tearDownUser(userId) {
-		this._tearDown.push('/v1/users/' + userId);
+		this._tearDown.push({ user: '__root', path: '/v1/users/' + userId });
 	}
 
+	/**
+	 * Marks a token to be deleted in teardown.
+	 * @param {string} user User reference
+	 * @param {string} tokenId User ID
+	 */
+	tearDownToken(user, tokenId) {
+		this._tearDown.push({ user: user, path: '/v1/tokens/' + tokenId });
+	}
+
+	/**
+	 * Prints out a request.
+	 * @param res
+	 * @param title
+	 */
 	dump(res, title) {
 		if (res.data) {
 			console.log('%s (%d): %s', title || 'RESPONSE', res.status, util.inspect(res.body, null, null, true));

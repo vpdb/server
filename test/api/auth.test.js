@@ -1,21 +1,14 @@
 "use strict"; /*global describe, before, after, beforeEach, afterEach, it*/
 
 const _ = require('lodash');
-const request = require('superagent');
 const expect = require('expect.js');
 const jwt = require('jwt-simple');
 const config = require('../../src/config/settings-test');
 
 const ApiClient = require('../modules/api.client');
-
-const superagentTest = require('../modules/superagent-test');
-const hlp = require('../modules/helper');
-
 const api = new ApiClient();
 
-superagentTest(request);
-
-describe('The authentication engine of the VPDB API', () => {
+describe.only('The authentication engine of the VPDB API', () => {
 
 	let res;
 	before(async () => {
@@ -192,10 +185,10 @@ describe('The authentication engine of the VPDB API', () => {
 
 			// 1. create token for subscribed user
 			res = await api.as('subscribed1')
+				.markTeardown()
 				.post('/v1/tokens', { label: 'After plan downgrade token', password: api.getUser('subscribed1').password, scopes: [ 'all' ] })
 				.then(res => res.expectStatus(201));
 			const token = res.data.token;
-			api.tearDownToken('subscribed', res.data.id);
 
 			// 2. downgrade user to free
 			const user = api.getUser('subscribed1');
@@ -210,12 +203,12 @@ describe('The authentication engine of the VPDB API', () => {
 				.then(res => res.expectError(401, 'does not allow the use of app tokens'));
 		});
 
-		it.only('should fail if the token is inactive', async () => {
+		it('should fail if the token is inactive', async () => {
 			res = await api.as('subscribed')
+				.markTeardown()
 				.post('/v1/tokens', { label: 'Inactive token', password: api.getUser('subscribed').password, scopes: [ 'all' ] })
 				.then(res => res.expectStatus(201));
 			const token = res.data.token;
-			api.tearDownToken('subscribed', res.data.id);
 
 			await api.as('subscribed')
 				.patch('/v1/tokens/' + res.data.id, { is_active: false })
@@ -226,448 +219,333 @@ describe('The authentication engine of the VPDB API', () => {
 				.then(res => res.expectError(401, 'is inactive'));
 		});
 
-		it('should fail if the token is expired', function(done) {
-			request
-				.post('/api/v1/tokens')
-				.as('subscribed')
-				.send({ label: 'Expired token', password: hlp.getUser('subscribed').password, scopes: [ 'all' ] })
-				.end(function(err, res) {
-					hlp.expectStatus(err, res, 201);
-					const token = res.body.token;
-					request
-						.patch('/api/v1/tokens/' + res.body.id)
-						.as('subscribed')
-						.send({ expires_at: new Date(new Date().getTime() - 86400000)})
-						.end(function(err, res) {
-							hlp.expectStatus(err, res, 200);
-							request
-								.get('/api/v1/user')
-								.set('Authorization', 'Bearer ' + token)
-								.end(hlp.status(401, 'has expired', done));
-						});
-				});
+		it('should fail if the token is expired', async () => {
+			res = await api.as('subscribed')
+				.markTeardown()
+				.post('/v1/tokens', { label: 'Expired token', password: api.getUser('subscribed').password, scopes: [ 'all' ] })
+				.then(res => res.expectStatus(201));
+			const token = res.data.token;
+
+			await api.as('subscribed')
+				.patch('/v1/tokens/' + res.data.id, { expires_at: new Date(new Date().getTime() - 86400000) })
+				.then(res => res.expectStatus(200));
+
+			await api.withToken(token)
+				.get('/v1/user')
+				.then(res => res.expectError(401, 'has expired'));
 		});
 
-		it('should fail if the token is a login token', function(done) {
-			request
-				.post('/api/v1/tokens')
-				.as('subscribed')
-				.send({ label: 'Valid token', password: hlp.getUser('subscribed').password, scopes: [ 'login' ] })
-				.end(function(err, res) {
-					hlp.expectStatus(err, res, 201);
-					request
-						.get('/api/v1/user')
-						.set('Authorization', 'Bearer ' + res.body.token)
-						.end(hlp.status(401, 'invalid scope: [ "login" ]', done));
-				});
+		it('should fail if the token is a login token', async () => {
+			res = await api.as('subscribed')
+				.markTeardown()
+				.post('/v1/tokens', { label: 'Valid token', password: api.getUser('subscribed').password, scopes: [ 'login' ] })
+				.then(res => res.expectStatus(201));
+
+			await api.withToken(res.data.token)
+				.get('/v1/user')
+				.then(res => res.expectError(401, 'invalid scope: [ "login" ]'));
 		});
 
-		it('should succeed if the token is valid', function(done) {
-			request
-				.post('/api/v1/tokens')
-				.as('subscribed')
-				.send({ label: 'Valid token', password: hlp.getUser('subscribed').password, scopes: [ 'all' ] })
-				.end(function(err, res) {
-					hlp.expectStatus(err, res, 201);
-					request
-						.get('/api/v1/user')
-						.set('Authorization', 'Bearer ' + res.body.token)
-						.end(hlp.status(200, done));
-				});
+		it('should succeed if the token is valid', async () => {
+			res = await api.as('subscribed')
+				.markTeardown()
+				.post('/v1/tokens', { label: 'Valid token', password: api.getUser('subscribed').password, scopes: [ 'all' ] })
+				.then(res => res.expectStatus(201));
+
+			await api.withToken(res.data.token)
+				.get('/v1/user')
+				.then(res => res.expectStatus(200));
+
 		});
 	});
 
 	describe('when an application token is provided in the header', () => {
-		let oauthUser1, oauthUser2;
+		let ipsUser, githubUser;
 		let appToken;
 
 		before(async () => {
 
-			await client.setupUsers({
-				admin: { roles: ['admin'], _plan: 'subscribed' }
-			});
-			oauthUser1 = await client.createOAuthUser('oauth1', 'ipbtest');
-			oauthUser2 = await client.createOAuthUser('oauth2', 'ipbtest');
+			ipsUser = await api.createOAuthUser('oauth1', 'ipbtest');
+			githubUser = await api.createOAuthUser('oauth2', 'github');
 
-			let res = await client.as('admin').post('/v1/tokens', {
+			let res = await api.as('admin').markTeardown().post('/v1/tokens', {
 				label: 'Auth test token',
-				password: client.getUser('admin').password,
+				password: api.getUser('admin').password,
 				provider: 'ipbtest', type: 'application',
 				scopes: [ 'community', 'service' ]
-			}, 201);
+			}).then(res => res.expectStatus(201));
+
 			appToken = res.data.token;
 		});
 
-		after(async () => {
-			await client.teardown();
-		});
-
 		it('should fail when no user header is provided', async () => {
-			await client.withToken(appToken).get('/v1/user', 400, 'must provide "x-vpdb-user-id" or "x-user-id" header');
+			await api.withToken(appToken)
+				.get('/v1/user')
+				.then(res => res.expectError(400, 'must provide "x-vpdb-user-id" or "x-user-id" header'));
 		});
 
 		it('should fail when a non-existent vpdb user header is provided', async () => {
-			await client.withToken(appToken).withHeader('X-Vpdb-User-Id', 'blürpsl').get('/v1/user', 400, 'no user with id');
+			await api.withToken(appToken)
+				.withHeader('X-Vpdb-User-Id', 'blürpsl')
+				.get('/v1/user')
+				.then(res => res.expectError(400, 'no user with id'));
 		});
 
-		it('should fail with a vpdb user header of a different provider', done => {
-			request
-				.get('/api/v1/user')
-				.with(appToken)
-				.set('X-Vpdb-User-Id', hlp.getUser('member').id)
-				.end(hlp.status(400, 'user has not been authenticated with', done));
+		it('should fail with a vpdb user header of a different provider', async () => {
+			await api.withToken(appToken)
+				.withHeader('X-Vpdb-User-Id', api.getUser('member').id)
+				.get('/v1/user')
+				.then(res => res.expectError(400, 'user has not been authenticated with'));
 		});
 
-		it('should fail on a out-of-scope resource', done => {
-			request
-				.post('/api/v1/backglasses')
-				.send({})
-				.with(appToken)
-				.set('X-Vpdb-User-Id', oauthUser1.id)
-				.end(hlp.status(401, 'token has an invalid scope', done));
+		it('should fail on a out-of-scope resource', async () => {
+			await api.withToken(appToken)
+				.withHeader('X-Vpdb-User-Id', ipsUser.id)
+				.post('/v1/backglasses', {})
+				.then(res => res.expectError(401, 'token has an invalid scope'));
 		});
 
-		it('should fail with a non-existent user header', done => {
-			request
-				.get('/api/v1/user')
-				.with(appToken)
-				.set('X-User-Id', 'blarp')
-				.end(hlp.status(400, 'no user with id', done));
+		it('should fail with a non-existent user header', async () => {
+			await api.withToken(appToken)
+				.withHeader('X-User-Id', 'blarp')
+				.get('/v1/user')
+				.then(res => res.expectError(400, 'no user with id'));
 		});
 
-		it('should fail with a user header from a different provider', done => {
-			request
-				.get('/api/v1/user')
-				.with(appToken)
-				.set('X-User-Id', oauthUser2.github.id)
-				.end(hlp.status(400, 'no user with id', done));
+		it('should fail with a user header from a different provider', async () => {
+			await api.withToken(appToken)
+				.withHeader('X-User-Id', githubUser.github.id)
+				.get('/v1/user')
+				.then(res => res.expectError(400, 'no user with id'));
 		});
 
-		it('should succeed with the correct provider user header', done => {
-			request
-				.get('/api/v1/user')
-				.with(appToken)
-				.set('X-User-Id', '2')
-				.end(function(err, res) {
-					hlp.expectStatus(err, res, 200);
-					expect(res.body.id).to.be(oauthUser1.id);
-					done();
+		it('should succeed with the correct provider user header', async () => {
+			await api.withToken(appToken)
+				.withHeader('X-User-Id', ipsUser.ipbtest.id)
+				.get('/v1/user')
+				.then(res => {
+					res.expectStatus(200);
+					expect(res.data.id).to.be(ipsUser.id);
 				});
 		});
 
-		it('should succeed with the correct vpdb user header', done => {
-			request
-				.get('/api/v1/user')
-				.with(appToken)
-				.set('X-Vpdb-User-Id', oauthUser1.id)
-				.end(function(err, res) {
-					hlp.expectStatus(err, res, 200);
-					expect(res.body.id).to.be(oauthUser1.id);
-					done();
+		it('should succeed with the correct vpdb user header', async () => {
+			await api.withToken(appToken)
+				.withHeader('X-Vpdb-User-Id', ipsUser.id)
+				.get('/v1/user')
+				.then(res => {
+					res.expectStatus(200);
+					expect(res.data.id).to.be(ipsUser.id);
 				});
 		});
 
-		it('should be able to create an oauth user', done => {
-			request
-				.put('/api/v1/users')
-				.with(appToken)
-				.send({ provider_id: 1234, email: 'oauth@vpdb.io', username: 'oauthtest' }).end(function(err, res) {
-					hlp.expectStatus(err, res, 201);
-					hlp.doomUser(res.body.id);
-					expect(res.body.provider).to.be('ipbtest');
-					done();
-			});
+		it('should be able to create an oauth user', async () => {
+			await api.withToken(appToken)
+				.put('/v1/users', { provider_id: 1234, email: 'oauth@vpdb.io', username: 'oauthtest' })
+				.then(res => {
+					res.expectStatus(201);
+					api.tearDownUser(res.data.id);
+					expect(res.data.provider).to.be('ipbtest');
+				});
 		});
 	});
 
-	describe('when authorization is provided in the URL', function() {
+	describe('when authorization is provided in the URL', () => {
 
-		it('should able to get an access token if the auth token is valid', function(done) {
+		it('should able to get an access token if the auth token is valid', async () => {
 			const path = '/api/v1/user';
-			request
-				.post('/storage/v1/authenticate')
-				.as('member')
-				.send({ paths: path })
-				.end(function(err, res) {
-					hlp.expectStatus(err, res, 200);
-					expect(res.body).to.be.an('object');
-					expect(res.body).to.have.key(path);
-					request
-						.get(path)
-						.query({ token: res.body[path] })
-						.end(hlp.status(200, done));
-				});
+			res = await api.as('member')
+				.on('storage')
+				.post('/v1/authenticate', { paths: path });
+			res.expectStatus(200);
+			expect(res.data).to.be.an('object');
+			expect(res.data).to.have.key(path);
+
+			await api.withQuery({ token: res.data[path] })
+				.get('/v1/user')
+				.then(res => res.expectStatus(200));
 		});
 
-		it('should fail if the token is not path-restricted', function(done) {
-			request
-				.get('/api/v1/user')
-				.query({ token: request.tokens.member })
-				.end(hlp.status(401, 'valid for any path cannot', done));
+		it('should fail if the token is not path-restricted', async () => {
+			await api.withQuery({ token: api.getToken('member') })
+				.get('/v1/user')
+				.then(res => res.expectError(401, 'valid for any path cannot'));
 		});
 
-		it('should fail if the token is for a different path', function(done) {
+		it('should fail if the token is for a different path', async () => {
 			const path = '/storage/v1/files/12345';
-			hlp.storageToken(request, 'member', path, function(token) {
-				request
-					.get('/api/v1/user')
-					.query({ token: token })
-					.end(hlp.status(401, 'is only valid for', done));
-			});
+			const token = await api.retrieveStorageToken('member', path);
+			await api.withQuery({ token: token })
+				.get('/v1/user')
+				.then(res => res.expectError(401, 'is only valid for'));
 		});
 
-		it('should fail if the request method is not GET or HEAD', function(done) {
+		it('should fail if the request method is not GET or HEAD', async () => {
 			const path = '/storage/v1/files';
-			hlp.storageToken(request, 'member', path, function(token) {
-				request
-					.post(path)
-					.query({ token: token })
-					.send({})
-					.end(hlp.status(401, 'is only valid for', done));
-			});
+			const token = await api.retrieveStorageToken('member', path);
+			await api.withQuery({ token: token })
+				.on('storage')
+				.post('/v1/files', {})
+				.then(res => res.expectError(401, 'is only valid for'));
 		});
 
-		it('should fail if the token is corrupt or unreadable', function(done) {
-			request
-				.get('/api/v1/user')
-				.query({ token: 'abcd.123.xyz' })
-				.end(hlp.status(401, 'Bad JSON Web Token', done));
+		it('should fail if the token is corrupt or unreadable', async () => {
+			await api.withQuery({ token: 'abcd.123.xyz' })
+				.get('/v1/user')
+				.then(res => res.expectError(401, 'Bad JSON Web Token'));
 		});
 
-		it('should fail if the token is an application access token', function(done) {
-			request
-				.post('/api/v1/tokens')
-				.as('subscribed')
-				.send({ label: 'App token', password: hlp.getUser('subscribed').password, scopes: [ 'all' ] })
-				.end(function(err, res) {
-					hlp.expectStatus(err, res, 201);
-					request
-						.get('/api/v1/user')
-						.query({ token: res.body.token })
-						.end(hlp.status(401, 'must be provided in the header', done));
-				});
+		it('should fail if the token is an application access token', async () => {
+			res = await api.as('subscribed')
+				.markTeardown()
+				.post('/v1/tokens', { label: 'App token', password: api.getUser('subscribed').password, scopes: [ 'all' ] })
+				.then(res => res.expectStatus(201));
+
+			await api.withQuery({ token: res.data.token })
+				.get('/v1/user')
+				.then(res => res.expectError(401, 'must be provided in the header'));
 		});
 	});
 
-	describe('when authenticating via GitHub', function() {
+	describe('when authenticating via GitHub', () => {
 
-		it('should create a new user and return the user profile along with a valid token', function (done) {
-			request
-				.post('/api/v1/authenticate/mock')
-				.send({
+		it('should create a new user and return the user profile along with a valid token', async () => {
+			const profile = await api.post('/v1/authenticate/mock', {
+				provider: 'github',
+				profile: {
 					provider: 'github',
-					profile: {
-						provider: 'github',
-						id: '11234',
-						displayName: 'Motörhead Dude-23',
-						username: 'motorhead',
-						profileUrl: 'https://github.com/mockuser',
-						emails: [
-							{ value: 'motorhead@vpdb.io' }
-						],
-						_raw: '(not mocked)', _json: { not: 'mocked '}
-					}
-				}).end(hlp.auth.assertToken(request, function(err, profile) {
-					expect(profile.name).to.be('Motorhead Dude23');
-					done();
-				}));
+					id: '11234',
+					displayName: 'Motörhead Dude-23',
+					username: 'motorhead',
+					profileUrl: 'https://github.com/mockuser',
+					emails: [
+						{ value: 'motorhead@vpdb.io' }
+					],
+					_raw: '(not mocked)', _json: { not: 'mocked '}
+				}
+			}).then(res => api.retrieveUserProfile(res));
+			api.tearDownUser(profile.id);
+			expect(profile.name).to.be('Motorhead Dude23');
 		});
 
-		it('should match the same already registered Github user even though email and name are different', function(done) {
-			const githubId = '65465';
-			request
-				.post('/api/v1/authenticate/mock')
-				.send({
-					provider: 'github',
-					profile: { provider: 'github', id: githubId, displayName: null, username: 'mockuser', profileUrl: 'https://github.com/mockuser',
-						emails: [ { value: 'mockuser@vpdb.io' } ]
-					}
-				}).end(hlp.auth.assertToken(request, function(err, profile1) {
-
-					request
-						.post('/api/v1/authenticate/mock')
-						.send({
-							provider: 'github',
-							profile: { provider: 'github', id: githubId, displayName: 'bleh', username: 'foo',
-								emails: [ { value: 'other.email@vpdb.io' } ]
-							}
-						}).end(hlp.auth.assertToken(request, function(err, profile2) {
-							expect(profile1.id).to.be(profile2.id);
-							done();
-						}));
-				}));
+		it('should match the same already registered Github user even though email and name are different', async () => {
+			const profile1 = await api.createOAuthUser('github1', 'github', { id: '65465', emails: [ 'mockuser@vpdb.io' ]});
+			const profile2 = await api.createOAuthUser('github2', 'github', { id: '65465', emails: [ 'other.email@vpdb.io' ]}, { teardown: false });
+			expect(profile1.id).to.be(profile2.id);
 		});
 
-		it('should match an already registered local user with the same email address', function(done) {
-			const localUser = hlp.getUser('member');
-			request
-				.post('/api/v1/authenticate/mock')
-				.send({
-					provider: 'github',
-					profile: { provider: 'github', id: '1234xyz', displayName: null, username: 'mockuser', profileUrl: 'https://github.com/mockuser',
-						emails: [ { value: localUser.email } ]
-					}
-				}).end(hlp.auth.assertToken(request, function(err, profile) {
-					expect(profile.id).to.be(localUser.id);
-					done();
-				}, true));
+		it('should match an already registered local user with the same email address', async () => {
+
+			const localUser = api.getUser('member');
+			const oauthUser = await api.createOAuthUser('github3', 'github', { id: '1234xyz', emails: [ localUser.email ]}, { teardown: false });
+
+			expect(oauthUser.id).to.be(localUser.id);
 		});
 
-		it('should fail when the oauth email changes to an existing address', done => {
-			request
-				.post('/api/v1/authenticate/mock')
-				.send({
-					provider: 'github',
-					profile: {
-						provider: 'github',
-						id: '12345',
-						displayName: 'User changing email',
-						username: 'mailchanger',
-						profileUrl: 'https://github.com/mailchanger',
-						emails: [
-							{ value: 'first.email@vpdb.io' }
-						],
-						_raw: '(not mocked)', _json: { not: 'mocked '}
-					}
-				}).end(function(err, res) {
-					hlp.expectStatus(err, res, 200);
-					hlp.doomUser(res.body.user.id);
+		it('should fail when the oauth email changes to an existing address', async () => {
 
-				request
-					.post('/api/v1/users')
-					.send(_.extend(hlp.genUser({ roles: ['member'], email: 'second.email@vpdb.io' }), { skipEmailConfirmation: true }, ))
-					.end(function(err, res) {
-						hlp.expectStatus(err, res, 201);
-						hlp.doomUser(res.body.id);
-						request
-							.post('/api/v1/authenticate/mock')
-							.send({
-								provider: 'github',
-								profile: {
-									provider: 'github',
-									id: '12345',
-									displayName: 'User changing email',
-									username: 'mailchanger',
-									profileUrl: 'https://github.com/mailchanger',
-									emails: [
-										{ value: 'second.email@vpdb.io' }
-									],
-									_raw: '(not mocked)', _json: { not: 'mocked '}
-								}
-							}).end(hlp.status(409, done));
-					});
-			});
-		})
+			const oauthProfile = api.generateOAuthUser('github', { emails: [ 'first.email@vpdb.io' ]});
+			const localProfile = api.generateUser({ email: 'second.email@vpdb.io', roles: ['member'], skipEmailConfirmation: true });
+
+			// create oauth user with email1
+			await api.markTeardown('user.id', '/v1/users')
+				.post('/v1/authenticate/mock', oauthProfile)
+				.then(res => res.expectStatus(200));
+
+			// create local user with email2
+			await api.markTeardown()
+				.post('/v1/users', localProfile)
+				.then(res => res.expectStatus(201));
+
+			// change email1 at provider to email2
+			oauthProfile.profile.emails = [ { value: 'second.email@vpdb.io' } ];
+
+			// login with oauth user => 409
+			await api.post('/v1/authenticate/mock', oauthProfile)
+				.then(res => res.expectStatus(409));
+		});
 
 	});
 
-	describe('when authenticating via IPB', function() {
+	describe('when authenticating via IPB', () => {
 
-		it('should create a new user and return the user profile along with a valid token', function(done) {
-			request
-				.post('/api/v1/authenticate/mock')
-				.send({
-					provider: 'ipboard',
-					providerName: 'ipbtest',
-					profile: {
-						provider: 'ipbtest',
-						id: '2',
-						username: 'test',
-						displayName: 'test i am',
-						profileUrl: 'http://localhost:8088/index.php?showuser=2',
-						emails: [ { value: 'test@vpdb.io' } ],
-						photos: [ { value: 'http://localhost:8088/uploads/' } ]
-					}
-				})
-				.end(hlp.auth.assertToken(request, done));
+		it('should create a new user and return the user profile along with a valid token', async () => {
+			await api.post('/v1/authenticate/mock', {
+				provider: 'ipboard',
+				providerName: 'ipbtest',
+				profile: {
+					provider: 'ipbtest',
+					id: '2',
+					username: 'test',
+					displayName: 'test i am',
+					profileUrl: 'http://localhost:8088/index.php?showuser=2',
+					emails: [ { value: 'test@vpdb.io' } ],
+					photos: [ { value: 'http://localhost:8088/uploads/' } ]
+				}
+			}).then(res => api.retrieveUserProfile(res));
 		});
 
-		it('should match an already registered GitHub user with the same email address', function(done) {
+		it('should match an already registered GitHub user with the same email address', async () => {
 			const email = 'imthesame@vpdb.io';
-			request
-				.post('/api/v1/authenticate/mock')
-				.send({
-					provider: 'ipboard',
-					providerName: 'ipbtest',
-					profile: { provider: 'ipbtest', id: '3', username: 'test', displayName: 'test i am', profileUrl: 'http://localhost:8088/index.php?showuser=2',
-						emails: [ { value: email } ]
-					}
-				}).end(hlp.auth.assertToken(request, function(err, profile) {
-				const userId = profile.id;
-				request
-						.post('/api/v1/authenticate/mock')
-						.send({
-							provider: 'github',
-							profile: { provider: 'github', id: '1234abcd', displayName: null, username: 'mockuser', profileUrl: 'https://github.com/mockuser',
-								emails: [ { value: email } ]
-							}
-						}).end(hlp.auth.assertToken(request, function(err, profile) {
-							expect(profile.id).to.be(userId);
-							done();
-						}, true));
-				}));
+			const ipsUser = api.generateOAuthUser('ipbtest',   { emails: [ email ] });
+			const githubUser = api.generateOAuthUser('github', { emails: [ email ] });
+
+			res = await api.markTeardown('user.id', '/v1/users')
+				.post('/v1/authenticate/mock', ipsUser)
+				.then(res => api.retrieveUserProfile(res));
+
+			const userId = res.id;
+			res = await api.post('/v1/authenticate/mock', githubUser)
+				.then(res => api.retrieveUserProfile(res));
+
+			expect(res.id).to.be(userId);
 		});
 
-		it('should not match an already registered GitHub user even though ID, username and display name are the same', function(done) {
+		it('should not match an already registered GitHub user even though ID, username and display name are the same', async () => {
 			const id = '23';
 			const username = 'doofus';
 			const displayname = 'Doof Us';
-			request
-				.post('/api/v1/authenticate/mock')
-				.send({
-					provider: 'ipboard',
-					providerName: 'ipbtest',
-					profile: { provider: 'ipbtest', id: id, username: username, displayName: displayname, profileUrl: 'http://localhost:8088/index.php?showuser=2',
-						emails: [ { value: 'email1@vpdb.io' } ]
-					}
-				}).end(hlp.auth.assertToken(request, function(err, profile) {
-				const userId = profile.id;
-				request
-						.post('/api/v1/authenticate/mock')
-						.send({
-							provider: 'github',
-							profile: { provider: 'github', id: id, username: username, displayName: displayname, profileUrl: 'https://github.com/mockuser',
-								emails: [ { value: 'email2@vpdb.io' } ]
-							}
-						}).end(hlp.auth.assertToken(request, function(err, profile) {
-							expect(profile.id).not.to.be(userId);
-							done();
-						}));
-				}));
+
+			const ipsUser = api.generateOAuthUser('ipbtest',   { id: id, name: username, displayName: displayname });
+			const githubUser = api.generateOAuthUser('github', { id: id, name: username, displayName: displayname });
+
+			res = await api.markTeardown('user.id', '/v1/users')
+				.post('/v1/authenticate/mock', ipsUser)
+				.then(res => api.retrieveUserProfile(res));
+
+			const userId = res.id;
+			res = await api.post('/v1/authenticate/mock', githubUser)
+				.then(res => api.retrieveUserProfile(res));
+
+			expect(res.id).not.to.be(userId);
 		});
 
-		it('should deny access if received profile data is empty', function(done) {
-			request
-				.post('/api/v1/authenticate/mock')
-				.send({
-					provider: 'ipboard',
-					providerName: 'ipbtest',
-					profile: null
-				}).end(hlp.status(500, 'No profile received', done));
+		it('should deny access if received profile data is empty', async () => {
+			await api.post('/v1/authenticate/mock', {
+				provider: 'ipboard',
+				providerName: 'ipbtest',
+				profile: null
+			}).then(res => res.expectError(500, 'No profile received'));
 		});
 
-		it('should deny access if received profile data does not contain email address', function(done) {
-			request
-				.post('/api/v1/authenticate/mock')
-				.send({
-					provider: 'ipboard',
-					providerName: 'ipbtest',
-					profile: { provider: 'ipbtest', id: '2', username: 'test', displayName: 'test i am', profileUrl: 'http://localhost:8088/index.php?showuser=2',
-						emails: [ ]
-					}
-				}).end(hlp.status(500, 'does not contain any email', done));
+		it('should deny access if received profile data does not contain email address', async () => {
+			await api.post('/v1/authenticate/mock', {
+				provider: 'ipboard',
+				providerName: 'ipbtest',
+				profile: { provider: 'ipbtest', id: '2', username: 'test', displayName: 'test i am', profileUrl: 'http://localhost:8088/index.php?showuser=2',
+					emails: [ ]
+				}
+			}).then(res => res.expectError(500, 'does not contain any email'));
 		});
 
-		it('should deny access if received profile data does not contain user id', function(done) {
-			request
-				.post('/api/v1/authenticate/mock')
-				.send({
-					provider: 'ipboard',
-					providerName: 'ipbtest',
-					profile: { provider: 'ipbtest', username: 'test', displayName: 'test i am', profileUrl: 'http://localhost:8088/index.php?showuser=2',
-						emails: [ { value: 'valid.email@vpdb.io' } ]
-					}
-				}).end(hlp.status(500, 'does not contain user id', done));
+		it('should deny access if received profile data does not contain user id', async () => {
+			await api.post('/v1/authenticate/mock', {
+				provider: 'ipboard',
+				providerName: 'ipbtest',
+				profile: { provider: 'ipbtest', username: 'test', displayName: 'test i am', profileUrl: 'http://localhost:8088/index.php?showuser=2',
+					emails: [ { value: 'valid.email@vpdb.io' } ]
+				}
+			}).then(res => res.expectError(500, 'does not contain user id'));
 		});
 
 	});

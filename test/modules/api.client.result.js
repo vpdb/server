@@ -1,3 +1,5 @@
+const isString = require('lodash').isString;
+
 class ApiClientResult {
 
 	constructor(response) {
@@ -52,7 +54,7 @@ class ApiClientResult {
 	 */
 	expectStatus(status) {
 		if (this.response.status !== status) {
-			console.log(this._logResponse(this.response));
+			console.log(this._logResponse());
 			throw new Error('Expected status ' + status + ' but received "' + this.response.status + ' ' + this.response.statusText + '".');
 		}
 		return this;
@@ -68,21 +70,27 @@ class ApiClientResult {
 	expectError(status, contains) {
 		this.expectStatus(status);
 		if (!this.response.data) {
-			console.log(this._logResponse(this.response));
+			console.log(this._logResponse());
 			throw new Error('Expected data for error validation');
 		}
 		if (!this.response.data.error) {
-			console.log(this._logResponse(this.response));
+			console.log(this._logResponse());
 			throw new Error('Expected `error` property in returned object but got ' + JSON.stringify(this.response.data) + '.');
 		}
-		if (!this.response.data.error.toLowerCase().includes(contains.toLowerCase())) {
-			console.log(this._logResponse(this.response));
+		if (!isString(this.response.data.error) && !isString(this.response.data.error.message)) {
+			console.log(this._logResponse());
+			throw new Error('Expected `error` property in returned object to be a string or an object containing `message`.');
+		}
+		const message = isString(this.response.data.error) ? this.response.data.error : this.response.data.error.message;
+		if (!message.toLowerCase().includes(contains.toLowerCase())) {
+			console.log(this._logResponse());
 			throw new Error('Expected returned error message "' + this.response.data.error + '" to contain "' + contains + '".');
 		}
 		return this;
 	}
 
-	_logResponse(res) {
+	_logResponse() {
+		const res = this.response;
 		let err = '';
 		err += '\n--> ' + res.request._header.replace(/\n/g, '\n--> ');
 		if (res.config.data) {

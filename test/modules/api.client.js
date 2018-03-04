@@ -6,6 +6,7 @@ const assign = require('lodash').assign;
 const pick = require('lodash').pick;
 const keys = require('lodash').keys;
 const get = require('lodash').get;
+const isString = require('lodash').isString;
 
 const ApiClientResult = require('./api.client.result');
 
@@ -193,6 +194,7 @@ class ApiClient {
 
 	/**
 	 * Saves request and response to the documentation folder.
+	 *
 	 * @param {Object} opts Options
 	 * @param {Object} opts.path Where to save the response
 	 * @return {ApiClient}
@@ -201,13 +203,42 @@ class ApiClient {
 		return this;
 	}
 
-	markTeardown(pathToId) {
+	/**
+	 * Marks the current entity to be torn down after tests.
+	 *
+	 * @param {string} [pathToId="id"] Path to the attribute containing the ID field of the response.
+	 * @param {string} [path] If the DELETE path differs from the original request, this overwrites it.
+	 * @returns {ApiClient}
+	 */
+	markTeardown(pathToId, path) {
+		if (!pathToId) {
+			pathToId = 'id';
+		}
 		this._actions.push(res => {
-			this._tearDown.push({
-				authHeader: res.config.headers.Authorization,
-				url: res.config.url + '/' + get(res.data, pathToId)
-			});
+			const teardown = {};
+			if (path) {
+				teardown.path = path + '/' + get(res.data, pathToId);
+			} else {
+				teardown.url = res.config.url + '/' + get(res.data, pathToId);
+			}
+			if (res.config.headers.Authorization) {
+				teardown.authHeader = res.config.headers.Authorization;
+			} else {
+				teardown.user = '__root';
+			}
+			this._tearDown.push(teardown);
 		});
+		return this;
+	}
+
+
+	/**
+	 * Dumps a request/response log to the console.
+	 *
+	 * @returns {ApiClient}
+	 */
+	debug() {
+		this._actions.push(res => console.log(res._logResponse()));
 		return this;
 	}
 
@@ -302,6 +333,10 @@ class ApiClient {
 			if (entity.authHeader) {
 				req = this.withHeader(this._authHeader, entity.authHeader);
 			}
+			if (!req) {
+				console.log(entity);
+				throw new Error('Must either set `user` or `authHeader` ("' + entity.user + '"/"' + entity.authHeader + '").');
+			}
 			await req.del(entity.path || entity.url).then(res => res.expectStatus(204));
 		}
 		this._users.clear();
@@ -329,7 +364,7 @@ class ApiClient {
 		attrs = attrs || {};
 		opts = opts || {};
 
-		let user = this._generateUser(attrs);
+		let user = this.generateUser(attrs);
 		user.skipEmailConfirmation = !opts.keepUnconfirmed;
 
 		// 1. create user
@@ -357,29 +392,44 @@ class ApiClient {
 	/**
 	 * Creates a OAuth user to be deleted on teardown.
 	 *
-	 * @param {string} name User reference
+	 * @param {string} name Unique user reference
 	 * @param {string} provider Provider ID. Must be one of the configured OAuth providers, currently: [ "github", "ipbtest" ].
 	 * @param {Object} [attrs] User attributes to set
+	 * @param {string|number} [attrs.id] User ID at provider
 	 * @param {string} [attrs.name] Username
-	 * @param {string} [attrs.emails] List of email addresses
+	 * @param {string[]} [attrs.emails] List of email addresses
 	 * @param {string[]} [attrs.roles] User roles
 	 * @param {string} [attrs._plan] User roles
+	 * @param {Object} [opts] Options
+	 * @param {boolean} [opts.teardown=true] If set, teardown the user after tests
 	 * @return {Promise<*>} Created user
 	 */
-	async createOAuthUser(name, provider, attrs) {
+	async createOAuthUser(name, provider, attrs, opts) {
+
+		opts = opts || [];
+		attrs = attrs || [];
+		if (this._users.has('name')) {
+			throw new Error('User "' + name + '" already exists.');
+		}
 
 		// 1. create user
-		let user = this._generateOAuthUser(attrs, provider);
+		const oAuthProfile = this.generateOAuthUser(provider, attrs);
 
-		let res = await this.post('/v1/authenticate/mock', user, 200);
-		user = assign(user, res.data.user);
+		let res = await this.post('/v1/authenticate/mock', oAuthProfile).then(res => res.expectStatus(200));
+		const user = res.data.user;
 		this._users.set(name, assign(user, { _plan: user.plan.id }));
 		this._tokens.set(name, res.data.token);
-		this.tearDownUser(user.id);
+		if (opts.teardown !== false) {
+			this.tearDownUser(user.id);
+		}
 
 		// 2. update user
-		user = assign(user, attrs);
-		await this.asRoot().put('/v1/users/' + user.id, pick(user, [ 'name', 'email', 'username', 'is_active', 'roles', '_plan' ]), 200);
+		if (attrs.roles || attrs._plan) {
+			assign(user, pick(attrs, ['roles', '_plan']));
+			await this.asRoot()
+				.put('/v1/users/' + user.id, pick(user, [ 'name', 'email', 'username', 'is_active', 'roles', '_plan' ]))
+				.then(res => res.expectStatus(200));
+		}
 
 		return user;
 	}
@@ -400,6 +450,23 @@ class ApiClient {
 				return res.data[path];
 			});
 	};
+
+	/**
+	 * Retrieves the user profile from a given token response.
+	 *
+	 * @param {ApiClientResult} tokenResponse
+	 * @returns {Promise<Object>} User profile
+	 */
+	async retrieveUserProfile(tokenResponse) {
+		tokenResponse.expectStatus(200);
+		if (!tokenResponse.data.token) {
+			throw new Error('Parameter passed to retrieveUserProfile() must contain a valid token.')
+		}
+		return await this.withToken(tokenResponse.data.token).get('/v1/user').then(res => {
+			res.expectStatus(200);
+			return res.data;
+		});
+	}
 
 	/**
 	 * Marks a user to be deleted in teardown.
@@ -433,13 +500,13 @@ class ApiClient {
 		const config = {};
 		assign(config, this._baseConfig, this._config, requestConfig);
 		this._config = {};
-		const res = await this.api.request(config);
+		const res = new ApiClientResult(await this.api.request(config));
 		this._actions.forEach(action => action(res));
 		this._actions = [];
-		return new ApiClientResult(res);
+		return res;
 	}
 
-	_generateUser(attrs) {
+	generateUser(attrs) {
 		let username = '';
 		do {
 			username = faker.internet.userName().replace(/[^a-z0-9]+/gi, '');
@@ -452,23 +519,36 @@ class ApiClient {
 		}, attrs || {});
 	}
 
-	_generateOAuthUser(attrs, provider) {
+	/**
+	 * Generates an OAuth user to be posted to /v1/authenticate/mock.
+	 *
+	 * @param {string} provider Provider ID. Must be one of the configured OAuth providers, currently: [ "github", "ipbtest" ].
+	 * @param {Object} [attrs] User attributes to set
+	 * @param {string|number} [attrs.id] User ID at provider
+	 * @param {string} [attrs.name] Username
+	 * @param {string} [attrs.displayName] Display Name
+	 * @param {string[]} [attrs.emails] List of email addresses
+	 * @param {string[]} [attrs.roles] User roles
+	 * @return {Promise<*>} Created user
+	 */
+	generateOAuthUser(provider, attrs) {
 		attrs = attrs || {};
-		const gen = this._generateUser(attrs);
+		if (attrs.emails && attrs.emails.length > 0 && isString(attrs.emails[0])) {
+			attrs.emails = attrs.emails.map(email => { return { value: email } });
+		}
+		const gen = this.generateUser(attrs);
 		return {
 			provider: provider,
 			profile: {
 				provider: provider,
-				id: Math.floor(Math.random() * 100000),
-				displayName: faker.name.firstName() + ' ' + faker.name.lastName(),
+				id: attrs.id || Math.floor(Math.random() * 100000),
+				displayName: attrs.displayName || faker.name.firstName() + ' ' + faker.name.lastName(),
 				username: attrs.name || gen.username,
 				profileUrl: 'https://' + provider + '.com/' + gen.username,
 				emails: attrs.emails || [ { value: gen.email } ]
 			}
 		};
 	}
-
-
 
 }
 

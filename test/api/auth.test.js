@@ -8,7 +8,7 @@ const config = require('../../src/config/settings-test');
 const ApiClient = require('../modules/api.client');
 const api = new ApiClient();
 
-describe('The authentication engine of the VPDB API', () => {
+describe.only('The authentication engine of the VPDB API', () => {
 
 	let res;
 	before(async () => {
@@ -470,7 +470,7 @@ describe('The authentication engine of the VPDB API', () => {
 	describe('when authenticating via IPB', () => {
 
 		it('should create a new user and return the user profile along with a valid token', async () => {
-			await api.post('/v1/authenticate/mock', {
+			await api.markTeardown('user.id', '/v1/users').post('/v1/authenticate/mock', {
 				provider: 'ipboard',
 				providerName: 'ipbtest',
 				profile: {
@@ -514,7 +514,7 @@ describe('The authentication engine of the VPDB API', () => {
 				.then(res => api.retrieveUserProfile(res));
 
 			const userId = res.id;
-			res = await api.post('/v1/authenticate/mock', githubUser)
+			res = await api.markTeardown('user.id', '/v1/users').post('/v1/authenticate/mock', githubUser)
 				.then(res => api.retrieveUserProfile(res));
 
 			expect(res.id).not.to.be(userId);

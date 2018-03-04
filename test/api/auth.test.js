@@ -8,7 +8,7 @@ const config = require('../../src/config/settings-test');
 const ApiClient = require('../modules/api.client');
 const api = new ApiClient();
 
-describe.only('The authentication engine of the VPDB API', () => {
+describe('The authentication engine of the VPDB API', () => {
 
 	let res;
 	before(async () => {

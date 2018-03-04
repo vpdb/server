@@ -1,7 +1,11 @@
 const util = require('util');
 const axios = require('axios');
 const faker = require('faker');
+const stringify = require('json-stable-stringify');
 const randomstring = require('randomstring');
+const existsSync = require('fs').existsSync;
+const mkdirSync = require('fs').mkdirSync;
+const writeFileSync = require('fs').writeFileSync;
 const assign = require('lodash').assign;
 const pick = require('lodash').pick;
 const keys = require('lodash').keys;
@@ -18,7 +22,28 @@ class ApiClient {
 
 		this._users = new Map();
 		this._tokens = new Map();
+
+		/**
+		 * @callback action
+		 * @param {ApiClientResult} res
+		 */
+		/**
+		 * Functions executed after the request.
+		 * @type {Array.<action>}
+		 * @private
+		 */
 		this._actions = [];
+
+		/**
+		 * Teardown actions executed in the teardown block of the test.
+		 *
+		 * @type {Array.<{path:string, url:string, authHeader:string, user:string }>}
+		 * @property {string} path Absolute path (without `basePath`) to the DELETE resource, incl ID
+		 * @property {string} url An absolute URL starting with "http(s)://". Use instead of `path`.
+		 * @property {string} user User reference to authenticate with.
+		 * @property {string} authHeader The entire auth header value, e.g. "Bearer 1234abcd". Use instead of `user`.
+		 * @private
+		 */
 		this._tearDown = [];
 
 		const scheme = opts.scheme || process.env.HTTP_SCHEME || 'http';
@@ -26,13 +51,14 @@ class ApiClient {
 		const port = opts.port || process.env.PORT || 7357;
 		const path = opts.path || process.env.API_PATH || '/api';
 		this._baseUrl = scheme + '://' + host + ':' + port;
-
 		this._authHeader = opts.authHeader || process.env.AUTH_HEADER || 'Authorization';
-
-		this.saveOpts = {
-			host: opts.saveHost || 'api.vpdb.io',
+		this._apis = {
+			'/api': 'api.vpdb.io',
+			'/storage': 'storage.vpdb.io',
+		};
+		this._saveOpts = {
 			root: opts.saveRoot || 'doc/api/v1',
-			ignoreReqHeaders: opts.ignoreReqHeaders || ['cookie', 'host', 'user-agent'],
+			ignoreReqHeaders: opts.ignoreReqHeaders || ['cookie', 'host', 'user-agent', 'connection'],
 			ignoreResHeaders: opts.ignoreResHeaders || ['access-control-allow-origin', 'access-control-expose-headers', 'x-token-refresh', 'x-user-dirty', 'vary', 'connection', 'transfer-encoding', 'date', 'x-app-sha']
 		};
 
@@ -133,7 +159,7 @@ class ApiClient {
 	/**
 	 * Use the authentication token of given user.
 	 *
-	 * The user must have been created with either {@link #setupUsers} or
+	 * The user must have been created with either {@link setupUsers} or
 	 * {@link createUser}.
 	 *
 	 * @param user Reference to user
@@ -183,23 +209,81 @@ class ApiClient {
 	}
 
 	/**
-	 * Saves the response to the documentation folder.
+	 * Saves the request to the documentation folder.
+	 * @param {string} path Where to save the request, e.g. "users/post".
 	 * @param {Object} opts Options
-	 * @param {Object} opts.path Where to save the response
 	 * @return {ApiClient}
 	 */
-	saveResponse(opts) {
+	saveRequest(path, opts) {
+		const out = [];
+		const dest = this._getSaveFolder(this._saveOpts.root, path, '-req.json');
+		this._actions.push(/** @type {ApiClientResult} */ res => {
+
+			const prefix = Object.keys(this._apis).find(prefix => res.request.path.startsWith(prefix));
+
+			out.push(res.request.method + ' ' + res.request.path.substr(prefix.length) + ' HTTP/2.0');
+			out.push('Host: ' + this._apis[prefix]);
+
+			const headers = res.request._header.trim().split('\r\n').map(line => line.split(': '));
+			headers.shift();
+			headers
+				.filter(header => !this._saveOpts.ignoreReqHeaders.includes(header[0].toLowerCase()))
+				.map(header => `${header[0]}: ${header[1]}`)
+				.forEach(line => out.push(line));
+
+			out.push('');
+			if (res.config.data) {
+				out.push(stringify(JSON.parse(res.config.data), { space: 3 }));
+			}
+			writeFileSync(dest, out.join('\r\n'));
+			console.log('Writing request to %s', dest);
+		});
+		return this;
+	}
+
+	/**
+	 * Saves the response to the documentation folder.
+	 * @param {string} path Where to save the request, e.g. "users/post".
+	 * @param {Object} opts Options
+	 * @return {ApiClient}
+	 */
+	saveResponse(path, opts) {
+		const out = [];
+		this._actions.push(/** @type {ApiClientResult} */ res => {
+			const dest = this._getSaveFolder(this._saveOpts.root, path, '-res-' + res.status + '.json');
+			out.push(`${res.status} ${res.statusText}`);
+
+			const headers = {};
+			res.request.res.rawHeaders.forEach((val, index) => {
+				if (index % 2 === 1) {
+					headers[res.request.res.rawHeaders[index - 1]] = val;
+				}
+			});
+			Object.keys(headers)
+				.filter(header => !this._saveOpts.ignoreResHeaders.includes(header.toLowerCase()))
+				.map(header => `${header}: ${headers[header]}`)
+				.forEach(line => out.push(line));
+
+			out.push('');
+			if (res.data) {
+				out.push(stringify(res.data, { space: 3 }));
+			}
+			writeFileSync(dest, out.join('\r\n'));
+			console.log('Writing response to %s', dest);
+		});
 		return this;
 	}
 
 	/**
 	 * Saves request and response to the documentation folder.
 	 *
+	 * @param {string} path Where to save, e.g. "users/post".
 	 * @param {Object} opts Options
-	 * @param {Object} opts.path Where to save the response
 	 * @return {ApiClient}
 	 */
-	save(opts) {
+	save(path, opts) {
+		this.saveRequest(path, opts);
+		this.saveResponse(path, opts);
 		return this;
 	}
 
@@ -548,6 +632,15 @@ class ApiClient {
 				emails: attrs.emails || [ { value: gen.email } ]
 			}
 		};
+	}
+
+	_getSaveFolder(root, savePath, suffix) {
+		const p = savePath.split('/', 2);
+		root = root + '/' + p[0] + '/http';
+		if (!existsSync(root)) {
+			mkdirSync(root);
+		}
+		return root + '/' + p[1] + suffix;
 	}
 
 }

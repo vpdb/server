@@ -8,7 +8,7 @@ const config = require('../../src/config/settings-test');
 const ApiClient = require('../modules/api.client');
 const api = new ApiClient();
 
-describe.only('The authentication engine of the VPDB API', () => {
+describe('The authentication engine of the VPDB API', () => {
 
 	let res;
 	before(async () => {
@@ -30,13 +30,13 @@ describe.only('The authentication engine of the VPDB API', () => {
 	describe('when sending an authentication request using user/password', () => {
 
 		it('should fail if no credentials are posted', async () => {
-			await api.saveResponse({ path: 'auth/local' })
+			await api.saveResponse('auth/local')
 				.post('/v1/authenticate', {})
 				.then(res => res.expectError(400, 'must supply a username'));
 		});
 
 		it('should fail if username is non-existent', async () => {
-			await api.saveResponse({ path: 'auth/local' })
+			await api.saveResponse('auth/local')
 				.post('/v1/authenticate', { username: '_______________', password: 'xxx' })
 				.then(res => res.expectError(401, 'Wrong username or password'));
 		});
@@ -52,7 +52,7 @@ describe.only('The authentication engine of the VPDB API', () => {
 		});
 
 		it('should succeed if credentials are correct', async () => {
-			await api.save({ path: 'auth/local' })
+			await api.save('auth/local')
 				.post('/v1/authenticate', { username: api.getUser('member').name, password: api.getUser('member').password })
 				.then(res => res.expectStatus(200));
 		});

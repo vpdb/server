@@ -24,7 +24,7 @@ class ApiClientResult {
 		 * HTTP status code from the server response
 		 * @type {number}
 		 */
-		this.status = response.data;
+		this.status = response.status;
 		/**
 		 * HTTP status message from the server response
 		 * @type {string}

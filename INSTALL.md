@@ -415,6 +415,9 @@ Test on all instances that all connections are fine:
 	mongo --host 127.0.3.3 --port 27019
 	mongo --host 127.0.10.10 --port 27100
 	mongo --host 127.0.20.20 --port 27200
+	
+Note that on secondary and tertiary, you can't have another mongo instance 
+running on port 27017, even if it's non `127.0.0.1` instead of `127.0.1.1`.
 
 Then connect to primary, configure replication and add replicas:
 

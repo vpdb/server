@@ -45,7 +45,7 @@ class UserSerializer extends Serializer {
 	 */
 	_detailed(doc, req, opts) {
 		const user = this._simple(doc, req, opts);
-		_.assign(user, _.pick(doc, ['email', 'email_status', 'is_active', 'provider', 'created_at']));
+		_.assign(user, _.pick(doc, ['email', 'email_status', 'emails', 'is_active', 'provider', 'created_at']));
 
 		user.roles = doc.roles.toObject();
 		user.preferences = doc.preferences.toObject();

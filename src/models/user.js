@@ -439,7 +439,7 @@ UserSchema.statics.tryMergeUsers = function(mergeUsers, explanation, req, error)
 		const keepUser = _.find(mergeUsers, u => u.id === req.query.merged_user_id);
 		if (keepUser) {
 			const otherUsers = mergeUsers.filter(u => u.id !== req.query.merged_user_id);
-			logger.info('[model|user] Merging users [ %s ] into %s as per query parameter.', otherUsers.map(u => u.id).join(', '), keepUser.toString());
+			logger.info('[model|user] Merging users [ %s ] into %s as per query parameter.', otherUsers.map(u => u.id).join(', '), keepUser.id);
 			// merge users
 			return Promise
 				.each(otherUsers, otherUser => UserSchema.statics.mergeUsers(keepUser, otherUser, explanation, req))
@@ -466,10 +466,11 @@ UserSchema.statics.tryMergeUsers = function(mergeUsers, explanation, req, error)
  */
 UserSchema.statics.mergeUsers = function(keepUser, mergeUser, explanation, req) {
 
-	logger.info('[model|user]: Merging %s into %s...', mergeUser.toString(), keepUser.toString());
+	logger.info('[model|user] Merging %s into %s...', mergeUser.id, keepUser.id);
 	if (keepUser.id === mergeUser.id) {
 		return Promise.reject('Cannot merge user ' + keepUser.id + ' into itself!');
 	}
+	let num = 0;
 
 	// 1. update references
 	return Promise.all([
@@ -491,14 +492,19 @@ UserSchema.statics.mergeUsers = function(keepUser, mergeUser, explanation, req) 
 
 	]).then(result => {
 
-		console.log('Updated direct references:', result);
+		const strs = [ '%s backglass(es)', '%s build(s)', '%s comment(s)', '%s file(s)', '%s game(s)', '%s game request(s)',
+			'%s log event(s) as actor', '%s log events as ref', '%s user log(s) as user', '%s user log(s) as actor',
+			'%s media', '%s release(s)', '%s rom(s)', '%s tag(s)', '%s token(s).'];
+		logger.info('[model|user] Merged %s', result.map((r, i) => _.assign(r, { str: strs[i].replace('%s', r.n) })).filter(r => r.n > 0).map(r => r.str).join(', '));
 
 		// 1.1 update release versions
+
 		return mongoose.model('Release').find({ 'authors._user': mergeUser._id.toString() }).exec().then(releases => {
 			return Promise.all(releases.map(release => {
 				release.authors.forEach(author => {
 					if (author._user.equals(mergeUser._id)) {
 						author._user = keepUser._id;
+						num++;
 					}
 				});
 				return release.save();
@@ -506,11 +512,15 @@ UserSchema.statics.mergeUsers = function(keepUser, mergeUser, explanation, req) 
 
 		}).then(() => mongoose.model('Release').find({ 'versions.files.validation._validated_by': mergeUser._id.toString() }).exec().then(releases => {
 
+			logger.info('[model|user] Merged %s author(s)', num);
+			num = 0;
+
 			// 1.2 update release validation
 			return Promise.all(releases.map(release => {
 				release.files.forEach(releaseFile => {
 					if (releaseFile.validation._validated_by.equals(mergeUser._id)) {
 						releaseFile.validation._validated_by = keepUser._id;
+						num++;
 					}
 				});
 				return release.save();
@@ -518,11 +528,15 @@ UserSchema.statics.mergeUsers = function(keepUser, mergeUser, explanation, req) 
 
 		})).then(() => mongoose.model('Release').find({ 'moderation.history._created_by': mergeUser._id.toString() }).exec().then(releases => {
 
+			logger.info('[model|user] Merged %s release moderation(s)', num);
+			num = 0;
+
 			// 1.3 release moderation
 			return Promise.all(releases.map(release => {
 				release.moderation.history.forEach(historyItem => {
 					if (historyItem._created_by.equals(mergeUser._id)) {
 						historyItem._created_by = keepUser._id;
+						num++;
 					}
 				});
 				return release.save();
@@ -530,11 +544,15 @@ UserSchema.statics.mergeUsers = function(keepUser, mergeUser, explanation, req) 
 
 		})).then(() => mongoose.model('Backglass').find({ 'moderation.history._created_by': mergeUser._id.toString() }).exec().then(backglasses => {
 
+			logger.info('[model|user] Merged %s item(s) in release moderation history', num);
+			num = 0;
+
 			// 1.4 backglass moderation
 			return Promise.all(backglasses.map(backglass => {
 				backglass.moderation.history.forEach(historyItem => {
 					if (historyItem._created_by.equals(mergeUser._id)) {
 						historyItem._created_by = keepUser._id;
+						num++;
 					}
 				});
 				return backglass.save();
@@ -543,8 +561,13 @@ UserSchema.statics.mergeUsers = function(keepUser, mergeUser, explanation, req) 
 
 	}).then(() => {
 
+		logger.info('[model|user] Merged %s item(s) in backglass moderation history', num);
+		num = 0;
+
 		// 1.5 ratings. first, update user id of all ratings
-		return mongoose.model('Rating').update({ _from: mergeUser._id.toString() }, { _from: keepUser._id.toString() }).then(() => {
+		return mongoose.model('Rating').update({ _from: mergeUser._id.toString() }, { _from: keepUser._id.toString() }).then(result => {
+
+			logger.info('[model|user] Merged %s rating(s)', result.n);
 
 			// then, remove duplicate ratings
 			const map = new Map();
@@ -570,7 +593,9 @@ UserSchema.statics.mergeUsers = function(keepUser, mergeUser, explanation, req) 
 	}).then(() => {
 
 		// 1.6 stars: first, update user id of all stars
-		return mongoose.model('Star').update({ _from: mergeUser._id.toString() }, { _from: keepUser._id.toString() }).then(() => {
+		return mongoose.model('Star').update({ _from: mergeUser._id.toString() }, { _from: keepUser._id.toString() }).then(result => {
+
+			logger.info('[model|user] Merged %s star(s)', result.n);
 
 			// then, remove duplicate stars
 			const map = new Map();
@@ -642,7 +667,7 @@ UserSchema.statics.mergeUsers = function(keepUser, mergeUser, explanation, req) 
 
 	}).then(() => {
 
-		logger.info('[model|user]: Done merging, removing merged user.');
+		logger.info('[model|user] Done merging, removing merged user.');
 
 		// 5. delete merged user
 		return mergeUser.remove();

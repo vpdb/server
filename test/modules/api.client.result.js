@@ -102,9 +102,9 @@ class ApiClientResult {
 		});
 		if (res.data) {
 			err += '\n<--';
-			err += '\n<-- ' + JSON.stringify(res.data, null, '  ').replace(/\n/g, '\n--> ');
+			err += '\n<-- ' + JSON.stringify(res.data, null, '  ').replace(/\n/g, '\n<-- ');
 		}
-		err += '\nRequest config: ' + JSON.stringify(res.config);
+		err += '\n---\n--- Request config: ' + JSON.stringify(res.config);
 		return err;
 	}
 }

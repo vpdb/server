@@ -442,27 +442,39 @@ describe('The authentication engine of the VPDB API', () => {
 			expect(oauthUser.id).to.be(localUser.id);
 		});
 
-		it('should fail when the oauth email changes to an existing address', async () => {
+		it('should merge when the oauth email changes to an existing address', async () => {
 
-			const oauthProfile = api.generateOAuthUser('github', { emails: [ 'first.email@vpdb.io' ]});
-			const localProfile = api.generateUser({ email: 'second.email@vpdb.io', roles: ['member'], skipEmailConfirmation: true });
+			const oauthProfile = api.generateOAuthUser('github');
+			const localProfile = api.generateUser({ skipEmailConfirmation: true });
 
 			// create oauth user with email1
-			await api.markTeardown('user.id', '/v1/users')
+			await api
 				.post('/v1/authenticate/mock', oauthProfile)
 				.then(res => res.expectStatus(200));
 
 			// create local user with email2
-			await api.markTeardown()
+			res = await api.markTeardown()
 				.post('/v1/users', localProfile)
 				.then(res => res.expectStatus(201));
 
 			// change email1 at provider to email2
-			oauthProfile.profile.emails = [ { value: 'second.email@vpdb.io' } ];
+			oauthProfile.profile.emails = [ { value: res.data.email } ];
 
 			// login with oauth user => 409
-			await api.post('/v1/authenticate/mock', oauthProfile)
+			res = await api.post('/v1/authenticate/mock', oauthProfile)
 				.then(res => res.expectStatus(409));
+
+			expect(res.data.data.users).to.be.an('array');
+			expect(res.data.data.users).to.have.length(2);
+
+			// try again with merge user id (merge oauth user into local user)
+			const localUserId = res.data.data.users.find(user => user.email === localProfile.email).id;
+			res = await api.withQuery({ merged_user_id: localUserId })
+				.post('/v1/authenticate/mock', oauthProfile)
+				.then(res => res.expectStatus(200));
+
+			expect(res.data.user.id).to.be(localUserId);
+
 		});
 
 	});

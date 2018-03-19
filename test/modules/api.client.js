@@ -124,6 +124,11 @@ class ApiClient {
 		}
 	}
 
+	/**
+	 * Retrieves a previously created user object.
+	 * @param {string} user User identifier
+	 * @returns {object}
+	 */
 	getUser(user) {
 		if (!this._users.has(user)) {
 			throw Error('User "' + user + '" has not been created.');
@@ -131,6 +136,11 @@ class ApiClient {
 		return this._users.get(user);
 	}
 
+	/**
+	 * Retrieves the token of a previously created user.
+	 * @param {string} user User identifier
+	 * @returns {string}
+	 */
 	getToken(user) {
 		if (!this._tokens.has(user)) {
 			throw Error('No available token for user "' + user + '".');
@@ -514,7 +524,6 @@ class ApiClient {
 				.put('/v1/users/' + user.id, pick(user, [ 'name', 'email', 'username', 'is_active', 'roles', '_plan' ]))
 				.then(res => res.expectStatus(200));
 		}
-
 		return user;
 	}
 
@@ -563,14 +572,9 @@ class ApiClient {
 	/**
 	 * Prints out a request.
 	 * @param res
-	 * @param title
 	 */
-	dump(res, title) {
-		if (res.data) {
-			console.log('%s (%d): %s', title || 'RESPONSE', res.status, util.inspect(res.data, null, null, true));
-		} else {
-			console.log('%s: %s', title || 'RESPONSE', util.inspect(res, null, null, true));
-		}
+	inspect(res) {
+		console.log(util.inspect(res, null, null, true));
 	};
 
 	/**
@@ -590,6 +594,11 @@ class ApiClient {
 		return res;
 	}
 
+
+	/**
+	 * Generates a user object that can be used to create a new user.
+	 * @param {object} attrs Attributes to override generated data with
+	 */
 	generateUser(attrs) {
 		let username = '';
 		do {
@@ -634,6 +643,15 @@ class ApiClient {
 		};
 	}
 
+	/**
+	 * Returns the folder within the API documentation to create example dumps.
+	 *
+	 * @param {string} root Root of the API documentation
+	 * @param {string} savePath Path to save to, e.g. "users/list"
+	 * @param {string} suffix Suffix appended before the file extension
+	 * @returns {string} Complete path
+	 * @private
+	 */
 	_getSaveFolder(root, savePath, suffix) {
 		const p = savePath.split('/', 2);
 		root = root + '/' + p[0] + '/http';

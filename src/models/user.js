@@ -193,17 +193,6 @@ UserSchema.path('email').validate(function(email) {
 	return _.isString(email) && validator.isEmail(email);
 }, 'Email must be in the correct format.');
 
-UserSchema.path('email').validate(function(email) {
-	return Promise.try(() => {
-		if (!email) {
-			return true;
-		}
-		return mongoose.model('User').findOne({ 'email_status.value': email }).exec();
-
-	}).then(u => !u || u.id === this.id);
-
-}, 'The {PATH} "{VALUE}" is already taken.');
-
 UserSchema.path('location').validate(function(location) {
 	return _.isString(location) && validator.isLength(location, 0, 100);
 }, 'Location must not be longer than 100 characters.');

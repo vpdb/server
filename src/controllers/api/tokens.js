@@ -212,6 +212,7 @@ exports.update = function(req, res) {
 
 		token.validate(function(err) {
 			if (err) {
+				console.log('1');
 				return api.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn('update'), 422);
 			}
 			token.save(assert(function() {

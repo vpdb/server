@@ -64,7 +64,7 @@ class ApiClientResult {
 	 * Expects that the returned error message contains a given string.
 	 * Note that the check is case-insensitive.
 	 * @param {number} status Status code
-	 * @param {string} contains String that must be present in the error message
+	 * @param {string} [contains] String that must be present in the error message
 	 * @return {ApiClientResult}
 	 */
 	expectError(status, contains) {
@@ -82,7 +82,7 @@ class ApiClientResult {
 			throw new Error('Expected `error` property in returned object to be a string or an object containing `message`.');
 		}
 		const message = isString(this.response.data.error) ? this.response.data.error : this.response.data.error.message;
-		if (!message.toLowerCase().includes(contains.toLowerCase())) {
+		if (contains && !message.toLowerCase().includes(contains.toLowerCase())) {
 			console.log(this._logResponse());
 			throw new Error('Expected returned error message "' + this.response.data.error + '" to contain "' + contains + '".');
 		}

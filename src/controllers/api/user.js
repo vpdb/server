@@ -421,6 +421,9 @@ exports.authenticate = function(req, res) {
 exports.confirm = function(req, res) {
 
 	let user, currentCode, logEvent, successMsg, failMsg = 'No such token or token expired.';
+	const deleteUsers = [];
+	const mergeUsers = [];
+
 	return Promise.try(() => {
 		return User.findOne({ 'email_status.token': req.params.tkn }).exec();
 
@@ -440,33 +443,37 @@ exports.confirm = function(req, res) {
 				.status(404);
 		}
 
+		const emailToConfirm = user.email_status.value;
+		logger.info('[api|user:confirm] Email %s confirmed.', emailToConfirm);
+
 		// now we have a valid user that is either pending registration or update.
 		// BUT meanwhile there might have been an oauth account creation with the same email,
 		// or even another unconfirmed local account. so check if we need to merge or delete.
 		return User.find({
 			$or: [
-				{ email: user.email },
-				{ emails: user.email },
-				{ validated_emails: user.email }
+				{ email: emailToConfirm },
+				{ emails: emailToConfirm },
+				{ validated_emails: emailToConfirm }
 			],
 			id: { $ne: user.id }
 		}).exec().then(otherUsers => {
-			const deleteUsers = [];
-			const mergeUsers = [];
 
 			otherUsers.forEach(otherUser => {
 				// other "pending_registration" accounts are deleted, they don't have anything merge-worthy, and we already have local credentials.
 				if (otherUser.email_status && otherUser.email_status.code === 'pending_registration') {
+					logger.info('[api|user:confirm] Deleting pending registration user with same email <%s>.', otherUser.email);
 					deleteUsers.push(otherUser);
+					return;
 				}
 				// other "pending_update" accounts are ignored and will be treated when confirmed
 				if (otherUser.email_status && otherUser.email_status.code === 'pending_update') {
+					logger.info('[api|user:confirm] Ignoring pending update user with same email <%s>.', otherUser.email);
 					return;
 				}
 				// the rest needs merging
 				mergeUsers.push(otherUser);
 			});
-			logger.log('[api|user:confirm] Found %s confirmed and %s unconfirmed dupe users for %s.', mergeUsers.length, deleteUsers.length, user.email);
+			logger.info('[api|user:confirm] Found %s confirmed and %s unconfirmed dupe users for %s.', mergeUsers.length, deleteUsers.length, user.email);
 
 			return Promise.all(deleteUsers.map(u => u.remove())).then(() => {
 
@@ -492,12 +499,12 @@ exports.confirm = function(req, res) {
 		currentCode = user.email_status.code;
 		if (currentCode === 'pending_registration') {
 			user.is_active = true;
-			logger.log('[api|user:confirm] User email <%s> for pending registration confirmed.', user.email);
+			logger.info('[api|user:confirm] User email <%s> for pending registration confirmed.', user.email);
 			successMsg = 'Email successfully validated. You may login now.';
 			logEvent = 'registration_email_confirmed';
 
 		} else if (currentCode === 'pending_update') {
-			logger.log('[api|user:confirm] User email <%s> for pending update confirmed.', user.email_status.value);
+			logger.info('[api|user:confirm] User email <%s> for pending update confirmed.', user.email_status.value);
 			user.email = user.email_status.value;
 			successMsg = 'Email validated and updated.';
 			logEvent = 'email_confirmed';
@@ -519,7 +526,7 @@ exports.confirm = function(req, res) {
 
 	}).then(() => {
 
-		api.success(res, { message: successMsg, previous_code: currentCode });
+		api.success(res, { message: successMsg, previous_code: currentCode, deleted_users: deleteUsers.length, merged_users: mergeUsers.length });
 		LogUser.success(req, user, logEvent, { email: user.email });
 
 		if (logEvent === 'registration_email_confirmed' && config.vpdb.email.confirmUserEmail) {
@@ -554,7 +561,7 @@ exports.authenticateOAuth2 = function(req, res, next) {
  * @returns {Function}
  */
 exports.authenticateOAuth2Mock = function(req, res) {
-	logger.log('[api|user:auth-mock] Processing mock authentication via %s...', req.body.provider);
+	logger.info('[api|user:auth-mock] Processing mock authentication via %s...', req.body.provider);
 	const profile = req.body.profile;
 	if (profile) {
 		profile._json = {
@@ -562,6 +569,7 @@ exports.authenticateOAuth2Mock = function(req, res) {
 			id: req.body.profile ? req.body.profile.id : null
 		};
 	}
+	req.params = { strategy: req.body.provider };
 	require('../../passport').verifyCallbackOAuth(req.body.provider, req.body.providerName)(req, null, null, profile, passportCallback(req, res));
 };
 

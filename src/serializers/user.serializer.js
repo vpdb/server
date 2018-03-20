@@ -45,7 +45,7 @@ class UserSerializer extends Serializer {
 	 */
 	_detailed(doc, req, opts) {
 		const user = this._simple(doc, req, opts);
-		_.assign(user, _.pick(doc, ['email', 'email_status', 'emails', 'is_active', 'provider', 'created_at']));
+		_.assign(user, _.pick(doc, ['email', 'email_status', 'is_active', 'provider', 'created_at']));
 
 		user.roles = doc.roles.toObject();
 		user.preferences = doc.preferences.toObject();
@@ -65,11 +65,14 @@ class UserSerializer extends Serializer {
 			user.channel_config.api_key = config.vpdb.pusher.options.key;
 		}
 
+		// emails
+		user.emails = _.uniq([...doc.emails, ...doc.validated_emails]);
+
 		// email status
 		if (doc.email_status.code === 'confirmed') {
-			delete user.email_status;
-		} else {
-			delete user.email_status.token;
+			user.email_status = undefined;
+		} else if (process.env.NODE_ENV !== 'test') {
+			user.email_status.token = undefined;
 		}
 		user.providers = [];
 

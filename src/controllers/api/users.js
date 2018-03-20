@@ -332,6 +332,7 @@ exports.update = function(req, res) {
 		// 4. validate
 		user.validate(function(err) {
 			if (err) {
+				console.log('2');
 				return api.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn('create'), 422);
 			}
 			logger.info('[api|user:update] Validations passed, updating user.');

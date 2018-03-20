@@ -301,7 +301,7 @@ class ApiClient {
 	 * Marks the current entity to be torn down after tests.
 	 *
 	 * @param {string} [pathToId="id"] Path to the attribute containing the ID field of the response.
-	 * @param {string} [path] If the DELETE path differs from the original request, this overwrites it.
+	 * @param {string} [path] If the DELETE path differs from the original request, this overrides it.
 	 * @returns {ApiClient}
 	 */
 	markTeardown(pathToId, path) {
@@ -451,6 +451,7 @@ class ApiClient {
 	 * @param {string} [attrs._plan] User roles
 	 * @param {Object} [opts] Options
 	 * @param {boolean} [opts.keepUnconfirmed] If set, user will stay with unconfirmed email and no auth token will be available
+	 * @param {boolean} [opts.teardown=true] If set, teardown the user after tests
 	 * @return {Promise<*>} Created user
 	 */
 	async createUser(name, attrs, opts) {
@@ -465,7 +466,10 @@ class ApiClient {
 		let res = await this.post('/v1/users', user, 201);
 		user = assign(user, res.data);
 		this._users.set(name, assign(user, { _plan: user.plan.id }));
-		this.tearDownUser(user.id);
+
+		if (opts.teardown !== false) {
+			this.tearDownUser(user.id);
+		}
 
 		// can't get token for unconfirmed user
 		if (!user.skipEmailConfirmation) {
@@ -597,7 +601,7 @@ class ApiClient {
 
 	/**
 	 * Generates a user object that can be used to create a new user.
-	 * @param {object} attrs Attributes to override generated data with
+	 * @param {object} [attrs] Attributes to override generated data with
 	 */
 	generateUser(attrs) {
 		let username = '';

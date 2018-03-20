@@ -135,7 +135,7 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 			// there might be "pending_registration" account(s) that match the received email addresses.
 			// in this case, we save the credentials for later and delete the account(s).
 			// note that "pending_update" accounts are dealt with when they are confirmed.
-			// TODO why not deal with "pending_registration" at confirmation as well? makes sense not to set the password before the mail was confirmed...
+			// FIXME why not deal with "pending_registration" at confirmation as well? makes sense not to set the password before the mail was confirmed...
 			return User.find({ email: { $in: emails }, 'email_status.code': 'pending_registration' })
 				.then(users => Promise.each(users, user => {
 					if (!localCredentials && user.password_hash) {
@@ -244,6 +244,8 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 
 				newUser[provider] = profile._json; // save original data to separate field
 				newUser.emails = _.uniq(emails);
+
+				logger.info('[passport|%s] Creating new user.', logtag);
 
 				return User.createUser(newUser, false);
 

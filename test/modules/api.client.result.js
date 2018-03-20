@@ -1,4 +1,5 @@
 const isString = require('lodash').isString;
+const isArray = require('lodash').isArray;
 
 class ApiClientResult {
 
@@ -87,6 +88,58 @@ class ApiClientResult {
 			throw new Error('Expected returned error message "' + this.response.data.error + '" to contain "' + contains + '".');
 		}
 		return this;
+	}
+
+	/**
+	 * Expects the provided validation errors to be in the response body.
+	 *
+	 * @param {string[][]} errors Array of <field>, <contains> arrays
+	 * @param {number} [numErrors] If provided, the number of validation errors must match.
+	 */
+	expectValidationErrors(errors, numErrors) {
+		for (let i = 0; i < errors.length; i++) {
+			this.expectValidationError(errors[i][0], errors[i][1]);
+		}
+		if (numErrors && this.response.data.errors.length !== numErrors) {
+			throw new Error('Expected ' + numErrors + ' validation errors, but got ' + this.response.data.errors.length + '.');
+		}
+	}
+
+	/**
+	 * Expects a validation error to be in the response body.
+	 *
+	 * @param {string} field Field
+	 * @param {string} [contains] If provided, message must contain this string
+	 */
+	expectValidationError(field, contains) {
+		this.expectStatus(422);
+		if (!isArray(this.response.data.errors)) {
+			throw new Error('Expected validation errors as array but got ' + JSON.stringify(this.response.data) + '.');
+		}
+		const fieldErrors = this.response.data.errors.filter(e => e.field === field);
+		if (fieldErrors.length === 0) {
+			throw new Error('Expected validation error on field "' + field + '" but got none.');
+		}
+		if (contains) {
+			const matchedErrors = fieldErrors.filter(val => val.message.toLowerCase().indexOf(contains.toLowerCase()) > -1);
+			if (matchedErrors.length === 0) {
+				throw new Error('Expected validation error on field "' + field + '" to contain "' + contains.toLowerCase() + '".');
+			}
+		}
+	}
+
+	/**
+	 * Expects a given response header.
+	 * @param {string} name Name of the header
+	 * @param {string} [contains] If set, must be contained, otherwise the header must just exist
+	 */
+	expectHeader(name, contains) {
+		if (!this.response.headers[name.toLowerCase()]) {
+			throw new Error('Expected header "' + name + '" to be present, but got nothing.');
+		}
+		if (contains && !this.response.headers[name.toLowerCase()].toLowerCase().includes(contains.toLowerCase())) {
+			throw new Error('Expected header "' + name.toLowerCase() + '" with value "' + this.response.headers[name.toLowerCase()].toLowerCase() + '" to contain "' + contains.toLowerCase() + '".');
+		}
 	}
 
 	_logResponse() {

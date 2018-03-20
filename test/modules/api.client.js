@@ -221,7 +221,7 @@ class ApiClient {
 	/**
 	 * Saves the request to the documentation folder.
 	 * @param {string} path Where to save the request, e.g. "users/post".
-	 * @param {Object} opts Options
+	 * @param {Object} [opts={}] Options
 	 * @return {ApiClient}
 	 */
 	saveRequest(path, opts) {
@@ -246,7 +246,6 @@ class ApiClient {
 				out.push(stringify(JSON.parse(res.config.data), { space: 3 }));
 			}
 			writeFileSync(dest, out.join('\r\n'));
-			console.log('Writing request to %s', dest);
 		});
 		return this;
 	}
@@ -254,7 +253,7 @@ class ApiClient {
 	/**
 	 * Saves the response to the documentation folder.
 	 * @param {string} path Where to save the request, e.g. "users/post".
-	 * @param {Object} opts Options
+	 * @param {Object} [opts={}] Options
 	 * @return {ApiClient}
 	 */
 	saveResponse(path, opts) {
@@ -279,7 +278,6 @@ class ApiClient {
 				out.push(stringify(res.data, { space: 3 }));
 			}
 			writeFileSync(dest, out.join('\r\n'));
-			console.log('Writing response to %s', dest);
 		});
 		return this;
 	}
@@ -288,7 +286,7 @@ class ApiClient {
 	 * Saves request and response to the documentation folder.
 	 *
 	 * @param {string} path Where to save, e.g. "users/post".
-	 * @param {Object} opts Options
+	 * @param {Object} [opts={}] Options
 	 * @return {ApiClient}
 	 */
 	save(path, opts) {
@@ -490,9 +488,9 @@ class ApiClient {
 	/**
 	 * Creates a OAuth user to be deleted on teardown.
 	 *
-	 * @param {string} name Unique user reference
 	 * @param {string} provider Provider ID. Must be one of the configured OAuth providers, currently: [ "github", "ipbtest" ].
 	 * @param {Object} [attrs] User attributes to set
+	 * @param {string|null} [name=null] Unique user reference. If set, user and token can be later retrieved in tests, useful for setups but usually unnecessary for in-test creation.
 	 * @param {string|number} [attrs.id] User ID at provider
 	 * @param {string} [attrs.name] Username
 	 * @param {string[]} [attrs.emails] List of email addresses
@@ -500,13 +498,13 @@ class ApiClient {
 	 * @param {string} [attrs._plan] User roles
 	 * @param {Object} [opts] Options
 	 * @param {boolean} [opts.teardown=true] If set, teardown the user after tests
-	 * @return {Promise<*>} Created user
+	 * @return {Promise<{user:object, token:string}>} Response data
 	 */
-	async createOAuthUser(name, provider, attrs, opts) {
+	async createOAuthUser(provider, attrs, name, opts) {
 
 		opts = opts || [];
 		attrs = attrs || [];
-		if (this._users.has('name')) {
+		if (name && this._users.has(name)) {
 			throw new Error('User "' + name + '" already exists.');
 		}
 
@@ -515,20 +513,22 @@ class ApiClient {
 
 		let res = await this.post('/v1/authenticate/mock', oAuthProfile).then(res => res.expectStatus(200));
 		const user = res.data.user;
-		this._users.set(name, assign(user, { _plan: user.plan.id }));
-		this._tokens.set(name, res.data.token);
+		if (name) {
+			this._users.set(name, assign(user, { _plan: user.plan.id }));
+			this._tokens.set(name, res.data.token);
+		}
 		if (opts.teardown !== false) {
 			this.tearDownUser(user.id);
 		}
 
 		// 2. update user
 		if (attrs.roles || attrs._plan) {
-			assign(user, pick(attrs, ['roles', '_plan']));
+			assign(res.data.user, pick(attrs, ['roles', '_plan']));
 			await this.asRoot()
 				.put('/v1/users/' + user.id, pick(user, [ 'name', 'email', 'username', 'is_active', 'roles', '_plan' ]))
 				.then(res => res.expectStatus(200));
 		}
-		return user;
+		return res.data;
 	}
 
 	/**
@@ -614,6 +614,14 @@ class ApiClient {
 			password: randomstring.generate(10),
 			email: faker.internet.email().toLowerCase()
 		}, attrs || {});
+	}
+
+	/**
+	 * Returns the number of users currently created.
+	 * @returns {number} Number of users
+	 */
+	numCreatedUsers() {
+		return this._users.size;
 	}
 
 	/**

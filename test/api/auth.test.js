@@ -265,8 +265,10 @@ describe('The authentication engine of the VPDB API', () => {
 
 		before(async () => {
 
-			ipsUser = await api.createOAuthUser('oauth1', 'ipbtest');
-			githubUser = await api.createOAuthUser('oauth2', 'github');
+			let data = await api.createOAuthUser('ipbtest');
+			ipsUser = data.user;
+			data = await api.createOAuthUser('github');
+			githubUser = data.user;
 
 			let res = await api.as('admin').markTeardown().post('/v1/tokens', {
 				label: 'Auth test token',
@@ -429,17 +431,17 @@ describe('The authentication engine of the VPDB API', () => {
 		});
 
 		it('should match the same already registered Github user even though email and name are different', async () => {
-			const profile1 = await api.createOAuthUser('github1', 'github', { id: '65465', emails: [ 'mockuser@vpdb.io' ]});
-			const profile2 = await api.createOAuthUser('github2', 'github', { id: '65465', emails: [ 'other.email@vpdb.io' ]}, { teardown: false });
-			expect(profile1.id).to.be(profile2.id);
+			const profile1 = await api.createOAuthUser('github', { id: '65465', emails: [ 'mockuser@vpdb.io' ]});
+			const profile2 = await api.createOAuthUser('github', { id: '65465', emails: [ 'other.email@vpdb.io' ]}, null, { teardown: false });
+			expect(profile1.user.id).to.be(profile2.user.id);
 		});
 
 		it('should match an already registered local user with the same email address', async () => {
 
 			const localUser = api.getUser('member');
-			const oauthUser = await api.createOAuthUser('github3', 'github', { id: '1234xyz', emails: [ localUser.email ]}, { teardown: false });
+			const oauthUser = await api.createOAuthUser('github', { id: '1234xyz', emails: [ localUser.email ]}, null, { teardown: false });
 
-			expect(oauthUser.id).to.be(localUser.id);
+			expect(oauthUser.user.id).to.be(localUser.id);
 		});
 
 		it('should merge multiple accounts when matched', async () => {
@@ -523,9 +525,9 @@ describe('The authentication engine of the VPDB API', () => {
 			const emailToken = res.data.email_status.token;
 
 			// login at provider1/id1 with email2 -> account2
-			const oauthUser = await api.createOAuthUser('provider', 'github', { emails: [ dupeEmail ] }, { teardown: false });
+			const oauthUser = await api.createOAuthUser('github', { emails: [ dupeEmail ] }, null, { teardown: false });
 
-			expect(oauthUser.id).not.to.be(localUser.id);
+			expect(oauthUser.user.id).not.to.be(localUser.id);
 
 			// confirm email2 from mail
 			res = await api.get('/v1/user/confirm/' + emailToken).then(res => res.expectStatus(200));
@@ -543,9 +545,9 @@ describe('The authentication engine of the VPDB API', () => {
 			const localUser = res.data;
 
 			// login at provider1/id1 with email1 -> account2
-			const oauthUser = await api.createOAuthUser('provider', 'github', { emails: [ localUser.email ] });
+			const oauth = await api.createOAuthUser('github', { emails: [ localUser.email ] });
 
-			expect(oauthUser.id).not.to.be(localUser.id);
+			expect(oauth.user.id).not.to.be(localUser.id);
 
 			// confirm email1 from mail => was auto-merged at login
 			await api.get('/v1/user/confirm/' + localUser.email_token).then(res => res.expectError(404));

@@ -420,7 +420,7 @@ exports.authenticate = function(req, res) {
  */
 exports.confirm = function(req, res) {
 
-	let user, currentCode, logEvent, successMsg, failMsg = 'No such token or token expired.';
+	let user, emailToConfirm, currentCode, logEvent, successMsg, failMsg = 'No such token or token expired.';
 	const deleteUsers = [];
 	const mergeUsers = [];
 
@@ -443,7 +443,7 @@ exports.confirm = function(req, res) {
 				.status(404);
 		}
 
-		const emailToConfirm = user.email_status.value;
+		emailToConfirm = user.email_status.value;
 		logger.info('[api|user:confirm] Email %s confirmed.', emailToConfirm);
 
 		// now we have a valid user that is either pending registration or update.
@@ -459,18 +459,14 @@ exports.confirm = function(req, res) {
 		}).exec().then(otherUsers => {
 
 			otherUsers.forEach(otherUser => {
-				// other "pending_registration" accounts are deleted, they don't have anything merge-worthy, and we already have local credentials.
+				// "pending_registration" are the only accounts where "email" is not confirmed ("pending_update" doesn't update "email").
+				// these can be deleted because they don't have anything merge-worthy (given it's an email confirmation, we already have local credentials).
 				if (otherUser.email_status && otherUser.email_status.code === 'pending_registration') {
 					logger.info('[api|user:confirm] Deleting pending registration user with same email <%s>.', otherUser.email);
 					deleteUsers.push(otherUser);
 					return;
 				}
-				// other "pending_update" accounts are ignored and will be treated when confirmed
-				if (otherUser.email_status && otherUser.email_status.code === 'pending_update') {
-					logger.info('[api|user:confirm] Ignoring pending update user with same email <%s>.', otherUser.email);
-					return;
-				}
-				// the rest needs merging
+				// the rest (confirmed) needs merging
 				mergeUsers.push(otherUser);
 			});
 			logger.info('[api|user:confirm] Found %s confirmed and %s unconfirmed dupe users for %s.', mergeUsers.length, deleteUsers.length, user.email);
@@ -495,6 +491,7 @@ exports.confirm = function(req, res) {
 
 	}).then(u => {
 
+		// user might be a different one than the original, if merged.
 		user = u;
 		currentCode = user.email_status.code;
 		if (currentCode === 'pending_registration') {
@@ -503,20 +500,12 @@ exports.confirm = function(req, res) {
 			successMsg = 'Email successfully validated. You may login now.';
 			logEvent = 'registration_email_confirmed';
 
-		} else if (currentCode === 'pending_update') {
-			logger.info('[api|user:confirm] User email <%s> for pending update confirmed.', user.email_status.value);
-			user.email = user.email_status.value;
+		} else {
+			logger.info('[api|user:confirm] User email <%s> confirmed.', emailToConfirm);
+			user.email = emailToConfirm;
 			successMsg = 'Email validated and updated.';
 			logEvent = 'email_confirmed';
-
-		} else {
-			/* istanbul ignore next  */
-			throw error('Unknown email status code "%s"', user.email_status.code)
-				.display('Internal server error, please contact an administrator.')
-				.log();
 		}
-
-	}).then(() => {
 		user.email_status = { code: 'confirmed' };
 		user.validated_emails = user.validated_emails || [];
 		user.validated_emails.push(user.email);

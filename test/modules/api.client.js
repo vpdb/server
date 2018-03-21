@@ -11,6 +11,7 @@ const pick = require('lodash').pick;
 const keys = require('lodash').keys;
 const get = require('lodash').get;
 const isString = require('lodash').isString;
+const isObject = require('lodash').isObject;
 
 const ApiClientResult = require('./api.client.result');
 
@@ -172,10 +173,16 @@ class ApiClient {
 	 * The user must have been created with either {@link setupUsers} or
 	 * {@link createUser}.
 	 *
-	 * @param user Reference to user
+	 * @param {string|{token:string}} user User reference or user with populated `token`.
 	 * @return {ApiClient}
 	 */
 	as(user) {
+		if (isObject(user)) {
+			if (!user.token) {
+				throw new Error('Token must be set when using user object for authentication.');
+			}
+			return this.withToken(user.token);
+		}
 		if (!this._users.has(user)) {
 			throw new Error('User "' + user + '" has not been created ([ ' + Array.from(this._users.keys()).join(', ') + ' ]).');
 		}
@@ -440,7 +447,7 @@ class ApiClient {
 	 *
 	 * Username, mail and password are randomly generated.
 	 *
-	 * @param {string} name User reference
+	 * @param {string} [name] User reference
 	 * @param {Object} [attrs] User attributes to set
 	 * @param {string} [attrs.name] Username
 	 * @param {string} [attrs.email] Email
@@ -454,8 +461,13 @@ class ApiClient {
 	 */
 	async createUser(name, attrs, opts) {
 
-		attrs = attrs || {};
-		opts = opts || {};
+		if (isObject(name)) {
+			attrs = name;
+			opts = attrs || {};
+		} else {
+			attrs = attrs || {};
+			opts = opts || {};
+		}
 
 		let user = this.generateUser(attrs);
 		user.skipEmailConfirmation = !opts.keepUnconfirmed;
@@ -463,20 +475,25 @@ class ApiClient {
 		// 1. create user
 		let res = await this.post('/v1/users', user, 201);
 		user = assign(user, res.data);
-		this._users.set(name, assign(user, { _plan: user.plan.id }));
+		if (name) {
+			this._users.set(name, assign(user, { _plan: user.plan.id }));
+		}
 
 		if (opts.teardown !== false) {
 			this.tearDownUser(user.id);
 		}
 
 		// can't get token for unconfirmed user
-		if (!user.skipEmailConfirmation) {
+		if (opts.keepUnconfirmed) {
 			return user;
 		}
 
 		// 2. retrieve token
 		res = await this.post('/v1/authenticate', pick(user, 'username', 'password'), 200);
-		this._tokens.set(name, res.data.token);
+		if (name) {
+			this._tokens.set(name, res.data.token);
+		}
+		user.token = res.data.token;
 
 		// 3. update user
 		user = assign(user, attrs);

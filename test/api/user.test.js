@@ -21,19 +21,7 @@ describe.only('The VPDB `user` API', () => {
 			admin: { roles: [ 'admin' ]},
 			contributor: { roles: [ 'contributor' ]},
 			member: { roles: [ 'member' ]},
-			chpass1: { roles: [ 'member' ]},
-			chpass2: { roles: [ 'member' ]},
-			chpass3: { roles: [ 'member' ]},
-			chmail1: { roles: [ 'member' ]},
-			chmail2: { roles: [ 'member' ]},
-			chmail3: { roles: [ 'member' ]},
-			chmail4: { roles: [ 'member' ]},
-			chmail5: { roles: [ 'member' ]},
-			chmail6: { roles: [ 'member' ]},
-			chprofile: { roles: [ 'member' ]},
-			addoauth: { roles: [ 'member' ]},
-			vip: { roles: [ 'member' ], _plan: 'vip' },
-			vip1: { roles: [ 'member' ], _plan: 'vip' }
+			chprofile: { roles: [ 'member' ]}
 		});
 	});
 
@@ -97,14 +85,15 @@ describe.only('The VPDB `user` API', () => {
 		});
 
 		it('should return minimal details', async () => {
-			const user = api.getUser('member');
-			res = await api.as('chprofile')
-				.get('/v1/users/' + api.getUser('member').id)
+			const member = api.getUser('member');
+			const user = await api.createUser();
+			res = await api.as(user)
+				.get('/v1/users/' + member.id)
 				.then(res => res.expectStatus(200));
 			expect(res.data).to.be.an('object');
-			expect(res.data.id).to.be(user.id);
-			expect(res.data.name).to.be(user.name);
-			expect(res.data.username).to.be(user.username);
+			expect(res.data.id).to.be(member.id);
+			expect(res.data.name).to.be(member.name);
+			expect(res.data.username).to.be(member.username);
 			expect(res.data.email).not.to.be.ok();
 			expect(res.data.provider).not.to.be.ok();
 			expect(res.data.roles).not.to.be.ok();
@@ -220,12 +209,12 @@ describe.only('The VPDB `user` API', () => {
 		});
 
 		it('should succeed when updating all attributes', async () => {
-			const user = api.getUser('chpass3');
+			const user = await api.createUser();
 			const name = faker.name.firstName() + ' ' + faker.name.lastName();
 			const location = faker.address.city();
 			const email = faker.internet.email().toLowerCase();
 			const newPass = randomString.generate(10);
-			await api.as('chpass3')
+			await api.as(user)
 				.save('user/update-profile')
 				.patch('/v1/user', {
 					name: name,
@@ -237,7 +226,7 @@ describe.only('The VPDB `user` API', () => {
 				.then(res => res.expectStatus(200));
 
 			// check updated value
-			res = await api.as('chpass3').get('/v1/user').then(res => res.expectStatus(200));
+			res = await api.as(user).get('/v1/user').then(res => res.expectStatus(200));
 			expect(res.data.name).to.be(name);
 			expect(res.data.location).to.be(location);
 			expect(res.data.email_status.value).to.be(email);
@@ -392,42 +381,20 @@ describe.only('The VPDB `user` API', () => {
 		});
 
 		it('should fail when for non-existent releases', async () => {
-			await api.as('vip')
+			const user = await api.createUser({ _plan: 'vip' });
+			await api.as(user)
 				.patch('/v1/user', { channel_config: { subscribed_releases: [ shortId(), '-invalid-' ] } })
 				.then(res => res.expectValidationErrors([
 					['channel_config.subscribed_releases.0', 'does not exist'],
 					['channel_config.subscribed_releases.1', 'does not exist']
 				]));
 		});
-
-		/*
-		// testing success not possible because realtime api is disabled in test.
-		it('should succeed for valid data', async () => {
-			hlp.release.createRelease('contributor', await api, function(release) {
-				await api
-					.patch('/v1/user')
-					.as('vip1')
-					.send({ channel_config: {
-						subscribed_releases: [ release.id ],
-						subscribe_to_starred: true
-					}})
-					.end(hlp.status(200, function(err, user) {
-
-						expect(user.channel_config.subscribed_releases).to.be.an('array');
-						expect(user.channel_config.subscribed_releases).to.have.length(1);
-						expect(user.channel_config.subscribed_releases[0]).to.be(release.id);
-						expect(user.channel_config.subscribe_to_starred).to.be(true);
-						done();
-					}));
-			});
-		});*/
-
 	});
 
 	describe('when a user updates its email', () => {
 
 		it('should fail when providing a valid email but email is unconfirmed', async () => {
-			const user = 'chmail1';
+			const user = await api.createUser();
 			const email = faker.internet.email().toLowerCase();
 			await api.as(user)
 				.patch('/v1/user', { email: email })
@@ -442,9 +409,9 @@ describe.only('The VPDB `user` API', () => {
 		});
 
 		it('should succeed when providing a valid email and email is confirmed', async () => {
-			const user = 'chmail2';
+			const user = await api.createUser();
 			const email = faker.internet.email().toLowerCase();
-			await api.as(user)
+			res = await api.as(user)
 				.patch('/v1/user', { email: email, returnEmailToken: true })
 				.then(res => res.expectStatus(200));
 
@@ -452,7 +419,7 @@ describe.only('The VPDB `user` API', () => {
 			await api.save('user/confirm-token').get('/v1/user/confirm/' + res.data.email_token).then(res => res.expectStatus(200));
 
 			// check updated value
-			await api.as(user).get('/v1/user').then(res => res.expectStatus(200));
+			res = await api.as(user).get('/v1/user').then(res => res.expectStatus(200));
 			expect(res.data.email).to.be(email);
 			expect(res.data.email_status).to.not.be.ok();
 		});
@@ -476,7 +443,7 @@ describe.only('The VPDB `user` API', () => {
 		});
 
 		it('should fail when providing an email that already exists but is still pending', async () => {
-			const user1 = 'chmail6';
+			const user1 = await api.createUser();
 			const user2 = 'member';
 			const email = faker.internet.email().toLowerCase();
 
@@ -492,8 +459,8 @@ describe.only('The VPDB `user` API', () => {
 		});
 
 		it('should directly set the email status to confirmed if the email has already been confirmed in the past', async () => {
-			const user = 'chmail5';
-			const oldMail = api.getUser(user).email;
+			const user = await api.createUser();
+			const oldMail = user.email;
 			const email1 = faker.internet.email().toLowerCase();
 			const email2 = faker.internet.email().toLowerCase();
 
@@ -547,7 +514,7 @@ describe.only('The VPDB `user` API', () => {
 			});
 
 			it('should ignore the email when the submitted email is the same as the pending one', async () => {
-				const user = 'chmail3';
+				const user = await api.createUser();
 				const newEmail = faker.internet.email().toLowerCase();
 				// set to new email
 				res = await api.as(user)
@@ -567,7 +534,7 @@ describe.only('The VPDB `user` API', () => {
 			});
 
 			it('should fail when the submitted email is neither the current nor the pending one', async () => {
-				const user = 'chmail4';
+				const user = await api.createUser();
 				const newEmail1 = faker.internet.email().toLowerCase();
 				const newEmail2 = faker.internet.email().toLowerCase();
 				await api.as(user)
@@ -605,9 +572,9 @@ describe.only('The VPDB `user` API', () => {
 		});
 
 		it('should grant authentication with the new password', async () => {
-			const user = api.getUser('chpass1');
+			const user = await api.createUser();
 			const newPass = randomString.generate(10);
-			await api.as('chpass1')
+			await api.as(user)
 				.saveRequest('user/update-password')
 				.patch('/v1/user',{ current_password: user.password, password: newPass })
 				.then(res => res.expectStatus(200));
@@ -617,9 +584,9 @@ describe.only('The VPDB `user` API', () => {
 		});
 
 		it('should deny authentication with the old password', async () => {
-			const user = api.getUser('chpass2');
+			const user = await api.createUser();
 			const newPass = '12345678';
-			await api.as('chpass2')
+			await api.as(user)
 				.patch('/v1/user', { current_password: user.password, password: newPass })
 				.then(res => res.expectStatus(200));
 			await api.post('/v1/authenticate', { username: user.name, password: user.password })
@@ -813,10 +780,11 @@ describe.only('The VPDB `user` API', () => {
 		});
 
 		it('should update a user with a known email address', async () => {
+			const user = await api.createUser();
 			res = await api.withToken(appToken)
-				.put('/v1/users', { email: api.getUser('addoauth').email, username: 'böh', provider_id: 4321 })
+				.put('/v1/users', { email: user.email, username: 'böh', provider_id: 4321 })
 				.then(res => res.expectStatus(200));
-			expect(res.data.id).to.be(api.getUser('addoauth').id);
+			expect(res.data.id).to.be(user.id);
 			expect(res.data.ipbtest.id).to.be(4321);
 			expect(res.data.roles).to.eql(['member']);
 		});

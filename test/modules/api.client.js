@@ -38,7 +38,7 @@ class ApiClient {
 		/**
 		 * Teardown actions executed in the teardown block of the test.
 		 *
-		 * @type {Array.<{path:string, url:string, authHeader:string, user:string }>}
+		 * @type {Array.<{[path]:string, [url]:string, [authHeader]:string, [user]:string }>}
 		 * @property {string} path Absolute path (without `basePath`) to the DELETE resource, incl ID
 		 * @property {string} url An absolute URL starting with "http(s)://". Use instead of `path`.
 		 * @property {string} user User reference to authenticate with.
@@ -462,8 +462,8 @@ class ApiClient {
 	async createUser(name, attrs, opts) {
 
 		if (isObject(name)) {
-			attrs = name;
 			opts = attrs || {};
+			attrs = name;
 		} else {
 			attrs = attrs || {};
 			opts = opts || {};
@@ -473,7 +473,7 @@ class ApiClient {
 		user.skipEmailConfirmation = !opts.keepUnconfirmed;
 
 		// 1. create user
-		let res = await this.post('/v1/users', user, 201);
+		let res = await this.post('/v1/users', user).then(res => res.expectStatus(201));
 		user = assign(user, res.data);
 		if (name) {
 			this._users.set(name, assign(user, { _plan: user.plan.id }));
@@ -489,15 +489,18 @@ class ApiClient {
 		}
 
 		// 2. retrieve token
-		res = await this.post('/v1/authenticate', pick(user, 'username', 'password'), 200);
+		res = await this.post('/v1/authenticate', pick(user, 'username', 'password')).then(res => res.expectStatus(200));
 		if (name) {
 			this._tokens.set(name, res.data.token);
 		}
 		user.token = res.data.token;
 
+		// we received plan but need _plan for posting
+		user._plan = user._plan || user.plan.id;
+
 		// 3. update user
 		user = assign(user, attrs);
-		await this.asRoot().put('/v1/users/' + user.id, pick(user, [ 'name', 'email', 'username', 'is_active', 'roles', '_plan' ]), 200);
+		await this.asRoot().put('/v1/users/' + user.id, pick(user, [ 'name', 'email', 'username', 'is_active', 'roles', '_plan' ])).then(res => res.expectStatus(200));
 
 		return user;
 	}

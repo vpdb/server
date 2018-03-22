@@ -13,7 +13,7 @@ const ApiClient = require('../modules/api.client');
 const api = new ApiClient();
 let res;
 
-describe.only('The VPDB `user` API', () => {
+describe('The VPDB `user` API', () => {
 
 	before(async () => {
 		await api.setupUsers({
@@ -985,6 +985,4 @@ describe.only('The VPDB `user` API', () => {
 			await api.asRoot().get('/v1/users/' + user2.id).then(res => res.expectStatus(404));
 		});
 	});
-
-
 });

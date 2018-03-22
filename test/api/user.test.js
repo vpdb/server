@@ -602,15 +602,16 @@ describe.only('The VPDB `user` API', () => {
 			expect(oauth.user.provider).to.be('github');
 
 			// 2. add local credentials
+			const username = api.generateUser().username;
 			const pass = randomString.generate(10);
 			res = await api.saveResponse('user/update-create-local')
 				.withToken(oauth.token)
-				.patch('/v1/user', { username: oauth.user.name, password: pass })
+				.patch('/v1/user', { username: username, password: pass })
 				.then(res => res.expectStatus(200));
 			expect(res.data.provider).to.be('local');
 
 			// 3. assert local credentials
-			await api.post('/v1/authenticate', { username: gen.profile.username, password: pass }).then(res => res.expectStatus(200));
+			await api.post('/v1/authenticate', { username: username, password: pass }).then(res => res.expectStatus(200));
 		});
 
 		it('should fail when providing no password', async () => {
@@ -636,11 +637,12 @@ describe.only('The VPDB `user` API', () => {
 		it('should fail the second time providing a different username', async () => {
 			// 1. create github user
 			const oauth = await api.createOAuthUser('github');
+			const username = api.generateUser().username;
 			const pass = randomString.generate(10);
 
 			// 2. add local credentials
 			await api.withToken(oauth.token)
-				.patch('/v1/user', { username: oauth.user.name, password: pass })
+				.patch('/v1/user', { username: username, password: pass })
 				.then(res => res.expectStatus(200));
 
 			// 3. add (again) local credentials
@@ -653,16 +655,17 @@ describe.only('The VPDB `user` API', () => {
 
 			// 1. create github user
 			const oauth = await api.createOAuthUser('github');
+			const username = api.generateUser().username;
 			const pass = randomString.generate(10);
 
 			// 2. add local credentials
 			await api.withToken(oauth.token)
-				.patch('/v1/user', { username: oauth.user.name, password: pass })
+				.patch('/v1/user', { username: username, password: pass })
 				.then(res => res.expectStatus(200));
 
 			// 3. add (again) local credentials
 			await api.withToken(oauth.token)
-				.patch('/v1/user', { username: oauth.user.name, password: pass })
+				.patch('/v1/user', { username: username, password: pass })
 				.then(res => res.expectStatus(200));
 		});
 	});
@@ -770,7 +773,7 @@ describe.only('The VPDB `user` API', () => {
 		});
 
 		it('should add a new user with an unknown email address', async () => {
-			res = await api.markTeardown()
+			res = await api.markTeardown(null, null, '__root')
 				.withToken(appToken)
 				.put('/v1/users', { email: 'by-isp@vpdb.io', username: 'böh', provider_id: 1234})
 				.then(res => res.expectStatus(201));
@@ -790,13 +793,13 @@ describe.only('The VPDB `user` API', () => {
 		});
 
 		it('should update a user with an existing provider ID', async () => {
-			res = await api.markTeardown()
+			res = await api.markTeardown(null, null, '__root')
 				.withToken(appToken)
 				.put('/v1/users', { email: 'update-me@vpdb.io', username: 'duh', provider_id: 666 })
 				.then(res => res.expectStatus(201));
 
 			const user = res.data;
-			await api.withToken(appToken)
+			res = await api.withToken(appToken)
 				.put('/v1/users', { email: 'email-updated@vpdb.io', username: 'asdf', provider_id: 666 })
 				.then(res => res.expectStatus(200));
 
@@ -887,9 +890,9 @@ describe.only('The VPDB `user` API', () => {
 			const localUser = await api.createUser();
 
 			// 2. change email1 to *unconfirmed* email2
-			res = await api.as('local')
+			res = await api.as(localUser)
 				.patch('/v1/user', { email: dupeEmail })
-				.then(res => res.expectStatus(201));
+				.then(res => res.expectStatus(200));
 			const emailToken = res.data.email_status.token;
 
 			// 3. login at provider1/id1 with email2 -> account2
@@ -945,7 +948,7 @@ describe.only('The VPDB `user` API', () => {
 
 	describe('when authenticating locally', () => {
 
-		it.only('should merge an existing user with a previously unconfirmed email', async () => {
+		it('should merge an existing user with a previously unconfirmed email', async () => {
 			const email = faker.internet.email().toLowerCase();
 
 			// 1. register locally with email1 -> account1

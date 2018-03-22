@@ -305,22 +305,26 @@ class ApiClient {
 	/**
 	 * Marks the current entity to be torn down after tests.
 	 *
-	 * @param {string} [pathToId="id"] Path to the attribute containing the ID field of the response.
-	 * @param {string} [path] If the DELETE path differs from the original request, this overrides it.
+	 * @param {string|null} [pathToId="id"] Path to the attribute containing the ID field of the response.
+	 * @param {string|null} [path] If the DELETE path differs from the original request, this overrides it.
+	 * @param {string|null} [user] Use given user reference to tear down.
 	 * @returns {ApiClient}
 	 */
-	markTeardown(pathToId, path) {
+	markTeardown(pathToId, path, user) {
 		if (!pathToId) {
 			pathToId = 'id';
 		}
+		const trace = new Error();
 		this._actions.push(res => {
-			const teardown = {};
+			const teardown = { stack:trace.stack };
 			if (path) {
 				teardown.path = path + '/' + get(res.data, pathToId);
 			} else {
 				teardown.url = res.config.url + '/' + get(res.data, pathToId);
 			}
-			if (res.config.headers.Authorization) {
+			if (user) {
+				teardown.user = user;
+			} else if (res.config.headers.Authorization) {
 				teardown.authHeader = res.config.headers.Authorization;
 			} else {
 				teardown.user = '__root';
@@ -436,7 +440,14 @@ class ApiClient {
 				console.log(entity);
 				throw new Error('Must either set `user` or `authHeader` ("' + entity.user + '"/"' + entity.authHeader + '").');
 			}
-			await req.del(entity.path || entity.url).then(res => res.expectStatus(204));
+			try {
+				await req.del(entity.path || entity.url).then(res => res.expectStatus(204));
+			} catch (err) {
+				if (entity.stack) {
+					console.log(entity.stack)
+				}
+				throw err;
+			}
 		}
 		this._users.clear();
 		this._tokens.clear();
@@ -464,6 +475,7 @@ class ApiClient {
 		if (isObject(name)) {
 			opts = attrs || {};
 			attrs = name;
+			name = null;
 		} else {
 			attrs = attrs || {};
 			opts = opts || {};
@@ -622,6 +634,7 @@ class ApiClient {
 	/**
 	 * Generates a user object that can be used to create a new user.
 	 * @param {object} [attrs] Attributes to override generated data with
+	 * @return {{username:string, password:string, email:string}} User data
 	 */
 	generateUser(attrs) {
 		let username = '';

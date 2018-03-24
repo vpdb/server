@@ -129,18 +129,14 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 			return callback(null, false, { message: 'Received profile from ' + logtag + ' does not contain user id.' });
 		}
 
-		let name, localCredentials;
+		let name;
 		const emails = profile.emails.map(e => e.value);
 		Promise.try(() => {
 			// there might be "pending_registration" account(s) that match the received email addresses.
-			// in this case, we save the credentials for later and delete the account(s).
+			// in this case, we delete the account(s).
 			// note that "pending_update" accounts are dealt with when they are confirmed.
-			// FIXME why not deal with "pending_registration" at confirmation as well? makes sense not to set the password before the mail was confirmed...
 			return User.find({ email: { $in: emails }, 'email_status.code': 'pending_registration' })
 				.then(users => Promise.each(users, user => {
-					if (!localCredentials && user.password_hash) {
-						localCredentials = _.pick(user, 'password_hash', 'password_salt');
-					}
 					logger.warn('[passport|%s] Deleting local user %s with pending registration (match by [ %s ]).', logtag, user.toString(), emails.join(', '));
 					return user.remove();
 				}));
@@ -199,12 +195,6 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 					user.thumb = profile.photos[0].value;
 				}
 
-				// update credentials from "pending_registration" if none set
-				if (localCredentials && !user.password_hash) {
-					user.password_hash = localCredentials.password_hash;
-					user.password_salt = localCredentials.password_salt;
-				}
-
 				// save and return
 				return user.save();
 			}
@@ -234,12 +224,6 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 				// optional data
 				if (profile.photos && profile.photos.length > 0) {
 					newUser.thumb = profile.photos[0].value;
-				}
-
-				// credentials from deleted "pending_registration" account
-				if (localCredentials) {
-					newUser.password_hash = localCredentials.password_hash;
-					newUser.password_salt = localCredentials.password_salt;
 				}
 
 				newUser[provider] = profile._json; // save original data to separate field

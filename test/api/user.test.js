@@ -13,7 +13,7 @@ const ApiClient = require('../modules/api.client');
 const api = new ApiClient();
 let res;
 
-describe('The VPDB `user` API', () => {
+describe.only('The VPDB `user` API', () => {
 
 	before(async () => {
 		await api.setupUsers({
@@ -983,6 +983,34 @@ describe('The VPDB `user` API', () => {
 
 			// make sure user2 is gone
 			await api.asRoot().get('/v1/users/' + user2.id).then(res => res.expectStatus(404));
+		});
+	});
+
+	describe('when linking another account', () => {
+
+		it('should fail when logged with the same provider but different id', async () => {
+			// 1. login with provider1/id1, email1 -> account1
+			const oauthUser1 = await api.createOAuthUser('github');
+			// 2. link to provider1/id2 -> different provider id
+			const oauthProfile2 = api.generateOAuthUser('github');
+			await api
+				.as(oauthUser1)
+				.post('/v1/authenticate/mock', oauthProfile2)
+				.then(res => res.expectError(400, 'is already linked to id'));
+		});
+
+		it('should succeed without conflicted data', async() => {
+			// 1. create local user
+			const localUser = await api.createUser();
+			expect(localUser.github).to.not.be.ok();
+			// 2. link oauth account
+			const oauthProfile = api.generateOAuthUser('github');
+			res = await api
+				.as(localUser)
+				.post('/v1/authenticate/mock', oauthProfile)
+				.then(res => res.expectStatus(200));
+			expect(res.data.user.id).to.be(localUser.id);
+			expect(res.data.user.github).to.be.ok();
 		});
 	});
 });

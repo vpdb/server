@@ -129,6 +129,12 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 			return callback(null, false, { message: 'Received profile from ' + logtag + ' does not contain user id.' });
 		}
 
+		// exclude login with different account at same provider
+		if (req.user && req.user[provider] && req.user[provider].id !== profile.id) {
+			return callback(error('Profile at %s is already linked to ID %s', provider, req.user[provider].id).status(400));
+			//return callback(null, false, { message:  });
+		}
+
 		let name;
 		const emails = profile.emails.map(e => e.value);
 		Promise.try(() => {
@@ -156,23 +162,39 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 
 		}).then(users => {
 
-			// no user match means new user, so we're good
-			if (users.length === 0) {
-				return null;
+			// if req.user is set, it means we'll link the profile to the existing user.
+			if (req.user) {
+
+				// no user match means link to current user
+				if (users.length === 0) {
+					return req.user;
+				}
+
+				// otherwise, we merge matched users into currently logged user.
+				const explanation = `The email address we've received from the OAuth provider you've just linked to your account to was already in our database.`;
+				return Promise
+					.each(users, otherUser => User.mergeUsers(req.user, otherUser, explanation, req))
+					.then(() => req.user);
+
+			} else {
+				// no user match means new user, so we're good
+				if (users.length === 0) {
+					return null;
+				}
+
+				// if only one user matched, it'll be updated
+				if (users.length === 1) {
+					return users[0];
+				}
+
+				// otherwise, try to merge.
+				// this can be more than 2 even, e.g. if three local accounts were registered and the oauth profile contains all of them emails
+				logger.info('[passport|%s] Got %s matches for user: [ %s ] with %s ID %s and emails [ %s ].',
+					logtag, users.length, users.map(u => u.id).join(', '), provider, profile.id, emails.join(', '));
+
+				const explanation = `The email address we've received from the OAuth provider you've just logged was already in our database. This can happen when you change the email address at the provider's to one you've already used at VPDB under a different account.`;
+				return User.tryMergeUsers(users, explanation, req, error);
 			}
-
-			// if only one user matched, it'll be updated
-			if (users.length === 1) {
-				return users[0];
-			}
-
-			// otherwise, try to merge.
-			// this can be more than 2 even, e.g. if three local accounts were registered and the oauth profile contains all of them emails
-			logger.info('[passport|%s] Got %s matches for user: [ %s ] with %s ID %s and emails [ %s ].',
-				logtag, users.length, users.map(u => u.id).join(', '), provider, profile.id, emails.join(', '));
-
-			const explanation = `The email address we've received from the OAuth provider you've just logged was already in our database. This can happen when you change the email address at the provider's to one you've already used at VPDB under a different account.`;
-			return User.tryMergeUsers(users, explanation, req, error);
 
 		}).then(user => {
 

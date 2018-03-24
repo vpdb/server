@@ -31,7 +31,7 @@ exports.register = function(app, api) {
 
 	// mock route for simulating oauth2 callbacks
 	if (process.env.NODE_ENV === 'test') {
-		app.post(settings.apiPath('/authenticate/mock'), api.user.authenticateOAuth2Mock);
+		app.post(settings.apiPath('/authenticate/mock'), api.anon(api.user.authenticateOAuth2Mock));
 	}
 
 	// oauth init

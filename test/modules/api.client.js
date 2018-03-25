@@ -665,9 +665,9 @@ class ApiClient {
 	 * @param {string|number} [attrs.id] User ID at provider
 	 * @param {string} [attrs.name] Username
 	 * @param {string} [attrs.displayName] Display Name
-	 * @param {string[]} [attrs.emails] List of email addresses
+	 * @param {string[]|{ value:string }[]} [attrs.emails] List of email addresses
 	 * @param {string[]} [attrs.roles] User roles
-	 * @return {Promise<*>} Created user
+	 * @return {{ provider:string, profile: { provider:string, id:string|number, displayName:string, username:string, profileUrl:string, emails:{ value:string }[]}} Generated user
 	 */
 	generateOAuthUser(provider, attrs) {
 		attrs = attrs || {};

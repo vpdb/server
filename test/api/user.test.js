@@ -999,6 +999,40 @@ describe.only('The VPDB `user` API', () => {
 				.then(res => res.expectError(400, 'is already linked to id'));
 		});
 
+		it('should auto-merge a local account when linking and account', async () => {
+			// 1. register locally with email1 -> account1
+			const user1 = await api.createUser();
+			// 2. register locally with email2 -> account2
+			const user2 = await api.createUser({}, { teardown: false });
+			// 3. login with account2, link provider1/id1, email1 -> two accounts (one by match, one with currently logged).
+			const oauthUser = api.generateOAuthUser('github', { emails: [ user2.email ] });
+			res = await api
+				.as(user1)
+				.post('/v1/authenticate/mock', oauthUser)
+				.then(res => res.expectStatus(200));
+			expect(res.data.user.id).to.be(user1.id);
+			expect(res.data.user.github.id).to.be(oauthUser.profile.id);
+			// make sure user2 is gone
+			await api.asRoot().get('/v1/users/' + user2.id).then(res => res.expectStatus(404));
+		});
+
+		it.skip('should auto-merge a local account when linking and account', async () => {
+			// 1. login with provider1/id1, email1 -> account1
+			const user1 = await api.createOAuthUser('ipboard', {}, { teardown: false });
+			// 2. register locally with email2 -> account2
+			const user2 = await api.createUser({});
+			// 3. login with account2, link provider1/id1, email1 -> two accounts (one by match, one with currently logged).
+			const oauthUser = api.generateOAuthUser('github', { emails: [ user1.email ] });
+			res = await api
+				.as(user2)
+				.post('/v1/authenticate/mock', oauthUser)
+				.then(res => res.expectStatus(200));
+			expect(res.data.user.id).to.be(user2.id);
+			expect(res.data.user.github.id).to.be(oauthUser.profile.id);
+			// make sure user2 is gone
+			await api.asRoot().get('/v1/users/' + user1.id).then(res => res.expectStatus(404));
+		});
+
 		it('should succeed without conflicted data', async() => {
 			// 1. create local user
 			const localUser = await api.createUser();

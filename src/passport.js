@@ -135,8 +135,12 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 			//return callback(null, false, { message:  });
 		}
 
+		const emails = profile.emails.filter(e => !!e).map(e => e.value);
+		if (emails.length === 0) {
+			return callback(error('Emails must contain at least one value.').status(400));
+		}
+
 		let name;
-		const emails = profile.emails.map(e => e.value);
 		Promise.try(() => {
 			// there might be "pending_registration" account(s) that match the received email addresses.
 			// in this case, we delete the account(s).
@@ -202,10 +206,10 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 			if (user) {
 				if (!user[provider]) {
 					LogUser.success(req, user, 'authenticate', { provider: provider, profile: profile._json });
-					logger.info('[passport|%s] Adding profile from %s to user.', logtag, provider, profile.emails[0].value);
+					logger.info('[passport|%s] Adding profile from %s to user.', logtag, provider, emails[0]);
 				} else {
 					LogUser.success(req, user, 'authenticate', { provider: provider });
-					logger.info('[passport|%s] Returning user %s', logtag, profile.emails[0].value);
+					logger.info('[passport|%s] Returning user %s', logtag, emails[0]);
 				}
 
 				// update profile data on separate field

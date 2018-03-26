@@ -656,7 +656,7 @@ UserSchema.statics.mergeUsers = function(keepUser, mergeUser, explanation, req) 
 
 	}).then(() => {
 
-		logger.info('[model|user] Done merging, removing merged user.');
+		logger.info('[model|user] Done merging, removing merged user %s.', mergeUser.id);
 
 		// 5. delete merged user
 		return mergeUser.remove();

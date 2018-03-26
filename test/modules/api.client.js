@@ -468,6 +468,7 @@ class ApiClient {
 	 * @param {Object} [opts] Options
 	 * @param {boolean} [opts.keepUnconfirmed] If set, user will stay with unconfirmed email and no auth token will be available
 	 * @param {boolean} [opts.teardown=true] If set, teardown the user after tests
+	 * @param {boolean} [opts.debug=false] If set, print request details
 	 * @return {Promise<*>} Created user
 	 */
 	async createUser(name, attrs, opts) {

@@ -688,8 +688,8 @@ module.exports = {
 						return;
 					}
 					/* istanbul ignore if */
-					if (version !== 3 && version !== 4) {
-						return 'IPS version must be either 3 or 4.';
+					if (version !== 3 && version !== 4 && version !== 4.3) {
+						return 'IPS version must be either 3, 4 or 4.3';
 					}
 				},
 

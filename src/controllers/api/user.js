@@ -576,6 +576,10 @@ function passportCallback(req, res) {
 		if (err) {
 			if (err.oauthError) {
 				return api.fail(res, error(err, 'Authentication failed: %j', err.oauthError).warn('authenticate', req.params.strategy), err.code || 401);
+
+			} else if (err.code === 'invalid_grant') {
+				return api.fail(res, error('Previous grant is not valid anymore. Try again.').warn('authenticate', req.params.strategy), 401);
+
 			} else {
 				return api.fail(res, err);
 			}

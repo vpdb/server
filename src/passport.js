@@ -27,6 +27,7 @@ const GitHubStrategy = require('passport-github').Strategy;
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const IPBoard3Strategy = require('./modules/passport-ipboard3').Strategy;
 const IPBoard4Strategy = require('./modules/passport-ipboard4').Strategy;
+const IPBoard43Strategy = require('./modules/passport-ipboard43').Strategy;
 
 const error = require('./modules/error')('passport');
 const mailer = require('./modules/mailer');
@@ -86,6 +87,17 @@ exports.configure = function() {
 					clientID: ipbConfig.clientID,
 					clientSecret: ipbConfig.clientSecret,
 					callbackURL: callbackUrl
+				}, exports.verifyCallbackOAuth('ipboard', ipbConfig.id)));
+			}
+			if (ipbConfig.version === 4.3) {
+				passport.use(new IPBoard43Strategy({
+					passReqToCallback: true,
+					name: ipbConfig.id,
+					baseURL: ipbConfig.baseURL,
+					clientID: ipbConfig.clientID,
+					clientSecret: ipbConfig.clientSecret,
+					callbackURL: callbackUrl,
+					scope: ['profile', 'email']
 				}, exports.verifyCallbackOAuth('ipboard', ipbConfig.id)));
 			}
 		}

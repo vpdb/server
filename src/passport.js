@@ -220,9 +220,7 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 					user.providers = user.providers || {};
 					user.providers[provider] = {
 						id: String(profile.id),
-						name: profile.displayName
-							|| (profile.name ? profile.name.givenName || profile.name.familyName : '')
-							|| profile.emails[0].value.substr(0, profile.emails[0].value.indexOf('@')),
+						name: getNameFromProfile(profile),
 						emails: emails,
 						created_at: new Date(),
 						modified_at: new Date(),
@@ -233,7 +231,8 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 
 				} else {
 					user.providers[provider].id = String(profile.id);
-					user.providers[provider].emails = _.uniq(...user.providers[provider].emails, ...emails);
+					user.providers[provider].emails = emails;
+					user.providers[provider].name = getNameFromProfile(profile);
 					user.providers[provider].modified_at = new Date();
 					user.providers[provider].profile = profile._json;
 					LogUser.success(req, user, 'authenticate', { provider: provider });
@@ -272,15 +271,14 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 				newUser = {
 					is_local: false,
 					name: name,
-					email: profile.emails[0].value,
+					email: emails[0],
 					providers: {
 						[provider]: {
 							id: String(profile.id),
-							name: profile.displayName
-								|| (profile.name ? profile.name.givenName || profile.name.familyName : '')
-								|| profile.emails[0].value.substr(0, profile.emails[0].value.indexOf('@')),
-							emails: profile.emails.map(e => e.value),
+							name: getNameFromProfile(profile),
+							emails: emails,
 							created_at: new Date(),
+							modified_at: new Date(),
 							profile: profile._json
 						}
 					}
@@ -325,6 +323,13 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 
 	};
 };
+
+function getNameFromProfile(profile) {
+	return profile.displayName
+		|| profile.username
+		|| (profile.name ? profile.name.givenName || profile.name.familyName : '')
+		|| profile.emails[0].value.substr(0, profile.emails[0].value.indexOf('@'));
+}
 
 const diacriticsRemovalMap = [
 	{'base':'A', 'letters':/[\u0041\u24B6\uFF21\u00C0\u00C1\u00C2\u1EA6\u1EA4\u1EAA\u1EA8\u00C3\u0100\u0102\u1EB0\u1EAE\u1EB4\u1EB2\u0226\u01E0\u00C4\u01DE\u1EA2\u00C5\u01FA\u01CD\u0200\u0202\u1EA0\u1EAC\u1EB6\u1E00\u0104\u023A\u2C6F]/g},

@@ -19,6 +19,7 @@
 
 'use strict';
 
+const uniq = require('lodash').uniq;
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
 const LogUser = mongoose.model('LogUser');
@@ -73,22 +74,22 @@ module.exports.up = async function() {
 
 	const users = await User.find({}).exec();
 	const userDb = mongoose.connection.db.collection('users');
+	const ipsIds = uniq([ ...config.vpdb.passport.ipboard.map(ips => ips.id), 'gameex', 'vpu' ]);
 	console.log('Got %s users, migrating provider data.', users.length);
 	for (let i = 0; i < users.length; i++) {
 		const user = users[i];
+		const changes = { $unset: {}, $set: { providers: {} } };
 		let createdAt, modifiedAt;
 
-		//delete user._doc.provider;
-		user.set('provider', undefined, { strict: false });
-		const cleanup = [ async () => await userDb.update({ id: user.id }, { $unset: { provider: 1 } }) ];
-
-		user.is_local = !!user.password_hash;
+		// don't need `provider` no more
+		changes.$unset.provider = 1;
+		changes.$set.is_local = !!user.password_hash;
 
 		// provider data fields
 		if (user._doc.github) {
 			createdAt = await findCreationDate(user, 'github');
 			modifiedAt = await findModificationDate(user, 'github');
-			user.providers.github = {
+			changes.$set.providers.github = {
 				id: String(user._doc.github.id),
 				name: user._doc.github.login,
 				emails: [user._doc.github.email],
@@ -96,14 +97,12 @@ module.exports.up = async function() {
 				modified_at: modifiedAt || createdAt,
 				profile: user._doc.github
 			};
-			cleanup.push(async () => await userDb.update({ id: user.id }, { $unset: { github: 1 } }));
-		} else {
-			user.providers.github = undefined;
+			changes.$unset.github = 1;
 		}
 		if (user._doc.google) {
 			createdAt = await findCreationDate(user, 'google');
 			modifiedAt = await findModificationDate(user, 'google');
-			user.providers.google = {
+			changes.$set.providers.google = {
 				id: String(user._doc.google.id),
 				name: user._doc.google.displayName
 					|| (user._doc.google.name ? user._doc.google.name.givenName || user._doc.google.name.familyName : '')
@@ -113,16 +112,14 @@ module.exports.up = async function() {
 				modified_at: modifiedAt || createdAt,
 				profile: user._doc.google
 			};
-			cleanup.push(async () => await userDb.update({ id: user.id }, { $unset: { google: 1 } }));
-		} else {
-			user.providers.google = undefined;
+			changes.$unset.google = 1;
 		}
-		for (let j = 0; j < config.vpdb.passport.ipboard.length; j++) {
-			const p = config.vpdb.passport.ipboard[j].id;
+		for (let j = 0; j < ipsIds.length; j++) {
+			const p = ipsIds[j];
 			if (user._doc[p]) {
 				createdAt = await findCreationDate(user, p);
 				modifiedAt = await findModificationDate(user, p);
-				user.providers[p] = {
+				changes.$set.providers[p] = {
 					id: String(user._doc[p].id),
 					name: user._doc[p].username || user._doc[p].displayName,
 					emails: [user._doc[p].email],
@@ -130,15 +127,11 @@ module.exports.up = async function() {
 					modified_at: modifiedAt || createdAt,
 					profile: user._doc[p]
 				};
-				cleanup.push(async () => await userDb.update({ id: user.id }, { $unset: { [p]: 1 } }));
-			} else {
-				user.providers[p] = undefined;
+				changes.$unset[p] = 1;
 			}
 		}
-		await user.save();
-		for (let j = 0; j < cleanup.length; j++) {
-			await cleanup[j]();
-		}
+		//console.log('%s %s', user.id, require('util').inspect(changes, { colors:true, depth:null}));
+		await userDb.updateOne({ id: user.id }, changes);
 	}
 	console.log('Updated %s users.', users.length);
 	return null;

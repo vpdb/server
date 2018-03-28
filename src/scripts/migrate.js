@@ -127,6 +127,10 @@ Promise.try(() => {
 			mongoose.connection.close();
 		});
 
+}).then(() => {
+	console.info('Migration done.');
+	process.exit(0);
+
 }).catch(err => {
 	console.error('Migration error.');
 	console.error(err.stack);

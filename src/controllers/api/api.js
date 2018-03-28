@@ -153,7 +153,8 @@ exports.fail = function(res, err, code) {
 				return {
 					message: error.message,
 					field: _.isArray(err.errs) ? error.path : path,
-					value: error.value
+					value: error.value,
+					code: error.kind && error.kind != 'user defined' ? error.kind : undefined
 				};
 			}), _.isEqual);
 			res.status(code).json(_.assignIn({ errors: _.sortBy(arr, 'field'), data: err.data || undefined }, body));

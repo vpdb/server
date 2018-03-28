@@ -148,7 +148,7 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 								if (!user) {
 									throw new error('No user with ID "%s".', req.headers[vpdbUserIdHeader]).status(400);
 								}
-								if (!user[appToken.provider]) {
+								if (!user.providers[appToken.provider]) {
 									throw new error('Provided user has not been authenticated with %s.', appToken.provider).status(400);
 								}
 								return user;
@@ -159,14 +159,7 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 						// oauth provider user id header provided
 						const providerUserId = req.headers[providerUserIdHeader];
 						if (providerUserId) {
-							// id might be string but int in db or vice versa
-							let query;
-							if (parseInt(providerUserId).toString() === providerUserId.toString()) {
-								query = { $in: [ parseInt(providerUserId), providerUserId.toString() ]};
-							} else {
-								query = providerUserId;
-							}
-							return User.findOne({ [appToken.provider + '.id' ]: query }).then(user => {
+							return User.findOne({ ['providers.' + appToken.provider + '.id' ]: String(providerUserId) }).then(user => {
 								if (!user) {
 									throw new error('No user with ID "%s" for provider "%s".', req.headers[providerUserIdHeader], appToken.provider).status(400);
 								}

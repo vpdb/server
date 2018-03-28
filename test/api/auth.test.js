@@ -261,14 +261,17 @@ describe('The authentication engine of the VPDB API', () => {
 
 	describe('when a provider token is provided in the header', () => {
 		let ipsUser, githubUser;
+		let ipsProfile, githubProfile;
 		let appToken;
 
 		before(async () => {
 
 			let data = await api.createOAuthUser('ipbtest');
 			ipsUser = data.user;
+			ipsProfile = ipsUser.providers.find(p => p.provider === 'ipbtest');
 			data = await api.createOAuthUser('github');
 			githubUser = data.user;
+			githubProfile = githubUser.providers.find(p => p.provider === 'github');
 
 			let res = await api.as('admin').markTeardown().post('/v1/tokens', {
 				label: 'Auth test token',
@@ -316,39 +319,33 @@ describe('The authentication engine of the VPDB API', () => {
 
 		it('should fail with a user header from a different provider', async () => {
 			await api.withToken(appToken)
-				.withHeader('X-User-Id', githubUser.github.id)
+				.withHeader('X-User-Id', githubProfile.id)
 				.get('/v1/user')
 				.then(res => res.expectError(400, 'no user with id'));
 		});
 
 		it('should succeed with the correct provider user header', async () => {
-			await api.withToken(appToken)
-				.withHeader('X-User-Id', ipsUser.ipbtest.id)
+			res = await api.withToken(appToken)
+				.withHeader('X-User-Id', ipsProfile.id)
 				.get('/v1/user')
-				.then(res => {
-					res.expectStatus(200);
-					expect(res.data.id).to.be(ipsUser.id);
-				});
+				.then(res => res.expectStatus(200));
+			expect(res.data.id).to.be(ipsUser.id);
 		});
 
 		it('should succeed with the correct vpdb user header', async () => {
-			await api.withToken(appToken)
+			res = await api.withToken(appToken)
 				.withHeader('X-Vpdb-User-Id', ipsUser.id)
 				.get('/v1/user')
-				.then(res => {
-					res.expectStatus(200);
-					expect(res.data.id).to.be(ipsUser.id);
-				});
+				.then(res => res.expectStatus(200));
+			expect(res.data.id).to.be(ipsUser.id);
 		});
 
 		it('should be able to create an oauth user', async () => {
-			await api.withToken(appToken)
+			await api.markRootTeardown()
+				.withToken(appToken)
 				.put('/v1/users', { provider_id: 1234, email: 'oauth@vpdb.io', username: 'oauthtest' })
-				.then(res => {
-					res.expectStatus(201);
-					api.tearDownUser(res.data.id);
-					expect(res.data.provider).to.be('ipbtest');
-				});
+				.then(res => res.expectStatus(201));
+			expect(res.data.providers.map(p => p.provider)).to.contain('ipbtest');
 		});
 	});
 
@@ -358,8 +355,8 @@ describe('The authentication engine of the VPDB API', () => {
 			const path = '/api/v1/user';
 			res = await api.as('member')
 				.on('storage')
-				.post('/v1/authenticate', { paths: path });
-			res.expectStatus(200);
+				.post('/v1/authenticate', { paths: path })
+				.then(res => res.expectStatus(200));
 			expect(res.data).to.be.an('object');
 			expect(res.data).to.have.key(path);
 

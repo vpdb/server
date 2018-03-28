@@ -21,7 +21,7 @@
 
 const _ = require('lodash');
 const logger = require('winston');
-const randomstring = require('randomstring');
+const randomString = require('randomstring');
 const validator = require('validator');
 
 const User = require('mongoose').model('User');
@@ -51,7 +51,8 @@ exports.create = function(req, res) {
 	return Promise.try(() => {
 
 		newUser = _.assignIn(_.pick(req.body, 'username', 'password', 'email'), {
-			provider: 'local'
+			is_local: true,
+			name: req.body.name || req.body.username
 		});
 
 		// api test behavior
@@ -136,7 +137,7 @@ exports.createOrUpdate = function(req, res) {
 		// create query condition
 		const query = {
 			$or: [
-				{ [provider + '.id']: req.body.provider_id },
+				{ ['providers.' + provider + '.id']: req.body.provider_id },
 				{ email: req.body.email },
 				{ validated_emails: req.body.email }
 			]
@@ -146,16 +147,22 @@ exports.createOrUpdate = function(req, res) {
 	}).then(existingUser => {
 
 		if (existingUser) {
-			if (!existingUser[provider]) {
+			if (!existingUser.providers || !existingUser.providers[provider]) {
+				existingUser.providers = existingUser.providers || {};
+				existingUser.providers[provider] = {
+					id: String(req.body.provider_id),
+					name: req.body.username || (req.body.email ? req.body.email.substr(0, req.body.email.indexOf('@')) : undefined),
+					emails: [ req.body.email ],
+					created_at: new Date(),
+					modified_at: new Date(),
+					profile: req.body.provider_profile
+				};
 				LogUser.success(req, existingUser, 'provider_add', { provider: provider, profile: req.body.provider_profile });
 			} else {
+				existingUser.providers[provider].modified_at = new Date();
 				LogUser.success(req, existingUser, 'provider_update', { provider: provider });
 			}
-
-			// update profile data on separate field
-			existingUser[provider] = _.assign(existingUser[provider], { id: req.body.provider_id }, req.body.provider_profile || {});
 			existingUser.emails = _.uniq([existingUser.email, ...existingUser.emails, req.body.email]);
-
 			isNew = false;
 
 			// save and return
@@ -165,21 +172,25 @@ exports.createOrUpdate = function(req, res) {
 
 		// check if username doesn't conflict
 		let newUser;
+		let originalName = name;
 		return User.findOne({ name: name }).exec().then(dupeNameUser => {
 			if (dupeNameUser) {
 				name += Math.floor(Math.random() * 1000);
 			}
 			newUser = {
-				provider: provider,
+				is_local: false,
 				name: name,
 				email: req.body.email,
 				emails: [req.body.email],
-				[provider]: _.assign(req.body.provider_profile || {}, {
-					id: req.body.provider_id,
-					email: req.body.email,
-					username: name,
-					displayName: req.body.username
-				})
+				providers: {
+					[provider]: {
+						id: String(req.body.provider_id),
+						name: originalName,
+						emails: [ req.body.email ],
+						created_at: new Date(),
+						profile: req.body.provider_profile
+					}
+				}
 			};
 
 			return User.createUser(newUser, false).then(newUser => {
@@ -264,22 +275,24 @@ exports.list = function(req, res) {
  * @param {Request} req Request object
  * @param {Response} res Response object
  */
-exports.update = function(req, res) {
+exports.update = async function(req, res) {
 
 	// TODO move into model
 	const updateableFields = ['name', 'email', 'username', 'is_active', 'roles', '_plan'];
-	const assert = api.assert(error, 'update', req.params.id, res);
 
-	User.findOne({ id: req.params.id }, assert(function(user) {
+	try {
+
+		const user = await User.findOne({ id: req.params.id }).exec();
 		if (!user) {
-			return api.fail(res, error('No such user.'), 404);
+			throw error('No such user.').status(404);
 		}
+
 		const updatedUser = req.body;
 
 		// 1. check for changed read-only fields
 		const readOnlyFieldErrors = api.checkReadOnlyFields(req.body, user, updateableFields);
 		if (readOnlyFieldErrors) {
-			return api.fail(res, error('User tried to update read-only fields').errors(readOnlyFieldErrors).warn('update'), 422);
+			throw error('User tried to update read-only fields').errors(readOnlyFieldErrors).warn('update').status(422);
 		}
 
 		// 2. check for permission escalation
@@ -304,23 +317,24 @@ exports.update = function(req, res) {
 				LogUser.failure(req, user, 'update', diff, req.user, 'User is not allowed to update administrators or root users.');
 
 				// fail
-				return api.fail(res, error('PRIVILEGE ESCALATION: Non-root user <%s> [%s] tried to update user <%s> [%s].', req.user.email, callerRoles.join(' '), user.email, currentUserRoles.join(' '))
-					.display('You are not allowed to update administrators or root users.')
-					.log('update'),
-				403);
+				throw error('PRIVILEGE ESCALATION: Non-root user <%s> [%s] tried to update user <%s> [%s].',
+							req.user.email, callerRoles.join(' '), user.email, currentUserRoles.join(' '))
+						.display('You are not allowed to update administrators or root users.')
+						.log('update')
+						.status(403);
 			}
 
 			// if new roles contain root or admin, deny (even when removing)
-			if (_.includes(addedRoles, 'root') || _.includes(addedRoles, 'admin') || _.includes(removedRoles, 'root') || _.includes(removedRoles, 'admin')) {
+			if (addedRoles.includes('root') || addedRoles.includes('admin') || removedRoles.includes('root') || removedRoles.includes('admin')) {
 
 				// log
 				LogUser.failure(req, user, 'update', diff, req.user, 'User is not allowed change the admin or root role for anyone.');
 
 				// fail
-				return api.fail(res, error('PRIVILEGE ESCALATION: User <%s> [%s] tried to update user <%s> [%s] with new roles [%s].', req.user.email, callerRoles.join(' '), user.email, currentUserRoles.join(' '), updatedUserRoles.join(' '))
-					.display('You are not allowed change the admin or root role for anyone.')
-					.log('update'),
-				403);
+				throw error('PRIVILEGE ESCALATION: User <%s> [%s] tried to update user <%s> [%s] with new roles [%s].', req.user.email, callerRoles.join(' '), user.email, currentUserRoles.join(' '), updatedUserRoles.join(' '))
+						.display('You are not allowed change the admin or root role for anyone.')
+						.log('update')
+						.status(403);
 			}
 		}
 
@@ -330,43 +344,39 @@ exports.update = function(req, res) {
 		});
 
 		// 4. validate
-		user.validate(function(err) {
-			if (err) {
-				console.log('2');
-				return api.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn('create'), 422);
-			}
-			logger.info('[api|user:update] Validations passed, updating user.');
+		await user.validate();
 
-			// 5. save
-			user.save(assert(function() {
+		// 5. save
+		await user.save();
 
-				LogUser.successDiff(req, updatedUser, 'update', _.pick(user.toObject(), updateableFields), updatedUser, req.user);
-				logger.info('[api|user:update] Success!');
+		LogUser.successDiff(req, updatedUser, 'update', _.pick(user.toObject(), updateableFields), updatedUser, req.user);
+		logger.info('[api|user:update] Success!');
 
-				// 6. update ACLs if roles changed
-				if (removedRoles.length > 0) {
-					logger.info('[api|user:update] Updating ACLs: Removing roles [%s] from user <%s>.', removedRoles.join(' '), user.email);
-					acl.removeUserRoles(user.id, removedRoles);
-				}
-				if (addedRoles.length > 0) {
-					logger.info('[api|user:update] Updating ACLs: Adding roles [%s] to user <%s>.', addedRoles.join(' '), user.email);
-					acl.addUserRoles(user.id, addedRoles);
-				}
+		// 6. update ACLs if roles changed
+		if (removedRoles.length > 0) {
+			logger.info('[api|user:update] Updating ACLs: Removing roles [%s] from user <%s>.', removedRoles.join(' '), user.email);
+			acl.removeUserRoles(user.id, removedRoles);
+		}
+		if (addedRoles.length > 0) {
+			logger.info('[api|user:update] Updating ACLs: Adding roles [%s] to user <%s>.', addedRoles.join(' '), user.email);
+			acl.addUserRoles(user.id, addedRoles);
+		}
 
-				// 7. if changer is not changed user, mark user as dirty
-				if (!req.user._id.equals(user._id)) {
-					logger.info('[api|user:update] Marking user <%s> as dirty.', user.email);
-					redis.set('dirty_user_' + user.id, new Date().getTime(), function() {
-						redis.expire('dirty_user_' + user.id, 10000, function() {
-							return api.success(res, UserSerializer.detailed(user, req), 200);
-						});
-					});
-				} else {
+		// 7. if changer is not changed user, mark user as dirty
+		if (!req.user._id.equals(user._id)) {
+			logger.info('[api|user:update] Marking user <%s> as dirty.', user.email);
+			redis.set('dirty_user_' + user.id, new Date().getTime(), function() {
+				redis.expire('dirty_user_' + user.id, 10000, function() {
 					return api.success(res, UserSerializer.detailed(user, req), 200);
-				}
-			}, 'Error updating user "%s"'));
-		});
-	}, 'Error finding user "%s"'));
+				});
+			});
+		} else {
+			return api.success(res, UserSerializer.detailed(user, req), 200);
+		}
+
+	} catch (err) {
+		api.handleError(res, error, 'Error listing users')(err);
+	}
 };
 
 
@@ -447,7 +457,7 @@ exports.sendConfirmationMail = function(req, res) {
 		if (user.email_status.code === 'confirmed') {
 			throw error('Cannot re-send confirmation mail to already confirmed address.').status(400);
 		}
-		user.email_status.token = randomstring.generate(16);
+		user.email_status.token = randomString.generate(16);
 		user.email_status.expires_at = new Date(new Date().getTime() + 86400000); // 1d valid
 		return user.save();
 

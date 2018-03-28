@@ -131,7 +131,7 @@ exports.update = function(req, res) {
 		}
 
 		// CREATE LOCAL ACCOUNT
-		if (req.body.username && currentUser.provider !== 'local') {
+		if (req.body.username && !currentUser.is_local) {
 
 			if (!req.body.password) {
 				errors.password = { message: 'You must provide your new password.', path: 'password' };
@@ -139,12 +139,12 @@ exports.update = function(req, res) {
 			} else {
 				updatedUser.password = req.body.password;
 				updatedUser.username = req.body.username;
-				updatedUser.provider = 'local';
+				updatedUser.is_local = true;
 				LogUser.success(req, updatedUser, 'create_local_account', { username: req.body.username });
 			}
 		}
-		if (req.body.username && currentUser.provider === 'local' && req.body.username !== updatedUser.username) {
-			errors.username = { message: 'Cannot change username for already local account.', path: 'username' };
+		if (req.body.username && currentUser.is_local && req.body.username !== updatedUser.username) {
+			errors.username = { message: 'Cannot change username for already local account.', path: 'username', value: req.body.username, kind: 'read_only' };
 		}
 
 		// CHANNEL CONFIG
@@ -479,7 +479,7 @@ exports.confirm = function(req, res) {
 				}
 
 				// auto-merge if only one user without credentials
-				if (mergeUsers.length === 1 && mergeUsers[0].provider !== 'local') {
+				if (mergeUsers.length === 1 && !mergeUsers[0].is_local) {
 					return User.mergeUsers(user, mergeUsers[0], null, req);
 				}
 

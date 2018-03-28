@@ -19,7 +19,7 @@ class UserSerializer extends Serializer {
 
 		// provider id
 		if (req.tokenType === 'application' && doc[req.tokenProvider]) {
-			user.provider_id = doc[req.tokenProvider].id;
+			user.provider_id = doc.providers[req.tokenProvider].id;
 		}
 
 		return user;
@@ -45,7 +45,7 @@ class UserSerializer extends Serializer {
 	 */
 	_detailed(doc, req, opts) {
 		const user = this._simple(doc, req, opts);
-		_.assign(user, _.pick(doc, ['email', 'email_status', 'is_active', 'provider', 'created_at']));
+		_.assign(user, _.pick(doc, ['email', 'email_status', 'is_local', 'is_active', 'created_at']));
 
 		user.roles = doc.roles.toObject();
 		user.preferences = doc.preferences.toObject();
@@ -74,44 +74,12 @@ class UserSerializer extends Serializer {
 		} else if (process.env.NODE_ENV !== 'test') {
 			user.email_status.token = undefined;
 		}
-		user.providers = [];
 
 		// provider data
-		if (!_.isEmpty(doc.github)) {
-			user.github = {
-				id: doc.github.id,
-				username: doc.github.login,
-				email: doc.github.email,
-				avatar_url: doc.github.avatar_url,
-				html_url: doc.github.html_url
-			};
-			user.providers.push('github');
-		}
-		if (!_.isEmpty(doc.google)) {
-			user.google = {
-				id: doc.google.id,
-				username: doc.google.login,
-				email: doc.google.email,
-				avatar_url: doc.google.avatar_url,
-				html_url: doc.google.html_url
-			};
-			user.providers.push('google');
-		}
-		config.vpdb.passport.ipboard.forEach(ipb => {
-			if (!_.isEmpty(doc[ipb.id])) {
-				user[ipb.id] = {
-					id: doc[ipb.id].id,
-					username: doc[ipb.id].username,
-					email: doc[ipb.id].email,
-					avatar_url: doc[ipb.id].avatar,
-					html_url: doc[ipb.id].profileUrl
-				};
-				user.providers.push(ipb.id);
-			}
-		});
-		if (doc.password_hash) {
-			user.providers.push('local');
-		}
+		user.providers = _.keys(doc.providers)
+			.filter(k => doc.providers[k] && doc.providers[k].id)
+			.map(k => _.assign({ provider: k }, _.pick(doc.providers[k], [ 'id', 'name', 'emails', 'created_at', 'modified_at' ])));
+
 		return user;
 	}
 

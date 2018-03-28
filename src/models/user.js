@@ -42,7 +42,7 @@ const Schema = mongoose.Schema;
 const fields = {
 	id: { type: String, required: true, unique: true, 'default': shortId.generate },
 	name: { type: String, index: true, required: 'Name must be provided.' }, // display name, equals username when locally registering.
-	username: { type: String, index: true, unique: true, sparse: true },         // login name when logging locally, empty if oauth
+	username: { type: String, index: true, unique: true, sparse: true },     // login name when logging locally, empty if oauth
 	email: { type: String, index: true, unique: true, lowercase: true, required: 'Email must be provided.' },
 	email_status: {
 		code: { type: String, 'enum': ['confirmed', 'pending_registration', 'pending_update'], required: true },
@@ -50,10 +50,11 @@ const fields = {
 		expires_at: { type: Date },
 		value: { type: String }
 	},
-	emails: { type: [String] }, // collected from profiles
-	roles: { type: [String], required: true },
-	_plan: { type: String, required: true },
-	provider: { type: String, required: true },
+	emails: { type: [String], index: true }, // collected from profiles
+	roles: { type: [String], required: 'Roles must be provided.' },
+	_plan: { type: String, required: 'Plan must be provided.' },
+	is_local: { type: Boolean, required: true },
+	providers: {},
 	password_hash: { type: String },
 	password_salt: { type: String },
 	thumb: { type: String },
@@ -83,23 +84,31 @@ const fields = {
 	},
 	created_at: { type: Date, required: true },
 	is_active: { type: Boolean, required: true, 'default': false },
-	validated_emails: { type: [String] },
+	validated_emails: { type: [String], index: true },
 	channel_config: {
 		subscribe_to_starred: { type: Boolean, 'default': false }, // "nice to know", useless
 		subscribed_releases: { type: [String], index: true }     // linked releases on client side, so we can announce properly in realtime
 	}
 };
+const providerSchema = new mongoose.Schema({
+	id: { type: String, required: 'Provider ID is required.', index: true },
+	name: { type: String },
+	emails: { type: [String], required: false },
+	created_at: { type: Date, required: true },
+	modified_at: { type: Date },
+	profile: {}
+});
 
 // provider data fields
 if (config.vpdb.passport.github.enabled) {
-	fields.github = {};
+	fields.providers.github = providerSchema;
 }
 if (config.vpdb.passport.google.enabled) {
-	fields.google = {};
+	fields.providers.google = providerSchema;
 }
 config.vpdb.passport.ipboard.forEach(function(ipbConfig) {
 	if (ipbConfig.enabled) {
-		fields[ipbConfig.id] = {};
+		fields.providers[ipbConfig.id] = providerSchema;
 	}
 });
 const UserSchema = new Schema(fields, { usePushEach: true });
@@ -138,31 +147,35 @@ UserSchema.virtual('planConfig')
 		return plan;
 	});
 
+UserSchema.virtual('provider')
+	.get(function() {
+		return _.find(_.keys(this.providers), p => this.providers[p] && this.providers[p].id) || 'local';
+	});
 
 //-----------------------------------------------------------------------------
 // MIDDLEWARE
 //-----------------------------------------------------------------------------
 
-UserSchema.pre('validate', function(next) {
-	const user = this.toJSON();
-	if (this.isNew && !this.name) {
-		if (user.username) {
-			this.name = user.username;
-		}
-		if (!_.isEmpty(user.github)) {
-			this.name = user.github.name ? user.github.name : user.github.login;
-		}
-		if (!_.isEmpty(user.google)) {
-			this.name = user.google.name ? user.google.name : user.google.login;
-		}
-		config.vpdb.passport.ipboard.forEach(function(ipbConfig) {
-			if (!_.isEmpty(user[ipbConfig.id])) {
-				this.name = user[ipbConfig.id].displayName ? user[ipbConfig.id].displayName : user[ipbConfig.id].username;
-			}
-		}, this);
-	}
-	next();
-});
+// UserSchema.pre('validate', function(next) {
+// 	const user = this.toJSON();
+// 	if (this.isNew && !this.name) {
+// 		if (user.username) {
+// 			this.name = user.username;
+// 		}
+// 		// if (user.providers && !_.isEmpty(user.providers.github)) {
+// 		// 	this.name = user.github.name ? user.providers.github.name : user.providers.github.login;
+// 		// }
+// 		// if (user.providers && !_.isEmpty(user.providers.google)) {
+// 		// 	this.name = user.google.name ? user.google.name : user.google.login;
+// 		// }
+// 		// config.vpdb.passport.ipboard.forEach(function(ipbConfig) {
+// 		// 	if (!_.isEmpty(user[ipbConfig.id])) {
+// 		// 		this.name = user[ipbConfig.id].displayName ? user[ipbConfig.id].displayName : user[ipbConfig.id].username;
+// 		// 	}
+// 		// }, this);
+// 	}
+// 	next();
+// });
 
 
 //-----------------------------------------------------------------------------
@@ -187,7 +200,7 @@ UserSchema.path('name').validate(function(name) {
 
 UserSchema.path('email').validate(function(email) {
 	// if you are authenticating by any of the oauth strategies, don't validate
-	if (this.isNew && this.provider !== 'local') {
+	if (this.isNew && !this.is_local) {
 		return true;
 	}
 	return _.isString(email) && validator.isEmail(email);
@@ -197,7 +210,7 @@ UserSchema.path('location').validate(function(location) {
 	return _.isString(location) && validator.isLength(location, 0, 100);
 }, 'Location must not be longer than 100 characters.');
 
-UserSchema.path('provider').validate(function(provider) {
+UserSchema.path('is_local').validate(function(isLocal) {
 
 	return Promise.try(() => {
 
@@ -205,7 +218,7 @@ UserSchema.path('provider').validate(function(provider) {
 		// below because it's not run when there's no value (and it can be null,
 		// if auth strategy is not local). so do it here, invalidate password if
 		// necessary but return true so provider passes.
-		if (this.isNew && provider === 'local') {
+		if (this.isNew && isLocal) {
 			if (!this._password) {
 				this.invalidate('password', 'Password is required.');
 			}
@@ -217,7 +230,7 @@ UserSchema.path('provider').validate(function(provider) {
 				this.invalidate('email', 'Email is required.');
 			}
 		}
-		if (provider === 'local') {
+		if (isLocal) {
 			if (!_.isString(this.username)) {
 				this.invalidate('username', 'Username must be a string between 3 and 30 characters.');
 			} else {
@@ -629,17 +642,18 @@ UserSchema.statics.mergeUsers = function(keepUser, mergeUser, explanation, req) 
 		keepUser.counter.downloads = keepUser.counter.downloads + mergeUser.counter.downloads;
 		keepUser.counter.stars = keepUser.counter.stars + mergeUser.counter.stars;
 		keepUser.validated_emails = _.uniq([...keepUser.validated_emails, ...mergeUser.validated_emails]);
-		if (mergeUser.github && !keepUser.github) {
-			keepUser.github = mergeUser.github;
-		}
-		if (mergeUser.google && !keepUser.google) {
-			keepUser.google = mergeUser.google;
-		}
-		config.vpdb.passport.ipboard.forEach(ips => {
-			if (mergeUser[ips.id] && !keepUser[ips.id]) {
-				keepUser[ips.id] = mergeUser[ips.id];
+
+
+		if (mergeUser.providers) {
+			if (!keepUser.providers) {
+				keepUser.providers = {};
 			}
-		});
+			_.keys(mergeUser.providers).forEach(k => {
+				if (!keepUser.providers[k]) {
+					keepUser.providers[k] = mergeUser.providers[k];
+				}
+			});
+		}
 		return keepUser.save();
 
 	}).then(() => {

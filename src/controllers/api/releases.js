@@ -699,18 +699,11 @@ exports.list = function(req, res) {
 			if (req.tokenType !== 'application') {
 				throw error('Must be authenticated with provider token in order to filter by provider user ID.').status(400);
 			}
-			let userQuery;
-			if (parseInt(req.query.provider_user).toString() === req.query.provider_user.toString()) {
-				userQuery = { $in: [ parseInt(req.query.provider_user), req.query.provider_user.toString() ]};
-			} else {
-				userQuery = req.query.provider_user;
-			}
-			return User.findOne({ [req.tokenProvider + '.id' ]: userQuery }).then(user => {
+			return User.findOne({ ['providers.' + req.tokenProvider + '.id' ]: String(req.query.provider_user) }).then(user => {
 				if (user) {
 					query.push({ 'authors._user': user._id.toString() });
 				}
 			});
-
 		}
 
 	}).then(() => {

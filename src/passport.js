@@ -142,8 +142,8 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 		}
 
 		// exclude login with different account at same provider
-		if (req.user && req.user[provider] && req.user[provider].id !== profile.id) {
-			return callback(error('Profile at %s is already linked to ID %s', provider, req.user[provider].id).status(400));
+		if (req.user && req.user.providers && req.user.providers[provider] && req.user.providers[provider].id !== profile.id) {
+			return callback(error('Profile at %s is already linked to ID %s', provider, req.user.providers[provider].id).status(400));
 			//return callback(null, false, { message:  });
 		}
 
@@ -168,7 +168,7 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 			// we explicitly don't go after user.email, because if it's confirmed it's in user.validated_emails.
 			const query = {
 				$or: [
-					{ [provider + '.id']: profile.id },
+					{ ['providers.' + provider + '.id']: profile.id },
 					{ emails: { $in: emails } },           // emails from other providers
 					{ validated_emails: { $in: emails } }  // emails the user manually validated during sign-up or email change
 				]
@@ -216,16 +216,31 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 
 			// if user found, update and return.
 			if (user) {
-				if (!user[provider]) {
+				if (!user.providers || !user.providers[provider]) {
+					user.providers = user.providers || {};
+					user.providers[provider] = {
+						id: String(profile.id),
+						name: profile.displayName
+							|| (profile.name ? profile.name.givenName || profile.name.familyName : '')
+							|| profile.emails[0].value.substr(0, profile.emails[0].value.indexOf('@')),
+						emails: emails,
+						created_at: new Date(),
+						modified_at: new Date(),
+						profile: profile._json
+					};
 					LogUser.success(req, user, 'authenticate', { provider: provider, profile: profile._json });
 					logger.info('[passport|%s] Adding profile from %s to user.', logtag, provider, emails[0]);
+
 				} else {
+					user.providers[provider].id = String(profile.id);
+					user.providers[provider].emails = _.uniq(...user.providers[provider].emails, ...emails);
+					user.providers[provider].modified_at = new Date();
+					user.providers[provider].profile = profile._json;
 					LogUser.success(req, user, 'authenticate', { provider: provider });
 					logger.info('[passport|%s] Returning user %s', logtag, emails[0]);
 				}
 
 				// update profile data on separate field
-				user[provider] = profile._json;
 				user.emails = _.uniq([ user.email, ...user.emails, ...emails]);
 
 				// optional data
@@ -255,16 +270,27 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 					name += Math.floor(Math.random() * 1000);
 				}
 				newUser = {
-					provider: provider,
+					is_local: false,
 					name: name,
 					email: profile.emails[0].value,
+					providers: {
+						[provider]: {
+							id: String(profile.id),
+							name: profile.displayName
+								|| (profile.name ? profile.name.givenName || profile.name.familyName : '')
+								|| profile.emails[0].value.substr(0, profile.emails[0].value.indexOf('@')),
+							emails: profile.emails.map(e => e.value),
+							created_at: new Date(),
+							profile: profile._json
+						}
+					}
 				};
 				// optional data
 				if (profile.photos && profile.photos.length > 0) {
 					newUser.thumb = profile.photos[0].value;
 				}
 
-				newUser[provider] = profile._json; // save original data to separate field
+				newUser.providers[provider].profile = profile._json; // save original data to separate field
 				newUser.emails = _.uniq(emails);
 
 				logger.info('[passport|%s] Creating new user.', logtag);

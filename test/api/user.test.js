@@ -240,7 +240,7 @@ describe('The VPDB `user` API', () => {
 	describe('when a user updates its name', () => {
 
 		it('should succeed when providing a valid name', async () => {
-			const name = faker.name.firstName() + ' ' + faker.name.lastName();
+			const name = faker.name.firstName().replace(/[^a-z0-9]+/i, '') + ' ' + faker.name.lastName().replace(/[^a-z0-9]+/i, '');
 			await api.as('member')
 				.patch('/v1/user', { name: name })
 				.then(res => res.expectStatus(200));
@@ -599,7 +599,8 @@ describe('The VPDB `user` API', () => {
 		it('should succeed when providing a valid password', async () => {
 			// 1. create github user
 			const oauth = await api.createOAuthUser('github');
-			expect(oauth.user.provider).to.be('github');
+			expect(oauth.user.is_local).to.be(false);
+			expect(oauth.user.providers[0].provider).to.be('github');
 
 			// 2. add local credentials
 			const username = api.generateUser().username;
@@ -608,7 +609,7 @@ describe('The VPDB `user` API', () => {
 				.withToken(oauth.token)
 				.patch('/v1/user', { username: username, password: pass })
 				.then(res => res.expectStatus(200));
-			expect(res.data.provider).to.be('local');
+			expect(res.data.is_local).to.be(true);
 
 			// 3. assert local credentials
 			await api.post('/v1/authenticate', { username: username, password: pass }).then(res => res.expectStatus(200));
@@ -699,9 +700,9 @@ describe('The VPDB `user` API', () => {
 				.then(res => res.expectValidationErrors([
 					['email', 'must be provided'],
 					['name', 'must be provided'],
-					['roles', 'is required'],
+					['roles', 'must be provided'],
 					['username', 'must be a string between'],
-					['_plan', 'is required']
+					['_plan', 'must be provided']
 				], 6));
 		});
 
@@ -773,11 +774,11 @@ describe('The VPDB `user` API', () => {
 		});
 
 		it('should add a new user with an unknown email address', async () => {
-			res = await api.markTeardown(null, null, '__root')
+			res = await api.markRootTeardown()
 				.withToken(appToken)
 				.put('/v1/users', { email: 'by-isp@vpdb.io', username: 'böh', provider_id: 1234})
 				.then(res => res.expectStatus(201));
-			expect(res.data.ipbtest.id).to.be(1234);
+			expect(res.data.providers.find(p => p.provider === 'ipbtest').id).to.be('1234');
 			expect(res.data.email).to.be('by-isp@vpdb.io');
 			expect(res.data.roles).to.eql([ 'member' ]);
 		});
@@ -788,12 +789,12 @@ describe('The VPDB `user` API', () => {
 				.put('/v1/users', { email: user.email, username: 'böh', provider_id: 4321 })
 				.then(res => res.expectStatus(200));
 			expect(res.data.id).to.be(user.id);
-			expect(res.data.ipbtest.id).to.be(4321);
+			expect(res.data.providers.find(p => p.provider === 'ipbtest').id).to.be('4321');
 			expect(res.data.roles).to.eql(['member']);
 		});
 
 		it('should update a user with an existing provider ID', async () => {
-			res = await api.markTeardown(null, null, '__root')
+			res = await api.markRootTeardown()
 				.withToken(appToken)
 				.put('/v1/users', { email: 'update-me@vpdb.io', username: 'duh', provider_id: 666 })
 				.then(res => res.expectStatus(201));
@@ -932,7 +933,7 @@ describe('The VPDB `user` API', () => {
 			const user = res.data.user;
 
 			// at provider, create a second account with same email
-			oauthProfile.profile.id++;
+			oauthProfile.profile.id += '0';
 
 			// login with provider1/id2, email1 -> different provider id
 			res = await api
@@ -941,7 +942,7 @@ describe('The VPDB `user` API', () => {
 
 			// => update provider id
 			expect(res.data.user.id).to.be(user.id);
-			expect(res.data.user.github.id).to.be(oauthProfile.profile.id);
+			expect(res.data.user.providers.find(p => p.provider === 'github').id).to.be(oauthProfile.profile.id);
 		});
 
 		it('should merge an existing user at confirmation when user was authenticated with OAuth during confirmation', async () => {
@@ -971,7 +972,7 @@ describe('The VPDB `user` API', () => {
 			await api.get('/v1/user/confirm/' + user1token).then(res => res.expectStatus(200));
 			res = await api.post('/v1/authenticate', { username: user1.name, password: user1.password }).then(res => res.expectStatus(200));
 			expect(res.data.user.id).to.be(user1.id);
-			expect(res.data.user.github.id).to.be(oauthUser.user.github.id);
+			expect(res.data.user.providers.find(p => p.provider === 'github').id).to.be(oauthUser.user.providers.find(p => p.provider === 'github').id);
 			await api.asRoot().get('/v1/users/' + oauthUser.user.id).then(res => res.expectStatus(404));
 
 			// 5. confirm account2
@@ -984,7 +985,7 @@ describe('The VPDB `user` API', () => {
 			res = await api.post('/v1/authenticate', { username: user2.name, password: user2.password }).then(res => res.expectStatus(200));
 			expect(res.data.user.id).to.be(user2.id);
 			expect(res.data.user.name).to.be(user2.name);
-			expect(res.data.user.github.id).to.be(oauthUser.user.github.id);
+			expect(res.data.user.providers.find(p => p.provider === 'github').id).to.be(oauthUser.user.providers.find(p => p.provider === 'github').id);
 			expect(res.data.user.emails).to.contain(user1.email);
 			expect(res.data.user.emails).to.contain(user2.email);
 			expect(res.data.user.emails).to.contain(user1b.email);
@@ -1058,7 +1059,7 @@ describe('The VPDB `user` API', () => {
 				.post('/v1/authenticate/mock', oauthUser)
 				.then(res => res.expectStatus(200));
 			expect(res.data.user.id).to.be(user1.id);
-			expect(res.data.user.github.id).to.be(oauthUser.profile.id);
+			expect(res.data.user.providers.find(p => p.provider === 'github').id).to.be(oauthUser.profile.id);
 			// make sure user2 is gone
 			await api.asRoot().get('/v1/users/' + user2.id).then(res => res.expectStatus(404));
 		});
@@ -1075,8 +1076,8 @@ describe('The VPDB `user` API', () => {
 				.post('/v1/authenticate/mock', linkedOAuth)
 				.then(res => res.expectStatus(200));
 			expect(res.data.user.id).to.be(localUser.id);
-			expect(res.data.user.github.id).to.be(linkedOAuth.profile.id);
-			expect(res.data.user.ipbtest.id).to.be(oauth.user.ipbtest.id);
+			expect(res.data.user.providers.find(p => p.provider === 'github').id).to.be(linkedOAuth.profile.id);
+			expect(res.data.user.providers.find(p => p.provider === 'ipbtest').id).to.be(oauth.user.providers.find(p => p.provider === 'ipbtest').id);
 			// make sure user2 is gone
 			await api.asRoot().get('/v1/users/' + oauth.id).then(res => res.expectStatus(404));
 		});
@@ -1092,7 +1093,7 @@ describe('The VPDB `user` API', () => {
 				.post('/v1/authenticate/mock', oauthProfile)
 				.then(res => res.expectStatus(200));
 			expect(res.data.user.id).to.be(localUser.id);
-			expect(res.data.user.github).to.be.ok();
+			expect(res.data.user.providers.find(p => p.provider === 'github')).to.be.ok();
 		});
 	});
 });

@@ -334,6 +334,16 @@ class ApiClient {
 		return this;
 	}
 
+	/**
+	 * Marks the current entity to be torn down after tests as root.
+	 *
+	 * @param {string|null} [pathToId="id"] Path to the attribute containing the ID field of the response.
+	 * @param {string|null} [path] If the DELETE path differs from the original request, this overrides it.
+	 * @returns {ApiClient}
+	 */
+	markRootTeardown(pathToId, path) {
+		return this.markTeardown(pathToId, path, '__root');
+	}
 
 	/**
 	 * Dumps a request/response log to the console.
@@ -680,7 +690,7 @@ class ApiClient {
 			provider: provider,
 			profile: {
 				provider: provider,
-				id: attrs.id || Math.floor(Math.random() * 100000),
+				id: String(attrs.id || Math.floor(Math.random() * 100000)),
 				displayName: attrs.displayName || faker.name.firstName() + ' ' + faker.name.lastName(),
 				username: attrs.name || gen.username,
 				profileUrl: 'https://' + provider + '.com/' + gen.username,

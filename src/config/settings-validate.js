@@ -619,7 +619,7 @@ module.exports = {
 						return;
 					}
 					/* istanbul ignore if */
-					if (!/^[a-z0-9]+$/.test(id)) {
+					if (!/^[a-z0-9_-]+$/.test(id)) {
 						return 'ID must be alphanumeric';
 					}
 				},

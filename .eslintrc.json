@@ -27,7 +27,7 @@
 		"no-unused-vars": 1
 	},
 	"parserOptions": {
-		"ecmaVersion": 6,
+		"ecmaVersion": 2017,
 		"sourceType": "module",
 		"impliedStrict": true
 	}

@@ -318,7 +318,7 @@ exports.update = async function(req, res) {
 
 				// fail
 				throw error('PRIVILEGE ESCALATION: Non-root user <%s> [%s] tried to update user <%s> [%s].',
-							req.user.email, callerRoles.join(' '), user.email, currentUserRoles.join(' '))
+					req.user.email, callerRoles.join(' '), user.email, currentUserRoles.join(' '))
 						.display('You are not allowed to update administrators or root users.')
 						.log('update')
 						.status(403);

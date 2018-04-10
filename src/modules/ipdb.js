@@ -19,12 +19,13 @@
 
 'use strict';
 
-var _ = require('lodash');
-var ent = require('ent');
-var logger = require('winston');
-var request = require('request');
+const _ = require('lodash');
+const ent = require('ent');
+const axios = require('axios');
+const logger = require('winston');
+const request = require('request');
 
-var error = require('./error')('ipdb');
+const error = require('./error')('ipdb');
 
 function Ipdb() {
 }
@@ -35,50 +36,44 @@ function Ipdb() {
  * @param {{ offline: boolean }} [opts] `offline` - if set, use local index instead of IPDB live query.
  * @return Promise
  */
-Ipdb.prototype.details = function(ipdbNo, opts) {
+Ipdb.prototype.details = async function(ipdbNo, opts) {
 
 	opts = opts || {};
 	if (opts.offline) {
-		const ipdb = require('../../data/ipdb.json');
-		const match = _.find(ipdb, i => i.ipdb.number === parseInt(ipdbNo));
-		if (!match) {
-			return Promise.reject(error('IPDB entry ' + ipdbNo + ' does not exist in local index. Try without the offline option.'));
-		}
-		return Promise.resolve(match);
+		return localDetails(ipdbNo);
 	}
 
-	return Promise.try(() => {
-		var url = 'http://www.ipdb.org/machine.cgi?id=' + ipdbNo;
-		logger.info('[ipdb] Fetching %s', url);
-		return new Promise((resolve, reject) => {
-			request({ url: url, timeout: 30000 }, function(err, response, body) {
-				/* istanbul ignore if */
-				if (!response) {
-					throw error('Timeout while trying to reach IPDB.org. Please try again later.').log();
-				}
-				/* istanbul ignore if */
-				if (err) {
-					return reject(err);
-				}
-				resolve([response, body]);
-			});
-		});
+	const url = 'http://www.ipdb.org/machine.cgi?id=' + ipdbNo;
+	logger.info('[ipdb] Fetching %s', url);
+	try {
+		const response =  await axios.get(url, { timeout: 30000 });
+		return parseDetails(response.data);
 
-	}).spread((response, body) => {
-		/* istanbul ignore if */
-		if (response.statusCode !== 200) {
-			logger.error('[ipdb] Wrong response code, got %s instead of 200. Body: %s', response.statusCode, body);
-			throw error('Wrong response data from IPDB.').log();
+	} catch (err) {
+		if (err.response) {
+			logger.error('[ipdb] Wrong response code, got %s instead of 200. Body: %s', err.response.status, err.response.data);
+			return localDetails(ipdbNo, error('Wrong response data from IPDB.').log());
+
+		} else {
+			return localDetails(ipdbNo, error('Timeout while trying to reach IPDB.org. Please try again later.').log());
 		}
-		return parseDetails(body);
-
-	});
+	}
 };
+
+function localDetails(ipdbNo, err) {
+	const ipdb = require('../../data/ipdb.json');
+	const match = _.find(ipdb, i => i.ipdb.number === parseInt(ipdbNo));
+	if (!match) {
+		throw (err || error('IPDB entry ' + ipdbNo + ' does not exist in local index. Try without the offline option.'));
+	}
+	return match;
+}
 
 /* istanbul ignore next */
 Ipdb.prototype.findDead = function(data) {
-	var id, ids = [];
-	for (var i = 0; i < data.length; i++) {
+	let id;
+	const ids = [];
+	for (let i = 0; i < data.length; i++) {
 		id = i + 1 + ids.length;
 		if (data[i].ipdb.number !== id) {
 			ids.push(id);
@@ -90,14 +85,14 @@ Ipdb.prototype.findDead = function(data) {
 
 function parseDetails(body) {
 
-	var tidyText = function(m) {
+	const tidyText = function(m) {
 		m = striptags(m).replace(/<br>/gi, '\n\n');
 		return ent.decode(m.trim());
 	};
 
 	return Promise.try(() => {
-		var m = body.match(/<a name="(\d+)">([^<]+)/i);
-		var game = { ipdb: {}};
+		const m = body.match(/<a name="(\d+)">([^<]+)/i);
+		const game = { ipdb: {} };
 
 		/* istanbul ignore else */
 		if (m) {
@@ -116,7 +111,7 @@ function parseDetails(body) {
 			game.year = number(firstMatch(body, /href="machine\.cgi\?id=\d+">\d+<\/a>\s*<I>[^<]*?(\d{4})/i));
 
 			game.game_type = firstMatch(body, /Type:\s*<\/b><\/td><td[^>]*>([^<]+)/i, function(m) {
-				var mm = m.match(/\((..)\)/);
+				const mm = m.match(/\((..)\)/);
 				return mm ? mm[1].toLowerCase() : null;
 			});
 
@@ -158,7 +153,7 @@ function parseDetails(body) {
 }
 
 function firstMatch(str, regex, postFn) {
-	var m = str.match(regex);
+	const m = str.match(regex);
 	if (m && postFn) {
 		return postFn(m[1].replace(/&nbsp;/gi, ' '));
 	} else if (m) {
@@ -1026,9 +1021,9 @@ Ipdb.prototype.systems = {
 };
 
 // eslint-disable-next-line no-unused-vars
-var manufacturerGroups = {
-	Gottlieb: [ 'Gottlieb', 'Mylstar', 'Premier' ],
-	Bally: [ 'Bally', 'Midway' ]
+const manufacturerGroups = {
+	Gottlieb: ['Gottlieb', 'Mylstar', 'Premier'],
+	Bally: ['Bally', 'Midway']
 };
 
 module.exports = new Ipdb();

@@ -31,6 +31,33 @@ const resolve = require('path').resolve;
 const exportPath = resolve(config.vpdb.tmp, 'mongo-reset-export');
 // eslint-disable-next-line no-unused-vars
 let sha, dbConfig, dbUser, dbPassword, dbName, replicaConfig, replicaUser, replicaPassword, replicaName;
+
+/**
+ * Exports production database and imports it into staging.
+ *
+ * In your current deployment folder, run:
+ *
+ * > APP_SETTINGS=../settings.js node src/scripts/reset-to-production.js
+ *
+ * Replace emails (in MongoDB console):
+ *
+ var bulk = db.users.initializeUnorderedBulkOp();
+ var count = 0;
+ db.users.find({ email: { $ne: 'freezy@xbmc.org' } }).forEach(function(doc) {
+    var newEmail = doc.email.replace(/([^@]+)@(.*)/, '$1_$2@vpdb.io');
+    bulk.find({ id: doc.id }).updateOne({ $set: { email: newEmail } });
+    count++;
+    if (count % 100 === 0) {
+        bulk.execute();
+        bulk = db.users.initializeUnorderedBulkOp();
+    }
+ })
+ if (count > 0) {
+   bulk.execute();
+ }
+
+ *
+ */
 Promise.try(() => {
 
 	if (!config.primary) {

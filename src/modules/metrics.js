@@ -124,13 +124,13 @@ Metrics.prototype._updateEntityMetrics = function(ref, entity, atm) {
 		// Mongoose API FTW!!
 		return new Promise((res, rej) => {
 			let data = [];
-			return Rating.aggregate({ $match: q }, {
+			return Rating.aggregate([{ $match: q }, {
 				$group: {
 					_id: null,
 					sum: { $sum: '$value' },
 					count: { $sum: 1 }
 				}
-			})
+			}])
 			.cursor({})
 			.exec()
 			.on('data', doc => data.push(doc))
@@ -165,13 +165,13 @@ Metrics.prototype._getGlobalMean = function(ref) {
 		// Mongoose API FTW!!
 		return new Promise((res, rej) => {
 			let data = [];
-			return Rating.aggregate({ $match: q }, {
+			return Rating.aggregate([{ $match: q }, {
 				$group: {
 					_id: null,
 					sum: { $sum: '$value' },
 					count: { $sum: 1 }
 				}
-			})
+			}])
 			.cursor({})
 			.exec()
 			.on('data', doc => data.push(doc))

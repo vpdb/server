@@ -78,7 +78,6 @@ serverDomain.run(function() {
 	let app = express();
 
 	const mongoOpts = {
-		useMongoClient: true,
 		keepAlive: true,
 		connectTimeoutMS: 5000
 	};

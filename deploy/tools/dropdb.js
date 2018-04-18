@@ -10,7 +10,6 @@ Promise.promisifyAll(redis.Multi.prototype);
 const settings = require('../../src/config/settings-test');
 
 const mongoOpts = {
-	useMongoClient: true,
 	keepAlive: true,
 	connectTimeoutMS: 5000
 };

@@ -24,11 +24,6 @@ if (process.env.PMX_ENABLED) {
 	require('pmx').init();
 }
 
-// new relic profiling
-if (process.env.NEW_RELIC_ENABLED) {
-	require('newrelic');
-}
-
 const fs = require('fs');
 const path = require('path');
 const util = require('util');

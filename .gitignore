@@ -24,8 +24,8 @@ logs
 
 results
 .nyc_output
-src/config/settings.js
-src/scripts/credentials.js
+config/settings.js
+src_/scripts/credentials.js
 test/coverage
 
 npm-debug.log

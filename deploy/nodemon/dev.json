@@ -9,15 +9,13 @@
 		"js": "node"
 	},
 	"watch": [
-		"app.js",
 		"src/**"
 	],
 	"env": {
 		"NODE_ENV": "development",
 		"PORT": "3000",
 		"APP_NAME": "local",
-		"PMX_ENABLED": 0,
-		"NEW_RELIC_ENABLED": 0
+		"APP_SETTINGS": "C:\\Development\\vpdb-server\\config\\settings.js"
 	},
 	"ext": "js json"
 }

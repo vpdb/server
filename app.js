@@ -50,12 +50,12 @@ require('shortid32').characters('123456789abcdefghkmnopqrstuvwxyz');
 Promise = require('bluebird');
 mongoose.Promise = Promise;
 
-const settings = require('./src/modules/settings');
+const settings = require('./src/common/settings');
 const serverDomain = domain.create();
 let raygunClient = null;
 
 // setup logger
-require('./src/logging').init();
+require('./src_/logging').init();
 
 // setup raygun error handling
 if (config && config.vpdb.services && config.vpdb.services.raygun && config.vpdb.services.raygun.enabled) {
@@ -100,9 +100,9 @@ serverDomain.run(function() {
 		});
 
 		// bootstrap modules
-		require('./src/modules/quota').init();
-		require('./src/modules/storage').init();
-		require('./src/modules/queue').init();
+		require('./src_/modules/quota').init();
+		require('./src_/modules/storage').init();
+		require('./src_/modules/queue').init();
 
 		// bootstrap models
 		let modelsPath = path.resolve(__dirname, 'src/models');
@@ -112,18 +112,18 @@ serverDomain.run(function() {
 			}
 		});
 
-		return require('./src/acl').init();
+		return require('./src/common/acl').init();
 
 	}).then(() => {
 
 		// bootstrap passport config
-		require('./src/passport').configure();
+		require('./src/common/passport').configure();
 
 		// express settings
-		require('./src/express').configure(app, raygunClient);
+		require('./src_/express').configure(app, raygunClient);
 
 		// other stuff
-		return require('./src/startup').init();
+		return require('./src_/startup').init();
 
 	}).then(() => {
 

@@ -24,8 +24,8 @@ const { isAbsolute, resolve } = require('path');
 const { existsSync } = require('fs');
 const settingsPath = isAbsolute(process.env.APP_SETTINGS) ? process.env.APP_SETTINGS : resolve(process.cwd(), process.env.APP_SETTINGS);
 const config = existsSync(settingsPath) ? require(settingsPath) : null;
-if (config && config.services && config.services.sqreen && config.services.sqreen.enabled) {
-	process.env.SQREEN_TOKEN = config.services.sqreen.token;
+if (config && config.vpdb.services && config.vpdb.services.sqreen && config.vpdb.services.sqreen.enabled) {
+	process.env.SQREEN_TOKEN = config.vpdb.services.sqreen.token;
 	require('sqreen');
 }
 

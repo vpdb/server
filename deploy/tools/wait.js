@@ -2,7 +2,7 @@
 
 Promise = require('bluebird');
 const http = require('http');
-const config = require('../../src/config/settings-test');
+const config = require('../../config/settings.test');
 
 function check() {
 	return new Promise((resolve, reject) => {

@@ -3,7 +3,7 @@
 const _ = require('lodash');
 const expect = require('expect.js');
 const jwt = require('jwt-simple');
-const config = require('../../src/config/settings-test');
+const config = require('../../config/settings.test');
 
 const ApiClient = require('../modules/api.client');
 const api = new ApiClient();

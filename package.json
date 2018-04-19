@@ -36,7 +36,7 @@
 		"test:ci": "run-p test:serve test:run"
 	},
 	"dependencies": {
-		"@slack/client": "3.6.0",
+		"@slack/client": "^4.1.0",
 		"acl": "0.4.11",
 		"archiver": "2.1.1",
 		"axios": "0.18.0",

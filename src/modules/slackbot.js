@@ -21,12 +21,10 @@
 
 const logger = require('winston');
 const settings = require('./settings');
-const RtmClient = require('@slack/client').RtmClient;
-const WebClient = require('@slack/client').WebClient;
+const { WebClient, RTMClient } = require('@slack/client');
+
 
 const config = settings.current;
-const CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS;
-const RTM_CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS.RTM;
 
 const red = '#cf0000';
 const delay = 5000;
@@ -40,20 +38,10 @@ class SlackBot {
 			this.config = config.vpdb.logging.slack;
 
 			this.web = new WebClient(this.config.token);
-			this.rtm = new RtmClient(this.config.token, { logLevel: 'info', mrkdwn: true });
-			this.rtm.on(CLIENT_EVENTS.RTM.AUTHENTICATED, rtmStartData => {
+			this.rtm = new RTMClient(this.config.token, { logLevel: 'info', mrkdwn: true });
+			this.rtm.on('authenticated', rtmStartData => {
 				logger.info(`[slack] Logged in as ${rtmStartData.self.name} of team ${rtmStartData.team.name}, but not yet connected to a channel.`);
 			});
-			// you need to wait for the client to fully connect before you can send messages
-			this.rtm.on(RTM_CLIENT_EVENTS.RTM_CONNECTION_OPENED, () => {
-				//this.rtm.sendMessage('Hi guys, I\'m back again!', this.config.channels.general);
-			});
-
-			// this.web.chat.postMessage(this.config.channels.general, 'Test as freezy!', {
-			// 	as_user: false,
-			// 	username: 'freezy',
-			// 	icon_url: 'https://www.gravatar.com/avatar/3216e12a740c59824257efe8b806cc7b'
-			// });
 
 			this.rtm.start();
 		}
@@ -195,11 +183,14 @@ class SlackBot {
 			attachments = attachments || [];
 			if (msg) {
 				return Promise.delay(delay).then(() => {
-					this.web.chat.postMessage(this.config.channels.eventLog, msg, {
+					this.web.chat.postMessage({
+						channel: this.config.channels.eventLog,
+						text: msg,
 						as_user: false,
 						username: actor.name,
 						attachments: attachments,
 						icon_url: 'https://www.gravatar.com/avatar/' + actor.gravatar_id + '?d=retro'
+
 					});
 				});
 			}
@@ -272,7 +263,8 @@ class SlackBot {
 			}
 
 			if (msg) {
-				this.web.chat.postMessage(this.config.channels.userLog, msg, {
+				this.web.chat.postMessage({
+					channel: this.config.channels.userLog, text: msg,
 					as_user: false,
 					username: actor.name,
 					attachments: attachments,

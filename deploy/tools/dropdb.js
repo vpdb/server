@@ -7,7 +7,7 @@ mongoose.Promise = Promise;
 Promise.promisifyAll(redis.RedisClient.prototype);
 Promise.promisifyAll(redis.Multi.prototype);
 
-const settings = require('../../src/config/settings-test');
+const settings = require('../../config/settings.test');
 
 const mongoOpts = {
 	keepAlive: true,

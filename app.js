@@ -19,17 +19,19 @@
 
 "use strict";
 
-// sqreen
+// retrieve config for services
 const { isAbsolute, resolve } = require('path');
 const { existsSync } = require('fs');
 const settingsPath = isAbsolute(process.env.APP_SETTINGS) ? process.env.APP_SETTINGS : resolve(process.cwd(), process.env.APP_SETTINGS);
 const config = existsSync(settingsPath) ? require(settingsPath) : null;
+
+// sqreen
 if (config && config.vpdb.services && config.vpdb.services.sqreen && config.vpdb.services.sqreen.enabled) {
 	process.env.SQREEN_TOKEN = config.vpdb.services.sqreen.token;
 	require('sqreen');
 }
 
-// keymetrics.io http analysis
+// keymetrics.io
 if (process.env.PMX_ENABLED) {
 	require('pmx').init();
 }
@@ -56,14 +58,16 @@ let raygunClient = null;
 require('./src/logging').init();
 
 // setup raygun error handling
-if (process.env.RAYGUN_API_KEY) {
-	let raygun = require('raygun');
-	raygunClient = new raygun.Client().init({ apiKey: process.env.RAYGUN_API_KEY });
-	logger.info('[logging] Raygun crash logging enabled with API key %s', process.env.RAYGUN_API_KEY);
+if (config && config.vpdb.services && config.vpdb.services.raygun && config.vpdb.services.raygun.enabled) {
+	const raygun = require('raygun');
+	const pkg = require('./package');
+	raygunClient = new raygun.Client().init({ apiKey: config.vpdb.services.raygun.apiKey });
+	raygunClient.setVersion(pkg.version);
+	logger.info('[logging] Raygun crash logging enabled with API key %s', config.vpdb.services.raygun.apiKey);
 	serverDomain.on('error', function(err){
 		logger.info('[logging] Sending error to Raygun...');
 		raygunClient.send(err, {}, function() {
-			process.exit();
+			process.exit(1);
 		});
 	});
 }

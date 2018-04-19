@@ -19,6 +19,16 @@
 
 "use strict";
 
+// sqreen
+const { isAbsolute, resolve } = require('path');
+const { existsSync } = require('fs');
+const settingsPath = isAbsolute(process.env.APP_SETTINGS) ? process.env.APP_SETTINGS : resolve(process.cwd(), process.env.APP_SETTINGS);
+const config = existsSync(settingsPath) ? require(settingsPath) : null;
+if (config && config.services && config.services.sqreen && config.services.sqreen.enabled) {
+	process.env.SQREEN_TOKEN = config.services.sqreen.token;
+	require('sqreen');
+}
+
 // keymetrics.io http analysis
 if (process.env.PMX_ENABLED) {
 	require('pmx').init();
@@ -62,8 +72,6 @@ if (process.env.RAYGUN_API_KEY) {
 if (!settings.validate()) {
 	logger.error('[app] Settings validation failed, aborting.');
 	process.exit(1);
-} else {
-	var config = settings.current;
 }
 
 serverDomain.run(function() {

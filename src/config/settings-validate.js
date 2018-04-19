@@ -734,6 +734,48 @@ module.exports = {
 			if (!_.isBoolean(bool)) {
 				return 'Option "generateTableScreenshot" must be either true or false';
 			}
+		},
+
+		/**
+		 * Additional third-party services
+		 */
+		services: {
+
+			/**
+			 * Crash reporting
+			 */
+			raygun: {
+				enabled: function(isEnabled) {
+					/* istanbul ignore if */
+					if (!_.isBoolean(isEnabled)) {
+						return 'Enabled flag must be either true or false';
+					}
+				},
+				apiKey: function(apiKey) {
+					/* istanbul ignore if */
+					if (!_.isString(apiKey)) {
+						return 'API key must be a string';
+					}
+				}
+			},
+
+			/**
+			 * App security
+			 */
+			sqreen: {
+				enabled: function(isEnabled) {
+					/* istanbul ignore if */
+					if (!_.isBoolean(isEnabled)) {
+						return 'Enabled flag must be either true or false';
+					}
+				},
+				token: function(token) {
+					/* istanbul ignore if */
+					if (!_.isString(token)) {
+						return 'Token must be a string';
+					}
+				}
+			}
 		}
 	},
 

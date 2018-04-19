@@ -520,7 +520,29 @@ module.exports = {
 		 * protect the site with let's say HTTP Basic, you'd need to use
 		 * different name for the authorization header.
 		 */
-		authorizationHeader: 'Authorization'
+		authorizationHeader: 'Authorization',
+
+		/**
+		 * Additional third-party services
+		 */
+		services: {
+
+			/**
+			 * Crash reporting
+			 */
+			raygun: {
+				enabled: false,
+				apiKey: ''
+			},
+
+			/**
+			 * App security
+			 */
+			sqreen: {
+				enabled: false,
+				token: ''
+			}
+		}
 	},
 
 	/**

@@ -22,17 +22,17 @@
 const _ = require('lodash');
 const logger = require('winston');
 const passport = require('passport');
-const randomstring = require('randomstring');
 
+const randomstring = require('randomstring');
 const User = require('mongoose').model('User');
 const Token = require('mongoose').model('Token');
-const LogUser = require('mongoose').model('LogUser');
 
+const LogUser = require('mongoose').model('LogUser');
 const acl = require('../../acl');
 const api = require('./api');
 const auth = require('../auth');
-const scope = require('../../scope');
 
+const scope = require('../../scope');
 const quota = require('../../modules/quota');
 const pusher = require('../../modules/pusher');
 const mailer = require('../../modules/mailer');
@@ -283,6 +283,9 @@ exports.authenticate = function(req, res) {
 			if (!usr || !usr.authenticate(req.body.password)) {
 				if (usr) {
 					LogUser.failure(req, usr, 'authenticate', { provider: 'local' }, null, 'Invalid password.');
+					if (config.vpdb.services.sqreen.enabled) {
+						require('sqreen').auth_track(false, { username: req.body.username });
+					}
 				}
 				throw error('Authentication denied for user "%s" (%s)', req.body.username, usr ? 'password' : 'username')
 					.display('Wrong username or password')
@@ -297,6 +300,9 @@ exports.authenticate = function(req, res) {
 
 		// check if already authenticated by user/pass
 		if (user) {
+			if (config.vpdb.services.sqreen.enabled) {
+				require('sqreen').auth_track(true, { email: user.email });
+			}
 			return;
 		}
 
@@ -326,21 +332,33 @@ exports.authenticate = function(req, res) {
 
 			// fail if invalid type
 			if (token.type !== 'personal') {
+				if (config.vpdb.services.sqreen.enabled) {
+					require('sqreen').auth_track(false, { email: token._created_by.email });
+				}
 				throw error('Cannot use token of type "%s" for authentication (must be of type "personal").', token.type).status(401);
 			}
 
 			// fail if not login token
 			if (!scope.isIdentical(token.scopes, [ 'login' ])) {
+				if (config.vpdb.services.sqreen.enabled) {
+					require('sqreen').auth_track(false, { email: token._created_by.email });
+				}
 				throw error('Token to exchange for JWT must exclusively be "login" ([ "' + token.scopes.join('", "') + '" ] given).').status(401);
 			}
 
 			// fail if token expired
 			if (token.expires_at.getTime() < new Date().getTime()) {
+				if (config.vpdb.services.sqreen.enabled) {
+					require('sqreen').auth_track(false, { email: token._created_by.email });
+				}
 				throw error('Token has expired.').status(401);
 			}
 
 			// fail if token inactive
 			if (!token.is_active) {
+				if (config.vpdb.services.sqreen.enabled) {
+					require('sqreen').auth_track(false, { email: token._created_by.email });
+				}
 				throw error('Token is inactive.').status(401);
 			}
 
@@ -354,6 +372,9 @@ exports.authenticate = function(req, res) {
 
 		// fail if user inactive
 		if (!user.is_active) {
+			if (config.vpdb.services.sqreen.enabled) {
+				require('sqreen').auth_track(false, UserSerializer.reduced(user, req));
+			}
 			if (user.email_status && user.email_status.code === 'pending_registration') {
 				LogUser.failure(req, user, 'authenticate', { provider: 'local' }, null, 'Inactive account due to pending email confirmation.');
 				throw error('User <%s> tried to login with unconfirmed email address.', user.email)
@@ -377,6 +398,9 @@ exports.authenticate = function(req, res) {
 
 		LogUser.success(req, user, 'authenticate', { provider: 'local', how: how });
 		logger.info('[api|user:authenticate] User <%s> successfully authenticated using %s.', user.email, how);
+		if (config.vpdb.services.sqreen.enabled) {
+			require('sqreen').auth_track(true, { email: user.email });
+		}
 		return getACLs(user).then(acls => {
 			return {
 				token: token,

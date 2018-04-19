@@ -144,7 +144,6 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 		// exclude login with different account at same provider
 		if (req.user && req.user.providers && req.user.providers[provider] && req.user.providers[provider].id !== profile.id) {
 			return callback(error('Profile at %s is already linked to ID %s', provider, req.user.providers[provider].id).status(400));
-			//return callback(null, false, { message:  });
 		}
 
 		const emails = profile.emails.filter(e => !!e).map(e => e.value);
@@ -216,6 +215,9 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 
 			// if user found, update and return.
 			if (user) {
+				if (config.vpdb.services.sqreen.enabled) {
+					require('sqreen').auth_track(true, { email: user.email });
+				}
 				if (!user.providers || !user.providers[provider]) {
 					user.providers = user.providers || {};
 					user.providers[provider] = {
@@ -296,6 +298,11 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 				return User.createUser(newUser, false);
 
 			}).then(user => {
+
+				if (config.vpdb.services.sqreen.enabled) {
+					require('sqreen').signup_track({ email: user.email });
+				}
+
 				LogUser.success(req, user, 'registration', { provider: provider, email: newUser.email });
 				logger.info('[passport|%s] New user <%s> created.', logtag, user.email);
 				mailer.welcomeOAuth(user);

@@ -75,6 +75,10 @@ exports.create = function(req, res) {
 
 	}).then(user => {
 
+		if (config.vpdb.services.sqreen.enabled) {
+			require('sqreen').signup_track({ email: user.email });
+		}
+
 		LogUser.success(req, user, 'registration', { provider: 'local', email: newUser.email, username: newUser.username });
 
 		// return result now and send email afterwards

@@ -245,6 +245,10 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 		}
 		// *** here we're still authenticated (token is valid and not expired). ***
 
+		if (config.vpdb.services.sqreen.enabled) {
+			require('sqreen').identify(req, { email: user.email });
+		}
+
 		// this will be useful for the rest of the stack
 		req.user = user;
 

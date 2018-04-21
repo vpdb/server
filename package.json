@@ -60,7 +60,24 @@
 		"winston": "^3.0.0-rc5"
 	},
 	"devDependencies": {
+		"@types/acl": "^0.4.34",
+		"@types/handlebars": "^4.0.37",
 		"@types/koa": "^2.0.45",
-		"nodemon": "^1.17.3"
+		"@types/koa-bodyparser": "^4.2.0",
+		"@types/koa-logger": "^3.1.0",
+		"@types/koa-router": "^7.0.27",
+		"@types/lodash": "^4.14.107",
+		"@types/logform": "^1.2.0",
+		"@types/mongoose": "^5.0.10",
+		"@types/mongoose-unique-validator": "^1.0.1",
+		"@types/nodemailer": "^4.6.0",
+		"@types/passport": "^0.4.5",
+		"@types/randomstring": "^1.1.6",
+		"@types/redis": "^2.8.6",
+		"@types/uglify-js": "^3.0.2",
+		"@types/validator": "^9.4.0",
+		"nodemon": "^1.17.3",
+		"ts-node": "^6.0.0",
+		"typescript": "^2.8.3"
 	}
 }

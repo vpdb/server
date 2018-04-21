@@ -1,7 +1,14 @@
-const { format } = require('util');
-const { isArray, isObject, forEach, compact } = require('lodash');
+import { format } from 'util';
+import { isArray, isObject, forEach, compact } from 'lodash';
 
-class ApiError extends Error {
+export class ApiError extends Error {
+
+	public statusCode: number;
+	public body: object;
+	private logLevel: string;
+	private responseMessage: string;
+	private errs: ApiValidationError[] | { [key:string]: ApiValidationError };
+	private fieldPrefix: string;
 
 	constructor() {
 		super();
@@ -15,7 +22,7 @@ class ApiError extends Error {
 	 * @param {number} status HTTP status
 	 * @returns {ApiError}
 	 */
-	status(status) {
+	status(status: number): ApiError {
 		this.statusCode = status;
 		return this;
 	}
@@ -25,8 +32,18 @@ class ApiError extends Error {
 	 * @param {string} message Response message
 	 * @returns {ApiError}
 	 */
-	display(message) {
+	display(message: string): ApiError {
 		this.responseMessage = message;
+		return this;
+	}
+
+	/**
+	 *
+	 * @param {object} body
+	 * @return {ApiError}
+	 */
+	data(body:object): ApiError {
+		this.body = body;
 		return this;
 	}
 
@@ -34,7 +51,7 @@ class ApiError extends Error {
 	 * Logs a warning instead of an error.
 	 * @return {ApiError}
 	 */
-	warn() {
+	warn(): ApiError {
 		this.logLevel = 'warn';
 		return this;
 	}
@@ -43,7 +60,7 @@ class ApiError extends Error {
 	 * Logs the error as error.
 	 * @return {ApiError}
 	 */
-	log() {
+	log(): ApiError {
 		this.logLevel = 'error';
 		return this;
 	}
@@ -55,7 +72,7 @@ class ApiError extends Error {
 	 * @param {*} [value] Invalid value
 	 * @returns {ApiError}
 	 */
-	validationError(path, message, value) {
+	validationError(path, message, value): ApiError {
 		this.errs = this.errs || [];
 		this.errs.push({ path: path, message: message, value: value });
 		this.statusCode = 422;
@@ -63,7 +80,7 @@ class ApiError extends Error {
 		return this;
 	};
 
-	validationErrors(errs) {
+	validationErrors(errs: ApiValidationError[]) {
 		this.errs = errs;
 		this.statusCode = 422;
 		this._stripFields();
@@ -100,4 +117,8 @@ class ApiError extends Error {
 	};
 }
 
-module.exports = ApiError;
+export interface ApiValidationError {
+	path: string,
+	message: string,
+	value?: any
+}

@@ -1,18 +1,23 @@
+import { assign, pick, find } from 'lodash';
+import { Serializer } from '../common/serializer';
+import { User } from './user.type';
+import { Context } from 'koa';
+import { SerializerOptions } from '../common/types/serializer';
+
 const _ = require('lodash');
 const crypto = require('crypto');
-const Serializer = require('../common/serializer');
 
 //const pusher = require('../../src_/modules/pusher');
 const config = require('../common/settings').current;
 
-class UserSerializer extends Serializer {
+export class UserSerializer extends Serializer<User> {
 
 	/**
 	 * User info in other data.
 	 * @protected
 	 */
-	_reduced(doc, ctx, opts) {
-		const user = _.pick(doc, ['id', 'name', 'username']);
+	_reduced(doc:User, ctx:Context, opts:SerializerOptions) {
+		const user = pick(doc, ['id', 'name', 'username']);
 
 		// gravatar
 		user.gravatar_id = doc.email ? crypto.createHash('md5').update(doc.email.toLowerCase()).digest('hex') : null;
@@ -31,10 +36,10 @@ class UserSerializer extends Serializer {
 	 */
 	_simple(doc, ctx, opts) {
 		const user = this._reduced(doc, ctx, opts);
-		_.assign(user, _.pick(doc, ['location']));
+		assign(user, pick(doc, ['location']));
 
 		// counter
-		user.counter = _.pick(doc.counter.toObject(), ['comments', 'stars']);
+		user.counter = pick(doc.counter.toObject(), ['comments', 'stars']);
 
 		return user;
 	}
@@ -45,14 +50,14 @@ class UserSerializer extends Serializer {
 	 */
 	_detailed(doc, ctx, opts) {
 		const user = this._simple(doc, ctx, opts);
-		_.assign(user, _.pick(doc, ['email', 'email_status', 'is_local', 'is_active', 'created_at']));
+		assign(user, pick(doc, ['email', 'email_status', 'is_local', 'is_active', 'created_at']));
 
 		user.roles = doc.roles.toObject();
 		user.preferences = doc.preferences.toObject();
 		user.counter = doc.counter.toObject();
 
 		// plan
-		const plan = _.find(config.vpdb.quota.plans, p => p.id === doc._plan);
+		const plan = find(config.vpdb.quota.plans, p => p.id === doc._plan);
 		user.plan = {
 			id: doc._plan,
 			app_tokens_enabled: plan.enableAppTokens,
@@ -84,5 +89,3 @@ class UserSerializer extends Serializer {
 	}
 
 }
-
-module.exports = new UserSerializer();

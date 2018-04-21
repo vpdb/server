@@ -1,45 +1,48 @@
-const _ = require('lodash');
+import { Document } from 'mongoose';
+import { Context, Context } from 'koa';
+import { get, isArray, defaultsDeep, assign, pick } from 'lodash';
+import { SerializerOptions } from './types/serializer';
 
-class Serializer {
+export class Serializer<T> {
 
 	/**
 	 * Returns the reduced version of the object.
 	 *
-	 * @param {Document} doc Retrieved MongoDB object
-	 * @param {Context} ctx Koa context
-	 * @param {{ [includedFields]:string[], [excludedFields]:string[], [starred]:boolean|undefined, [fileIds]:string[], [thumbFlavor]:string, [thumbFormat]:string, [fullThumbData]:boolean, [thumbPerFile]:boolean, [includeProviderId]:string }} [opts] Additional options for serialization
+	 * @param {T} doc Retrieved MongoDB object
+	 * @param {Application.Context} ctx Koa context
+	 * @param {SerializerOptions} [opts] Additional options for serialization
 	 * @return {object} Serialized object
 	 */
-	reduced(doc, ctx, opts) {
+	reduced(ctx: Context, doc: T, opts?: SerializerOptions) {
 		return this.__serialize(this._reduced.bind(this), doc, ctx, opts);
 	}
 
 	/**
 	 * Returns the simple version of the object.
 	 *
-	 * @param {Document} doc Retrieved MongoDB object
-	 * @param {Context} ctx Koa context
-	 * @param {{ [includedFields]:string[], [excludedFields]:string[], [starred]:boolean|undefined, [fileIds]:string[], [thumbFlavor]:string, [thumbFormat]:string, [fullThumbData]:boolean, [thumbPerFile]:boolean, [includeProviderId]:string }} [opts] Additional options for serialization
+	 * @param {T} doc Retrieved MongoDB object
+	 * @param {Application.Context} ctx Koa context
+	 * @param {SerializerOptions} [opts] Additional options for serialization
 	 * @return {object} Serialized object
 	 */
-	simple(doc, ctx, opts) {
+	simple(ctx:Context, doc:T, opts?: SerializerOptions) {
 		return this.__serialize(this._simple.bind(this), doc, ctx, opts);
 	}
 
 	/**
 	 * Returns the detailed version of the object.
 	 *
-	 * @param {Document} doc Retrieved MongoDB object
-	 * @param {Context} ctx Koa context
-	 * @param {{ [includedFields]:string[], [excludedFields]:string[], [starred]:boolean|undefined, [fileIds]:string[], [thumbFlavor]:string, [thumbFormat]:string, [fullThumbData]:boolean, [thumbPerFile]:boolean, [includeProviderId]:string }} [opts] Additional options for serialization
+	 * @param {T} doc Retrieved MongoDB object
+	 * @param {Application.Context} ctx Koa context
+	 * @param {SerializerOptions} [opts] Additional options for serialization
 	 * @return {object} Serialized object
 	 */
-	detailed(doc, ctx, opts) {
+	detailed(ctx:Context, doc:T, opts?: SerializerOptions) {
 		return this.__serialize(this._detailed.bind(this), doc, ctx, opts);
 	}
 
 	/** @private **/
-	__serialize(serializer, doc, ctx, opts) {
+	__serialize(serializer, doc, ctx, opts: SerializerOptions) {
 		if (!doc) {
 			return undefined;
 		}
@@ -55,7 +58,7 @@ class Serializer {
 	 *
 	 * @private
 	 */
-	_post(doc, object, ctx, opts) {
+	_post(doc, object, ctx, opts: SerializerOptions) {
 
 		if (!object) {
 			return object;
@@ -77,7 +80,7 @@ class Serializer {
 	 * This is only the fallthrough, don't call directly.
 	 * @protected
 	 */
-	_reduced(doc, ctx, opts) {
+	_reduced(doc, ctx, opts: SerializerOptions) {
 		return this.simple(doc, ctx, opts);
 	}
 
@@ -87,7 +90,7 @@ class Serializer {
 	 * This is only the fallthrough, don't call directly.
 	 * @protected
 	 */
-	_simple(doc, ctx, opts) {
+	_simple(doc:T, ctx:Context, opts: SerializerOptions) {
 		return {};
 	}
 
@@ -97,7 +100,7 @@ class Serializer {
 	 * This is only the fallthrough, don't call directly.
 	 * @protected
 	 */
-	_detailed(doc, ctx, opts) {
+	_detailed(doc, ctx, opts: SerializerOptions) {
 		return this.simple(doc, ctx, opts);
 	}
 
@@ -113,20 +116,20 @@ class Serializer {
 	 * @returns {boolean}
 	 * @protected
 	 */
-	_populated(doc, field) {
+	_populated(doc: Document, field: string) {
 		if (doc.populated(field)) {
 			return true;
 		}
-		let obj = _.get(doc, field);
-		if (_.isArray(obj) && obj.length > 0) {
+		let obj = get(doc, field);
+		if (isArray(obj) && obj.length > 0) {
 			obj = obj[0];
 		}
 		return obj && obj._id;
 	}
 
 	/** @protected */
-	_defaultOpts(opts) {
-		return _.defaultsDeep(opts || {}, {
+	_defaultOpts(opts: SerializerOptions): SerializerOptions {
+		return defaultsDeep(opts || {}, {
 			includedFields: [],
 			excludedFields: [],
 			starred: undefined,
@@ -163,7 +166,7 @@ class Serializer {
 	 * @protected
 	 * @returns {{}|null}
 	 */
-	_getFileThumb(versionFile, ctx, opts) {
+	_getFileThumb(versionFile, ctx, opts: SerializerOptions) {
 
 		if (!opts.thumbFormat) {
 			return undefined;
@@ -173,7 +176,7 @@ class Serializer {
 			return undefined;
 		}
 
-		let thumbFields = [ 'url', 'width', 'height', 'is_protected' ];
+		let thumbFields = ['url', 'width', 'height', 'is_protected'];
 		if (opts.fullThumbData) {
 			thumbFields = [...thumbFields, 'mime_type', 'bytes', 'file_type'];
 		}
@@ -182,16 +185,14 @@ class Serializer {
 		const playfieldImage = FileSerializer.detailed(versionFile._playfield_image, ctx, opts);
 
 		if (opts.thumbFormat === 'original') {
-			return _.assign(_.pick(playfieldImage, thumbFields), {
+			return assign(pick(playfieldImage, thumbFields), {
 				width: playfieldImage.metadata.size.width,
 				height: playfieldImage.metadata.size.height
 			});
 
 		} else if (playfieldImage.variations[opts.thumbFormat]) {
-			return _.pick(playfieldImage.variations[opts.thumbFormat], thumbFields);
+			return pick(playfieldImage.variations[opts.thumbFormat], thumbFields);
 		}
 		return null;
 	}
 }
-
-module.exports = Serializer;

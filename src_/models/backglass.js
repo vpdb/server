@@ -30,7 +30,7 @@ const prettyId = require('./plugins/pretty-id');
 const gameRef = require('./plugins/game-ref');
 const fileRef = require('./plugins/file-ref');
 const metrics = require('./plugins/metrics');
-const moderate = require('./plugins/moderate');
+const moderate = require('../../src/common/mongoose-plugins/moderate');
 
 const author = require('./release/author');
 

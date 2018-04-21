@@ -17,20 +17,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document, Types } from 'mongoose';
+import { Types, Document } from 'mongoose';
+import { Game } from '../games/game.type';
 import { User } from '../users/user.type';
 
-export interface File extends Document {
-	id: string
-	name: string
-	bytes: number
-	mime_type: string, // todo add enum
-	file_type: string, // todo add enum
-	metadata: any
-	variations: { [key: string]: any },  // todo type
-	preprocessed: any, // todo wtf is that
-	is_active: boolean
-	counter: { downloads: number },
+export interface GameRequest extends Document {
+	id: string,
+	title: string,
+	notes: string,
+	ipdb_number: number,
+	ipdb_title: string,
+	is_closed: boolean,
+	message: string,
+	_game: Game | Types.ObjectId,
+	_created_by: User | Types.ObjectId,
 	created_at: Date
-	_created_by: User | Types.ObjectId
 }

@@ -1,9 +1,11 @@
-import { Document, Schema } from 'mongoose';
+import { Types } from 'mongoose';
+import { Moderated } from '../common/mongoose-plugins/moderate';
 import { User } from '../users/user.type';
 import { ReleaseVersion } from './release.version.type';
 import { ReleaseAuthor } from './release.author.type';
+import { Tag } from '../tags/tag.type';
 
-export interface Release extends Document {
+export interface Release extends Moderated {
 	id: string,
 	name: string,
 	name_sortable: string,
@@ -11,14 +13,14 @@ export interface Release extends Document {
 	description: string,
 	versions: ReleaseVersion[],
 	authors: ReleaseAuthor[],
-	_tags: any, // todo Tag[] | Schema.Types.ObjectId
+	_tags: Tag[] | Types.ObjectId
 	links: {
 		label: string,
 		url: string
 	}[],
 	acknowledgements: string,
 	original_version: {
-		_ref: Release | Schema.Types.ObjectId,
+		_ref: Release | Types.ObjectId,
 		release: {
 			name: string,
 			url: string,
@@ -41,5 +43,5 @@ export interface Release extends Document {
 	released_at: Date,
 	modified_at: Date,
 	created_at: Date,
-	_created_by: User | Schema.Types.ObjectId
+	_created_by: User | Types.ObjectId
 }

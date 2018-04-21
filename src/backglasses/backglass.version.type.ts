@@ -17,20 +17,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document, Types } from 'mongoose';
-import { User } from '../users/user.type';
+import { Types } from 'mongoose';
+import { File } from '../files/file.type';
 
-export interface File extends Document {
-	id: string
-	name: string
-	bytes: number
-	mime_type: string, // todo add enum
-	file_type: string, // todo add enum
-	metadata: any
-	variations: { [key: string]: any },  // todo type
-	preprocessed: any, // todo wtf is that
-	is_active: boolean
-	counter: { downloads: number },
-	created_at: Date
-	_created_by: User | Types.ObjectId
+export interface BackglassVersion {
+	version: string,
+	changes: string,
+	_file: File | Types.ObjectId
+	released_at: Date,
+	counter: {
+		downloads: number
+	}
 }

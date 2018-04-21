@@ -19,18 +19,16 @@
 
 import { Document, Types } from 'mongoose';
 import { User } from '../users/user.type';
+import { Release } from '../releases/release.type';
 
-export interface File extends Document {
-	id: string
-	name: string
-	bytes: number
-	mime_type: string, // todo add enum
-	file_type: string, // todo add enum
-	metadata: any
-	variations: { [key: string]: any },  // todo type
-	preprocessed: any, // todo wtf is that
-	is_active: boolean
-	counter: { downloads: number },
+export interface Comment extends Document {
+	id: string,
+	_from: User | Types.ObjectId
+	_ref: {
+		release: Release | Types.ObjectId
+		release_moderation: Release | Types.ObjectId
+	},
+	message: string,
+	ip: string,
 	created_at: Date
-	_created_by: User | Types.ObjectId
 }

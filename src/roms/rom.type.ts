@@ -18,19 +18,22 @@
  */
 
 import { Document, Types } from 'mongoose';
+import { File } from '../files/file.type';
 import { User } from '../users/user.type';
 
-export interface File extends Document {
-	id: string
-	name: string
-	bytes: number
-	mime_type: string, // todo add enum
-	file_type: string, // todo add enum
-	metadata: any
-	variations: { [key: string]: any },  // todo type
-	preprocessed: any, // todo wtf is that
-	is_active: boolean
-	counter: { downloads: number },
-	created_at: Date
+export interface Rom extends Document {
+	id: string,
+	_file: File | Types.ObjectId,
+	_ipdb_number: number,
+	rom_files: {
+		filename: string,
+		bytes: number,
+		crc: number,
+		modified_at: Date,
+	}[],
+	version: string,
+	languages: string[],
+	notes: string,
+	created_at: Date,
 	_created_by: User | Types.ObjectId
 }

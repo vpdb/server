@@ -7,12 +7,11 @@ export class ApiError extends Error {
 	public body: object;
 	private logLevel: string;
 	private responseMessage: string;
-	private errs: ApiValidationError[] | { [key:string]: ApiValidationError };
+	private errs: ApiValidationError[];
 	private fieldPrefix: string;
 
-	constructor() {
-		super();
-		this.message = format.apply(null, arguments);
+	constructor(format?: any, ...param: any[]) {
+		super(format.apply(null, arguments));
 		this.statusCode = 0;
 		this.logLevel = null; // don't log per default
 	}
@@ -72,7 +71,7 @@ export class ApiError extends Error {
 	 * @param {*} [value] Invalid value
 	 * @returns {ApiError}
 	 */
-	validationError(path, message, value): ApiError {
+	validationError(path:string, message:string, value?:any): ApiError {
 		this.errs = this.errs || [];
 		this.errs.push({ path: path, message: message, value: value });
 		this.statusCode = 422;
@@ -105,14 +104,15 @@ export class ApiError extends Error {
 			}));
 
 		} else if (isObject(this.errs)) {
+			throw new Error('Errs is an object and probably should not be.');
 			// todo use https://github.com/lodash/lodash/issues/169 when merged
-			forEach(this.errs, (error, path) => {
-				const newPath = path.replace(this.fieldPrefix, '');
-				if (newPath !== path) {
-					this.errs[newPath] = error;
-					delete this.errs[path];
-				}
-			});
+			// forEach(this.errs, (error, path) => {
+			// 	const newPath = path.replace(this.fieldPrefix, '');
+			// 	if (newPath !== path) {
+			// 		this.errs[newPath] = error;
+			// 		delete this.errs[path];
+			// 	}
+			// });
 		}
 	};
 }

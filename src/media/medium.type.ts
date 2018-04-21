@@ -17,20 +17,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document, Types } from 'mongoose';
 import { User } from '../users/user.type';
+import { Document, Types } from 'mongoose';
 
-export interface File extends Document {
-	id: string
-	name: string
-	bytes: number
-	mime_type: string, // todo add enum
-	file_type: string, // todo add enum
-	metadata: any
-	variations: { [key: string]: any },  // todo type
-	preprocessed: any, // todo wtf is that
-	is_active: boolean
-	counter: { downloads: number },
-	created_at: Date
-	_created_by: User | Types.ObjectId
+export interface Medium extends Document {
+	_user: User | Types.ObjectId,
+	_actor: User | Types.ObjectId,
+	event: string,
+	payload: any,
+	result: 'success' | 'failure',
+	message: string,
+	ip: string,
+	logged_at: Date
 }

@@ -28,7 +28,7 @@ export class UserEndPoint implements EndPoint<User> {
 	}
 
 	registerModel(models: Models) {
-		models.user = mongoose.model<User>('User', this._schema);
+		models.User = mongoose.model<User>('User', this._schema);
 	}
 
 	registerSerializer(serializers: Serializers): void {

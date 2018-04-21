@@ -17,20 +17,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+
 import { Document, Types } from 'mongoose';
 import { User } from '../users/user.type';
+import { Game } from '../games/game.type';
+import { Release } from '../releases/release.type';
+import { Medium } from '../media/medium.type';
+import { Backglass } from '../backglasses/backglass.type';
 
-export interface File extends Document {
-	id: string
-	name: string
-	bytes: number
-	mime_type: string, // todo add enum
-	file_type: string, // todo add enum
-	metadata: any
-	variations: { [key: string]: any },  // todo type
-	preprocessed: any, // todo wtf is that
-	is_active: boolean
-	counter: { downloads: number },
+export interface Star extends Document {
+	_from: User | Types.ObjectId,
+	_ref: {
+		game: Game | Types.ObjectId,
+		release: Release | Types.ObjectId,
+		user: User | Types.ObjectId,
+		medium: Medium | Types.ObjectId,
+		backglass: Backglass | Types.ObjectId,
+	},
+	type: 'game' | 'release' | 'user' | 'medium' | 'backglass',
 	created_at: Date
-	_created_by: User | Types.ObjectId
 }

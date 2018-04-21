@@ -1,5 +1,5 @@
 import { Document } from 'mongoose';
-import { ReleaseVersionFile } from './releaseVersionFile';
+import { ReleaseVersionFile } from './release.version.file.type';
 
 export interface ReleaseVersion extends Document {
 	version: string,

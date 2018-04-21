@@ -19,18 +19,22 @@
 
 import { Document, Types } from 'mongoose';
 import { User } from '../users/user.type';
+import { Game } from '../games/game.type';
+import { Release } from '../releases/release.type';
 
-export interface File extends Document {
-	id: string
-	name: string
-	bytes: number
-	mime_type: string, // todo add enum
-	file_type: string, // todo add enum
-	metadata: any
-	variations: { [key: string]: any },  // todo type
-	preprocessed: any, // todo wtf is that
-	is_active: boolean
-	counter: { downloads: number },
-	created_at: Date
-	_created_by: User | Types.ObjectId
+export interface LogUser extends Document {
+	id: string,
+	_file: File | Types.ObjectId,
+	_ref: {
+		game: Game | Types.ObjectId,
+		release: Release | Types.ObjectId,
+	},
+	category: string,
+	description: string,
+	acknowledgements: string,
+	counter: {
+		stars: number,
+	},
+	created_at: Date,
+	_created_by: User | Types.ObjectId,
 }

@@ -1,14 +1,16 @@
 import { Context } from 'koa';
 import randomstring from 'randomstring';
-import { assign, keys, values, uniq } from 'lodash';
+import { assign, keys, sum, uniq, values } from 'lodash';
 
 import { logger } from '../common/logger';
 import { config } from '../common/settings';
 import { User } from './user.type';
-import { ApiError } from "../common/api.error";
-import { Release } from "../releases/release.type";
-import { ReleaseVersionFile } from "../releases/releaseVersionFile";
-import { Schema } from "mongoose";
+import { ApiError } from '../common/api.error';
+import { Release } from '../releases/release.type';
+import { ReleaseVersionFile } from '../releases/release.version.file.type';
+import { ReleaseAuthor } from '../releases/release.author.type';
+import { Backglass } from '../backglasses/backglass.type';
+import { Rating } from '../ratings/rating.type';
 
 export class UserUtil {
 
@@ -77,19 +79,20 @@ export class UserUtil {
 
 	/**
 	 * Merges one user into another.
-	 * @param {Application.Context} ctx
+	 * @param {Application.Context} ctx Koa context
 	 * @param {User} keepUser User to keep
 	 * @param {User} mergeUser User to merge into the other and then delete
-	 * @param explanation Explanation to put into mail, if null no mail is sent.
+	 * @param {string} explanation Explanation to put into mail, if null no mail is sent.
 	 * @return {Promise<User>} Merged user
 	 */
-	public static async mergeUsers(ctx: Context, keepUser: User, mergeUser: User, explanation) {
+	public static async mergeUsers(ctx: Context, keepUser: User, mergeUser: User, explanation:string) {
 
 		logger.info('[model|user] Merging %s into %s...', mergeUser.id, keepUser.id);
 		if (keepUser.id === mergeUser.id) {
 			return Promise.reject('Cannot merge user ' + keepUser.id + ' into itself!');
 		}
 		let num = 0;
+		let queries:Array<any>;
 
 		// 1. update references
 		await ctx.models.Backglass.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
@@ -117,8 +120,8 @@ export class UserUtil {
 		// 1.1 update release versions
 		const releasesByAuthor = await ctx.models.Release.find({ 'authors._user': mergeUser._id.toString() }).exec();
 		await Promise.all(releasesByAuthor.map((release: any) => {
-			release.authors.forEach(author => {
-				if (author._user.equals(mergeUser._id)) {
+			release.authors.forEach((author:ReleaseAuthor) => {
+				if (mergeUser._id.equals(author._user)) {
 					author._user = keepUser._id;
 					num++;
 				}
@@ -133,7 +136,7 @@ export class UserUtil {
 		await Promise.all(releasesByValidator.map((release: Release) => {
 			release.versions.forEach(releaseVersion => {
 				releaseVersion.files.forEach((releaseFile: ReleaseVersionFile) => {
-					if ((releaseFile.validation._validated_by as Schema.Types.ObjectId).equals(mergeUser._id)) {
+					if (mergeUser._id.equals(releaseFile.validation._validated_by)) {
 						releaseFile.validation._validated_by = keepUser._id;
 						num++;
 					}
@@ -148,7 +151,7 @@ export class UserUtil {
 		// 1.3 release moderation
 		await Promise.all(releasesByModeration.map((release: Release) => {
 			release.moderation.history.forEach(historyItem => {
-				if (historyItem._created_by.equals(mergeUser._id)) {
+				if (mergeUser._id.equals(historyItem._created_by)) {
 					historyItem._created_by = keepUser._id;
 					num++;
 				}
@@ -162,9 +165,9 @@ export class UserUtil {
 		num = 0;
 
 		// 1.4 backglass moderation
-		await Promise.all(backglasses.map(backglass => {
+		await Promise.all(backglasses.map((backglass:Backglass) => {
 			backglass.moderation.history.forEach(historyItem => {
-				if (historyItem._created_by.equals(mergeUser._id)) {
+				if (mergeUser._id.equals(historyItem._created_by)) {
 					historyItem._created_by = keepUser._id;
 					num++;
 				}
@@ -187,16 +190,17 @@ export class UserUtil {
 		// put ratings for the same thing into a map
 		ratings.forEach(rating => {
 			const key = keys(rating._ref).sort().join(',') + ':' + values(rating._ref).sort().join(',');
-			ratingMap.set(key, (map.get(key) || []).push(rating));
+			ratingMap.set(key, (ratingMap.get(key) || []).push(rating));
 		});
+
 		// remove dupes
-		const queries = [];
+		queries = [];
 		Array.from(ratingMap.values()).filter(ratings => ratings.length > 1).forEach(dupeRatings => {
 			// update first
 			const first = dupeRatings.shift();
-			queries.push(first.update({ value: Math.round(sum(dupeRatings.map(r => r.value)) / dupeRatings.length) }));
+			queries.push(first.update({ value: Math.round(sum(dupeRatings.map((r:Rating) => r.value)) / dupeRatings.length) }));
 			// delete the rest
-			dupeRatings.forEach(r => queries.push(r.remove()));
+			dupeRatings.forEach((r:Rating) => queries.push(r.remove()));
 		});
 		await Promise.all(queries);
 
@@ -214,7 +218,7 @@ export class UserUtil {
 			starMap.set(key, (starMap.get(key) || []).push(star));
 		});
 		// remove dupes
-		const queries = [];
+		queries = [];
 		Array.from(starMap.values()).filter(ratings => ratings.length > 1).forEach(dupeStars => {
 			// keep first
 			dupeStars.shift();
@@ -260,7 +264,7 @@ export class UserUtil {
 		await keepUser.save();
 
 		// 3. log
-		ctx.models.LogUser.success(req, keepUser, 'merge_users', { kept: keepUser, merged: mergeUser });
+		ctx.models.LogUser.success(ctx, keepUser, 'merge_users', { kept: keepUser, merged: mergeUser });
 
 		// 4. notify
 		if (explanation) {

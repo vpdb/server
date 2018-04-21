@@ -1,5 +1,6 @@
 import { Models } from './models';
 import { Serializers } from './serializers';
+import { User } from '../../users/user.type';
 
 declare module 'koa' {
 
@@ -13,5 +14,9 @@ declare module 'koa' {
 		 * Reference to all serializers
 		 */
 		serializers: Serializers;
+
+		state: {
+			user: User
+		}
 	}
 }

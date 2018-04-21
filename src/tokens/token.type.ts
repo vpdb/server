@@ -20,17 +20,16 @@
 import { Document, Types } from 'mongoose';
 import { User } from '../users/user.type';
 
-export interface File extends Document {
-	id: string
-	name: string
-	bytes: number
-	mime_type: string, // todo add enum
-	file_type: string, // todo add enum
-	metadata: any
-	variations: { [key: string]: any },  // todo type
-	preprocessed: any, // todo wtf is that
-	is_active: boolean
-	counter: { downloads: number },
-	created_at: Date
+export interface Token extends Document {
+	id: string,
+	token: string,
+	label: string,
+	type: 'personal' | 'application',
+	scopes: string[],
+	provider: string,
+	is_active: boolean,
+	last_used_at: Date,
+	expires_at: Date,
+	created_at: Date,
 	_created_by: User | Types.ObjectId
 }

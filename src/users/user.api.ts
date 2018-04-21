@@ -17,32 +17,33 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-'use strict';
+import redis, { RedisClient } from 'redis';
+
+import { User } from './user.type';
+import { Api } from '../common/api';
+import { Context } from 'koa';
+
+import { ApiError } from '../common/api.error';
 
 const _ = require('lodash');
-const redis = require('redis');
+
 const randomString = require('randomstring');
 const validator = require('validator');
 
 //const LogUser = require('mongoose').model('LogUser');
 
-const Api = require('../common/api');
-const ApiError = require('../common/api.error');
 const acl = require('../common/acl');
 const mailer = require('../common/mailer');
 const logger = require('../common/logger');
 const config = require('../common/settings').current;
 const removeDiacritics = require('passport').removeDiacritics;
 
-const userModel = require('./user.model');
-const userSerializer = require('./user.serializer');
+export class UserApi extends Api<User> {
 
-class UserApi extends Api {
+	private redis: RedisClient;
 
 	constructor() {
 		super();
-		this.model = userModel;
-		this.serializer = userSerializer;
 
 		this.redis = redis.createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
 		this.redis.select(config.vpdb.redis.db);
@@ -52,9 +53,10 @@ class UserApi extends Api {
 	/**
 	 * Creates a new user.
 	 *
-	 * @param {Application/Context} ctx Koa context
+	 * @param {Application.Context} ctx Koa context
+	 * @return {Promise<boolean>}
 	 */
-	async create(ctx) {
+	async create(ctx:Context) {
 
 		const newUser = _.assignIn(_.pick(ctx.request.body, 'username', 'password', 'email'), {
 			is_local: true,
@@ -66,7 +68,7 @@ class UserApi extends Api {
 		const skipEmailConfirmation = testMode && ctx.request.body.skipEmailConfirmation;
 
 		// TODO make sure newUser.email is sane (comes from user directly)
-		let user = await this.model.findOne({
+		let user = await ctx.models.User.findOne({
 			$or: [
 				{ emails: newUser.email },
 				{ validated_emails: newUser.email }
@@ -77,7 +79,7 @@ class UserApi extends Api {
 			throw new ApiError('User with email <%s> already exists.', newUser.email).warn().status(409);
 		}
 		let confirmUserEmail = config.vpdb.email.confirmUserEmail && !skipEmailConfirmation;
-		user = await this.model.createUser(newUser, confirmUserEmail);
+		user = await ctx.models.User.createUser(newUser, confirmUserEmail);
 
 		if (config.vpdb.services.sqreen.enabled) {
 			require('sqreen').signup_track({ email: user.email });
@@ -96,10 +98,10 @@ class UserApi extends Api {
 
 		// return result now and send email afterwards
 		if (testMode && ctx.request.body.returnEmailToken) {
-			return this.success(ctx, _.assign(this.serializer.detailed(user, req), { email_token: user.email_status.toObject().token }), 201);
+			return this.success(ctx, _.assign(ctx.serializers.user.detailed(user, ctx), { email_token: user.email_status.toObject().token }), 201);
 
 		} else {
-			return this.success(res, this.serializer.detailed(user, req), 201);
+			return this.success(ctx, ctx.serializers.user.detailed(user, ctx), 201);
 		}
 	}
 
@@ -156,7 +158,7 @@ class UserApi extends Api {
 				{ validated_emails: ctx.request.body.email }
 			]
 		};
-		const existingUser = await this.model.findOne(query).exec();
+		const existingUser = await ctx.models.User.findOne(query).exec();
 
 		let user;
 		if (existingUser) {
@@ -207,11 +209,11 @@ class UserApi extends Api {
 				}
 			};
 			isNew = true;
-			user = await this.model.createUser(newUser, false);
+			user = await ctx.models.user.createUser(newUser, false);
 		}
 
 		// LogUser.success(req, user, 'provider_registration', { provider: provider, email: user.email });
-		return this.success(ctx, this.serializer.detailed(user, req), isNew ? 201 : 200);
+		return this.success(ctx, ctx.serializers.user.detailed(user, req), isNew ? 201 : 200);
 	}
 
 	/**
@@ -257,10 +259,10 @@ class UserApi extends Api {
 			let roles = ctx.request.query.roles.trim().replace(/[^a-z0-9,-]+/gi, '').split(',');
 			query.push( { roles: { $in: roles }});
 		}
-		let users = await this.model.find(this.searchQuery(query)).exec();
+		let users = await ctx.models.User.find(this.searchQuery(query)).exec();
 
 		// reduce
-		users = users.map(user => canGetFullDetails ? this.serializer.detailed(user, ctx) : this.serializer.simple(user, ctx));
+		users = users.map(user => canGetFullDetails ? ctx.serializers.user.detailed(user, ctx) : ctx.serializers.user.simple(user, ctx));
 		return this.success(ctx, users);
 	}
 
@@ -375,12 +377,12 @@ class UserApi extends Api {
 	 * @param {Application/Context} ctx Koa context
 	 */
 	async view(ctx) {
-		const user = await this.model.findOne({ id: ctx.params.id }).exec();
+		const user = await ctx.models.User.findOne({ id: ctx.params.id }).exec();
 		if (!user) {
 			throw new ApiError('No such user').status(404);
 		}
 		const fullDetails = await acl.isAllowed(ctx.state.user.id, 'users', 'full-details');
-		return this.success(ctx, fullDetails ? this.serializer.detailed(user, ctx) : this.serializer.simple(user, ctx));
+		return this.success(ctx, fullDetails ? ctx.serializers.user.detailed(user, ctx) : ctx.serializers.user.simple(user, ctx));
 	}
 
 	/**
@@ -390,7 +392,7 @@ class UserApi extends Api {
 	 */
 	async del(ctx) {
 
-		const user = await this.model.findOne({ id: ctx.params.id }).exec();
+		const user = await ctx.models.User.findOne({ id: ctx.params.id }).exec();
 		if (!user) {
 			throw new ApiError('No such user').status(404);
 		}
@@ -413,7 +415,7 @@ class UserApi extends Api {
 	 */
 	async sendConfirmationMail(ctx) {
 
-		const user = await this.model.findOne({ id: ctx.params.id }).exec();
+		const user = await ctx.models.User.findOne({ id: ctx.params.id }).exec();
 
 		if (!user) {
 			throw new ApiError('No such user').status(404);

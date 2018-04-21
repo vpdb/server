@@ -5,64 +5,65 @@ const _ = require('lodash');
  * access to resources for a given user, scopes further narrow it down depending
  * on the type of authentication.
  */
-class Scope {
+export enum Scope {
 
-	constructor() {
+	/**
+	 * Previous "access" scope. Can do nearly everything.
+	 *
+	 * JWT tokens have this scope but also long-term tokens used in third-party
+	 * applications such as VPDB Agent.
+	 * @type {string}
+	 */
+	ALL = 'all',
 
-		/**
-		 * Previous "access" scope. Can do nearly everything.
-		 *
-		 * JWT tokens have this scope but also long-term tokens used in third-party
-		 * applications such as VPDB Agent.
-		 * @type {string}
-		 */
-		this.ALL = 'all';
+	/**
+	 * Used for autologin. Can be used to obtain a JWT (which has a "all" scope).
+	 *
+	 * This is used for browser auto-login so we don't have to store the plain
+	 * text password on the user's machine.
+	 * @type {string}
+	 */
+	LOGIN = 'login',
 
-		/**
-		 * Used for autologin. Can be used to obtain a JWT (which has a "all" scope).
-		 *
-		 * This is used for browser auto-login so we don't have to store the plain
-		 * text password on the user's machine.
-		 * @type {string}
-		 */
-		this.LOGIN = 'login';
+	/**
+	 * Rate, star, comment, basically anything visible on the site.
+	 * @type {string}
+	 */
+	COMMUNITY = 'community',
 
-		/**
-		 * Rate, star, comment, basically anything visible on the site.
-		 * @type {string}
-		 */
-		this.COMMUNITY = 'community';
+	/**
+	 * Resources that are not personal but third-party application related.
+	 *
+	 * @type {string}
+	 */
+	SERVICE = 'service',
 
-		/**
-		 * Resources that are not personal but third-party application related.
-		 *
-		 * @type {string}
-		 */
-		this.SERVICE = 'service';
+	/**
+	 * All kind of uploads
+	 * TODO implement and test
+	 * @type {string}
+	 */
+	CREATE = 'create',
 
-		/**
-		 * All kind of uploads
-		 * TODO implement and test
-		 * @type {string}
-		 */
-		this.CREATE = 'create';
+	/**
+	 * Used for obtaining storage tokens.
+	 * TODO implement and test
+	 * @type {string}
+	 */
+	STORAGE = 'storage',
 
-		/**
-		 * Used for obtaining storage tokens.
-		 * TODO implement and test
-		 * @type {string}
-		 */
-		this.STORAGE = 'storage';
+}
 
-		/**
-		 * Defines which scopes a token type is allowed to have *at creation*.
-		 * @private
-		 */
-		this._scopes = {
-			personal:  [ this.ALL, this.LOGIN, this.COMMUNITY, this.CREATE, this.STORAGE ],
-			application: [ this.COMMUNITY, this.CREATE, this.STORAGE, this.SERVICE ]
-		};
-	}
+export class ScopeHelper {
+
+	/**
+	 * Defines which scopes a token type is allowed to have *at creation*.
+	 * @private
+	 */
+	private _scopes:{ personal: Scope[], application: Scope[] } = {
+		personal:  [ Scope.ALL, Scope.LOGIN, Scope.COMMUNITY, Scope.CREATE, Scope.STORAGE ],
+		application: [ Scope.COMMUNITY, Scope.CREATE, Scope.STORAGE, Scope.SERVICE ]
+	};
 
 	/**
 	 * Returns all scopes that are valid for a given token type at token
@@ -126,4 +127,4 @@ class Scope {
 	}
 }
 
-module.exports = new Scope();
+export const scope = new Scope();

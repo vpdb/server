@@ -1,8 +1,9 @@
-const { format } = require('util');
-const winston = require('winston');
-const logFormat = require('logform').format;
+import { format } from 'util';
+import { format as logFormat } from 'logform';
+const winston = require('winston'); // todo use typings when available
 
-class Logger {
+export class Logger {
+	private logger: any;
 
 	constructor() {
 		const alignedWithColorsAndTime = logFormat.combine(
@@ -51,4 +52,4 @@ class Logger {
 	}
 }
 
-module.exports = new Logger();
+export const logger = new Logger();

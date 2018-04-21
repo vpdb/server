@@ -17,14 +17,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-const { isArray, isFunction, isObject, isUndefined, keys } = require('lodash');
-const { existsSync } = require('fs');
-const { isAbsolute, resolve } = require('path');
+import { existsSync } from 'fs';
+import { isAbsolute, resolve } from 'path';
+import { isArray, isFunction, isObject, isUndefined, keys } from 'lodash';
+import { VpdbConfig } from './types/config';
+import { logger } from './logger';
 
-const logger = require('./logger');
 const validators = require('./settings.validator');
 
-class Settings {
+export class Settings {
+
+	public readonly current: VpdbConfig;
+	private readonly filePath: string;
 
 	constructor() {
 		if (!process.env.APP_SETTINGS) {
@@ -96,7 +100,7 @@ class Settings {
 					success = false;
 				} else {
 					for (i = 0; i < setting[s].length; i++) {
-						if (!validate(validation[s], setting[s][i], path + '.' + s + '[' + i + ']')) {
+						if (!this._validate(validation[s], setting[s][i], path + '.' + s + '[' + i + ']')) {
 							//logger.error('[settings] %s failed', path);
 							success = false;
 						}
@@ -111,7 +115,7 @@ class Settings {
 					logger.error('[settings] %s [KO]: Setting block is missing.', p);
 					success = false;
 
-				} else if (!validate(validation[s], setting[s], path + '.' + s)) {
+				} else if (!this._validate(validation[s], setting[s], path + '.' + s)) {
 					//logger.error('[settings] %s failed', path);
 					success = false;
 				}
@@ -254,4 +258,5 @@ class Settings {
 	}
 }
 
-module.exports = new Settings();
+export const settings = new Settings();
+export const config = settings.current;

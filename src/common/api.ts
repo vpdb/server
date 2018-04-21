@@ -1,43 +1,41 @@
-const Router = require('koa-router');
-const { difference, keys } = require('lodash');
-const ApiError = require('./api.error');
+import { Context } from 'koa';
+import { difference, keys, pick } from 'lodash';
+import { logger } from './logger';
+import { ApiError } from './api.error';
+import Router from 'koa-router';
 
-const logger = require('./logger');
-const config = require('./settings').current;
+const config = require('../../config/vpdb');
 
-class Api {
+export class Api<T> {
 
 	/**
 	 * The API call was successful.
-	 *
-	 * @param {Application/Context} ctx Koa context
+	 * @param {Application.Context} ctx Koa context
 	 * @param {object|null} body Response body or null if no response body to send.
 	 * @param {number} [status=200] HTTP status code
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
-	success(ctx, body, status) {
+	success(ctx: Context, body?: any, status?: number) {
 		status = status || 200;
 
 		ctx.status = status;
-		if (body) {
-			ctx.body = body;
-		}
+		ctx.body = body;
 		return true;
 	}
 
-	anon(handler) {
-		return async ctx => {
+	anon(handler: (ctx: Context) => boolean) {
+		return async (ctx: Context) => {
 			await this._handleRequest(ctx, handler);
 		};
 	}
 
-	auth(handler, resource, permission, scopes) {
-		return async ctx => {
+	auth(handler: (ctx: Context) => boolean, resource: string, permission: string, scopes: string[]) {
+		return async (ctx: Context) => {
 			await this._handleRequest(ctx, handler);
 		};
 	}
 
-	checkReadOnlyFields(newObj, oldObj, allowedFields) {
+	checkReadOnlyFields(newObj:object, oldObj:object, allowedFields:string[]) {
 		const errors = [];
 		difference(keys(newObj), allowedFields).forEach(field => {
 			let newVal, oldVal;
@@ -47,12 +45,12 @@ class Api {
 				newVal = newObj[field] ? new Date(newObj[field]).getTime() : undefined;
 				oldVal = oldObj[field] ? new Date(oldObj[field]).getTime() : undefined;
 
-			// for objects, serialize first.
+				// for objects, serialize first.
 			} else if (_.isObject(oldObj[field])) {
 				newVal = newObj[field] ? JSON.stringify(newObj[field]) : undefined;
-				oldVal = oldObj[field] ? JSON.stringify(_.pick(oldObj[field], _.keys(newObj[field] || {}))) : undefined;
+				oldVal = oldObj[field] ? JSON.stringify(pick(oldObj[field], keys(newObj[field] || {}))) : undefined;
 
-			// otherwise, take raw values.
+				// otherwise, take raw values.
 			} else {
 				newVal = newObj[field];
 				oldVal = oldObj[field];
@@ -74,7 +72,7 @@ class Api {
 	 * @param {object[]} query Search queries
 	 * @returns {object}
 	 */
-	searchQuery(query) {
+	searchQuery(query:object[]) {
 		if (query.length === 0) {
 			return {};
 		} else if (query.length === 1) {
@@ -86,7 +84,6 @@ class Api {
 
 	/**
 	 * Instantiates a new router with the API prefix.
-	 *
 	 * @return {Router}
 	 */
 	apiRouter() {
@@ -97,22 +94,22 @@ class Api {
 		}
 	}
 
-	async _handleRequest(ctx, handle) {
+	async _handleRequest(ctx: Context, handler: (ctx: Context) => boolean) {
 		try {
-			const result = await handle(ctx);
+			const result = await handler(ctx);
 			if (result !== true) {
-				return this._handleError(ctx, new ApiError('Must return success() in API controller.').status(500));
+				//this._handleError(ctx, new ApiError('Must return success() in API controller.').status(500));
 			}
 		} catch (err) {
 			this._handleError(ctx, err);
 		}
 	}
 
-	_handleError(ctx, err) {
+	_handleError(ctx: Context, err: ApiError) {
 		let message;
-		const status = err.statusCode || 500;
+		const statusCode = err.statusCode || 500;
 
-		if (status === 500) {
+		if (statusCode === 500) {
 			logger.error(err);
 		}
 
@@ -121,9 +118,7 @@ class Api {
 		} else {
 			message = err.message || 'Internal error.';
 		}
-		ctx.status = status;
+		ctx.status = statusCode;
 		ctx.body = { error: message };
 	}
 }
-
-module.exports = Api;

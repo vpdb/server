@@ -1,7 +1,7 @@
 import { Document, Types } from 'mongoose';
-import { User } from '../users/user.type';
+import { User } from './user.type';
 
-export interface ReleaseAuthor extends Document {
+export interface ContentAuthor extends Document {
 	_user: User | Types.ObjectId,
 	roles: string[]
 }

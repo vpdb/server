@@ -358,7 +358,8 @@ export interface VpdbConfig {
 				 * Don't allow ROMs for Stern S.A.M (54) and SPIKE (61) games
 				 */
 				denyMpu: number[]
-			}
+			},
+			[key:string]: { denyMpu:number[]};
 		},
 
 		/**

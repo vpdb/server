@@ -1,4 +1,4 @@
-const _ = require('lodash');
+import { isArray } from 'lodash';
 
 /**
  * Scopes control access of a given type of token. While permissions control
@@ -60,9 +60,9 @@ export class ScopeHelper {
 	 * Defines which scopes a token type is allowed to have *at creation*.
 	 * @private
 	 */
-	private _scopes:{ personal: Scope[], application: Scope[] } = {
-		personal:  [ Scope.ALL, Scope.LOGIN, Scope.COMMUNITY, Scope.CREATE, Scope.STORAGE ],
-		application: [ Scope.COMMUNITY, Scope.CREATE, Scope.STORAGE, Scope.SERVICE ]
+	private _scopes: { personal: Scope[], application: Scope[] } = {
+		personal: [Scope.ALL, Scope.LOGIN, Scope.COMMUNITY, Scope.CREATE, Scope.STORAGE],
+		application: [Scope.COMMUNITY, Scope.CREATE, Scope.STORAGE, Scope.SERVICE]
 	};
 
 	/**
@@ -72,7 +72,7 @@ export class ScopeHelper {
 	 * @param {"personal"|"provider"} type Token type
 	 * @return {string[]} Valid scopes
 	 */
-	getScopes(type) {
+	getScopes(type: 'personal' | 'application'): Scope[] {
 		return this._scopes[type];
 	}
 
@@ -83,9 +83,10 @@ export class ScopeHelper {
 	 * @param {string} scope Scope
 	 * @return {boolean} True if found, false otherwise.
 	 */
-	has(scopes, scope) {
+	has(scopes: Scope[] | null, scope: Scope): boolean {
 		return scopes && scopes.includes(scope);
 	}
+
 	/**
 	 * Makes sure that at least one scope is valid. Basically as soon as one
 	 * of the given scopes is in the valid scopes, return trie.
@@ -94,13 +95,13 @@ export class ScopeHelper {
 	 * @param {string[]} scopesToValidate Scopes to check
 	 * @return {boolean} True if all scopes are valid
 	 */
-	isValid(validScopes, scopesToValidate) {
+	isValid(validScopes: string[] | 'personal' | 'application' | null, scopesToValidate: Scope[]): boolean {
 		if (validScopes === null) {
 			return true;
 		}
-		validScopes = _.isArray(validScopes) ? validScopes : this._scopes[validScopes];
+		const scopes: Scope[] = isArray(validScopes) ? validScopes as Scope[] : this._scopes[validScopes];
 		for (let i = 0; i < scopesToValidate.length; i++) {
-			if (this.has(validScopes, scopesToValidate[i])) {
+			if (this.has(scopes, scopesToValidate[i])) {
 				return true;
 			}
 		}
@@ -114,8 +115,8 @@ export class ScopeHelper {
 	 * @param {string[]} scopes
 	 * @return {boolean} True if identical, false otherwise.
 	 */
-	isIdentical(validScopes, scopes) {
-		if (scopes.length !== validScopes.length){
+	isIdentical(validScopes:Scope[], scopes:Scope[]) {
+		if (scopes.length !== validScopes.length) {
 			return false;
 		}
 		for (let i = 0; i < scopes.length; i++) {
@@ -127,4 +128,4 @@ export class ScopeHelper {
 	}
 }
 
-export const scope = new Scope();
+export const scope = new ScopeHelper();

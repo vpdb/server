@@ -1,107 +1,80 @@
 import { Document } from 'mongoose';
-import { Context, Context } from 'koa';
+import { Context } from 'koa';
 import { get, isArray, defaultsDeep, assign, pick } from 'lodash';
-import { SerializerOptions } from './types/serializer';
+import { Moderated } from './mongoose-plugins/moderate.type';
+import { ReleaseVersionFile } from '../releases/release.version.file.type';
 
-export class Serializer<T> {
+export abstract class Serializer<T extends Document | Moderated> {
+
+	protected abstract _reduced(ctx: Context, doc: T, opts: SerializerOptions): T;
+
+	protected abstract _simple(ctx: Context, doc: T, opts: SerializerOptions): T;
+
+	protected abstract _detailed(ctx: Context, doc: T, opts: SerializerOptions): T;
 
 	/**
 	 * Returns the reduced version of the object.
 	 *
+	 * @param {Context} ctx Koa context
 	 * @param {T} doc Retrieved MongoDB object
-	 * @param {Application.Context} ctx Koa context
 	 * @param {SerializerOptions} [opts] Additional options for serialization
-	 * @return {object} Serialized object
+	 * @return Promise<T> Serialized object
 	 */
-	reduced(ctx: Context, doc: T, opts?: SerializerOptions) {
-		return this.__serialize(this._reduced.bind(this), doc, ctx, opts);
+	reduced(ctx: Context, doc: T, opts?: SerializerOptions): T {
+		return this.serialize(this._reduced.bind(this), ctx, doc, opts);
 	}
 
 	/**
 	 * Returns the simple version of the object.
 	 *
+	 * @param {Context} ctx Koa context
 	 * @param {T} doc Retrieved MongoDB object
-	 * @param {Application.Context} ctx Koa context
 	 * @param {SerializerOptions} [opts] Additional options for serialization
-	 * @return {object} Serialized object
+	 * @return Promise<T> Serialized object
 	 */
-	simple(ctx:Context, doc:T, opts?: SerializerOptions) {
-		return this.__serialize(this._simple.bind(this), doc, ctx, opts);
+	simple(ctx: Context, doc: T, opts?: SerializerOptions): T {
+		return this.serialize(this._simple.bind(this), ctx, doc, opts);
 	}
 
 	/**
 	 * Returns the detailed version of the object.
 	 *
+	 * @param {Context} ctx Koa context
 	 * @param {T} doc Retrieved MongoDB object
-	 * @param {Application.Context} ctx Koa context
 	 * @param {SerializerOptions} [opts] Additional options for serialization
-	 * @return {object} Serialized object
+	 * @return Promise<T> Serialized object
 	 */
-	detailed(ctx:Context, doc:T, opts?: SerializerOptions) {
-		return this.__serialize(this._detailed.bind(this), doc, ctx, opts);
+	detailed(ctx: Context, doc: T, opts?: SerializerOptions): T {
+		return this.serialize(this._detailed.bind(this), ctx, doc, opts);
 	}
 
 	/** @private **/
-	__serialize(serializer, doc, ctx, opts: SerializerOptions) {
+	private serialize(serializer: (ctx: Context, doc: T, opts?: SerializerOptions) => T, ctx: Context, doc: T, opts: SerializerOptions): T {
 		if (!doc) {
 			return undefined;
 		}
-		if (!doc._id) {
-			throw new Error('Must be document, given: ' + JSON.stringify(doc));
-		}
-		return this._post(doc, serializer(doc, ctx, this._defaultOpts(opts)), ctx, this._defaultOpts(opts));
+		return this._post(ctx, doc, serializer(ctx, doc, this._defaultOpts(opts)), this._defaultOpts(opts));
 	}
 
 	/**
 	 * Updates serialized object with additional data, common for all detail
 	 * levels and types.
-	 *
-	 * @private
 	 */
-	_post(doc, object, ctx, opts: SerializerOptions) {
-
+	private _post(ctx: Context, doc: T, object: T, opts: SerializerOptions): T {
 		if (!object) {
 			return object;
 		}
 
 		// handle moderation field
-		const ModerationSerializer = require('../../src_/serializers/moderation.serializer');
-		object.moderation = ModerationSerializer._simple(doc.moderation, ctx, opts);
+		if ((doc as Moderated).moderation) {
+			const ModerationSerializer = require('./mongoose-plugins/moderation.serializer');
+			(object as Moderated).moderation = ModerationSerializer._simple((doc as Moderated).moderation, ctx, opts);
+		}
 
 		// remove excluded fields
-		opts.excludedFields.forEach(field => delete object[field]);
+		opts.excludedFields.forEach(field => delete (object as any)[field]);
 
 		return object;
-	}
-
-	/**
-	 * Returns the reduced version of the object.
-	 *
-	 * This is only the fallthrough, don't call directly.
-	 * @protected
-	 */
-	_reduced(doc, ctx, opts: SerializerOptions) {
-		return this.simple(doc, ctx, opts);
-	}
-
-	/**
-	 * Returns the simple version of the object.
-	 *
-	 * This is only the fallthrough, don't call directly.
-	 * @protected
-	 */
-	_simple(doc:T, ctx:Context, opts: SerializerOptions) {
-		return {};
-	}
-
-	/**
-	 * Returns the detailed version of the object.
-	 *
-	 * This is only the fallthrough, don't call directly.
-	 * @protected
-	 */
-	_detailed(doc, ctx, opts: SerializerOptions) {
-		return this.simple(doc, ctx, opts);
 	}
 
 	/**
@@ -114,9 +87,8 @@ export class Serializer<T> {
 	 * @param doc Document to check
 	 * @param field Field to check
 	 * @returns {boolean}
-	 * @protected
 	 */
-	_populated(doc: Document, field: string) {
+	protected _populated(doc: Document, field: string) {
 		if (doc.populated(field)) {
 			return true;
 		}
@@ -127,8 +99,7 @@ export class Serializer<T> {
 		return obj && obj._id;
 	}
 
-	/** @protected */
-	_defaultOpts(opts: SerializerOptions): SerializerOptions {
+	protected _defaultOpts(opts: SerializerOptions): SerializerOptions {
 		return defaultsDeep(opts || {}, {
 			includedFields: [],
 			excludedFields: [],
@@ -141,9 +112,8 @@ export class Serializer<T> {
 		});
 	}
 
-	/** @protected */
-	_sortByDate(attr) {
-		return (a, b) => {
+	protected _sortByDate(attr: string) {
+		return (a: { [key: string]: number }, b: { [key: string]: number }) => {
 			const dateA = new Date(a[attr]).getTime();
 			const dateB = new Date(b[attr]).getTime();
 			if (dateA < dateB) {
@@ -166,7 +136,7 @@ export class Serializer<T> {
 	 * @protected
 	 * @returns {{}|null}
 	 */
-	_getFileThumb(versionFile, ctx, opts: SerializerOptions) {
+	protected _getFileThumb(ctx: Context, versionFile: ReleaseVersionFile, opts: SerializerOptions) {
 
 		if (!opts.thumbFormat) {
 			return undefined;
@@ -195,4 +165,16 @@ export class Serializer<T> {
 		}
 		return null;
 	}
+}
+
+export interface SerializerOptions {
+	includedFields?: string[],
+	excludedFields?: string[],
+	starred?: boolean | undefined,
+	fileIds?: string[],
+	thumbFlavor?: string
+	thumbFormat?: string,
+	fullThumbData?: boolean,
+	thumbPerFile?: boolean,
+	includeProviderId?: string
 }

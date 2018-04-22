@@ -20,31 +20,31 @@ export class Logger {
 		});
 	}
 
-	error(format: any, ...param: any[]) {
+	error(f: any, ...param: any[]) {
 		this.logger.log({
 			level: 'error',
 			message: format.apply(null, arguments)
 		});
 	}
-	warn(format: any, ...param: any[]) {
+	warn(f: any, ...param: any[]) {
 		this.logger.log({
 			level: 'warn',
 			message: format.apply(null, arguments)
 		});
 	}
-	info(format: any, ...param: any[]) {
+	info(f: any, ...param: any[]) {
 		this.logger.log({
 			level: 'info',
 			message: format.apply(null, arguments)
 		});
 	}
-	verbose(format: any, ...param: any[]) {
+	verbose(f: any, ...param: any[]) {
 		this.logger.log({
 			level: 'verbose',
 			message: format.apply(null, arguments)
 		});
 	}
-	debug(format: any, ...param: any[]) {
+	debug(f: any, ...param: any[]) {
 		this.logger.log({
 			level: 'debug',
 			message: format.apply(null, arguments)

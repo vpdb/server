@@ -19,24 +19,19 @@
 
 import mongoose = require('mongoose');
 import { Schema } from 'mongoose';
-import { assign, isArray, isString, isBoolean, isUndefined, keys, each, values, sum, uniq, find } from 'lodash';
+import { each, find, isArray, isBoolean, isString, isUndefined, keys } from 'lodash';
 import { createHmac } from 'crypto';
 import validator from 'validator';
-import randomstring from 'randomstring';
 import uniqueValidator from 'mongoose-unique-validator';
+import { logger } from '../common/logger';
+import { config } from '../common/settings';
+
+import { User } from './user.type';
+import { server } from '../server';
 
 const shortId = require('shortid32');
 const metrics = require('../../src_/models/plugins/metrics');
-
-import { logger } from '../common/logger';
-
-import { UserSerializer } from './user.serializer';
-
-const config = require('../common/settings').current;
 const flavor = require('../../src_/modules/flavor');
-const mailer = require('../common/mailer');
-
-const serializer = new UserSerializer();
 
 //-----------------------------------------------------------------------------
 // SCHEMA
@@ -113,7 +108,7 @@ config.vpdb.passport.ipboard.forEach(function (ipbConfig) {
 		fields.providers[ipbConfig.id] = providerSchema;
 	}
 });
-const UserSchema = new Schema(fields);
+const UserSchema = new Schema(fields, { toObject: { virtuals: true, versionKey: false } });
 UserSchema.index({ name: 'text', username: 'text', email: 'text' });
 UserSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
 
@@ -130,7 +125,7 @@ UserSchema.plugin(metrics);
 //-----------------------------------------------------------------------------
 
 UserSchema.virtual('password')
-	.set(function (password) {
+	.set(function (password: string) {
 		this._password = password;
 		this.password_salt = this.makeSalt();
 		this.password_hash = this.hashPassword(password);
@@ -184,7 +179,7 @@ UserSchema.virtual('provider')
 // VALIDATIONS
 //-----------------------------------------------------------------------------
 const validNameRegex = /^[0-9a-z ]{3,}$/i;
-UserSchema.path('name').validate(function (name) {
+UserSchema.path('name').validate(function (name: string) {
 	// this gets default from username if not set anyway.
 	if (this.isNew) {
 		return true;
@@ -192,7 +187,7 @@ UserSchema.path('name').validate(function (name) {
 	return isString(name) && validator.isLength(name, 3, 30);
 }, 'Name must be between 3 and 30 characters.');
 
-UserSchema.path('name').validate(function (name) {
+UserSchema.path('name').validate(function (name: string) {
 	// this gets default from username if not set anyway.
 	if (this.isNew) {
 		return true;
@@ -200,7 +195,7 @@ UserSchema.path('name').validate(function (name) {
 	return validNameRegex.test(name);
 }, 'Name can only contain letters, numbers and spaces.');
 
-UserSchema.path('email').validate(function (email) {
+UserSchema.path('email').validate(function (email: string) {
 	// if you are authenticating by any of the oauth strategies, don't validate
 	if (this.isNew && !this.is_local) {
 		return true;
@@ -208,12 +203,11 @@ UserSchema.path('email').validate(function (email) {
 	return isString(email) && validator.isEmail(email);
 }, 'Email must be in the correct format.');
 
-UserSchema.path('location').validate(function (location) {
+UserSchema.path('location').validate(function (location: string) {
 	return isString(location) && validator.isLength(location, 0, 100);
 }, 'Location must not be longer than 100 characters.');
 
-UserSchema.path('is_local').validate(async function (isLocal) {
-
+UserSchema.path('is_local').validate(async function (isLocal: boolean) {
 
 	// validate presence of password. can't do that in the password validator
 	// below because it's not run when there's no value (and it can be null,
@@ -310,7 +304,7 @@ UserSchema.path('password_hash').validate(function () {
 	}
 }, null);
 
-UserSchema.path('_plan').validate(function (plan) {
+UserSchema.path('_plan').validate(function (plan: string) {
 	return config.vpdb.quota.plans.map(p => p.id).includes(plan);
 }, 'Plan must be one of: [' + config.vpdb.quota.plans.map(p => p.id).join(',') + ']');
 
@@ -321,33 +315,27 @@ UserSchema.path('_plan').validate(function (plan) {
 
 /**
  * Authenticate - check if the passwords are the same
- *
- * @param {String} plainText
- * @return {Boolean}
- * @api public
+ * @param {string} plainText Plaintext password
+ * @return {boolean} True if match, false otherwise.
  */
-UserSchema.methods.authenticate = function (plainText) {
+UserSchema.methods.authenticate = function (plainText: string): boolean {
 	return this.hashPassword(plainText) === this.password_hash;
 };
 
 /**
- * Make salt
- *
- * @return {String}
- * @api public
+ * Creates a random salt
+ * @return {string} Random salt
  */
-UserSchema.methods.makeSalt = function () {
+UserSchema.methods.makeSalt = function (): string {
 	return Math.round((new Date().valueOf() * Math.random())) + '';
 };
 
 /**
- * Encrypt password
- *
- * @param {String} password
- * @return {String}
- * @api public
+ * Hashes a password with previously set salt.
+ * @param {string} password Plain text password
+ * @return {string} Hex-encoded hash
  */
-UserSchema.methods.hashPassword = function (password) {
+UserSchema.methods.hashPassword = function (password: string): string {
 	if (!password) {
 		return '';
 	}
@@ -357,11 +345,20 @@ UserSchema.methods.hashPassword = function (password) {
 	return createHmac('sha1', this.password_salt).update(password).digest('hex');
 };
 
-UserSchema.methods.passwordSet = function () {
+/**
+ * Checks if password has been set.
+ * @return {boolean}
+ */
+UserSchema.methods.passwordSet = function (): boolean {
 	return this.password_salt && this.password_hash;
 };
 
-UserSchema.methods.hasRole = function (role) {
+/**
+ * Checks if the user has at least one of the given roles
+ * @param {string | string[]} role Roles to check
+ * @return {boolean} True if at least one role matches, false otherwise.
+ */
+UserSchema.methods.hasRole = function (role: string | string[]): boolean {
 	if (isArray(role)) {
 		for (let i = 0; i < role.length; i++) {
 			if (this.roles.includes(role[i])) {
@@ -375,30 +372,14 @@ UserSchema.methods.hasRole = function (role) {
 	}
 };
 
-
-//-----------------------------------------------------------------------------
-// STATIC METHODS
-//-----------------------------------------------------------------------------
-
 //-----------------------------------------------------------------------------
 // TRIGGERS
 //-----------------------------------------------------------------------------
-UserSchema.post('remove', function (obj, done) {
-
+UserSchema.post('remove', async function (obj: User) {
 	const acl = require('../common/acl');
-	const LogUser = mongoose.model('LogUser');
-	const Token = mongoose.model('Token');
-	return Promise
-		.try(() => LogUser.remove({ _user: obj._id }))
-		.then(() => Token.remove({ _created_by: obj._id }))
-		.then(() => acl.removeUserRoles(obj.id, obj.roles))
-		.nodeify(done);
+	await server.models().LogUser.remove({ _user: obj._id });
+	await server.models().Token.remove({ _created_by: obj._id });
+	await acl.removeUserRoles(obj.id, obj.roles);
 });
-
-
-//-----------------------------------------------------------------------------
-// OPTIONS
-//-----------------------------------------------------------------------------
-UserSchema.options.toObject = { virtuals: true, versionKey: false };
 
 export var schema: Schema = UserSchema;

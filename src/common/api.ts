@@ -1,10 +1,10 @@
 import { Context } from 'koa';
-import { difference, keys, pick } from 'lodash';
+import { difference, keys, pick, isObject } from 'lodash';
 import { logger } from './logger';
-import { ApiError } from './api.error';
+import { config } from './settings';
+import { ApiError, ApiValidationError } from './api.error';
 import Router from 'koa-router';
 
-const config = require('../../config/vpdb');
 
 export class Api<T> {
 
@@ -35,8 +35,8 @@ export class Api<T> {
 		};
 	}
 
-	checkReadOnlyFields(newObj:object, oldObj:object, allowedFields:string[]) {
-		const errors = [];
+	checkReadOnlyFields(newObj: {[key:string]: any}, oldObj: {[key:string]: any}, allowedFields: string[]) {
+		const errors:ApiValidationError[] = [];
 		difference(keys(newObj), allowedFields).forEach(field => {
 			let newVal, oldVal;
 
@@ -46,7 +46,7 @@ export class Api<T> {
 				oldVal = oldObj[field] ? new Date(oldObj[field]).getTime() : undefined;
 
 				// for objects, serialize first.
-			} else if (_.isObject(oldObj[field])) {
+			} else if (isObject(oldObj[field])) {
 				newVal = newObj[field] ? JSON.stringify(newObj[field]) : undefined;
 				oldVal = oldObj[field] ? JSON.stringify(pick(oldObj[field], keys(newObj[field] || {}))) : undefined;
 
@@ -72,7 +72,7 @@ export class Api<T> {
 	 * @param {object[]} query Search queries
 	 * @returns {object}
 	 */
-	searchQuery(query:object[]) {
+	searchQuery(query: object[]) {
 		if (query.length === 0) {
 			return {};
 		} else if (query.length === 1) {

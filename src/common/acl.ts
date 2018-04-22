@@ -17,36 +17,31 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-'use strict';
-
-const ACL = require('acl');
-const logger = require('winston');
-const mongoose = require('mongoose');
-
-const config = require('./settings').current;
+import ACL = require('acl');
+import { logger } from './logger';
+import { config } from './settings';
+import { server } from '../server';
 
 const redis = require('redis').createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
 
 redis.select(config.vpdb.redis.db);
-redis.on('error', err => logger.error('[acl] Redis error: %s', err.message));
+redis.on('error', (err:Error) => logger.error('[acl] Redis error: %s', err.message));
 
-const acl = new ACL(new ACL.redisBackend(redis, 'acl'));
+export const acl = new ACL(new ACL.redisBackend(redis, 'acl'));
 
 /**
  * Initializes the ACLs.
- *
- * @return {Promise.<ACL>}
  */
-acl.init = function() {
+export async function init():Promise<void> {
 
 	// do at least one error check on redis
-	redis.on('error', /* istanbul ignore next */ function(err) {
+	redis.on('error', /* istanbul ignore next */ (err:Error) => {
 		logger.error('[app] Error connecting to Redis: ' + err);
 		process.exit(1);
 	});
 
 	// permissions
-	return acl.allow([
+	await acl.allow([
 		{
 			roles: 'admin',
 			allows: [
@@ -105,27 +100,19 @@ acl.init = function() {
 				{ resources: 'users', permissions: 'delete' }
 			]
 		}
-	])
-	.then(() => acl.addRoleParents('root', [ 'admin', 'moderator' ]))
-	.then(() => acl.addRoleParents('admin', [ 'member' ]))
-	.then(() => acl.addRoleParents('moderator', [ 'contributor' ]))
-	.then(() => acl.addRoleParents('contributor', [ 'game-contributor', 'release-contributor', 'backglass-contributor' ]))
-	.then(() => acl.addRoleParents('game-contributor', [ 'member' ]))
-	.then(() => acl.addRoleParents('release-contributor', [ 'member' ]))
-	.then(() => acl.addRoleParents('backglass-contributor', [ 'member' ]))
-	.then(() => mongoose.model('User').find({}))
-	.then(users => {
-		logger.info('[acl] Applying ACLs to %d users...', users.length);
-		return Promise.each(users, user => {
-			/* istanbul ignore next: No initial users in test suite */
-			return acl.addUserRoles(user.id, user.roles);
-		});
+	]);
 
-	}).then(() => {
-		logger.info('[acl] ACLs applied.');
-		return acl;
-
-	});
-};
-
-module.exports = acl;
+	await acl.addRoleParents('root', [ 'admin', 'moderator' ]);
+	await acl.addRoleParents('admin', [ 'member' ]);
+	await acl.addRoleParents('moderator', [ 'contributor' ]);
+	await acl.addRoleParents('contributor', [ 'game-contributor', 'release-contributor', 'backglass-contributor' ]);
+	await acl.addRoleParents('game-contributor', [ 'member' ]);
+	await acl.addRoleParents('release-contributor', [ 'member' ]);
+	await acl.addRoleParents('backglass-contributor', [ 'member' ]);
+	const users = await server.models().User.find({}).exec();
+	logger.info('[acl] Applying ACLs to %d users...', users.length);
+	for (let user of users) {
+		await acl.addUserRoles(user.id, user.roles);
+	}
+	logger.info('[acl] ACLs applied.');
+}

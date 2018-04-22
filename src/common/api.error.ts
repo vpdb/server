@@ -10,7 +10,7 @@ export class ApiError extends Error {
 	private errs: ApiValidationError[];
 	private fieldPrefix: string;
 
-	constructor(format?: any, ...param: any[]) {
+	constructor(f?: any, ...param: any[]) {
 		super(format.apply(null, arguments));
 		this.statusCode = 0;
 		this.logLevel = null; // don't log per default

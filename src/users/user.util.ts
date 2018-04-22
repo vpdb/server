@@ -8,13 +8,15 @@ import { User } from './user.type';
 import { ApiError } from '../common/api.error';
 import { Release } from '../releases/release.type';
 import { ReleaseVersionFile } from '../releases/release.version.file.type';
-import { ReleaseAuthor } from '../releases/release.author.type';
+import { ContentAuthor } from './content.author.type';
 import { Backglass } from '../backglasses/backglass.type';
 import { Rating } from '../ratings/rating.type';
+import { userMergedDeleted, userMergedKept } from '../common/mailer';
+import { Star } from '../stars/star.type';
 
 export class UserUtil {
 
-	public static async createUser(ctx: Context, userObj: User, confirmUserEmail: boolean) {
+	public static async createUser(ctx: Context, userObj: User, confirmUserEmail: boolean): Promise<User> {
 
 		let user = new ctx.models.User(assign(userObj, {
 			created_at: new Date(),
@@ -72,7 +74,7 @@ export class UserUtil {
 		} else {
 			// otherwise, fail and query merge resolution
 			throw new ApiError('Conflicted users, must merge.')
-				.data({ explanation: explanation, users: mergeUsers.map(u => ctx.serializers.user.detailed(ctx, u)) })
+				.data({ explanation: explanation, users: mergeUsers.map(u => ctx.serializers.User.detailed(ctx, u)) })
 				.status(409);
 		}
 	};
@@ -85,7 +87,7 @@ export class UserUtil {
 	 * @param {string} explanation Explanation to put into mail, if null no mail is sent.
 	 * @return {Promise<User>} Merged user
 	 */
-	public static async mergeUsers(ctx: Context, keepUser: User, mergeUser: User, explanation:string) {
+	public static async mergeUsers(ctx: Context, keepUser: User, mergeUser: User, explanation:string): Promise<User> {
 
 		logger.info('[model|user] Merging %s into %s...', mergeUser.id, keepUser.id);
 		if (keepUser.id === mergeUser.id) {
@@ -120,7 +122,7 @@ export class UserUtil {
 		// 1.1 update release versions
 		const releasesByAuthor = await ctx.models.Release.find({ 'authors._user': mergeUser._id.toString() }).exec();
 		await Promise.all(releasesByAuthor.map((release: any) => {
-			release.authors.forEach((author:ReleaseAuthor) => {
+			release.authors.forEach((author:ContentAuthor) => {
 				if (mergeUser._id.equals(author._user)) {
 					author._user = keepUser._id;
 					num++;
@@ -223,7 +225,7 @@ export class UserUtil {
 			// keep first
 			dupeStars.shift();
 			// delete the rest
-			dupeStars.forEach(r => queries.push(r.remove()));
+			dupeStars.forEach((s:Star) => queries.push(s.remove()));
 		});
 		await Promise.all(queries);
 
@@ -264,20 +266,19 @@ export class UserUtil {
 		await keepUser.save();
 
 		// 3. log
-		ctx.models.LogUser.success(ctx, keepUser, 'merge_users', { kept: keepUser, merged: mergeUser });
+		//ctx.models.LogUser.success(ctx, keepUser, 'merge_users', { kept: keepUser, merged: mergeUser });
 
 		// 4. notify
 		if (explanation) {
-			await mailer.userMergedDeleted(keepUser, mergeUser, explanation);
-			await mailer.userMergedKept(keepUser, mergeUser, explanation);
+			await userMergedDeleted(keepUser, mergeUser, explanation);
+			await userMergedKept(keepUser, mergeUser, explanation);
 		}
 
 		logger.info('[model|user] Done merging, removing merged user %s.', mergeUser.id);
 
 		// 5. delete merged user
-		return mergeUser.remove();
+		await mergeUser.remove();
 
 		return keepUser;
 	}
-
 }

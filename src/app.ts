@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
 
-import { Server } from './server';
 import { EndPoint } from './common/types/endpoint';
 import { UserEndPoint } from './users';
-
-const config = require('../config/vpdb');
+import { config } from './common/settings';
+import { server } from './server';
+import { init as initAcls } from './common/acl';
 
 // links:
 //   - https://github.com/Microsoft/TypeScript-Node-Starter
@@ -17,14 +17,16 @@ const config = require('../config/vpdb');
 
 		// bootstrap models
 		console.log('Connecting to MongoDB...');
-		await mongoose.connect(config.db);
+		await mongoose.connect(config.vpdb.db);
 
 		// bootstrap endpoints
-		const server = new Server();
 		for (let endPoint of endPoints) {
 			console.log('Registering end point %s...', endPoint.name);
 			server.register(endPoint);
 		}
+
+		// setup ACLs
+		await initAcls();
 
 		// go!
 		server.start();

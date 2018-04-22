@@ -72,5 +72,7 @@ export interface Game extends Document {
 	},
 	modified_at: Date,
 	created_at: Date,
-	_created_by: User | Types.ObjectId,
+	_created_by: User | Types.ObjectId;
+
+	isRestricted(what:string):boolean;
 }

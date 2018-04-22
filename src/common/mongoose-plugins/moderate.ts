@@ -17,13 +17,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import mongoose, { Document, Model, Schema, Types } from 'mongoose';
+import mongoose, { Model, Schema, Types } from 'mongoose';
 import { Context } from 'koa';
 import { assign, includes, isArray, isObject } from 'lodash';
 
 import { User } from '../../users/user.type';
 import { ApiError } from '../api.error';
 import { logger } from '../logger';
+import { Moderated, ModerationData } from './moderate.type';
 
 const modelResourceMap: { [key: string]: string } = {
 	Release: 'releases',
@@ -98,7 +99,7 @@ export function moderatePlugin(schema: Schema) {
 				is_refused: false,
 				auto_approved: true,
 				history: [{ event: 'approved', created_at: now, _created_by: user }]
-			};
+			} as ModerationData;
 			if (this.postApprove) {
 				return this.postApprove();
 			}
@@ -108,7 +109,7 @@ export function moderatePlugin(schema: Schema) {
 				is_refused: false,
 				auto_approved: false,
 				history: []
-			};
+			} as ModerationData;
 		}
 
 	});
@@ -170,10 +171,9 @@ export function moderatePlugin(schema: Schema) {
 
 	/**
 	 * Handles moderation requests from the API.
-	 *
 	 * @param {Application.Context} ctx Koa context
 	 * @param {Moderated} entity Entity with moderation plugin enabled
-	 * @returns {Promise<ModerationData>} Moderation data
+	 * @return {Promise<ModerationData>} Moderation data
 	 */
 	schema.statics.handleModeration = async function (ctx: Context, entity: Moderated): Promise<ModerationData> {
 		const LogEvent = require('mongoose').model('LogEvent');
@@ -329,7 +329,7 @@ export function moderatePlugin(schema: Schema) {
 	 * @param {string} reason Reason why entity was refused
 	 ** @returns {Promise.<{}>} Updated moderation attribute
 	 */
-	schema.methods.refuse = async function (user:User, reason:string): Promise<ModerationData> {
+	schema.methods.refuse = async function (user: User, reason: string): Promise<ModerationData> {
 
 		const model = mongoose.model(this.constructor.modelName);
 		let previousModeration = { isApproved: this.moderation.is_approved, isRefused: this.moderation.is_refused };
@@ -359,7 +359,7 @@ export function moderatePlugin(schema: Schema) {
 	 * @param {string} [message] Optional message
 	 * @returns {Promise.<{}>} Updated moderation attribute
 	 */
-	schema.methods.moderate = async function (user:User, message:string): Promise<ModerationData> {
+	schema.methods.moderate = async function (user: User, message: string): Promise<ModerationData> {
 
 		const model = mongoose.model(this.constructor.modelName);
 		let previousModeration = { isApproved: this.moderation.is_approved, isRefused: this.moderation.is_refused };
@@ -392,8 +392,8 @@ export function moderatePlugin(schema: Schema) {
  * array. Otherwise, just the condition is returned.
  *
  * @param {object} toAdd Query to add
- * @param {array|object} [query] Original query
- * @returns {*}
+ * @param {Array<any> | object} query Original query
+ * @return {Array<any> | object} Merged query
  */
 function addToQuery(toAdd: object, query: Array<any> | object): Array<any> | object {
 	if (isArray(query)) {
@@ -404,43 +404,4 @@ function addToQuery(toAdd: object, query: Array<any> | object): Array<any> | obj
 		return assign(query, toAdd);
 	}
 	return toAdd;
-}
-
-export interface Moderated extends Document {
-
-	moderation: ModerationData,
-	_created_by: User | Types.ObjectId,
-
-	handleModerationQuery(ctx: Context, query: Array<any> | object): Promise<Array<any> | object>,
-
-	handleModeration(ctx: Context, entity: Moderated): Promise<ModerationData>,
-
-	approvedQuery(query: Array<any> | object): Array<any> | object,
-
-	assertModeratedView(ctx: Context): Promise<Moderated>,
-
-	populateModeration(ctx: Context, opts: { includedFields: string[] }): Promise<Moderated | false>
-
-	moderationChanged?(previousModeration: any, moderation: any): Promise<Moderated>,
-
-	approve(user: User, message: string): Promise<ModerationData>,
-
-	refuse(user: User, reason: string): Promise<ModerationData>,
-
-	moderate(user: User, message: string): Promise<ModerationData>,
-
-	postApprove?():void
-
-}
-
-interface ModerationData {
-	is_approved: boolean,
-	is_refused: boolean,
-	auto_approved: boolean,
-	history: {
-		event: 'approved'|'refused'|'pending'
-		message?: string,
-		created_at: Date,
-		_created_by: User | Types.ObjectId
-	}[]
 }

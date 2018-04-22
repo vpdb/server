@@ -2,8 +2,9 @@ import Application from 'koa';
 import koaLogger from 'koa-logger';
 import koaBodyParser from 'koa-bodyparser';
 import { EndPoint } from './common/types/endpoint';
-
-const config = require('../config/vpdb');
+import { Models } from './common/types/models';
+import { Serializers } from './common/types/serializers';
+import { config } from './common/settings'
 
 export class Server {
 
@@ -31,7 +32,17 @@ export class Server {
 	}
 
 	public start() {
-		console.log('Listening on port %s.', config.api.port);
-		this.app.listen(config.api.port);
+		console.log('Listening on port %s.', config.vpdb.api.port);
+		this.app.listen(config.vpdb.api.port);
+	}
+
+	public models(): Models {
+		return this.app.context.models;
+	}
+
+	public serializers(): Serializers {
+		return this.app.context.serializers;
 	}
 }
+
+export const server = new Server();

@@ -32,6 +32,6 @@ export class UserEndPoint implements EndPoint<User> {
 	}
 
 	registerSerializer(serializers: Serializers): void {
-		serializers.user = new UserSerializer();
+		serializers.User = new UserSerializer();
 	}
 }

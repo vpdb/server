@@ -1,18 +1,19 @@
 import { Types } from 'mongoose';
-import { Moderated } from '../common/mongoose-plugins/moderate';
+import { Moderated } from '../common/mongoose-plugins/moderate.type';
 import { User } from '../users/user.type';
 import { ReleaseVersion } from './release.version.type';
-import { ReleaseAuthor } from './release.author.type';
+import { ContentAuthor } from '../users/content.author.type';
 import { Tag } from '../tags/tag.type';
+import { GameReference } from '../common/mongoose-plugins/game-ref';
 
-export interface Release extends Moderated {
+export interface Release extends Moderated, GameReference {
 	id: string,
 	name: string,
 	name_sortable: string,
 	license: 'by-sa' | 'by-nd',
 	description: string,
 	versions: ReleaseVersion[],
-	authors: ReleaseAuthor[],
+	authors: ContentAuthor[],
 	_tags: Tag[] | Types.ObjectId
 	links: {
 		label: string,

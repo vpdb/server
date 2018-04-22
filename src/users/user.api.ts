@@ -17,37 +17,40 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import redis, { RedisClient } from 'redis';
+import { Context } from 'koa';
+import { promisify } from 'util';
+import redis from 'redis';
 
 import { User } from './user.type';
 import { Api } from '../common/api';
-import { Context } from 'koa';
-
 import { ApiError } from '../common/api.error';
 
 const _ = require('lodash');
-
 const randomString = require('randomstring');
 const validator = require('validator');
-
-//const LogUser = require('mongoose').model('LogUser');
+const removeDiacritics = require('passport').removeDiacritics;
 
 const acl = require('../common/acl');
-const mailer = require('../common/mailer');
-const logger = require('../common/logger');
-const config = require('../common/settings').current;
-const removeDiacritics = require('passport').removeDiacritics;
+import { registrationConfirmation } from '../common/mailer';
+import { logger } from '../common/logger';
+import { config } from '../common/settings';
+import { UserUtil } from './user.util';
+
 
 export class UserApi extends Api<User> {
 
-	private redis: RedisClient;
+	private readonly redisSet: any;
+	private readonly redisExpire: any;
 
 	constructor() {
 		super();
 
-		this.redis = redis.createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
-		this.redis.select(config.vpdb.redis.db);
-		this.redis.on('error', err => logger.error(err.message));
+		const redisClient = redis.createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
+		redisClient.select(config.vpdb.redis.db);
+		redisClient.on('error', err => logger.error(err.message));
+
+		this.redisSet = promisify(redisClient.set).bind(redisClient);
+		this.redisExpire = promisify(redisClient.expire).bind(redisClient);
 	}
 
 	/**
@@ -56,7 +59,7 @@ export class UserApi extends Api<User> {
 	 * @param {Application.Context} ctx Koa context
 	 * @return {Promise<boolean>}
 	 */
-	async create(ctx:Context) {
+	async create(ctx: Context) {
 
 		const newUser = _.assignIn(_.pick(ctx.request.body, 'username', 'password', 'email'), {
 			is_local: true,
@@ -79,7 +82,7 @@ export class UserApi extends Api<User> {
 			throw new ApiError('User with email <%s> already exists.', newUser.email).warn().status(409);
 		}
 		let confirmUserEmail = config.vpdb.email.confirmUserEmail && !skipEmailConfirmation;
-		user = await ctx.models.User.createUser(newUser, confirmUserEmail);
+		user = await UserUtil.createUser(ctx, newUser, confirmUserEmail);
 
 		if (config.vpdb.services.sqreen.enabled) {
 			require('sqreen').signup_track({ email: user.email });
@@ -93,15 +96,15 @@ export class UserApi extends Api<User> {
 
 		// user validated and created. time to send the activation email.
 		if (config.vpdb.email.confirmUserEmail) {
-			mailer.registrationConfirmation(user);
+			await registrationConfirmation(user);
 		}
 
 		// return result now and send email afterwards
 		if (testMode && ctx.request.body.returnEmailToken) {
-			return this.success(ctx, _.assign(ctx.serializers.user.detailed(user, ctx), { email_token: user.email_status.toObject().token }), 201);
+			return this.success(ctx, _.assign(ctx.serializers.User.detailed(ctx, user), { email_token: (user.email_status as any).toObject().token }), 201);
 
 		} else {
-			return this.success(ctx, ctx.serializers.user.detailed(user, ctx), 201);
+			return this.success(ctx, ctx.serializers.User.detailed(ctx, user), 201);
 		}
 	}
 
@@ -112,15 +115,15 @@ export class UserApi extends Api<User> {
 	 *
 	 * @param {Application/Context} ctx Koa context
 	 */
-	async createOrUpdate(ctx) {
+	async createOrUpdate(ctx: Context) {
 
 		let name, provider, isNew;
 
 		// make sure there's an app token
-		if (!req.appToken) {
+		if (!ctx.state.appToken) {
 			throw new ApiError('Resource only available with application token.').status(400);
 		}
-		provider = req.appToken.provider;
+		provider = ctx.state.appToken.provider;
 
 		// validations
 		let err = null;
@@ -189,7 +192,7 @@ export class UserApi extends Api<User> {
 			// check if username doesn't conflict
 			let newUser;
 			let originalName = name;
-			const dupeNameUser = await User.findOne({ name: name }).exec();
+			const dupeNameUser = await ctx.models.User.findOne({ name: name }).exec();
 			if (dupeNameUser) {
 				name += Math.floor(Math.random() * 1000);
 			}
@@ -209,11 +212,11 @@ export class UserApi extends Api<User> {
 				}
 			};
 			isNew = true;
-			user = await ctx.models.user.createUser(newUser, false);
+			user = await UserUtil.createUser(ctx, newUser as User, false);
 		}
 
 		// LogUser.success(req, user, 'provider_registration', { provider: provider, email: user.email });
-		return this.success(ctx, ctx.serializers.user.detailed(user, req), isNew ? 201 : 200);
+		return this.success(ctx, ctx.serializers.User.detailed(ctx, user), isNew ? 201 : 200);
 	}
 
 	/**
@@ -221,7 +224,7 @@ export class UserApi extends Api<User> {
 	 *
 	 * @param {Application/Context} ctx Koa context
 	 */
-	async list(ctx) {
+	async list(ctx: Context) {
 
 		const canList = ctx.state.user && await acl.isAllowed(ctx.state.user.id, 'users', 'list');
 		const canGetFullDetails = ctx.state.user && await acl.isAllowed(ctx.state.user.id, 'users', 'full-details');
@@ -237,16 +240,20 @@ export class UserApi extends Api<User> {
 			let q = ctx.request.query.q.trim().replace(/[^a-z0-9]+/gi, ' ').replace(/\s+/g, '.*');
 			let regex = new RegExp(q, 'i');
 			if (canList) {
-				query.push({ $or: [
-					{ name: regex },
-					{ username: regex },
-					{ email: regex }
-				]});
+				query.push({
+					$or: [
+						{ name: regex },
+						{ username: regex },
+						{ email: regex }
+					]
+				});
 			} else {
-				query.push({ $or: [
-					{ name: regex },
-					{ username: regex }
-				]});
+				query.push({
+					$or: [
+						{ name: regex },
+						{ username: regex }
+					]
+				});
 			}
 		}
 		if (ctx.request.query.name) {
@@ -257,12 +264,15 @@ export class UserApi extends Api<User> {
 		if (canList && ctx.request.query.roles) {
 			// sanitze and split
 			let roles = ctx.request.query.roles.trim().replace(/[^a-z0-9,-]+/gi, '').split(',');
-			query.push( { roles: { $in: roles }});
+			query.push({ roles: { $in: roles } });
 		}
 		let users = await ctx.models.User.find(this.searchQuery(query)).exec();
 
 		// reduce
-		users = users.map(user => canGetFullDetails ? ctx.serializers.user.detailed(user, ctx) : ctx.serializers.user.simple(user, ctx));
+		users = users.map(user => canGetFullDetails ?
+			ctx.serializers.User.detailed(ctx, user) :
+			ctx.serializers.User.simple(ctx, user)
+		);
 		return this.success(ctx, users);
 	}
 
@@ -272,12 +282,12 @@ export class UserApi extends Api<User> {
 	 *
 	 * @param {Application/Context} ctx Koa context
 	 */
-	async update(ctx) {
+	async update(ctx: Context) {
 
 		// TODO move into model
 		const updatableFields = ['name', 'email', 'username', 'is_active', 'roles', '_plan'];
 
-		const user = await User.findOne({ id: ctx.params.id }).exec();
+		const user: User = await ctx.models.User.findOne({ id: ctx.params.id }).exec();
 		if (!user) {
 			throw new ApiError('No such user.').status(404);
 		}
@@ -287,7 +297,7 @@ export class UserApi extends Api<User> {
 		// 1. check for changed read-only fields
 		const readOnlyFieldErrors = this.checkReadOnlyFields(ctx.request.body, user, updatableFields);
 		if (readOnlyFieldErrors) {
-			throw new ApiError('User tried to update read-only fields').validationErrors(readOnlyFieldErrors).warn('update');
+			throw new ApiError('User tried to update read-only fields').validationErrors(readOnlyFieldErrors).warn();
 		}
 
 		// 2. check for permission escalation
@@ -360,29 +370,24 @@ export class UserApi extends Api<User> {
 		// 7. if changer is not changed user, mark user as dirty
 		if (!ctx.state.user._id.equals(user._id)) {
 			logger.info('[api|user:update] Marking user <%s> as dirty.', user.email);
-			redis.set('dirty_user_' + user.id, new Date().getTime(), function() {
-				redis.expire('dirty_user_' + user.id, 10000, function() {
-					return api.success(res, UserSerializer.detailed(user, req), 200);
-				});
-			});
-		} else {
-			return api.success(res, UserSerializer.detailed(user, req), 200);
+			await this.redisSet('dirty_user_' + user.id, String(new Date().getTime()));
+			await this.redisExpire('dirty_user_' + user.id, 10000);
 		}
+		return this.success(ctx, ctx.serializers.User.detailed(ctx, user), 200);
 	}
-
 
 	/**
 	 * Returns user details for a given ID
 	 *
 	 * @param {Application/Context} ctx Koa context
 	 */
-	async view(ctx) {
+	async view(ctx:Context) {
 		const user = await ctx.models.User.findOne({ id: ctx.params.id }).exec();
 		if (!user) {
 			throw new ApiError('No such user').status(404);
 		}
 		const fullDetails = await acl.isAllowed(ctx.state.user.id, 'users', 'full-details');
-		return this.success(ctx, fullDetails ? ctx.serializers.user.detailed(user, ctx) : ctx.serializers.user.simple(user, ctx));
+		return this.success(ctx, fullDetails ? ctx.serializers.User.detailed(ctx, user) : ctx.serializers.User.simple(ctx, user));
 	}
 
 	/**
@@ -390,7 +395,7 @@ export class UserApi extends Api<User> {
 	 *
 	 * @param {Application/Context} ctx Koa context
 	 */
-	async del(ctx) {
+	async del(ctx:Context) {
 
 		const user = await ctx.models.User.findOne({ id: ctx.params.id }).exec();
 		if (!user) {
@@ -413,7 +418,7 @@ export class UserApi extends Api<User> {
 	 *
 	 * @param {Application/Context} ctx Koa context
 	 */
-	async sendConfirmationMail(ctx) {
+	async sendConfirmationMail(ctx:Context) {
 
 		const user = await ctx.models.User.findOne({ id: ctx.params.id }).exec();
 
@@ -427,10 +432,8 @@ export class UserApi extends Api<User> {
 		user.email_status.expires_at = new Date(new Date().getTime() + 86400000); // 1d valid
 
 		await user.save();
-		await mailer.registrationConfirmation(user);
+		await registrationConfirmation(user);
 
 		return this.success(ctx, null, 200);
 	};
 }
-
-module.exports = UserApi;

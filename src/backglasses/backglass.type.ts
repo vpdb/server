@@ -18,16 +18,17 @@
  */
 
 import { Types } from 'mongoose';
-import { Moderated } from '../common/mongoose-plugins/moderate';
+import { Moderated } from '../common/mongoose-plugins/moderate.type';
 import { User } from '../users/user.type';
 import { BackglassVersion } from './backglass.version.type';
-import { BackglassAuthor } from './backglass.author.type';
+import { ContentAuthor } from '../users/content.author.type';
+import { GameReference } from '../common/mongoose-plugins/game-ref';
 
-export interface Backglass extends Moderated {
+export interface Backglass extends Moderated, GameReference {
 	id: string,
 	versions: BackglassVersion[],
 	description: { type: String },
-	authors: BackglassAuthor[]
+	authors: ContentAuthor[]
 	acknowledgements: string,
 	counter: {
 		stars: number

@@ -65,7 +65,7 @@ export class Settings {
 	 * @returns {boolean}
 	 * @private
 	 */
-	_validate(validation, setting, path) {
+	_validate(validation: { [key: string]: any }, setting: { [key: string]: any }, path: string) {
 		let success = true;
 		let validationError, p, i, j;
 		for (let s of keys(validation)) {
@@ -128,7 +128,7 @@ export class Settings {
 		return success;
 	};
 
-	_logError(p, error, setting) {
+	_logError(p: string, error: { path: string, message: string, setting?: string }, setting: object | string) {
 		setting = !isUndefined(error.setting) ? error.setting : setting;
 		let s = isObject(setting) ? JSON.stringify(setting) : setting;
 		if (isObject(error)) {
@@ -153,7 +153,7 @@ export class Settings {
 	 * @param {string} path Path of the resource
 	 * @returns {string} Internal path
 	 */
-	apiPath(path) {
+	apiPath(path = '') {
 		return (this.current.vpdb.api.prefix || '') + this.current.vpdb.api.pathname + (path || '');
 	}
 
@@ -170,7 +170,7 @@ export class Settings {
 	 * @param {string} [path] Path of the resource
 	 * @returns {string} External URL
 	 */
-	storagePublicUri(path) {
+	storagePublicUri(path = '') {
 		return this.storageUri(this.current.vpdb.storage.public.api.pathname + (path || ''), 'public');
 	};
 
@@ -179,7 +179,7 @@ export class Settings {
 	 * @param {string} path Path of the resource
 	 * @returns {string} Internal path
 	 */
-	storagePublicPath(path) {
+	storagePublicPath(path = '') {
 		return (this.current.vpdb.storage.public.api.prefix || '') + this.current.vpdb.storage.public.api.pathname + (path || '');
 	}
 
@@ -188,7 +188,7 @@ export class Settings {
 	 * @param {string} [path] Path of the resource
 	 * @returns {string} External URL
 	 */
-	storageProtectedUri(path) {
+	storageProtectedUri(path = '') {
 		return this.storageUri(this.current.vpdb.storage.protected.api.pathname + (path || ''), 'protected');
 	}
 
@@ -197,7 +197,7 @@ export class Settings {
 	 * @param {string} path Path of the resource
 	 * @returns {string} Internal path
 	 */
-	storageProtectedPath(path) {
+	storageProtectedPath(path = '') {
 		return (this.current.vpdb.storage.protected.api.prefix || '') + this.current.vpdb.storage.protected.api.pathname + (path || '');
 	}
 
@@ -206,7 +206,7 @@ export class Settings {
 	 * @param {string} [path] Path of the URL
 	 * @returns {string}
 	 */
-	webUri(path) {
+	webUri(path = '') {
 		return this.current.vpdb.webapp.protocol + '://' +
 			this.current.vpdb.webapp.hostname +
 			(this.current.vpdb.webapp.port === 80 || this.current.vpdb.webapp.port === 443 ? '' : ':' + this.current.vpdb.webapp.port) +
@@ -219,7 +219,7 @@ export class Settings {
 	 * @param {string} visibility Either "public" or "protected", depending which API is demanded
 	 * @returns {string} Full URL
 	 */
-	storageUri(path, visibility) {
+	storageUri(path: string, visibility: 'public' | 'protected') {
 		let api = this.current.vpdb.storage[visibility].api;
 		return api.protocol + '://' + api.hostname + (api.port === 80 || api.port === 443 ? '' : ':' + api.port) + (path || '');
 	}
@@ -229,7 +229,7 @@ export class Settings {
 	 * @param internalPath
 	 * @returns {{protocol: string, hostname: string, port: number, pathname: string, prefix: string }|null} API or null if no match.
 	 */
-	getApi(internalPath) {
+	getApi(internalPath: string = null) {
 		if (!internalPath) {
 			return null;
 		}
@@ -249,7 +249,7 @@ export class Settings {
 	 * @param internalPath
 	 * @returns {string} External URL if an API could be matched, otherwise same string as given.
 	 */
-	intToExt(internalPath) {
+	intToExt(internalPath: string) {
 		let api = this.getApi(internalPath);
 		if (!api || !api.prefix) {
 			return internalPath;

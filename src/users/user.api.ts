@@ -28,7 +28,6 @@ import { ApiError } from '../common/api.error';
 const _ = require('lodash');
 const randomString = require('randomstring');
 const validator = require('validator');
-const removeDiacritics = require('passport').removeDiacritics;
 
 const acl = require('../common/acl');
 import { registrationConfirmation } from '../common/mailer';
@@ -36,8 +35,7 @@ import { logger } from '../common/logger';
 import { config } from '../common/settings';
 import { UserUtil } from './user.util';
 
-
-export class UserApi extends Api<User> {
+export class UserApi extends Api {
 
 	private readonly redisSet: any;
 	private readonly redisExpire: any;
@@ -142,7 +140,7 @@ export class UserApi extends Api<User> {
 			err = (err || new ApiError()).validationError('username', 'Username is required.');
 		} else if (!_.isString(ctx.request.body.username)) {
 			err = (err || new ApiError()).validationError('username', 'Username must be a string.');
-		} else if (!/^[0-9a-z ]{3,}$/i.test(removeDiacritics(ctx.request.body.username).replace(/[^0-9a-z ]+/gi, ''))) {
+		} else if (!/^[0-9a-z ]{3,}$/i.test(UserUtil.removeDiacritics(ctx.request.body.username).replace(/[^0-9a-z ]+/gi, ''))) {
 			err = (err || new ApiError()).validationError('username', 'Username must be alphanumeric with at least three characters.', ctx.request.body.username);
 		}
 		if (ctx.request.body.provider_profile && !_.isObject(ctx.request.body.provider_profile)) {
@@ -151,7 +149,7 @@ export class UserApi extends Api<User> {
 		if (err) {
 			throw err;
 		}
-		name = removeDiacritics(ctx.request.body.username).replace(/[^0-9a-z ]+/gi, '');
+		name = UserUtil.removeDiacritics(ctx.request.body.username).replace(/[^0-9a-z ]+/gi, '');
 
 		// create query condition
 		const query = {

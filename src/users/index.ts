@@ -30,7 +30,7 @@ import { UserSerializer } from './user.serializer';
 import { schema } from './user.schema';
 import { router } from './user.api.router';
 
-export class UserEndPoint implements EndPoint<User> {
+export class UserEndPoint implements EndPoint {
 
 	readonly name: string = 'users';
 

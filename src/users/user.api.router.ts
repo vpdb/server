@@ -29,3 +29,11 @@ router.get('/v1/users',        api.auth(api.list.bind(api), 'users', 'search', [
 router.get('/v1/users/:id',    api.auth(api.view.bind(api), 'users', 'view', [ Scope.ALL ]));
 router.put('/v1/users/:id',    api.auth(api.update.bind(api), 'users', 'update', [ Scope.ALL ]));
 router.del('/v1/users/:id',    api.auth(api.del.bind(api), 'users', 'delete', [ Scope.ALL ]));
+
+
+// router.post(settings.apiPath('/users/:id/star'),   api.auth(api.stars.star('user'), 'users', 'star', [ scope.ALL, scope.COMMUNITY ]));
+// router.delete(settings.apiPath('/users/:id/star'), api.auth(api.stars.unstar('user'), 'users', 'star', [ scope.ALL, scope.COMMUNITY ]));
+// router.get(settings.apiPath('/users/:id/star'),    api.auth(api.stars.get('user'), 'users', 'star', [ scope.ALL, scope.COMMUNITY ]));
+
+//router.get(settings.apiPath('/users/:id/events'),             api.anon(api.events.list({ byActor: true })));
+router.post(settings.apiPath('/users/:id/send-confirmation'), api.auth(api.sendConfirmationMail.bind(api), 'users', 'send-confirmation', [ Scope.ALL ]));

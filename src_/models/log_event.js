@@ -23,7 +23,7 @@ const _ = require('lodash');
 const logger = require('winston');
 const mongoose = require('mongoose');
 const paginate = require('mongoose-paginate');
-const slackbot = require('../modules/slackbot');
+const slackbot = require('../../src/common/slackbot');
 
 const Schema = mongoose.Schema;
 

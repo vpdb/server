@@ -18,6 +18,7 @@
  */
 
 import { Context as KoaContext } from 'koa';
+import { RedisClient } from 'redis';
 import { User } from '../../users/user.type';
 import { Models } from './models';
 import { Serializers } from './serializers';
@@ -33,6 +34,11 @@ export interface Context extends KoaContext {
 	 * Reference to all serializers
 	 */
 	serializers: Serializers;
+
+	/**
+	 * Promisified Redis client
+	 */
+	redis: RedisClient;
 
 	state: {
 		/**

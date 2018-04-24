@@ -39,7 +39,9 @@
 	},
 	"mod-project-name": "vpdb",
 	"dependencies": {
+		"@slack/client": "^4.1.0",
 		"acl": "^0.4.11",
+		"bluebird": "^3.5.1",
 		"handlebars": "^4.0.11",
 		"koa": "^2.5.0",
 		"koa-bodyparser": "^4.2.0",
@@ -50,6 +52,7 @@
 		"lodash": "^4.17.5",
 		"logform": "^1.4.2",
 		"mongoose": "^5.0.15",
+		"mongoose-paginate": "^5.0.3",
 		"mongoose-unique-validator": "^2.0.0",
 		"nodemailer": "^4.6.4",
 		"passport-github": "^1.1.0",
@@ -64,6 +67,7 @@
 	},
 	"devDependencies": {
 		"@types/acl": "^0.4.34",
+		"@types/bluebird": "^3.5.20",
 		"@types/handlebars": "^4.0.37",
 		"@types/koa": "^2.0.45",
 		"@types/koa-bodyparser": "^4.2.0",
@@ -73,6 +77,7 @@
 		"@types/lodash": "^4.14.107",
 		"@types/logform": "^1.2.0",
 		"@types/mongoose": "^5.0.10",
+		"@types/mongoose-paginate": "^5.0.6",
 		"@types/mongoose-unique-validator": "^1.0.1",
 		"@types/nodemailer": "^4.6.0",
 		"@types/passport": "^0.4.5",

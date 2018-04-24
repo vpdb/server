@@ -25,8 +25,13 @@ import { Models } from './common/types/models';
 import { Serializers } from './common/types/serializers';
 import { config } from './common/settings'
 import { logger } from './common/logger';
-
 const koaResponseTime = require('koa-response-time');
+
+import Redis = require('redis');
+import Bluebird = require('bluebird');
+import { RedisClient } from 'redis';
+Bluebird.promisifyAll((Redis as any).RedisClient.prototype);
+Bluebird.promisifyAll((Redis as any).Multi.prototype);
 
 export class Server {
 
@@ -40,9 +45,11 @@ export class Server {
 
 		this.app.context.models = {};
 		this.app.context.serializers = {};
+
+		this.app.context.redis = this.setupRedis();
 	}
 
-	public register<T>(endPoint: EndPoint<T>) {
+	public register<T>(endPoint: EndPoint) {
 		// routes
 		this.app.use(endPoint.getRouter().routes());
 		this.app.use(endPoint.getRouter().allowedMethods());
@@ -65,6 +72,14 @@ export class Server {
 
 	public serializers(): Serializers {
 		return this.app.context.serializers;
+	}
+
+	private setupRedis(): RedisClient {
+		const redis = Redis.createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
+		redis.select(config.vpdb.redis.db);
+		// todo better error handling (use raygun)
+		redis.on('error', err => logger.error(err.message));
+		return redis;
 	}
 }
 

@@ -17,20 +17,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { format } from 'util';
+import { format as sprintf } from 'util';
 import { isArray, isObject, forEach, compact } from 'lodash';
 
 export class ApiError extends Error {
 
 	public statusCode: number;
-	public body: object;
+	public data: { [key: string]: any };
 	private logLevel: string;
 	private responseMessage: string;
 	private errs: ApiValidationError[];
 	private fieldPrefix: string;
 
-	constructor(f?: any, ...param: any[]) {
-		super(format.apply(null, arguments));
+	constructor(format?: any, ...param: any[]) {
+		super(sprintf.apply(null, arguments));
 		this.statusCode = 0;
 		this.logLevel = null; // don't log per default
 	}
@@ -47,21 +47,23 @@ export class ApiError extends Error {
 
 	/**
 	 * Don't return original message but this (original message gets logged).
-	 * @param {string} message Response message
-	 * @returns {ApiError}
+	 *
+	 * @param format Message
+	 * @param param Parameters
+	 * @return {ApiError}
 	 */
-	display(message: string): ApiError {
-		this.responseMessage = message;
+	display(format?: any, ...param: any[]): ApiError {
+		this.responseMessage = sprintf.apply(null, arguments);
 		return this;
 	}
 
 	/**
-	 *
-	 * @param {object} body
+	 * Set response body
+	 * @param {object} data
 	 * @return {ApiError}
 	 */
-	data(body:object): ApiError {
-		this.body = body;
+	body(data: object): ApiError {
+		this.data = data;
 		return this;
 	}
 
@@ -90,7 +92,7 @@ export class ApiError extends Error {
 	 * @param {*} [value] Invalid value
 	 * @returns {ApiError}
 	 */
-	validationError(path:string, message:string, value?:any): ApiError {
+	validationError(path: string, message: string, value?: any): ApiError {
 		this.errs = this.errs || [];
 		this.errs.push({ path: path, message: message, value: value });
 		this.statusCode = 422;

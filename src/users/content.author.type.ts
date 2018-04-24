@@ -21,6 +21,16 @@ import { Document, Types } from 'mongoose';
 import { User } from './user.type';
 
 export interface ContentAuthor extends Document {
-	_user: User | Types.ObjectId,
-	roles: string[]
+	/**
+	 * User from database, full object if populated or `ObjectId` otherwise.
+	 */
+	_user?: User | Types.ObjectId;
+	/**
+	 * Roles the user had during the development of the content.
+	 */
+	roles: string[];
+	/**
+	 * Serialized user
+	 */
+	user?: User;
 }

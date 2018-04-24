@@ -25,7 +25,7 @@ import { ApiError, ApiValidationError } from './api.error';
 import Router from 'koa-router';
 
 
-export class Api<T> {
+export class Api {
 
 	/**
 	 * The API call was successful.

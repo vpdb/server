@@ -30,7 +30,7 @@ import { Serializers } from "./serializers";
  *    - Database model
  *    - Entity type
  */
-export interface EndPoint<T> {
+export interface EndPoint {
 
 	/**
 	 * The name (plural) of the end point.

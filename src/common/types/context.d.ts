@@ -17,23 +17,42 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { Context as KoaContext } from 'koa';
+import { User } from '../../users/user.type';
 import { Models } from './models';
 import { Serializers } from './serializers';
-import { User } from '../../users/user.type';
+import { Token } from '../../tokens/token.type';
 
+export interface Context extends KoaContext {
+	/**
+	 * Reference to all our database models.
+	 */
+	models: Models;
 
-// declare module 'koa' {
-//
-// 	interface Context {
-// 		/**
-// 		 * Reference to all our database models.
-// 		 */
-// 		models: Models;
-//
-// 		/**
-// 		 * Reference to all serializers
-// 		 */
-// 		serializers: Serializers;
-// 	}
-// }
-//
+	/**
+	 * Reference to all serializers
+	 */
+	serializers: Serializers;
+
+	state: {
+		/**
+		 * The currently logged user or null if not authenticated.
+		 */
+		user: User;
+
+		/**
+		 * If logged with an app token, this is it
+		 */
+		appToken: Token;
+
+		/**
+		 * The type of the token used for authentication
+		 */
+		tokenType: 'jwt-refreshed' | 'jwt' | 'application';
+
+		/**
+		 * If app token, the name of the auth provider, e.g. "github", "google".
+		 */
+		tokenProvider: string;
+	}
+}

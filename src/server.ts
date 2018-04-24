@@ -24,6 +24,9 @@ import { EndPoint } from './common/types/endpoint';
 import { Models } from './common/types/models';
 import { Serializers } from './common/types/serializers';
 import { config } from './common/settings'
+import { logger } from './common/logger';
+
+const koaResponseTime = require('koa-response-time');
 
 export class Server {
 
@@ -33,6 +36,7 @@ export class Server {
 		this.app = new Application();
 		this.app.use(koaLogger());
 		this.app.use(koaBodyParser());
+		this.app.use(koaResponseTime());
 
 		this.app.context.models = {};
 		this.app.context.serializers = {};
@@ -51,7 +55,7 @@ export class Server {
 	}
 
 	public start() {
-		console.log('Listening on port %s.', config.vpdb.api.port);
+		logger.info('Listening on port %s.', config.vpdb.api.port);
 		this.app.listen(config.vpdb.api.port);
 	}
 

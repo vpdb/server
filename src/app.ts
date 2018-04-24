@@ -24,6 +24,8 @@ import { UserEndPoint } from './users';
 import { config } from './common/settings';
 import { server } from './server';
 import { init as initAcls } from './common/acl';
+import { logger } from './common/logger';
+import { AuthenticationEndPoint } from './authentication';
 
 // links:
 //   - https://github.com/Microsoft/TypeScript-Node-Starter
@@ -32,15 +34,15 @@ import { init as initAcls } from './common/acl';
 (async () => {
 	try {
 
-		const endPoints:EndPoint<any>[] = [ new UserEndPoint() ];
+		const endPoints:EndPoint[] = [ new AuthenticationEndPoint(), new UserEndPoint() ];
 
 		// bootstrap models
-		console.log('Connecting to MongoDB...');
+		logger.info('Connecting to MongoDB...');
 		await mongoose.connect(config.vpdb.db);
 
 		// bootstrap endpoints
 		for (let endPoint of endPoints) {
-			console.log('Registering end point %s...', endPoint.name);
+			logger.info('Registering end point %s...', endPoint.name);
 			server.register(endPoint);
 		}
 

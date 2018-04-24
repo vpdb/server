@@ -1,6 +1,6 @@
 /*
- * VPDB - Visual Pinball Database
- * Copyright (C) 2016 freezy <freezy@xbmc.org>
+ * VPDB - Virtual Pinball Database
+ * Copyright (C) 2018 freezy <freezy@vpdb.io>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,8 +18,8 @@
  */
 
 import { ModelProperties, Schema, Types, Document } from 'mongoose';
-import { Context } from 'koa';
 import { isArray, isObject, isEmpty, assign, map } from 'lodash';
+import { Context } from '../types/context';
 import { server } from '../../server';
 import { config } from '../settings';
 import { Game } from '../../games/game.type';

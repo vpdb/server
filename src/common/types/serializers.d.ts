@@ -17,8 +17,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { UserSerializer } from "../../users/user.serializer";
+import { UserSerializer } from '../../users/user.serializer';
+import { FileSerializer } from '../../files/file.serializer';
 
 export interface Serializers {
+	File: FileSerializer;
 	User: UserSerializer;
 }

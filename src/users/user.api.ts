@@ -17,18 +17,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { promisify } from 'util';
-import redis from 'redis';
-
 import { Context } from '../common/types/context';
 import { User } from './user.type';
 import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
-
-const _ = require('lodash');
-const randomString = require('randomstring');
-const validator = require('validator');
-
 import { registrationConfirmation } from '../common/mailer';
 import { acl } from '../common/acl';
 import { logger } from '../common/logger';
@@ -36,21 +28,11 @@ import { config } from '../common/settings';
 import { UserUtil } from './user.util';
 import { LogUserUtil } from '../log-user/log.user.util';
 
+const _ = require('lodash');
+const randomString = require('randomstring');
+const validator = require('validator');
+
 export class UserApi extends Api {
-
-	private readonly redisSet: any;
-	private readonly redisExpire: any;
-
-	constructor() {
-		super();
-
-		const redisClient = redis.createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
-		redisClient.select(config.vpdb.redis.db);
-		redisClient.on('error', err => logger.error(err.message));
-
-		this.redisSet = promisify(redisClient.set).bind(redisClient);
-		this.redisExpire = promisify(redisClient.expire).bind(redisClient);
-	}
 
 	/**
 	 * Creates a new user.
@@ -292,9 +274,7 @@ export class UserApi extends Api {
 	 */
 	public async update(ctx: Context) {
 
-		// TODO move into model
 		const updatableFields = ['name', 'email', 'username', 'is_active', 'roles', '_plan'];
-
 		const user: User = await ctx.models.User.findOne({ id: ctx.params.id }).exec();
 		if (!user) {
 			throw new ApiError('No such user.').status(404);
@@ -377,8 +357,8 @@ export class UserApi extends Api {
 		// 7. if changer is not changed user, mark user as dirty
 		if (!ctx.state.user._id.equals(user._id)) {
 			logger.info('[api|user:update] Marking user <%s> as dirty.', user.email);
-			await this.redisSet('dirty_user_' + user.id, String(new Date().getTime()));
-			await this.redisExpire('dirty_user_' + user.id, 10000);
+			await ctx.redis.setAsync('dirty_user_' + user.id, String(new Date().getTime()));
+			await ctx.redis.expireAsync('dirty_user_' + user.id, 10000);
 		}
 		return this.success(ctx, ctx.serializers.User.detailed(ctx, user), 200);
 	}

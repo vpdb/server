@@ -1,3 +1,5 @@
+import { keys } from 'lodash';
+
 /*
  * VPDB - Visual Pinball Database
  * Copyright (C) 2016 freezy <freezy@xbmc.org>
@@ -17,12 +19,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-'use strict';
-
 /**
  * This are the allowed MIME types.
  */
-module.exports = {
+export const mimeTypes: { [key: string]: MimeType } = {
 	'image/jpeg': {
 		name: 'JPEG image',
 		ext: 'jpg',
@@ -114,3 +114,11 @@ module.exports = {
 		category: 'text'
 	}
 };
+
+export const mimeTypeNames = keys(mimeTypes);
+
+export interface MimeType {
+	name: string,
+	ext: string,
+	category: 'image' | 'text' | 'video' | 'audio' | 'script' | 'archive' | 'directb2s' | 'table';
+}

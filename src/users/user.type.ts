@@ -18,7 +18,7 @@
  */
 
 import { Document } from 'mongoose';
-import { VpdbQuoteConfigPlan } from '../common/types/config';
+import { VpdbQuotaConfigPlan } from '../common/types/config';
 
 /**
  * The user model as it comes from the database.
@@ -59,7 +59,7 @@ export interface User extends Document {
 	};
 	[key:string]:any;
 
-	planConfig?:VpdbQuoteConfigPlan;
+	planConfig?:VpdbQuotaConfigPlan;
 
 	/**
 	 * Checks if the passwords are the same

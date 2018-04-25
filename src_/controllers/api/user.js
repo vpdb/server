@@ -33,7 +33,7 @@ const api = require('./api');
 const auth = require('../auth');
 
 const scope = require('../../../src/common/scope');
-const quota = require('../../modules/quota');
+const quota = require('../../../src/common/quota');
 const pusher = require('../../modules/pusher');
 const mailer = require('../../../src/common/mailer');
 const error = require('../../modules/error')('api', 'user');

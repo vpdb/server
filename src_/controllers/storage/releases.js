@@ -35,7 +35,7 @@ const Backglass = require('mongoose').model('Backglass');
 const ReleaseSerializer = require('../../serializers/release.serializer');
 const ImageProcessor = require('../../modules/processor/image');
 
-const quota = require('../../modules/quota');
+const quota = require('../../../src/common/quota');
 const flavor = require('../../modules/flavor');
 const error = require('../../modules/error')('storage', 'release');
 const api = require('../api/api');

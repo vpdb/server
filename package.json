@@ -1,8 +1,8 @@
 {
 	"name": "vpdb",
-	"version": "v1.0.5",
+	"version": "v2.0.0",
 	"description": "Virtual Pinball Database",
-	"main": "src/app.js",
+	"main": "src/app.ts",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/vpdb/server"
@@ -12,18 +12,19 @@
 		"vp10",
 		"vpx"
 	],
-	"author": "freezy",
+	"author": "freezy <freezy@vpdb.io>",
 	"license": "GPL-2.0",
 	"bugs": {
 		"url": "https://github.com/vpdb/server/issues"
 	},
 	"scripts": {
 		"start": "node src/app.js",
-		"serve:dev": "nodemon --config deploy/nodemon/dev.json --exec node --inspect src/app.js",
+		"serve:dev": "nodemon --config deploy/nodemon/dev.json --exec ts-node src/app",
 		"serve:test": "nyc --reporter=lcov --reporter=html node app.js",
 		"serve:test:debug": "node --inspect app.js",
 		"serve:protractor": "cross-env NODE_ENV=test APP_SETTINGS=src/config/settings-protractor.js PORT=7357 APP_NAME=local run-s test:dropdbs start",
 		"build:lint": "eslint src/**/*.js",
+		"build:prod": "tsc src/** ",
 		"test:dropdbs": "node deploy/tools/dropdb",
 		"test:rimraf": "rimraf .nyc_output coverage",
 		"test:wait": "node deploy/tools/wait",
@@ -65,6 +66,7 @@
 		"sqreen": "^1.17.1",
 		"uglify-js": "^3.3.21",
 		"validator": "^9.4.1",
+		"volos-quota-redis": "^0.11.2",
 		"winston": "^3.0.0-rc5"
 	},
 	"devDependencies": {

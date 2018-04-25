@@ -1,3 +1,5 @@
+import { keys } from 'lodash';
+
 /*
  * VPDB - Visual Pinball Database
  * Copyright (C) 2016 freezy <freezy@xbmc.org>
@@ -17,13 +19,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-'use strict';
-
-const _ = require('lodash');
 /**
  * This are the allowed file types.
  */
-exports.values = {
+export const fileTypes:{[key:string]: FileType} = {
 
 	'backglass': {
 		mimeTypes: [ 'image/jpeg', 'image/png', 'application/x-directb2s' ]
@@ -51,14 +50,16 @@ exports.values = {
 	}
 };
 
-exports.keys = function() {
-	return _.keys(exports.values);
-};
+export const fileTypeNames = keys(fileTypes);
 
-exports.mimeTypes = function(type) {
-	return exports.values[type].mimeTypes;
-};
+export function fileTypeMimeTypes(type:string) {
+	return fileTypes[type].mimeTypes;
+}
 
-exports.exists = function(type) {
-	return exports.values[type] ? true : false;
-};
+export function fileTypeExists(type:string) {
+	return !!fileTypes[type];
+}
+
+export interface FileType {
+	mimeTypes: string[];
+}

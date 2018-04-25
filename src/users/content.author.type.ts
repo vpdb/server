@@ -17,14 +17,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document, Types } from 'mongoose';
+import { Document, Schema } from 'mongoose';
 import { User } from './user.type';
 
 export interface ContentAuthor extends Document {
 	/**
 	 * User from database, full object if populated or `ObjectId` otherwise.
 	 */
-	_user?: User | Types.ObjectId;
+	_user?: User | Schema.Types.ObjectId;
 	/**
 	 * Roles the user had during the development of the content.
 	 */

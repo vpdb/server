@@ -18,7 +18,7 @@
  */
 
 
-import { Document, Types } from 'mongoose';
+import { Document, Schema } from 'mongoose';
 import { User } from '../users/user.type';
 import { Game } from '../games/game.type';
 import { Release } from '../releases/release.type';
@@ -26,13 +26,13 @@ import { Medium } from '../media/medium.type';
 import { Backglass } from '../backglasses/backglass.type';
 
 export interface Star extends Document {
-	_from: User | Types.ObjectId,
+	_from: User | Schema.Types.ObjectId,
 	_ref: {
-		game: Game | Types.ObjectId,
-		release: Release | Types.ObjectId,
-		user: User | Types.ObjectId,
-		medium: Medium | Types.ObjectId,
-		backglass: Backglass | Types.ObjectId,
+		game: Game | Schema.Types.ObjectId,
+		release: Release | Schema.Types.ObjectId,
+		user: User | Schema.Types.ObjectId,
+		medium: Medium | Schema.Types.ObjectId,
+		backglass: Backglass | Schema.Types.ObjectId,
 	},
 	type: 'game' | 'release' | 'user' | 'medium' | 'backglass',
 	created_at: Date

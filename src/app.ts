@@ -19,13 +19,14 @@
 
 import mongoose from 'mongoose';
 
-import { EndPoint } from './common/types/endpoint';
-import { UserEndPoint } from './users';
-import { config } from './common/settings';
 import { server } from './server';
+import { config } from './common/settings';
 import { init as initAcls } from './common/acl';
 import { logger } from './common/logger';
+import { EndPoint } from './common/types/endpoint';
 import { AuthenticationEndPoint } from './authentication';
+import { LogUserEndPoint } from './log-user';
+import { UserEndPoint } from './users';
 
 // links:
 //   - https://github.com/Microsoft/TypeScript-Node-Starter
@@ -33,16 +34,22 @@ import { AuthenticationEndPoint } from './authentication';
 //   - https://gist.github.com/brennanMKE/ee8ea002d305d4539ef6
 (async () => {
 	try {
+		logger.info('[app] Starting up...');
 
-		const endPoints:EndPoint[] = [ new AuthenticationEndPoint(), new UserEndPoint() ];
+		const endPoints:EndPoint[] = [ new AuthenticationEndPoint(), new UserEndPoint(), new LogUserEndPoint() ];
 
 		// bootstrap models
-		logger.info('Connecting to MongoDB...');
+		logger.info('[app] Connecting to MongoDB...');
 		await mongoose.connect(config.vpdb.db);
 
 		// bootstrap endpoints
 		for (let endPoint of endPoints) {
-			logger.info('Registering end point %s...', endPoint.name);
+			if (endPoint.paths.length) {
+				logger.info('[app] Registering end-point %s at %s', endPoint.name, endPoint.paths.join(', '));
+			} else {
+				logger.info('[app] Registering end-point %s', endPoint.name);
+			}
+
 			server.register(endPoint);
 		}
 

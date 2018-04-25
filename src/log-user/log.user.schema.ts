@@ -17,15 +17,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Schema, Types } from 'mongoose';
+import { Schema } from 'mongoose';
 import paginate = require('mongoose-paginate');
 
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
 const fields = {
-	_user: { type: Types.ObjectId, required: true, ref: 'User', index: true },
-	_actor: { type: Types.ObjectId, required: true, ref: 'User', index: true },
+	_user: { type: Schema.Types.ObjectId, required: true, ref: 'User', index: true },
+	_actor: { type: Schema.Types.ObjectId, required: true, ref: 'User', index: true },
 	event: { type: String, index: true },
 	payload: {},
 	result: { type: String, 'enum': ['success', 'failure'], required: true },

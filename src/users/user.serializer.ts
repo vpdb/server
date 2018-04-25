@@ -17,15 +17,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { assign, pick, find, uniq, mapValues } from 'lodash';
+import { assign, pick, find, uniq, mapValues, pickBy, isEmpty } from 'lodash';
+import { createHash } from 'crypto';
+import { config } from '../common/settings';
 import { Context } from '../common/types/context';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { User, UserCounter } from './user.type';
 
-const crypto = require('crypto');
-
 //const pusher = require('../../src_/modules/pusher');
-const config = require('../common/settings').current;
 
 export class UserSerializer extends Serializer<User> {
 
@@ -37,7 +36,7 @@ export class UserSerializer extends Serializer<User> {
 		const user: User = pick(doc, ['id', 'name', 'username']) as User;
 
 		// gravatar
-		user.gravatar_id = doc.email ? crypto.createHash('md5').update(doc.email.toLowerCase()).digest('hex') : null;
+		user.gravatar_id = doc.email ? createHash('md5').update(doc.email.toLowerCase()).digest('hex') : null;
 
 		// provider id
 		if (ctx.state.tokenType === 'application' && doc.providers[ctx.state.tokenProvider]) {
@@ -96,7 +95,7 @@ export class UserSerializer extends Serializer<User> {
 		}
 
 		// provider data
-		user.providers = mapValues(doc.providers, val => pick(val, ['id', 'name', 'emails', 'created_at', 'modified_at']));
+		user.providers = pickBy(mapValues(doc.providers, val => pick(val, ['id', 'name', 'emails', 'created_at', 'modified_at'])), o => !isEmpty(o));
 
 		return user;
 	}

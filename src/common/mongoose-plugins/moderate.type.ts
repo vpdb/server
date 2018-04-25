@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document, Types } from 'mongoose';
+import { Document, Schema } from 'mongoose';
 import { Context } from '../types/context';
 import { User } from '../../users/user.type';
 
@@ -27,7 +27,7 @@ import { User } from '../../users/user.type';
 export interface Moderated extends Document {
 
 	moderation: ModerationData,
-	_created_by: User | Types.ObjectId,
+	_created_by: User | Schema.Types.ObjectId,
 
 	/**
 	 * Returns the query used for listing only approved entities.
@@ -107,7 +107,7 @@ export interface ModerationData extends Document {
 		event: 'approved' | 'refused' | 'pending';
 		message?: string;
 		created_at: Date;
-		_created_by?: User | Types.ObjectId;
+		_created_by?: User | Schema.Types.ObjectId;
 		created_by?: User;
 	}[]
 }

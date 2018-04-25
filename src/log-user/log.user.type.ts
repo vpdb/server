@@ -17,12 +17,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document, Types } from 'mongoose';
+import { Document, Schema } from 'mongoose';
 import { User } from '../users/user.type';
 
 export interface LogUser extends Document {
-	_user: User | Types.ObjectId;
-	_actor: User | Types.ObjectId;
+	_user: User | Schema.Types.ObjectId;
+	_actor: User | Schema.Types.ObjectId;
 	event: string;
 	payload: { [key: string]: any };
 	result: 'success' | 'failure';

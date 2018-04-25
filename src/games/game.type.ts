@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document, Types } from 'mongoose';
+import { Document, Schema } from 'mongoose';
 import { File } from '../files/file.type';
 import { User } from '../users/user.type';
 
@@ -28,8 +28,8 @@ export interface Game extends Document {
 	year: number,
 	manufacturer: string,
 	game_type: 'ss' | 'em' | 'pm' | 'og' | 'na',
-	_backglass: File | Types.ObjectId,
-	_logo: File | Types.ObjectId,
+	_backglass: File | Schema.Types.ObjectId,
+	_logo: File | Schema.Types.ObjectId,
 	short: Array<string>,
 	description: string,
 	instructions: string,
@@ -72,7 +72,7 @@ export interface Game extends Document {
 	},
 	modified_at: Date,
 	created_at: Date,
-	_created_by: User | Types.ObjectId;
+	_created_by: User | Schema.Types.ObjectId;
 
 	isRestricted(what:string):boolean;
 }

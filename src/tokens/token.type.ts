@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document, Types } from 'mongoose';
+import { Document, Schema } from 'mongoose';
 import { User } from '../users/user.type';
 
 export interface Token extends Document {
@@ -31,5 +31,5 @@ export interface Token extends Document {
 	last_used_at: Date,
 	expires_at: Date,
 	created_at: Date,
-	_created_by: User | Types.ObjectId
+	_created_by: User | Schema.Types.ObjectId
 }

@@ -28,10 +28,18 @@ import { User } from '../users/user.type';
 import { UserUtil } from '../users/user.util';
 import { LogUserUtil } from '../log-user/log.user.util';
 import { scope } from '../common/scope';
+import { AuthenticationUtil } from './authentication.util';
 
 export class AuthenticationApi extends Api {
 
-	async authenticate(ctx: Context) {
+	/**
+	 * Authenticates a user with local credentials or a login token.
+	 *
+	 * @see /v1/authenticate
+	 * @param {Context} ctx
+	 * @returns {Promise<boolean>}
+	 */
+	public async authenticate(ctx: Context) {
 		const ipAddress = ctx.ip || ctx.request.get('x-forwarded-for') || '0.0.0.0';
 		const backoffNumDelay = config.vpdb.loginBackoff.keep;
 		const backoffDelay = config.vpdb.loginBackoff.delay;
@@ -70,14 +78,14 @@ export class AuthenticationApi extends Api {
 			// generate token and return.
 			const now = new Date();
 			const expires = new Date(now.getTime() + config.vpdb.apiTokenLifetime);
-			const token = auth.generateApiToken(authenticatedUser, now, how !== 'password');
+			const token = AuthenticationUtil.generateApiToken(authenticatedUser, now, how !== 'password');
 
 			await LogUserUtil.success(ctx, authenticatedUser, 'authenticate', { provider: 'local', how: how });
-			logger.info('[api|user:authenticate] User <%s> successfully authenticated using %s.', user.email, how);
+			logger.info('[api|user:authenticate] User <%s> successfully authenticated using %s.', authenticatedUser.email, how);
 			if (config.vpdb.services.sqreen.enabled) {
 				require('sqreen').auth_track(true, { email: authenticatedUser.email });
 			}
-			const acls = await getACLs(authenticatedUser);
+			const acls = await UserUtil.getACLs(authenticatedUser);
 			const response = {
 				token: token,
 				expires: expires,
@@ -88,7 +96,7 @@ export class AuthenticationApi extends Api {
 				require('sqreen').auth_track(true, { email: authenticatedUser.email });
 			}
 
-			this.success(ctx, response, 200);
+			return this.success(ctx, response, 200);
 
 		} catch (err) {
 			const num: number = await ctx.redis.incrAsync(backoffNumKey);
@@ -99,7 +107,7 @@ export class AuthenticationApi extends Api {
 				await ctx.redis.expireAsync(backoffDelayKey, wait);
 			}
 			if (num === 1) {
-				return ctx.redis.expireAsync(backoffNumKey, backoffNumDelay);
+				await ctx.redis.expireAsync(backoffNumKey, backoffNumDelay);
 			}
 			throw err;
 		}
@@ -112,12 +120,11 @@ export class AuthenticationApi extends Api {
 	 * @throws {ApiError} If credentials provided but authentication failed.
 	 * @return {User | null} User if found and authenticated, null if no credentials provided.
 	 */
-	async authenticateLocally(ctx: Context): Promise<User> {
+	private async authenticateLocally(ctx: Context): Promise<User> {
 		// try to authenticate with user/pass
 		if (!ctx.request.body.username || !ctx.request.body.password) {
 			return null;
 		}
-		// todo fix antiBruteForce = true;
 		const localUser = await ctx.models.User.findOne({ username: ctx.request.body.username }).exec();
 		if (localUser && localUser.authenticate(ctx.request.body.password)) {
 			// all good, return.
@@ -146,7 +153,7 @@ export class AuthenticationApi extends Api {
 	 * @return {Promise<User>} Authenticated user
 	 * @throws {ApiError} When authentication failed or no login token was provided.
 	 */
-	async authenticateWithToken(ctx: Context) {
+	private async authenticateWithToken(ctx: Context) {
 		// if no token provided, fail fast.
 		if (!ctx.request.body.token) {
 			throw new ApiError('Ignored incomplete authentication request')
@@ -170,28 +177,28 @@ export class AuthenticationApi extends Api {
 		// fail if invalid type
 		if (token.type !== 'personal') {
 			if (config.vpdb.services.sqreen.enabled) {
-				require('sqreen').auth_track(false, { email: token._created_by.email });
+				require('sqreen').auth_track(false, { email: (token._created_by as User).email });
 			}
 			throw new ApiError('Cannot use token of type "%s" for authentication (must be of type "personal").', token.type).status(401);
 		}
 		// fail if not login token
 		if (!scope.isIdentical(token.scopes, ['login'])) {
 			if (config.vpdb.services.sqreen.enabled) {
-				require('sqreen').auth_track(false, { email: token._created_by.email });
+				require('sqreen').auth_track(false, { email: (token._created_by as User).email });
 			}
 			throw new ApiError('Token to exchange for JWT must exclusively be "login" ([ "' + token.scopes.join('", "') + '" ] given).').status(401);
 		}
 		// fail if token expired
 		if (token.expires_at.getTime() < new Date().getTime()) {
 			if (config.vpdb.services.sqreen.enabled) {
-				require('sqreen').auth_track(false, { email: token._created_by.email });
+				require('sqreen').auth_track(false, { email: (token._created_by as User).email });
 			}
 			throw new ApiError('Token has expired.').status(401);
 		}
 		// fail if token inactive
 		if (!token.is_active) {
 			if (config.vpdb.services.sqreen.enabled) {
-				require('sqreen').auth_track(false, { email: token._created_by.email });
+				require('sqreen').auth_track(false, { email: (token._created_by as User).email });
 			}
 			throw new ApiError('Token is inactive.').status(401);
 		}
@@ -207,7 +214,7 @@ export class AuthenticationApi extends Api {
 	 * @throws {ApiError} When user is inactive
 	 * @return {Promise<void>}
 	 */
-	async assetUserIsActive(ctx: Context, user: User): Promise<void> {
+	private async assetUserIsActive(ctx: Context, user: User): Promise<void> {
 		if (!user.is_active) {
 			if (config.vpdb.services.sqreen.enabled) {
 				require('sqreen').auth_track(false, { email: user.email });

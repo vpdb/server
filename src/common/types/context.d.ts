@@ -52,9 +52,12 @@ export interface Context extends KoaContext {
 		appToken: Token;
 
 		/**
-		 * The type of the token used for authentication
+		 * The type of the token used for authentication.
+		 * One of: [ `jwt-refreshed`, `jwt`, `application` ]
 		 */
-		tokenType: 'jwt-refreshed' | 'jwt' | 'application';
+		tokenType: string;
+
+		tokenScopes: string[];
 
 		/**
 		 * If app token, the name of the auth provider, e.g. "github", "google".

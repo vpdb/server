@@ -146,7 +146,7 @@ Strategy.prototype.userProfile = function(accessToken, done) {
 /**
  * Framework version.
  */
-require('pkginfo')(module, 'version');
+//require('pkginfo')(module, 'version');
 
 /**
  * Expose constructors.

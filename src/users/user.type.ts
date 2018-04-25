@@ -18,6 +18,7 @@
  */
 
 import { Document } from 'mongoose';
+import { VpdbQuoteConfigPlan } from '../common/types/config';
 
 /**
  * The user model as it comes from the database.
@@ -57,6 +58,8 @@ export interface User extends Document {
 		push_notifications_enabled: boolean;
 	};
 	[key:string]:any;
+
+	planConfig?:VpdbQuoteConfigPlan;
 
 	/**
 	 * Checks if the passwords are the same

@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import mongoose, { Model, Schema, Types } from 'mongoose';
+import mongoose, { Model, Schema } from 'mongoose';
 import { assign, includes, isArray, isObject } from 'lodash';
 
 import { Context } from '../types/context';
@@ -63,7 +63,7 @@ export function moderatePlugin(schema: Schema) {
 				event: { type: String, 'enum': ['approved', 'refused', 'pending'], required: true },
 				message: { type: String },
 				created_at: { type: Date },
-				_created_by: { type: Types.ObjectId, ref: 'User' }
+				_created_by: { type: Schema.Types.ObjectId, ref: 'User' }
 			}]
 		}
 	});
@@ -190,15 +190,15 @@ export function moderatePlugin(schema: Schema) {
 				if (!ctx.request.body.message) {
 					throw new ApiError('Validations failed.').validationError('message', 'A message must be provided when refusing.', ctx.request.body.message);
 				}
-				moderation = await entity.refuse(ctx.state.user, ctx.state.body.message);
+				moderation = await entity.refuse(ctx.state.user, ctx.request.body.message);
 				break;
 
 			case 'approve':
-				moderation = await entity.approve(ctx.state.user, ctx.state.body.message);
+				moderation = await entity.approve(ctx.state.user, ctx.request.body.message);
 				break;
 
 			case 'moderate':
-				moderation = await entity.moderate(ctx.state.user, ctx.state.body.message);
+				moderation = await entity.moderate(ctx.state.user, ctx.request.body.message);
 				break;
 		}
 

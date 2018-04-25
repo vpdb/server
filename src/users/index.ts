@@ -18,21 +18,20 @@
  */
 
 import { Schema } from 'mongoose';
-import mongoose = require('mongoose');
 import Router from 'koa-router';
 
-import { Models } from '../common/types/models';
-import { Serializers } from '../common/types/serializers';
 import { EndPoint } from '../common/types/endpoint';
-
 import { User } from './user.type';
 import { UserSerializer } from './user.serializer';
 import { schema } from './user.schema';
-import { router } from './user.api.router';
+import { router, prefixes } from './user.api.router';
+import mongoose = require('mongoose');
+import Application = require('koa');
 
 export class UserEndPoint implements EndPoint {
 
 	readonly name: string = 'users';
+	readonly paths: string[] = prefixes;
 
 	private readonly _router: Router;
 	private readonly _schema: Schema;
@@ -46,11 +45,8 @@ export class UserEndPoint implements EndPoint {
 		return this._router;
 	}
 
-	registerModel(models: Models) {
-		models.User = mongoose.model<User>('User', this._schema);
-	}
-
-	registerSerializer(serializers: Serializers): void {
-		serializers.User = new UserSerializer();
+	register(app: Application): void {
+		app.context.models.User = mongoose.model<User>('User', this._schema);
+		app.context.serializers.User = new UserSerializer();
 	}
 }

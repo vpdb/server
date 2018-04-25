@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Types } from 'mongoose';
+import { Schema } from 'mongoose';
 import { Moderated } from '../common/mongoose-plugins/moderate.type';
 import { User } from '../users/user.type';
 import { BackglassVersion } from './backglass.version.type';
@@ -34,5 +34,5 @@ export interface Backglass extends Moderated, GameReference {
 		stars: number
 	},
 	created_at: Date,
-	_created_by: User | Types.ObjectId
+	_created_by: User | Schema.Types.ObjectId
 }

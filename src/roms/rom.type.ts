@@ -17,13 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document, Types } from 'mongoose';
+import { Document, Schema } from 'mongoose';
 import { File } from '../files/file.type';
 import { User } from '../users/user.type';
 
 export interface Rom extends Document {
 	id: string,
-	_file: File | Types.ObjectId,
+	_file: File | Schema.Types.ObjectId,
 	_ipdb_number: number,
 	rom_files: {
 		filename: string,
@@ -35,5 +35,5 @@ export interface Rom extends Document {
 	languages: string[],
 	notes: string,
 	created_at: Date,
-	_created_by: User | Types.ObjectId
+	_created_by: User | Schema.Types.ObjectId
 }

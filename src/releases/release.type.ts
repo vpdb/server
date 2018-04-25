@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Types } from 'mongoose';
+import { Schema } from 'mongoose';
 import { Moderated } from '../common/mongoose-plugins/moderate.type';
 import { User } from '../users/user.type';
 import { ReleaseVersion } from './release.version.type';
@@ -33,14 +33,14 @@ export interface Release extends Moderated, GameReference {
 	description: string,
 	versions: ReleaseVersion[],
 	authors: ContentAuthor[],
-	_tags: Tag[] | Types.ObjectId
+	_tags: Tag[] | Schema.Types.ObjectId
 	links: {
 		label: string,
 		url: string
 	}[],
 	acknowledgements: string,
 	original_version: {
-		_ref: Release | Types.ObjectId,
+		_ref: Release | Schema.Types.ObjectId,
 		release: {
 			name: string,
 			url: string,
@@ -63,5 +63,5 @@ export interface Release extends Moderated, GameReference {
 	released_at: Date,
 	modified_at: Date,
 	created_at: Date,
-	_created_by: User | Types.ObjectId
+	_created_by: User | Schema.Types.ObjectId
 }

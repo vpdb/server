@@ -17,16 +17,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document, Types } from 'mongoose';
+import { Document, Schema } from 'mongoose';
 import { User } from '../users/user.type';
 import { Release } from '../releases/release.type';
 
 export interface Comment extends Document {
 	id: string,
-	_from: User | Types.ObjectId
+	_from: User | Schema.Types.ObjectId
 	_ref: {
-		release: Release | Types.ObjectId
-		release_moderation: Release | Types.ObjectId
+		release: Release | Schema.Types.ObjectId
+		release_moderation: Release | Schema.Types.ObjectId
 	},
 	message: string,
 	ip: string,

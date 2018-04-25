@@ -18,11 +18,11 @@
  */
 
 import { User } from '../users/user.type';
-import { Document, Types } from 'mongoose';
+import { Document, Schema } from 'mongoose';
 
 export interface Medium extends Document {
-	_user: User | Types.ObjectId,
-	_actor: User | Types.ObjectId,
+	_user: User | Schema.Types.ObjectId,
+	_actor: User | Schema.Types.ObjectId,
 	event: string,
 	payload: any,
 	result: 'success' | 'failure',

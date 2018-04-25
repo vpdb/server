@@ -29,11 +29,12 @@ const _ = require('lodash');
 const randomString = require('randomstring');
 const validator = require('validator');
 
-const acl = require('../common/acl');
 import { registrationConfirmation } from '../common/mailer';
+import { acl } from '../common/acl';
 import { logger } from '../common/logger';
 import { config } from '../common/settings';
 import { UserUtil } from './user.util';
+import { LogUserUtil } from '../log-user/log.user.util';
 
 export class UserApi extends Api {
 
@@ -54,12 +55,13 @@ export class UserApi extends Api {
 	/**
 	 * Creates a new user.
 	 *
+	 * @see POST /v1/users
 	 * @param {Application.Context} ctx Koa context
 	 * @return {Promise<boolean>}
 	 */
-	async create(ctx: Context) {
+	public async create(ctx: Context) {
 
-		const newUser = _.assignIn(_.pick(ctx.request.body, 'username', 'password', 'email'), {
+		const newUser:User = _.assignIn(_.pick(ctx.request.body, 'username', 'password', 'email'), {
 			is_local: true,
 			name: ctx.request.body.name || ctx.request.body.username
 		});
@@ -86,11 +88,11 @@ export class UserApi extends Api {
 			require('sqreen').signup_track({ email: user.email });
 		}
 
-		// LogUser.success(req, user, 'registration', {
-		// 	provider: 'local',
-		// 	email: newUser.email,
-		// 	username: newUser.username
-		// });
+		await LogUserUtil.success(ctx, user, 'registration', {
+			provider: 'local',
+			email: newUser.email,
+			username: newUser.username
+		});
 
 		// user validated and created. time to send the activation email.
 		if (config.vpdb.email.confirmUserEmail) {
@@ -111,9 +113,11 @@ export class UserApi extends Api {
 	 *
 	 * This is only accessible by registered OAuth providers.
 	 *
-	 * @param {Application/Context} ctx Koa context
+	 * @see PUT /v1/users
+	 * @param {Application.Context} ctx Koa context
+	 * @return {Promise<boolean>}
 	 */
-	async createOrUpdate(ctx: Context) {
+	public async createOrUpdate(ctx: Context) {
 
 		let name, provider, isNew;
 
@@ -173,13 +177,13 @@ export class UserApi extends Api {
 					modified_at: new Date(),
 					profile: ctx.request.body.provider_profile
 				};
-				// LogUser.success(req, existingUser, 'provider_add', {
-				// 	provider: provider,
-				// 	profile: ctx.request.body.provider_profile
-				// });
+				await LogUserUtil.success(ctx, existingUser, 'provider_add', {
+					provider: provider,
+					profile: ctx.request.body.provider_profile
+				});
 			} else {
 				existingUser.providers[provider].modified_at = new Date();
-				//LogUser.success(req, existingUser, 'provider_update', { provider: provider });
+				await LogUserUtil.success(ctx, existingUser, 'provider_update', { provider: provider });
 			}
 			existingUser.emails = _.uniq([existingUser.email, ...existingUser.emails, ctx.request.body.email]);
 			isNew = false;
@@ -213,16 +217,21 @@ export class UserApi extends Api {
 			user = await UserUtil.createUser(ctx, newUser as User, false);
 		}
 
-		// LogUser.success(req, user, 'provider_registration', { provider: provider, email: user.email });
+		await LogUserUtil.success(ctx, user, 'provider_registration', { provider: provider, email: user.email });
 		return this.success(ctx, ctx.serializers.User.detailed(ctx, user), isNew ? 201 : 200);
 	}
 
 	/**
 	 * Lists users.
 	 *
-	 * @param {Application/Context} ctx Koa context
+	 * Note that as non-admin, a search query must be provided and returned
+	 * details are reduced.
+	 *
+	 * @see GET /v1/users
+	 * @param {Application.Context} ctx Koa context
+	 * @return {Promise<boolean>}
 	 */
-	async list(ctx: Context) {
+	public async list(ctx: Context) {
 
 		const canList = ctx.state.user && await acl.isAllowed(ctx.state.user.id, 'users', 'list');
 		const canGetFullDetails = ctx.state.user && await acl.isAllowed(ctx.state.user.id, 'users', 'full-details');
@@ -274,13 +283,14 @@ export class UserApi extends Api {
 		return this.success(ctx, users);
 	}
 
-
 	/**
 	 * Updates an existing user.
 	 *
-	 * @param {Application/Context} ctx Koa context
+	 * @see PUT /v1/users/:id
+	 * @param {Application.Context} ctx Koa context
+	 * @return {Promise<boolean>}
 	 */
-	async update(ctx: Context) {
+	public async update(ctx: Context) {
 
 		// TODO move into model
 		const updatableFields = ['name', 'email', 'username', 'is_active', 'roles', '_plan'];
@@ -306,8 +316,7 @@ export class UserApi extends Api {
 		const removedRoles = _.difference(currentUserRoles, updatedUserRoles);
 		const addedRoles = _.difference(updatedUserRoles, currentUserRoles);
 
-		const diff = {};// const diff = LogUser.diff(_.pick(user.toObject(), updatableFields), updatedUser);
-
+		const diff = LogUserUtil.diff(_.pick(user.toObject(), updatableFields), updatedUser);
 
 		// if caller is not root..
 		if (!_.includes(callerRoles, 'root')) {
@@ -318,7 +327,7 @@ export class UserApi extends Api {
 			if (!user._id.equals(ctx.state.user._id) && (_.includes(currentUserRoles, 'root') || _.includes(currentUserRoles, 'admin'))) {
 
 				// log
-				// LogUser.failure(req, user, 'update', diff, ctx.state.user, 'User is not allowed to update administrators or root users.');
+				await LogUserUtil.failure(ctx, user, 'update', diff, ctx.state.user, 'User is not allowed to update administrators or root users.');
 
 				// fail
 				throw new ApiError('PRIVILEGE ESCALATION: Non-root user <%s> [%s] tried to update user <%s> [%s].', ctx.state.user.email, callerRoles.join(' '), user.email, currentUserRoles.join(' '))
@@ -331,7 +340,7 @@ export class UserApi extends Api {
 			if (addedRoles.includes('root') || addedRoles.includes('admin') || removedRoles.includes('root') || removedRoles.includes('admin')) {
 
 				// log
-				// LogUser.failure(req, user, 'update', diff, ctx.state.user, 'User is not allowed change the admin or root role for anyone.');
+				await LogUserUtil.failure(ctx, user, 'update', diff, ctx.state.user, 'User is not allowed change the admin or root role for anyone.');
 
 				// fail
 				throw new ApiError('PRIVILEGE ESCALATION: User <%s> [%s] tried to update user <%s> [%s] with new roles [%s].', ctx.state.user.email, callerRoles.join(' '), user.email, currentUserRoles.join(' '), updatedUserRoles.join(' '))
@@ -352,17 +361,17 @@ export class UserApi extends Api {
 		// 5. save
 		await user.save();
 
-		// LogUser.successDiff(req, updatedUser, 'update', _.pick(user.toObject(), updatableFields), updatedUser, ctx.state.user);
+		await LogUserUtil.successDiff(ctx, updatedUser, 'update', _.pick(user.toObject(), updatableFields), updatedUser, ctx.state.user);
 		logger.info('[api|user:update] Success!');
 
 		// 6. update ACLs if roles changed
 		if (removedRoles.length > 0) {
 			logger.info('[api|user:update] Updating ACLs: Removing roles [%s] from user <%s>.', removedRoles.join(' '), user.email);
-			acl.removeUserRoles(user.id, removedRoles);
+			await acl.removeUserRoles(user.id, removedRoles);
 		}
 		if (addedRoles.length > 0) {
 			logger.info('[api|user:update] Updating ACLs: Adding roles [%s] to user <%s>.', addedRoles.join(' '), user.email);
-			acl.addUserRoles(user.id, addedRoles);
+			await acl.addUserRoles(user.id, addedRoles);
 		}
 
 		// 7. if changer is not changed user, mark user as dirty
@@ -377,9 +386,11 @@ export class UserApi extends Api {
 	/**
 	 * Returns user details for a given ID
 	 *
-	 * @param {Application/Context} ctx Koa context
+	 * @see GET /v1/users/:id
+	 * @param {Application.Context} ctx Koa context
+	 * @return {Promise<boolean>}
 	 */
-	async view(ctx:Context) {
+	public async view(ctx:Context) {
 		const user = await ctx.models.User.findOne({ id: ctx.params.id }).exec();
 		if (!user) {
 			throw new ApiError('No such user').status(404);
@@ -391,9 +402,11 @@ export class UserApi extends Api {
 	/**
 	 * Deletes an existing user.
 	 *
-	 * @param {Application/Context} ctx Koa context
+	 * @see DELETE /v1/users/:id
+	 * @param {Application.Context} ctx Koa context
+	 * @return {Promise<boolean>}
 	 */
-	async del(ctx:Context) {
+	public async del(ctx:Context) {
 
 		const user = await ctx.models.User.findOne({ id: ctx.params.id }).exec();
 		if (!user) {
@@ -414,9 +427,11 @@ export class UserApi extends Api {
 	 * Needed if the user spelled the email wrong the first time or didn't click on
 	 * the link within 24 hours.
 	 *
-	 * @param {Application/Context} ctx Koa context
+	 * @see POST /v1/users/:id/send-confirmation
+	 * @param {Application.Context} ctx Koa context
+	 * @return {Promise<boolean>}
 	 */
-	async sendConfirmationMail(ctx:Context) {
+	public async sendConfirmationMail(ctx:Context) {
 
 		const user = await ctx.models.User.findOne({ id: ctx.params.id }).exec();
 

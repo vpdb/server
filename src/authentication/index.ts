@@ -19,14 +19,12 @@
 
 import Router from 'koa-router';
 import passport from 'koa-passport';
-
-import { Models } from '../common/types/models';
 import { EndPoint } from '../common/types/endpoint';
-import { Serializers } from '../common/types/serializers';
 
 import { logger } from '../common/logger';
-import { settings, config } from '../common/settings';
-import { api, router } from './authentication.api.router';
+import { config, settings } from '../common/settings';
+import { api, router, prefixes } from './authentication.api.router';
+import Application = require('koa');
 
 const GitHubStrategy = require('passport-github').Strategy;
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
@@ -37,6 +35,7 @@ const IPBoard43Strategy = require('./passport-ipboard43').Strategy;
 export class AuthenticationEndPoint implements EndPoint {
 
 	readonly name: string = 'authentication';
+	readonly paths: string[] = prefixes;
 
 	private readonly _router: Router;
 
@@ -111,11 +110,7 @@ export class AuthenticationEndPoint implements EndPoint {
 		return this._router;
 	}
 
-	registerModel(models: Models) {
-		// no models
-	}
-
-	registerSerializer(serializers: Serializers): void {
-		// no serializer
+	register(app: Application): void {
+		app.use(passport.initialize());
 	}
 }

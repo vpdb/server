@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { ModelProperties, Schema, Types, Document } from 'mongoose';
-import { isArray, isObject, isEmpty, assign, map } from 'lodash';
+import { Document, ModelProperties, Schema } from 'mongoose';
+import { assign, isArray, isEmpty, isObject, map } from 'lodash';
 import { Context } from '../types/context';
 import { server } from '../../server';
 import { config } from '../settings';
@@ -51,9 +51,9 @@ export function gameReferencePlugin(schema: Schema, options: { isOptional?: bool
 	 * Add fields to entity
 	 */
 	if (options.isOptional) {
-		schema.add({ _game: { type: Types.ObjectId, ref: 'Game' } });
+		schema.add({ _game: { type: Schema.Types.ObjectId, ref: 'Game' } });
 	} else {
-		schema.add({ _game: { type: Types.ObjectId, required: 'Reference to game must be provided.', ref: 'Game' } });
+		schema.add({ _game: { type: Schema.Types.ObjectId, required: 'Reference to game must be provided.', ref: 'Game' } });
 	}
 
 	/**
@@ -214,7 +214,7 @@ export interface GameReference extends Document {
 	/**
 	 * Game reference or populated object
 	 */
-	_game: Game | Types.ObjectId;
+	_game: Game | Schema.Types.ObjectId;
 
 	/**
 	 * Returns the query used for listing only approved entities.
@@ -253,6 +253,6 @@ export interface GameReference extends Document {
 	 */
 	isRestricted(): boolean;
 
-	_created_by?: User | Types.ObjectId;
+	_created_by?: User | Schema.Types.ObjectId;
 	authors?: ContentAuthor[];
 }

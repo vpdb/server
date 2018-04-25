@@ -50,15 +50,16 @@ export class Server {
 	}
 
 	public register<T>(endPoint: EndPoint) {
+
 		// routes
-		this.app.use(endPoint.getRouter().routes());
-		this.app.use(endPoint.getRouter().allowedMethods());
+		const endPointRouter = endPoint.getRouter();
+		if (endPointRouter) {
+			this.app.use(endPointRouter.routes());
+			this.app.use(endPointRouter.allowedMethods());
+		}
 
-		// model
-		endPoint.registerModel(this.app.context.models);
-
-		// serializer
-		endPoint.registerSerializer(this.app.context.serializers);
+		// register app
+		endPoint.register(this.app);
 	}
 
 	public start() {

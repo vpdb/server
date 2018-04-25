@@ -17,9 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import Application = require('koa');
 import Router from 'koa-router';
-import { Models } from 'models.d.ts';
-import { Serializers } from "./serializers";
 
 /**
  * An API end point (or, more RESTful, a "resource") bundles all the
@@ -38,20 +37,20 @@ export interface EndPoint {
 	readonly name: string;
 
 	/**
+	 * The resource path prefixes for logging purposes.
+	 */
+	readonly paths: string[]
+
+	/**
 	 * Returns the router containing all the routes of the end point.
 	 * @return {Router}
 	 */
 	getRouter(): Router;
 
 	/**
-	 * Registers the end point's model with Mongoose.
-	 * @param {Models} models
+	 * Registers the end point with the application.
+	 * @param {Application} app Koa application
 	 */
-	registerModel(models: Models): void;
+	register(app:Application): void;
 
-	/**
-	 * Registers the end point's serializer.
-	 * @param {Serializers} serializers
-	 */
-	registerSerializer(serializers: Serializers): void;
 }

@@ -40,6 +40,16 @@ export class LogUserUtil {
 		}
 	}
 
+	public static diff(obj1: { [key: string]: any }, obj2: { [key: string]: any }): ObjectDiff {
+		return reduce(obj1, function (result: ObjectDiff, val, key) {
+			if (!isEqual(obj2[key], val)) {
+				result.old[key] = val;
+				result.new[key] = obj2[key];
+			}
+			return result;
+		}, { 'old': {}, 'new': {} });
+	}
+
 	private static async log(ctx: Context, user: User, result: 'success' | 'failure', event: string, payload: { [key: string]: any }, actor: User, message: string): Promise<void> {
 		actor = actor || user;
 		const log = new ctx.models.LogUser({
@@ -58,16 +68,6 @@ export class LogUserUtil {
 		} catch (err) {
 			logger.error('[model|loguser] Error saving log for "%s": %s', event, err.message, err);
 		}
-	}
-
-	private static diff(obj1: { [key: string]: any }, obj2: { [key: string]: any }): ObjectDiff {
-		return reduce(obj1, function (result: ObjectDiff, val, key) {
-			if (!isEqual(obj2[key], val)) {
-				result.old[key] = val;
-				result.new[key] = obj2[key];
-			}
-			return result;
-		}, { 'old': {}, 'new': {} });
 	}
 }
 

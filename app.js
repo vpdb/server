@@ -100,7 +100,7 @@ serverDomain.run(function() {
 		});
 
 		// bootstrap modules
-		require('./src_/modules/quota').init();
+		require('./src/common/quota').init();
 		require('./src_/modules/storage').init();
 		require('./src_/modules/queue').init();
 

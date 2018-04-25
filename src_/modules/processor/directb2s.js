@@ -30,7 +30,7 @@ const Readable = require('stream').Readable;
 
 const Parser = require('../sax-async');
 const error = require('../error')('processor', 'directb2s');
-const mimeTypes = require('../mimetypes');
+const mimeTypes = require('../../../src/common/defs/mimetypes');
 
 Promise.promisifyAll(gm.prototype);
 

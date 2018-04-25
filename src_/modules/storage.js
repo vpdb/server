@@ -25,7 +25,7 @@ const path = require('path');
 const logger = require('winston');
 
 const queue = require('./queue');
-const quota = require('./quota');
+const quota = require('../../src/common/quota');
 const error = require('./error')('storage');
 const settings = require('../../src/common/settings');
 const config = settings.current;
@@ -129,57 +129,6 @@ class Storage {
 		});
 	}
 
-	/**
-	 * Removes a file and all its variations from storage.
-	 *
-	 * In case there are access exceptions, a retry mechanism is in place.
-	 *
-	 * @param file
-	 */
-	remove(file) {
-		let filePath = file.getPath();
-		if (fs.existsSync(filePath)) {
-			logger.verbose('[storage] Removing file %s..', filePath);
-			try {
-				fs.unlinkSync(filePath);
-			} catch (err) {
-				/* istanbul ignore next */
-				logger.error('[storage] %s', err);
-
-				// if this is a busy problem, try again in a few.
-				let retries = 0;
-				const intervalId = setInterval(function() {
-					if (!fs.existsSync(filePath)) {
-						return clearInterval(intervalId);
-					}
-					if (++retries > 10) {
-						logger.error('[storage] Still could not unlink %s, giving up.', filePath);
-						return clearInterval(intervalId);
-					}
-					try {
-						fs.unlinkSync(filePath);
-						clearInterval(intervalId);
-					} catch (err) {
-						logger.warn('[storage] Still could not unlink %s (try %d): %s', filePath, retries, err.toString());
-					}
-				}, 500);
-			}
-		}
-		if (this.variations[file.getMimeCategory()] && this.variations[file.getMimeCategory()][file.file_type]) {
-			this.variations[file.getMimeCategory()][file.file_type].forEach(variation => {
-				filePath = file.getPath(variation.name);
-				if (fs.existsSync(filePath)) {
-					logger.verbose('[storage] Removing file variation %s..', filePath);
-					try {
-						fs.unlinkSync(filePath);
-					} catch (err) {
-						/* istanbul ignore next */
-						logger.error('[storage] Error deleting file (ignoring): %s', err);
-					}
-				}
-			});
-		}
-	}
 
 	/**
 	 * Retrieves metadata for a given file using the processor of the file type.
@@ -444,72 +393,6 @@ class Storage {
 		return variationName ?
 			path.resolve(baseDir, variationName, file.id) + suffix + ext :
 			path.resolve(baseDir, file.id) + suffix + ext;
-	}
-
-	/**
-	 * Moves the file or/and the variations to the public storage location.
-	 *
-	 * @param {File} file File object to move
-	 */
-	switchToPublic(file) {
-
-		const that = this;
-		const mimeCategory = file.getMimeCategory();
-
-		// file
-		const protectedPath = that.path(file, null, { forceProtected: true });
-		const publicPath = that.path(file);
-		if (protectedPath !== publicPath) {
-			logger.verbose('[storage] Renaming "%s" to "%s"', protectedPath, publicPath);
-			try {
-				fs.renameSync(protectedPath, publicPath);
-			} catch (err) {
-				logger.warn('[storage] Error renaming, re-trying in a second (%s)', err.message);
-				setTimeout(function() {
-					logger.verbose('[storage] Renaming "%s" to "%s"', protectedPath, publicPath);
-					fs.renameSync(protectedPath, publicPath);
-				}, 5000);
-			}
-
-		} else {
-			logger.verbose('[storage] Skipping renaming of "%s" (no path change)', protectedPath);
-		}
-
-		// variations
-		if (this.variations[mimeCategory] && this.variations[mimeCategory][file.file_type]) {
-			this.variations[mimeCategory][file.file_type].forEach(function(variation) {
-				const lockPath = that.path(file, variation, { forceProtected: true, lockFile: true });
-				const protectedPath = that.path(file, variation, { forceProtected: true });
-				const publicPath = that.path(file, variation);
-				if (protectedPath !== publicPath) {
-					if (fs.existsSync(protectedPath)) {
-						if (!fs.existsSync(lockPath)) {
-							try {
-								logger.verbose('[storage] Renaming "%s" to "%s"', protectedPath, publicPath);
-								fs.renameSync(protectedPath, publicPath);
-							} catch (err) {
-								logger.warn('[storage] Error renaming, re-trying in a second (%s)', err.message);
-								setTimeout(function() {
-									try {
-										logger.verbose('[storage] Renaming "%s" to "%s"', protectedPath, publicPath);
-										fs.renameSync(protectedPath, publicPath);
-									} catch (err) {
-										logger.warn('[storage] Second time failed too.', err.message);
-									}
-								}, 5000);
-							}
-						} else {
-							logger.warn('[storage] Skipping rename, "%s" is locked (processing)', protectedPath);
-						}
-					} else {
-						fs.closeSync(fs.openSync(protectedPath, 'w'));
-						logger.warn('[storage] Skipping rename, "%s" does not exist (yet).', protectedPath);
-					}
-				} else {
-					logger.verbose('[storage] Skipping renaming of "%s" (no path change).', protectedPath);
-				}
-			});
-		}
 	}
 
 	/**

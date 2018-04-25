@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const Serializer = require('../../src/common/serializer');
-const FileSerializer = require('./file.serializer');
+const FileSerializer = require('../../src/files/file.serializer');
 const UserSerializer = require('../../src/users/user.serializer');
 
 class RomSerializer extends Serializer {

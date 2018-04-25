@@ -29,7 +29,7 @@ const Release = require('mongoose').model('Release');
 const TableBlock = require('mongoose').model('TableBlock');
 
 const ReleaseSerializer = require('../../serializers/release.serializer');
-const FileSerializer = require('../../serializers/file.serializer');
+const FileSerializer = require('../../../src/files/file.serializer');
 
 const fileModule = require('../../modules/file');
 const error = require('../../modules/error')('api', 'file');

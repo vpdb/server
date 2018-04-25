@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const Serializer = require('../../src/common/serializer');
 const BuildSerializer = require('./build.serializer');
-const FileSerializer = require('./file.serializer');
+const FileSerializer = require('../../src/files/file.serializer');
 const UserSerializer = require('../../src/users/user.serializer');
 
 class ReleaseVersionFileSerializer extends Serializer {

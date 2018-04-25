@@ -36,4 +36,4 @@ router.del('/v1/users/:id',    api.auth(api.del.bind(api), 'users', 'delete', [ 
 // router.get(settings.apiPath('/users/:id/star'),    api.auth(api.stars.get('user'), 'users', 'star', [ scope.ALL, scope.COMMUNITY ]));
 
 //router.get(settings.apiPath('/users/:id/events'),             api.anon(api.events.list({ byActor: true })));
-router.post(settings.apiPath('/users/:id/send-confirmation'), api.auth(api.sendConfirmationMail.bind(api), 'users', 'send-confirmation', [ Scope.ALL ]));
+//router.post(settings.apiPath('/users/:id/send-confirmation'), api.auth(api.sendConfirmationMail.bind(api), 'users', 'send-confirmation', [ Scope.ALL ]));

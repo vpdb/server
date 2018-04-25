@@ -102,8 +102,8 @@ export class ScopeHelper {
 	 * @param {string} scope Scope
 	 * @return {boolean} True if found, false otherwise.
 	 */
-	has(scopes: Scope[] | null, scope: Scope): boolean {
-		return scopes && scopes.includes(scope);
+	has(scopes: Scope[] | string[] | null, scope: Scope | string): boolean {
+		return scopes && (<string[]>scopes).includes(<string>scope);
 	}
 
 	/**
@@ -114,7 +114,7 @@ export class ScopeHelper {
 	 * @param {string[]} scopesToValidate Scopes to check
 	 * @return {boolean} True if all scopes are valid
 	 */
-	isValid(validScopes: string[] | 'personal' | 'application' | null, scopesToValidate: Scope[]): boolean {
+	isValid(validScopes: string[] | 'personal' | 'application' | null, scopesToValidate: Scope[] |string[]): boolean {
 		if (validScopes === null) {
 			return true;
 		}
@@ -134,7 +134,7 @@ export class ScopeHelper {
 	 * @param {string[]} scopes
 	 * @return {boolean} True if identical, false otherwise.
 	 */
-	isIdentical(validScopes:Scope[], scopes:Scope[]) {
+	isIdentical(validScopes: Scope[] | string[], scopes: Scope[] | string[]) {
 		if (scopes.length !== validScopes.length) {
 			return false;
 		}

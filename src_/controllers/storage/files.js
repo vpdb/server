@@ -25,7 +25,7 @@ const stream = require('stream');
 const logger = require('winston');
 
 const File = require('mongoose').model('File');
-const quota = require('../../modules/quota');
+const quota = require('../../../src/common/quota');
 const storage = require('../../modules/storage');
 const error = require('../../modules/error')('storage', 'file');
 const acl = require('../../../src/common/acl');

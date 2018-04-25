@@ -170,7 +170,7 @@ export abstract class Serializer<T extends Document | Moderated> {
 			thumbFields = [...thumbFields, 'mime_type', 'bytes', 'file_type'];
 		}
 
-		const FileSerializer = require('../../src_/serializers/file.serializer');
+		const FileSerializer = require('../files/file.serializer');
 		const playfieldImage = FileSerializer.detailed(versionFile._playfield_image, ctx, opts);
 
 		if (opts.thumbFormat === 'original') {

@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const ipdb = require('../modules/ipdb');
 const Serializer = require('../../src/common/serializer');
-const FileSerializer = require('./file.serializer');
+const FileSerializer = require('../../src/files/file.serializer');
 const config = require('../../src/common/settings').current;
 
 class GameSerializer extends Serializer {

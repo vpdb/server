@@ -267,47 +267,7 @@ export interface VpdbConfig {
 		 * Quota definitions for the site. Quotas can be used to limit the
 		 * number of items a user can download in a given time.
 		 */
-		quota: {
-			/**
-			 *  Every user has one plan assigned. The plan defines how many
-			 *  credits the user is allowed to burn for a given duration.
-			 *  After the duration, the credits are reset.
-			 *
-			 *  Valid durations are: "minute", "hour", "day" and "week". If
-			 *  "unlimited" is set to true, the quota check is skipped.
-			 *
-			 *  You can add any number of plans here (they will show up in the
-			 *  user control panel), but at least one default plan must exist.
-			 */
-			plans: VpdbQuoteConfigPlan[],
-
-			/**
-			 * The default plan which is assigned to new users.
-			 */
-			defaultPlan: string,
-
-			/**
-			 * How many credits are debited per download. Give the file type as
-			 * key.
-			 *
-			 * Values are either -1 (public, no access control), 0 (free but
-			 * user must be logged), and n (number credits).
-			 *
-			 * See [1] for a list of file types.
-			 *
-			 * If you want to distinguish between the actual file and its
-			 * variations, add a "variation" sub-config with the variation
-			 * name as keys.
-			 *
-			 * IMPORTANT: Don't change -1 values after you have set them, or
-			 * files won't be accessible anymore. This is due to public files
-			 * being served from a different folder so we can make Nginx or even
-			 * a CDN host them.
-			 *
-			 * [1] https://github.com/vpdb/backend/blob/master/src/modules/filetypes.js
-			 */
-			costs: { [key: string]: 0 | -1 | VpdbPlanCost }
-		},
+		quota: VpdbQuotaConfig,
 
 		/**
 		 * Parameters about the rating metrics.
@@ -569,17 +529,7 @@ export interface VpdbHost {
 	prefix?: string
 }
 
-export interface VpdbPlanTypeCost {
-	video: number | string,
-	image: number | string
-}
-
-export interface VpdbPlanCost {
-	category: VpdbPlanTypeCost | 0 | -1,
-	variation: { [key: string]: { type: VpdbPlanTypeCost | 0 | -1 } }
-}
-
-export interface VpdbQuoteConfigPlan {
+export interface VpdbQuotaConfigPlan {
 	id: string;
 	credits: number;
 	per: 'day' | 'hour' | 'minute';
@@ -588,3 +538,93 @@ export interface VpdbQuoteConfigPlan {
 
 	[key: string]: any;
 }
+
+export interface VpdbQuotaConfig {
+	/**
+	 *  Every user has one plan assigned. The plan defines how many
+	 *  credits the user is allowed to burn for a given duration.
+	 *  After the duration, the credits are reset.
+	 *
+	 *  Valid durations are: "minute", "hour", "day" and "week". If
+	 *  "unlimited" is set to true, the quota check is skipped.
+	 *
+	 *  You can add any number of plans here (they will show up in the
+	 *  user control panel), but at least one default plan must exist.
+	 */
+	plans: VpdbQuotaConfigPlan[],
+
+	/**
+	 * The default plan which is assigned to new users.
+	 */
+	defaultPlan: string,
+
+	/**
+	 * How many credits are debited per download. Give the file type as
+	 * key.
+	 *
+	 * Values are either -1 (public, no access control), 0 (free but
+	 * user must be logged), and n (number credits).
+	 *
+	 * See [1] for a list of file types.
+	 *
+	 * If you want to distinguish between the actual file and its
+	 * variations, add a "variation" sub-config with the variation
+	 * name as keys.
+	 *
+	 * IMPORTANT: Don't change -1 values after you have set them, or
+	 * files won't be accessible anymore. This is due to public files
+	 * being served from a different folder so we can make Nginx or even
+	 * a CDN host them.
+	 *
+	 * [1] https://github.com/vpdb/backend/blob/master/src/modules/filetypes.js
+	 */
+	costs: { [key: string]: 0 | -1 | VpdbPlanCost }
+}
+
+export interface VpdbPlanCost {
+	category?: 0 | -1 | VpdbPlanTypeCost;
+	variation?: 0 | -1 | VpdbPlanVariationCost;
+}
+
+export interface VpdbPlanVariationCost {
+	[key: string]: 0 | -1 | {
+		type: 0 | -1 | VpdbPlanTypeCost;
+	}
+}
+
+export interface VpdbPlanTypeCost {
+	video: number;
+	image: number;
+	table: number;
+	'*': number;
+}
+
+
+
+// export test = {
+// costs: {
+// 	'backglass': {
+// 		category: { video: 1, image: 0 },
+// 		variation: -1
+// 	},
+// 	'logo': {
+// 		category: 0,
+// 		variation: -1 },                             // original logo: free, any variation: public
+// 	'playfield-fs': {
+// 		category: { video: 1, image: 0 },
+// 		variation: -1
+// 	},
+// 	'playfield-ws': {
+// 		category: { video: 1, image: 0 },
+// 		variation: {
+// 			medium: {
+// 				type: { image: 1 }
+// 			},
+// 			'*': -1
+// 		}
+// 	},
+// 	'release': {
+// 		category: { table: 1, '*': 0 }
+// 	},                      // any type or variation: 1 credit
+// 	'rom': 0
+// }}

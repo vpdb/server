@@ -27,6 +27,7 @@ import { EndPoint } from './common/types/endpoint';
 import { AuthenticationEndPoint } from './authentication';
 import { LogUserEndPoint } from './log-user';
 import { UserEndPoint } from './users';
+import { FilesEndPoint } from './files';
 
 // links:
 //   - https://github.com/Microsoft/TypeScript-Node-Starter
@@ -36,7 +37,12 @@ import { UserEndPoint } from './users';
 	try {
 		logger.info('[app] Starting up...');
 
-		const endPoints:EndPoint[] = [ new AuthenticationEndPoint(), new UserEndPoint(), new LogUserEndPoint() ];
+		const endPoints: EndPoint[] = [
+			new AuthenticationEndPoint(),
+			new FilesEndPoint(),
+			new LogUserEndPoint(),
+			new UserEndPoint(),
+		];
 
 		// bootstrap models
 		logger.info('[app] Connecting to MongoDB...');

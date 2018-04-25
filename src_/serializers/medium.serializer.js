@@ -3,7 +3,7 @@ const Serializer = require('../../src/common/serializer');
 const UserSerializer = require('../../src/users/user.serializer');
 const GameSerializer = require('./game.serializer');
 const ReleaseSerializer = require('./release.serializer');
-const FileSerializer = require('./file.serializer');
+const FileSerializer = require('../../src/files/file.serializer');
 
 class MediumSerializer extends Serializer {
 

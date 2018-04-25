@@ -2,11 +2,12 @@
 	"restartable": "rs",
 	"ignore": [
 		".git",
-		"node_modules/**/node_modules"
+		"src/**/*.spec.ts"
 	],
 	"verbose": true,
 	"execMap": {
-		"js": "node"
+		"js": "node",
+		"ts": "ts-node"
 	},
 	"watch": [
 		"src/**"
@@ -15,7 +16,7 @@
 		"NODE_ENV": "development",
 		"PORT": "3000",
 		"APP_NAME": "local",
-		"APP_SETTINGS": "C:\\Development\\vpdb-server\\config\\settings.js"
+		"APP_SETTINGS": "c:\\dev\\vpdb-backend\\config\\settings.js"
 	},
-	"ext": "js json"
+	"ext": "ts js json"
 }

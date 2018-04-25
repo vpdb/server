@@ -22,7 +22,7 @@
 const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
-const fileTypes = require('../../src_/modules/filetypes');
+const fileTypes = require('./defs/filetypes');
 const validator = require('validator');
 
 /**

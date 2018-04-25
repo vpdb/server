@@ -51,7 +51,7 @@ export class AuthenticationEndPoint implements EndPoint {
 				clientID: config.vpdb.passport.google.clientID,
 				clientSecret: config.vpdb.passport.google.clientSecret,
 				callbackURL: settings.webUri('/auth/google/callback')
-			}, api.verifyCallbackOAuth('google')));
+			}, api.verifyCallbackOAuth('google').bind(api)));
 		}
 
 		// configure github strategy
@@ -63,7 +63,7 @@ export class AuthenticationEndPoint implements EndPoint {
 				clientSecret: config.vpdb.passport.github.clientSecret,
 				callbackURL: settings.webUri('/auth/github/callback'),
 				scope: ['user:email']
-			}, api.verifyCallbackOAuth('github')));
+			}, api.verifyCallbackOAuth('github').bind(api)));
 		}
 
 		// configure ips strategies
@@ -80,7 +80,7 @@ export class AuthenticationEndPoint implements EndPoint {
 						clientID: ipbConfig.clientID,
 						clientSecret: ipbConfig.clientSecret,
 						callbackURL: callbackUrl
-					}, api.verifyCallbackOAuth('ipboard', ipbConfig.id)));
+					}, api.verifyCallbackOAuth('ipboard', ipbConfig.id).bind(api)));
 				}
 				if (ipbConfig.version === 4) {
 					passport.use(new IPBoard4Strategy({
@@ -90,7 +90,7 @@ export class AuthenticationEndPoint implements EndPoint {
 						clientID: ipbConfig.clientID,
 						clientSecret: ipbConfig.clientSecret,
 						callbackURL: callbackUrl
-					}, api.verifyCallbackOAuth('ipboard', ipbConfig.id)));
+					}, api.verifyCallbackOAuth('ipboard', ipbConfig.id).bind(api)));
 				}
 				if (ipbConfig.version === 4.3) {
 					passport.use(new IPBoard43Strategy({
@@ -101,7 +101,7 @@ export class AuthenticationEndPoint implements EndPoint {
 						clientSecret: ipbConfig.clientSecret,
 						callbackURL: callbackUrl,
 						scope: ['profile', 'email']
-					}, api.verifyCallbackOAuth('ipboard', ipbConfig.id)));
+					}, api.verifyCallbackOAuth('ipboard', ipbConfig.id).bind(api)));
 				}
 			}
 		});

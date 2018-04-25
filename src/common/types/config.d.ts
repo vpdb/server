@@ -279,7 +279,7 @@ export interface VpdbConfig {
 			 *  You can add any number of plans here (they will show up in the
 			 *  user control panel), but at least one default plan must exist.
 			 */
-			plans: { id: string, credits: number, per: 'day' | 'hour' | 'minute', enableAppTokens: boolean, enableRealtime: boolean }[],
+			plans: VpdbQuoteConfigPlan[],
 
 			/**
 			 * The default plan which is assigned to new users.
@@ -378,7 +378,7 @@ export interface VpdbConfig {
 				 */
 				denyMpu: number[]
 			},
-			[key:string]: { denyMpu:number[]};
+			[key: string]: { denyMpu: number[] };
 		},
 
 		/**
@@ -500,7 +500,7 @@ export interface VpdbConfig {
 				/**
 				 * Version of the IPS board. Either `3` or `4`.
 				 */
-				version: 3|4|4.3
+				version: 3 | 4 | 4.3
 
 			}[]
 		},
@@ -577,4 +577,14 @@ export interface VpdbPlanTypeCost {
 export interface VpdbPlanCost {
 	category: VpdbPlanTypeCost | 0 | -1,
 	variation: { [key: string]: { type: VpdbPlanTypeCost | 0 | -1 } }
+}
+
+export interface VpdbQuoteConfigPlan {
+	id: string;
+	credits: number;
+	per: 'day' | 'hour' | 'minute';
+	enableAppTokens: boolean;
+	enableRealtime: boolean;
+
+	[key: string]: any;
 }

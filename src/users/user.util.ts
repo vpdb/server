@@ -21,6 +21,7 @@ import randomstring from 'randomstring';
 import { assign, keys, sum, uniq, values } from 'lodash';
 
 import { Context } from '../common/types/context';
+import { acl } from '../common/acl';
 import { logger } from '../common/logger';
 import { config } from '../common/settings';
 import { User } from './user.type';
@@ -93,7 +94,7 @@ export class UserUtil {
 		} else {
 			// otherwise, fail and query merge resolution
 			throw new ApiError('Conflicted users, must merge.')
-				.data({ explanation: explanation, users: mergeUsers.map(u => ctx.serializers.User.detailed(ctx, u)) })
+				.body({ explanation: explanation, users: mergeUsers.map(u => ctx.serializers.User.detailed(ctx, u)) })
 				.status(409);
 		}
 	};
@@ -299,6 +300,19 @@ export class UserUtil {
 		await mergeUser.remove();
 
 		return keepUser;
+	}
+
+	/**
+	 * Returns the ACLs for a given user.
+	 *
+	 * @param {User} user
+	 * @returns {Promise<{permissions: string[]}>}
+	 */
+	static async getACLs(user:User): Promise<{ permissions: string[]}> {
+		const roles = await acl.userRoles(user.id);
+		const resources = await acl.whatResources(roles);
+		const permissions = await acl.allowedPermissions(user.id, keys(resources));
+		return { permissions: permissions };
 	}
 
 	/**

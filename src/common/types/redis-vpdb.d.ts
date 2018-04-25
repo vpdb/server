@@ -1,4 +1,4 @@
-import { Callback, Commands } from 'redis';
+import { Commands } from 'redis';
 import { EventEmitter } from 'events';
 
 declare module 'redis' {
@@ -7,6 +7,8 @@ declare module 'redis' {
 
 		getAsync(key: string): Promise<string>;
 
+		delAsync(key: string): Promise<void>;
+
 		ttlAsync(key: string): Promise<number>;
 
 		incrAsync(key: string): Promise<number>;
@@ -14,4 +16,3 @@ declare module 'redis' {
 		expireAsync(key: string, seconds: number): Promise<number>;
 	}
 }
-

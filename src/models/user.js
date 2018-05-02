@@ -519,11 +519,13 @@ UserSchema.statics.mergeUsers = function(keepUser, mergeUser, explanation, req) 
 
 			// 1.2 update release validation
 			return Promise.all(releases.map(release => {
-				release.files.forEach(releaseFile => {
-					if (releaseFile.validation._validated_by.equals(mergeUser._id)) {
-						releaseFile.validation._validated_by = keepUser._id;
-						num++;
-					}
+				release.versions.forEach(releaseVersion => {
+					releaseVersion.files.forEach(releaseFile => {
+						if (releaseFile.validation._validated_by.equals(mergeUser._id)) {
+							releaseFile.validation._validated_by = keepUser._id;
+							num++;
+						}
+					});
 				});
 				return release.save();
 			}));

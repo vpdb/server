@@ -104,9 +104,9 @@ exports.createOrUpdate = function(req, res) {
 	let name, provider, isNew;
 	return Promise.try(() => {
 
-		// make sure there's an app token
-		if (!req.appToken) {
-			throw error('Resource only available with application token.').status(400);
+		// make sure there's a provider token
+		if (!req.appToken || req.tokenType !== 'provider') {
+			throw error('Resource only available with provider token.').status(400);
 		}
 		provider = req.appToken.provider;
 

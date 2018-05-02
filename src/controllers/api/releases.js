@@ -696,7 +696,7 @@ exports.list = function(req, res) {
 
 		// filter by provider user id
 		if (req.query.provider_user) {
-			if (req.tokenType !== 'application') {
+			if (req.tokenType !== 'provider') {
 				throw error('Must be authenticated with provider token in order to filter by provider user ID.').status(400);
 			}
 			return User.findOne({ ['providers.' + req.tokenProvider + '.id' ]: String(req.query.provider_user) }).then(user => {

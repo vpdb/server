@@ -178,7 +178,7 @@ describe('The authentication engine of the VPDB API', () => {
 		it('should fail if the token is invalid', async () => {
 			await api.withToken('688f4864ca7be0fe4bfe866acbf6b151')
 				.get('/v1/user')
-				.then(res => res.expectError(401, 'invalid app token'));
+				.then(res => res.expectError(401, 'invalid application token'));
 		});
 
 		it('should fail if the user has the wrong plan', async () => {
@@ -200,7 +200,7 @@ describe('The authentication engine of the VPDB API', () => {
 			// 3. fail with app token
 			await api.withToken(token)
 				.get('/v1/user')
-				.then(res => res.expectError(401, 'does not allow the use of app tokens'));
+				.then(res => res.expectError(401, 'does not allow the use of personal tokens'));
 		});
 
 		it('should fail if the token is inactive', async () => {
@@ -276,7 +276,7 @@ describe('The authentication engine of the VPDB API', () => {
 			let res = await api.as('admin').markTeardown().post('/v1/tokens', {
 				label: 'Auth test token',
 				password: api.getUser('admin').password,
-				provider: 'ipbtest', type: 'application',
+				provider: 'ipbtest', type: 'provider',
 				scopes: [ 'community', 'service' ]
 			}).then(res => res.expectStatus(201));
 

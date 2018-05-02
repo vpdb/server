@@ -43,7 +43,7 @@ exports.create = function(req, res) {
 
 		// check if the plan allows application token creation
 		if (scope.has(req.body.scopes, scope.ALL) && !req.user.planConfig.enableAppTokens) {
-			throw error('Your current plan "%s" does not allow the creation of application "all" access tokens. Upgrade or contact an admin.', req.user.planConfig.id).status(401);
+			throw error('Your current plan "%s" does not allow the creation of application tokens with the "all" scope. Upgrade or contact an admin.', req.user.planConfig.id).status(401);
 		}
 
 		// tokenType == "jwt" means the token comes from a "fresh" login (not a
@@ -80,8 +80,8 @@ exports.create = function(req, res) {
 		}
 
 		// for application tokens, check additional permissions.
-		if (req.body.type === 'application') {
-			return acl.isAllowed(req.user.id, 'tokens', 'application-token').then(granted => {
+		if (req.body.type === 'provider') {
+			return acl.isAllowed(req.user.id, 'tokens', 'provider-token').then(granted => {
 				if (!granted) {
 					throw error('Permission denied.').status(401);
 				}
@@ -139,7 +139,7 @@ exports.view = function(req, res) {
 				tokenInfo.is_active = appToken.is_active;
 
 				// additional props for application token
-				if (appToken.type === 'application') {
+				if (appToken.type === 'provider') {
 					tokenInfo.provider = appToken.provider;
 				} else {
 					tokenInfo.for_user = appToken._created_by.id;
@@ -179,7 +179,7 @@ exports.view = function(req, res) {
 exports.list = function(req, res) {
 
 	const query = { _created_by: req.user._id, type: 'personal' };
-	const allowedTypes = [ 'personal', 'application' ];
+	const allowedTypes = [ 'personal', 'provider' ];
 
 	// filter by type?
 	if (req.query.type && _.includes(allowedTypes, req.query.type)) {

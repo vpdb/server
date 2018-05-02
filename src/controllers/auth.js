@@ -98,21 +98,21 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 		// app token?
 		if (/[0-9a-f]{32,}/i.test(token)) {
 
-			// application access tokens aren't allowed in the url
+			// application tokens aren't allowed in the url
 			if (fromUrl) {
-				throw error('App tokens must be provided in the header.').status(401);
+				throw error('Application tokens must be provided in the header.').status(401);
 			}
 
 			return Token.findOne({ token: token }).populate('_created_by').exec().then(appToken => {
 
 				// fail if not found
 				if (!appToken) {
-					throw error('Invalid app token.').status(401);
+					throw error('Invalid application token.').status(401);
 				}
 
 				// fail if incorrect plan
 				if (appToken.type === 'personal' && !appToken._created_by.planConfig.enableAppTokens) {
-					throw error('Your current plan "%s" does not allow the use of app tokens. Upgrade or contact an admin.', appToken._created_by.planConfig.id).status(401);
+					throw error('Your current plan "%s" does not allow the use of personal tokens. Upgrade or contact an admin.', appToken._created_by.planConfig.id).status(401);
 				}
 
 				// fail if expired
@@ -131,7 +131,7 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 				req.tokenScopes = appToken.scopes;
 
 				// additional checks for application token
-				if (appToken.type === 'application') {
+				if (appToken.type === 'provider') {
 
 					req.tokenProvider = appToken.provider;
 

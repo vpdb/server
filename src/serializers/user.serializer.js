@@ -18,7 +18,7 @@ class UserSerializer extends Serializer {
 		user.gravatar_id = doc.email ? crypto.createHash('md5').update(doc.email.toLowerCase()).digest('hex') : null;
 
 		// provider id
-		if (req.tokenType === 'application' && doc[req.tokenProvider]) {
+		if (req.tokenType === 'provider' && doc[req.tokenProvider]) {
 			user.provider_id = doc.providers[req.tokenProvider].id;
 		}
 

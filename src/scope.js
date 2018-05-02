@@ -60,7 +60,7 @@ class Scope {
 		 */
 		this._scopes = {
 			personal:  [ this.ALL, this.LOGIN, this.COMMUNITY, this.CREATE, this.STORAGE ],
-			application: [ this.COMMUNITY, this.CREATE, this.STORAGE, this.SERVICE ]
+			provider: [ this.COMMUNITY, this.CREATE, this.STORAGE, this.SERVICE ]
 		};
 	}
 
@@ -68,7 +68,7 @@ class Scope {
 	 * Returns all scopes that are valid for a given token type at token
 	 * creation.
 	 *
-	 * @param {"personal"|"application"} type Token type
+	 * @param {"personal"|"provider"} type Token type
 	 * @return {string[]} Valid scopes
 	 */
 	getScopes(type) {
@@ -89,7 +89,7 @@ class Scope {
 	 * Makes sure that at least one scope is valid. Basically as soon as one
 	 * of the given scopes is in the valid scopes, return trie.
 	 *
-	 * @param {string[]|"personal"|"application"} [validScopes] If string given, match against valid scopes of given type. Otherwise match against given scopes.
+	 * @param {string[]|"personal"|"provider"} [validScopes] If string given, match against valid scopes of given type. Otherwise match against given scopes.
 	 * @param {string[]} scopesToValidate Scopes to check
 	 * @return {boolean} True if all scopes are valid
 	 */

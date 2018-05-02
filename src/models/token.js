@@ -31,7 +31,7 @@ const scope = require('../scope');
 const config = require('../modules/settings').current;
 
 const Schema = mongoose.Schema;
-const validTypes = [ 'personal', 'application' ];
+const validTypes = ['personal', 'provider'];
 
 //-----------------------------------------------------------------------------
 // SCHEMA
@@ -42,7 +42,7 @@ const fields = {
 	label: { type: String, required: 'A label must be provided' },
 	type: { type: String, 'enum': validTypes, required: true },
 	scopes: { type: [String] },
-	provider: { type: String }, // must be set for application tokens
+	provider: { type: String }, // must be set for provider tokens
 	is_active: { type: Boolean, required: true, 'default': true },
 	last_used_at: { type: Date },
 	expires_at: { type: Date, required: true },
@@ -64,7 +64,7 @@ TokenSchema.path('scopes').validate(function(scopes) {
 		return true;
 	}
 	// for scope validation, fall back to private if invalid type given
-	const type = validTypes.includes(this.type) ? this.type : 'private';
+	const type = validTypes.includes(this.type) ? this.type : 'personal';
 	if (!scope.isValid(type, scopes)) {
 		this.invalidate('scopes', 'Scopes must be one or more of the following: [ "' + scope.getScopes(type).join('", "') + '" ].');
 	}
@@ -72,9 +72,9 @@ TokenSchema.path('scopes').validate(function(scopes) {
 });
 
 TokenSchema.path('type').validate(function(type) {
-	if (type === 'application') {
+	if (type === 'provider') {
 		if (!this.provider) {
-			this.invalidate('provider', 'Provider is required for application tokens.');
+			this.invalidate('provider', 'Provider is required for provider tokens.');
 		}
 		const providers = [];
 		if (config.vpdb.passport.google.enabled) {
@@ -91,6 +91,7 @@ TokenSchema.path('type').validate(function(type) {
 		if (!providers.includes(this.provider)) {
 			this.invalidate('provider', 'Provider must be one of: [ "' + providers.join('", "') + '" ].');
 		}
+
 	}
 	return true;
 });

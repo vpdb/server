@@ -328,7 +328,7 @@ describe('The VPDB `Token` API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('admin')
-				.send({ label: 'Test Application', password: hlp.getUser('admin').password, type: 'application', scopes: [ 'community '] })
+				.send({ label: 'Test Application', password: hlp.getUser('admin').password, type: 'provider', scopes: [ 'community '] })
 				.end(function(err, res) {
 					hlp.expectValidationError(err, res, 'provider', 'provider is required');
 					done();
@@ -339,7 +339,7 @@ describe('The VPDB `Token` API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('admin')
-				.send({ label: 'Test Application', password: hlp.getUser('admin').password, type: 'application', provider: 'yadayada', scopes: [ 'community '] })
+				.send({ label: 'Test Application', password: hlp.getUser('admin').password, type: 'provider', provider: 'yadayada', scopes: [ 'community '] })
 				.end(function(err, res) {
 					hlp.expectValidationError(err, res, 'provider', 'provider must be one of');
 					done();
@@ -350,13 +350,13 @@ describe('The VPDB `Token` API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('admin')
-				.send({ label: 'Test Application', password: hlp.getUser('admin').password, type: 'application', scopes: [ 'all '] })
+				.send({ label: 'Test Application', password: hlp.getUser('admin').password, type: 'provider', scopes: [ 'all '] })
 				.end(function(err, res) {
 					hlp.expectValidationError(err, res, 'scopes', 'scopes must be one or more of the following');
 					request
 						.post('/api/v1/tokens')
 						.as('admin')
-						.send({ label: 'Test Application', password: hlp.getUser('admin').password, type: 'application', scopes: [ 'login '] })
+						.send({ label: 'Test Application', password: hlp.getUser('admin').password, type: 'provider', scopes: [ 'login '] })
 						.end(function(err, res) {
 							hlp.expectValidationError(err, res, 'scopes', 'scopes must be one or more of the following');
 							done();
@@ -368,7 +368,7 @@ describe('The VPDB `Token` API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('subscribed')
-				.send({ label: 'Test Application', password: hlp.getUser('subscribed').password, provider: 'github', type: 'application', scopes: [ 'community'] })
+				.send({ label: 'Test Application', password: hlp.getUser('subscribed').password, provider: 'github', type: 'provider', scopes: [ 'community'] })
 				.end(hlp.status(401, done));
 		});
 
@@ -376,7 +376,7 @@ describe('The VPDB `Token` API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('admin')
-				.send({ label: 'Test Application', password: hlp.getUser('admin').password, provider: 'github', type: 'application', scopes: [ 'community'] })
+				.send({ label: 'Test Application', password: hlp.getUser('admin').password, provider: 'github', type: 'provider', scopes: [ 'community'] })
 				.end(hlp.status(201, done));
 		});
 
@@ -409,7 +409,7 @@ describe('The VPDB `Token` API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('admin')
-				.send({ label: 'Test Application', password: hlp.getUser('admin').password, provider: 'github', type: 'application', scopes: [ 'community', 'service' ] })
+				.send({ label: 'Test Application', password: hlp.getUser('admin').password, provider: 'github', type: 'provider', scopes: [ 'community', 'service' ] })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					expect(res.body.id).to.be.ok();
@@ -420,7 +420,7 @@ describe('The VPDB `Token` API', function() {
 						.end(function(err, res) {
 							hlp.expectStatus(err, res, 200);
 							expect(res.body.label).to.be('Test Application');
-							expect(res.body.type).to.be('application');
+							expect(res.body.type).to.be('provider');
 							expect(res.body.scopes).to.eql(['community', 'service']);
 							expect(res.body.is_active).to.be(true);
 							expect(res.body.provider).to.be('github');

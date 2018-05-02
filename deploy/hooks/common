@@ -133,7 +133,7 @@ repo_link() {
 	echo Running migration scripts...
 	cd ${dest}
 	APP_SETTINGS=${currentSettings} APP_NAME=${DEPLOY_ENV} NODE_ENV=production node ${dest}/src/scripts/migrate.js --from=${DEPLOY_ROOT}/${DEPLOY_ENV}/current
-    test $? -eq 0 || abort $1 "Migration failed. Fix and redeploy."
+	test $? -eq 0 || abort $1 "Migration failed. Fix and redeploy."
 
 	echo Swapping code...
 	ln -sfn ${dest} ${DEPLOY_ROOT}/${DEPLOY_ENV}/current

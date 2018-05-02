@@ -32,7 +32,7 @@ module.exports.up = function() {
 	let counter = 0;
 
 	return Token.find({ type: 'application' }).exec().then(tokens => {
-
+		counter = tokens.length;
 		console.log('Got %s application tokens, changing to "provider".', tokens.length);
 		return Promise.each(tokens, token => {
 			token.type = 'provider';

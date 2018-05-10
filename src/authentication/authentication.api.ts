@@ -24,7 +24,7 @@ import { Context } from '../common/types/context';
 import { logger } from '../common/logger';
 import { config } from '../common/settings';
 import { welcomeOAuth } from '../common/mailer';
-import { User } from '../users/user.type';
+import { User } from '../users/user';
 import { UserUtil } from '../users/user.util';
 import { LogUserUtil } from '../log-user/log.user.util';
 import { scope } from '../common/scope';

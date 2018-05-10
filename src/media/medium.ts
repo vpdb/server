@@ -17,15 +17,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Schema } from 'mongoose';
-import { File } from '../files/file.type';
+import { User } from '../users/user';
+import { Document, Schema } from 'mongoose';
 
-export interface BackglassVersion {
-	version: string,
-	changes: string,
-	_file: File | Schema.Types.ObjectId
-	released_at: Date,
-	counter: {
-		downloads: number
-	}
+export interface Medium extends Document {
+	_user: User | Schema.Types.ObjectId,
+	_actor: User | Schema.Types.ObjectId,
+	event: string,
+	payload: any,
+	result: 'success' | 'failure',
+	message: string,
+	ip: string,
+	logged_at: Date
 }

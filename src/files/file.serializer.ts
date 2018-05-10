@@ -1,7 +1,7 @@
 import { pick, assign } from 'lodash';
 import { Context } from '../common/types/context';
 import { Serializer, SerializerOptions } from '../common/serializer';
-import { File } from './file.type';
+import { File } from './file';
 
 const quota = require('../common/quota');
 const storage = require('../../src_/modules/storage');

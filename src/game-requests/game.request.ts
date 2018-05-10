@@ -18,17 +18,18 @@
  */
 
 import { Document, Schema } from 'mongoose';
-import { User } from '../users/user.type';
-import { Release } from '../releases/release.type';
+import { Game } from '../games/game.type';
+import { User } from '../users/user';
 
-export interface Comment extends Document {
+export interface GameRequest extends Document {
 	id: string,
-	_from: User | Schema.Types.ObjectId
-	_ref: {
-		release: Release | Schema.Types.ObjectId
-		release_moderation: Release | Schema.Types.ObjectId
-	},
+	title: string,
+	notes: string,
+	ipdb_number: number,
+	ipdb_title: string,
+	is_closed: boolean,
 	message: string,
-	ip: string,
+	_game: Game | Schema.Types.ObjectId,
+	_created_by: User | Schema.Types.ObjectId,
 	created_at: Date
 }

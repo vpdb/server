@@ -18,7 +18,7 @@
  */
 
 import { Context } from '../common/types/context';
-import { User } from './user.type';
+import { User } from './user';
 import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
 import { registrationConfirmation } from '../common/mailer';

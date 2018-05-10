@@ -21,7 +21,7 @@ import { isEmpty, reduce, isEqual } from 'lodash';
 import { logger } from '../common/logger';
 import { slackbot } from '../common/slackbot';
 import { Context } from '../common/types/context';
-import { User } from '../users/user.type';
+import { User } from '../users/user';
 
 export class LogUserUtil {
 

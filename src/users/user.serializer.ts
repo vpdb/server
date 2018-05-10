@@ -22,7 +22,7 @@ import { createHash } from 'crypto';
 import { config } from '../common/settings';
 import { Context } from '../common/types/context';
 import { Serializer, SerializerOptions } from '../common/serializer';
-import { User, UserCounter } from './user.type';
+import { User, UserCounter } from './user';
 
 //const pusher = require('../../src_/modules/pusher');
 

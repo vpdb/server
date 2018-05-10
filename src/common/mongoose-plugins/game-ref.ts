@@ -23,7 +23,7 @@ import { Context } from '../types/context';
 import { server } from '../../server';
 import { config } from '../settings';
 import { Game } from '../../games/game.type';
-import { User } from '../../users/user.type';
+import { User } from 'user.ts';
 import { ContentAuthor } from '../../users/content.author.type';
 
 const modelResourceMap: { [key: string]: string } = {

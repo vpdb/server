@@ -18,22 +18,17 @@
  */
 
 import { Document, Schema } from 'mongoose';
-import { File } from '../files/file.type';
-import { User } from '../users/user.type';
+import { User } from '../users/user';
+import { Release } from '../releases/release';
 
-export interface Rom extends Document {
+export interface Comment extends Document {
 	id: string,
-	_file: File | Schema.Types.ObjectId,
-	_ipdb_number: number,
-	rom_files: {
-		filename: string,
-		bytes: number,
-		crc: number,
-		modified_at: Date,
-	}[],
-	version: string,
-	languages: string[],
-	notes: string,
-	created_at: Date,
-	_created_by: User | Schema.Types.ObjectId
+	_from: User | Schema.Types.ObjectId
+	_ref: {
+		release: Release | Schema.Types.ObjectId
+		release_moderation: Release | Schema.Types.ObjectId
+	},
+	message: string,
+	ip: string,
+	created_at: Date
 }

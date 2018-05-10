@@ -20,12 +20,12 @@
 import Bluebird = require('bluebird');
 import { isArray, isObject, isUndefined } from 'lodash';
 import { VpdbQuotaConfig } from './types/config';
-import { User } from '../users/user.type';
+import { User } from '../users/user';
 import { Context } from 'context';
 import { ApiError } from './api.error';
 import { config } from './settings';
 import { logger } from './logger';
-import { File, FileVariation } from '../files/file.type';
+import { File, FileVariation } from '../files/file';
 
 const quotaModule = require('volos-quota-redis');
 

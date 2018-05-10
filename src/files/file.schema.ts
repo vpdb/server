@@ -22,9 +22,9 @@ import { Schema } from 'mongoose';
 import { includes } from 'lodash';
 
 import { server } from '../server';
-import { mimeTypeNames, mimeTypes } from '../common/defs/mimetypes';
-import { fileTypeExists, fileTypeMimeTypes, fileTypeNames } from '../common/defs/filetypes';
-import { File, FilePathOptions, FileVariation } from './file.type';
+import { mimeTypeNames, mimeTypes } from './file.mimetypes';
+import { File, FilePathOptions, FileVariation } from './file';
+import { fileTypes } from './file.types';
 import { quota } from '../common/quota';
 import { storage } from '../common/storage';
 import { config, settings } from '../common/settings';
@@ -51,8 +51,8 @@ const fields = {
 		type: String,
 		required: true,
 		'enum': {
-			values: fileTypeNames,
-			message: 'Invalid file type. Valid file types are: ["' + fileTypeNames.join('", "') + '"].'
+			values: fileTypes.names,
+			message: 'Invalid file type. Valid file types are: ["' + fileTypes.names.join('", "') + '"].'
 		}
 	},
 	metadata: { type: Schema.Types.Mixed },
@@ -79,11 +79,11 @@ FileSchema.plugin(metrics);
 
 FileSchema.path('mime_type').validate(function (mimeType: string) {
 	// will be validated by enum
-	if (!this.file_type || !fileTypeExists(this.file_type)) {
+	if (!this.file_type || !fileTypes.exists(this.file_type)) {
 		return true;
 	}
-	if (!includes(fileTypeMimeTypes(this.file_type), mimeType)) {
-		this.invalidate('mime_type', 'Invalid MIME type "' + mimeType + '" for file type "' + this.file_type + '". Valid MIME types are: ["' + fileTypeMimeTypes(this.file_type).join('", "') + '"].');
+	if (!includes(fileTypes.getMimeTypes(this.file_type), mimeType)) {
+		this.invalidate('mime_type', 'Invalid MIME type "' + mimeType + '" for file type "' + this.file_type + '". Valid MIME types are: ["' + fileTypes.getMimeTypes(this.file_type).join('", "') + '"].');
 	}
 });
 
@@ -224,6 +224,34 @@ FileSchema.methods.switchToActive = async function (): Promise<File> {
 	this.is_active = true;
 	return await storage.switchToPublic(this);
 };
+
+/**
+ * Returns all variations that are stored in the database for this file.
+ *
+ * @returns {FileVariation[]} Existing variations
+ */
+FileSchema.methods.getExistingVariations = function (): FileVariation[] {
+	const variations:FileVariation[] = [];
+	if (!this.variations) {
+		return [];
+	}
+	for (let name of Object.keys(this.variations)) {
+		variations.push({ name: name, mimeType: this.variations[name].mime_type });
+	}
+	return variations;
+};
+
+FileSchema.methods.getVariations = function (): FileVariation[] {
+	const variations:FileVariation[] = [];
+	switch (this.file_type) {
+
+	}
+	for (let name of Object.keys(this.variations)) {
+		variations.push({ name: name, mimeType: this.variations[name].mime_type });
+	}
+	return variations;
+};
+
 
 /**
  * Locks a file as being processed.

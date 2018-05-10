@@ -18,13 +18,15 @@
  */
 
 import { Document, Schema } from 'mongoose';
-import { User } from '../users/user.type';
+import { User } from '../users/user';
 
-export interface Tag extends Document {
-	_id: string,
-	name: string,
-	description: string,
-	is_active: boolean,
-	created_at: Date,
-	_created_by: User | Schema.Types.ObjectId
+export interface LogUser extends Document {
+	_user: User | Schema.Types.ObjectId;
+	_actor: User | Schema.Types.ObjectId;
+	event: string;
+	payload: { [key: string]: any };
+	result: 'success' | 'failure';
+	message: string;
+	ip: string;
+	logged_at: Date;
 }

@@ -21,7 +21,7 @@ import mongoose, { Model, Schema } from 'mongoose';
 import { assign, includes, isArray, isObject } from 'lodash';
 
 import { Context } from '../types/context';
-import { User } from '../../users/user.type';
+import { User } from 'user.ts';
 import { ApiError } from '../api.error';
 import { logger } from '../logger';
 import { Moderated, ModerationData } from './moderate.type';

@@ -21,7 +21,7 @@ import { Schema } from 'mongoose';
 import Router from 'koa-router';
 
 import { EndPoint } from '../common/types/endpoint';
-import { User } from './user.type';
+import { User } from './user';
 import { UserSerializer } from './user.serializer';
 import { schema } from './user.schema';
 import { router, prefixes } from './user.api.router';

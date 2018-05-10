@@ -19,10 +19,10 @@
 
 import { Schema } from 'mongoose';
 import { Moderated } from '../common/mongoose-plugins/moderate.type';
-import { User } from '../users/user.type';
-import { ReleaseVersion } from './release.version.type';
+import { User } from '../users/user';
+import { ReleaseVersion } from './release.version';
 import { ContentAuthor } from '../users/content.author.type';
-import { Tag } from '../tags/tag.type';
+import { Tag } from '../tags/tag';
 import { GameReference } from '../common/mongoose-plugins/game-ref';
 
 export interface Release extends Moderated, GameReference {

@@ -19,7 +19,7 @@
 
 import { parse } from 'url';
 import { encode as jwtEncode } from 'jwt-simple';
-import { User } from '../users/user.type';
+import { User } from '../users/user';
 import { config } from '../common/settings';
 
 export class AuthenticationUtil {

@@ -17,19 +17,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document, Schema } from 'mongoose';
-import { Game } from '../games/game.type';
-import { User } from '../users/user.type';
 
-export interface GameRequest extends Document {
-	id: string,
-	title: string,
-	notes: string,
-	ipdb_number: number,
-	ipdb_title: string,
-	is_closed: boolean,
-	message: string,
-	_game: Game | Schema.Types.ObjectId,
-	_created_by: User | Schema.Types.ObjectId,
-	created_at: Date
+import { File, FileVariation } from '../file';
+
+export abstract class Processor<V extends FileVariation> {
+
+	abstract canProcess(file: File, variation?: FileVariation): boolean;
+
+	abstract getQueue(): ProcessorQueue;
+
+	abstract getPriority(variation?: FileVariation): number;
+
+	abstract async process(file: File, src:string, dest:string, variation?: V): Promise<File>;
+}
+
+export enum ProcessorQueue {
+	HI_PRIO_FAST,
+	LOW_PRIO_SLOW
 }

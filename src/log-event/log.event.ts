@@ -16,17 +16,27 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+import { Document, Schema } from 'mongoose';
+import { User } from '../users/user';
+import { Game } from '../games/game.type';
+import { Release } from '../releases/release';
+import { Backglass } from '../backglasses/backglass.type';
+import { GameRequest } from '../game-requests/game.request.type';
+import { Build } from '../builds/build.type';
 
-import { Document } from 'mongoose';
-import { ReleaseVersionFile } from './release.version.file.type';
-
-export interface ReleaseVersion extends Document {
-	version: string,
-	released_at: Date,
-	changes: string,
-	files: ReleaseVersionFile[],
-	counter: {
-		downloads: number,
-		comments: number
-	}
+export interface LogEvent extends Document {
+	_actor: User | Schema.Types.ObjectId,
+	_ref: {
+		game?: Game | Schema.Types.ObjectId,
+		release?: Release | Schema.Types.ObjectId,
+		backglass?: Backglass | Schema.Types.ObjectId,
+		user?: User | Schema.Types.ObjectId,
+		game_request?: GameRequest | Schema.Types.ObjectId,
+		build?: Build | Schema.Types.ObjectId,
+	},
+	event: string,
+	payload: any,
+	is_public: boolean,
+	ip: string,
+	logged_at: Date
 }

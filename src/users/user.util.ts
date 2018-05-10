@@ -24,15 +24,15 @@ import { Context } from '../common/types/context';
 import { acl } from '../common/acl';
 import { logger } from '../common/logger';
 import { config } from '../common/settings';
-import { User } from './user.type';
+import { User } from './user';
 import { ApiError } from '../common/api.error';
-import { Release } from '../releases/release.type';
-import { ReleaseVersionFile } from '../releases/release.version.file.type';
+import { Release } from '../releases/release';
+import { ReleaseVersionFile } from '../releases/release.version.file';
 import { ContentAuthor } from './content.author.type';
 import { Backglass } from '../backglasses/backglass.type';
-import { Rating } from '../ratings/rating.type';
+import { Rating } from '../ratings/rating';
 import { userMergedDeleted, userMergedKept } from '../common/mailer';
-import { Star } from '../stars/star.type';
+import { Star } from '../stars/star';
 
 export class UserUtil {
 

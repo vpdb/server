@@ -19,7 +19,7 @@
 
 import { isArray, pick } from 'lodash';
 import { Context } from '../types/context';
-import { User } from '../../users/user.type';
+import { User } from 'user.ts';
 import { ModerationData } from './moderate.type';
 import { Serializer, SerializerOptions } from '../serializer';
 

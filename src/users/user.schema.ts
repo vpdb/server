@@ -26,7 +26,7 @@ import uniqueValidator from 'mongoose-unique-validator';
 import { logger } from '../common/logger';
 import { config } from '../common/settings';
 
-import { User } from './user.type';
+import { User } from './user';
 import { server } from '../server';
 
 const shortId = require('shortid32');

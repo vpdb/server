@@ -18,18 +18,22 @@
  */
 
 import { Document, Schema } from 'mongoose';
-import { User } from '../users/user.type';
+import { File } from '../files/file';
+import { User } from '../users/user';
 
-export interface Token extends Document {
+export interface Rom extends Document {
 	id: string,
-	token: string,
-	label: string,
-	type: 'personal' | 'application',
-	scopes: string[],
-	provider: string,
-	is_active: boolean,
-	last_used_at: Date,
-	expires_at: Date,
+	_file: File | Schema.Types.ObjectId,
+	_ipdb_number: number,
+	rom_files: {
+		filename: string,
+		bytes: number,
+		crc: number,
+		modified_at: Date,
+	}[],
+	version: string,
+	languages: string[],
+	notes: string,
 	created_at: Date,
 	_created_by: User | Schema.Types.ObjectId
 }

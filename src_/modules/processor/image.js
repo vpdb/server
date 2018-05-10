@@ -28,7 +28,7 @@ var PngQuant = require('pngquant');
 var OptiPng = require('optipng');
 
 var error = require('../error')('processor', 'image');
-var mimeTypes = require('../../../src/common/defs/mimetypes');
+var mimeTypes = require('../../../src/files/file.mimetypes');
 
 Promise.promisifyAll(gm.prototype);
 

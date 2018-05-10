@@ -26,7 +26,7 @@ const fileTypes = require('./defs/filetypes');
 const validator = require('validator');
 
 /**
- * Settings validations for VPFB
+ * Settings validations for VPDB
  *
  * !!! Don't copy this as settings template !!!
  */

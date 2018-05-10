@@ -23,7 +23,7 @@ import { RTMClientOptions } from '@slack/client/dist/RTMClient';
 import { settings, config } from './settings';
 import { logger } from './logger';
 import { server } from '../server';
-import { User } from '../users/user.type';
+import { User } from '../users/user';
 import { ContentAuthor } from '../users/content.author.type';
 import { LogEvent } from '../log-event/log.event.type';
 import { LogUser } from '../log-user/log.user.type';

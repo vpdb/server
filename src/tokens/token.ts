@@ -17,16 +17,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { User } from '../users/user.type';
 import { Document, Schema } from 'mongoose';
+import { User } from '../users/user';
 
-export interface Medium extends Document {
-	_user: User | Schema.Types.ObjectId,
-	_actor: User | Schema.Types.ObjectId,
-	event: string,
-	payload: any,
-	result: 'success' | 'failure',
-	message: string,
-	ip: string,
-	logged_at: Date
+export interface Token extends Document {
+	id: string,
+	token: string,
+	label: string,
+	type: 'personal' | 'application',
+	scopes: string[],
+	provider: string,
+	is_active: boolean,
+	last_used_at: Date,
+	expires_at: Date,
+	created_at: Date,
+	_created_by: User | Schema.Types.ObjectId
 }

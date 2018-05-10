@@ -18,22 +18,22 @@
  */
 
 import { Model } from 'mongoose';
-import { Backglass } from '../../backglasses/backglass.type';
-import { Build } from '../../builds/build.type';
-import { Comment } from '../../comments/comment.type';
-import { File } from '../../files/file.type';
-import { Game } from '../../games/game.type';
-import { GameRequest } from '../../game-requests/game.request.type';
-import { LogEvent } from '../../log-event/log.event.type';
-import { LogUser } from '../../log-user/log.user.type';
-import { Medium } from '../../media/medium.type';
-import { Rating } from '../../ratings/rating.type';
-import { Release } from '../../releases/release.type';
-import { Rom } from '../../roms/rom.type';
-import { Tag } from '../../tags/tag.type';
-import { Token } from '../../tokens/token.type';
-import { Star } from '../../stars/star.type';
-import { User } from '../../users/user.type';
+import { Backglass } from '../../backglasses/backglass';
+import { Build } from '../../builds/build';
+import { Comment } from '../../comments/comment';
+import { File } from '../../files/file';
+import { Game } from '../../games/game';
+import { GameRequest } from '../../game-requests/game.request';
+import { LogEvent } from '../../log-event/log.event';
+import { LogUser } from '../../log-user/log.user';
+import { Medium } from '../../media/medium';
+import { Rating } from '../../ratings/rating';
+import { Release } from '../../releases/release';
+import { Rom } from '../../roms/rom';
+import { Tag } from '../../tags/tag';
+import { Token } from '../../tokens/token';
+import { Star } from '../../stars/star';
+import { User } from '../../users/user';
 
 export interface Models {
 	Backglass: Model<Backglass>;

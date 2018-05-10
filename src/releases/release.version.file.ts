@@ -18,15 +18,30 @@
  */
 
 import { Document, Schema } from 'mongoose';
-import { User } from '../users/user.type';
+import { File } from '../files/file';
+import { User } from '../users/user';
+import { Build } from '../builds/build';
 
-export interface LogUser extends Document {
-	_user: User | Schema.Types.ObjectId;
-	_actor: User | Schema.Types.ObjectId;
-	event: string;
-	payload: { [key: string]: any };
-	result: 'success' | 'failure';
-	message: string;
-	ip: string;
-	logged_at: Date;
+export interface ReleaseVersionFile extends Document {
+	_file: File | Schema.Types.ObjectId;
+	flavor: {
+		orientation: string; // todo type
+		lighting: string; // todo type
+	};
+	validation: {
+		status: string; // todo type
+		message: string;
+		validated_at: Date;
+		_validated_by: User | Schema.Types.ObjectId;
+	};
+	_compatibility: Build[];
+	_playfield_image: File | Schema.Types.ObjectId;
+	_playfield_video: File | Schema.Types.ObjectId;
+	released_at: Date;
+	counter: {
+		downloads: number;
+	};
+
+	// serialized
+	file: File;
 }

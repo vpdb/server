@@ -18,8 +18,8 @@
  */
 
 import { Document, Schema } from 'mongoose';
-import { File } from '../files/file.type';
-import { User } from '../users/user.type';
+import { File } from '../files/file';
+import { User } from '../users/user';
 
 export interface Game extends Document {
 	id: string,

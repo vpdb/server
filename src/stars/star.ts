@@ -17,23 +17,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Models } from './models';
-import { Serializers } from './serializers';
-import { User } from 'user.ts';
 
+import { Document, Schema } from 'mongoose';
+import { User } from '../users/user';
+import { Game } from '../games/game.type';
+import { Release } from '../releases/release';
+import { Medium } from '../media/medium';
+import { Backglass } from '../backglasses/backglass.type';
 
-// declare module 'koa' {
-//
-// 	interface Context {
-// 		/**
-// 		 * Reference to all our database models.
-// 		 */
-// 		models: Models;
-//
-// 		/**
-// 		 * Reference to all serializers
-// 		 */
-// 		serializers: Serializers;
-// 	}
-// }
-//
+export interface Star extends Document {
+	_from: User | Schema.Types.ObjectId,
+	_ref: {
+		game: Game | Schema.Types.ObjectId,
+		release: Release | Schema.Types.ObjectId,
+		user: User | Schema.Types.ObjectId,
+		medium: Medium | Schema.Types.ObjectId,
+		backglass: Backglass | Schema.Types.ObjectId,
+	},
+	type: 'game' | 'release' | 'user' | 'medium' | 'backglass',
+	created_at: Date
+}

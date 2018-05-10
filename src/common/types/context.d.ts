@@ -19,10 +19,10 @@
 
 import { Context as KoaContext } from 'koa';
 import { RedisClient } from 'redis';
-import { User } from '../../users/user.type';
+import { User } from 'user.ts';
 import { Models } from './models';
 import { Serializers } from './serializers';
-import { Token } from '../../tokens/token.type';
+import { Token } from 'token.ts';
 
 export interface Context extends KoaContext {
 	/**

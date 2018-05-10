@@ -1,4 +1,4 @@
-import { File } from '../files/file.type';
+import { File } from '../files/file';
 import { rename, exists, open, close, unlink } from 'fs';
 import Bluebird = require('bluebird');
 import { logger } from './logger';
@@ -39,41 +39,40 @@ export class Storage {
 			logger.verbose('[storage] Skipping renaming of "%s" (no path change)', protectedPath);
 		}
 
-		// variations
-		if (this.variations[mimeCategory] && this.variations[mimeCategory][file.file_type]) {
-			this.variations[mimeCategory][file.file_type].forEach(function (variation) {
-				const lockPath = file.getPath(variation, { forceProtected: true, lockFile: true });
-				const protectedPath = file.getPath(variation, { forceProtected: true });
-				const publicPath = file.getPath(variation);
-				if (protectedPath !== publicPath) {
-					if (await existsAsync(protectedPath)) {
-						if (!(await existsAsync(lockPath))) {
-							try {
-								logger.verbose('[storage] Renaming "%s" to "%s"', protectedPath, publicPath);
-								await renameAsync(protectedPath, publicPath);
-							} catch (err) {
-								logger.warn('[storage] Error renaming, re-trying in a second (%s)', err.message);
-								setTimeout(function () {
-									try {
-										logger.verbose('[storage] Renaming "%s" to "%s"', protectedPath, publicPath);
-										await renameAsync(protectedPath, publicPath);
-									} catch (err) {
-										logger.warn('[storage] Second time failed too.', err.message);
-									}
-								}, 5000);
-							}
-						} else {
-							logger.warn('[storage] Skipping rename, "%s" is locked (processing)', protectedPath);
+		// go through variations
+		for (let variation of file.getExistingVariations()) {
+			const lockPath = file.getPath(variation, { forceProtected: true, lockFile: true });
+			const protectedPath = file.getPath(variation, { forceProtected: true });
+			const publicPath = file.getPath(variation);
+			if (protectedPath !== publicPath) {
+				if (await existsAsync(protectedPath)) {
+					if (!(await existsAsync(lockPath))) {
+						try {
+							logger.verbose('[storage] Renaming "%s" to "%s"', protectedPath, publicPath);
+							await renameAsync(protectedPath, publicPath);
+						} catch (err) {
+							logger.warn('[storage] Error renaming, re-trying in a second (%s)', err.message);
+							setTimeout(function () {
+								try {
+									logger.verbose('[storage] Renaming "%s" to "%s"', protectedPath, publicPath);
+									await renameAsync(protectedPath, publicPath);
+								} catch (err) {
+									logger.warn('[storage] Second time failed too.', err.message);
+								}
+							}, 5000);
 						}
 					} else {
-						await closeAsync(await openAsync(protectedPath, 'w'));
-						logger.warn('[storage] Skipping rename, "%s" does not exist (yet).', protectedPath);
+						logger.warn('[storage] Skipping rename, "%s" is locked (processing)', protectedPath);
 					}
 				} else {
-					logger.verbose('[storage] Skipping renaming of "%s" (no path change).', protectedPath);
+					await closeAsync(await openAsync(protectedPath, 'w'));
+					logger.warn('[storage] Skipping rename, "%s" does not exist (yet).', protectedPath);
 				}
-			});
+			} else {
+				logger.verbose('[storage] Skipping renaming of "%s" (no path change).', protectedPath);
+			}
 		}
+		return file;
 	}
 
 	/**
@@ -96,7 +95,7 @@ export class Storage {
 				// if this is a busy problem, try again in a few.
 				let retries = 0;
 				const intervalId = setInterval(function() {
-					if (!fs.existsSync(filePath)) {
+					if (!(await existsAsync(filePath))) {
 						return clearInterval(intervalId);
 					}
 					if (++retries > 10) {
@@ -104,7 +103,7 @@ export class Storage {
 						return clearInterval(intervalId);
 					}
 					try {
-						fs.unlinkSync(filePath);
+						await unlinkAsync(filePath);
 						clearInterval(intervalId);
 					} catch (err) {
 						logger.warn('[storage] Still could not unlink %s (try %d): %s', filePath, retries, err.toString());
@@ -112,19 +111,17 @@ export class Storage {
 				}, 500);
 			}
 		}
-		if (this.variations[file.getMimeCategory()] && this.variations[file.getMimeCategory()][file.file_type]) {
-			this.variations[file.getMimeCategory()][file.file_type].forEach(variation => {
-				filePath = file.getPath(variation.name);
-				if (fs.existsSync(filePath)) {
-					logger.verbose('[storage] Removing file variation %s..', filePath);
-					try {
-						fs.unlinkSync(filePath);
-					} catch (err) {
-						/* istanbul ignore next */
-						logger.error('[storage] Error deleting file (ignoring): %s', err);
-					}
+		for (let variation of file.getExistingVariations()) {
+			filePath = file.getPath(variation);
+			if (await existsAsync(filePath)) {
+				logger.verbose('[storage] Removing file variation %s..', filePath);
+				try {
+					await unlinkAsync(filePath);
+				} catch (err) {
+					/* istanbul ignore next */
+					logger.error('[storage] Error deleting file (ignoring): %s', err);
 				}
-			});
+			}
 		}
 	}
 }

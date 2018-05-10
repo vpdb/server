@@ -18,7 +18,7 @@
  */
 
 import { Document, Schema } from 'mongoose';
-import { User } from './user.type';
+import { User } from './user';
 
 export interface ContentAuthor extends Document {
 	/**

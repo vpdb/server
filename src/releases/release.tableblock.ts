@@ -18,18 +18,12 @@
  */
 
 import { Document, Schema } from 'mongoose';
-import { Release } from '../releases/release.type';
-import { User } from '../users/user.type';
-import { Game } from '../games/game.type';
+import { File } from '../files/file';
 
-export interface Rating extends Document {
-	id: string,
-	_from: User | Schema.Types.ObjectId,
-	_ref: {
-		game: Game | Schema.Types.ObjectId,
-		release: Release | Schema.Types.ObjectId,
-	},
-	value: number
-	modified_at: Date,
-	created_at: Date
+export interface TableBlock extends Document {
+	hash: Buffer,
+	bytes: number,
+	type: 'image' | 'sound' | 'gameitem' | 'collection',
+	meta: any,
+	_files: File[] | Schema.Types.ObjectId[]
 }

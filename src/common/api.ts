@@ -24,7 +24,7 @@ import { logger } from './logger';
 import { config, settings } from './settings';
 import { ApiError, ApiValidationError } from './api.error';
 import Router from 'koa-router';
-import { User } from '../users/user.type';
+import { User } from '../users/user';
 import { scope, Scope } from './scope';
 import { AuthenticationUtil, Jwt } from '../authentication/authentication.util';
 import { acl } from './acl';

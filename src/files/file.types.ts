@@ -18,7 +18,8 @@
  */
 
 import { uniq, flatten } from 'lodash';
-import { BackglassVariation, FileVariation, ImageFileVariation } from './file';
+import { BackglassVariation} from './file.variations';
+import { FileVariation, ImageFileVariation } from './file.variations';
 
 class FileTypes {
 
@@ -133,7 +134,7 @@ class FileTypes {
 	constructor() {
 		this.fileTypes = [ this.backglassImage, this.backglassDirectB2s, this.logo, this.playfield,
 			this.playfieldImageLandscape, this.playfieldImagePortrait, this.playfieldVideoLandscape,
-			this.playfieldVideoPortrait, this.landscape, this.releaseTable, this.release ];
+			this.playfieldVideoPortrait, this.landscape, this.releaseTable, this.release, this.rom ];
 
 		this.names = uniq(this.fileTypes.map(t => t.name));
 	}
@@ -148,6 +149,18 @@ class FileTypes {
 
 	exists(name:string) {
 		return this.names.includes(name);
+	}
+
+	/**
+	 * Returns variation names of a number of file types.
+	 * For example, getting all playfield variations would be:
+	 *
+	 * @example	getVariationNames(['playfield','playfield-fs','playfield-ws'])
+	 * @param {string[]} fileTypes
+	 * @return {string[]}
+	 */
+	getVariationNames(fileTypes:string[]):string[] {
+		return uniq(flatten(this.fileTypes.filter(t => fileTypes.includes(t.name)).map(t => t.variations.map(v => v.name))));
 	}
 }
 

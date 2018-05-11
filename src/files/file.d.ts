@@ -19,6 +19,7 @@
 
 import { Document, Schema } from 'mongoose';
 import { User } from '../users/user';
+import { FileVariation } from './file.variations';
 
 export interface File extends Document {
 	id: string;
@@ -139,75 +140,6 @@ export interface File extends Document {
 	 * @returns {string}
 	 */
 	toString(variation?: FileVariation): string;
-}
-
-export interface FileVariation {
-	name: string;
-	mimeType?: string;
-	priority?: number;
-}
-
-export interface ImageFileVariation extends FileVariation {
-
-	/**
-	 * Encoding quality, 0-100.
-	 */
-	quality?: number;
-
-	/**
-	 * Width in pixels.
-	 */
-	width?: number;
-
-	/**
-	 * Height in pixels.
-	 */
-	height?: number;
-
-	/**
-	 * Size in pixel for square images.
-	 */
-	size?: number;
-
-	/**
-	 * Degrees to rotate the image.
-	 */
-	rotate?: number;
-
-	/**
-	 * If set, generate a square image with {@link size} width and height from a portrait source.
-	 */
-	portraitToSquare?: boolean;
-
-	/**
-	 * If set, generate a square image with {@link size} width and height from a landscape source.
-	 */
-	wideToSquare?: boolean;
-
-	/**
-	 * If set, rotate to landscape if not already in landscape.
-	 */
-	landscape?: boolean;
-}
-
-export interface BackglassVariation extends FileVariation {
-	/**
-	 * Encoding quality, 0-100.
-	 */
-	quality?: number;
-
-	/**
-	 * Width in pixels.
-	 */
-	width?: number;
-
-	/**
-	 * Height in pixels.
-	 */
-	height?: number;
-
- 	cutGrill?: boolean;
- 	modulate?: number;
 }
 
 export interface FilePathOptions {

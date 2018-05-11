@@ -21,10 +21,9 @@ import gm from 'gm';
 import { createWriteStream } from 'fs';
 
 import { Processor, ProcessorQueue } from './processor';
-import { File, FileVariation, ImageFileVariation } from '../file';
+import { File} from '../file';
 import { logger } from '../../common/logger';
-
-//require('bluebird').promisifyAll(gm.prototype);
+import { FileVariation, ImageFileVariation } from '../file.variations';
 
 export class ImageVariationProcessor extends Processor<ImageFileVariation> {
 

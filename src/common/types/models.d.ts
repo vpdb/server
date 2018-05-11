@@ -30,6 +30,7 @@ import { Medium } from '../../media/medium';
 import { Rating } from '../../ratings/rating';
 import { Release } from '../../releases/release';
 import { Rom } from '../../roms/rom';
+import { TableBlock } from '../../releases/release.tableblock';
 import { Tag } from '../../tags/tag';
 import { Token } from '../../tokens/token';
 import { Star } from '../../stars/star';
@@ -48,6 +49,7 @@ export interface Models {
 	Rating: Model<Rating>;
 	Release: Model<Release>;
 	Rom: Model<Rom>;
+	TableBlock: Model<TableBlock>;
 	Tag: Model<Tag>;
 	Token: Model<Token>;
 	Star: Model<Star>;

@@ -81,17 +81,17 @@ exports.create = function(req, res) {
 
 		LogUser.success(req, user, 'registration', { provider: 'local', email: newUser.email, username: newUser.username });
 
+		// user validated and created. time to send the activation email.
+		if (config.vpdb.email.confirmUserEmail) {
+			mailer.registrationConfirmation(user);
+		}
+
 		// return result now and send email afterwards
 		if (testMode && req.body.returnEmailToken) {
 			api.success(res, _.extend(UserSerializer.detailed(user, req), { email_token: user.email_status.toObject().token }), 201);
 
 		} else {
 			api.success(res, UserSerializer.detailed(user, req), 201);
-		}
-
-		// user validated and created. time to send the activation email.
-		if (config.vpdb.email.confirmUserEmail) {
-			mailer.registrationConfirmation(user);
 		}
 
 		return null;

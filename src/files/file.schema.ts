@@ -23,11 +23,12 @@ import { includes } from 'lodash';
 
 import { server } from '../server';
 import { mimeTypeNames, mimeTypes } from './file.mimetypes';
-import { File, FilePathOptions, FileVariation } from './file';
+import { File, FilePathOptions} from './file';
 import { fileTypes } from './file.types';
 import { quota } from '../common/quota';
 import { storage } from '../common/storage';
 import { config, settings } from '../common/settings';
+import { FileVariation } from './file.variations';
 
 const shortId = require('shortid32');
 const metrics = require('../../src_/models/plugins/metrics');
@@ -163,7 +164,7 @@ FileSchema.methods.isFree = function (variation: FileVariation = null): boolean 
  * @param {FileVariation} [variation] File variation or null for original file
  * @return {string} MIME type of the file or its variation.
  */
-FileSchema.methods.getMimeType = function (variation: FileVariation = null): string {
+FileSchema.methods.getMimeType = function (variation?: FileVariation): string {
 	if (variation && this.variations && this.variations[variation.name] && this.variations[variation.name].mime_type) {
 		return this.variations[variation.name].mime_type;
 
@@ -234,17 +235,6 @@ FileSchema.methods.getExistingVariations = function (): FileVariation[] {
 	const variations:FileVariation[] = [];
 	if (!this.variations) {
 		return [];
-	}
-	for (let name of Object.keys(this.variations)) {
-		variations.push({ name: name, mimeType: this.variations[name].mime_type });
-	}
-	return variations;
-};
-
-FileSchema.methods.getVariations = function (): FileVariation[] {
-	const variations:FileVariation[] = [];
-	switch (this.file_type) {
-
 	}
 	for (let name of Object.keys(this.variations)) {
 		variations.push({ name: name, mimeType: this.variations[name].mime_type });

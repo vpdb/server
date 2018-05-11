@@ -18,7 +18,8 @@
  */
 
 
-import { File, FileVariation } from '../file';
+import { File} from '../file';
+import { FileVariation } from '../file.variations';
 
 export abstract class Processor<V extends FileVariation> {
 

@@ -23,9 +23,10 @@ const PngQuant = require('pngquant');
 const OptiPng = require('optipng');
 
 import { Processor, ProcessorQueue } from './processor';
-import { File, FileVariation } from '../file';
+import { File} from '../file';
 import { logger } from '../../common/logger';
 import { ApiError } from '../../common/api.error';
+import { FileVariation } from '../file.variations';
 
 export class ImageOptimizationProcessor extends Processor<FileVariation> {
 

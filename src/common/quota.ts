@@ -25,7 +25,8 @@ import { Context } from 'context';
 import { ApiError } from './api.error';
 import { config } from './settings';
 import { logger } from './logger';
-import { File, FileVariation } from '../files/file';
+import { File} from '../files/file';
+import { FileVariation } from '../files/file.variations';
 
 const quotaModule = require('volos-quota-redis');
 

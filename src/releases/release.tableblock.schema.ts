@@ -17,12 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-'use strict';
-
-const logger = require('winston');
-const mongoose = require('mongoose');
-
-const Schema = mongoose.Schema;
+import { Schema } from 'mongoose';
 
 //-----------------------------------------------------------------------------
 // SCHEMA
@@ -32,9 +27,8 @@ const fields = {
 	bytes: { type: Number, required: true },
 	type:  { type: String, required: true, 'enum': [ 'image', 'sound', 'gameitem', 'collection' ] },
 	meta:  { type: Schema.Types.Mixed },
-	_files: { type: [ Schema.ObjectId ], ref: 'File', index: true }
+	_files: { type: [ Schema.Types.ObjectId ], ref: 'File', index: true }
 };
-const TableBlockSchema = new Schema(fields, { usePushEach: true });
+const TableBlockSchema = new Schema(fields);
 
-mongoose.model('TableBlock', TableBlockSchema);
-logger.info('[model] Schema "TableBlock" registered.');
+export var schema: Schema = TableBlockSchema;

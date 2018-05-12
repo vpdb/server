@@ -23,7 +23,7 @@ const mongoose = require('mongoose');
 
 const fileRef = require('../plugins/file-ref');
 const prettyId = require('../plugins/pretty-id');
-const flavor = require('../../modules/flavor');
+const flavor = require('../../../src/releases/release.flavors');
 
 const Schema = mongoose.Schema;
 const validationStatusValues = ['verified', 'playable', 'broken'];

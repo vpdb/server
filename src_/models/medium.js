@@ -28,7 +28,7 @@ const uniqueValidator = require('mongoose-unique-validator');
 
 const prettyId = require('./plugins/pretty-id');
 const fileRef = require('./plugins/file-ref');
-const metrics = require('./plugins/metrics');
+const metrics = require('../../src/common/mongoose-plugins/metrics');
 
 const Schema = mongoose.Schema;
 

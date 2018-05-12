@@ -28,10 +28,10 @@ import { config } from '../common/settings';
 
 import { User } from './user';
 import { server } from '../server';
+import { flavors } from '../releases/release.flavors';
 
 const shortId = require('shortid32');
-const metrics = require('../../src_/models/plugins/metrics');
-const flavor = require('../../src_/modules/flavor');
+const metrics = require('../common/mongoose-plugins/metrics');
 
 //-----------------------------------------------------------------------------
 // SCHEMA
@@ -251,7 +251,7 @@ UserSchema.path('is_local').validate(async function (isLocal: boolean) {
 		}
 	}
 	if (this.preferences && this.preferences.flavor_tags) {
-		each(flavor.values, (flavorType, flavorId) => {  // flavorId: 'orientation', flavorType: { fs: { name: 'Portrait', .. }, ws: { ... } }
+		each(flavors.values, (flavorType, flavorId) => {  // flavorId: 'orientation', flavorType: { fs: { name: 'Portrait', .. }, ws: { ... } }
 			if (this.preferences.flavor_tags[flavorId]) {
 				each(flavorType, (flavorAttrs, flavorValue) => { // flavorValue: 'fs', flavorAttrs: { name: 'Portrait', .. }
 					if (isUndefined(this.preferences.flavor_tags[flavorId][flavorValue])) {

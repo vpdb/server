@@ -29,9 +29,9 @@ import { quota } from '../common/quota';
 import { storage } from '../common/storage';
 import { config, settings } from '../common/settings';
 import { FileVariation } from './file.variations';
+import { metricsPlugin } from '../common/mongoose-plugins/metrics';
 
 const shortId = require('shortid32');
-const metrics = require('../../src_/models/plugins/metrics');
 
 //-----------------------------------------------------------------------------
 // SCHEMA
@@ -71,7 +71,7 @@ const FileSchema = new Schema(fields, { toObject: { virtuals: true, versionKey: 
 // PLUGINS
 //-----------------------------------------------------------------------------
 
-FileSchema.plugin(metrics);
+FileSchema.plugin(metricsPlugin);
 
 
 //-----------------------------------------------------------------------------

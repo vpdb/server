@@ -36,7 +36,7 @@ const ReleaseSerializer = require('../../serializers/release.serializer');
 const ImageProcessor = require('../../modules/processor/image');
 
 const quota = require('../../../src/common/quota');
-const flavor = require('../../modules/flavor');
+const flavor = require('../../../src/releases/release.flavors');
 const error = require('../../modules/error')('storage', 'release');
 const api = require('../api/api');
 

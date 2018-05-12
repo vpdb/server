@@ -99,6 +99,15 @@
 				"@types/node": "9.6.6"
 			}
 		},
+		"@types/adm-zip": {
+			"version": "0.4.31",
+			"resolved": "https://registry.npmjs.org/@types/adm-zip/-/adm-zip-0.4.31.tgz",
+			"integrity": "sha1-ozdrn6j0xunAeMF20t8srreTneM=",
+			"dev": true,
+			"requires": {
+				"@types/node": "9.6.6"
+			}
+		},
 		"@types/bluebird": {
 			"version": "3.5.20",
 			"resolved": "https://registry.npmjs.org/@types/bluebird/-/bluebird-3.5.20.tgz",
@@ -502,6 +511,11 @@
 				"mongodb": "2.2.35",
 				"redis": "2.8.0"
 			}
+		},
+		"adm-zip": {
+			"version": "0.4.10",
+			"resolved": "https://registry.npmjs.org/adm-zip/-/adm-zip-0.4.10.tgz",
+			"integrity": "sha512-075E4f1zFxHbsnn6C4OI4jVzUT1zV+M68QdBxcVxmO/Yqk35CFnFFYLaepvth68gzlIlyQ/hkaI2JY99Nh3C5Q=="
 		},
 		"agent-base": {
 			"version": "4.2.0",
@@ -5033,7 +5047,7 @@
 		},
 		"onetime": {
 			"version": "1.1.0",
-			"resolved": "http://registry.npmjs.org/onetime/-/onetime-1.1.0.tgz",
+			"resolved": "https://registry.npmjs.org/onetime/-/onetime-1.1.0.tgz",
 			"integrity": "sha1-ofeDj4MUxRbwXs78vEzP4EtO14k="
 		},
 		"only": {
@@ -6762,6 +6776,11 @@
 			"version": "1.0.0",
 			"resolved": "https://registry.npmjs.org/unpipe/-/unpipe-1.0.0.tgz",
 			"integrity": "sha1-sr9O6FFKrmFltIF4KdIbLvSZBOw="
+		},
+		"unrar": {
+			"version": "0.1.7",
+			"resolved": "https://registry.npmjs.org/unrar/-/unrar-0.1.7.tgz",
+			"integrity": "sha1-VGVwCA8EDeMDzNnEf3535zzZ5/g="
 		},
 		"unset-value": {
 			"version": "1.0.0",

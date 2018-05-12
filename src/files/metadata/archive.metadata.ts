@@ -38,10 +38,10 @@ export class ArchiveMetadata implements Metadata {
 		switch (type) {
 			case 'x-rar-compressed':
 			case 'rar':
-				return await this._getRarMetadata(file);
+				return await this.getRarMetadata(file);
 
 			case 'zip':
-				return this._getZipMetadata(file);
+				return this.getZipMetadata(file);
 		}
 	}
 
@@ -58,7 +58,7 @@ export class ArchiveMetadata implements Metadata {
 	 * @param {FileSchema} file
 	 * @return {Promise<{ entries: { filename: string, bytes: number, bytes_compressed: number, crc: string, modified_at: Date }[]}>}
 	 */
-	async _getRarMetadata(file: File) {
+	private async getRarMetadata(file: File) {
 
 		const archive = new Unrar(file.getPath());
 		let entries = await archive.listAsync();
@@ -85,7 +85,7 @@ export class ArchiveMetadata implements Metadata {
 	 * @param {FileSchema} file
 	 * @return {{ entries: { filename: string, bytes: number, bytes_compressed: number, crc: string, modified_at: Date }[]}}
 	 */
-	_getZipMetadata(file: File) {
+	private getZipMetadata(file: File) {
 
 		let entries = new Zip(file.getPath()).getEntries();
 

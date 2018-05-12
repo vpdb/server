@@ -29,7 +29,7 @@ const uniqueValidator = require('mongoose-unique-validator');
 const prettyId = require('./plugins/pretty-id');
 const gameRef = require('../../src/common/mongoose-plugins/game-ref');
 const fileRef = require('./plugins/file-ref');
-const metrics = require('./plugins/metrics');
+const metrics = require('../../src/common/mongoose-plugins/metrics');
 const moderate = require('../../src/common/mongoose-plugins/moderate');
 
 const author = require('./release/author');

@@ -27,7 +27,7 @@ const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 const paginate = require('mongoose-paginate');
 
-const metrics = require('./plugins/metrics');
+const metrics = require('../../src/common/mongoose-plugins/metrics');
 const gameRef = require('../../src/common/mongoose-plugins/game-ref');
 const fileRef = require('./plugins/file-ref');
 const moderate = require('../../src/common/mongoose-plugins/moderate');

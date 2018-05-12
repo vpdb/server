@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const flavor = require('../modules/flavor');
+const flavor = require('../../src/releases/release.flavors');
 const Serializer = require('../../src/common/serializer');
 const GameSerializer = require('./game.serializer');
 const FileSerializer = require('../../src/files/file.serializer');

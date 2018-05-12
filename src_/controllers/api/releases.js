@@ -43,7 +43,7 @@ const ReleaseVersionFileSerializer = require('../../serializers/release.version.
 
 const acl = require('../../../src/common/acl');
 const error = require('../../modules/error')('api', 'release');
-const flavor = require('../../modules/flavor');
+const flavor = require('../../../src/releases/release.flavors');
 const pusher = require('../../modules/pusher');
 const mailer = require('../../../src/common/mailer');
 const storage = require('../../modules/storage');

@@ -21,13 +21,35 @@ import Router from 'koa-router';
 import { Schema } from 'mongoose';
 import { EndPoint } from '../common/types/endpoint';
 
-//import { schema } from './log.user.schema';
+import { schema } from './file.schema';
 import { FileSerializer } from './file.serializer';
 import Application = require('koa');
 
-export class FilesEndPoint implements EndPoint {
+export class FilesApiEndPoint implements EndPoint {
 
 	readonly name: string = 'files';
+	readonly paths: string[] = [];
+
+	private readonly _router: Router;
+	private readonly _schema: Schema;
+
+	constructor() {
+		this._schema = schema;
+		this._router = router;
+	}
+
+	getRouter(): Router {
+		return this._router;
+	}
+
+	register(app: Application): void {
+		app.context.serializers.File = new FileSerializer();
+	}
+}
+
+export class FilesStorageEndPoint implements EndPoint {
+
+	readonly name: string = 'storage files';
 	readonly paths: string[] = [];
 
 	private readonly _router: Router;

@@ -20,7 +20,7 @@
 import { Document, Schema } from 'mongoose';
 import { Release } from '../releases/release';
 import { User } from '../users/user';
-import { Game } from '../games/game.type';
+import { Game } from '../games/game';
 
 export interface Rating extends Document {
 	id: string,

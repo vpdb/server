@@ -24,9 +24,9 @@ import { settings, config } from './settings';
 import { logger } from './logger';
 import { server } from '../server';
 import { User } from '../users/user';
-import { ContentAuthor } from '../users/content.author.type';
-import { LogEvent } from '../log-event/log.event.type';
-import { LogUser } from '../log-user/log.user.type';
+import { ContentAuthor } from '../users/content.author';
+import { LogEvent } from '../log-event/log.event';
+import { LogUser } from '../log-user/log.user';
 
 const red = '#cf0000';
 const delay = 5000;

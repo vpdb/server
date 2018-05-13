@@ -18,11 +18,11 @@
  */
 import { Document, Schema } from 'mongoose';
 import { User } from '../users/user';
-import { Game } from '../games/game.type';
+import { Game } from '../games/game';
 import { Release } from '../releases/release';
-import { Backglass } from '../backglasses/backglass.type';
-import { GameRequest } from '../game-requests/game.request.type';
-import { Build } from '../builds/build.type';
+import { Backglass } from '../backglasses/backglass';
+import { GameRequest } from '../game-requests/game.request';
+import { Build } from '../builds/build';
 
 export interface LogEvent extends Document {
 	_actor: User | Schema.Types.ObjectId,

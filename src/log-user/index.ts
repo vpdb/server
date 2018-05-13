@@ -22,7 +22,7 @@ import Router from 'koa-router';
 import { EndPoint } from '../common/types/endpoint';
 
 import { schema } from './log.user.schema';
-import { LogUser } from './log.user.type';
+import { LogUser } from './log.user';
 import Application = require('koa');
 
 export class LogUserEndPoint implements EndPoint {

@@ -18,21 +18,50 @@
  */
 
 import { Schema } from 'mongoose';
-import { Moderated } from '../common/mongoose-plugins/moderate.type';
+import { Moderated } from '../common/mongoose-plugins/moderate';
 import { User } from '../users/user';
-import { BackglassVersion } from './backglass.version.type';
-import { ContentAuthor } from '../users/content.author.type';
+import { ReleaseVersion } from './release.version';
+import { ContentAuthor } from '../users/content.author';
+import { Tag } from '../tags/tag';
 import { GameReference } from '../common/mongoose-plugins/game-ref';
 
-export interface Backglass extends Moderated, GameReference {
+export interface Release extends Moderated, GameReference {
 	id: string,
-	versions: BackglassVersion[],
-	description: { type: String },
-	authors: ContentAuthor[]
+	name: string,
+	name_sortable: string,
+	license: 'by-sa' | 'by-nd',
+	description: string,
+	versions: ReleaseVersion[],
+	authors: ContentAuthor[],
+	_tags: Tag[] | Schema.Types.ObjectId
+	links: {
+		label: string,
+		url: string
+	}[],
 	acknowledgements: string,
-	counter: {
-		stars: number
+	original_version: {
+		_ref: Release | Schema.Types.ObjectId,
+		release: {
+			name: string,
+			url: string,
+		}
 	},
+	counter: {
+		downloads: number,
+		comments: number,
+		stars: number,
+		views: number,
+	},
+	metrics: {
+		popularity: number,
+	},
+	rating: {
+		average: number,
+		votes: number,
+		score: number,
+	},
+	released_at: Date,
+	modified_at: Date,
 	created_at: Date,
 	_created_by: User | Schema.Types.ObjectId
 }

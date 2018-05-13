@@ -17,23 +17,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-
 import { Document, Schema } from 'mongoose';
+import { Game } from '../games/game';
 import { User } from '../users/user';
-import { Game } from '../games/game.type';
-import { Release } from '../releases/release';
-import { Medium } from '../media/medium';
-import { Backglass } from '../backglasses/backglass.type';
 
-export interface Star extends Document {
-	_from: User | Schema.Types.ObjectId,
-	_ref: {
-		game: Game | Schema.Types.ObjectId,
-		release: Release | Schema.Types.ObjectId,
-		user: User | Schema.Types.ObjectId,
-		medium: Medium | Schema.Types.ObjectId,
-		backglass: Backglass | Schema.Types.ObjectId,
-	},
-	type: 'game' | 'release' | 'user' | 'medium' | 'backglass',
+export interface GameRequest extends Document {
+	id: string,
+	title: string,
+	notes: string,
+	ipdb_number: number,
+	ipdb_title: string,
+	is_closed: boolean,
+	message: string,
+	_game: Game | Schema.Types.ObjectId,
+	_created_by: User | Schema.Types.ObjectId,
 	created_at: Date
 }

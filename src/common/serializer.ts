@@ -20,7 +20,7 @@
 import { Document } from 'mongoose';
 import { get, isArray, defaultsDeep, assign, pick } from 'lodash';
 import { Context } from './types/context';
-import { Moderated } from './mongoose-plugins/moderate.type';
+import { Moderated } from './mongoose-plugins/moderate';
 import { ReleaseVersionFile } from '../releases/release.version.file';
 
 export abstract class Serializer<T extends Document | Moderated> {

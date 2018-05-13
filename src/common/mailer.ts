@@ -31,9 +31,9 @@ import { User } from '../users/user';
 import { Release } from '../releases/release';
 import { ReleaseVersion } from '../releases/release.version';
 import { ReleaseVersionFile } from '../releases/release.version.file';
-import { Backglass } from '../backglasses/backglass.type';
-import { Game } from '../games/game.type';
-import { ContentAuthor } from '../users/content.author.type';
+import { Backglass } from '../backglasses/backglass';
+import { Game } from '../games/game';
+import { ContentAuthor } from '../users/content.author';
 
 const templatesDir = resolve(__dirname, '../email-templates');
 

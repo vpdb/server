@@ -19,8 +19,8 @@
 
 import { isArray, pick } from 'lodash';
 import { Context } from '../types/context';
-import { User } from 'user.ts';
-import { ModerationData } from './moderate.type';
+import { User } from '../../users/user';
+import { ModerationData } from './moderate';
 import { Serializer, SerializerOptions } from '../serializer';
 
 class ModerationSerializer extends Serializer<ModerationData> {

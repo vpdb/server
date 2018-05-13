@@ -22,9 +22,9 @@ import { assign, isArray, isEmpty, isObject, map } from 'lodash';
 import { Context } from '../types/context';
 import { server } from '../../server';
 import { config } from '../settings';
-import { Game } from '../../games/game.type';
-import { User } from 'user.ts';
-import { ContentAuthor } from '../../users/content.author.type';
+import { Game } from '../../games/game';
+import { User } from '../../users/user';
+import { ContentAuthor } from '../../users/content.author';
 
 const modelResourceMap: { [key: string]: string } = {
 	Release: 'releases',

@@ -2,7 +2,7 @@ const _ = require('lodash');
 const Serializer = require('../../src/common/serializer');
 const UserSerializer = require('../../src/users/user.serializer');
 const GameSerializer = require('./game.serializer');
-const ReleaseSerializer = require('./release.serializer');
+const ReleaseSerializer = require('../../src/releases/release.serializer');
 const FileSerializer = require('../../src/files/file.serializer');
 
 class MediumSerializer extends Serializer {

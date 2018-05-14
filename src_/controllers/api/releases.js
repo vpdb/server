@@ -38,8 +38,8 @@ const User = require('mongoose').model('User');
 const api = require('./api');
 
 const GameSerializer = require('../../serializers/game.serializer');
-const ReleaseSerializer = require('../../serializers/release.serializer');
-const ReleaseVersionFileSerializer = require('../../serializers/release.version.file.serializer');
+const ReleaseSerializer = require('../../../src/releases/release.serializer');
+const ReleaseVersionFileSerializer = require('../../../src/releases/release.version.file.serializer');
 
 const acl = require('../../../src/common/acl');
 const error = require('../../modules/error')('api', 'release');

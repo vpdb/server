@@ -74,5 +74,24 @@ export interface Game extends Document {
 	created_at: Date,
 	_created_by: User | Schema.Types.ObjectId;
 
+	// serialized
+	backglass?: File;
+	logo?: File;
+
+	// generated
+	mpu?: number;
+	owner: string;
+	restrictions?: GameRestrictions;
+
 	isRestricted(what:string):boolean;
+}
+
+export interface GameRestrictions {
+	release?: GameRestriction;
+	backglass?: GameRestriction;
+	rom?: GameRestriction;
+}
+
+export interface GameRestriction {
+	mpu: boolean;
 }

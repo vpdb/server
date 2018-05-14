@@ -17,14 +17,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { pick, sortBy, sumBy } from 'lodash';
+import Busboy from 'busboy';
+
 import { Api } from '../common/api';
 import { Context } from '../common/types/context';
 import { ApiError } from '../common/api.error';
+import { TableBlock, TableBlockBase, TableBlockMatch, TableBlockMatchResult } from '../releases/release.tableblock';
 import { File } from './file';
-
-const _ = require('lodash');
-const logger = require('winston');
-const Busboy = require('busboy');
+import { logger } from '../common/logger';
+import { Release } from '../releases/release';
+import { ReleaseVersion } from '../releases/release.version';
+import { ReleaseVersionFile } from '../releases/release.version.file';
+import { Build } from '../builds/build';
+import { FileUtil } from './file.util';
 
 //const fileModule = require('../../modules/file');
 
@@ -98,7 +104,7 @@ export class FileApi extends Api {
 		}
 
 		// fail if inactive and not owner
-		let isOwner = ctx.state.user && file._created_by.equals(ctx.state.user._id);
+		let isOwner = ctx.state.user && (file._created_by as any).equals(ctx.state.user._id);
 		if (!file.is_active && (!ctx.state.user || !isOwner)) {
 			throw new ApiError('File "%s" is inactive.', ctx.params.id).status(ctx.state.user ? 403 : 401);
 		}
@@ -113,9 +119,8 @@ export class FileApi extends Api {
 	public async blockmatch(ctx: Context) {
 
 		const includeSameRelease = !!ctx.query.include_same_release;
-		const rlsFields = '_game authors._user versions.files._file versions.files._compatibility';
+		const rlsFields = ['_game', 'authors._user', 'versions.files._file', 'versions.files._compatibility'];
 		const threshold = 50; // sum of matched bytes and object percentage must be >50%
-		let result = {};
 		const file = await ctx.models.File.findOne({ id: ctx.params.id });
 
 		// fail if not found
@@ -127,18 +132,18 @@ export class FileApi extends Api {
 		if (file.getMimeCategory() !== 'table') {
 			throw new ApiError('Can only match table files, this is a %s', file.getMimeCategory(), ctx.params.id).status(400);
 		}
-		const release = await ctx.models.Release.findOne({ 'versions.files._file': file._id }).populate(rlsFields).exec();
+		const release = await ctx.models.Release.findOne({ 'versions.files._file': file._id }).populate(rlsFields.join(' ')).exec();
 
 		// fail if not found
 		if (!release) {
 			throw new ApiError('Release reference missing.', ctx.params.id).status(400);
 		}
-		this.splitReleaseFile(ctx, release, file._id.toString(), result);
 
-		const matches = new Map();
+		const result: TableBlockMatchResult = this.populateBlockmatch<TableBlockMatchResult>(ctx, release, file._id.toString());
+		const matches = new Map<string, TableBlock[]>();
 		const blocks = await ctx.models.TableBlock.find({ _files: file._id }).exec();
 		// split blocks: { <file._id>: [ matched blocks ] }
-		blocks.forEach(block => {
+		blocks.forEach((block: TableBlock) => {
 			(block._files as File[]).forEach(f => {
 				// don't match own id
 				if (f.equals(file._id)) {
@@ -155,32 +160,31 @@ export class FileApi extends Api {
 		const matchedReleases = await ctx.models.Release.find({ 'versions.files._file': { $in: Array.from(matches.keys()) } }).populate(rlsFields).exec();
 
 		// map <file._id>: <release>
-		let releases = new Map();
+		let releases = new Map<string, Release>();
 		matchedReleases.forEach(release => {
 			release.versions.forEach(version => {
 				version.files.forEach(file => {
-					releases.set(file._file._id.toString(), release);
+					releases.set((file._file as File)._id.toString(), release);
 				});
 			});
 		});
-		const totalBytes = _.sumBy(blocks, b => b.bytes);
+		const totalBytes = sumBy(blocks, b => b.bytes);
 		result.matches = [];
 		for (let [key, matchedBlocks] of matches) {
-			const matchedBytes = _.sumBy(matchedBlocks, b => b.bytes);
-			let match = {
+			const matchedBytes = sumBy(matchedBlocks, b => b.bytes);
+			let match = this.populateBlockmatch<TableBlockMatch>(ctx, releases.get(key), key, {
 				matchedCount: matchedBlocks.length,
 				matchedBytes: matchedBytes,
 				countPercentage: matchedBlocks.length / blocks.length * 100,
 				bytesPercentage: matchedBytes / totalBytes * 100
-			};
-			splitReleaseFile(ctx, releases.get(key), key, match);
+			});
 			result.matches.push(match);
 		}
-		result.matches = _.filter(result.matches, m => m.release && m.countPercentage + m.bytesPercentage > threshold);
+		result.matches = result.matches.filter(m => m.release && m.countPercentage + m.bytesPercentage > threshold);
 		if (!includeSameRelease) {
-			result.matches = _.filter(result.matches, m => m.release.id !== release.id);
+			result.matches = result.matches.filter(m => m.release.id !== release.id);
 		}
-		result.matches = _.sortBy(result.matches, m => -(m.countPercentage + m.bytesPercentage));
+		result.matches = sortBy(result.matches, m => -(m.countPercentage + m.bytesPercentage));
 		return this.success(ctx, result);
 	}
 
@@ -191,26 +195,27 @@ export class FileApi extends Api {
 	 * @param {Application.Context} ctx Koa context
 	 * @param {Release} release Release to search in
 	 * @param {string} fileId File ID to search for  (database _id as string)
-	 * @param {object} result Object to be updated
+	 * @param {object} base Object to be updated
 	 */
-	private splitReleaseFile(ctx: Context, release, fileId, result) {
+	private populateBlockmatch<T extends TableBlockBase>(ctx: Context, release: Release, fileId: string, base: T = {} as T): T {
 		if (!release) {
 			return;
 		}
-		let rls = ReleaseSerializer.simple(release, req);
-		result.release = _.pick(rls, ['id', 'name', 'created_at', 'authors']);
-		result.game = rls.game;
+		let rls = ctx.serializers.Release.simple(ctx, release);
+		base.release = pick(rls, ['id', 'name', 'created_at', 'authors']) as Release;
+		base.game = rls.game;
 		release.versions.forEach(version => {
 			version.files.forEach(versionFile => {
-				if (versionFile._file._id.toString() === fileId) {
-					result.version = _.pick(version.toObject(), ['version', 'released_at']);
+				if ((versionFile._file as File)._id.toString() === fileId) {
+					base.version = pick(version.toObject(), ['version', 'released_at']) as ReleaseVersion;
 					let f = versionFile.toObject();
-					result.file = _.pick(f, ['released_at', 'flavor']);
-					result.file.compatibility = f._compatibility.map(c => _.pick(c, ['id', 'label']));
-					result.file.file = FileSerializer.simple(versionFile._file, req);
+					base.file = pick(f, ['released_at', 'flavor']) as ReleaseVersionFile;
+					base.file.compatibility = f._compatibility.map((c: Build) => pick(c, ['id', 'label']));
+					base.file.file = ctx.serializers.File.simple(ctx, versionFile._file as File);
 				}
 			});
 		});
+		return base;
 	}
 
 	/**
@@ -220,28 +225,25 @@ export class FileApi extends Api {
 	 */
 	private async handleUpload(ctx: Context): Promise<File> {
 
-		return Promise.try(() => {
+		if (!ctx.get('content-disposition')) {
+			throw new ApiError('Header "Content-Disposition" must be provided.').status(422);
+		}
+		if (!/filename=([^;]+)/i.test(ctx.get('content-disposition'))) {
+			throw new ApiError('Header "Content-Disposition" must contain file name.').status(422);
+		}
+		const filename = ctx.get('content-disposition').match(/filename=([^;]+)/i)[1].replace(/(^"|^'|"$|'$)/g, '');
+		logger.info('[api|file:upload] Starting file upload of "%s"...', filename);
+		const fileData = {
+			name: filename,
+			bytes: ctx.get('content-length') || 0,
+			variations: {},
+			created_at: new Date(),
+			mime_type: ctx.get('content-type'),
+			file_type: ctx.query.type,
+			_created_by: ctx.state.user._id
+		};
 
-			if (!req.headers['content-disposition']) {
-				throw error('Header "Content-Disposition" must be provided.').status(422);
-			}
-			if (!/filename=([^;]+)/i.test(req.headers['content-disposition'])) {
-				throw error('Header "Content-Disposition" must contain file name.').status(422);
-			}
-			const filename = req.headers['content-disposition'].match(/filename=([^;]+)/i)[1].replace(/(^"|^'|"$|'$)/g, '');
-			logger.info('[api|file:upload] Starting file upload of "%s"...', filename);
-			const fileData = {
-				name: filename,
-				bytes: req.headers['content-length'] || 0,
-				variations: {},
-				created_at: new Date(),
-				mime_type: req.headers['content-type'],
-				file_type: req.query.type,
-				_created_by: req.user._id
-			};
-
-			return fileModule.create(fileData, req, error, { processInBackground: true });
-		});
+		return FileUtil.create(ctx, fileData as File, null, { processInBackground: true });
 	}
 
 	/**
@@ -251,43 +253,40 @@ export class FileApi extends Api {
 	 */
 	private async handleMultipartUpload(ctx: Context): Promise<File> {
 
-		return Promise.try(() => {
+		if (!ctx.query.content_type) {
+			throw new ApiError('Mime type must be provided as query parameter "content_type" when using multipart.').status(422);
+		}
 
-			if (!req.query.content_type) {
-				throw error('Mime type must be provided as query parameter "content_type" when using multipart.').status(422);
-			}
+		const busboy = new Busboy({ headers: ctx.request.headers });
+		const parseResult = new Promise<File>((resolve, reject) => {
 
-			const busboy = new Busboy({ headers: req.headers });
-			const parseResult = new Promise(function (resolve, reject) {
-
-				let numFiles = 0;
-				busboy.on('file', function (fieldname, stream, filename) {
-					numFiles++;
-					if (numFiles > 1) {
-						return reject(error('Multipart requests must only contain one file.').status(422));
-					}
-					logger.info('[api|file:upload] Starting file (multipart) upload of "%s"...', filename);
-					const fileData = {
-						name: filename,
-						bytes: 0,
-						variations: {},
-						created_at: new Date(),
-						mime_type: req.query.content_type,
-						file_type: req.query.type,
-						_created_by: req.user._id
-					};
-					fileModule.create(fileData, stream, error, { processInBackground: true }).then(file => resolve(file)).catch(reject);
-				});
+			let numFiles = 0;
+			busboy.on('file', (fieldname, stream, filename) => {
+				numFiles++;
+				if (numFiles > 1) {
+					return reject(new ApiError('Multipart requests must only contain one file.').status(422));
+				}
+				logger.info('[api|file:upload] Starting file (multipart) upload of "%s"...', filename);
+				const fileData = {
+					name: filename,
+					bytes: 0,
+					variations: {},
+					created_at: new Date(),
+					mime_type: ctx.query.content_type,
+					file_type: ctx.query.type,
+					_created_by: ctx.state.user._id
+				};
+				FileUtil.create(ctx, fileData as File, stream, { processInBackground: true }).then(file => resolve(file)).catch(reject);
 			});
-
-			const parseMultipart = new Promise((resolve, reject) => {
-				busboy.on('finish', resolve);
-				busboy.on('error', reject);
-				req.pipe(busboy);
-			});
-
-			return Promise.all([parseResult, parseMultipart]).then(results => results[0]);
 		});
-	}
 
+		const parseMultipart = new Promise((resolve, reject) => {
+			busboy.on('finish', resolve);
+			busboy.on('error', reject);
+			ctx.pipe(busboy);
+		});
+
+		const results = await Promise.all([parseResult, parseMultipart]);
+		return results[0];
+	}
 }

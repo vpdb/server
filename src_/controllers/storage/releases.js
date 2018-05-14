@@ -32,7 +32,7 @@ const Rom = require('mongoose').model('Rom');
 const Medium = require('mongoose').model('Medium');
 const Backglass = require('mongoose').model('Backglass');
 
-const ReleaseSerializer = require('../../serializers/release.serializer');
+const ReleaseSerializer = require('../../../src/releases/release.serializer');
 const ImageProcessor = require('../../modules/processor/image');
 
 const quota = require('../../../src/common/quota');

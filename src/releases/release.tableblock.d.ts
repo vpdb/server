@@ -19,6 +19,10 @@
 
 import { Document, Schema } from 'mongoose';
 import { File } from '../files/file';
+import { Release } from './release';
+import { Game } from '../games/game';
+import { ReleaseVersion } from './release.version';
+import { ReleaseVersionFile } from './release.version.file';
 
 export interface TableBlock extends Document {
 	hash: Buffer,
@@ -26,4 +30,22 @@ export interface TableBlock extends Document {
 	type: 'image' | 'sound' | 'gameitem' | 'collection',
 	meta: any,
 	_files: File[] | Schema.Types.ObjectId[]
+}
+
+export interface TableBlockMatchResult extends TableBlockBase {
+	matches?: TableBlockMatch[]
+}
+
+export interface TableBlockMatch extends TableBlockBase {
+	matchedCount: number;
+	matchedBytes: number;
+	countPercentage: number;
+	bytesPercentage: number;
+}
+
+export interface TableBlockBase {
+	release?: Release;
+	game?: Game;
+	version?: ReleaseVersion;
+	file?: ReleaseVersionFile;
 }

@@ -36,14 +36,14 @@ const Medium = require('mongoose').model('Medium');
 
 const GameSerializer = require('../../serializers/game.serializer');
 const GameRequestSerializer = require('../../serializers/game_request.serializer');
-const ReleaseSerializer = require('../../serializers/release.serializer');
+const ReleaseSerializer = require('../../../src/releases/release.serializer');
 const BackglassSerializer = require('../../serializers/backglass.serializer');
 const MediumSerializer = require('../../serializers/medium.serializer');
 
 const api = require('./api');
 
 const acl = require('../../../src/common/acl');
-const fileModule = require('../../modules/file');
+const fileModule = require('../../../src/files/file');
 const mailer = require('../../../src/common/mailer');
 const error = require('../../modules/error')('api', 'game');
 const config = require('../../../src/common/settings').current;

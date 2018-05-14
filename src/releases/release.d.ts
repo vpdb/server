@@ -26,42 +26,44 @@ import { Tag } from '../tags/tag';
 import { GameReference } from '../common/mongoose-plugins/game-ref';
 
 export interface Release extends Moderated, GameReference {
-	id: string,
-	name: string,
-	name_sortable: string,
-	license: 'by-sa' | 'by-nd',
-	description: string,
-	versions: ReleaseVersion[],
-	authors: ContentAuthor[],
-	_tags: Tag[] | Schema.Types.ObjectId
+	id: string;
+	name: string;
+	name_sortable: string;
+	license: 'by-sa' | 'by-nd';
+	description: string;
+	versions: ReleaseVersion[];
+	authors: ContentAuthor[];
+	_tags: Tag[] | Schema.Types.ObjectId;
+	tags: Tag[];
 	links: {
-		label: string,
+		label: string;
 		url: string
-	}[],
-	acknowledgements: string,
+	}[];
+	acknowledgements: string;
 	original_version: {
-		_ref: Release | Schema.Types.ObjectId,
+		_ref: Release | Schema.Types.ObjectId;
 		release: {
-			name: string,
-			url: string,
-		}
-	},
+			name: string;
+			url: string;
+		};
+	};
 	counter: {
-		downloads: number,
-		comments: number,
-		stars: number,
-		views: number,
-	},
+		downloads: number;
+		comments: number;
+		stars: number;
+		views: number;
+	};
 	metrics: {
-		popularity: number,
-	},
+		popularity: number;
+	};
 	rating: {
-		average: number,
-		votes: number,
-		score: number,
-	},
-	released_at: Date,
-	modified_at: Date,
-	created_at: Date,
-	_created_by: User | Schema.Types.ObjectId
+		average: number;
+		votes: number;
+		score: number;
+	};
+	released_at: Date;
+	modified_at: Date;
+	created_at: Date;
+	_created_by: User | Schema.Types.ObjectId;
+	created_by: User;
 }

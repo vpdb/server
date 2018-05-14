@@ -1,0 +1,226 @@
+/*
+ * VPDB - Virtual Pinball Database
+ * Copyright (C) 2018 freezy <freezy@vpdb.io>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+import { assign, flatten, orderBy, compact, uniq, intersection, pick, includes } from 'lodash';
+import { Document } from 'mongoose';
+
+import { File } from '../files/file';
+import { Context } from '../common/types/context';
+import { Serializer, SerializerOptions } from '../common/serializer';
+import { Release } from './release';
+import { ReleaseVersion } from './release.version';
+import { Game } from '../games/game';
+import { Tag } from '../tags/tag';
+import { User } from '../users/user';
+import { flavors } from './release.flavors';
+import { ReleaseFileFlavor, ReleaseVersionFile } from './release.version.file';
+
+
+export class ReleaseSerializer extends Serializer<Release> {
+
+	protected _reduced(ctx: Context, doc: Release, opts: SerializerOptions): Release {
+		return this._simple(ctx, doc, opts);
+	}
+
+	protected _simple(ctx: Context, doc: Release, opts: SerializerOptions): Release {
+		return this.serializeRelease(ctx, doc, opts, ctx.serializers.ReleaseVersion.simple.bind(ctx.serializers.ReleaseVersion), true);
+	}
+
+	protected _detailed(ctx: Context, doc: Release, opts: SerializerOptions): Release {
+		return this.serializeRelease(ctx, doc, opts, ctx.serializers.ReleaseVersion.detailed.bind(ctx.serializers.ReleaseVersion), false,
+			['description', 'acknowledgements', 'license', 'modified_at']);
+	}
+
+	private serializeRelease(ctx: Context, doc: Release, opts: SerializerOptions,
+							 versionSerializer: (ctx: Context, doc: ReleaseVersion, opts: SerializerOptions) => ReleaseVersion,
+							 stripVersions: boolean,
+							 additionalFields: string[] = []): Release {
+
+		const requestedFields = intersection(['description'], (ctx.query.include_fields || '').split(','));
+		additionalFields = additionalFields || [];
+		const fields = ['id', 'name', 'created_at', 'released_at', 'rating', ...additionalFields, ...requestedFields];
+
+		// primitive fields
+		const release = pick(doc, fields) as Release;
+
+		release.metrics = (doc.metrics as any).toObject();
+		release.counter = (doc.counter as any).toObject();
+
+		// game
+		if (this._populated(doc, '_game')) {
+			release.game = ctx.serializers.Game.reduced(ctx, (doc._game as Game), opts);
+		}
+
+		// tags
+		if (this._populated(doc, '_tags')) {
+			release.tags = (doc._tags as Tag[]).map(tag => ctx.serializers.Tag.simple(ctx, tag, opts));
+		}
+
+		// links
+		if (_.isArray(doc.links)) {
+			release.links = doc.links.map(link => _.pick(link, ['label', 'url']));
+		} else {
+			release.links = [];
+		}
+
+		// creator
+		if (this._populated(doc, '_created_by')) {
+			release.created_by = ctx.serializers.User.reduced(ctx, doc._created_by as User, opts);
+		}
+
+		// authors
+		if (this._populated(doc, 'authors._user')) {
+			release.authors = doc.authors.map(author => ctx.serializers.Author.reduced(ctx, author, opts));
+		}
+
+		// versions
+		release.versions = doc.versions
+			.map(version => versionSerializer(ctx, version, opts))
+			.sort(this.sortByDate('released_at'));
+
+		if (stripVersions && this._populated(doc, 'versions.files._file')) {
+			release.versions = ctx.serializers.ReleaseVersion.strip(ctx, release.versions, opts);
+		}
+
+		// thumb
+		if (opts.thumbFlavor || opts.thumbFormat) {
+			release.thumb = this.findThumb(ctx, doc.versions, opts);
+		}
+
+		// star
+		if (opts.starredReleaseIds) {
+			release.starred = includes(opts.starredReleaseIds, doc._id.toString());
+		}
+		if (!_.isUndefined(opts.starred)) {
+			release.starred = opts.starred;
+		}
+
+		return release;
+	}
+
+	/**
+	 * Returns the thumb object for the given options provided by the user.
+	 *
+	 * Basically it looks at thumbFlavor and thumbFormat and tries to return
+	 * the best match.
+	 * @param {Document[]} versions Version documents
+	 * @param req
+	 * @param {{ thumbFlavor:string, thumbFormat:string, fullThumbData:boolean }} opts thumbFlavor: "orientation:fs,lighting:day", thumbFormat: variation name or "original"
+	 * @private
+	 * @returns {{image: *, flavor: *}}
+	 */
+	findThumb(ctx: Context, versions: ReleaseVersion[], opts: SerializerOptions) : { image: xxx, flavor: ReleaseFileFlavor } {
+
+		opts.thumbFormat = opts.thumbFormat || 'original';
+
+		const flavorDefaults = flavors.defaultThumb();
+		// flavorParams: { lighting:string, orientation:string }
+		const flavorParams: { [key:string]:string } = (opts.thumbFlavor || '').split(',').map(f => f.split(':')).reduce((a, v) => assign(a, { [v[0]]: v[1] }), {});
+
+		// get all table files
+		const files = flatten(versions.map(v => v.files)).filter(file => file.flavor);
+		// console.log('flavorParams: %j, flavorDefaults: %j', flavorParams, flavorDefaults);
+
+		// assign weights to each file depending on parameters
+		const filesByWeight:{ file: ReleaseVersionFile, weight: number }[] = orderBy(files.map(file => {
+
+			/** @type {{ lighting:string, orientation:string }} */
+			const fileFlavor = (file.flavor as any).toObject ? (file.flavor as any).toObject() : file.flavor;
+			let weight = 0;
+			const flavorNames = this.getFlavorNames(opts);
+			let p = flavorNames.length + 1;
+			flavorNames.forEach(flavorName => {
+
+				// parameter match gets most weight.
+				if (fileFlavor[flavorName] === flavorParams[flavorName]) {
+					weight += Math.pow(10, p * 3);
+
+					// defaults match gets also weight, but less
+				} else if (fileFlavor[flavorName] === flavorDefaults[flavorName]) {
+					weight += Math.pow(10, p);
+				}
+				p--;
+			});
+
+			// console.log('%s / %j => %d', opts.thumbFlavor, fileFlavor, weight);
+			return {
+				file: file,
+				weight: weight
+			};
+
+		}), ['weight'], ['desc']);
+
+		const bestMatch = filesByWeight[0].file;
+		const thumb = this.getFileThumb(ctx, bestMatch, opts);
+		// can be null if invalid thumbFormat was specified
+		if (thumb === null) {
+			return {
+				image: this.getDefaultThumb(ctx, bestMatch, opts),
+				flavor: bestMatch.flavor
+			};
+		}
+		return thumb ? {
+			image: thumb,
+			flavor: bestMatch.flavor
+		} : undefined;
+	}
+
+
+	/**
+	 * Returns the default thumb of a file.
+	 *
+	 * @param {{ [playfield_image]:{}, [_playfield_image]:{} }} versionFileDoc Table file
+	 * @param req
+	 * @param {{ fullThumbData: boolean }} opts
+	 * @private
+	 * @returns {{}|null}
+	 */
+	private getDefaultThumb(ctx:Context, versionFileDoc:ReleaseVersionFile, opts:SerializerOptions) {
+
+		let playfieldImage = this._populated(versionFileDoc, '_playfield_image')
+			? ctx.serializers.File.detailed(ctx, versionFileDoc._playfield_image as File, opts)
+			: null;
+		if (!playfieldImage || !playfieldImage.metadata) {
+			return null;
+		}
+		const thumb = {
+			url: playfieldImage.url,
+			width: playfieldImage.metadata.size.width,
+			height: playfieldImage.metadata.size.height
+		};
+		if (opts.fullThumbData) {
+			thumb.mime_type = playfieldImage.mime_type;
+			thumb.bytes = playfieldImage.bytes;
+			thumb.file_type = playfieldImage.file_type;
+		}
+		return thumb;
+	}
+
+	/**
+	 * Returns all known flavor names sorted by given parameters.
+	 * @param opts Options
+	 * @returns string[]
+	 */
+	private getFlavorNames(opts: SerializerOptions):string[] {
+		const names = (opts.thumbFlavor || '')
+			.split(',')
+			.map((f: string) => f.split(':')[0]);
+		return compact(uniq([...names, 'orientation', 'lighting']));
+	}
+}

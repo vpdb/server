@@ -20,6 +20,7 @@
 import { Document } from 'mongoose';
 import { get, isArray, defaultsDeep, assign, pick } from 'lodash';
 import { Context } from './types/context';
+import { File } from '../files/file';
 import { Moderated } from './mongoose-plugins/moderate';
 import { ReleaseVersionFile } from '../releases/release.version.file';
 
@@ -131,7 +132,7 @@ export abstract class Serializer<T extends Document | Moderated> {
 		});
 	}
 
-	protected _sortByDate(attr: string) {
+	protected sortByDate(attr: string) {
 		return (a: { [key: string]: number }, b: { [key: string]: number }) => {
 			const dateA = new Date(a[attr]).getTime();
 			const dateB = new Date(b[attr]).getTime();
@@ -155,7 +156,7 @@ export abstract class Serializer<T extends Document | Moderated> {
 	 * @protected
 	 * @returns {{}|null}
 	 */
-	protected _getFileThumb(ctx: Context, versionFile: ReleaseVersionFile, opts: SerializerOptions) {
+	protected getFileThumb(ctx: Context, versionFile: ReleaseVersionFile, opts: SerializerOptions) {
 
 		if (!opts.thumbFormat) {
 			return undefined;
@@ -170,8 +171,7 @@ export abstract class Serializer<T extends Document | Moderated> {
 			thumbFields = [...thumbFields, 'mime_type', 'bytes', 'file_type'];
 		}
 
-		const FileSerializer = require('../files/file.serializer');
-		const playfieldImage = FileSerializer.detailed(versionFile._playfield_image, ctx, opts);
+		const playfieldImage = ctx.serializers.File.detailed(ctx, versionFile._playfield_image as File, opts);
 
 		if (opts.thumbFormat === 'original') {
 			return assign(pick(playfieldImage, thumbFields), {

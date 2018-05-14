@@ -30,5 +30,3 @@ export class FileSerializer extends Serializer<File> {
 		return file;
 	}
 }
-
-module.exports = new FileSerializer();

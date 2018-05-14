@@ -214,7 +214,12 @@ export interface GameReference extends Document {
 	/**
 	 * Game reference or populated object
 	 */
-	_game: Game | Schema.Types.ObjectId;
+	_game?: Game | Schema.Types.ObjectId;
+
+	/**
+	 * Serialized game
+	 */
+	game?: Game;
 
 	/**
 	 * Returns the query used for listing only approved entities.

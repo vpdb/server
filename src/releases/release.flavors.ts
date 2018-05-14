@@ -89,11 +89,11 @@ export class ReleaseFlavors {
 	 * @param {{ lighting:string, orientation:string }} [opts] Options
 	 * @returns {{ lighting:string, orientation:string }} Default thumb
 	 */
-	defaultThumb(opts?:{ lighting?:string, orientation?:string }):{ lighting:string, orientation:string } {
+	defaultThumb(opts?:{ lighting?:string, orientation?:string }):{ lighting:string, orientation:string, [key:string]:string } {
 		opts = opts || {};
 		return {
 			lighting: opts.lighting || 'day',
-			orientation: opts.orientation || 'fs'
+			orientation: opts.orientation || 'fs',
 		}
 	};
 }

@@ -23,18 +23,19 @@ import { User } from '../users/user';
 import { Build } from '../builds/build';
 
 export interface ReleaseVersionFile extends Document {
+	// model
 	_file: File | Schema.Types.ObjectId;
 	flavor: ReleaseFileFlavor;
 	validation: {
 		status: string; // todo type
 		message: string;
 		validated_at: Date;
-		_validated_by: User | Schema.Types.ObjectId;
+		_validated_by?: User | Schema.Types.ObjectId;
+		validated_by?: User;
 	};
 	_compatibility: Build[] | Schema.Types.ObjectId[];
-	compatibility?: Build[];
-	_playfield_image: File | Schema.Types.ObjectId;
-	_playfield_video: File | Schema.Types.ObjectId;
+	_playfield_image?: File | Schema.Types.ObjectId;
+	_playfield_video?: File | Schema.Types.ObjectId;
 	released_at: Date;
 	counter: {
 		downloads: number;
@@ -42,9 +43,14 @@ export interface ReleaseVersionFile extends Document {
 
 	// serialized
 	file: File;
+	compatibility?: Build[];
+	playfield_image?: File;
+	playfield_video?: File;
+	thumb: any; // todo type
 }
 
 export interface ReleaseFileFlavor {
 	orientation: string; // todo type
 	lighting: string; // todo type
+	[key: string]: string;
 }

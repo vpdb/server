@@ -23,6 +23,7 @@ import { Context } from './types/context';
 import { File } from '../files/file';
 import { Moderated } from './mongoose-plugins/moderate';
 import { ReleaseVersionFile } from '../releases/release.version.file';
+import { Thumb } from './types/serializers';
 
 export abstract class Serializer<T extends Document | Moderated> {
 
@@ -132,10 +133,10 @@ export abstract class Serializer<T extends Document | Moderated> {
 		});
 	}
 
-	protected sortByDate(attr: string) {
-		return (a: { [key: string]: number }, b: { [key: string]: number }) => {
-			const dateA = new Date(a[attr]).getTime();
-			const dateB = new Date(b[attr]).getTime();
+	protected sortByDate<T>(attr: string):(a:T, b:T) => number {
+		return (a:T, b:T) => {
+			const dateA = new Date((a as any)[attr]).getTime();
+			const dateB = new Date((b as any)[attr]).getTime();
 			if (dateA < dateB) {
 				return 1;
 			}
@@ -156,7 +157,7 @@ export abstract class Serializer<T extends Document | Moderated> {
 	 * @protected
 	 * @returns {{}|null}
 	 */
-	protected getFileThumb(ctx: Context, versionFile: ReleaseVersionFile, opts: SerializerOptions) {
+	protected getFileThumb(ctx: Context, versionFile: ReleaseVersionFile, opts: SerializerOptions): Thumb {
 
 		if (!opts.thumbFormat) {
 			return undefined;
@@ -177,23 +178,24 @@ export abstract class Serializer<T extends Document | Moderated> {
 			return assign(pick(playfieldImage, thumbFields), {
 				width: playfieldImage.metadata.size.width,
 				height: playfieldImage.metadata.size.height
-			});
+			}) as Thumb;
 
 		} else if (playfieldImage.variations[opts.thumbFormat]) {
-			return pick(playfieldImage.variations[opts.thumbFormat], thumbFields);
+			return pick(playfieldImage.variations[opts.thumbFormat], thumbFields) as Thumb;
 		}
 		return null;
 	}
 }
 
 export interface SerializerOptions {
-	includedFields?: string[],
-	excludedFields?: string[],
-	starred?: boolean | undefined,
-	fileIds?: string[],
-	thumbFlavor?: string
-	thumbFormat?: string,
-	fullThumbData?: boolean,
-	thumbPerFile?: boolean,
-	includeProviderId?: string
+	includedFields?: string[];
+	excludedFields?: string[];
+	starred?: boolean | undefined;
+	fileIds?: string[];
+	thumbFlavor?: string;
+	thumbFormat?: string;
+	fullThumbData?: boolean;
+	thumbPerFile?: boolean;
+	includeProviderId?: string;
+	starredReleaseIds?: string[];
 }

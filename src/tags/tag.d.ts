@@ -21,10 +21,14 @@ import { Document, Schema } from 'mongoose';
 import { User } from '../users/user';
 
 export interface Tag extends Document {
-	_id: string,
-	name: string,
-	description: string,
-	is_active: boolean,
-	created_at: Date,
-	_created_by: User | Schema.Types.ObjectId
+	// model
+	_id: string;
+	name: string;
+	description: string;
+	is_active: boolean;
+	created_at: Date;
+	_created_by?: User | Schema.Types.ObjectId;
+
+	// serialized
+	created_by?: User;
 }

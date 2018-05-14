@@ -24,8 +24,12 @@ import { ReleaseVersion } from './release.version';
 import { ContentAuthor } from '../users/content.author';
 import { Tag } from '../tags/tag';
 import { GameReference } from '../common/mongoose-plugins/game-ref';
+import { Thumb } from '../common/types/serializers';
+import { ReleaseFileFlavor } from './release.version.file';
 
 export interface Release extends Moderated, GameReference {
+
+	// from model
 	id: string;
 	name: string;
 	name_sortable: string;
@@ -34,7 +38,6 @@ export interface Release extends Moderated, GameReference {
 	versions: ReleaseVersion[];
 	authors: ContentAuthor[];
 	_tags: Tag[] | Schema.Types.ObjectId;
-	tags: Tag[];
 	links: {
 		label: string;
 		url: string
@@ -61,9 +64,16 @@ export interface Release extends Moderated, GameReference {
 		votes: number;
 		score: number;
 	};
+	_created_by: User | Schema.Types.ObjectId;
+
+	// serialized
+	tags: Tag[];
 	released_at: Date;
 	modified_at: Date;
 	created_at: Date;
-	_created_by: User | Schema.Types.ObjectId;
 	created_by: User;
+
+	// generated
+	thumb?: { image: Thumb, flavor: ReleaseFileFlavor };
+	starred: boolean;
 }

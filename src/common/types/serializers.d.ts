@@ -17,10 +17,34 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { UserSerializer } from '../../users/user.serializer';
+import { BuildSerializer } from '../../builds/build.serializer';
+import { ContentAuthorSerializer } from '../../users/content.author.serializer';
 import { FileSerializer } from '../../files/file.serializer';
+import { GameSerializer } from '../../games/game.serializer';
+import { ReleaseSerializer } from '../../releases/release.serializer';
+import { ReleaseVersionSerializer } from '../../releases/release.version.serializer';
+import { ReleaseVersionFileSerializer } from '../../releases/release.version.file.serializer';
+import { TagSerializer } from '../../tags/tag.serializer';
+import { UserSerializer } from '../../users/user.serializer';
 
 export interface Serializers {
+	Build: BuildSerializer;
+	ContentAuthor: ContentAuthorSerializer;
 	File: FileSerializer;
+	Game: GameSerializer;
+	Release: ReleaseSerializer;
+	ReleaseVersion: ReleaseVersionSerializer;
+	ReleaseVersionFile: ReleaseVersionFileSerializer;
+	Tag: TagSerializer;
 	User: UserSerializer;
+}
+
+export interface Thumb {
+	url: string;
+	width: number;
+	height: number;
+	is_protected: boolean;
+	mime_type?: string;
+	bytes?: number;
+	file_type?: string;
 }

@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { assign, flatten, orderBy, compact, uniq, intersection, pick, includes } from 'lodash';
+import { assign, flatten, orderBy, compact, uniq, intersection, pick, includes, isArray, isUndefined } from 'lodash';
 import { Document } from 'mongoose';
 
 import { File } from '../files/file';
@@ -30,7 +30,7 @@ import { Tag } from '../tags/tag';
 import { User } from '../users/user';
 import { flavors } from './release.flavors';
 import { ReleaseFileFlavor, ReleaseVersionFile } from './release.version.file';
-
+import { Thumb } from '../common/types/serializers';
 
 export class ReleaseSerializer extends Serializer<Release> {
 
@@ -73,8 +73,8 @@ export class ReleaseSerializer extends Serializer<Release> {
 		}
 
 		// links
-		if (_.isArray(doc.links)) {
-			release.links = doc.links.map(link => _.pick(link, ['label', 'url']));
+		if (isArray(doc.links)) {
+			release.links = doc.links.map(link => pick(link, ['label', 'url']));
 		} else {
 			release.links = [];
 		}
@@ -86,7 +86,7 @@ export class ReleaseSerializer extends Serializer<Release> {
 
 		// authors
 		if (this._populated(doc, 'authors._user')) {
-			release.authors = doc.authors.map(author => ctx.serializers.Author.reduced(ctx, author, opts));
+			release.authors = doc.authors.map(author => ctx.serializers.ContentAuthor.reduced(ctx, author, opts));
 		}
 
 		// versions
@@ -107,7 +107,7 @@ export class ReleaseSerializer extends Serializer<Release> {
 		if (opts.starredReleaseIds) {
 			release.starred = includes(opts.starredReleaseIds, doc._id.toString());
 		}
-		if (!_.isUndefined(opts.starred)) {
+		if (!isUndefined(opts.starred)) {
 			release.starred = opts.starred;
 		}
 
@@ -125,7 +125,7 @@ export class ReleaseSerializer extends Serializer<Release> {
 	 * @private
 	 * @returns {{image: *, flavor: *}}
 	 */
-	findThumb(ctx: Context, versions: ReleaseVersion[], opts: SerializerOptions) : { image: xxx, flavor: ReleaseFileFlavor } {
+	findThumb(ctx: Context, versions: ReleaseVersion[], opts: SerializerOptions) : { image: Thumb, flavor: ReleaseFileFlavor } {
 
 		opts.thumbFormat = opts.thumbFormat || 'original';
 
@@ -185,13 +185,12 @@ export class ReleaseSerializer extends Serializer<Release> {
 	/**
 	 * Returns the default thumb of a file.
 	 *
-	 * @param {{ [playfield_image]:{}, [_playfield_image]:{} }} versionFileDoc Table file
-	 * @param req
-	 * @param {{ fullThumbData: boolean }} opts
-	 * @private
-	 * @returns {{}|null}
+	 * @param {Context} ctx
+	 * @param {ReleaseVersionFile} versionFileDoc
+	 * @param {SerializerOptions} opts
+	 * @return {Thumb}
 	 */
-	private getDefaultThumb(ctx:Context, versionFileDoc:ReleaseVersionFile, opts:SerializerOptions) {
+	private getDefaultThumb(ctx:Context, versionFileDoc:ReleaseVersionFile, opts:SerializerOptions): Thumb {
 
 		let playfieldImage = this._populated(versionFileDoc, '_playfield_image')
 			? ctx.serializers.File.detailed(ctx, versionFileDoc._playfield_image as File, opts)
@@ -203,7 +202,7 @@ export class ReleaseSerializer extends Serializer<Release> {
 			url: playfieldImage.url,
 			width: playfieldImage.metadata.size.width,
 			height: playfieldImage.metadata.size.height
-		};
+		} as Thumb;
 		if (opts.fullThumbData) {
 			thumb.mime_type = playfieldImage.mime_type;
 			thumb.bytes = playfieldImage.bytes;

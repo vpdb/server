@@ -23,7 +23,7 @@ import koaBodyParser from 'koa-bodyparser';
 import { EndPoint } from './common/types/endpoint';
 import { Models } from './common/types/models';
 import { Serializers } from './common/types/serializers';
-import { config } from './common/settings'
+import { config, settings } from './common/settings'
 import { logger } from './common/logger';
 
 import Redis = require('redis');
@@ -64,8 +64,9 @@ export class Server {
 	}
 
 	public start() {
-		logger.info('Listening on port %s.', config.vpdb.api.port);
 		this.app.listen(config.vpdb.api.port);
+		logger.info('[app] Storage ready at %s', settings.storageProtectedUri());
+		logger.info('[app] API ready at %s', settings.apiUri());
 	}
 
 	public models(): Models {

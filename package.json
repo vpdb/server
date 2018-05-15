@@ -44,6 +44,7 @@
 		"acl": "^0.4.11",
 		"adm-zip": "^0.4.9",
 		"bluebird": "^3.5.1",
+		"bull": "^3.4.2",
 		"busboy": "^0.2.14",
 		"gm": "^1.23.1",
 		"handlebars": "^4.0.11",
@@ -78,6 +79,7 @@
 	"devDependencies": {
 		"@types/adm-zip": "^0.4.31",
 		"@types/bluebird": "^3.5.20",
+		"@types/bull": "^3.3.10",
 		"@types/busboy": "^0.2.3",
 		"@types/gm": "^1.18.0",
 		"@types/handlebars": "^4.0.37",

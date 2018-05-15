@@ -2,6 +2,7 @@ import { File } from '../files/file';
 import { rename, exists, open, close, unlink } from 'fs';
 import Bluebird = require('bluebird');
 import { logger } from './logger';
+import Timer = NodeJS.Timer;
 
 const renameAsync = Bluebird.promisify(rename);
 const existsAsync = Bluebird.promisify(exists);
@@ -41,7 +42,7 @@ export class Storage {
 
 		// go through variations
 		for (let variation of file.getExistingVariations()) {
-			const lockPath = file.getPath(variation, { forceProtected: true, lockFile: true });
+			const lockPath = file.getPath(variation, { forceProtected: true });
 			const protectedPath = file.getPath(variation, { forceProtected: true });
 			const publicPath = file.getPath(variation);
 			if (protectedPath !== publicPath) {
@@ -52,14 +53,13 @@ export class Storage {
 							await renameAsync(protectedPath, publicPath);
 						} catch (err) {
 							logger.warn('[storage] Error renaming, re-trying in a second (%s)', err.message);
-							setTimeout(function () {
-								try {
-									logger.verbose('[storage] Renaming "%s" to "%s"', protectedPath, publicPath);
-									await renameAsync(protectedPath, publicPath);
-								} catch (err) {
-									logger.warn('[storage] Second time failed too.', err.message);
-								}
-							}, 5000);
+							await Storage.timeout(5000);
+							try {
+								logger.verbose('[storage] Renaming "%s" to "%s"', protectedPath, publicPath);
+								await renameAsync(protectedPath, publicPath);
+							} catch (err) {
+								logger.warn('[storage] Second time failed too.', err.message);
+							}
 						}
 					} else {
 						logger.warn('[storage] Skipping rename, "%s" is locked (processing)', protectedPath);
@@ -73,6 +73,12 @@ export class Storage {
 			}
 		}
 		return file;
+	}
+
+	private static timeout(duration:number):Promise<void> {
+		return new Promise<void>(resolve => {
+			setTimeout(resolve, duration);
+		})
 	}
 
 	/**
@@ -94,7 +100,7 @@ export class Storage {
 
 				// if this is a busy problem, try again in a few.
 				let retries = 0;
-				const intervalId = setInterval(function() {
+				const intervalId:Timer = setInterval(async function() {
 					if (!(await existsAsync(filePath))) {
 						return clearInterval(intervalId);
 					}

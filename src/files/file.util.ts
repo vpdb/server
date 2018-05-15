@@ -28,7 +28,6 @@ import { logger } from '../common/logger';
 
 const statAsync = Bluebird.promisify(stat);
 
-var storage = require('../../src_/modules/storage');
 
 export class FileUtil {
 
@@ -41,7 +40,7 @@ export class FileUtil {
 	 * @param {{ [processInBackground]: boolean }} [opts] Options passed to postprocessor
 	 * @return {Promise.<FileSchema>}
 	 */
-	public static async create(ctx: Context, fileData: File, readStream: Stream, opts) {
+	public static async create(ctx: Context, fileData: File, readStream: Stream, opts:any): Promise<File> {
 
 		let file = new ctx.models.File(fileData);
 		file = await file.save();
@@ -60,19 +59,20 @@ export class FileUtil {
 			await ctx.models.File.update({ _id: file._id }, { bytes: stats.size });
 		}
 
-		await storage.preprocess(file);
+		// FIXME await storage.preprocess(file);
 
 		try {
-			const metadata = await storage.metadata(file);
+			// FIXME const metadata = await storage.metadata(file);
+			const metadata = {};
 			const stats = await statAsync(file.getPath());
 
-			File.sanitizeObject(metadata);
+			// TODO File.sanitizeObject(metadata);
 			file.metadata = metadata;
 			file.bytes = stats.size;
 			await ctx.models.File.update({ _id: file._id }, { metadata: metadata, bytes: stats.size });
 
 			logger.info('[api|file:save] File upload of %s successfully completed.', file.toString());
-			return storage.postprocess(file, opts).then(() => file);
+			// FIXME return storage.postprocess(file, opts).then(() => file);
 
 		} catch (err) {
 			try {
@@ -81,7 +81,9 @@ export class FileUtil {
 				/* istanbul ignore next */
 				logger.error('[api|file:save] Error removing file: %s', err.message);
 			}
-			throw new ApiError(err, 'Metadata parsing failed for type "%s": %s', file.mime_type, err.message).short().warn().status(400);
+			throw new ApiError(err, 'Metadata parsing failed for type "%s": %s', file.mime_type, err.message).warn().status(400);
 		}
+
+		return file;
 	}
 }

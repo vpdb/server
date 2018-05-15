@@ -24,6 +24,6 @@ const api = new FileApi();
 export const router = api.apiRouter();
 export const prefixes = [ '/v1/files' ];
 
-router.get('/v1/files/:id',            api.anon(api.files.view.bind(api)));
-router.del('/v1/files/:id',            api.auth(api.files.del.bind(api), 'files', 'delete-own', [ Scope.ALL, Scope.CREATE ]));
-router.get('/v1/files/:id/blockmatch', api.auth(api.files.blockmatch.bind(api), 'files', 'blockmatch', [ Scope.ALL, Scope.CREATE ]));
+router.get('/v1/files/:id',            api.anon(api.view.bind(api)));
+router.del('/v1/files/:id',            api.auth(api.del.bind(api), 'files', 'delete-own', [ Scope.ALL, Scope.CREATE ]));
+router.get('/v1/files/:id/blockmatch', api.auth(api.blockmatch.bind(api), 'files', 'blockmatch', [ Scope.ALL, Scope.CREATE ]));

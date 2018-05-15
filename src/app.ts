@@ -27,7 +27,7 @@ import { EndPoint } from './common/types/endpoint';
 import { AuthenticationEndPoint } from './authentication';
 import { LogUserEndPoint } from './log-user';
 import { UserEndPoint } from './users';
-import { FilesApiEndPoint } from './files';
+import { FilesApiEndPoint, FilesStorageEndPoint } from './files';
 
 // links:
 //   - https://github.com/Microsoft/TypeScript-Node-Starter
@@ -40,6 +40,7 @@ import { FilesApiEndPoint } from './files';
 		const endPoints: EndPoint[] = [
 			new AuthenticationEndPoint(),
 			new FilesApiEndPoint(),
+			new FilesStorageEndPoint(),
 			new LogUserEndPoint(),
 			new UserEndPoint(),
 		];

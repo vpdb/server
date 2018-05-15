@@ -63,7 +63,7 @@ export class UserUtil {
 		user.roles = count ? ['member'] : ['root'];
 		user = await user.save();
 
-		await require('../common/acl').addUserRoles(user.id, user.roles);
+		await acl.addUserRoles(user.id, user.roles);
 
 		logger.info('[model|user] %s <%s> successfully created with ID "%s" and plan "%s".', count ? 'User' : 'Root user', user.email, user.id, user._plan);
 		return user;

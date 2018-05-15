@@ -20,6 +20,8 @@
 import Application from 'koa';
 import koaLogger from 'koa-logger';
 import koaBodyParser from 'koa-bodyparser';
+import { uniq } from 'lodash';
+
 import { EndPoint } from './common/types/endpoint';
 import { Models } from './common/types/models';
 import { Serializers } from './common/types/serializers';
@@ -57,6 +59,13 @@ export class Server {
 		if (router) {
 			this.app.use(router.routes());
 			this.app.use(router.allowedMethods());
+
+			// pretty print registered paths with methods
+			const methods:Map<string, string[]> = new Map<string, string[]>();
+			router.stack.forEach(layer => methods.set(layer.path, [ ...methods.get(layer.path) || [], ...layer.methods ]));
+			uniq(router.stack.map(layer => layer.path)).sort().forEach(path => {
+				logger.info('  %s [ %s ]', path, methods.get(path).join(', '));
+			});
 		}
 
 		// register app (set models and serializer)

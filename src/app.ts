@@ -51,11 +51,7 @@ import { FilesApiEndPoint, FilesStorageEndPoint } from './files';
 
 		// bootstrap endpoints
 		for (let endPoint of endPoints) {
-			if (endPoint.paths.length) {
-				logger.info('[app] Registering end-point %s at %s', endPoint.name, endPoint.paths.join(', '));
-			} else {
-				logger.info('[app] Registering end-point %s', endPoint.name);
-			}
+			logger.info('[app] Registering %s:', endPoint.name);
 			server.register(endPoint);
 		}
 

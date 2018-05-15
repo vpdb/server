@@ -109,7 +109,8 @@ export async function init():Promise<void> {
 	await acl.addRoleParents('game-contributor', [ 'member' ]);
 	await acl.addRoleParents('release-contributor', [ 'member' ]);
 	await acl.addRoleParents('backglass-contributor', [ 'member' ]);
-	const users = await server.models().User.find({}).exec();
+	logger.info('[acl] Added permissions to roles.');
+	const users = await server.models().User.find({}).lean().exec();
 	logger.info('[acl] Applying ACLs to %d users...', users.length);
 	for (let user of users) {
 		await acl.addUserRoles(user.id, user.roles);

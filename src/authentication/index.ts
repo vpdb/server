@@ -34,8 +34,7 @@ const IPBoard43Strategy = require('./passport-ipboard43').Strategy;
 
 export class AuthenticationEndPoint implements EndPoint {
 
-	readonly name: string = 'authentication';
-	readonly paths: string[] = prefixes;
+	readonly name: string = 'Authentication API';
 
 	private readonly _router: Router;
 

@@ -56,7 +56,6 @@ import { FilesApiEndPoint, FilesStorageEndPoint } from './files';
 			} else {
 				logger.info('[app] Registering end-point %s', endPoint.name);
 			}
-
 			server.register(endPoint);
 		}
 

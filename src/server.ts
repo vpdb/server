@@ -25,11 +25,13 @@ import { Models } from './common/types/models';
 import { Serializers } from './common/types/serializers';
 import { config } from './common/settings'
 import { logger } from './common/logger';
-const koaResponseTime = require('koa-response-time');
 
 import Redis = require('redis');
 import Bluebird = require('bluebird');
 import { RedisClient } from 'redis';
+
+const koaResponseTime = require('koa-response-time');
+
 Bluebird.promisifyAll((Redis as any).RedisClient.prototype);
 Bluebird.promisifyAll((Redis as any).Multi.prototype);
 
@@ -45,20 +47,19 @@ export class Server {
 
 		this.app.context.models = {};
 		this.app.context.serializers = {};
-
 		this.app.context.redis = this.setupRedis();
 	}
 
 	public register<T>(endPoint: EndPoint) {
 
 		// routes
-		const endPointRouter = endPoint.getRouter();
-		if (endPointRouter) {
-			this.app.use(endPointRouter.routes());
-			this.app.use(endPointRouter.allowedMethods());
+		const router = endPoint.getRouter();
+		if (router) {
+			this.app.use(router.routes());
+			this.app.use(router.allowedMethods());
 		}
 
-		// register app
+		// register app (set models and serializer)
 		endPoint.register(this.app);
 	}
 

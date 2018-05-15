@@ -24,14 +24,13 @@ import { EndPoint } from '../common/types/endpoint';
 import { User } from './user';
 import { UserSerializer } from './user.serializer';
 import { schema } from './user.schema';
-import { router, prefixes } from './user.api.router';
+import { router } from './user.api.router';
 import mongoose = require('mongoose');
 import Application = require('koa');
 
 export class UserEndPoint implements EndPoint {
 
-	readonly name: string = 'users';
-	readonly paths: string[] = prefixes;
+	readonly name: string = 'User API';
 
 	private readonly _router: Router;
 	private readonly _schema: Schema;

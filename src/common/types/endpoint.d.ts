@@ -37,11 +37,6 @@ export interface EndPoint {
 	readonly name: string;
 
 	/**
-	 * The resource path prefixes for logging purposes.
-	 */
-	readonly paths: string[]
-
-	/**
 	 * Returns the router containing all the routes of the end point.
 	 * @return {Router}
 	 */

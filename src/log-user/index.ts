@@ -27,8 +27,7 @@ import Application = require('koa');
 
 export class LogUserEndPoint implements EndPoint {
 
-	readonly name: string = 'user logs';
-	readonly paths: string[] = [];
+	readonly name: string = 'Userlog API';
 
 	private readonly _router: Router;
 	private readonly _schema: Schema;

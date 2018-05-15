@@ -46,7 +46,7 @@ describe('The VPDB `user` API', () => {
 
 	after(async () => await api.teardown());
 
-	describe('when listing all users', () => {
+	describe.only('when listing all users', () => {
 
 		it('the number of current users should be returned', async () => {
 

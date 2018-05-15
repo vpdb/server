@@ -276,25 +276,25 @@ UserSchema.path('is_local').validate(async function (isLocal: boolean) {
 	}
 
 	// TODO put this into separate validation when this is fixed: https://github.com/LearnBoost/mongoose/issues/1919
-	if (this.channel_config && this.channel_config.subscribed_releases) {
-		if (!isArray(this.channel_config.subscribed_releases)) {
-			this.invalidate('channel_config.subscribed_releases', 'Must be an array of release IDs.');
-			return true;
-		}
-		const Release = mongoose.model('Release');
-		for (let i = 0; i < this.channel_config.subscribed_releases.length; i++) {
-			const releaseId = this.channel_config.subscribed_releases[i];
-			let rls = await Release.findOne({ id: releaseId }).exec();
-			if (!rls) {
-				this.invalidate('channel_config.subscribed_releases.' + i, 'Release with ID "' + releaseId + '" does not exist.');
-			}
-			i++;
-		}
-	}
-	return null;
+	// if (this.channel_config && this.channel_config.subscribed_releases) {
+	// 	if (!isArray(this.channel_config.subscribed_releases)) {
+	// 		this.invalidate('channel_config.subscribed_releases', 'Must be an array of release IDs.');
+	// 		return true;
+	// 	}
+	// 	const Release = mongoose.model('Release');
+	// 	for (let i = 0; i < this.channel_config.subscribed_releases.length; i++) {
+	// 		const releaseId = this.channel_config.subscribed_releases[i];
+	// 		let rls = await Release.findOne({ id: releaseId }).exec();
+	// 		if (!rls) {
+	// 			this.invalidate('channel_config.subscribed_releases.' + i, 'Release with ID "' + releaseId + '" does not exist.');
+	// 		}
+	// 		i++;
+	// 	}
+	// }
+	return true;
 
 
-}, null);
+}, 'Error while validating is_local.');
 
 UserSchema.path('password_hash').validate(function () {
 	// here we check the length. remember that the virtual _password field is

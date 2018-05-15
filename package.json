@@ -20,7 +20,7 @@
 	"scripts": {
 		"start": "node src/app.js",
 		"serve:dev": "nodemon --config deploy/nodemon/dev.json --inspect -r ts-node/register src/app",
-		"serve:test": "ts-node --inspect src/app",
+		"serve:test": "node --inspect -r ts-node/register src/app",
 		"serve:test:nyc": "nyc --reporter=lcov --reporter=html node app.js",
 		"serve:test:debug": "node --inspect app.js",
 		"serve:protractor": "cross-env NODE_ENV=test APP_SETTINGS=src/config/settings-protractor.js PORT=7357 APP_NAME=local run-s test:dropdbs start",

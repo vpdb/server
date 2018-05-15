@@ -90,7 +90,7 @@ export abstract class Api {
 						return await this.handleRequest(ctx, handler);
 					}
 
-					// Otherwise, assume it's a JWT.
+				// Otherwise, assume it's a JWT.
 				} else {
 					user = await this.authenticateWithJwt(ctx, token);
 				}
@@ -117,12 +117,15 @@ export abstract class Api {
 				// update state
 				ctx.state.user = user;
 
-				// continue with request
-				await this.handleRequest(ctx, handler);
-
 			} catch (err) {
-				this.handleError(ctx, err);
+				// only fail when not coming from anon
+				if (resource !== null || permission !== null) {
+					return this.handleError(ctx, err);
+				}
 			}
+
+			// continue with request
+			await this.handleRequest(ctx, handler);
 		};
 	}
 

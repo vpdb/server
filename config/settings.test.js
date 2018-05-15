@@ -5,10 +5,10 @@ module.exports = {
 
 	vpdb: {
 		name: 'Test API',
-		api: { protocol: 'http', hostname: 'localhost', port: 7357, pathname: '/api/v1', prefix: '' },
+		api: { protocol: 'http', hostname: 'localhost', port: 7357, pathname: '/api', prefix: '' },
 		storage: {
 			'public': { path: './data/storage-test-public', api: { protocol: 'http', hostname: 'localhost', port: 7357, pathname: '/storage/public', prefix: '' } },
-			'protected': { path: './data/storage-test-protected', api: { protocol: 'http', hostname: 'localhost', port: 7357, pathname: '/storage/v1', prefix: '' } }
+			'protected': { path: './data/storage-test-protected', api: { protocol: 'http', hostname: 'localhost', port: 7357, pathname: '/storage', prefix: '' } }
 		},
 		webapp: { protocol: 'http', hostname: 'localhost', port: 3333 },
 		db: 'mongodb://localhost/vpdb-test',

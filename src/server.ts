@@ -18,7 +18,6 @@
  */
 
 import Application from 'koa';
-import koaLogger from 'koa-logger';
 import koaBodyParser from 'koa-bodyparser';
 import { uniq } from 'lodash';
 
@@ -26,6 +25,7 @@ import { EndPoint } from './common/types/endpoint';
 import { Models } from './common/types/models';
 import { Serializers } from './common/types/serializers';
 import { config, settings } from './common/settings'
+import { koaLogger } from './common/koa/koa-logger';
 import { logger } from './common/logger';
 
 import Redis = require('redis');

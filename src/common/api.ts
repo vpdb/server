@@ -74,51 +74,55 @@ export abstract class Api {
 
 		return async (ctx: Context) => {
 
-			let user: User | null;
-			delete ctx.state.user;
+			try {
+				let user: User | null;
+				delete ctx.state.user;
 
-			const token = this.retrieveToken(ctx);
+				const token = this.retrieveToken(ctx);
 
-			// app token?
-			if (/[0-9a-f]{32,}/i.test(token.value)) {
+				// app token?
+				if (/[0-9a-f]{32,}/i.test(token.value)) {
 
-				user = await this.authenticateWithAppToken(ctx, token, resource, permission, scopes);
+					user = await this.authenticateWithAppToken(ctx, token, resource, permission, scopes);
 
-				// if authenticated as service resource, we're done here.
-				if (user === null) {
-					return await this.handleRequest(ctx, handler);
+					// if authenticated as service resource, we're done here.
+					if (user === null) {
+						return await this.handleRequest(ctx, handler);
+					}
+
+					// Otherwise, assume it's a JWT.
+				} else {
+					user = await this.authenticateWithJwt(ctx, token);
 				}
 
-				// Otherwise, assume it's a JWT.
-			} else {
+				// make sure the authorization is given
+				await this.authorizeUser(ctx, user, resource, permission, scopes, planAttrs);
 
-				user = await this.authenticateWithJwt(ctx, token);
+				// ---- here the user's authenticated and authorized. ---- //
+
+				// set dirty header if necessary
+				const result = await ctx.redis.getAsync('dirty_user_' + user.id);
+				if (result) {
+					logger.info('[ctrl|auth] User <%s> is dirty, telling him in header.', user.email);
+					ctx.set('X-User-Dirty', result);
+					await ctx.redis.delAsync('dirty_user_' + user.id);
+				}
+				ctx.set('X-User-Dirty', '0');
+
+				// log to sqreen
+				if (config.vpdb.services.sqreen.enabled) {
+					require('sqreen').identify(ctx.req, { email: user.email });
+				}
+
+				// update state
+				ctx.state.user = user;
+
+				// continue with request
+				await this.handleRequest(ctx, handler);
+
+			} catch (err) {
+				this.handleError(ctx, err);
 			}
-
-			// make sure the authorization is given
-			await this.authorizeUser(ctx, user, resource, permission, scopes, planAttrs);
-
-			// ---- here the user's authenticated and authorized. ---- //
-
-			// set dirty header if necessary
-			const result = await ctx.redis.getAsync('dirty_user_' + user.id);
-			if (result) {
-				logger.info('[ctrl|auth] User <%s> is dirty, telling him in header.', user.email);
-				ctx.set('X-User-Dirty', result);
-				await ctx.redis.delAsync('dirty_user_' + user.id);
-			}
-			ctx.set('X-User-Dirty', '0');
-
-			// log to sqreen
-			if (config.vpdb.services.sqreen.enabled) {
-				require('sqreen').identify(ctx.req, { email: user.email });
-			}
-
-			// update state
-			ctx.state.user = user;
-
-			// continue with request
-			await this.handleRequest(ctx, handler);
 		};
 	}
 
@@ -439,7 +443,7 @@ export abstract class Api {
 		try {
 			const result = await handler(ctx);
 			if (result !== true) {
-				//this._handleError(ctx, new ApiError('Must return success() in API controller.').status(500));
+				this.handleError(ctx, new ApiError('Must return success() in API controller.').status(500));
 			}
 		} catch (err) {
 			this.handleError(ctx, err);

@@ -17,12 +17,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-'use strict';
-
 const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
-const fileTypes = require('./defs/filetypes');
 const validator = require('validator');
 
 /**

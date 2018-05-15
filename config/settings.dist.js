@@ -31,7 +31,7 @@ module.exports = {
 		 *
 		 * @important
 		 */
-		api: { protocol: 'https', hostname: 'localhost', port: 3000, pathname: '/api/v1', prefix: '' },
+		api: { protocol: 'https', hostname: 'localhost', port: 3000, pathname: '/api', prefix: '' },
 
 		/**
 		 * Storage-related URLs and paths.
@@ -65,7 +65,7 @@ module.exports = {
 				path: './data/storage-protected',
 
 				/** URI of the API. Used to construct URLs. */
-				api: { protocol: 'https', hostname: 'localhost', port: 3000, pathname: '/storage/v1', prefix: '' }
+				api: { protocol: 'https', hostname: 'localhost', port: 3000, pathname: '/storage', prefix: '' }
 			}
 		},
 

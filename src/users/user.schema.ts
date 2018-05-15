@@ -23,15 +23,15 @@ import { each, find, isArray, isBoolean, isString, isUndefined, keys } from 'lod
 import { createHmac } from 'crypto';
 import validator from 'validator';
 import uniqueValidator from 'mongoose-unique-validator';
+
 import { logger } from '../common/logger';
 import { config } from '../common/settings';
-
+import { metricsPlugin } from '../common/mongoose-plugins/metrics';
 import { User } from './user';
 import { server } from '../server';
 import { flavors } from '../releases/release.flavors';
 
 const shortId = require('shortid32');
-const metrics = require('../common/mongoose-plugins/metrics');
 
 //-----------------------------------------------------------------------------
 // SCHEMA
@@ -117,7 +117,7 @@ UserSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already t
 // PLUGINS
 //-----------------------------------------------------------------------------
 
-UserSchema.plugin(metrics);
+UserSchema.plugin(metricsPlugin);
 
 
 //-----------------------------------------------------------------------------

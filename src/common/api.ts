@@ -423,6 +423,18 @@ export abstract class Api {
 		}
 	}
 
+	/**
+	 * Instantiates a new router with the storage prefix.
+	 * @return {Router}
+	 */
+	public storageRouter() {
+		if (config.vpdb.storage.protected.api.pathname) {
+			return new Router({ prefix: config.vpdb.storage.protected.api.pathname });
+		} else {
+			return new Router();
+		}
+	}
+
 	private async handleRequest(ctx: Context, handler: (ctx: Context) => boolean) {
 		try {
 			const result = await handler(ctx);

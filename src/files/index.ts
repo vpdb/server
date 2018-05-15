@@ -24,18 +24,20 @@ import { EndPoint } from '../common/types/endpoint';
 import { schema } from './file.schema';
 import { FileSerializer } from './file.serializer';
 import Application = require('koa');
+import { prefixes as apiPrefixes, router as apiRouter } from './file.api.router';
+import { prefixes as storagePrefixes, router as storageRouter } from './file.storage.router';
 
 export class FilesApiEndPoint implements EndPoint {
 
 	readonly name: string = 'files';
-	readonly paths: string[] = [];
+	readonly paths: string[] = apiPrefixes;
 
 	private readonly _router: Router;
 	private readonly _schema: Schema;
 
 	constructor() {
 		this._schema = schema;
-		this._router = router;
+		this._router = apiRouter;
 	}
 
 	getRouter(): Router {
@@ -50,14 +52,12 @@ export class FilesApiEndPoint implements EndPoint {
 export class FilesStorageEndPoint implements EndPoint {
 
 	readonly name: string = 'storage files';
-	readonly paths: string[] = [];
+	readonly paths: string[] = storagePrefixes;
 
 	private readonly _router: Router;
-	private readonly _schema: Schema;
 
 	constructor() {
-		// this._schema = schema;
-		// this._router = router;
+		this._router = storageRouter;
 	}
 
 	getRouter(): Router {
@@ -65,6 +65,6 @@ export class FilesStorageEndPoint implements EndPoint {
 	}
 
 	register(app: Application): void {
-		app.context.serializers.File = new FileSerializer();
+		// nothing to register
 	}
 }

@@ -1,10 +1,11 @@
 import { pick, assign } from 'lodash';
+
+import { storage } from '../common/storage';
 import { Context } from '../common/types/context';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { File } from './file';
 
 const quota = require('../common/quota');
-const storage = require('../../src_/modules/storage');
 
 export class FileSerializer extends Serializer<File> {
 
@@ -13,11 +14,11 @@ export class FileSerializer extends Serializer<File> {
 	}
 
 	protected _simple(ctx: Context, doc: File, opts: SerializerOptions):File {
-		const file:File = this._reduced(ctx, doc, opts);
+		const file = this._reduced(ctx, doc, opts);
 		file.bytes = doc.bytes;
-		file.variations = storage.urls(doc);
+		// FIXME file.variations = storage.urls(doc);
 		file.cost = quota.getCost(doc);
-		file.url = storage.url(doc);
+		// FIXME file.url = storage.url(doc);
 		file.is_protected = !doc.is_active || file.cost > -1;
 		file.counter = (doc.counter as any).toObject();
 		return file;
@@ -26,7 +27,7 @@ export class FileSerializer extends Serializer<File> {
 	protected _detailed(ctx: Context, doc: File, opts: SerializerOptions):File {
 		const file = this._simple(ctx, doc, opts);
 		assign(file, pick(doc, ['is_active', 'created_at', 'file_type' ]));
-		file.metadata = storage.metadataShort(doc);
+		// FIXME file.metadata = storage.metadataShort(doc);
 		return file;
 	}
 }

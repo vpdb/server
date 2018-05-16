@@ -17,16 +17,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { difference, keys, pick, isObject } from 'lodash';
-import { decode as jwtDecode } from 'jwt-simple';
+import { difference, isObject, keys, pick } from 'lodash';
 import { Context } from './types/context';
 import { logger } from './logger';
-import { config, settings } from './settings';
+import { config } from './settings';
 import { ApiError, ApiValidationError } from './api.error';
 import Router from 'koa-router';
 import { User } from '../users/user';
 import { scope, Scope } from './scope';
-import { AuthenticationUtil, Jwt } from '../authentication/authentication.util';
 import { acl } from './acl';
 
 export abstract class Api {
@@ -66,7 +64,7 @@ export abstract class Api {
 
 			// if authentication failed, abort.
 			if (ctx.state.authError) {
-				return this.handleError(ctx, ctx.state.authError);
+				throw ctx.state.authError;
 			}
 
 			// if this resource is a service resource, we don't need a user.
@@ -74,28 +72,23 @@ export abstract class Api {
 				return await this.handleRequest(ctx, handler);
 			}
 
-			try {
-
-				// just to be sure (auth middleware loaded?)...
-				if (!ctx.state.user) {
-					throw new ApiError('Something went wrong, authenticated but no user.');
-				}
-
-				// now we're authenticated, let's authorize.
-				await this.authorizeUser(ctx, ctx.state.user, resource, permission, scopes, planAttrs);
-
-				// now we're authorized, set dirty header if necessary
-				const result = await ctx.redis.getAsync('dirty_user_' + ctx.state.user.id);
-				if (result) {
-					logger.info('[ctrl|auth] User <%s> is dirty, telling him in header.', ctx.state.user.email);
-					ctx.set('X-User-Dirty', result);
-					await ctx.redis.delAsync('dirty_user_' + ctx.state.user.id);
-				}
-				ctx.set('X-User-Dirty', '0');
-
-			} catch (err) {
-				return this.handleError(ctx, err);
+			// just to be sure (auth middleware loaded?)...
+			if (!ctx.state.user) {
+				throw new ApiError('Something went wrong, authenticated but no user.');
 			}
+
+			// now we're authenticated, let's authorize.
+			await this.authorizeUser(ctx, ctx.state.user, resource, permission, scopes, planAttrs);
+
+			// now we're authorized, set dirty header if necessary
+			const result = await ctx.redis.getAsync('dirty_user_' + ctx.state.user.id);
+			if (result) {
+				logger.info('[ctrl|auth] User <%s> is dirty, telling him in header.', ctx.state.user.email);
+				ctx.set('X-User-Dirty', result);
+				await ctx.redis.delAsync('dirty_user_' + ctx.state.user.id);
+			}
+			ctx.set('X-User-Dirty', '0');
+
 
 			// continue with request
 			await this.handleRequest(ctx, handler);
@@ -162,37 +155,10 @@ export abstract class Api {
 	 * @returns {Promise<void>}
 	 */
 	private async handleRequest(ctx: Context, handler: (ctx: Context) => boolean): Promise<void> {
-		try {
-			const result = await handler(ctx);
-			if (result !== true) {
-				this.handleError(ctx, new ApiError('Must return success() in API controller.').status(500));
-			}
-		} catch (err) {
-			this.handleError(ctx, err);
+		const result = await handler(ctx);
+		if (result !== true) {
+			throw new ApiError('Must return success() in API controller.');
 		}
-	}
-
-	/**
-	 * Handles exceptions during the API request.
-	 *
-	 * @param ctx Koa context
-	 * @param err Thrown error
-	 */
-	private handleError(ctx: Context, err: ApiError) {
-		let message;
-		const statusCode = err.statusCode || 500;
-
-		if (statusCode === 500) {
-			logger.error(err);
-		}
-
-		if (!err.status) {
-			message = 'Internal error.';
-		} else {
-			message = err.message || 'Internal error.';
-		}
-		ctx.status = statusCode;
-		ctx.body = { error: message };
 	}
 
 	/**

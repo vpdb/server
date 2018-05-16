@@ -1,0 +1,231 @@
+import { Context } from '../types/context';
+import { config, settings } from '../settings';
+import { User } from '../../users/user';
+import { ApiError } from '../api.error';
+import { decode as jwtDecode } from 'jwt-simple';
+import { Scope } from '../scope';
+import { AuthenticationUtil, Jwt } from '../../authentication/authentication.util';
+
+/**
+ * Middleware that populates the authentication state. It sets:
+ *
+ * - ctx.state.user: The user, when authentication succeeded
+ * - ctx.state.authError: The exception, when authentication failed
+ * - ctx.state.appToken: The token, if authenticated via database (application token)
+ * - ctx.state.tokenType: The token type
+ * - ctx.state.tokenScopes: The scopes of the token
+ * - ctx.state.tokenProvider: The provider, if provider token
+ *
+ * Note this doesn't authorize anything, see {@link Api.auth()} for that.
+ *
+ * @return {(ctx: Context, next: () => Promise<any>) => Promise<void>} Koa middleware
+ */
+export function koaAuth() {
+	return async function logger(ctx: Context, next: () => Promise<any>) {
+		try {
+			delete ctx.state.user;
+
+			// get token sent by user
+			const token = retrieveToken(ctx);
+
+			// try to authenticate with token
+			const user = /[0-9a-f]{32,}/i.test(token.value) ?
+				await authenticateWithAppToken(ctx, token) : // app token?
+				await authenticateWithJwt(ctx, token);  // otherwise, assume it's a JWT.
+
+			// log to sqreen
+			if (config.vpdb.services.sqreen.enabled) {
+				require('sqreen').identify(ctx.req, { email: user.email });
+			}
+
+			// update state
+			ctx.state.user = user;
+
+		} catch (err) {
+			// update state with error
+			ctx.state.authError = err;
+		}
+
+		// continue with next middleware
+		await next();
+	}
+}
+
+/**
+ * Retrieves the token from either URL or HTTP header.
+ *
+ * @param {Context} ctx Koa context
+ * @returns {{token: string, fromUrl: boolean}} Token
+ * @throws {ApiError} If no token found or incorrect header.
+ */
+function retrieveToken(ctx: Context): { value: string, fromUrl: boolean } {
+	const headerName = config.vpdb.authorizationHeader;
+	// get token
+	if (ctx.get(headerName.toLowerCase())) {
+
+		// validate format
+		const parts = ctx.get(headerName.toLowerCase()).split(' ');
+		if (parts.length !== 2) {
+			throw new ApiError('Bad Authorization header. Format is "%s: Bearer [token]"', headerName).status(401);
+		}
+		const scheme = parts[0];
+		const credentials = parts[1];
+		if (!/^Bearer$/i.test(scheme)) {
+			throw new ApiError('Bad Authorization header. Format is "%s: Bearer [token]"', headerName).status(401);
+		}
+		return {
+			value: credentials,
+			fromUrl: false
+		};
+
+	} else if (ctx.query && ctx.query.token) {
+		return {
+			value: ctx.query.token,
+			fromUrl: true
+		};
+	} else {
+		throw new ApiError('Unauthorized. You need to provide credentials for this resource').status(401);
+	}
+}
+
+/**
+ * Tries to authenticate with a database token.
+ *
+ * For a "service resource" (a resource available to third-party services
+ * without an authenticated user), `null` is returned in case of success.
+ *
+ * Otherwise, the authenticated user is returned.
+ *
+ * @param {Context} ctx Koa context
+ * @param {{value: string, fromUrl: boolean}} token Retrieved token
+ * @returns {Promise<User | null>} Authenticated user on success or null on successful service resource authentication.
+ * @throws {ApiError} If provided token is invalid.
+ */
+async function authenticateWithAppToken(ctx: Context, token: { value: string, fromUrl: boolean }): Promise<User | null> {
+
+	const vpdbUserIdHeader = 'x-vpdb-user-id';
+	const providerUserIdHeader = 'x-user-id';
+
+	// application access tokens aren't allowed in the url
+	if (token.fromUrl) {
+		throw new ApiError('App tokens must be provided in the header.').status(401);
+	}
+
+	const appToken = await ctx.models.Token.findOne({ token: token }).populate('_created_by').exec();
+
+	// fail if not found
+	if (!appToken) {
+		throw new ApiError('Invalid app token.').status(401);
+	}
+
+	// fail if incorrect plan
+	if (appToken.type === 'personal' && !(appToken._created_by as User).planConfig.enableAppTokens) {
+		throw new ApiError('Your current plan "%s" does not allow the use of app tokens. Upgrade or contact an admin.', (appToken._created_by as User).planConfig.id).status(401);
+	}
+
+	// fail if expired
+	if (appToken.expires_at.getTime() < new Date().getTime()) {
+		throw new ApiError('Token has expired.').status(401);
+	}
+
+	// fail if inactive
+	if (!appToken.is_active) {
+		throw new ApiError('Token is inactive.').status(401);
+	}
+
+	// so we're good here!
+	ctx.state.appToken = appToken;
+	ctx.state.tokenType = appToken.type;
+	ctx.state.tokenScopes = appToken.scopes;
+
+	let user: User;
+
+	// additional checks for application (provider) token
+	if (appToken.type === 'application') {
+
+		ctx.state.tokenProvider = appToken.provider;
+
+		// retrieve user id headers
+		const userId = ctx.get(vpdbUserIdHeader);
+		const providerUserId = ctx.get(providerUserIdHeader);
+
+		// vpdb user id header provided
+		if (userId) {
+			user = await ctx.models.User.findOne({ id: userId });
+			if (!user) {
+				throw new ApiError('No user with ID "%s".', userId).status(400);
+			}
+			if (!user.providers[appToken.provider]) {
+				throw new ApiError('Provided user has not been authenticated with %s.', appToken.provider).status(400);
+			}
+
+		// provider id header provided
+		} else if (providerUserId) {
+			user = await ctx.models.User.findOne({ ['providers.' + appToken.provider + '.id']: String(providerUserId) });
+
+			if (!user) {
+				throw new ApiError('No user with ID "%s" for provider "%s".', providerUserId, appToken.provider).status(400);
+			}
+
+		// if no user header found, fail.
+		} else {
+			throw new ApiError('Must provide "%s" or "%s" header when using application token.', vpdbUserIdHeader, providerUserIdHeader).status(400);
+		}
+
+	} else {
+		user = appToken._created_by as User;
+	}
+	await appToken.update({ last_used_at: new Date() });
+	return user;
+}
+
+/**
+ * Tries to authenticate with a JSON Web Token.
+ *
+ * @param {Context} ctx Koa context
+ * @param {{value: string, fromUrl: boolean}} token Retrieved token
+ * @returns {Promise<User>} Authenticated user on success.
+ * @throws {ApiError} If provided token is invalid.
+ */
+async function authenticateWithJwt(ctx: Context, token: { value: string, fromUrl: boolean }): Promise<User> {
+
+	// validate token
+	let decoded: Jwt;
+	try {
+		decoded = jwtDecode(token, config.vpdb.secret, false, 'HS256');
+	} catch (e) {
+		throw new ApiError(e, 'Bad JSON Web Token').status(401);
+	}
+
+	// check for expiration
+	let tokenExp = new Date(decoded.exp);
+	if (tokenExp.getTime() < new Date().getTime()) {
+		throw new ApiError('Token has expired').status(401);
+	}
+
+	if (token.fromUrl && !decoded.path) {
+		throw new ApiError('Tokens that are valid for any path cannot be provided as query parameter.').status(401);
+	}
+
+	// check for path && method
+	let extPath = settings.intToExt(ctx.request.path);
+	if (decoded.path && (decoded.path !== extPath || (ctx.method !== 'GET' && ctx.method !== 'HEAD'))) {
+		throw new ApiError('Token is only valid for "GET/HEAD %s" but got "%s %s".', decoded.path, ctx.method, extPath).status(401);
+	}
+
+	const user = await
+		ctx.models.User.findOne({ id: decoded.iss });
+	if (!user) {
+		throw new ApiError('No user with ID %s found.', decoded.iss).status(403).log();
+	}
+
+	// generate new token if it's a short term token.
+	let tokenIssued = new Date(decoded.iat);
+	if (tokenExp.getTime() - tokenIssued.getTime() === config.vpdb.apiTokenLifetime) {
+		ctx.set('X-Token-Refresh', AuthenticationUtil.generateApiToken(user, new Date(), true));
+	}
+
+	ctx.state.tokenScopes = [Scope.ALL];
+	ctx.state.tokenType = decoded.irt ? 'jwt-refreshed' : 'jwt';
+	return user;
+}

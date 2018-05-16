@@ -198,8 +198,6 @@ async function authenticateWithAppToken(ctx: Context, token: { value: string, fr
  */
 async function authenticateWithJwt(ctx: Context, token: { value: string, fromUrl: boolean }): Promise<User> {
 
-	(logger as any).blarz();
-
 	// validate token
 	let decoded: Jwt;
 	try {

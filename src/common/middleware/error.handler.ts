@@ -17,14 +17,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { basename, dirname, sep } from 'path';
-import chalk, { Chalk, ColorSupport } from 'chalk';
+import { keys } from 'lodash';
+import chalk from 'chalk';
 
 import { Context } from '../types/context';
 import { logger } from '../logger';
 import { ApiError } from '../api.error';
-
-
 
 /**
  * Gracefully handles errors.
@@ -52,10 +50,10 @@ export function koaErrorHandler() {
 			// log
 			let sendError:boolean;
 			if (err.isApiError) {
-				(err as ApiError).print();
+				(err as ApiError).print('\n\n' + chalk.magenta(requestLog(ctx)));
 				sendError = (err as ApiError).sendError();
 			} else {
-				logger.error('\n\n' + ApiError.colorStackTrace(err) + '\n');
+				logger.error('\n\n' + ApiError.colorStackTrace(err) + '\n\n' + chalk.magenta(requestLog(ctx)) + '\n');
 				sendError = true;
 			}
 
@@ -66,11 +64,16 @@ export function koaErrorHandler() {
 	}
 }
 
-function logRequest(err:Error) {
-
+function requestLog(ctx:Context) {
+	let err = ctx.request.method + ' ' + ctx.request.path + '\n\n';
+	err += keys(ctx.request.header).map(name => name + ': ' + ctx.request.get(name)).join('\n');
+	if (ctx.request.rawBody) {
+		err += '\n\n' + ctx.request.rawBody;
+	}
+	return err;
 }
 
 
 function reportError(err:Error) {
-
+	// TODO: send to raygun
 }

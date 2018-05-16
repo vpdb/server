@@ -21,6 +21,7 @@ logs
 /gfx/favicon
 /gfx/svg-defs.svg
 /vpdb-svg
+/src/config/
 
 results
 .nyc_output

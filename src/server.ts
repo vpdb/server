@@ -66,7 +66,7 @@ export class Server {
 			const methods:Map<string, string[]> = new Map<string, string[]>();
 			router.stack.forEach(layer => methods.set(layer.path, [ ...methods.get(layer.path) || [], ...layer.methods ]));
 			uniq(router.stack.map(layer => layer.path)).sort().forEach(path => {
-				logger.info('  %s [ %s ]', path, methods.get(path).join(', '));
+				logger.info('  %s (%s)', path, methods.get(path).join(','));
 			});
 		}
 

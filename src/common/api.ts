@@ -32,42 +32,33 @@ import { acl } from './acl';
 export abstract class Api {
 
 	/**
-	 * No user object is populated, only errors are handled.
-	 *
-	 * @param {(ctx: Context) => boolean} handler The API controller launched
-	 * @returns {(ctx: Context) => Promise<void>} A middleware function for Koa
-	 */
-	public plain(handler: (ctx: Context) => boolean) {
-		return async (ctx: Context) => {
-			await this.handleRequest(ctx, handler);
-		};
-	}
-
-	/**
 	 * Handles an API request with no authorization.
 	 *
-	 * @param {(ctx: Context) => boolean} handler The API controller launched
-	 * @returns {(ctx: Context) => Promise<void>} A middleware function for Koa
+	 * @param handler The API controller launched
+	 * @returns A middleware function for Koa
 	 */
 	public anon(handler: (ctx: Context) => boolean) {
 		return async (ctx: Context) => await this.handleRequest(ctx, handler);
 	}
 
 	/**
-	 * Protects a resource by verifying the JWT in the header or query param.
-	 * If `resource` and `permission` are set, ACLs are additionally checked.
-	 * If `plan` is set, must must be subscribed to that plan.
+	 * Protects a resource by verifying the permissions of an authenticated user
+	 * and the token used for authentication. Also the plan can is verified if
+	 * provided.
 	 *
-	 * In any case, the user must be logged. On success, the `ctx.state.user`
-	 * object is set so further down the stack you can read data from it. Also,
-	 * `ctx` is used for setting the `X-Token-Refresh` header if necessary.
+	 * The only cases where a logged user is not mandatory are resources with
+	 * the SERVICE scope, which are only validated against a valid application
+	 * token.
 	 *
-	 * @param {(ctx: Context) => boolean} handler The API controller  launched after authentication
-	 * @param {string} resource Required resource
-	 * @param {string} permission Required permissions
-	 * @param {string[]} scopes Required scopes of the authentication method
-	 * @param planAttrs Key/value pairs of plan options that must match, e.g. { enableAppTokens: false }
-	 * @returns {(ctx: Context) => Promise<any>} A middleware function for Koa
+	 * This also takes care of the dirty user flag, which is sent in the header
+	 * if any of the user data changed since the user last accessed the API.
+	 *
+	 * @param handler    The API controller  launched after authentication
+	 * @param resource   Required resource
+	 * @param permission Required permissions
+	 * @param scopes     Required scopes of the authentication method
+	 * @param planAttrs  Key/value pairs of plan options that must match, e.g. { enableAppTokens: false }
+	 * @returns A middleware function for Koa
 	 */
 	public auth(handler: (ctx: Context) => boolean, resource: string, permission: string, scopes: Scope[], planAttrs?: { [key: string]: any }) {
 
@@ -114,12 +105,12 @@ export abstract class Api {
 	/**
 	 * Authorizes an authenticated user with given permissions.
 	 *
-	 * @param {Context} ctx Koa context
-	 * @param {User} user User to authorize
-	 * @param {string} resource Required resource
-	 * @param {string} permission Required permission
-	 * @param {Scope[]} scopes Required scopes
-	 * @param planAttrs Key/value pairs of plan options that must match, e.g. { enableAppTokens: false }
+	 * @param ctx        Koa context
+	 * @param user       User to authorize
+	 * @param resource   Required resource
+	 * @param permission Required permission
+	 * @param scopes     Required scopes
+	 * @param planAttrs  Key/value pairs of plan options that must match, e.g. { enableAppTokens: false }
 	 * @throws {ApiError} If authorization failed.
 	 */
 	private async authorizeUser(ctx: Context, user: User, resource: string, permission: string, scopes: Scope[], planAttrs: { [key: string]: any }): Promise<void> {
@@ -149,7 +140,86 @@ export abstract class Api {
 		}
 	}
 
-	protected checkReadOnlyFields(newObj: { [key: string]: any }, oldObj: { [key: string]: any }, allowedFields: string[]) {
+	/**
+	 * The API call was successful.
+	 * @param ctx          Koa context
+	 * @param body         Response body or null if no response body to send.
+	 * @param [status=200] HTTP status code
+	 * @return {boolean} Boolean indicating success.
+	 */
+	protected success(ctx: Context, body?: any, status?: number) {
+		status = status || 200;
+		ctx.status = status;
+		ctx.body = body;
+		return true;
+	}
+
+	/**
+	 * Executes the API request provided by the router.
+	 *
+	 * @param {Context} ctx Koa context
+	 * @param {(ctx: Context) => boolean} handler Handler function
+	 * @returns {Promise<void>}
+	 */
+	private async handleRequest(ctx: Context, handler: (ctx: Context) => boolean): Promise<void> {
+		try {
+			const result = await handler(ctx);
+			if (result !== true) {
+				this.handleError(ctx, new ApiError('Must return success() in API controller.').status(500));
+			}
+		} catch (err) {
+			this.handleError(ctx, err);
+		}
+	}
+
+	/**
+	 * Handles exceptions during the API request.
+	 *
+	 * @param ctx Koa context
+	 * @param err Thrown error
+	 */
+	private handleError(ctx: Context, err: ApiError) {
+		let message;
+		const statusCode = err.statusCode || 500;
+
+		if (statusCode === 500) {
+			logger.error(err);
+		}
+
+		if (!err.status) {
+			message = 'Internal error.';
+		} else {
+			message = err.message || 'Internal error.';
+		}
+		ctx.status = statusCode;
+		ctx.body = { error: message };
+	}
+
+	/**
+	 * Creates a MongoDb query out of a list of queries.
+	 *
+	 * @param query Search queries
+	 * @returns {object}
+	 */
+	protected searchQuery(query: object[]) {
+		if (query.length === 0) {
+			return {};
+		} else if (query.length === 1) {
+			return query[0];
+		} else {
+			return { $and: query };
+		}
+	};
+
+	/**
+	 * Checks is an object has only changes of a given field.
+	 *
+	 * @param newObj        Object with changes
+	 * @param oldObj        Original object
+	 * @param allowedFields Allowed fields to change
+	 * @returns False if everything is okay, a list of validation errors otherwise.
+	 */
+	protected checkReadOnlyFields(newObj: { [key: string]: any }, oldObj: { [key: string]: any }, allowedFields: string[]): ApiValidationError[] | boolean  {
 		const errors: ApiValidationError[] = [];
 		difference(keys(newObj), allowedFields).forEach(field => {
 			let newVal, oldVal;
@@ -182,38 +252,8 @@ export abstract class Api {
 	}
 
 	/**
-	 * The API call was successful.
-	 * @param {Application.Context} ctx Koa context
-	 * @param {object|null} body Response body or null if no response body to send.
-	 * @param {number} [status=200] HTTP status code
-	 * @return {boolean}
-	 */
-	protected success(ctx: Context, body?: any, status?: number) {
-		status = status || 200;
-
-		ctx.status = status;
-		ctx.body = body;
-		return true;
-	}
-
-	/**
-	 * Creates a MongoDb query out of a list of queries
-	 * @param {object[]} query Search queries
-	 * @returns {object}
-	 */
-	protected searchQuery(query: object[]) {
-		if (query.length === 0) {
-			return {};
-		} else if (query.length === 1) {
-			return query[0];
-		} else {
-			return { $and: query };
-		}
-	};
-
-	/**
 	 * Instantiates a new router with the API prefix.
-	 * @return {Router}
+	 * @return API router
 	 */
 	public apiRouter() {
 		if (config.vpdb.api.pathname) {
@@ -225,7 +265,7 @@ export abstract class Api {
 
 	/**
 	 * Instantiates a new router with the storage prefix.
-	 * @return {Router}
+	 * @return Storage router
 	 */
 	public storageRouter() {
 		if (config.vpdb.storage.protected.api.pathname) {
@@ -233,33 +273,5 @@ export abstract class Api {
 		} else {
 			return new Router();
 		}
-	}
-
-	private async handleRequest(ctx: Context, handler: (ctx: Context) => boolean) {
-		try {
-			const result = await handler(ctx);
-			if (result !== true) {
-				this.handleError(ctx, new ApiError('Must return success() in API controller.').status(500));
-			}
-		} catch (err) {
-			this.handleError(ctx, err);
-		}
-	}
-
-	private handleError(ctx: Context, err: ApiError) {
-		let message;
-		const statusCode = err.statusCode || 500;
-
-		if (statusCode === 500) {
-			logger.error(err);
-		}
-
-		if (!err.status) {
-			message = 'Internal error.';
-		} else {
-			message = err.message || 'Internal error.';
-		}
-		ctx.status = statusCode;
-		ctx.body = { error: message };
 	}
 }

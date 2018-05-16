@@ -5,6 +5,7 @@ import { ApiError } from '../api.error';
 import { decode as jwtDecode } from 'jwt-simple';
 import { Scope } from '../scope';
 import { AuthenticationUtil, Jwt } from '../../authentication/authentication.util';
+import { logger } from '../logger';
 
 /**
  * Middleware that populates the authentication state. It sets:
@@ -197,12 +198,15 @@ async function authenticateWithAppToken(ctx: Context, token: { value: string, fr
  */
 async function authenticateWithJwt(ctx: Context, token: { value: string, fromUrl: boolean }): Promise<User> {
 
+	(logger as any).blarz();
+
 	// validate token
 	let decoded: Jwt;
 	try {
 		decoded = jwtDecode(token, config.vpdb.secret, false, 'HS256');
 	} catch (e) {
-		throw new ApiError(e, 'Bad JSON Web Token').status(401);
+		logger.error(e);
+		throw new ApiError('Bad JSON Web Token').status(401);
 	}
 
 	// check for expiration

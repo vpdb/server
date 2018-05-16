@@ -100,5 +100,11 @@ function log(ctx: Context, start: number, len: number, err: any = null, event: s
 	const logStatus = statusStyle[Math.floor(statusCode / 100) * 100] || statusStyle[100];
 	const logMethod = methodStyle[ctx.method] || methodStyle.GET;
 
-	logger.info('[%s] %s%s %s %sms - %s', logUserIp, upstream, logStatus(' ' + statusCode + ' '), logMethod(ctx.method + ' ' + ctx.originalUrl), Date.now() - start, length);
+	if (statusCode >= 500 && statusCode < 600) {
+		logger.error('[%s] %s%s %s %sms - %s', logUserIp, upstream, logStatus(' ' + statusCode + ' '), logMethod(ctx.method + ' ' + ctx.originalUrl), Date.now() - start, length);
+	} else {
+		logger.info('[%s] %s%s %s %sms - %s', logUserIp, upstream, logStatus(' ' + statusCode + ' '), logMethod(ctx.method + ' ' + ctx.originalUrl), Date.now() - start, length);
+	}
+
+
 }

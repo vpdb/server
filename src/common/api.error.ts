@@ -17,22 +17,66 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import chalk from 'chalk';
 import { format as sprintf } from 'util';
-import { isArray, isObject, forEach, compact } from 'lodash';
+import { compact, isArray, isObject } from 'lodash';
+import { logger } from './logger';
+import { Context } from './types/context';
+import { basename, dirname, sep } from 'path';
 
 export class ApiError extends Error {
 
+	/**
+	 * Marks the error as API error so we don't need to deal with `instanceof`
+	 * @type {boolean}
+	 */
 	public isApiError = true;
-	public statusCode: number;
+
+	/**
+	 * HTTP status to return to the client. Default is 500.
+	 * @type {number}
+	 */
+	public statusCode: number = 500;
+
+	/**
+	 * The body that should be returned to the client.
+	 */
 	public data: { [key: string]: any };
-	private logLevel: string;
+
+	/**
+	 * If set, log to console.
+	 *
+	 * - `warn` will only log to console.
+	 * - `error` will log to the console with a stack trace and the crash reporter.
+	 *
+	 * Independently of this value, if statusCode is 500, `error` is assumed.
+	 */
+	private logLevel: 'warn'|'error';
+
+	/**
+	 * The message that is returned to the client as `{ error: message }`.
+	 */
 	private responseMessage: string;
+
+	/**
+	 * A list of validation errors.
+	 *
+	 * If set, status 422 is returned.
+	 */
 	private errs: ApiValidationError[];
+
+	/**
+	 * If set, this prefix is stripped from the validation field values.
+	 */
 	private fieldPrefix: string;
 
+	/**
+	 * Constructor.
+	 * @param format Message
+	 * @param param Message arguments to replaced
+	 */
 	constructor(format?: any, ...param: any[]) {
 		super(sprintf.apply(null, arguments));
-		this.statusCode = 0;
 		this.logLevel = null; // don't log per default
 	}
 
@@ -41,7 +85,7 @@ export class ApiError extends Error {
 	 * @param {number} status HTTP status
 	 * @returns {ApiError}
 	 */
-	status(status: number): ApiError {
+	public status(status: number): ApiError {
 		this.statusCode = status;
 		return this;
 	}
@@ -53,7 +97,7 @@ export class ApiError extends Error {
 	 * @param param Parameters
 	 * @return {ApiError}
 	 */
-	display(format?: any, ...param: any[]): ApiError {
+	public display(format?: any, ...param: any[]): ApiError {
 		this.responseMessage = sprintf.apply(null, arguments);
 		return this;
 	}
@@ -63,25 +107,26 @@ export class ApiError extends Error {
 	 * @param {object} data
 	 * @return {ApiError}
 	 */
-	body(data: object): ApiError {
+	public body(data: object): ApiError {
 		this.data = data;
 		return this;
 	}
 
 	/**
-	 * Logs a warning instead of an error.
+	 * Logs a warning to the console.
 	 * @return {ApiError}
 	 */
-	warn(): ApiError {
+	public warn(): ApiError {
 		this.logLevel = 'warn';
 		return this;
 	}
 
 	/**
-	 * Logs the error as error.
+	 * Logs an error and a stack trace to the console. Also sends the
+	 * error to the crash reporter.
 	 * @return {ApiError}
 	 */
-	log(): ApiError {
+	public log(): ApiError {
 		this.logLevel = 'error';
 		return this;
 	}
@@ -93,22 +138,85 @@ export class ApiError extends Error {
 	 * @param {*} [value] Invalid value
 	 * @returns {ApiError}
 	 */
-	validationError(path: string, message: string, value?: any): ApiError {
+	public validationError(path: string, message: string, value?: any): ApiError {
 		this.errs = this.errs || [];
 		this.errs.push({ path: path, message: message, value: value });
 		this.statusCode = 422;
-		this._stripFields();
+		this.stripFields();
 		return this;
 	};
 
-	validationErrors(errs: ApiValidationError[]) {
+	/**
+	 * Adds multiple validation errors and sets the status to 422.
+	 * @param {ApiValidationError[]} errs
+	 * @returns {ApiError}
+	 */
+	public validationErrors(errs: ApiValidationError[]) {
 		this.errs = errs;
 		this.statusCode = 422;
-		this._stripFields();
+		this.stripFields();
 		return this;
 	}
 
-	_stripFields() {
+	/**
+	 * Sends the error to the HTTP client.
+	 * @param {Context} ctx Koa context
+	 */
+	public respond(ctx:Context) {
+		ctx.status = this.statusCode;
+		ctx.body = this.data || { error: this.message };
+	}
+
+	/**
+	 * Logs the error with the current logger.
+	 */
+	public print(requestLog = '') {
+		if (this.statusCode === 500 || this.logLevel === 'error') {
+			logger.error('\n\n' + ApiError.colorStackTrace(this) + requestLog);
+
+		} else if (this.logLevel === 'warn') {
+			logger.warn(chalk.yellowBright(this.message.trim()));
+		}
+	}
+
+	/**
+	 * Returns if the trace of the error should be sent to the crash reporter.
+	 * @returns {boolean}
+	 */
+	public sendError():boolean {
+		return this.statusCode === 500 || this.logLevel === 'error';
+	}
+
+	/**
+	 * Returns a colored stack trace of a given error.
+	 *
+	 * @param {Error} err Error to colorize
+	 * @returns {string} Colorized stack trace
+	 */
+	public static colorStackTrace(err: Error) {
+		return err.stack.split('\n').map((line, index) => {
+			if (index === 0) {
+				return chalk.redBright(line);
+			}
+			const match = line.match(/(\s*)at ([^\s]+)\s*\(([^)]{2}[^:]+):(\d+):(\d+)\)/i);
+			if (line.indexOf('node_modules') > 0 || (match && /^internal\//i.test(match[3]))) {
+				return chalk.gray(line);
+			} else {
+				if (match) {
+					return match[1] + chalk.gray('at ') + chalk.whiteBright(match[2]) + ' (' +
+						dirname(match[3]) + sep + chalk.yellowBright(basename(match[3])) +
+						':' + chalk.cyanBright(match[4]) + ':' + chalk.cyan(match[5]) + ')';
+				} else {
+					return chalk.gray(line);
+				}
+			}
+		}).join('\n');
+	}
+
+	/**
+	 * Strips prefix off validation paths if set.
+	 */
+	private stripFields() {
 		if (!this.fieldPrefix) {
 			return;
 		}

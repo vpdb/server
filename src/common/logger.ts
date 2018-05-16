@@ -19,7 +19,7 @@
 
 import { format as sprintf } from 'util';
 import { format as logFormat } from 'logform';
-const winston = require('winston'); // todo use typings when available
+const winston = require('winston'); // todo use typings when available (https://github.com/winstonjs/winston/issues/1190)
 
 export class Logger {
 	private logger: any;

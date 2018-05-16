@@ -27,6 +27,7 @@ import { Serializers } from './common/types/serializers';
 import { config, settings } from './common/settings'
 import { koaLogger } from './common/middleware/logger';
 import { koaAuth } from './common/middleware/auth';
+import { koaErrorHandler } from './common/middleware/error.handler';
 import { logger } from './common/logger';
 
 import Redis = require('redis');
@@ -47,6 +48,7 @@ export class Server {
 		this.app.use(koaLogger());
 		this.app.use(koaBodyParser());
 		this.app.use(koaResponseTime());
+		this.app.use(koaErrorHandler());
 		this.app.use(koaAuth());
 
 		this.app.context.models = {};

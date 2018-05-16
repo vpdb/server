@@ -23,6 +23,7 @@ import { User } from '../../users/user';
 import { Models } from './models';
 import { Serializers } from './serializers';
 import { Token } from '../../tokens/token';
+import { ApiError } from '../api.error';
 
 export interface Context extends KoaContext {
 	/**
@@ -63,5 +64,10 @@ export interface Context extends KoaContext {
 		 * If app token, the name of the auth provider, e.g. "github", "google".
 		 */
 		tokenProvider: string;
+
+		/**
+		 * Set when authentication failed.
+		 */
+		authError: ApiError;
 	}
 }

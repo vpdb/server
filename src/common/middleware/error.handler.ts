@@ -17,12 +17,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { keys } from 'lodash';
+import { keys, values } from 'lodash';
 import chalk from 'chalk';
 
 import { Context } from '../types/context';
 import { logger } from '../logger';
-import { ApiError } from '../api.error';
+import { ApiError, ApiValidationError } from '../api.error';
 
 /**
  * Gracefully handles errors.
@@ -38,10 +38,15 @@ export function koaErrorHandler() {
 
 		} catch (err) {
 
-			// handle client
+			// thrown somewhere in app
 			if (err.isApiError) {
 				(err as ApiError).respond(ctx);
 
+			// validation error from mongoose
+			} else if (err.name === 'ValidationError') {
+				new ApiError('Validation failed.').validationErrors(values(err.errors) as ApiValidationError[]).warn().respond(ctx);
+
+			// unexpected errors
 			} else {
 				ctx.status = 500;
 				ctx.body = { error: 'Internal server error. Sorry about that, we will get a mail about this and fix it ASAP.' };
@@ -52,6 +57,11 @@ export function koaErrorHandler() {
 			if (err.isApiError) {
 				(err as ApiError).print('\n\n' + chalk.magenta(requestLog(ctx)));
 				sendError = (err as ApiError).sendError();
+
+			} else if (err.name === 'ValidationError') {
+				new ApiError('Validation failed.').validationErrors(values(err.errors) as ApiValidationError[]).warn().print('\n\n' + chalk.magenta(requestLog(ctx)));
+				sendError = false;
+
 			} else {
 				logger.error('\n\n' + ApiError.colorStackTrace(err) + '\n\n' + chalk.magenta(requestLog(ctx)) + '\n');
 				sendError = true;

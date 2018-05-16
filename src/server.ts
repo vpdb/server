@@ -33,6 +33,7 @@ import { logger } from './common/logger';
 import Redis = require('redis');
 import Bluebird = require('bluebird');
 import { RedisClient } from 'redis';
+import { koa404Handler } from './common/middleware/notfound.handler';
 
 const koaResponseTime = require('koa-response-time');
 
@@ -74,6 +75,10 @@ export class Server {
 
 		// register app (set models and serializer)
 		endPoint.register(this.app);
+	}
+
+	public postRegister() {
+		this.app.use(koa404Handler());
 	}
 
 	public start() {

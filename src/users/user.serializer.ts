@@ -30,7 +30,6 @@ export class UserSerializer extends Serializer<User> {
 
 	/**
 	 * User info in other data.
-	 * @protected
 	 */
 	protected _reduced(ctx: Context, doc: User, opts: SerializerOptions): User {
 		const user: User = pick(doc, ['id', 'name', 'username']) as User;
@@ -47,7 +46,6 @@ export class UserSerializer extends Serializer<User> {
 
 	/**
 	 * User details for anon/members (when searching or clicking).
-	 * @protected
 	 */
 	protected _simple(ctx: Context, doc: User, opts: SerializerOptions): User {
 		const user: User = this._reduced(ctx, doc, opts);
@@ -60,7 +58,6 @@ export class UserSerializer extends Serializer<User> {
 
 	/**
 	 * User details for admins, or profile data
-	 * @protected
 	 */
 	protected _detailed(ctx: Context, doc: User, opts: SerializerOptions): User {
 		const user = this._simple(ctx, doc, opts);
@@ -99,5 +96,4 @@ export class UserSerializer extends Serializer<User> {
 
 		return user;
 	}
-
 }

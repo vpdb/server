@@ -25,7 +25,7 @@ import { User } from '../users/user';
 
 export class LogUserUtil {
 
-	public static async success(ctx: Context, user: User, event: string, payload: { [key: string]: any }, actor?: User): Promise<void> {
+	public static async success(ctx: Context, user: User, event: string, payload?: { [key: string]: any }, actor?: User): Promise<void> {
 		await LogUserUtil.log(ctx, user, 'success', event, payload, actor, undefined);
 	}
 
@@ -33,7 +33,7 @@ export class LogUserUtil {
 		await LogUserUtil.log(ctx, user, 'failure', event, payload, actor, message);
 	}
 
-	public static async successDiff(ctx: Context, user: User, event: string, obj1: { [key: string]: any }, obj2: { [key: string]: any }, actor: User) {
+	public static async successDiff(ctx: Context, user: User, event: string, obj1: { [key: string]: any }, obj2: { [key: string]: any }, actor?: User) {
 		const diff = LogUserUtil.diff(obj1, obj2);
 		if (diff && !isEmpty(diff.new)) {
 			await LogUserUtil.success(ctx, user, event, diff, actor);

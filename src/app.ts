@@ -24,10 +24,13 @@ import { config } from './common/settings';
 import { init as initAcls } from './common/acl';
 import { logger } from './common/logger';
 import { EndPoint } from './common/types/endpoint';
+
 import { AuthenticationEndPoint } from './authentication';
-import { LogUserEndPoint } from './log-user';
-import { UserEndPoint } from './users';
 import { FilesApiEndPoint, FilesStorageEndPoint } from './files';
+import { LogUserEndPoint } from './log-user';
+import { TokenEndPoint } from './tokens';
+import { UserEndPoint } from './users';
+import { ProfileEndPoint } from './profile';
 
 // links:
 //   - https://github.com/Microsoft/TypeScript-Node-Starter
@@ -42,6 +45,8 @@ import { FilesApiEndPoint, FilesStorageEndPoint } from './files';
 			new FilesApiEndPoint(),
 			new FilesStorageEndPoint(),
 			new LogUserEndPoint(),
+			new ProfileEndPoint(),
+			new TokenEndPoint(),
 			new UserEndPoint(),
 		];
 
@@ -54,6 +59,7 @@ import { FilesApiEndPoint, FilesStorageEndPoint } from './files';
 			logger.info('[app] Registering %s:', endPoint.name);
 			server.register(endPoint);
 		}
+		server.postRegister();
 
 		// setup ACLs
 		await initAcls();

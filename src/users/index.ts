@@ -17,16 +17,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Schema } from 'mongoose';
+import Application = require('koa');
+import mongoose, { Schema } from 'mongoose';
 import Router from 'koa-router';
 
+import { Models } from '../common/types/models';
 import { EndPoint } from '../common/types/endpoint';
+import { Serializers } from '../common/types/serializers';
 import { User } from './user';
 import { UserSerializer } from './user.serializer';
 import { schema } from './user.schema';
 import { router } from './user.api.router';
-import mongoose = require('mongoose');
-import Application = require('koa');
 
 export class UserEndPoint implements EndPoint {
 
@@ -45,7 +46,7 @@ export class UserEndPoint implements EndPoint {
 	}
 
 	register(app: Application): void {
-		app.context.models.User = mongoose.model<User>('User', this._schema);
-		app.context.serializers.User = new UserSerializer();
+		(app.context.models as Models).User = mongoose.model<User>('User', this._schema);
+		(app.context.serializers as Serializers).User = new UserSerializer();
 	}
 }

@@ -17,28 +17,25 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-'use strict';
+import { Schema } from 'mongoose';
+import { randomBytes } from 'crypto';
+import { isString } from 'lodash';
+import { isLength } from 'validator';
+import uniqueValidator from 'mongoose-unique-validator';
 
-const _ = require('lodash');
-const crypto = require('crypto');
-const logger = require('winston');
+import { scope } from '../common/scope';
+import { config } from '../common/settings';
+
 const shortId = require('shortid32');
-const mongoose = require('mongoose');
-const validator = require('validator');
-const uniqueValidator = require('mongoose-unique-validator');
 
-const scope = require('../../src/common/scope');
-const config = require('../../src/common/settings').current;
-
-const Schema = mongoose.Schema;
-const validTypes = ['personal', 'provider'];
+const validTypes = ['personal', 'application'];
 
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
 const fields = {
 	id: { type: String, required: true, unique: true, 'default': shortId.generate },
-	token: { type: String, required: true, unique: true, 'default': generate },
+	token: { type: String, required: true, unique: true, 'default': () => randomBytes(16).toString('hex') },
 	label: { type: String, required: 'A label must be provided' },
 	type: { type: String, 'enum': validTypes, required: true },
 	scopes: { type: [String] },
@@ -47,18 +44,18 @@ const fields = {
 	last_used_at: { type: Date },
 	expires_at: { type: Date, required: true },
 	created_at: { type: Date, required: true },
-	_created_by: { type: Schema.ObjectId, ref: 'User', required: true }
+	_created_by: { type: Schema.Types.ObjectId, required: true, ref: 'User' }
 };
-const TokenSchema = new Schema(fields, { usePushEach: true });
+const TokenSchema = new Schema(fields, { toObject: { virtuals: true, versionKey: false } });
 
 //-----------------------------------------------------------------------------
 // VALIDATIONS
 //-----------------------------------------------------------------------------
-TokenSchema.path('label').validate(function(label) {
-	return _.isString(label) && validator.isLength(label ? label.trim() : '', 3);
+TokenSchema.path('label').validate(function (label: string) {
+	return isString(label) && isLength(label ? label.trim() : '', 3);
 }, 'Label must contain at least three characters.');
 
-TokenSchema.path('scopes').validate(function(scopes) {
+TokenSchema.path('scopes').validate(function (scopes: string[]) {
 	if (!scopes || scopes.length === 0) {
 		this.invalidate('scopes', 'Scopes are required');
 		return true;
@@ -71,12 +68,12 @@ TokenSchema.path('scopes').validate(function(scopes) {
 	return true;
 });
 
-TokenSchema.path('type').validate(function(type) {
-	if (type === 'provider') {
+TokenSchema.path('type').validate(function (type: string) {
+	if (type === 'application') {
 		if (!this.provider) {
 			this.invalidate('provider', 'Provider is required for provider tokens.');
 		}
-		const providers = [];
+		const providers: string[] = [];
 		if (config.vpdb.passport.google.enabled) {
 			providers.push('google');
 		}
@@ -101,19 +98,4 @@ TokenSchema.path('type').validate(function(type) {
 //-----------------------------------------------------------------------------
 TokenSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
 
-
-//-----------------------------------------------------------------------------
-// OPTIONS
-//-----------------------------------------------------------------------------
-TokenSchema.options.toObject = { virtuals: true, versionKey: false };
-
-/**
- * Generates a token.
- * @returns {string} token
- */
-function generate() {
-	return crypto.randomBytes(16).toString('hex');
-}
-
-mongoose.model('Token', TokenSchema);
-logger.info('[model] Schema "Token" registered.');
+export var schema: Schema = TokenSchema;

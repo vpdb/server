@@ -17,16 +17,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-'use strict';
+import { Scope } from '../common/scope';
+import { TokenApi } from './token.api';
 
-const scope = require('../../../src/common/scope');
-const settings = require('../../../src/common/settings');
+const api = new TokenApi();
+export const router = api.apiRouter();
 
-exports.register = function(app, api) {
-
-	app.post(settings.apiPath('/tokens'), api.auth(api.tokens.create, 'tokens', 'add', [ scope.ALL ]));
-	app.get(settings.apiPath('/tokens'), api.auth(api.tokens.list, 'tokens', 'list', [ scope.ALL ], { enableAppTokens: true }));
-	app.get(settings.apiPath('/tokens/:id'), api.anon(api.tokens.view));
-	app.delete(settings.apiPath('/tokens/:id'), api.auth(api.tokens.del, 'tokens', 'delete-own', [ scope.ALL ]));
-	app.patch(settings.apiPath('/tokens/:id'), api.auth(api.tokens.update, 'tokens', 'update-own', [ scope.ALL ]));
-};
+router.post('/v1/tokens', api.auth(api.create.bind(api), 'tokens', 'add', [ Scope.ALL ]));
+router.get('/v1/tokens', api.auth(api.list.bind(api), 'tokens', 'list', [ Scope.ALL ], { enableAppTokens: true }));
+router.get('/v1/tokens/:id', api.anon(api.view.bind(api)));
+router.del('/v1/tokens/:id', api.auth(api.del.bind(api), 'tokens', 'delete-own', [ Scope.ALL ]));
+router.patch('/v1/tokens/:id', api.auth(api.update.bind(api), 'tokens', 'update-own', [ Scope.ALL ]));

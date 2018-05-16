@@ -17,24 +17,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document, Schema } from 'mongoose';
-import { User } from '../users/user';
+import { Context } from '../types/context';
+import { ApiError } from '../api.error';
 
-export interface Token extends Document {
-	id: string,
-	token: string,
-	label: string,
-	type: 'personal' | 'application' | 'jwt-refreshed' | 'jwt',
-	scopes: string[],
-	provider: string,
-	is_active: boolean,
-	last_used_at: Date,
-	expires_at: Date,
-	created_at: Date,
-	_created_by: User | Schema.Types.ObjectId,
-
-	// generated
-	browser?: IUAParser.IResult;
-	for_user?: string;
-	for_path?: string;
+/**
+ * Returns a 404 body.
+ *
+ * @return {(ctx: Context, next: () => Promise<any>) => Promise<void>}
+ */
+export function koa404Handler() {
+	return async function handle404(ctx: Context, next: () => Promise<any>) {
+		await next();
+		if (ctx.status === 404) {
+			if (!ctx.request.path.includes('/v1')) {
+				throw new ApiError('Resource not found. Maybe you forgot to use the /v1 prefix for the resouce?').status(404);
+			}
+			throw new ApiError('Resource not found.').status(404);
+		}
+	}
 }

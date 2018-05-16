@@ -24,6 +24,7 @@ import { createHmac } from 'crypto';
 import validator from 'validator';
 import uniqueValidator from 'mongoose-unique-validator';
 
+import { acl } from '../common/acl';
 import { logger } from '../common/logger';
 import { config } from '../common/settings';
 import { metricsPlugin } from '../common/mongoose-plugins/metrics';
@@ -376,10 +377,9 @@ UserSchema.methods.hasRole = function (role: string | string[]): boolean {
 // TRIGGERS
 //-----------------------------------------------------------------------------
 UserSchema.post('remove', async function (obj: User) {
-	const acl = require('../common/acl');
 	await server.models().LogUser.remove({ _user: obj._id });
 	await server.models().Token.remove({ _created_by: obj._id });
 	await acl.removeUserRoles(obj.id, obj.roles);
 });
 
-export var schema: Schema = UserSchema;
+export const schema: Schema = UserSchema;

@@ -32,7 +32,7 @@ const ApiClient = require('../../test/modules/api.client');
 const api = new ApiClient();
 let res;
 
-describe('The VPDB `user` API', () => {
+describe.only('The VPDB `user` API', () => {
 
 	before(async () => {
 		await api.setupUsers({
@@ -46,7 +46,7 @@ describe('The VPDB `user` API', () => {
 
 	after(async () => await api.teardown());
 
-	describe.only('when listing all users', () => {
+	describe('when listing all users', () => {
 
 		it('the number of current users should be returned', async () => {
 
@@ -201,7 +201,6 @@ describe('The VPDB `user` API', () => {
 				.get('/v1/user/confirm/invalid')
 				.then(res => res.expectError(404, 'no such token'));
 		});
-
 	});
 
 	describe('when providing a valid authentication token', () => {

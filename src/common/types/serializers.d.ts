@@ -25,6 +25,7 @@ import { ReleaseSerializer } from '../../releases/release.serializer';
 import { ReleaseVersionSerializer } from '../../releases/release.version.serializer';
 import { ReleaseVersionFileSerializer } from '../../releases/release.version.file.serializer';
 import { TagSerializer } from '../../tags/tag.serializer';
+import { TokenSerializer } from '../../tokens/token.serializer';
 import { UserSerializer } from '../../users/user.serializer';
 
 export interface Serializers {
@@ -36,6 +37,7 @@ export interface Serializers {
 	ReleaseVersion: ReleaseVersionSerializer;
 	ReleaseVersionFile: ReleaseVersionFileSerializer;
 	Tag: TagSerializer;
+	Token: TokenSerializer;
 	User: UserSerializer;
 }
 

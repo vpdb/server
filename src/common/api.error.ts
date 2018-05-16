@@ -71,6 +71,11 @@ export class ApiError extends Error {
 	private fieldPrefix: string;
 
 	/**
+	 * Error coming from elsewhere. Will be logged instead of parent.
+	 */
+	private cause: Error | undefined;
+
+	/**
 	 * Constructor.
 	 * @param format Message
 	 * @param param Message arguments to replaced
@@ -126,8 +131,9 @@ export class ApiError extends Error {
 	 * error to the crash reporter.
 	 * @return {ApiError}
 	 */
-	public log(): ApiError {
+	public log(cause?:Error): ApiError {
 		this.logLevel = 'error';
+		this.cause = cause;
 		return this;
 	}
 
@@ -172,7 +178,7 @@ export class ApiError extends Error {
 	 */
 	public print(requestLog = '') {
 		if (this.statusCode === 500 || this.logLevel === 'error') {
-			logger.error('\n\n' + ApiError.colorStackTrace(this) + requestLog);
+			logger.error('\n\n' + ApiError.colorStackTrace(this) + (this.cause ? '\n' + ApiError.colorStackTrace(this.cause) + '\n' : '') + requestLog + '\n\n');
 
 		} else if (this.logLevel === 'warn') {
 			logger.warn(chalk.yellowBright(this.message.trim()));

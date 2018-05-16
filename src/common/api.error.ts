@@ -18,11 +18,12 @@
  */
 
 import chalk from 'chalk';
+import { basename, dirname, sep } from 'path';
+import { compact, isArray, isObject, isEmpty } from 'lodash';
 import { format as sprintf } from 'util';
-import { compact, isArray, isObject } from 'lodash';
+
 import { logger } from './logger';
 import { Context } from './types/context';
-import { basename, dirname, sep } from 'path';
 
 export class ApiError extends Error {
 
@@ -63,7 +64,7 @@ export class ApiError extends Error {
 	 *
 	 * If set, status 422 is returned.
 	 */
-	private errs: ApiValidationError[];
+	private errors: ApiValidationError[];
 
 	/**
 	 * If set, this prefix is stripped from the validation field values.
@@ -145,8 +146,11 @@ export class ApiError extends Error {
 	 * @returns {ApiError}
 	 */
 	public validationError(path: string, message: string, value?: any): ApiError {
-		this.errs = this.errs || [];
-		this.errs.push({ path: path, message: message, value: value });
+		if (!this.message) {
+			this.message = 'Validation failed.';
+		}
+		this.errors = this.errors || [];
+		this.errors.push({ path: path, message: message, value: value });
 		this.statusCode = 422;
 		this.stripFields();
 		return this;
@@ -158,7 +162,10 @@ export class ApiError extends Error {
 	 * @returns {ApiError}
 	 */
 	public validationErrors(errs: ApiValidationError[]) {
-		this.errs = errs;
+		if (!this.message) {
+			this.message = 'Validation failed.';
+		}
+		this.errors = errs;
 		this.statusCode = 422;
 		this.stripFields();
 		return this;
@@ -169,19 +176,38 @@ export class ApiError extends Error {
 	 * @param {Context} ctx Koa context
 	 */
 	public respond(ctx:Context) {
+
+		const body:any = this.data || { error: this.message };
+		if (this.errors) {
+			body.errors = this.errors.map(error => {
+				return {
+					field: error.path,
+					message: error.message,
+					value: isEmpty(error.value) ? undefined : error.value,
+					code: isEmpty(error.kind) || error.kind == 'user defined' ? undefined : error.kind
+				}
+			});
+		}
 		ctx.status = this.statusCode;
-		ctx.body = this.data || { error: this.message };
+		ctx.body = body;
 	}
 
 	/**
 	 * Logs the error with the current logger.
 	 */
 	public print(requestLog = '') {
+		let cause = (this.cause ? '\n' + ApiError.colorStackTrace(this.cause) + '\n' : '');
+		if (this.errors) {
+			cause += this.errors
+				.filter(error => !!error.reason)
+				.map(error => '\n' + ApiError.colorStackTrace(error.reason) + '\n')
+				.join('');
+		}
 		if (this.statusCode === 500 || this.logLevel === 'error') {
-			logger.error('\n\n' + ApiError.colorStackTrace(this) + (this.cause ? '\n' + ApiError.colorStackTrace(this.cause) + '\n' : '') + requestLog + '\n\n');
+			logger.error('\n\n' + ApiError.colorStackTrace(this) + cause + requestLog + '\n\n');
 
-		} else if (this.logLevel === 'warn') {
-			logger.warn(chalk.yellowBright(this.message.trim()));
+		} else if (cause || this.logLevel === 'warn') {
+			logger.warn(chalk.yellowBright(this.message.trim()) + cause + (requestLog ? requestLog + '\n' : ''));
 		}
 	}
 
@@ -226,35 +252,24 @@ export class ApiError extends Error {
 		if (!this.fieldPrefix) {
 			return;
 		}
-		if (isArray(this.errs)) {
-			let map = new Map();
-			this.errs = compact(this.errs.map(error => {
-				error.path = error.path.replace(this.fieldPrefix, '');
-				let key = error.path + '|' + error.message + '|' + error.value;
-				// eliminate dupes
-				if (map.has(key)) {
-					return null;
-				}
-				map.set(key, true);
-				return error;
-			}));
-
-		} else if (isObject(this.errs)) {
-			throw new Error('Errs is an object and probably should not be.');
-			// todo use https://github.com/lodash/lodash/issues/169 when merged
-			// forEach(this.errs, (error, path) => {
-			// 	const newPath = path.replace(this.fieldPrefix, '');
-			// 	if (newPath !== path) {
-			// 		this.errs[newPath] = error;
-			// 		delete this.errs[path];
-			// 	}
-			// });
-		}
+		let map = new Map();
+		this.errors = compact(this.errors.map(error => {
+			error.path = error.path.replace(this.fieldPrefix, '');
+			let key = error.path + '|' + error.message + '|' + error.value;
+			// eliminate dupes
+			if (map.has(key)) {
+				return null;
+			}
+			map.set(key, true);
+			return error;
+		}));
 	};
 }
 
 export interface ApiValidationError {
-	path: string,
-	message: string,
-	value?: any
+	path: string;
+	message: string;
+	value?: any;
+	kind?: string;
+	reason?: Error;
 }

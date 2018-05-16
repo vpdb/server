@@ -18,12 +18,12 @@ const methodStyle: { [key: string]: Chalk & { supportsColor: ColorSupport } } = 
 	GET: chalk.white.bgBlue,
 	HEAD: chalk.white.bgWhite,
 	POST: chalk.white.bgGreen,
-	PUT: chalk.white.bgBlue,
-	DELETE: chalk.white.bgBlue,
-	CONNECT: chalk.white.bgBlue,
-	OPTIONS: chalk.white.bgBlue,
-	TRACE: chalk.white.bgBlue,
-	PATCH: chalk.white.bgBlue,
+	PUT: chalk.white.bgYellow,
+	DELETE: chalk.white.bgRed,
+	CONNECT: chalk.white.bgWhite,
+	OPTIONS: chalk.white.bgWhite,
+	TRACE: chalk.white.bgWhite,
+	PATCH: chalk.white.bgCyan,
 };
 
 /**

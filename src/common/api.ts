@@ -143,7 +143,9 @@ export abstract class Api {
 	protected success(ctx: Context, body?: any, status?: number) {
 		status = status || 200;
 		ctx.status = status;
-		ctx.body = body;
+		if (body) {
+			ctx.body = body;
+		}
 		return true;
 	}
 

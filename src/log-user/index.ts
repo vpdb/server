@@ -17,13 +17,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import Application = require('koa');
 import mongoose, { Schema } from 'mongoose';
 import Router from 'koa-router';
-import { EndPoint } from '../common/types/endpoint';
 
+import { Models } from '../common/types/models';
+import { EndPoint } from '../common/types/endpoint';
 import { schema } from './log.user.schema';
 import { LogUser } from './log.user';
-import Application = require('koa');
 
 export class LogUserEndPoint implements EndPoint {
 
@@ -41,6 +42,6 @@ export class LogUserEndPoint implements EndPoint {
 	}
 
 	register(app: Application): void {
-		app.context.models.LogUser = mongoose.model<LogUser>('LogUser', this._schema);
+		(app.context.models as Models).LogUser = mongoose.model<LogUser>('LogUser', this._schema);
 	}
 }

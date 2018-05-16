@@ -22,7 +22,6 @@ import { UserApi } from './user.api';
 
 const api = new UserApi();
 export const router = api.apiRouter();
-export const prefixes = [ '/v1/users' ];
 
 router.post('/v1/users',    api.anon(api.create.bind(api)));
 router.put('/v1/users',     api.auth(api.createOrUpdate.bind(api), '', '', [ Scope.SERVICE ]));

@@ -19,47 +19,18 @@
 
 import Application = require('koa');
 import Router from 'koa-router';
-import { default as mongoose, Schema } from 'mongoose';
 
-import { Models } from '../common/types/models';
 import { EndPoint } from '../common/types/endpoint';
-import { Serializers } from '../common/types/serializers';
-import { File } from './file';
-import { FileSerializer } from './file.serializer';
-import { schema } from './file.schema';
-import { router as apiRouter } from './file.api.router';
-import { router as storageRouter } from './file.storage.router';
+import { router } from './profile.api.router';
 
-export class FilesApiEndPoint implements EndPoint {
+export class ProfileEndPoint implements EndPoint {
 
-	readonly name: string = 'Files API';
-
-	private readonly _router: Router;
-	private readonly _schema: Schema;
-
-	constructor() {
-		this._schema = schema;
-		this._router = apiRouter;
-	}
-
-	getRouter(): Router {
-		return this._router;
-	}
-
-	register(app: Application): void {
-		(app.context.models as Models).File = mongoose.model<File>('File', this._schema);
-		(app.context.serializers as Serializers).File = new FileSerializer();
-	}
-}
-
-export class FilesStorageEndPoint implements EndPoint {
-
-	readonly name: string = 'Storage Files API';
+	readonly name: string = 'User Profile API';
 
 	private readonly _router: Router;
 
 	constructor() {
-		this._router = storageRouter;
+		this._router = router;
 	}
 
 	getRouter(): Router {

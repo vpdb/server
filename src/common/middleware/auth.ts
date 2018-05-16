@@ -9,19 +9,19 @@ import { AuthenticationUtil, Jwt } from '../../authentication/authentication.uti
 /**
  * Middleware that populates the authentication state. It sets:
  *
- * - ctx.state.user: The user, when authentication succeeded
- * - ctx.state.authError: The exception, when authentication failed
- * - ctx.state.appToken: The token, if authenticated via database (application token)
- * - ctx.state.tokenType: The token type
- * - ctx.state.tokenScopes: The scopes of the token
- * - ctx.state.tokenProvider: The provider, if provider token
+ * - `ctx.state.user`: The user, when authentication succeeded
+ * - `ctx.state.authError`: The exception, when authentication failed
+ * - `ctx.state.appToken`: The token, if authenticated via database (application token)
+ * - `ctx.state.tokenType`: The token type
+ * - `ctx.state.tokenScopes`: The scopes of the token
+ * - `ctx.state.tokenProvider`: The provider, if provider token
  *
  * Note this doesn't authorize anything, see {@link Api.auth()} for that.
  *
  * @return {(ctx: Context, next: () => Promise<any>) => Promise<void>} Koa middleware
  */
 export function koaAuth() {
-	return async function logger(ctx: Context, next: () => Promise<any>) {
+	return async function authenticate(ctx: Context, next: () => Promise<any>) {
 		try {
 			delete ctx.state.user;
 
@@ -42,8 +42,16 @@ export function koaAuth() {
 			ctx.state.user = user;
 
 		} catch (err) {
-			// update state with error
-			ctx.state.authError = err;
+
+			if (err.isApiError) {
+				// update state with error if it's API-related
+				ctx.state.authError = err;
+
+			} else {
+				// otherwise, re-throw (this is an unexpected one)
+				throw err;
+			}
+
 		}
 
 		// continue with next middleware
@@ -54,8 +62,8 @@ export function koaAuth() {
 /**
  * Retrieves the token from either URL or HTTP header.
  *
- * @param {Context} ctx Koa context
- * @returns {{token: string, fromUrl: boolean}} Token
+ * @param ctx Koa context
+ * @returns {{value: string, fromUrl: boolean}} Token
  * @throws {ApiError} If no token found or incorrect header.
  */
 function retrieveToken(ctx: Context): { value: string, fromUrl: boolean } {
@@ -96,8 +104,8 @@ function retrieveToken(ctx: Context): { value: string, fromUrl: boolean } {
  *
  * Otherwise, the authenticated user is returned.
  *
- * @param {Context} ctx Koa context
- * @param {{value: string, fromUrl: boolean}} token Retrieved token
+ * @param ctx   Koa context
+ * @param token Retrieved token
  * @returns {Promise<User | null>} Authenticated user on success or null on successful service resource authentication.
  * @throws {ApiError} If provided token is invalid.
  */
@@ -182,8 +190,8 @@ async function authenticateWithAppToken(ctx: Context, token: { value: string, fr
 /**
  * Tries to authenticate with a JSON Web Token.
  *
- * @param {Context} ctx Koa context
- * @param {{value: string, fromUrl: boolean}} token Retrieved token
+ * @param ctx   Koa context
+ * @param token Retrieved token
  * @returns {Promise<User>} Authenticated user on success.
  * @throws {ApiError} If provided token is invalid.
  */

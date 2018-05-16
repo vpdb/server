@@ -22,6 +22,7 @@ import { isArray, isObject, forEach, compact } from 'lodash';
 
 export class ApiError extends Error {
 
+	public isApiError = true;
 	public statusCode: number;
 	public data: { [key: string]: any };
 	private logLevel: string;

@@ -26,7 +26,7 @@ export const router = api.apiRouter();
 export const prefixes = [ '/v1/authenticate', '/v1/redirect', '/auth' ];
 
 // local authentication
-router.post('/v1/authenticate', api.plain(api.authenticate.bind(api)));
+router.post('/v1/authenticate', api.anon(api.authenticate.bind(api)));
 
 // // mock route for simulating oauth2 callbacks
 // if (process.env.NODE_ENV === 'test') {

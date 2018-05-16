@@ -20,7 +20,7 @@
 import { Context } from '../common/types/context';
 import { User } from './user';
 import { Api } from '../common/api';
-import { ApiError } from '../common/api.error';
+import { ApiError, ApiValidationError } from '../common/api.error';
 import { registrationConfirmation } from '../common/mailer';
 import { acl } from '../common/acl';
 import { logger } from '../common/logger';
@@ -285,7 +285,7 @@ export class UserApi extends Api {
 		// 1. check for changed read-only fields
 		const readOnlyFieldErrors = this.checkReadOnlyFields(ctx.request.body, user, updatableFields);
 		if (readOnlyFieldErrors) {
-			throw new ApiError('User tried to update read-only fields').validationErrors(readOnlyFieldErrors).warn();
+			throw new ApiError('User tried to update read-only fields').validationErrors(readOnlyFieldErrors as ApiValidationError[]).warn();
 		}
 
 		// 2. check for permission escalation

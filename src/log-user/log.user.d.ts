@@ -29,4 +29,8 @@ export interface LogUser extends Document {
 	message: string;
 	ip: string;
 	logged_at: Date;
+
+	// populated
+	user: User;
+	actor: User;
 }

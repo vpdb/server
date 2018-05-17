@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Schema } from 'mongoose';
+import { PaginateModel, Schema, Document } from 'mongoose';
 import paginate = require('mongoose-paginate');
 
 //-----------------------------------------------------------------------------
@@ -34,7 +34,7 @@ const fields = {
 	logged_at: { type: Date, required: true }
 };
 
-const LogUserSchema = new Schema(fields, { toObject: { virtuals: true, versionKey: false }});
+const LogUserSchema = new Schema(fields, { toObject: { virtuals: true, versionKey: false } });
 
 //-----------------------------------------------------------------------------
 // PLUGINS
@@ -42,3 +42,4 @@ const LogUserSchema = new Schema(fields, { toObject: { virtuals: true, versionKe
 LogUserSchema.plugin(paginate);
 
 export var schema: Schema = LogUserSchema;
+export interface LogUserModel<T extends Document> extends PaginateModel<T> {}

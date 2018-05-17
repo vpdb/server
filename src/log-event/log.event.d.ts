@@ -25,18 +25,29 @@ import { GameRequest } from '../game-requests/game.request';
 import { Build } from '../builds/build';
 
 export interface LogEvent extends Document {
-	_actor: User | Schema.Types.ObjectId,
+	_actor: User | Schema.Types.ObjectId;
 	_ref: {
-		game?: Game | Schema.Types.ObjectId,
-		release?: Release | Schema.Types.ObjectId,
-		backglass?: Backglass | Schema.Types.ObjectId,
-		user?: User | Schema.Types.ObjectId,
-		game_request?: GameRequest | Schema.Types.ObjectId,
-		build?: Build | Schema.Types.ObjectId,
+		game?: Game | Schema.Types.ObjectId;
+		release?: Release | Schema.Types.ObjectId;
+		backglass?: Backglass | Schema.Types.ObjectId;
+		user?: User | Schema.Types.ObjectId;
+		game_request?: GameRequest | Schema.Types.ObjectId;
+		build?: Build | Schema.Types.ObjectId;
 	},
-	event: string,
-	payload: any,
-	is_public: boolean,
-	ip: string,
-	logged_at: Date
+	event: string;
+	payload: any;
+	is_public: boolean;
+	ip: string;
+	logged_at: Date;
+
+	// serialized
+	actor: User;
+	ref?: {
+		game?: Game;
+		release?: Release;
+		backglass?: Backglass;
+		user?: User;
+		game_request?: GameRequest;
+		build?: Build;
+	},
 }

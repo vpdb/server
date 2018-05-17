@@ -17,10 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { difference, isObject, keys, pick } from 'lodash';
+import { parse as parseUrl, format as formatUrl } from 'url';
+import { difference, isObject, keys, pick, extend, values, map } from 'lodash';
 import { Context } from './types/context';
 import { logger } from './logger';
-import { config } from './settings';
+import { config, settings } from './settings';
 import { ApiError, ApiValidationError } from './api.error';
 import Router from 'koa-router';
 import { User } from '../users/user';
@@ -135,13 +136,50 @@ export abstract class Api {
 
 	/**
 	 * The API call was successful.
+	 *
 	 * @param ctx          Koa context
 	 * @param body         Response body or null if no response body to send.
 	 * @param [status=200] HTTP status code
-	 * @return {boolean} Boolean indicating success.
+	 * @param [opts]       Additional options such as pagination options and headers.
+	 * @return {boolean}   Boolean indicating success.
 	 */
-	protected success(ctx: Context, body?: any, status?: number) {
-		status = status || 200;
+	protected success(ctx: Context, body?: any, status: number = 200, opts: SuccessOpts = {}) {
+
+		if (opts.pagination) {
+			const pageLinks: { first?: string, prev?: string, next?: string, last?: string } = {};
+			const currentUrl = parseUrl(settings.apiHost() + ctx.request.url, true);
+			delete currentUrl.search;
+			const paginatedUrl = (page: number, perPage: number): string => {
+				currentUrl.query = extend(currentUrl.query, { page: page, per_page: perPage });
+				return formatUrl(currentUrl);
+			};
+
+			const lastPage = Math.ceil(opts.pagination.count / opts.pagination.perPage);
+			if (opts.pagination.page > 2) {
+				pageLinks.first = paginatedUrl(1, opts.pagination.perPage);
+			}
+			if (opts.pagination.page > 1) {
+				pageLinks.prev = paginatedUrl(opts.pagination.page - 1, opts.pagination.perPage);
+			}
+			if (opts.pagination.page < lastPage) {
+				pageLinks.next = paginatedUrl(opts.pagination.page + 1, opts.pagination.perPage);
+			}
+			if (opts.pagination.page < lastPage - 1) {
+				pageLinks.last = paginatedUrl(lastPage, opts.pagination.perPage);
+			}
+
+			if (values(pageLinks).length > 0) {
+				ctx.set('Link', values(map(pageLinks, (link, rel) => '<' + link + '>; rel="' + rel + '"')).join(', '));
+			}
+			ctx.set('X-List-Page', String(opts.pagination.page));
+			ctx.set('X-List-Size', String(opts.pagination.perPage));
+			ctx.set('X-List-Count', String(opts.pagination.count));
+		}
+
+		if (opts.headers) {
+			keys(opts.headers).forEach(name => ctx.set(name, opts.headers[name]));
+		}
+
 		ctx.status = status;
 		if (body) {
 			ctx.body = body;
@@ -177,7 +215,35 @@ export abstract class Api {
 		} else {
 			return { $and: query };
 		}
-	};
+	}
+
+	/**
+	 * Returns the pagination object.
+	 *
+	 * @param ctx Koa context
+	 * @param [defaultPerPage=10] Default number of items returned if not indicated - default 10.
+	 * @param [maxPerPage=50] Maximal number of items returned if not indicated - default 50.
+	 * @return {{defaultPerPage: number, maxPerPage: number, page: Number, perPage: Number}}
+	 */
+	pagination(ctx: Context, defaultPerPage: number = 20, maxPerPage: number = 50): PaginationOpts {
+		return {
+			defaultPerPage: defaultPerPage,
+			maxPerPage: maxPerPage,
+			page: Math.max(ctx.query.page, 1) || 1,
+			perPage: Math.max(0, Math.min(ctx.query.per_page, maxPerPage)) || defaultPerPage
+		};
+	}
+
+	/**
+	 * Adds item count to the pagination object.
+	 * @param pagination Current pagination object
+	 * @param count Total hits
+	 * @returns Updated options
+	 */
+	paginationOpts(pagination: PaginationOpts, count: number): { pagination: PaginationOpts } {
+		return { pagination: extend(pagination, { count: count }) };
+	}
+
 
 	/**
 	 * Checks is an object has only changes of a given field.
@@ -187,7 +253,7 @@ export abstract class Api {
 	 * @param allowedFields Allowed fields to change
 	 * @returns False if everything is okay, a list of validation errors otherwise.
 	 */
-	protected checkReadOnlyFields(newObj: { [key: string]: any }, oldObj: { [key: string]: any }, allowedFields: string[]): ApiValidationError[] | boolean  {
+	protected checkReadOnlyFields(newObj: { [key: string]: any }, oldObj: { [key: string]: any }, allowedFields: string[]): ApiValidationError[] | boolean {
 		const errors: ApiValidationError[] = [];
 		difference(keys(newObj), allowedFields).forEach(field => {
 			let newVal, oldVal;
@@ -197,12 +263,12 @@ export abstract class Api {
 				newVal = newObj[field] ? new Date(newObj[field]).getTime() : undefined;
 				oldVal = oldObj[field] ? new Date(oldObj[field]).getTime() : undefined;
 
-			// for objects, serialize first.
+				// for objects, serialize first.
 			} else if (isObject(oldObj[field])) {
 				newVal = newObj[field] ? JSON.stringify(newObj[field]) : undefined;
 				oldVal = oldObj[field] ? JSON.stringify(pick(oldObj[field], keys(newObj[field] || {}))) : undefined;
 
-			// otherwise, take raw values.
+				// otherwise, take raw values.
 			} else {
 				newVal = newObj[field];
 				oldVal = oldObj[field];
@@ -242,4 +308,24 @@ export abstract class Api {
 			return new Router();
 		}
 	}
+}
+
+export interface SuccessOpts {
+	/**
+	 * If set, pagination headers and navigation links will be added.
+	 */
+	pagination?: PaginationOpts;
+
+	/**
+	 * Use this to add additional custom headers
+	 */
+	headers?: { [key: string]: string };
+}
+
+export interface PaginationOpts {
+	defaultPerPage: number;
+	maxPerPage: number;
+	page: number;
+	perPage: number;
+	count?: number;
 }

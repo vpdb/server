@@ -27,6 +27,7 @@ import { EndPoint } from './common/types/endpoint';
 
 import { AuthenticationEndPoint } from './authentication';
 import { FilesApiEndPoint, FilesStorageEndPoint } from './files';
+import { LogEventEndPoint } from './log-event';
 import { LogUserEndPoint } from './log-user';
 import { TokenEndPoint } from './tokens';
 import { UserEndPoint } from './users';
@@ -44,6 +45,7 @@ import { ProfileEndPoint } from './profile';
 			new AuthenticationEndPoint(),
 			new FilesApiEndPoint(),
 			new FilesStorageEndPoint(),
+			new LogEventEndPoint(),
 			new LogUserEndPoint(),
 			new ProfileEndPoint(),
 			new TokenEndPoint(),

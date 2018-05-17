@@ -21,6 +21,8 @@ import { BuildSerializer } from '../../builds/build.serializer';
 import { ContentAuthorSerializer } from '../../users/content.author.serializer';
 import { FileSerializer } from '../../files/file.serializer';
 import { GameSerializer } from '../../games/game.serializer';
+import { LogEventSerializer } from '../../log-event/log.event.serializer';
+import { LogUserSerializer } from '../../log-user/log.user.serializer';
 import { ReleaseSerializer } from '../../releases/release.serializer';
 import { ReleaseVersionSerializer } from '../../releases/release.version.serializer';
 import { ReleaseVersionFileSerializer } from '../../releases/release.version.file.serializer';
@@ -33,6 +35,8 @@ export interface Serializers {
 	ContentAuthor: ContentAuthorSerializer;
 	File: FileSerializer;
 	Game: GameSerializer;
+	LogEvent: LogEventSerializer;
+	LogUser: LogUserSerializer;
 	Release: ReleaseSerializer;
 	ReleaseVersion: ReleaseVersionSerializer;
 	ReleaseVersionFile: ReleaseVersionFileSerializer;

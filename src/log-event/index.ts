@@ -23,14 +23,14 @@ import Router from 'koa-router';
 
 import { Models } from '../common/types/models';
 import { EndPoint } from '../common/types/endpoint';
-import { schema } from './log.user.schema';
-import { LogUser } from './log.user';
-import { LogUserSerializer } from './log.user.serializer';
 import { Serializers } from '../common/types/serializers';
+import { schema } from './log.event.schema';
+import { LogEvent } from './log.event';
+import { LogEventSerializer } from './log.event.serializer';
 
-export class LogUserEndPoint implements EndPoint {
+export class LogEventEndPoint implements EndPoint {
 
-	readonly name: string = 'User Log API';
+	readonly name: string = 'Event Log API';
 
 	private readonly _router: Router;
 	private readonly _schema: Schema;
@@ -44,7 +44,7 @@ export class LogUserEndPoint implements EndPoint {
 	}
 
 	register(app: Application): void {
-		(app.context.models as Models).LogUser = mongoose.model<LogUser>('LogUser', this._schema);
-		(app.context.serializers as Serializers).LogUser = new LogUserSerializer();
+		(app.context.models as Models).LogEvent = mongoose.model<LogEvent>('LogEvent', this._schema);
+		(app.context.serializers as Serializers).LogEvent = new LogEventSerializer();
 	}
 }

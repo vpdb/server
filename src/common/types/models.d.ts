@@ -36,6 +36,9 @@ import { Token } from '../../tokens/token';
 import { Star } from '../../stars/star';
 import { User } from '../../users/user';
 
+import { LogEventModel } from '../../log-event/log.event.schema';
+import { LogUserModel } from '../../log-user/log.user.schema';
+
 export interface Models {
 	Backglass: Model<Backglass>;
 	Build: Model<Build>;
@@ -43,8 +46,8 @@ export interface Models {
 	File: Model<File>;
 	Game: Model<Game>;
 	GameRequest: Model<GameRequest>;
-	LogEvent: Model<LogEvent>;
-	LogUser: Model<LogUser>;
+	LogEvent: LogEventModel<LogEvent>;
+	LogUser: LogUserModel<LogUser>;
 	Medium: Model<Medium>;
 	Rating: Model<Rating>;
 	Release: Model<Release>;

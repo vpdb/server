@@ -17,14 +17,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Schema } from 'mongoose';
-import { Moderated } from '../common/mongoose-plugins/moderate';
+import { GameReferenceDocument, ModeratedDocument, Schema } from 'mongoose';
 import { User } from '../users/user';
 import { BackglassVersion } from './backglass.version';
 import { ContentAuthor } from '../users/content.author';
-import { GameReference } from '../common/mongoose-plugins/game-ref';
 
-export interface Backglass extends Moderated, GameReference {
+export interface Backglass extends ModeratedDocument, GameReferenceDocument {
 	id: string,
 	versions: BackglassVersion[],
 	description: { type: String },

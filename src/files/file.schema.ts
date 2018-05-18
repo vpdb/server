@@ -29,7 +29,7 @@ import { quota } from '../common/quota';
 import { storage } from '../common/storage';
 import { config, settings } from '../common/settings';
 import { FileVariation } from './file.variations';
-import { metricsPlugin } from '../common/mongoose-plugins/metrics';
+import { metricsPlugin } from '../common/mongoose/metrics';
 
 const shortId = require('shortid32');
 

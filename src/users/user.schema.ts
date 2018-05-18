@@ -27,7 +27,7 @@ import uniqueValidator from 'mongoose-unique-validator';
 import { acl } from '../common/acl';
 import { logger } from '../common/logger';
 import { config } from '../common/settings';
-import { metricsPlugin } from '../common/mongoose-plugins/metrics';
+import { metricsPlugin } from '../common/mongoose/metrics.plugin';
 import { User } from './user';
 import { server } from '../server';
 import { flavors } from '../releases/release.flavors';

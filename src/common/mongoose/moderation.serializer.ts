@@ -20,7 +20,7 @@
 import { isArray, pick } from 'lodash';
 import { Context } from '../types/context';
 import { User } from '../../users/user';
-import { ModerationData } from './moderate';
+import { ModerationData } from './moderate.plugin';
 import { Serializer, SerializerOptions } from '../serializer';
 
 class ModerationSerializer extends Serializer<ModerationData> {

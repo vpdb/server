@@ -1,6 +1,6 @@
 /*
- * VPDB - Visual Pinball Database
- * Copyright (C) 2016 freezy <freezy@xbmc.org>
+ * VPDB - Virtual Pinball Database
+ * Copyright (C) 2018 freezy <freezy@vpdb.io>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,43 +17,35 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-'use strict';
+import { inspect } from 'util';
+import { compact, isUndefined, map } from 'lodash';
 
-const _ = require('lodash');
-const util = require('util');
-const logger = require('winston');
+import { Api } from '../common/api';
+import { Context } from '../common/types/context';
+import { ApiError } from '../common/api.error';
+import { acl } from '../common/acl';
+import { logger } from '../common/logger';
+import { LogEvent } from './log.event';
 
-const Star = require('mongoose').model('Star');
-const Game = require('mongoose').model('Game');
-const Release = require('mongoose').model('Release');
-const User = require('mongoose').model('User');
-const LogEvent = require('mongoose').model('LogEvent');
-const LogEventSerializer = require('../../serializers/log_event.serializer');
+export class LogEventApi extends Api {
 
-const acl = require('../../../src/common/acl');
-const api = require('./api');
-const error = require('../../modules/error')('api', 'eventlogs');
+	list(opts: ListLogEventOpts) {
 
+		opts = opts || {};
+		return async (ctx: Context): Promise<boolean> => {
 
-exports.list = function(opts) {
+			const query: any = [{ is_public: true }];
+			const pagination = this.pagination(ctx, 10, 50);
 
-	opts = opts || {};
-	return function(req, res) {
-
-		let query = [ { is_public: true } ];
-		let pagination = api.pagination(req, 10, 50);
-
-		let fullDetails;
-		let emptyResult = false;
-		return Promise.try(() => {
+			let emptyResult = false;
 
 			// filter event
-			if (req.query.events) {
-				let events = req.query.events.split(',');
-				let eventsIn = [];
-				let eventsNin = [];
-				events.forEach(function(event) {
-					if (event[ 0 ] === '!') {
+			if (ctx.query.events) {
+				const events: string[] = ctx.query.events.split(',');
+				const eventsIn: string[] = [];
+				const eventsNin: string[] = [];
+				events.forEach(function (event) {
+					if (event[0] === '!') {
 						eventsNin.push(event.substr(1));
 					} else {
 						eventsIn.push(event);
@@ -69,119 +61,107 @@ exports.list = function(opts) {
 
 			// user
 			if (opts.loggedUser) {
-				query.push({ _actor: req.user._id });
+				query.push({ _actor: ctx.state.user._id });
 			}
 
 			// by game
-			if (opts.byGame && req.params.id) {
-				return Game.findOne({ id: req.params.id }).exec().then(game => {
-					if (!game) {
-						throw error('No such game with id %s.', req.params.id).status(404);
-					}
-					query.push({ '_ref.game': game._id });
-				});
+			if (opts.byGame && ctx.params.id) {
+				const game = await ctx.models.Game.findOne({ id: ctx.params.id }).exec();
+				if (!game) {
+					throw new ApiError('No such game with id %s.', ctx.params.id).status(404);
+				}
+				query.push({ '_ref.game': game._id });
 			}
-			return null;
-
-		}).then(() => {
 
 			// by release
-			if (opts.byRelease && req.params.id) {
-				let release;
-				return Release.findOne({ id: req.params.id }).populate('_game').exec().then(r => {
-					release = r;
-					if (!release) {
-						throw error('No such release with id %s.', req.params.id).status(404);
-					}
-					return Release.hasRestrictionAccess(req, release._game, release);
+			if (opts.byRelease && ctx.params.id) {
+				const release = await ctx.models.Release.findOne({ id: ctx.params.id }).populate('_game').exec();
+				if (!release) {
+					throw new ApiError('No such release with id %s.', ctx.params.id).status(404);
+				}
+				const hasAccess = await ctx.models.Release.hasRestrictionAccess(ctx, release._game, release);
 
-				}).then(hasAccess => {
-					if (!hasAccess) {
-						throw error('No such release with ID "%s"', req.params.id).status(404);
-					}
-					query.push({ '_ref.release': release._id });
-
-				});
+				if (!hasAccess) {
+					throw new ApiError('No such release with ID "%s"', ctx.params.id).status(404);
+				}
+				query.push({ '_ref.release': release._id });
 			}
-			return null;
 
-		}).then(() => {
 
 			// starred events
-			if (!_.isUndefined(req.query.starred)) {
-				if (!req.user) {
-					throw error('Must be logged when listing starred events.').status(401);
+			if (!isUndefined(ctx.query.starred)) {
+				if (!ctx.state.user) {
+					throw new ApiError('Must be logged when listing starred events.').status(401);
 				}
 
-				return Star.find({ _from: req.user._id }).exec().then(stars => {
-					let releaseIds = _.compact(_.map(_.map(stars, '_ref'), 'release'));
-					let gameIds = _.compact(_.map(_.map(stars, '_ref'), 'game'));
+				const stars = await ctx.models.Star.find({ _from: ctx.state.user._id }).exec();
 
-					let or = [];
-					if (releaseIds.length > 0) {
-						or.push({ '_ref.release': { $in: releaseIds } });
-					}
-					if (gameIds.length > 0) {
-						or.push({ '_ref.game': { $in: gameIds } });
-					}
-					if (or.length > 0) {
-						query.push({ $or: or });
+				let releaseIds = compact(map(map(stars, '_ref'), 'release'));
+				let gameIds = compact(map(map(stars, '_ref'), 'game'));
 
-					} else {
-						// return empty result (nothing starred)
-						emptyResult = true;
-					}
-				});
+				let or = [];
+				if (releaseIds.length > 0) {
+					or.push({ '_ref.release': { $in: releaseIds } });
+				}
+				if (gameIds.length > 0) {
+					or.push({ '_ref.game': { $in: gameIds } });
+				}
+				if (or.length > 0) {
+					query.push({ $or: or });
+
+				} else {
+					// return empty result (nothing starred)
+					emptyResult = true;
+				}
 			}
-			return null;
-
-		}).then(() => {
 
 			// check for full details permission
-			if (req.user) {
-				return acl.isAllowed(req.user.id, 'users', 'full-details').then(result => fullDetails = result);
+			let fullDetails = false;
+			if (ctx.state.user) {
+				fullDetails = await acl.isAllowed(ctx.state.user.id, 'users', 'full-details');
 			}
-			return null;
-
-		}).then(() => {
 
 			// by actor
-			if (opts.byActor && req.params.id) {
+			if (opts.byActor && ctx.params.id) {
 
 				// check access
 				if (!fullDetails) {
-					throw error('Access denied.').status(401);
+					throw new ApiError('Access denied.').status(401);
 				}
-				return User.findOne({ id: req.params.id }).exec().then(user => {
-					if (!user) {
-						throw error('No such user with id %s.', req.params.id).status(404);
-					}
-					query.push({ '_actor': user._id });
+				const user = await ctx.models.User.findOne({ id: ctx.params.id }).exec();
+				if (!user) {
+					throw new ApiError('No such user with id %s.', ctx.params.id).status(404);
+				}
+				query.push({ '_actor': user._id });
+			}
+			logger.info('Events query: %s', inspect(query, { depth: null }));
+
+			let docs:LogEvent[] = [];
+			let count = 0;
+
+			// don't bother querying if a previous selection came up empty
+			if (!emptyResult) {
+				// query
+				const result = await ctx.models.LogEvent.paginate(this.searchQuery(query), {
+					page: pagination.page,
+					limit: pagination.perPage,
+					sort: { logged_at: -1 },
+					populate: ['_actor']
+
 				});
-			}
-			return null;
-
-		}).then(() => {
-			logger.info('Events query: %s', util.inspect(query, { depth: null }));
-
-			if (emptyResult) {
-				return [ [], 0 ];
+				docs = result.docs;
+				count = result.total;
 			}
 
-			// query
-			return LogEvent.paginate(api.searchQuery(query), {
-				page: pagination.page,
-				limit: pagination.perPage,
-				sort: { logged_at: -1 },
-				populate: [ '_actor' ]
-
-			}).then(result => [ result.docs, result.total ]);
-
-		}).spread((results, count) => {
-
-			let logs = results.map(log => fullDetails ? LogEventSerializer.detailed(log, req) : LogEventSerializer.simple(log, req));
-			return api.success(res, logs, 200, api.paginationOpts(pagination, count));
-
-		}).catch(api.handleError(res, error, 'Error listing events'));
+			const logs = docs.map(log => fullDetails ? ctx.serializers.LogEvent.detailed(ctx, log) : ctx.serializers.LogEvent.simple(ctx, log));
+			return this.success(ctx, logs, 200, this.paginationOpts(pagination, count));
+		}
 	};
-};
+}
+
+export interface ListLogEventOpts {
+	loggedUser?: boolean;
+	byGame?: boolean;
+	byRelease?: boolean;
+	byActor?: boolean;
+}

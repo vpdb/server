@@ -17,13 +17,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import mongoose, { Document, Model, Schema } from 'mongoose';
+import mongoose, { Document, Model, ModeratedDocument, ModeratedModel, ModeratedSchema, Schema, ModerationData } from 'mongoose';
 import { assign, includes, isArray, isObject } from 'lodash';
 
 import { Context } from '../types/context';
 import { User } from '../../users/user';
 import { ApiError } from '../api.error';
 import { logger } from '../logger';
+import { server } from '../../server';
 
 const modelResourceMap: { [key: string]: string } = {
 	Release: 'releases',
@@ -48,7 +49,7 @@ const modelReferenceMap: { [key: string]: string } = {
  *
  * @param schema
  */
-export function moderatePlugin(schema: Schema) {
+export function moderationPlugin(schema: Schema) {
 
 	/*
 	 * Add fields to entity
@@ -71,13 +72,13 @@ export function moderatePlugin(schema: Schema) {
 	 * Post save trigger that automatically approves if the creator has
 	 * the "auto-approve" permission.
 	 */
-	schema.pre('save', async function (this: Moderated) {
+	schema.pre('save', async function (this: ModeratedDocument) {
 		if (!this.isNew) {
 			return;
 		}
 		// check if _created_by is a contributor and auto-approve.
 		const acl = require('../acl');
-		const User: Model<User> = mongoose.model('User');
+		const User = server.models().User;
 		let user: User;
 		if (this.populated('_created_by')) {
 			user = this._created_by as User;
@@ -171,10 +172,10 @@ export function moderatePlugin(schema: Schema) {
 	/**
 	 * Handles moderation requests from the API.
 	 * @param {Application.Context} ctx Koa context
-	 * @param {Moderated} entity Entity with moderation plugin enabled
+	 * @param {ModeratedDocument} entity Entity with moderation plugin enabled
 	 * @return {Promise<ModerationData>} Moderation data
 	 */
-	schema.statics.handleModeration = async function (ctx: Context, entity: Moderated): Promise<ModerationData> {
+	schema.statics.handleModeration = async function (ctx: Context, entity: ModeratedDocument): Promise<ModerationData> {
 		const LogEvent = require('mongoose').model('LogEvent');
 		const actions = ['refuse', 'approve', 'moderate'];
 		if (!ctx.request.body.action) {
@@ -224,9 +225,9 @@ export function moderatePlugin(schema: Schema) {
 	 * Makes sure an API request has the permission to view the entity.
 	 *
 	 * @param {Application.Context} ctx Koa context
-	 * @returns {Promise.<Moderated>} This entity
+	 * @returns {Promise.<ModeratedDocument>} This entity
 	 */
-	schema.methods.assertModeratedView = async function (ctx: Context): Promise<Moderated> {
+	schema.methods.assertModeratedView = async function (ctx: Context): Promise<ModeratedDocument> {
 
 		const acl = require('../acl');
 		const resource: string = modelResourceMap[this.constructor.modelName];
@@ -263,9 +264,9 @@ export function moderatePlugin(schema: Schema) {
 	 *
 	 * @param {Application.Context} ctx Koa context
 	 * @param {{includedFields: string[]}} opts Options
-	 * @returns {Moderated | boolean} Populated entity if fields added, false otherwise.
+	 * @returns {ModeratedDocument | boolean} Populated entity if fields added, false otherwise.
 	 */
-	schema.methods.populateModeration = async function (ctx: Context, opts: { includedFields: string[] }): Promise<Moderated | false> {
+	schema.methods.populateModeration = async function (ctx: Context, opts: { includedFields: string[] }): Promise<ModeratedDocument | false> {
 		const acl = require('../acl');
 		const resource: string = modelResourceMap[this.constructor.modelName];
 		if (opts.includedFields.includes('moderation')) {
@@ -286,9 +287,8 @@ export function moderatePlugin(schema: Schema) {
 					return this;
 				}
 				return false;
-			} else {
-				return false;
 			}
+			return false;
 		}
 	};
 
@@ -300,7 +300,7 @@ export function moderatePlugin(schema: Schema) {
 	 */
 	schema.methods.approve = async function (user: User, message: string): Promise<ModerationData> {
 
-		const model = mongoose.model(this.constructor.modelName);
+		const model = mongoose.model<ModeratedDocument>(this.constructor.modelName);
 		let previousModeration = { isApproved: this.moderation.is_approved, isRefused: this.moderation.is_refused };
 		await model.findByIdAndUpdate(this._id, {
 			'moderation.is_approved': true,
@@ -315,7 +315,7 @@ export function moderatePlugin(schema: Schema) {
 			}
 		}).exec();
 
-		let entity: Moderated = await model.findOne({ _id: this._id }).exec() as Moderated;
+		let entity = await model.findOne({ _id: this._id }).exec();
 		if (entity.moderationChanged) {
 			entity = await entity.moderationChanged(previousModeration, { isApproved: true, isRefused: false });
 		}
@@ -330,7 +330,7 @@ export function moderatePlugin(schema: Schema) {
 	 */
 	schema.methods.refuse = async function (user: User, reason: string): Promise<ModerationData> {
 
-		const model = mongoose.model(this.constructor.modelName);
+		const model = mongoose.model<ModeratedDocument>(this.constructor.modelName);
 		let previousModeration = { isApproved: this.moderation.is_approved, isRefused: this.moderation.is_refused };
 		await model.findByIdAndUpdate(this._id, {
 			'moderation.is_approved': false,
@@ -345,7 +345,7 @@ export function moderatePlugin(schema: Schema) {
 			}
 		}).exec();
 
-		let entity: Moderated = await model.findOne({ _id: this._id }).exec() as Moderated;
+		let entity = await model.findOne({ _id: this._id }).exec();
 		if (entity.moderationChanged) {
 			entity = await entity.moderationChanged(previousModeration, { isApproved: false, isRefused: true });
 		}
@@ -360,7 +360,7 @@ export function moderatePlugin(schema: Schema) {
 	 */
 	schema.methods.moderate = async function (user: User, message: string): Promise<ModerationData> {
 
-		const model = mongoose.model(this.constructor.modelName);
+		const model = mongoose.model<ModeratedDocument>(this.constructor.modelName);
 		let previousModeration = { isApproved: this.moderation.is_approved, isRefused: this.moderation.is_refused };
 		await model.findByIdAndUpdate(this._id, {
 			'moderation.is_approved': false,
@@ -375,7 +375,7 @@ export function moderatePlugin(schema: Schema) {
 			}
 		}).exec();
 
-		let entity: Moderated = await model.findOne({ _id: this._id }).exec() as Moderated;
+		let entity: ModeratedDocument = await model.findOne({ _id: this._id }).exec();
 		if (entity.moderationChanged) {
 			entity = await entity.moderationChanged(previousModeration, { isApproved: false, isRefused: false });
 		}
@@ -405,93 +405,119 @@ function addToQuery(toAdd: object, query: Array<any> | object): Array<any> | obj
 	return toAdd;
 }
 
-/**
- * A moderated entity
- */
-export interface Moderated extends Document {
+declare module 'mongoose' {
 
-	moderation: ModerationData,
-	_created_by: User | Schema.Types.ObjectId,
+	// methods
+	export interface ModeratedDocument extends Document {
 
-	/**
-	 * Returns the query used for listing only approved entities.
-	 *
-	 * @param {Application.Context} ctx Koa context
-	 * @param {Array|object} query Current query
-	 * @returns {Promise<Array|object>} Moderated query
-	 */
-	handleModerationQuery(ctx: Context, query: Array<any> | object): Promise<Array<any> | object>,
-
-	/**
-	 * Handles moderation requests from the API.
-	 * @param {Application.Context} ctx Koa context
-	 * @param {Moderated} entity Entity with moderation plugin enabled
-	 * @return {Promise<ModerationData>} Moderation data
-	 */
-	handleModeration(ctx: Context, entity: Moderated): Promise<ModerationData>,
-
-	/**
-	 * Returns the query used for listing only approved entities.
-	 * @param {Array | object} query
-	 * @returns {Array | object}
-	 */
-	approvedQuery(query: Array<any> | object): Array<any> | object,
-
-	/**
-	 * Makes sure an API request has the permission to view the entity.
-	 *
-	 * @param {Application.Context} ctx Koa context
-	 * @returns {Promise.<Moderated>} This entity
-	 */
-	assertModeratedView(ctx: Context): Promise<Moderated>,
-
-	/**
-	 * If moderation field is demanded in request, populates it.
-	 *
-	 * @param {Application.Context} ctx Koa context
-	 * @param {{includedFields: string[]}} opts Options
-	 * @returns {Moderated | boolean} Populated entity if fields added, false otherwise.
-	 */
-	populateModeration(ctx: Context, opts: { includedFields: string[] }): Promise<Moderated | false>
-
-	moderationChanged?(previousModeration: any, moderation: any): Promise<Moderated>,
-
-	/**
-	 * Marks the entity as approved.
-	 * @param {User|ObjectId} user User who approved
-	 * @param {string} [message] Optional message
-	 * @returns {Promise.<{}>} Updated moderation attribute
-	 */
-	approve(user: User, message: string): Promise<ModerationData>,
-
-	/**
-	 * Marks the entity as refused.
-	 * @param {User|ObjectId} user User who refused
-	 * @param {string} reason Reason why entity was refused
-	 ** @returns {Promise.<{}>} Updated moderation attribute
-	 */
-	refuse(user: User, reason: string): Promise<ModerationData>,
-
-	/**
-	 * Sets the entity back to moderated
-	 * @param {User|ObjectId} user User who reset to moderated
-	 * @param {string} [message] Optional message
-	 * @returns {Promise.<{}>} Updated moderation attribute
-	 */
-	moderate(user: User, message: string): Promise<ModerationData>,
-
-	postApprove?(): void
-}
-
-export interface ModerationData extends Document {
-	is_approved: boolean;
-	is_refused: boolean;
-	auto_approved: boolean;
-	history?: {
-		event: 'approved' | 'refused' | 'pending';
-		message?: string;
-		created_at: Date;
-		_created_by?: User | Schema.Types.ObjectId;
+		moderation: ModerationData;
+		_created_by: User | Schema.Types.ObjectId;
 		created_by?: User;
-	}[]
+
+		/**
+		 * Makes sure an API request has the permission to view the entity.
+		 *
+		 * @param {Application.Context} ctx Koa context
+		 * @returns {Promise.<ModeratedDocument>} This entity
+		 */
+		assertModeratedView(ctx: Context): Promise<ModeratedDocument>;
+
+		/**
+		 * If moderation field is demanded in request, populates it.
+		 *
+		 * @param {Application.Context} ctx Koa context
+		 * @param {{includedFields: string[]}} opts Options
+		 * @returns {ModeratedDocument | boolean} Populated entity if fields added, false otherwise.
+		 */
+		populateModeration(ctx: Context, opts: { includedFields: string[] }): Promise<ModeratedDocument | false>;
+
+		/**
+		 * Marks the entity as approved.
+		 * @param {User|ObjectId} user User who approved
+		 * @param {string} [message] Optional message
+		 * @returns {Promise.<{}>} Updated moderation attribute
+		 */
+		approve(user: User, message: string): Promise<ModerationData>,
+
+		/**
+		 * Marks the entity as refused.
+		 * @param {User|ObjectId} user User who refused
+		 * @param {string} reason Reason why entity was refused
+		 ** @returns {Promise.<{}>} Updated moderation attribute
+		 */
+		refuse(user: User, reason: string): Promise<ModerationData>;
+
+		/**
+		 * Sets the entity back to moderated
+		 * @param {User|ObjectId} user User who reset to moderated
+		 * @param {string} [message] Optional message
+		 * @returns {Promise.<{}>} Updated moderation attribute
+		 */
+		moderate(user: User, message: string): Promise<ModerationData>;
+
+		/**
+		 * An optional hook executed when moderation changed.
+		 *
+		 * @param previousModeration Original moderation
+		 * @param moderation New moderation
+		 * @returns {Promise<ModeratedDocument>}
+		 */
+		moderationChanged?(previousModeration: { isApproved: boolean, isRefused: boolean }, moderation: { isApproved: boolean, isRefused: boolean }): Promise<ModeratedDocument>,
+
+		/**
+		 * An optional hook executed when the moderation was approved.
+		 */
+		postApprove?(): void
+	}
+
+	export interface ModerationData extends Document {
+		is_approved: boolean;
+		is_refused: boolean;
+		auto_approved: boolean;
+		history?: {
+			event: 'approved' | 'refused' | 'pending';
+			message?: string;
+			created_at: Date;
+			_created_by?: User | Schema.Types.ObjectId;
+			created_by?: User;
+		}[]
+	}
+
+	// statics
+	export interface ModeratedModel<T extends ModeratedDocument> extends Model<T> {
+		/**
+		 * Returns the query used for listing only approved entities.
+		 *
+		 * @param {Application.Context} ctx Koa context
+		 * @param {Array|object} query Current query
+		 * @returns {Promise<Array|object>} Moderated query
+		 */
+		handleModerationQuery(ctx: Context, query: Array<any> | object): Promise<Array<any> | object>,
+
+		/**
+		 * Handles moderation requests from the API.
+		 * @param {Application.Context} ctx Koa context
+		 * @param {ModeratedDocument} entity Entity with moderation plugin enabled
+		 * @return {Promise<ModerationData>} Moderation data
+		 */
+		handleModeration(ctx: Context, entity: ModeratedDocument): Promise<ModerationData>,
+
+		/**
+		 * Returns the query used for listing only approved entities.
+		 * @param {Array | object} query
+		 * @returns {Array | object}
+		 */
+		approvedQuery(query: Array<any> | object): Array<any> | object,
+	}
+
+	export interface ModeratedSchema extends Schema {
+		plugin(plugin: (schema: ModeratedSchema, options?: any) => void, options?: ModeratedSchema): this;
+	}
+
+	export function model<T extends ModeratedDocument>(
+		name: string,
+		schema?: ModeratedSchema,
+		collection?: string,
+		skipInit?: boolean): ModeratedModel<T>;
 }
+

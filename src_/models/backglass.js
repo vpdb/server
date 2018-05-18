@@ -27,10 +27,10 @@ const paginate = require('mongoose-paginate');
 const uniqueValidator = require('mongoose-unique-validator');
 
 const prettyId = require('./plugins/pretty-id');
-const gameRef = require('../../src/common/mongoose-plugins/game-ref');
+const gameRef = require('../../src/common/mongoose/game-ref');
 const fileRef = require('./plugins/file-ref');
-const metrics = require('../../src/common/mongoose-plugins/metrics');
-const moderate = require('../../src/common/mongoose-plugins/moderate');
+const metrics = require('../../src/common/mongoose/metrics');
+const moderate = require('../../src/common/mongoose/moderate');
 
 const author = require('./release/author');
 

@@ -17,7 +17,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document, ModelProperties, Schema } from 'mongoose';
+import {
+	Document,
+	GameReferenceDocument,
+	GameReferenceOptions,
+	Model,
+	ModelProperties,
+	ModeratedDocument,
+	Schema
+} from 'mongoose';
 import { assign, isArray, isEmpty, isObject, map } from 'lodash';
 import { Context } from '../types/context';
 import { server } from '../../server';
@@ -45,7 +53,7 @@ const modelReferenceMap: { [key: string]: string } = {
  * @param schema
  * @param options
  */
-export function gameReferencePlugin(schema: Schema, options: { isOptional?: boolean } = {}) {
+export function gameReferencePlugin(schema: Schema, options: GameReferenceOptions = {}) {
 
 	/*
 	 * Add fields to entity
@@ -137,10 +145,10 @@ export function gameReferencePlugin(schema: Schema, options: { isOptional?: bool
 	 *
 	 * @param {Application.Context} ctx Koa context
 	 * @param {Game} game Game to check
-	 * @param {GameReference} entity ntity that references the game. Needed to in order to check for owner.
+	 * @param {GameReferenceDocument} entity ntity that references the game. Needed to in order to check for owner.
 	 * @return {Promise<boolean>} True if access granted, false otherwise.
 	 */
-	schema.statics.hasRestrictionAccess = async function (ctx: Context, game: Game, entity: GameReference): Promise<boolean> {
+	schema.statics.hasRestrictionAccess = async function (ctx: Context, game: Game, entity: GameReferenceDocument): Promise<boolean> {
 
 		const acl = require('../acl');
 		const reference = modelReferenceMap[this.modelName];
@@ -209,55 +217,80 @@ function addToQuery(toAdd: object, query: Array<any> | object): Array<any> | obj
 	return toAdd;
 }
 
-export interface GameReference extends Document {
 
-	/**
-	 * Game reference or populated object
-	 */
-	_game?: Game | Schema.Types.ObjectId;
+declare module 'mongoose' {
 
-	/**
-	 * Serialized game
-	 */
-	game?: Game;
+	// methods
+	export interface GameReferenceDocument extends Document {
+		/**
+		 * Game reference or populated object
+		 */
+		_game?: Game | Schema.Types.ObjectId;
 
-	/**
-	 * Returns the query used for listing only approved entities.
-	 *
-	 * @param {Application.Context} ctx Koa context
-	 * @param {Array<any> | object} query Input query
-	 * @return {Promise<Array<any> | object>} Output query
-	 */
-	handleGameQuery(this: ModelProperties, ctx: Context, query: Array<any> | object): Promise<Array<any> | object>;
+		/**
+		 * Serialized game
+		 */
+		game?: Game;
 
-	/**
-	 * Returns the query for listing only approved entities for a given game.
-	 *
-	 * @param {Application.Context} ctx Koa context
-	 * @param {Game} game Game to fetch entities for.
-	 * @param {Array<any> | object} query Query to append
-	 * @return {Promise<Array<any> | object | null>} Updated query on restriction, same without restriction and null if not logged.
-	 */
-	restrictedQuery(ctx: Context, game: Game, query: Array<any> | object): Promise<Array<any> | object | null>;
+		/**
+		 * Returns true if the entity is restricted by its linked game.
+		 * Note that the game must be populated, otherwise <tt>true</tt> will be returned.
+		 *
+		 * @return {boolean} True if linked game is restricted, false otherwise.
+		 */
+		isRestricted(): boolean;
 
-	/**
-	 * Checks whether a user can access a given game.
-	 *
-	 * @param {Application.Context} ctx Koa context
-	 * @param {Game} game Game to check
-	 * @param {GameReference} entity ntity that references the game. Needed to in order to check for owner.
-	 * @return {Promise<boolean>} True if access granted, false otherwise.
-	 */
-	hasRestrictionAccess(ctx: Context, game: Game, entity: GameReference): Promise<boolean>;
+		_created_by?: User | Schema.Types.ObjectId;
+		authors?: ContentAuthor[];
+	}
 
-	/**
-	 * Returns true if the entity is restricted by its linked game.
-	 * Note that the game must be populated, otherwise <tt>true</tt> will be returned.
-	 *
-	 * @return {boolean} True if linked game is restricted, false otherwise.
-	 */
-	isRestricted(): boolean;
+	// statics
+	export interface GameReferenceModel<T extends GameReferenceDocument> extends Model<T> {
 
-	_created_by?: User | Schema.Types.ObjectId;
-	authors?: ContentAuthor[];
+		/**
+		 * Returns the query used for listing only approved entities.
+		 *
+		 * @param {Application.Context} ctx Koa context
+		 * @param {Array<any> | object} query Input query
+		 * @return {Promise<Array<any> | object>} Output query
+		 */
+		handleGameQuery(this: ModelProperties, ctx: Context, query: Array<any> | object): Promise<Array<any> | object>;
+
+		/**
+		 * Returns the query for listing only approved entities for a given game.
+		 *
+		 * @param {Application.Context} ctx Koa context
+		 * @param {Game} game Game to fetch entities for.
+		 * @param {Array<any> | object} query Query to append
+		 * @return {Promise<Array<any> | object | null>} Updated query on restriction, same without restriction and null if not logged.
+		 */
+		restrictedQuery(ctx: Context, game: Game, query: Array<any> | object): Promise<Array<any> | object | null>;
+
+		/**
+		 * Checks whether a user can access a given game.
+		 *
+		 * @param {Application.Context} ctx Koa context
+		 * @param {Game} game Game to check
+		 * @param {GameReferenceModel<T>} entity entity that references the game. Needed to in order to check for owner.
+		 * @return {Promise<boolean>} True if access granted, false otherwise.
+		 */
+		hasRestrictionAccess(ctx: Context, game: Game, entity: GameReferenceModel<T>): Promise<boolean>;
+	}
+
+	// plugin options
+	export interface GameReferenceOptions {
+		isOptional?: boolean;
+	}
+
+	export interface GameReferenceSchema extends Schema {
+		plugin(
+			plugin: (schema: GameReferenceSchema, options?: GameReferenceOptions) => void,
+			options?: GameReferenceOptions): this;
+	}
+
+	export function model<T extends GameReferenceDocument>(
+		name: string,
+		schema?: GameReferenceSchema,
+		collection?: string,
+		skipInit?: boolean): GameReferenceModel<T>;
 }

@@ -27,7 +27,7 @@ const validator = require('validator');
 const uniqueValidator = require('mongoose-unique-validator');
 
 const prettyId = require('./plugins/pretty-id');
-const gameRef = require('../../src/common/mongoose-plugins/game-ref');
+const gameRef = require('../../src/common/mongoose/game-ref');
 const fileRef = require('./plugins/file-ref');
 
 const Schema = mongoose.Schema;

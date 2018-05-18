@@ -21,7 +21,7 @@ import { Document } from 'mongoose';
 import { get, isArray, defaultsDeep, assign, pick } from 'lodash';
 import { Context } from './types/context';
 import { File } from '../files/file';
-import { Moderated } from './mongoose-plugins/moderate';
+import { Moderated } from './mongoose/moderate';
 import { ReleaseVersionFile } from '../releases/release.version.file';
 import { Thumb } from './types/serializers';
 
@@ -88,7 +88,7 @@ export abstract class Serializer<T extends Document | Moderated> {
 
 		// handle moderation field
 		if ((doc as Moderated).moderation) {
-			const ModerationSerializer = require('./mongoose-plugins/moderation.serializer');
+			const ModerationSerializer = require('./mongoose/moderation.serializer');
 			(object as Moderated).moderation = ModerationSerializer._simple((doc as Moderated).moderation, ctx, opts);
 		}
 

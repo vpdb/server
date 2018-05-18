@@ -28,7 +28,7 @@ const paginate = require('mongoose-paginate');
 const uniqueValidator = require('mongoose-unique-validator');
 
 const fileRef = require('./plugins/file-ref');
-const metrics = require('../../src/common/mongoose-plugins/metrics');
+const metrics = require('../../src/common/mongoose/metrics');
 const prettyId = require('./plugins/pretty-id');
 const sortTitle = require('./plugins/sortable-title');
 const config = require('../../src/common/settings').current;

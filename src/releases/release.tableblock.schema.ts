@@ -22,13 +22,11 @@ import { Schema } from 'mongoose';
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
-const fields = {
+export const tableBlockFields = {
 	hash:  { type: Buffer, required: true, unique: true, index: true },
 	bytes: { type: Number, required: true },
 	type:  { type: String, required: true, 'enum': [ 'image', 'sound', 'gameitem', 'collection' ] },
 	meta:  { type: Schema.Types.Mixed },
 	_files: { type: [ Schema.Types.ObjectId ], ref: 'File', index: true }
 };
-const TableBlockSchema = new Schema(fields);
-
-export var schema: Schema = TableBlockSchema;
+export const tableBlockSchema = new Schema(tableBlockFields);

@@ -23,7 +23,7 @@ import Router from 'koa-router';
 
 import { Models } from '../common/types/models';
 import { EndPoint } from '../common/types/endpoint';
-import { schema } from './log.user.schema';
+import { logUserSchema } from './log.user.schema';
 import { LogUser } from './log.user';
 import { LogUserSerializer } from './log.user.serializer';
 import { Serializers } from '../common/types/serializers';
@@ -36,7 +36,7 @@ export class LogUserEndPoint implements EndPoint {
 	private readonly _schema: Schema;
 
 	constructor() {
-		this._schema = schema;
+		this._schema = logUserSchema;
 	}
 
 	getRouter(): Router {

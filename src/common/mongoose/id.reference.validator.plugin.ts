@@ -1,6 +1,6 @@
 /*
- * VPDB - Visual Pinball Database
- * Copyright (C) 2016 freezy <freezy@xbmc.org>
+ * VPDB - Virtual Pinball Database
+ * Copyright (C) 2018 freezy <freezy@vpdb.io>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,23 +17,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-'use strict';
+import { default as mongoose, Document, Query, Schema } from 'mongoose';
 
-const _ = require('lodash');
-const mongoose = require('mongoose');
-
-module.exports = function(schema, options) {
+export function idReferenceValidatorPlugin(schema: Schema, options: IdReferenceValidatorOpts = {}) {
 
 	options = options || {};
 	const fields = options.fields || [];
 	const message = options.message || '{PATH} references a non existing ID';
 
-	schema.eachPath(function (path, schemaType) {
-		var validateFunction = null;
-		var refModelName = null;
-		var conditions = {};
+	schema.eachPath((path, schemaType: any) => {
+		let validateFunction: Function = null;
+		let refModelName: string = null;
+		let conditions = {};
 
-		if (fields.length > 0 && !_.includes(fields, path)) {
+		if (fields.length > 0 && !fields.includes(path)) {
 			return;
 		}
 
@@ -52,43 +49,46 @@ module.exports = function(schema, options) {
 		}
 
 		if (validateFunction) {
-			schema.path(path).validate(function(value) {
-				return Promise.try(() => {
-					return validateFunction(this, path, refModelName, value, conditions);
-				});
-
+			schema.path(path).validate(async function (value: any) {
+				return validateFunction(this, path, refModelName, value, conditions);
 			}, message);
 		}
 	});
-};
-
-function executeQuery(query, conditions, validateValue) {
-	for (var fieldName in conditions) {
-		query.where(fieldName, conditions[fieldName]);
-	}
-	return query.exec().then(count => count === validateValue);
 }
 
-function validateId(doc, path, refModelName, value, conditions) {
+async function executeQuery<T>(query: Query<T>, conditions: string[], validateValue: any) {
+	for (let fieldName in conditions) {
+		query.where(fieldName, conditions[fieldName]);
+	}
+	const count = await query.exec();
+	return count === validateValue;
+}
+
+async function validateId(doc: Document, path: string, refModelName: string, value: any, conditions: string[]) {
 	if (value === null) {
-		return Promise.resolve(true);
+		return true;
 	}
 	const refModel = mongoose.model(refModelName);
-	const query = refModel.count({_id: value});
+	const query = refModel.count({ _id: value });
 	return executeQuery(query, conditions, 1);
 }
 
-function validateIdArray(doc, path, refModelName, values, conditions) {
+async function validateIdArray(doc: Document, path: string, refModelName: string, values: any[], conditions: string[]) {
 	if (values.length === 0) {
-		return Promise.resolve(true);
+		return true;
 	}
 	let n = 0;
-	return Promise.each(values, value => {
-		return validateId(doc, path, refModelName, value, conditions).then(valid => {
-			if (!valid) {
-				doc.invalidate(path + '.' + n, 'No such ' + refModelName + ' with id "' + value + '".', value);
-			}
-			n++;
-		});
-	}).then(() => true);
+	for (let value of values) {
+		const valid = await validateId(doc, path, refModelName, value, conditions);
+		if (!valid) {
+			doc.invalidate(path + '.' + n, 'No such ' + refModelName + ' with id "' + value + '".', value);
+		}
+		n++;
+	}
+	return true;
+}
+
+export interface IdReferenceValidatorOpts {
+	fields?: string[];
+	message?: string;
 }

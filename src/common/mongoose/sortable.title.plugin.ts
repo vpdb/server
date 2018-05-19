@@ -1,6 +1,6 @@
 /*
- * VPDB - Visual Pinball Database
- * Copyright (C) 2016 freezy <freezy@xbmc.org>
+ * VPDB - Virtual Pinball Database
+ * Copyright (C) 2018 freezy <freezy@vpdb.io>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,16 +17,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-'use strict';
+import { Schema } from 'mongoose';
 
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+export function sortableTitlePlugin(schema: Schema, opts: SortableTitleOptions = {}) {
 
-const AuthorSchema = new Schema({
-	_user: { type: Schema.ObjectId, required: 'Reference to user must be provided.', ref: 'User' },
-	roles: [ String ]
-}, { usePushEach: true });
+	opts.src = opts.src || 'title';
+	opts.dest = opts.dest || 'title_sortable';
 
-AuthorSchema.options.toObject = { virtuals: true, versionKey: false };
+	schema.pre('save', function (this: any, next: Function) {
+		if (this[opts.src]) {
+			this[opts.dest] = this[opts.src].replace(/^((the|a|an)\s+)(.+)$/i, '$3, $2');
+		}
+		next();
+	});
+}
 
-module.exports.schema = AuthorSchema;
+export interface SortableTitleOptions {
+	src?: string;
+	dest?: string;
+}

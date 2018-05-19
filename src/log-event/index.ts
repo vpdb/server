@@ -24,7 +24,7 @@ import Router from 'koa-router';
 import { Models } from '../common/types/models';
 import { EndPoint } from '../common/types/endpoint';
 import { Serializers } from '../common/types/serializers';
-import { schema } from './log.event.schema';
+import { logEventSchema } from './log.event.schema';
 import { LogEvent } from './log.event';
 import { LogEventSerializer } from './log.event.serializer';
 
@@ -36,7 +36,7 @@ export class LogEventEndPoint implements EndPoint {
 	private readonly _schema: Schema;
 
 	constructor() {
-		this._schema = schema;
+		this._schema = logEventSchema;
 	}
 
 	getRouter(): Router {

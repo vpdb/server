@@ -1,6 +1,6 @@
 /*
- * VPDB - Visual Pinball Database
- * Copyright (C) 2016 freezy <freezy@xbmc.org>
+ * VPDB - Virtual Pinball Database
+ * Copyright (C) 2018 freezy <freezy@vpdb.io>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,9 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-'use strict';
-
-var _ = require('lodash');
+import { Document, Schema } from 'mongoose';
+import { extend, get, isArray, keys } from 'lodash';
 
 /**
  * Returns all paths of a given schema.
@@ -28,19 +27,18 @@ var _ = require('lodash');
  * @param {object} [paths] Internal usage only
  * @returns {object} Keys: path, Values: Schema type
  */
-exports.traversePaths = function(schema, prefix, paths) {
-	prefix = prefix || '';
-	paths = paths || {};
-	schema.eachPath(function(path, schemaType) {
-		var isArray = schemaType.options && _.isArray(schemaType.options.type);
-		var fullPath = prefix + (prefix ? '.' : '') + path + (isArray ? '.0' : '');
+export function traversePaths(schema: Schema, prefix: string = '', paths: any = {}): { [key: string]: any } {
+	schema.eachPath((path, type) => {
+		const schemaType = type as any;
+		const isPathArray = schemaType.options && isArray(schemaType.options.type);
+		const fullPath = prefix + (prefix ? '.' : '') + path + (isPathArray ? '.0' : '');
 		paths[fullPath] = schemaType;
 		if (schemaType.schema) {
 			exports.traversePaths(schemaType.schema, fullPath, paths);
 		}
 	});
 	return paths;
-};
+}
 
 /**
  * This applies the paths from the model to the actual object. If a path is
@@ -80,47 +78,49 @@ exports.traversePaths = function(schema, prefix, paths) {
  * @param {object} [arrayRefs] Reference paths that contain an array of values
  * @returns {object} Exploded paths
  */
-exports.explodePaths = function(obj, singleRefs, arrayRefs) {
+export function explodePaths(obj: Object, singleRefs: { [key: string]: string }, arrayRefs: { [key: string]: any } = {}): { [key: string]: string } {
 
 	arrayRefs = arrayRefs || {};
 
-	var appendNext = function(obj, parts, refModelName, level, path) {
-		level = level || 0;
-		var paths = {};
-		var objPath = parts[level];
-		if (!objPath) {
-			return {};
-		}
-		path = path || '';
-		path += (path ? '.' : '') + objPath;
-		if (!parts[level + 1]) {
-			paths[path] = refModelName;
-		}
-		var subObj = _.get(obj, objPath);
-		if (subObj) {
-			for (var i = 0; i < subObj.length; i++) {
-				paths = _.extend(paths, appendNext(subObj[i], parts, refModelName, level + 1, path + '.' + i));
-			}
-		}
-		return paths;
-	};
-	var paths = {};
-	_.each(singleRefs, function(refModelName, path) {
-		paths = _.extend(paths, appendNext(obj, path.split(/\.\d+\.?/), refModelName));
+	let paths: { [key: string]: string } = {};
+	keys(singleRefs).forEach((path: string) => {
+		paths = extend(paths, appendNext(obj, path.split(/\.\d+\.?/), singleRefs[path]));
 	});
 
-	var arrayPaths = {};
-	var arrayPathsExploded = {};
-	_.each(arrayRefs, function(refModelName, path) {
-		arrayPaths = _.extend(arrayPaths, appendNext(obj, path.split(/\.\d+\.?/), refModelName));
+	let arrayPaths: { [key: string]: string } = {};
+	const arrayPathsExploded: { [key: string]: string } = {};
+	keys(arrayRefs).forEach(path => {
+		arrayPaths = extend(arrayPaths, appendNext(obj, path.split(/\.\d+\.?/), arrayRefs[path]));
 	});
-	_.each(arrayPaths, function(refModelName, path) {
-		var subObj = _.get(obj, path);
-		if (_.isArray(subObj) && subObj.length > 0) {
-			for (var i = 0; i < subObj.length; i++) {
-				arrayPathsExploded[path + '.' + i] = refModelName;
+
+	keys(arrayPaths).forEach(path => {
+		const subObj = get(obj, path);
+		if (isArray(subObj) && subObj.length > 0) {
+			for (let i = 0; i < subObj.length; i++) {
+				arrayPathsExploded[path + '.' + i] = arrayPaths[path];
 			}
 		}
 	});
-	return _.extend(paths, arrayPathsExploded);
-};
+	return extend(paths, arrayPathsExploded);
+}
+
+function appendNext(obj: Object, parts: string[], refModelName: string, level: number = 0, path: string = '') {
+	level = level || 0;
+	let paths: { [key: string]: string } = {};
+	let objPath = parts[level];
+	if (!objPath) {
+		return {};
+	}
+	path = path || '';
+	path += (path ? '.' : '') + objPath;
+	if (!parts[level + 1]) {
+		paths[path] = refModelName;
+	}
+	const subObj = get(obj, objPath);
+	if (subObj) {
+		for (let i = 0; i < subObj.length; i++) {
+			paths = extend(paths, appendNext(subObj[i], parts, refModelName, level + 1, path + '.' + i));
+		}
+	}
+	return paths;
+}

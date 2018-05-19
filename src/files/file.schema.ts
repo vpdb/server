@@ -29,14 +29,14 @@ import { quota } from '../common/quota';
 import { storage } from '../common/storage';
 import { config, settings } from '../common/settings';
 import { FileVariation } from './file.variations';
-import { metricsPlugin } from '../common/mongoose/metrics';
+import { metricsPlugin } from '../common/mongoose/metrics.plugin';
 
 const shortId = require('shortid32');
 
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
-const fields = {
+export const fileFields = {
 	id: { type: String, required: true, unique: true, 'default': shortId.generate },
 	name: { type: String, required: 'Filename must be provided.' },
 	bytes: { type: Number, required: true },
@@ -64,21 +64,22 @@ const fields = {
 	created_at: { type: Date, required: true },
 	_created_by: { type: Schema.Types.ObjectId, required: true, ref: 'User' }
 };
-const FileSchema = new Schema(fields, { toObject: { virtuals: true, versionKey: false } });
+
+export const fileSchema = new Schema(fileFields, { toObject: { virtuals: true, versionKey: false } });
 
 
 //-----------------------------------------------------------------------------
 // PLUGINS
 //-----------------------------------------------------------------------------
 
-FileSchema.plugin(metricsPlugin);
+fileSchema.plugin(metricsPlugin);
 
 
 //-----------------------------------------------------------------------------
 // VALIDATIONS
 //-----------------------------------------------------------------------------
 
-FileSchema.path('mime_type').validate(function (mimeType: string) {
+fileSchema.path('mime_type').validate(function (mimeType: string) {
 	// will be validated by enum
 	if (!this.file_type || !fileTypes.exists(this.file_type)) {
 		return true;
@@ -103,7 +104,7 @@ FileSchema.path('mime_type').validate(function (mimeType: string) {
  * @param {FilePathOptions} opts Path options
  * @return {string} Absolute path to storage
  */
-FileSchema.methods.getPath = function (variation: FileVariation = null, opts: FilePathOptions = {}): string {
+fileSchema.methods.getPath = function (variation: FileVariation = null, opts: FilePathOptions = {}): string {
 	const baseDir = this.isPublic(variation) && !opts.forceProtected ? config.vpdb.storage.public.path : config.vpdb.storage.protected.path;
 	const suffix = opts.tmpSuffix || '';
 	return variation ?
@@ -117,7 +118,7 @@ FileSchema.methods.getPath = function (variation: FileVariation = null, opts: Fi
  * @param {FileVariation} [variation] File variation or null for original file
  * @return {string} File extension
  */
-FileSchema.methods.getExt = function (variation: FileVariation = null): string {
+fileSchema.methods.getExt = function (variation: FileVariation = null): string {
 	return '.' + mimeTypes[this.getMimeType(variation)].ext;
 };
 
@@ -131,7 +132,7 @@ FileSchema.methods.getExt = function (variation: FileVariation = null): string {
  * @param {FileVariation} [variation] File variation or null for original file
  * @return {string}
  */
-FileSchema.methods.getUrl = function (variation: FileVariation = null): string {
+fileSchema.methods.getUrl = function (variation: FileVariation = null): string {
 	let storageUri = this.isPublic(variation) ? settings.storagePublicUri.bind(settings) : settings.storageProtectedUri.bind(settings);
 	return variation ?
 		storageUri('/files/' + variation.name + '/' + this.id + this.getExt(variation)) :
@@ -144,7 +145,7 @@ FileSchema.methods.getUrl = function (variation: FileVariation = null): string {
  * @param {FileVariation} [variation] File variation or null for original file
  * @return {boolean}
  */
-FileSchema.methods.isPublic = function (variation: FileVariation = null): boolean {
+fileSchema.methods.isPublic = function (variation: FileVariation = null): boolean {
 	return this.is_active && quota.getCost(this, variation) === -1;
 };
 
@@ -154,7 +155,7 @@ FileSchema.methods.isPublic = function (variation: FileVariation = null): boolea
  * @param {FileVariation} [variation] File variation or null for original file
  * @return {boolean} True if free, false otherwise.
  */
-FileSchema.methods.isFree = function (variation: FileVariation = null): boolean {
+fileSchema.methods.isFree = function (variation: FileVariation = null): boolean {
 	return quota.getCost(this, variation) <= 0;
 };
 
@@ -164,7 +165,7 @@ FileSchema.methods.isFree = function (variation: FileVariation = null): boolean 
  * @param {FileVariation} [variation] File variation or null for original file
  * @return {string} MIME type of the file or its variation.
  */
-FileSchema.methods.getMimeType = function (variation?: FileVariation): string {
+fileSchema.methods.getMimeType = function (variation?: FileVariation): string {
 	if (variation && this.variations && this.variations[variation.name] && this.variations[variation.name].mime_type) {
 		return this.variations[variation.name].mime_type;
 
@@ -182,7 +183,7 @@ FileSchema.methods.getMimeType = function (variation?: FileVariation): string {
  * @param {FileVariation} [variation] File variation or null for original file
  * @return {string} Primary part of the MIME type.
  */
-FileSchema.methods.getMimeTypePrimary = function (variation: FileVariation = null): string {
+fileSchema.methods.getMimeTypePrimary = function (variation: FileVariation = null): string {
 	return this.getMimeType(variation).split('/')[0];
 };
 
@@ -192,7 +193,7 @@ FileSchema.methods.getMimeTypePrimary = function (variation: FileVariation = nul
  * @param {FileVariation} [variation] File variation or null for original file
  * @return {string} Secondary part of the MIME type.
  */
-FileSchema.methods.getMimeSubtype = function (variation: FileVariation = null): string {
+fileSchema.methods.getMimeSubtype = function (variation: FileVariation = null): string {
 	return this.getMimeType(variation).split('/')[1];
 };
 
@@ -202,7 +203,7 @@ FileSchema.methods.getMimeSubtype = function (variation: FileVariation = null): 
  * @param {FileVariation} [variation] File variation or null for original file
  * @return {string}
  */
-FileSchema.methods.getMimeCategory = function (variation: FileVariation = null): string {
+fileSchema.methods.getMimeCategory = function (variation: FileVariation = null): string {
 	return mimeTypes[this.getMimeType(variation)].category;
 };
 
@@ -211,7 +212,7 @@ FileSchema.methods.getMimeCategory = function (variation: FileVariation = null):
  * @param {object|string} variation Variation name or whole object
  * @returns {string}
  */
-FileSchema.methods.toString = function (variation: FileVariation = null): string {
+fileSchema.methods.toString = function (variation: FileVariation = null): string {
 	return this.file_type + ' "' + this.id + '"' + (variation ? ' (' + variation.name + ')' : '');
 };
 
@@ -220,7 +221,7 @@ FileSchema.methods.toString = function (variation: FileVariation = null): string
  *
  * @return {Promise<File>} Moved file
  */
-FileSchema.methods.switchToActive = async function (): Promise<File> {
+fileSchema.methods.switchToActive = async function (): Promise<File> {
 	await server.models().File.update({ _id: this._id }, { is_active: true });
 	this.is_active = true;
 	return await storage.switchToPublic(this);
@@ -231,7 +232,7 @@ FileSchema.methods.switchToActive = async function (): Promise<File> {
  *
  * @returns {FileVariation[]} Existing variations
  */
-FileSchema.methods.getExistingVariations = function (): FileVariation[] {
+fileSchema.methods.getExistingVariations = function (): FileVariation[] {
 	const variations:FileVariation[] = [];
 	if (!this.variations) {
 		return [];
@@ -307,7 +308,7 @@ FileSchema.methods.getExistingVariations = function (): FileVariation[] {
  * @param {object} object Object that is going to end up in MongoDB
  * @param {string} [replacement=-] (optional) Replacement character
  */
-FileSchema.statics.sanitizeObject = function (object:any, replacement='-') {
+fileSchema.statics.sanitizeObject = function (object:any, replacement='-') {
 	let oldProp;
 	for (let property in object) {
 		if (object.hasOwnProperty(property)) {
@@ -318,7 +319,7 @@ FileSchema.statics.sanitizeObject = function (object:any, replacement='-') {
 				delete object[oldProp];
 			}
 			if (typeof object[property] === 'object') {
-				FileSchema.statics.sanitizeObject(object[property]);
+				fileSchema.statics.sanitizeObject(object[property]);
 			}
 		}
 	}
@@ -327,7 +328,7 @@ FileSchema.statics.sanitizeObject = function (object:any, replacement='-') {
 //-----------------------------------------------------------------------------
 // TRIGGERS
 //-----------------------------------------------------------------------------
-FileSchema.post('remove', async function (obj:File) {
+fileSchema.post('remove', async function (obj:File) {
 
 		// remove physical file
 		await storage.remove(obj);
@@ -340,5 +341,3 @@ FileSchema.post('remove', async function (obj:File) {
 		);
 		await server.models().TableBlock.remove({ _files: { $size: 0 } });
 });
-
-export var schema: Schema = FileSchema;

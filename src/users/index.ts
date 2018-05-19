@@ -26,7 +26,7 @@ import { EndPoint } from '../common/types/endpoint';
 import { Serializers } from '../common/types/serializers';
 import { User } from './user';
 import { UserSerializer } from './user.serializer';
-import { schema } from './user.schema';
+import { userSchema } from './user.schema';
 import { router } from './user.api.router';
 
 export class UserEndPoint implements EndPoint {
@@ -38,7 +38,7 @@ export class UserEndPoint implements EndPoint {
 
 	constructor() {
 		this._router = router;
-		this._schema = schema;
+		this._schema = userSchema;
 	}
 
 	getRouter(): Router {

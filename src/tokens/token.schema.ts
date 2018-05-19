@@ -33,7 +33,7 @@ const validTypes = ['personal', 'application'];
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
-const fields = {
+export const tokenFields = {
 	id: { type: String, required: true, unique: true, 'default': shortId.generate },
 	token: { type: String, required: true, unique: true, 'default': () => randomBytes(16).toString('hex') },
 	label: { type: String, required: 'A label must be provided' },
@@ -46,16 +46,17 @@ const fields = {
 	created_at: { type: Date, required: true },
 	_created_by: { type: Schema.Types.ObjectId, required: true, ref: 'User' }
 };
-const TokenSchema = new Schema(fields, { toObject: { virtuals: true, versionKey: false } });
+
+export const tokenSchema = new Schema(tokenFields, { toObject: { virtuals: true, versionKey: false } });
 
 //-----------------------------------------------------------------------------
 // VALIDATIONS
 //-----------------------------------------------------------------------------
-TokenSchema.path('label').validate(function (label: string) {
+tokenSchema.path('label').validate(function (label: string) {
 	return isString(label) && isLength(label ? label.trim() : '', 3);
 }, 'Label must contain at least three characters.');
 
-TokenSchema.path('scopes').validate(function (scopes: string[]) {
+tokenSchema.path('scopes').validate(function (scopes: string[]) {
 	if (!scopes || scopes.length === 0) {
 		this.invalidate('scopes', 'Scopes are required');
 		return true;
@@ -68,7 +69,7 @@ TokenSchema.path('scopes').validate(function (scopes: string[]) {
 	return true;
 });
 
-TokenSchema.path('type').validate(function (type: string) {
+tokenSchema.path('type').validate(function (type: string) {
 	if (type === 'application') {
 		if (!this.provider) {
 			this.invalidate('provider', 'Provider is required for application tokens.');
@@ -95,6 +96,4 @@ TokenSchema.path('type').validate(function (type: string) {
 //-----------------------------------------------------------------------------
 // PLUGINS
 //-----------------------------------------------------------------------------
-TokenSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
-
-export var schema: Schema = TokenSchema;
+tokenSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });

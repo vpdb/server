@@ -26,6 +26,7 @@ import { ApiError } from '../common/api.error';
 import { acl } from '../common/acl';
 import { logger } from '../common/logger';
 import { LogEvent } from './log.event';
+import { Game } from '../games/game';
 
 export class LogEventApi extends Api {
 
@@ -44,7 +45,7 @@ export class LogEventApi extends Api {
 				const events: string[] = ctx.query.events.split(',');
 				const eventsIn: string[] = [];
 				const eventsNin: string[] = [];
-				events.forEach(function (event) {
+				events.forEach(event => {
 					if (event[0] === '!') {
 						eventsNin.push(event.substr(1));
 					} else {
@@ -79,7 +80,7 @@ export class LogEventApi extends Api {
 				if (!release) {
 					throw new ApiError('No such release with id %s.', ctx.params.id).status(404);
 				}
-				const hasAccess = await ctx.models.Release.hasRestrictionAccess(ctx, release._game, release);
+				const hasAccess = await ctx.models.Release.hasRestrictionAccess(ctx, release._game as Game, release);
 
 				if (!hasAccess) {
 					throw new ApiError('No such release with ID "%s"', ctx.params.id).status(404);

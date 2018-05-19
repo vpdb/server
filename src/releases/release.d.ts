@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Schema, ModeratedDocument, GameReferenceDocument } from 'mongoose';
+import { Schema, ModeratedDocument, GameReferenceDocument, PrettyIdDocument } from 'mongoose';
 import { User } from '../users/user';
 import { ReleaseVersion } from './release.version';
 import { ContentAuthor } from '../users/content.author';
@@ -25,7 +25,7 @@ import { Tag } from '../tags/tag';
 import { Thumb } from '../common/types/serializers';
 import { ReleaseFileFlavor } from './release.version.file';
 
-export interface Release extends ModeratedDocument, GameReferenceDocument {
+export interface Release extends ModeratedDocument, GameReferenceDocument, PrettyIdDocument {
 
 	// from model
 	id: string;

@@ -17,22 +17,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { MetricsDocument, MetricsOptions, Schema } from 'mongoose';
 
-import { Schema } from 'mongoose';
-
-export function metricsPlugin<T>(schema: Schema, options:MetricOptions = {}) {
+export function metricsPlugin<T>(schema: Schema, options:MetricsOptions = {}) {
 
 	/**
 	 * Increments a counter.
 	 *
-	 * @param {string} what Property to increment
+	 * @param {string} counterName Property to increment
 	 * @param {boolean} [decrement] If set to true, decrement instead counter instead of increment.
 	 * @returns {Promise}
 	 */
-	schema.methods.incrementCounter = async function(what:string, decrement:boolean = false): Promise<T> {
+	schema.methods.incrementCounter = async function(counterName:string, decrement:boolean = false): Promise<T> {
 		const incr = decrement ? -1 : 1;
 		const q:any = {
-			$inc: { ['counter.' + what]: incr }
+			$inc: { ['counter.' + counterName]: incr }
 		};
 
 		if (options.hotness) {
@@ -43,7 +42,7 @@ export function metricsPlugin<T>(schema: Schema, options:MetricOptions = {}) {
 				Object.keys(hotness).forEach(variable => {
 					const factor = hotness[variable];
 					if (this.counter[variable]) {
-						score += factor * (this.counter[variable] + (variable === what ? incr : 0));
+						score += factor * (this.counter[variable] + (variable === counterName ? incr : 0));
 					}
 				});
 				q.metrics[metric] = Math.log(Math.max(score, 1));
@@ -53,8 +52,24 @@ export function metricsPlugin<T>(schema: Schema, options:MetricOptions = {}) {
 	};
 }
 
-export interface MetricOptions {
-	hotness?: {
-		[key:string]: { [key:string]: number }
+declare module 'mongoose' {
+
+	// methods
+	export interface MetricsDocument extends Document {
+		/**
+		 * Increments a counter.
+		 *
+		 * @param {string} what Property to increment
+		 * @param {boolean} [decrement=false] If set to true, decrement instead counter instead of increment.
+		 * @returns {Promise}
+		 */
+		incrementCounter(what:string, decrement:boolean): Promise<MetricsDocument>
+	}
+
+	// plugin options
+	export interface MetricsOptions {
+		hotness?: {
+			[key:string]: { [key:string]: number }
+		}
 	}
 }

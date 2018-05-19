@@ -26,7 +26,7 @@ import { EndPoint } from '../common/types/endpoint';
 import { Serializers } from '../common/types/serializers';
 import { File } from './file';
 import { FileSerializer } from './file.serializer';
-import { schema } from './file.schema';
+import { fileSchema } from './file.schema';
 import { router as apiRouter } from './file.api.router';
 import { router as storageRouter } from './file.storage.router';
 
@@ -38,7 +38,7 @@ export class FilesApiEndPoint implements EndPoint {
 	private readonly _schema: Schema;
 
 	constructor() {
-		this._schema = schema;
+		this._schema = fileSchema;
 		this._router = apiRouter;
 	}
 

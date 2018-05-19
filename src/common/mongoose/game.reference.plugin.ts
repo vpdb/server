@@ -23,7 +23,7 @@ import {
 	GameReferenceOptions,
 	Model,
 	ModelProperties,
-	ModeratedDocument,
+	ModeratedDocument, PrettyIdOptions,
 	Schema
 } from 'mongoose';
 import { assign, isArray, isEmpty, isObject, map } from 'lodash';
@@ -271,26 +271,14 @@ declare module 'mongoose' {
 		 *
 		 * @param {Application.Context} ctx Koa context
 		 * @param {Game} game Game to check
-		 * @param {GameReferenceModel<T>} entity entity that references the game. Needed to in order to check for owner.
+		 * @param {GameReferenceDocument<T>} entity entity that references the game. Needed to in order to check for owner.
 		 * @return {Promise<boolean>} True if access granted, false otherwise.
 		 */
-		hasRestrictionAccess(ctx: Context, game: Game, entity: GameReferenceModel<T>): Promise<boolean>;
+		hasRestrictionAccess(ctx: Context, game: Game, entity: GameReferenceDocument): Promise<boolean>;
 	}
 
-	// plugin options
+	// options
 	export interface GameReferenceOptions {
 		isOptional?: boolean;
 	}
-
-	export interface GameReferenceSchema extends Schema {
-		plugin(
-			plugin: (schema: GameReferenceSchema, options?: GameReferenceOptions) => void,
-			options?: GameReferenceOptions): this;
-	}
-
-	export function model<T extends GameReferenceDocument>(
-		name: string,
-		schema?: GameReferenceSchema,
-		collection?: string,
-		skipInit?: boolean): GameReferenceModel<T>;
 }

@@ -17,8 +17,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { PaginateModel, Schema, Document } from 'mongoose';
-import paginate = require('mongoose-paginate');
+import { PaginateModel, Schema } from 'mongoose';
+import { LogEvent } from './log.event';
+import paginatePlugin = require('mongoose-paginate');
 
 // also update slackbot when adding new events
 const events = [
@@ -38,7 +39,7 @@ const events = [
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
-const fields = {
+export const logEventFields = {
 	_actor: { type: Schema.Types.ObjectId, required: true, ref: 'User', index: true },
 	_ref: {
 		game: { type: Schema.Types.ObjectId, ref: 'Game', index: true, sparse: true },
@@ -54,13 +55,10 @@ const fields = {
 	ip: { type: String, required: true },
 	logged_at: { type: Date, required: true }
 };
-const LogEventSchema = new Schema(fields, { toObject: { virtuals: true, versionKey: false } });
-
+export interface LogEventModel extends PaginateModel<LogEvent> { }
+export const logEventSchema = new Schema(logEventFields, { toObject: { virtuals: true, versionKey: false } });
 
 //-----------------------------------------------------------------------------
 // PLUGINS
 //-----------------------------------------------------------------------------
-LogEventSchema.plugin(paginate);
-
-export var schema: Schema = LogEventSchema;
-export interface LogEventModel<T extends Document> extends PaginateModel<T> { }
+logEventSchema.plugin(paginatePlugin);

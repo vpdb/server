@@ -1,6 +1,6 @@
 /*
- * VPDB - Visual Pinball Database
- * Copyright (C) 2016 freezy <freezy@xbmc.org>
+ * VPDB - Virtual Pinball Database
+ * Copyright (C) 2018 freezy <freezy@vpdb.io>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,19 +17,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-'use strict';
+import { Schema } from 'mongoose';
 
-module.exports = function(schema, options) {
-
-	options = options || {};
-	options.src = options.src || 'title';
-	options.dest = options.dest || 'title_sortable';
-
-	schema.pre('save', function(next) {
-		if (this[options.src]) {
-			this[options.dest] = this[options.src].replace(/^((the|a|an)\s+)(.+)$/i, '$3, $2');
-		}
-		next();
-	});
-
-};
+export const authorSchema = new Schema({
+	_user: { type: Schema.Types.ObjectId, required: 'Reference to user must be provided.', ref: 'User' },
+	roles: [ String ]
+}, { toObject: { virtuals: true, versionKey: false } });

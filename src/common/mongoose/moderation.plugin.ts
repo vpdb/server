@@ -462,7 +462,7 @@ declare module 'mongoose' {
 		 * @param moderation New moderation
 		 * @returns {Promise<ModeratedDocument>}
 		 */
-		moderationChanged?(previousModeration: { isApproved: boolean, isRefused: boolean }, moderation: { isApproved: boolean, isRefused: boolean }): Promise<ModeratedDocument>,
+		moderationChanged?(previousModeration: { isApproved: boolean, isRefused: boolean }, moderation: { isApproved: boolean, isRefused: boolean }): Promise<ModeratedDocument>;
 
 		/**
 		 * An optional hook executed when the moderation was approved.
@@ -511,7 +511,7 @@ declare module 'mongoose' {
 	}
 
 	export interface ModeratedSchema extends Schema {
-		plugin(plugin: (schema: ModeratedSchema, options?: any) => void, options?: ModeratedSchema): this;
+		//plugin(plugin: (schema: ModeratedSchema, options?: any) => void, options?: ModeratedSchema): this;
 	}
 
 	export function model<T extends ModeratedDocument>(

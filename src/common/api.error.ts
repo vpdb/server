@@ -177,7 +177,7 @@ export class ApiError extends Error {
 	 */
 	public respond(ctx:Context) {
 
-		const body:any = this.data || { error: this.message };
+		const body:any = this.data || { error: this.responseMessage || this.message };
 		if (this.errors) {
 			body.errors = this.errors.map(error => {
 				return {

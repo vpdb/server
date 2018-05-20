@@ -26,6 +26,7 @@ export class LogUserApi extends Api {
 	/**
 	 * Returns the current user's log.
 	 *
+	 * @see GET /v1/profile/logs
 	 * @param ctx Koa context
 	 */
 	public async list(ctx: Context) {

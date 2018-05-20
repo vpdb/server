@@ -21,9 +21,8 @@ import Application = require('koa');
 import Router from 'koa-router';
 import { default as mongoose, Schema } from 'mongoose';
 
-import { Models } from '../common/types/models';
+import { state } from '../state';
 import { EndPoint } from '../common/types/endpoint';
-import { Serializers } from '../common/types/serializers';
 import { File } from './file';
 import { FileSerializer } from './file.serializer';
 import { fileSchema } from './file.schema';
@@ -47,8 +46,8 @@ export class FilesApiEndPoint implements EndPoint {
 	}
 
 	register(app: Application): void {
-		(app.context.models as Models).File = mongoose.model<File>('File', this._schema);
-		(app.context.serializers as Serializers).File = new FileSerializer();
+		state.models.File = mongoose.model<File>('File', this._schema);
+		state.serializers.File = new FileSerializer();
 	}
 }
 

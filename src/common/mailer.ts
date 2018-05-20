@@ -24,7 +24,7 @@ import handlebars from 'handlebars';
 import nodemailer, { SentMessageInfo } from 'nodemailer';
 import Mail, { Address } from 'nodemailer/lib/mailer';
 
-import { server } from '../server';
+import { state } from '../state';
 import { logger } from './logger';
 import { config, settings } from './settings';
 import { User } from '../users/user';
@@ -74,7 +74,7 @@ export async function welcomeOAuth(user: User): Promise<SentMessageInfo> {
 
 export async function releaseAutoApproved(user: User, release: Release): Promise<SentMessageInfo[]> {
 	const game = release._game as Game;
-	const moderators = await server.models().User.find({
+	const moderators = await state.models.User.find({
 		roles: { $in: ['moderator', 'root'] },
 		id: { $ne: user.id }
 	}).exec();
@@ -103,7 +103,7 @@ export async function releaseSubmitted(user: User, release: Release): Promise<Se
 	}, 'notify_release_moderation_status');
 	results.push(result);
 	// send to moderators
-	const moderators = await server.models().User.find({
+	const moderators = await state.models.User.find({
 		roles: { $in: ['moderator', 'root'] },
 		id: { $ne: user.id }
 	}).exec();
@@ -170,7 +170,7 @@ export async function releaseVersionAdded(uploader: User, author: User, release:
 
 export async function releaseFileAdded(uploader: User, author: User, release: Release, version: ReleaseVersion, versionFile: ReleaseVersionFile): Promise<SentMessageInfo> {
 	const game = release._game as Game;
-	const file = await server.models().File.findById(versionFile._file).exec();
+	const file = await state.models.File.findById(versionFile._file).exec();
 	return sendEmail(author, 'A new file for v' + version.version + ' of "' + release.name + '" of ' + game.title + ' has been uploaded', 'release-author-new-file', {
 		user: author,
 		uploader: uploader,
@@ -192,7 +192,7 @@ export async function backglassSubmitted(user: User, backglass: Backglass): Prom
 	}, 'notify_backglass_moderation_status');
 	results.push(result);
 	// send to moderators
-	const moderators = await server.models().User.find({
+	const moderators = await state.models.User.find({
 		roles: { $in: ['moderator', 'root'] },
 		id: { $ne: user.id }
 	}).exec();
@@ -211,7 +211,7 @@ export async function backglassSubmitted(user: User, backglass: Backglass): Prom
 export async function backglassAutoApproved(user: User, backglass: Backglass): Promise<SentMessageInfo[]> {
 	const results: SentMessageInfo[] = [];
 	const game = backglass._game as Game;
-	const moderators = await server.models().User.find({ roles: { $in: ['moderator', 'root'] }, id: { $ne: user.id } });
+	const moderators = await state.models.User.find({ roles: { $in: ['moderator', 'root'] }, id: { $ne: user.id } });
 	let result: SentMessageInfo;
 	for (let moderator of moderators) {
 		result = await sendEmail(moderator, 'A new backglass has been auto-approved for ' + game.title, 'moderator-backglass-auto-approved', {
@@ -293,8 +293,8 @@ export async function releaseValidated(user: User, moderator: User, game: Game, 
 
 export async function releaseModerationCommented(user: User, release: Release, message: string): Promise<SentMessageInfo[]> {
 	const results: SentMessageInfo[] = [];
-	const moderators = await server.models().User.find({ roles: { $in: ['moderator', 'root'] } }).exec();
-	const comments = await server.models().Comment.find({ '_ref.release_moderation': release._id }).populate('_from').exec();
+	const moderators = await state.models.User.find({ roles: { $in: ['moderator', 'root'] } }).exec();
+	const comments = await state.models.Comment.find({ '_ref.release_moderation': release._id }).populate('_from').exec();
 	const participants = comments.map(c => c._from as User);
 
 	let all: User[] = uniqWith([...moderators, ...participants, release._created_by as User], (u1: User, u2: User) => u1.id === u2.id);

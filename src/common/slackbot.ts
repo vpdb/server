@@ -20,9 +20,10 @@
 import { WebClient, RTMClient } from '@slack/client';
 import { MessageAttachment } from '@slack/client/dist/methods';
 import { RTMClientOptions } from '@slack/client/dist/RTMClient';
+
+import { state } from '../state';
 import { settings, config } from './settings';
 import { logger } from './logger';
-import { server } from '../server';
 import { User } from '../users/user';
 import { ContentAuthor } from '../users/content.author';
 import { LogEvent } from '../log-event/log.event';
@@ -58,7 +59,7 @@ export class SlackBot {
 			return;
 		}
 		const msg: { msg: string, atts?: MessageAttachment[] } = { msg: '', atts: [] };
-		const actor = await server.models().User.findById((log._actor as User)._id || log._actor).exec();
+		const actor = await state.models.User.findById((log._actor as User)._id || log._actor).exec();
 		switch (log.event) {
 			case 'create_comment':
 				msg.msg = `Commented on *${log.payload.comment.release.name}* of ${log.payload.comment.release.game.title} (${log.payload.comment.release.game.manufacturer} ${log.payload.comment.release.game.year}):`;
@@ -120,7 +121,7 @@ export class SlackBot {
 				break;
 
 			case 'update_game':
-				const game = await server.models().Game.findById(log._ref.game).exec();
+				const game = await state.models.Game.findById(log._ref.game).exec();
 				msg.msg = 'Updated game:';
 				msg.atts = [{
 					fallback: `${game.title} (${game.manufacturer} ${game.year})`,
@@ -202,8 +203,8 @@ export class SlackBot {
 		if (!this.enabled) {
 			return;
 		}
-		const user = await server.models().User.findById((log._user as User)._id || log._user).exec();
-		const actor = await server.models().User.findById((log._actor as User)._id || log._actor).exec();
+		const user = await state.models.User.findById((log._user as User)._id || log._user).exec();
+		const actor = await state.models.User.findById((log._actor as User)._id || log._actor).exec();
 
 		let self = user.id === actor.id;
 		const msg: { msg: string, atts?: MessageAttachment[] } = { msg: '', atts: [] };

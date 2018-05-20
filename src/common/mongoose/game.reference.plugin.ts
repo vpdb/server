@@ -17,18 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import {
-	Document,
-	GameReferenceDocument,
-	GameReferenceOptions,
-	Model,
-	ModelProperties,
-	ModeratedDocument, PrettyIdOptions,
-	Schema
-} from 'mongoose';
+import { Document, GameReferenceDocument, GameReferenceOptions, Model, ModelProperties, Schema } from 'mongoose';
 import { assign, isArray, isEmpty, isObject, map } from 'lodash';
+
+import { state } from '../../state';
 import { Context } from '../types/context';
-import { server } from '../../server';
 import { config } from '../settings';
 import { Game } from '../../games/game';
 import { User } from '../../users/user';
@@ -89,7 +82,7 @@ export function gameReferencePlugin(schema: Schema, options: GameReferenceOption
 		}
 
 		// find restricted games
-		const games = await server.models().Game.find({ 'ipdb.mpu': { $in: config.vpdb.restrictions[reference].denyMpu } }).exec();
+		const games = await state.models.Game.find({ 'ipdb.mpu': { $in: config.vpdb.restrictions[reference].denyMpu } }).exec();
 
 		if (ctx.state.user) {
 			return addToQuery({

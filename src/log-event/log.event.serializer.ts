@@ -18,6 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 import { pick, isEmpty } from 'lodash';
+
+import { state } from '../state';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { LogEvent } from './log.event';
 import { Context } from '../common/types/context';
@@ -40,25 +42,25 @@ export class LogEventSerializer extends Serializer<LogEvent> {
 
 		// actor
 		if (this._populated(doc, '_actor')) {
-			logEvent.actor = ctx.serializers.User.reduced(ctx, doc._actor as User, opts);
+			logEvent.actor = state.serializers.User.reduced(ctx, doc._actor as User, opts);
 		}
 
 		// references
 		logEvent.ref = {};
 		if (this._populated(doc, '_ref.game')) {
-			logEvent.ref.game = ctx.serializers.Game.reduced(ctx, doc._ref.game as Game, opts);
+			logEvent.ref.game = state.serializers.Game.reduced(ctx, doc._ref.game as Game, opts);
 		}
 		if (this._populated(doc, '_ref.release')) {
-			logEvent.ref.release = ctx.serializers.Release.reduced(ctx, doc._ref.release as Release, opts);
+			logEvent.ref.release = state.serializers.Release.reduced(ctx, doc._ref.release as Release, opts);
 		}
 		if (this._populated(doc, '_ref.backglass')) {
-			logEvent.ref.backglass = ctx.serializers.Backglass.reduced(ctx, doc._ref.backglass as Backglass, opts);
+			logEvent.ref.backglass = state.serializers.Backglass.reduced(ctx, doc._ref.backglass as Backglass, opts);
 		}
 		if (this._populated(doc, '_ref.user')) {
-			logEvent.ref.user = ctx.serializers.User.reduced(ctx, doc._ref.user as User, opts);
+			logEvent.ref.user = state.serializers.User.reduced(ctx, doc._ref.user as User, opts);
 		}
 		if (this._populated(doc, '_ref.game_request')) {
-			logEvent.ref.game_request = ctx.serializers.GameRequest.reduced(ctx, doc._ref.game_request as GameRequest, opts);
+			logEvent.ref.game_request = state.serializers.GameRequest.reduced(ctx, doc._ref.game_request as GameRequest, opts);
 		}
 		if (isEmpty(logEvent.ref)) {
 			delete logEvent.ref;

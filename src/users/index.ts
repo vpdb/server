@@ -21,9 +21,8 @@ import Application = require('koa');
 import mongoose, { Schema } from 'mongoose';
 import Router from 'koa-router';
 
-import { Models } from '../common/types/models';
+import { state } from '../state';
 import { EndPoint } from '../common/types/endpoint';
-import { Serializers } from '../common/types/serializers';
 import { User } from './user';
 import { UserSerializer } from './user.serializer';
 import { userSchema } from './user.schema';
@@ -46,7 +45,7 @@ export class UserEndPoint implements EndPoint {
 	}
 
 	register(app: Application): void {
-		(app.context.models as Models).User = mongoose.model<User>('User', this._schema);
-		(app.context.serializers as Serializers).User = new UserSerializer();
+		state.models.User = mongoose.model<User>('User', this._schema);
+		state.serializers.User = new UserSerializer();
 	}
 }

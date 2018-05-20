@@ -33,9 +33,9 @@ import { metricsPlugin } from '../common/mongoose/metrics.plugin';
 import { sortableTitlePlugin } from '../common/mongoose/sortable.title.plugin';
 import { idReferenceValidatorPlugin } from '../common/mongoose/id.reference.validator.plugin';
 
+import { state } from '../state';
 import { logger } from '../common/logger';
 import { Release } from './release';
-import { server } from '../server';
 import { User } from '../users/user';
 import { File } from '../files/file';
 
@@ -126,10 +126,10 @@ releaseSchema.path('versions').validate(function() {
 
 releaseSchema.methods.moderationChanged = async function(previousModeration: { isApproved: boolean, isRefused: boolean }, moderation: { isApproved: boolean, isRefused: boolean }): Promise<ModeratedDocument> {
 	if (previousModeration.isApproved && !moderation.isApproved) {
-		return await server.models().Game.update({ _id: this._game  }, { $inc: { 'counter.releases': -1 } });
+		return await state.models.Game.update({ _id: this._game  }, { $inc: { 'counter.releases': -1 } });
 	}
 	if (!previousModeration.isApproved && moderation.isApproved) {
-		return await server.models().Game.update({ _id: this._game  }, { $inc: { 'counter.releases': 1 } });
+		return await state.models.Game.update({ _id: this._game  }, { $inc: { 'counter.releases': 1 } });
 	}
 };
 
@@ -164,7 +164,7 @@ releaseSchema.methods.isCreatedBy = function(user:User) {
 releaseSchema.pre('remove', async function (this: Release) {
 
 	// remove linked comments
-	server.models().Comment.remove({ $or: [{ '_ref.release': this._id }, { '_ref.release_moderation': this._id }] }).exec();
+	state.models.Comment.remove({ $or: [{ '_ref.release': this._id }, { '_ref.release_moderation': this._id }] }).exec();
 
 	// remove table blocks
 	let fileIds: string[] = [];
@@ -176,11 +176,11 @@ releaseSchema.pre('remove', async function (this: Release) {
 	logger.info('[model] Removing all table blocks for file IDs [ %s ]', fileIds.map(fid => fid.toString()).join(', '));
 
 	for (let fileId of fileIds) {
-		await server.models().TableBlock.update(
+		await state.models.TableBlock.update(
 			{ _files: fileId },
 			{ $pull: { _files: fileId } },
 			{ multi: true }
 		);
 	}
-	await server.models().TableBlock.remove({ _files: { $size: 0 } }).exec();
+	await state.models.TableBlock.remove({ _files: { $size: 0 } }).exec();
 });

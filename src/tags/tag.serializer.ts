@@ -1,3 +1,4 @@
+import { state } from '../state';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { Tag } from './tag';
 import { Context } from '../common/types/context';
@@ -14,7 +15,7 @@ export class TagSerializer extends Serializer<Tag> {
 		const tag = pick(doc, ['id', 'name', 'description']) as Tag;
 		// created_by
 		if (this._populated(doc, '_created_by')) {
-			tag.created_by = ctx.serializers.User.reduced(ctx, tag._created_by as User, opts);
+			tag.created_by = state.serializers.User.reduced(ctx, tag._created_by as User, opts);
 		}
 		return tag;
 	}

@@ -20,6 +20,7 @@
 import { inspect } from 'util';
 import { compact, isUndefined, map } from 'lodash';
 
+import { state } from '../state';
 import { Api } from '../common/api';
 import { Context } from '../common/types/context';
 import { ApiError } from '../common/api.error';
@@ -72,7 +73,7 @@ export class LogEventApi extends Api {
 
 			// by game
 			if (opts.byGame && ctx.params.id) {
-				const game = await ctx.models.Game.findOne({ id: ctx.params.id }).exec();
+				const game = await state.models.Game.findOne({ id: ctx.params.id }).exec();
 				if (!game) {
 					throw new ApiError('No such game with id %s.', ctx.params.id).status(404);
 				}
@@ -81,11 +82,11 @@ export class LogEventApi extends Api {
 
 			// by release
 			if (opts.byRelease && ctx.params.id) {
-				const release = await ctx.models.Release.findOne({ id: ctx.params.id }).populate('_game').exec();
+				const release = await state.models.Release.findOne({ id: ctx.params.id }).populate('_game').exec();
 				if (!release) {
 					throw new ApiError('No such release with id %s.', ctx.params.id).status(404);
 				}
-				const hasAccess = await ctx.models.Release.hasRestrictionAccess(ctx, release._game as Game, release);
+				const hasAccess = await state.models.Release.hasRestrictionAccess(ctx, release._game as Game, release);
 
 				if (!hasAccess) {
 					throw new ApiError('No such release with ID "%s"', ctx.params.id).status(404);
@@ -100,7 +101,7 @@ export class LogEventApi extends Api {
 					throw new ApiError('Must be logged when listing starred events.').status(401);
 				}
 
-				const stars = await ctx.models.Star.find({ _from: ctx.state.user._id }).exec();
+				const stars = await state.models.Star.find({ _from: ctx.state.user._id }).exec();
 
 				let releaseIds = compact(map(map(stars, '_ref'), 'release'));
 				let gameIds = compact(map(map(stars, '_ref'), 'game'));
@@ -134,7 +135,7 @@ export class LogEventApi extends Api {
 				if (!fullDetails) {
 					throw new ApiError('Access denied.').status(401);
 				}
-				const user = await ctx.models.User.findOne({ id: ctx.params.id }).exec();
+				const user = await state.models.User.findOne({ id: ctx.params.id }).exec();
 				if (!user) {
 					throw new ApiError('No such user with id %s.', ctx.params.id).status(404);
 				}
@@ -148,7 +149,7 @@ export class LogEventApi extends Api {
 			// don't bother querying if a previous selection came up empty
 			if (!emptyResult) {
 				// query
-				const result = await ctx.models.LogEvent.paginate(this.searchQuery(query), {
+				const result = await state.models.LogEvent.paginate(this.searchQuery(query), {
 					page: pagination.page,
 					limit: pagination.perPage,
 					sort: { logged_at: -1 },
@@ -159,7 +160,7 @@ export class LogEventApi extends Api {
 				count = result.total;
 			}
 
-			const logs = docs.map(log => fullDetails ? ctx.serializers.LogEvent.detailed(ctx, log) : ctx.serializers.LogEvent.simple(ctx, log));
+			const logs = docs.map(log => fullDetails ? state.serializers.LogEvent.detailed(ctx, log) : state.serializers.LogEvent.simple(ctx, log));
 			return this.success(ctx, logs, 200, this.paginationOpts(pagination, count));
 		}
 	};

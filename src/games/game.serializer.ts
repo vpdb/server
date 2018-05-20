@@ -1,4 +1,6 @@
 import { isEmpty, pick } from 'lodash';
+
+import { state } from '../state';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { Game, GameRestrictions } from './game';
 import { File } from '../files/file';
@@ -47,12 +49,12 @@ export class GameSerializer extends Serializer<Game> {
 
 		// backglass
 		if (this._populated(doc, '_backglass')) {
-			game.backglass = ctx.serializers.File.simple(ctx, doc._backglass as File, opts);
+			game.backglass = state.serializers.File.simple(ctx, doc._backglass as File, opts);
 		}
 
 		// logo
 		if (this._populated(doc, '_logo')) {
-			game.logo = ctx.serializers.File.simple(ctx, doc._logo as File, opts);
+			game.logo = state.serializers.File.simple(ctx, doc._logo as File, opts);
 		}
 
 		return game;

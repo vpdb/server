@@ -20,17 +20,18 @@
 import { assign, flatten, orderBy, compact, uniq, intersection, pick, includes, isArray, isUndefined } from 'lodash';
 import { Document } from 'mongoose';
 
-import { File } from '../files/file';
+import { state } from '../state';
 import { Context } from '../common/types/context';
 import { Serializer, SerializerOptions } from '../common/serializer';
+import { Thumb } from '../common/types/serializers';
 import { Release } from './release';
 import { ReleaseVersion } from './release.version';
+import { ReleaseFileFlavor, ReleaseVersionFile } from './release.version.file';
+import { File } from '../files/file';
 import { Game } from '../games/game';
 import { Tag } from '../tags/tag';
 import { User } from '../users/user';
 import { flavors } from './release.flavors';
-import { ReleaseFileFlavor, ReleaseVersionFile } from './release.version.file';
-import { Thumb } from '../common/types/serializers';
 
 export class ReleaseSerializer extends Serializer<Release> {
 
@@ -39,11 +40,11 @@ export class ReleaseSerializer extends Serializer<Release> {
 	}
 
 	protected _simple(ctx: Context, doc: Release, opts: SerializerOptions): Release {
-		return this.serializeRelease(ctx, doc, opts, ctx.serializers.ReleaseVersion.simple.bind(ctx.serializers.ReleaseVersion), true);
+		return this.serializeRelease(ctx, doc, opts, state.serializers.ReleaseVersion.simple.bind(state.serializers.ReleaseVersion), true);
 	}
 
 	protected _detailed(ctx: Context, doc: Release, opts: SerializerOptions): Release {
-		return this.serializeRelease(ctx, doc, opts, ctx.serializers.ReleaseVersion.detailed.bind(ctx.serializers.ReleaseVersion), false,
+		return this.serializeRelease(ctx, doc, opts, state.serializers.ReleaseVersion.detailed.bind(state.serializers.ReleaseVersion), false,
 			['description', 'acknowledgements', 'license', 'modified_at']);
 	}
 
@@ -64,12 +65,12 @@ export class ReleaseSerializer extends Serializer<Release> {
 
 		// game
 		if (this._populated(doc, '_game')) {
-			release.game = ctx.serializers.Game.reduced(ctx, (doc._game as Game), opts);
+			release.game = state.serializers.Game.reduced(ctx, (doc._game as Game), opts);
 		}
 
 		// tags
 		if (this._populated(doc, '_tags')) {
-			release.tags = (doc._tags as Tag[]).map(tag => ctx.serializers.Tag.simple(ctx, tag, opts));
+			release.tags = (doc._tags as Tag[]).map(tag => state.serializers.Tag.simple(ctx, tag, opts));
 		}
 
 		// links
@@ -81,12 +82,12 @@ export class ReleaseSerializer extends Serializer<Release> {
 
 		// creator
 		if (this._populated(doc, '_created_by')) {
-			release.created_by = ctx.serializers.User.reduced(ctx, doc._created_by as User, opts);
+			release.created_by = state.serializers.User.reduced(ctx, doc._created_by as User, opts);
 		}
 
 		// authors
 		if (this._populated(doc, 'authors._user')) {
-			release.authors = doc.authors.map(author => ctx.serializers.ContentAuthor.reduced(ctx, author, opts));
+			release.authors = doc.authors.map(author => state.serializers.ContentAuthor.reduced(ctx, author, opts));
 		}
 
 		// versions
@@ -95,7 +96,7 @@ export class ReleaseSerializer extends Serializer<Release> {
 			.sort(this.sortByDate('released_at'));
 
 		if (stripVersions && this._populated(doc, 'versions.files._file')) {
-			release.versions = ctx.serializers.ReleaseVersion.strip(ctx, release.versions, opts);
+			release.versions = state.serializers.ReleaseVersion.strip(ctx, release.versions, opts);
 		}
 
 		// thumb
@@ -193,7 +194,7 @@ export class ReleaseSerializer extends Serializer<Release> {
 	private getDefaultThumb(ctx:Context, versionFileDoc:ReleaseVersionFile, opts:SerializerOptions): Thumb {
 
 		let playfieldImage = this._populated(versionFileDoc, '_playfield_image')
-			? ctx.serializers.File.detailed(ctx, versionFileDoc._playfield_image as File, opts)
+			? state.serializers.File.detailed(ctx, versionFileDoc._playfield_image as File, opts)
 			: null;
 		if (!playfieldImage || !playfieldImage.metadata) {
 			return null;

@@ -18,6 +18,8 @@
  */
 
 import { isEmpty, reduce, isEqual } from 'lodash';
+
+import { state } from '../state';
 import { logger } from '../common/logger';
 import { slackbot } from '../common/slackbot';
 import { Context } from '../common/types/context';
@@ -52,7 +54,7 @@ export class LogUserUtil {
 
 	private static async log(ctx: Context, user: User, result: 'success' | 'failure', event: string, payload: { [key: string]: any }, actor: User, message: string): Promise<void> {
 		actor = actor || user;
-		const log = new ctx.models.LogUser({
+		const log = new state.models.LogUser({
 			_user: user._id || user,
 			_actor: actor,
 			event: event,

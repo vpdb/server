@@ -19,14 +19,15 @@
 
 import { assignIn, pick, assign, isString, isNumber, isObject, uniq, escapeRegExp, difference, includes } from 'lodash';
 
+import { state } from '../state';
 import { Context } from '../common/types/context';
-import { User } from './user';
 import { Api } from '../common/api';
 import { ApiError, ApiValidationError } from '../common/api.error';
 import { registrationConfirmation } from '../common/mailer';
 import { acl } from '../common/acl';
 import { logger } from '../common/logger';
 import { config } from '../common/settings';
+import { User } from './user';
 import { UserUtil } from './user.util';
 import { LogUserUtil } from '../log-user/log.user.util';
 
@@ -54,7 +55,7 @@ export class UserApi extends Api {
 		const skipEmailConfirmation = testMode && ctx.request.body.skipEmailConfirmation;
 
 		// TODO make sure newUser.email is sane (comes from user directly)
-		let user = await ctx.models.User.findOne({
+		let user = await state.models.User.findOne({
 			$or: [
 				{ emails: newUser.email },
 				{ validated_emails: newUser.email }
@@ -84,10 +85,10 @@ export class UserApi extends Api {
 
 		// return result now and send email afterwards
 		if (testMode && ctx.request.body.returnEmailToken) {
-			return this.success(ctx, assign(ctx.serializers.User.detailed(ctx, user), { email_token: (user.email_status as any).toObject().token }), 201);
+			return this.success(ctx, assign(state.serializers.User.detailed(ctx, user), { email_token: (user.email_status as any).toObject().token }), 201);
 
 		} else {
-			return this.success(ctx, ctx.serializers.User.detailed(ctx, user), 201);
+			return this.success(ctx, state.serializers.User.detailed(ctx, user), 201);
 		}
 	}
 
@@ -146,7 +147,7 @@ export class UserApi extends Api {
 				{ validated_emails: ctx.request.body.email }
 			]
 		};
-		const existingUser = await ctx.models.User.findOne(query).exec();
+		const existingUser = await state.models.User.findOne(query).exec();
 
 		let user;
 		if (existingUser) {
@@ -177,7 +178,7 @@ export class UserApi extends Api {
 			// check if username doesn't conflict
 			let newUser;
 			let originalName = name;
-			const dupeNameUser = await ctx.models.User.findOne({ name: name }).exec();
+			const dupeNameUser = await state.models.User.findOne({ name: name }).exec();
 			if (dupeNameUser) {
 				name += Math.floor(Math.random() * 1000);
 			}
@@ -201,7 +202,7 @@ export class UserApi extends Api {
 		}
 
 		await LogUserUtil.success(ctx, user, 'provider_registration', { provider: provider, email: user.email });
-		return this.success(ctx, ctx.serializers.User.detailed(ctx, user), isNew ? 201 : 200);
+		return this.success(ctx, state.serializers.User.detailed(ctx, user), isNew ? 201 : 200);
 	}
 
 	/**
@@ -256,12 +257,12 @@ export class UserApi extends Api {
 			let roles = ctx.request.query.roles.trim().replace(/[^a-z0-9,-]+/gi, '').split(',');
 			query.push({ roles: { $in: roles } });
 		}
-		let users = await ctx.models.User.find(this.searchQuery(query)).exec();
+		let users = await state.models.User.find(this.searchQuery(query)).exec();
 
 		// reduce
 		users = users.map(user => canGetFullDetails ?
-			ctx.serializers.User.detailed(ctx, user) :
-			ctx.serializers.User.simple(ctx, user)
+			state.serializers.User.detailed(ctx, user) :
+			state.serializers.User.simple(ctx, user)
 		);
 		return this.success(ctx, users);
 	}
@@ -276,7 +277,7 @@ export class UserApi extends Api {
 	public async update(ctx: Context) {
 
 		const updatableFields = ['name', 'email', 'username', 'is_active', 'roles', '_plan'];
-		const user: User = await ctx.models.User.findOne({ id: ctx.params.id }).exec();
+		const user: User = await state.models.User.findOne({ id: ctx.params.id }).exec();
 		if (!user) {
 			throw new ApiError('No such user.').status(404);
 		}
@@ -358,10 +359,10 @@ export class UserApi extends Api {
 		// 7. if changer is not changed user, mark user as dirty
 		if (!ctx.state.user._id.equals(user._id)) {
 			logger.info('[api|user:update] Marking user <%s> as dirty.', user.email);
-			await ctx.redis.setAsync('dirty_user_' + user.id, String(new Date().getTime()));
-			await ctx.redis.expireAsync('dirty_user_' + user.id, 10000);
+			await state.redis.setAsync('dirty_user_' + user.id, String(new Date().getTime()));
+			await state.redis.expireAsync('dirty_user_' + user.id, 10000);
 		}
-		return this.success(ctx, ctx.serializers.User.detailed(ctx, user), 200);
+		return this.success(ctx, state.serializers.User.detailed(ctx, user), 200);
 	}
 
 	/**
@@ -372,12 +373,12 @@ export class UserApi extends Api {
 	 * @return {Promise<boolean>}
 	 */
 	public async view(ctx:Context) {
-		const user = await ctx.models.User.findOne({ id: ctx.params.id }).exec();
+		const user = await state.models.User.findOne({ id: ctx.params.id }).exec();
 		if (!user) {
 			throw new ApiError('No such user').status(404);
 		}
 		const fullDetails = await acl.isAllowed(ctx.state.user.id, 'users', 'full-details');
-		return this.success(ctx, fullDetails ? ctx.serializers.User.detailed(ctx, user) : ctx.serializers.User.simple(ctx, user));
+		return this.success(ctx, fullDetails ? state.serializers.User.detailed(ctx, user) : state.serializers.User.simple(ctx, user));
 	}
 
 	/**
@@ -389,7 +390,7 @@ export class UserApi extends Api {
 	 */
 	public async del(ctx:Context) {
 
-		const user = await ctx.models.User.findOne({ id: ctx.params.id }).exec();
+		const user = await state.models.User.findOne({ id: ctx.params.id }).exec();
 		if (!user) {
 			throw new ApiError('No such user').status(404);
 		}
@@ -414,7 +415,7 @@ export class UserApi extends Api {
 	 */
 	public async sendConfirmationMail(ctx:Context) {
 
-		const user = await ctx.models.User.findOne({ id: ctx.params.id }).exec();
+		const user = await state.models.User.findOne({ id: ctx.params.id }).exec();
 
 		if (!user) {
 			throw new ApiError('No such user').status(404);

@@ -21,6 +21,7 @@ import { ValidationError } from 'mongoose';
 import { assign, extend, pick, uniq, values } from 'lodash';
 import randomstring from 'randomstring';
 
+import { state } from '../state';
 import { Api } from '../common/api';
 import { acl } from '../common/acl';
 import { Context } from '../common/types/context';
@@ -46,7 +47,7 @@ export class ProfileApi extends Api {
 
 		const acls = await this.getACLs(ctx.state.user);
 		const q = await quota.getCurrent(ctx.state.user);
-		return this.success(ctx, assign(ctx.serializers.User.detailed(ctx, ctx.state.user), acls, { quota: q }), 200);
+		return this.success(ctx, assign(state.serializers.User.detailed(ctx, ctx.state.user), acls, { quota: q }), 200);
 	}
 
 	/**
@@ -64,14 +65,14 @@ export class ProfileApi extends Api {
 		let currentUser = ctx.state.user;
 		let errors:ApiValidationError[] = [];
 
-		const updatedUser = await ctx.models.User.findById(currentUser._id).exec();
+		const updatedUser = await state.models.User.findById(currentUser._id).exec();
 		if (!updatedUser) {
 			throw new ApiError('User not found. Seems be deleted since last login.').status(404);
 		}
 
 		// check for dupe name
 		if (ctx.request.body.name) {
-			const dupeNameUser = await ctx.models.User.findOne({
+			const dupeNameUser = await state.models.User.findOne({
 				name: ctx.request.body.name,
 				id: { $ne: currentUser.id }
 			}).exec();
@@ -222,9 +223,9 @@ export class ProfileApi extends Api {
 		const acls = await this.getACLs(user);
 
 		if (testMode && ctx.request.body.returnEmailToken) {
-			return this.success(ctx, extend(ctx.serializers.User.detailed(ctx, user), acls, { email_token: (user.email_status as any).toObject().token }), 200);
+			return this.success(ctx, extend(state.serializers.User.detailed(ctx, user), acls, { email_token: (user.email_status as any).toObject().token }), 200);
 		}
-		return this.success(ctx, extend(ctx.serializers.User.detailed(ctx, user), acls), 200);
+		return this.success(ctx, extend(state.serializers.User.detailed(ctx, user), acls), 200);
 	}
 
 	/**
@@ -237,7 +238,7 @@ export class ProfileApi extends Api {
 
 		const failMsg = 'No such token or token expired.';
 
-		let user = await ctx.models.User.findOne({ 'email_status.token': ctx.params.tkn }).exec();
+		let user = await state.models.User.findOne({ 'email_status.token': ctx.params.tkn }).exec();
 		if (!user) {
 			throw new ApiError('No user found with email token "%s".', ctx.params.tkn)
 				.display(failMsg)
@@ -257,7 +258,7 @@ export class ProfileApi extends Api {
 		// now we have a valid user that is either pending registration or update.
 		// BUT meanwhile there might have been an oauth account creation with the same email,
 		// or even another unconfirmed local account. so check if we need to merge or delete.
-		const otherUsers = await ctx.models.User.find({
+		const otherUsers = await state.models.User.find({
 			$or: [
 				{ email: emailToConfirm },
 				{ emails: emailToConfirm },
@@ -409,7 +410,7 @@ export class ProfileApi extends Api {
 	// 			return api.success(res, {
 	// 				token: token,
 	// 				expires: expires,
-	// 				user: _.extend(ctx.serializers.User.detailed(user, req), acls)
+	// 				user: _.extend(state.serializers.User.detailed(user, req), acls)
 	// 			}, 200);
 	// 		});
 	// 	}

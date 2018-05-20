@@ -20,11 +20,11 @@
 import mongoose, { Document, Model, ModeratedDocument, ModeratedModel, ModeratedSchema, Schema, ModerationData } from 'mongoose';
 import { assign, includes, isArray, isObject } from 'lodash';
 
+import { state } from '../../state';
 import { Context } from '../types/context';
 import { User } from '../../users/user';
 import { ApiError } from '../api.error';
 import { logger } from '../logger';
-import { server } from '../../server';
 
 const modelResourceMap: { [key: string]: string } = {
 	Release: 'releases',
@@ -78,7 +78,7 @@ export function moderationPlugin(schema: Schema) {
 		}
 		// check if _created_by is a contributor and auto-approve.
 		const acl = require('../acl');
-		const User = server.models().User;
+		const User = state.models.User;
 		let user: User;
 		if (this.populated('_created_by')) {
 			user = this._created_by as User;

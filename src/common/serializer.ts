@@ -19,6 +19,8 @@
 
 import { Document, ModeratedDocument } from 'mongoose';
 import { get, isArray, defaultsDeep, assign, pick } from 'lodash';
+
+import { state } from '../state';
 import { Context } from './types/context';
 import { File } from '../files/file';
 import { ReleaseVersionFile } from '../releases/release.version.file';
@@ -171,7 +173,7 @@ export abstract class Serializer<T extends Document | ModeratedDocument> {
 			thumbFields = [...thumbFields, 'mime_type', 'bytes', 'file_type'];
 		}
 
-		const playfieldImage = ctx.serializers.File.detailed(ctx, versionFile._playfield_image as File, opts);
+		const playfieldImage = state.serializers.File.detailed(ctx, versionFile._playfield_image as File, opts);
 
 		if (opts.thumbFormat === 'original') {
 			return assign(pick(playfieldImage, thumbFields), {

@@ -24,13 +24,13 @@ import { createHmac } from 'crypto';
 import validator from 'validator';
 import uniqueValidator from 'mongoose-unique-validator';
 
+import { state } from '../state';
 import { acl } from '../common/acl';
 import { logger } from '../common/logger';
 import { config } from '../common/settings';
 import { metricsPlugin } from '../common/mongoose/metrics.plugin';
-import { User } from './user';
-import { server } from '../server';
 import { flavors } from '../releases/release.flavors';
+import { User } from './user';
 
 const shortId = require('shortid32');
 
@@ -378,7 +378,7 @@ userSchema.methods.hasRole = function (role: string | string[]): boolean {
 // TRIGGERS
 //-----------------------------------------------------------------------------
 userSchema.post('remove', async function (obj: User) {
-	await server.models().LogUser.remove({ _user: obj._id });
-	await server.models().Token.remove({ _created_by: obj._id });
+	await state.models.LogUser.remove({ _user: obj._id });
+	await state.models.Token.remove({ _created_by: obj._id });
 	await acl.removeUserRoles(obj.id, obj.roles);
 });

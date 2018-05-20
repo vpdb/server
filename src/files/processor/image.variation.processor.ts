@@ -31,7 +31,7 @@ export class ImageVariationProcessor extends Processor<ImageFileVariation> {
 		return !!variation && file.getMimeTypePrimary() === 'image';
 	}
 
-	getPriority(variation?: FileVariation): number {
+	getOrder(variation?: FileVariation): number {
 		return 100 + (variation && variation.priority ? variation.priority : 0);
 	}
 

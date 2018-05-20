@@ -33,6 +33,9 @@ import { TokenEndPoint } from './tokens';
 import { UserEndPoint } from './users';
 import { ProfileEndPoint } from './profile';
 
+const shortId = require('shortid32');
+shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
+
 // links:
 //   - https://github.com/Microsoft/TypeScript-Node-Starter
 //   - http://brianflove.com/2016/11/11/typescript-2-express-mongoose-mocha-chai/

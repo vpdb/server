@@ -36,7 +36,7 @@ export class ImageOptimizationProcessor extends Processor<FileVariation> {
 		return mimeType === 'image/png';
 	}
 
-	getPriority(variation?: FileVariation): number {
+	getOrder(variation?: FileVariation): number {
 		return 500;
 	}
 

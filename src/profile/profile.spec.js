@@ -33,6 +33,18 @@ let res;
 
 describe.only('The VPDB `profile` API', () => {
 
+	before(async () => {
+		await api.setupUsers({
+			root: { roles: [ 'root' ]},
+			admin: { roles: [ 'admin' ]},
+			contributor: { roles: [ 'contributor' ]},
+			member: { roles: [ 'member' ]},
+			chprofile: { roles: [ 'member' ]}
+		});
+	});
+
+	after(async () => await api.teardown());
+
 	describe('when fetching profile info', () => {
 
 		it('should return detailed user data', async () => {
@@ -106,7 +118,6 @@ describe.only('The VPDB `profile` API', () => {
 			// validate password change
 			await api.post('/v1/authenticate', { username: user.name, password: newPass }).then(res => res.expectStatus(200));
 		});
-
 	});
 
 	describe('when a user updates its name', () => {
@@ -252,7 +263,7 @@ describe.only('The VPDB `profile` API', () => {
 				.then(res => res.expectValidationError('channel_config', 'features are not enabled'));
 		});
 
-		it('should fail when for non-existent releases', async () => {
+		it.skip('should fail when for non-existent releases', async () => {
 			const user = await api.createUser({ _plan: 'vip' });
 			await api.as(user)
 				.patch('/v1/profile', { channel_config: { subscribed_releases: [ shortId(), '-invalid-' ] } })
@@ -263,7 +274,7 @@ describe.only('The VPDB `profile` API', () => {
 		});
 	});
 
-	describe('when a user updates its email', () => {
+	describe.only('when a user updates its email', () => {
 
 		it('should fail when providing a valid email but email is unconfirmed', async () => {
 			const user = await api.createUser();
@@ -280,7 +291,7 @@ describe.only('The VPDB `profile` API', () => {
 			expect(res.data.email_status.value).to.be(email);
 		});
 
-		it('should succeed when providing a valid email and email is confirmed', async () => {
+		it.only('should succeed when providing a valid email and email is confirmed', async () => {
 			const user = await api.createUser();
 			const email = faker.internet.email().toLowerCase();
 			res = await api.as(user)

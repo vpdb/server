@@ -17,6 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { assignIn, pick, assign, isString, isNumber, isObject, uniq, escapeRegExp, difference, includes } from 'lodash';
+
 import { Context } from '../common/types/context';
 import { User } from './user';
 import { Api } from '../common/api';
@@ -28,7 +30,6 @@ import { config } from '../common/settings';
 import { UserUtil } from './user.util';
 import { LogUserUtil } from '../log-user/log.user.util';
 
-const _ = require('lodash');
 const randomString = require('randomstring');
 const validator = require('validator');
 
@@ -43,7 +44,7 @@ export class UserApi extends Api {
 	 */
 	public async create(ctx: Context) {
 
-		const newUser:User = _.assignIn(_.pick(ctx.request.body, 'username', 'password', 'email'), {
+		const newUser:User = assignIn<User>(pick(ctx.request.body, 'username', 'password', 'email'), {
 			is_local: true,
 			name: ctx.request.body.name || ctx.request.body.username
 		});
@@ -83,7 +84,7 @@ export class UserApi extends Api {
 
 		// return result now and send email afterwards
 		if (testMode && ctx.request.body.returnEmailToken) {
-			return this.success(ctx, _.assign(ctx.serializers.User.detailed(ctx, user), { email_token: (user.email_status as any).toObject().token }), 201);
+			return this.success(ctx, assign(ctx.serializers.User.detailed(ctx, user), { email_token: (user.email_status as any).toObject().token }), 201);
 
 		} else {
 			return this.success(ctx, ctx.serializers.User.detailed(ctx, user), 201);
@@ -113,10 +114,10 @@ export class UserApi extends Api {
 		let err = null;
 		if (!ctx.request.body.provider_id) {
 			err = (err || new ApiError()).validationError('provider_id', 'Identifier at provider is required.');
-		} else if (!_.isString(ctx.request.body.provider_id) && !_.isNumber(ctx.request.body.provider_id)) {
+		} else if (!isString(ctx.request.body.provider_id) && !isNumber(ctx.request.body.provider_id)) {
 			err = (err || new ApiError()).validationError('provider_id', 'Identifier at provider must be a number or a string.');
 		}
-		if (!ctx.request.body.email || !_.isString(ctx.request.body.email)) {
+		if (!ctx.request.body.email || !isString(ctx.request.body.email)) {
 			err = (err || new ApiError()).validationError('email', 'Email is required.');
 
 		} else if (!validator.isEmail(ctx.request.body.email)) {
@@ -124,12 +125,12 @@ export class UserApi extends Api {
 		}
 		if (!ctx.request.body.username) {
 			err = (err || new ApiError()).validationError('username', 'Username is required.');
-		} else if (!_.isString(ctx.request.body.username)) {
+		} else if (!isString(ctx.request.body.username)) {
 			err = (err || new ApiError()).validationError('username', 'Username must be a string.');
 		} else if (!/^[0-9a-z ]{3,}$/i.test(UserUtil.removeDiacritics(ctx.request.body.username).replace(/[^0-9a-z ]+/gi, ''))) {
 			err = (err || new ApiError()).validationError('username', 'Username must be alphanumeric with at least three characters.', ctx.request.body.username);
 		}
-		if (ctx.request.body.provider_profile && !_.isObject(ctx.request.body.provider_profile)) {
+		if (ctx.request.body.provider_profile && !isObject(ctx.request.body.provider_profile)) {
 			err = (err || new ApiError()).validationError('provider_profile', 'Must be an object.');
 		}
 		if (err) {
@@ -167,7 +168,7 @@ export class UserApi extends Api {
 				existingUser.providers[provider].modified_at = new Date();
 				await LogUserUtil.success(ctx, existingUser, 'provider_update', { provider: provider });
 			}
-			existingUser.emails = _.uniq([existingUser.email, ...existingUser.emails, ctx.request.body.email]);
+			existingUser.emails = uniq([existingUser.email, ...existingUser.emails, ctx.request.body.email]);
 			isNew = false;
 			user = await existingUser.save();
 
@@ -246,7 +247,7 @@ export class UserApi extends Api {
 			}
 		}
 		if (ctx.request.query.name) {
-			query.push({ name: new RegExp('^' + _.escapeRegExp(ctx.request.query.name) + '$', 'i') });
+			query.push({ name: new RegExp('^' + escapeRegExp(ctx.request.query.name) + '$', 'i') });
 		}
 
 		// filter by role
@@ -293,18 +294,18 @@ export class UserApi extends Api {
 		const currentUserRoles = user.roles || [];
 		const updatedUserRoles = updatedUser.roles || [];
 
-		const removedRoles = _.difference(currentUserRoles, updatedUserRoles);
-		const addedRoles = _.difference(updatedUserRoles, currentUserRoles);
+		const removedRoles = difference(currentUserRoles, updatedUserRoles);
+		const addedRoles = difference(updatedUserRoles, currentUserRoles);
 
-		const diff = LogUserUtil.diff(_.pick(user.toObject(), updatableFields), updatedUser);
+		const diff = LogUserUtil.diff(pick(user.toObject(), updatableFields), updatedUser);
 
 		// if caller is not root..
-		if (!_.includes(callerRoles, 'root')) {
+		if (!includes(callerRoles, 'root')) {
 
 			logger.info('[api|user:update] Checking for privilege escalation. Added roles: [%s], Removed roles: [%s].', addedRoles.join(' '), removedRoles.join(' '));
 
 			// if user to be updated is already root or admin, deny (unless it's the same user).
-			if (!user._id.equals(ctx.state.user._id) && (_.includes(currentUserRoles, 'root') || _.includes(currentUserRoles, 'admin'))) {
+			if (!user._id.equals(ctx.state.user._id) && (includes(currentUserRoles, 'root') || includes(currentUserRoles, 'admin'))) {
 
 				// log
 				await LogUserUtil.failure(ctx, user, 'update', diff, ctx.state.user, 'User is not allowed to update administrators or root users.');
@@ -341,7 +342,7 @@ export class UserApi extends Api {
 		// 5. save
 		await user.save();
 
-		await LogUserUtil.successDiff(ctx, updatedUser, 'update', _.pick(user.toObject(), updatableFields), updatedUser, ctx.state.user);
+		await LogUserUtil.successDiff(ctx, updatedUser, 'update', pick(user.toObject(), updatableFields), updatedUser, ctx.state.user);
 		logger.info('[api|user:update] Success!');
 
 		// 6. update ACLs if roles changed

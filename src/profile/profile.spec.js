@@ -31,7 +31,7 @@ const ApiClient = require('../../test/modules/api.client');
 const api = new ApiClient();
 let res;
 
-describe.only('The VPDB `profile` API', () => {
+describe('The VPDB `profile` API', () => {
 
 	before(async () => {
 		await api.setupUsers({

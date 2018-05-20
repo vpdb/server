@@ -64,14 +64,14 @@ export abstract class Api {
 
 		return async (ctx: Context) => {
 
-			// if authentication failed, abort.
-			if (ctx.state.authError) {
-				throw ctx.state.authError;
-			}
-
 			// if this resource is a service resource, we don't need a user.
 			if (scopes && scope.isValid([Scope.SERVICE], scopes) && !resource && !permission && ctx.state.tokenType === 'application') {
 				return await this.handleRequest(ctx, handler);
+			}
+
+			// if authentication failed, abort.
+			if (ctx.state.authError) {
+				throw ctx.state.authError;
 			}
 
 			// just to be sure (auth middleware loaded?)...

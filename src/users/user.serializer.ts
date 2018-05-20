@@ -22,9 +22,8 @@ import { createHash } from 'crypto';
 import { config } from '../common/settings';
 import { Context } from '../common/types/context';
 import { Serializer, SerializerOptions } from '../common/serializer';
+import { realtime } from '../common/realtime';
 import { User, UserCounter } from './user';
-
-//const pusher = require('../../src_/modules/pusher');
 
 export class UserSerializer extends Serializer<User> {
 
@@ -76,10 +75,10 @@ export class UserSerializer extends Serializer<User> {
 		};
 
 		// pusher
-		// if (pusher.isUserEnabled(doc)) {
-		// 	user.channel_config = doc.channel_config;
-		// 	user.channel_config.api_key = config.vpdb.pusher.options.key;
-		// }
+		if (realtime.isUserEnabled(doc)) {
+			user.channel_config = doc.channel_config;
+			user.channel_config.api_key = config.vpdb.pusher.options.key;
+		}
 
 		// emails
 		user.emails = uniq([...doc.emails, ...doc.validated_emails]);

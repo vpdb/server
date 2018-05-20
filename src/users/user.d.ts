@@ -47,6 +47,7 @@ export interface User extends Document {
 	channel_config?: {
 		subscribe_to_starred: boolean;
 		subscribed_releases: string[];
+		api_key: string;
 	};
 
 	provider?: string;

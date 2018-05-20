@@ -17,9 +17,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { RedisClient } from 'redis';
+
 import { Models } from './common/types/models';
 import { Serializers } from './common/types/serializers';
-import { RedisClient } from 'redis';
 import { logger } from './common/logger';
 import { config } from './common/settings';
 

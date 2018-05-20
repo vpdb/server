@@ -27,6 +27,7 @@ import Router from 'koa-router';
 import { User } from '../users/user';
 import { scope, Scope } from './scope';
 import { acl } from './acl';
+import { state } from '../state';
 
 export abstract class Api {
 
@@ -82,11 +83,11 @@ export abstract class Api {
 			await this.authorizeUser(ctx, ctx.state.user, resource, permission, scopes, planAttrs);
 
 			// now we're authorized, set dirty header if necessary
-			const result = await ctx.redis.getAsync('dirty_user_' + ctx.state.user.id);
+			const result = await state.redis.getAsync('dirty_user_' + ctx.state.user.id);
 			if (result) {
 				logger.info('[ctrl|auth] User <%s> is dirty, telling him in header.', ctx.state.user.email);
 				ctx.set('X-User-Dirty', result);
-				await ctx.redis.delAsync('dirty_user_' + ctx.state.user.id);
+				await state.redis.delAsync('dirty_user_' + ctx.state.user.id);
 			}
 			ctx.set('X-User-Dirty', '0');
 

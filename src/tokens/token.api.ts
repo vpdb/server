@@ -19,6 +19,7 @@
 
 import { extend, includes, pick } from 'lodash';
 
+import { state } from '../state';
 import { Api } from '../common/api';
 import { acl } from '../common/acl';
 import { ApiError } from '../common/api.error';
@@ -81,7 +82,7 @@ export class TokenApi extends Api {
 			if (!granted) {
 				throw new ApiError('Permission denied.').status(401);
 			}
-			newToken = new ctx.models.Token(extend(ctx.request.body, {
+			newToken = new state.models.Token(extend(ctx.request.body, {
 				label: ctx.request.body.label,
 				is_active: true,
 				created_at: new Date(),
@@ -90,7 +91,7 @@ export class TokenApi extends Api {
 			}));
 
 		} else {
-			newToken = new ctx.models.Token(extend(ctx.request.body, {
+			newToken = new state.models.Token(extend(ctx.request.body, {
 				label: ctx.request.body.label || ctx.get('user-agent'),
 				is_active: true,
 				created_at: new Date(),
@@ -101,7 +102,7 @@ export class TokenApi extends Api {
 		await newToken.save();
 
 		logger.info('[api|token:create] Token "%s" successfully created.', newToken.label);
-		return this.success(ctx, ctx.serializers.Token.detailed(ctx, newToken), 201);
+		return this.success(ctx, state.serializers.Token.detailed(ctx, newToken), 201);
 	}
 
 	public async view(ctx: Context) {
@@ -112,7 +113,7 @@ export class TokenApi extends Api {
 		// app token?
 		if (/[0-9a-f]{32,}/i.test(token)) {
 
-			const appToken = await ctx.models.Token.findOne({ token: token }).populate('_created_by').exec();
+			const appToken = await state.models.Token.findOne({ token: token }).populate('_created_by').exec();
 
 			// fail if not found
 			if (!appToken) {
@@ -169,24 +170,24 @@ export class TokenApi extends Api {
 		if (ctx.query.type && includes(allowedTypes, ctx.query.type)) {
 			query.type = ctx.query.type;
 		}
-		let tokens = await ctx.models.Token.find().exec();
+		let tokens = await state.models.Token.find().exec();
 
 		// reduce
-		tokens = tokens.map(token => ctx.serializers.Token.simple(ctx, token));
+		tokens = tokens.map(token => state.serializers.Token.simple(ctx, token));
 		return this.success(ctx, tokens);
 	}
 
 	public async update(ctx: Context) {
 		const updatableFields = ['label', 'is_active', 'expires_at', 'scopes']; // TODO enable expires_at only in debug, not in prod
-		const token = await ctx.models.Token.findOne({ id: ctx.params.id, _created_by: ctx.state.user._id }).exec();
+		const token = await state.models.Token.findOne({ id: ctx.params.id, _created_by: ctx.state.user._id }).exec();
 		extend(token, pick(ctx.request.body, updatableFields));
 		await token.save();
 		logger.info('[api|token:update] Token "%s" successfully updated.', token.label);
-		return this.success(ctx, ctx.serializers.Token.simple(ctx, token), 200);
+		return this.success(ctx, state.serializers.Token.simple(ctx, token), 200);
 	}
 
 	public async del(ctx: Context) {
-		const token = await ctx.models.Token.findOne({ id: ctx.params.id, _created_by: ctx.state.user._id }).exec();
+		const token = await state.models.Token.findOne({ id: ctx.params.id, _created_by: ctx.state.user._id }).exec();
 		if (!token) {
 			throw new ApiError('No such token').status(404);
 		}

@@ -21,8 +21,7 @@ import Application = require('koa');
 import mongoose, { Schema } from 'mongoose';
 import Router from 'koa-router';
 
-import { Models } from '../common/types/models';
-import { Serializers } from '../common/types/serializers';
+import { state } from '../state';
 import { EndPoint } from '../common/types/endpoint';
 import { Token } from './token';
 import { tokenSchema } from './token.schema';
@@ -46,7 +45,7 @@ export class TokenEndPoint implements EndPoint {
 	}
 
 	register(app: Application): void {
-		(app.context.models as Models).Token = mongoose.model<Token>('Token', this._schema);
-		(app.context.serializers as Serializers).Token = new TokenSerializer();
+		state.models.Token = mongoose.model<Token>('Token', this._schema);
+		state.serializers.Token = new TokenSerializer();
 	}
 }

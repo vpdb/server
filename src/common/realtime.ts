@@ -18,12 +18,13 @@
  */
 
 import { uniq } from 'lodash';
+
+import { state } from '../state';
 import { config } from './settings';
 import { Game } from '../games/game';
 import { Release } from '../releases/release';
 import { ReleaseVersion } from '../releases/release.version';
 import { logger } from './logger';
-import { server } from '../server';
 import { User } from '../users/user';
 
 const Pusher = require('pusher');
@@ -50,7 +51,7 @@ class Realtime {
 			return logger.info('[pusher] [addVersion] Disabled, skipping announce.');
 		}
 
-		const subscribedUsers = await server.models().User.find({ 'channel_config.subscribed_releases': release.id });
+		const subscribedUsers = await state.models.User.find({ 'channel_config.subscribed_releases': release.id });
 
 		const users = subscribedUsers.filter(user => this.isUserEnabled(user));
 			logger.info('Found %d authorized user(s) subscribed to release %s.', users.length, release.id);

@@ -18,6 +18,8 @@
  */
 
 import { pick } from 'lodash';
+
+import { state } from '../state';
 import { Backglass } from './backglass';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { Context } from '../common/types/context';
@@ -29,19 +31,19 @@ export class BackglassSerializer extends Serializer<Backglass> {
 
 
 	protected _reduced(ctx: Context, doc: Backglass, opts: SerializerOptions): Backglass {
-		return this._serialize(ctx, doc, opts, ctx.serializers.BackglassVersion.reduced.bind(ctx.serializers.BackglassVersion));
+		return this._serialize(ctx, doc, opts, state.serializers.BackglassVersion.reduced.bind(state.serializers.BackglassVersion));
 	}
 
 	protected _simple(ctx: Context, doc: Backglass, opts: SerializerOptions): Backglass {
-		return this._serialize(ctx, doc, opts, ctx.serializers.BackglassVersion.simple.bind(ctx.serializers.BackglassVersion));
+		return this._serialize(ctx, doc, opts, state.serializers.BackglassVersion.simple.bind(state.serializers.BackglassVersion));
 	}
 
 	protected _detailed(ctx: Context, doc: Backglass, opts: SerializerOptions): Backglass {
-		const backglass = this._serialize(ctx, doc, opts, ctx.serializers.BackglassVersion.simple.bind(ctx.serializers.BackglassVersion));
+		const backglass = this._serialize(ctx, doc, opts, state.serializers.BackglassVersion.simple.bind(state.serializers.BackglassVersion));
 
 		// creator
 		if (this._populated(doc, '_created_by')) {
-			backglass.created_by = ctx.serializers.User.reduced(ctx, doc._created_by as User, opts);
+			backglass.created_by = state.serializers.User.reduced(ctx, doc._created_by as User, opts);
 		}
 		return backglass;
 	}
@@ -57,12 +59,12 @@ export class BackglassSerializer extends Serializer<Backglass> {
 
 		// game
 		if (this._populated(doc, '_game')) {
-			backglass.game = ctx.serializers.Game.reduced(ctx, doc._game as Game, opts);
+			backglass.game = state.serializers.Game.reduced(ctx, doc._game as Game, opts);
 		}
 
 		// authors
 		if (this._populated(doc, 'authors._user')) {
-			backglass.authors = doc.authors.map(author => ctx.serializers.ContentAuthor.reduced(ctx, author, opts));
+			backglass.authors = doc.authors.map(author => state.serializers.ContentAuthor.reduced(ctx, author, opts));
 		}
 
 		return backglass;

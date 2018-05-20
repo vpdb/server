@@ -18,6 +18,8 @@
  */
 
 import { uniq, isArray, assign } from 'lodash';
+
+import { state } from '../state';
 import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
 import { Context } from '../common/types/context';
@@ -51,7 +53,7 @@ export class AuthenticationApi extends Api {
 		try {
 
 			// check if there's a back-off delay
-			const ttl = await ctx.redis.ttlAsync(backoffDelayKey);
+			const ttl = await state.redis.ttlAsync(backoffDelayKey);
 			if (ttl > 0) {
 				throw new ApiError('Too many failed login attempts from %s, blocking for another %s seconds.', ipAddress, ttl)
 					.display('Too many failed login attempts from this IP, try again in %s seconds.', ttl)
@@ -89,7 +91,7 @@ export class AuthenticationApi extends Api {
 			const response = {
 				token: token,
 				expires: expires,
-				user: assign(ctx.serializers.User.detailed(ctx, authenticatedUser), acls)
+				user: assign(state.serializers.User.detailed(ctx, authenticatedUser), acls)
 			};
 
 			if (config.vpdb.services.sqreen.enabled) {
@@ -99,15 +101,15 @@ export class AuthenticationApi extends Api {
 			return this.success(ctx, response, 200);
 
 		} catch (err) {
-			const num: number = await ctx.redis.incrAsync(backoffNumKey);
+			const num: number = await state.redis.incrAsync(backoffNumKey);
 			let wait = backoffDelay[Math.min(num, backoffDelay.length) - 1];
 			logger.info('[api|user:authenticate] Increasing back-off time to %s for try number %d.', wait, num);
 			if (wait > 0) {
-				await ctx.redis.setAsync(backoffDelayKey, '1');
-				await ctx.redis.expireAsync(backoffDelayKey, wait);
+				await state.redis.setAsync(backoffDelayKey, '1');
+				await state.redis.expireAsync(backoffDelayKey, wait);
 			}
 			if (num === 1) {
-				await ctx.redis.expireAsync(backoffNumKey, backoffNumDelay);
+				await state.redis.expireAsync(backoffNumKey, backoffNumDelay);
 			}
 			throw err;
 		}
@@ -125,7 +127,7 @@ export class AuthenticationApi extends Api {
 		if (!ctx.request.body.username || !ctx.request.body.password) {
 			return null;
 		}
-		const localUser = await ctx.models.User.findOne({ username: ctx.request.body.username }).exec();
+		const localUser = await state.models.User.findOne({ username: ctx.request.body.username }).exec();
 		if (localUser && localUser.authenticate(ctx.request.body.password)) {
 			// all good, return.
 			return localUser;
@@ -168,7 +170,7 @@ export class AuthenticationApi extends Api {
 				.warn()
 				.status(400);
 		}
-		const token = await ctx.models.Token.findOne({ token: ctx.request.body.token }).populate('_created_by').exec();
+		const token = await state.models.Token.findOne({ token: ctx.request.body.token }).populate('_created_by').exec();
 		// fail if not found
 		if (!token) {
 			// todo fix antiBruteForce = true;
@@ -354,7 +356,7 @@ export class AuthenticationApi extends Api {
 	 */
 	private async removePendingUsers(ctx: Context, emails: string[]): Promise<void> {
 		//
-		const pendingUsers = await ctx.models.User.find({
+		const pendingUsers = await state.models.User.find({
 			email: { $in: emails },
 			'email_status.code': 'pending_registration'
 		});
@@ -384,7 +386,7 @@ export class AuthenticationApi extends Api {
 			]
 		};
 		logger.info('[passport] Checking for existing user: %s', JSON.stringify(query));
-		return await ctx.models.User.find(query).exec();
+		return await state.models.User.find(query).exec();
 	}
 
 	/**
@@ -511,7 +513,7 @@ export class AuthenticationApi extends Api {
 
 		// check if username doesn't conflict
 		let newUser: User;
-		const dupeNameUser = await ctx.models.User.findOne({ name: name }).exec();
+		const dupeNameUser = await state.models.User.findOne({ name: name }).exec();
 		if (dupeNameUser) {
 			name += Math.floor(Math.random() * 1000);
 		}

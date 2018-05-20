@@ -18,6 +18,8 @@
  */
 
 import { pick } from 'lodash';
+
+import { state } from '../state';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { GameRequest } from './game.request';
 import { Context } from '../common/types/context';
@@ -35,7 +37,7 @@ export class GameRequestSerializer extends Serializer<GameRequest> {
 
 		// game
 		if (this._populated(doc, '_game')) {
-			gameRequest.game = ctx.serializers.Game.reduced(ctx, doc._game as Game, opts);
+			gameRequest.game = state.serializers.Game.reduced(ctx, doc._game as Game, opts);
 		}
 		return gameRequest;
 	}
@@ -45,7 +47,7 @@ export class GameRequestSerializer extends Serializer<GameRequest> {
 
 		// creator
 		if (this._populated(doc, '_created_by')) {
-			gameRequest.created_by = ctx.serializers.User.reduced(ctx, doc._created_by as User, opts);
+			gameRequest.created_by = state.serializers.User.reduced(ctx, doc._created_by as User, opts);
 		}
 		return gameRequest;
 	}

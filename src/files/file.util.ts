@@ -21,13 +21,13 @@ import { createWriteStream, stat } from 'fs';
 import * as Stream from 'stream';
 import Bluebird = require('bluebird');
 
+import { state } from '../state';
 import { Context } from '../common/types/context';
 import { File } from './file';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
 
 const statAsync = Bluebird.promisify(stat);
-
 
 export class FileUtil {
 
@@ -42,7 +42,7 @@ export class FileUtil {
 	 */
 	public static async create(ctx: Context, fileData: File, readStream: Stream, opts:any): Promise<File> {
 
-		let file = new ctx.models.File(fileData);
+		let file = new state.models.File(fileData);
 		file = await file.save();
 
 		await new Promise((resolve, reject) => {
@@ -56,7 +56,7 @@ export class FileUtil {
 		if (!file.bytes) {
 			const stats = await statAsync(file.getPath());
 			file.bytes = stats.size;
-			await ctx.models.File.update({ _id: file._id }, { bytes: stats.size });
+			await state.models.File.update({ _id: file._id }, { bytes: stats.size });
 		}
 
 		// FIXME await storage.preprocess(file);
@@ -69,7 +69,7 @@ export class FileUtil {
 			// TODO File.sanitizeObject(metadata);
 			file.metadata = metadata;
 			file.bytes = stats.size;
-			await ctx.models.File.update({ _id: file._id }, { metadata: metadata, bytes: stats.size });
+			await state.models.File.update({ _id: file._id }, { metadata: metadata, bytes: stats.size });
 
 			logger.info('[api|file:save] File upload of %s successfully completed.', file.toString());
 			// FIXME return storage.postprocess(file, opts).then(() => file);

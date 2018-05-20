@@ -22,23 +22,14 @@ import koaBodyParser from 'koa-bodyparser';
 import { uniq } from 'lodash';
 
 import { EndPoint } from './common/types/endpoint';
-import { Models } from './common/types/models';
-import { Serializers } from './common/types/serializers';
 import { config, settings } from './common/settings'
 import { koaLogger } from './common/middleware/logger';
 import { koaAuth } from './common/middleware/auth';
 import { koaErrorHandler } from './common/middleware/error.handler';
+import { koa404Handler } from './common/middleware/notfound.handler';
 import { logger } from './common/logger';
 
-import Redis = require('redis');
-import Bluebird = require('bluebird');
-import { RedisClient } from 'redis';
-import { koa404Handler } from './common/middleware/notfound.handler';
-
 const koaResponseTime = require('koa-response-time');
-
-Bluebird.promisifyAll((Redis as any).RedisClient.prototype);
-Bluebird.promisifyAll((Redis as any).Multi.prototype);
 
 export class Server {
 
@@ -51,10 +42,6 @@ export class Server {
 		this.app.use(koaResponseTime());
 		this.app.use(koaErrorHandler());
 		this.app.use(koaAuth());
-
-		this.app.context.models = {};
-		this.app.context.serializers = {};
-		this.app.context.redis = this.setupRedis();
 	}
 
 	public register<T>(endPoint: EndPoint) {
@@ -85,22 +72,6 @@ export class Server {
 		this.app.listen(config.vpdb.api.port);
 		logger.info('[app] Storage ready at %s', settings.storageProtectedUri());
 		logger.info('[app] API ready at %s', settings.apiUri());
-	}
-
-	public models(): Models {
-		return this.app.context.models;
-	}
-
-	public serializers(): Serializers {
-		return this.app.context.serializers;
-	}
-
-	private setupRedis(): RedisClient {
-		const redis = Redis.createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
-		redis.select(config.vpdb.redis.db);
-		// todo better error handling (use raygun)
-		redis.on('error', err => logger.error(err.message));
-		return redis;
 	}
 }
 

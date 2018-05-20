@@ -6,6 +6,7 @@ import { ApiError } from '../api.error';
 import { decode as jwtDecode } from 'jwt-simple';
 import { Scope } from '../scope';
 import { AuthenticationUtil, Jwt } from '../../authentication/authentication.util';
+import { Token } from '../../tokens/token';
 
 /**
  * Middleware that populates the authentication state. It sets:
@@ -25,6 +26,9 @@ export function koaAuth() {
 	return async function authenticate(ctx: Context, next: () => Promise<any>) {
 		try {
 			delete ctx.state.user;
+			delete ctx.state.appToken;
+			delete ctx.state.tokenType;
+			delete ctx.state.tokenScopes;
 
 			// get token sent by user
 			const token = retrieveToken(ctx);
@@ -120,7 +124,7 @@ async function authenticateWithAppToken(ctx: Context, token: { value: string, fr
 		throw new ApiError('App tokens must be provided in the header.').status(401);
 	}
 
-	const appToken = await state.models.Token.findOne({ token: token }).populate('_created_by').exec();
+	const appToken = await state.models.Token.findOne({ token: token.value }).populate('_created_by').exec();
 
 	// fail if not found
 	if (!appToken) {

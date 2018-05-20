@@ -274,7 +274,7 @@ describe.only('The VPDB `profile` API', () => {
 		});
 	});
 
-	describe.only('when a user updates its email', () => {
+	describe('when a user updates its email', () => {
 
 		it('should fail when providing a valid email but email is unconfirmed', async () => {
 			const user = await api.createUser();
@@ -291,7 +291,7 @@ describe.only('The VPDB `profile` API', () => {
 			expect(res.data.email_status.value).to.be(email);
 		});
 
-		it.only('should succeed when providing a valid email and email is confirmed', async () => {
+		it('should succeed when providing a valid email and email is confirmed', async () => {
 			const user = await api.createUser();
 			const email = faker.internet.email().toLowerCase();
 			res = await api.as(user)
@@ -477,7 +477,7 @@ describe.only('The VPDB `profile` API', () => {
 		});
 	});
 
-	describe('when a non-local user sets its username', () => {
+	describe.skip('when a non-local user sets its username', () => {
 
 		it('should succeed when providing a valid password', async () => {
 			// 1. create github user

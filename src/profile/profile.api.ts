@@ -39,6 +39,7 @@ export class ProfileApi extends Api {
 	/**
 	 * Returns the current user's profile.
 	 *
+	 * @see GET /v1/profile
 	 * @param ctx Koa context
 	 */
 	public async view(ctx: Context) {
@@ -229,13 +230,12 @@ export class ProfileApi extends Api {
 	/**
 	 * Confirms user's email for a given token.
 	 *
+	 * @see GET /v1/profile/confirm/:tkn
 	 * @param ctx Koa context
 	 */
 	public async confirm(ctx: Context) {
 
-		let emailToConfirm, currentCode, logEvent, successMsg, failMsg = 'No such token or token expired.';
-		const deleteUsers: User[] = [];
-		const mergeUsers: User[] = [];
+		const failMsg = 'No such token or token expired.';
 
 		let user = await ctx.models.User.findOne({ 'email_status.token': ctx.params.tkn }).exec();
 		if (!user) {
@@ -251,7 +251,7 @@ export class ProfileApi extends Api {
 				.status(404);
 		}
 
-		emailToConfirm = user.email_status.value;
+		const emailToConfirm = user.email_status.value;
 		logger.info('[api|user:confirm] Email %s confirmed.', emailToConfirm);
 
 		// now we have a valid user that is either pending registration or update.
@@ -266,32 +266,35 @@ export class ProfileApi extends Api {
 			id: { $ne: user.id }
 		}).exec();
 
-		otherUsers.forEach(otherUser => {
+		let delCounter = 0;
+		const mergeUsers: User[] = [];
+		for (let otherUser of otherUsers) {
 			// "pending_registration" are the only accounts where "email" is not confirmed ("pending_update" doesn't update "email").
 			// these can be deleted because they don't have anything merge-worthy (given it's an email confirmation, we already have local credentials).
 			if (otherUser.email_status && otherUser.email_status.code === 'pending_registration') {
 				logger.info('[api|user:confirm] Deleting pending registration user with same email <%s>.', otherUser.email);
-				deleteUsers.push(otherUser);
-				return;
-			}
-			// the rest (confirmed) needs merging
-			mergeUsers.push(otherUser);
-		});
-		logger.info('[api|user:confirm] Found %s confirmed and %s unconfirmed dupe users for %s.', mergeUsers.length, deleteUsers.length, user.email);
+				await otherUser.remove();
+				delCounter++;
 
-		await Promise.all(deleteUsers.map(u => u.remove()));
+			} else {
+				// the rest (confirmed) needs merging
+				mergeUsers.push(otherUser);
+			}
+		}
+		logger.info('[api|user:confirm] Found %s confirmed and %s unconfirmed dupe users for %s.', mergeUsers.length, delCounter, user.email);
 
 		// auto-merge if only one user without credentials
 		if (mergeUsers.length === 1 && !mergeUsers[0].is_local) {
 			user = await UserUtil.mergeUsers(ctx, user, mergeUsers[0], null);
 
-			// otherwise we need to manually merge.
-		} else {
+		// otherwise we need to manually merge.
+		} else if (mergeUsers.length > 0) {
 			const explanation = `During the email validation, another account with the same email was created and validated. If that wasn't you, you should be worried an contact us immediately!`;
 			user = await UserUtil.tryMergeUsers(ctx, [user, ...mergeUsers], explanation);
 		}
 
-		currentCode = user.email_status.code;
+		let logEvent:string, successMsg:string;
+		const currentCode = user.email_status.code;
 		if (currentCode === 'pending_registration') {
 			user.is_active = true;
 			logger.info('[api|user:confirm] User email <%s> for pending registration confirmed.', user.email);
@@ -319,7 +322,7 @@ export class ProfileApi extends Api {
 		return this.success(ctx, {
 			message: successMsg,
 			previous_code: currentCode,
-			deleted_users: deleteUsers.length,
+			deleted_users: delCounter,
 			merged_users: mergeUsers.length
 		});
 	}

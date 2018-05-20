@@ -22,14 +22,18 @@ import { Game } from '../games/game';
 import { User } from '../users/user';
 
 export interface GameRequest extends Document {
-	id: string,
-	title: string,
-	notes: string,
-	ipdb_number: number,
-	ipdb_title: string,
-	is_closed: boolean,
-	message: string,
-	_game: Game | Schema.Types.ObjectId,
-	_created_by: User | Schema.Types.ObjectId,
-	created_at: Date
+	id: string;
+	title: string;
+	notes: string;
+	ipdb_number: number;
+	ipdb_title: string;
+	is_closed: boolean;
+	message: string;
+	_game: Game | Schema.Types.ObjectId;
+	_created_by: User | Schema.Types.ObjectId;
+	created_at: Date;
+
+	// serialized
+	game: Game;
+	created_by: User;
 }

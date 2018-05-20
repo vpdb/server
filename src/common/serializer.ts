@@ -17,15 +17,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document } from 'mongoose';
+import { Document, ModeratedDocument } from 'mongoose';
 import { get, isArray, defaultsDeep, assign, pick } from 'lodash';
 import { Context } from './types/context';
 import { File } from '../files/file';
-import { Moderated } from './mongoose/moderate';
 import { ReleaseVersionFile } from '../releases/release.version.file';
 import { Thumb } from './types/serializers';
 
-export abstract class Serializer<T extends Document | Moderated> {
+export abstract class Serializer<T extends Document | ModeratedDocument> {
 
 	protected abstract _reduced(ctx: Context, doc: T, opts: SerializerOptions): T;
 
@@ -87,9 +86,9 @@ export abstract class Serializer<T extends Document | Moderated> {
 		}
 
 		// handle moderation field
-		if ((doc as Moderated).moderation) {
+		if ((doc as ModeratedDocument).moderation) {
 			const ModerationSerializer = require('./mongoose/moderation.serializer');
-			(object as Moderated).moderation = ModerationSerializer._simple((doc as Moderated).moderation, ctx, opts);
+			(object as ModeratedDocument).moderation = ModerationSerializer._simple((doc as ModeratedDocument).moderation, ctx, opts);
 		}
 
 		// remove excluded fields

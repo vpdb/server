@@ -53,7 +53,7 @@ export class ProfileApi extends Api {
 	 */
 	public async update(ctx: Context) {
 
-		const updateableFields = ['name', 'location', 'email', 'preferences', 'channel_config'];
+		const updatableFields = ['name', 'location', 'email', 'preferences', 'channel_config'];
 
 		// api test behavior
 		let testMode = process.env.NODE_ENV === 'test';
@@ -195,7 +195,7 @@ export class ProfileApi extends Api {
 		}
 
 		const user = await updatedUser.save();
-		await LogUserUtil.successDiff(ctx, updatedUser, 'update', pick(currentUser.toObject(), updateableFields), updatedUser);
+		await LogUserUtil.successDiff(ctx, updatedUser, 'update', pick(currentUser.toObject(), updatableFields), updatedUser);
 
 		// log
 		if (ctx.request.body.password) {

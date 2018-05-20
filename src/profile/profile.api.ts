@@ -17,7 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { assign, extend, keys, pick, uniq } from 'lodash';
+import { ValidationError } from 'mongoose';
+import { assign, extend, pick, uniq, values } from 'lodash';
 import randomstring from 'randomstring';
 
 import { Api } from '../common/api';
@@ -30,6 +31,7 @@ import { ApiError, ApiValidationError } from '../common/api.error';
 import { User } from '../users/user';
 import { emailUpdateConfirmation, welcomeLocal } from '../common/mailer';
 import { config } from '../common/settings';
+import { realtime } from '../common/realtime';
 import { UserUtil } from '../users/user.util';
 
 export class ProfileApi extends Api {
@@ -49,6 +51,7 @@ export class ProfileApi extends Api {
 	/**
 	 * Updates the current user's profile.
 	 *
+	 * @see PATCH /v1/profile
 	 * @param ctx Koa context
 	 */
 	public async update(ctx: Context) {
@@ -58,13 +61,14 @@ export class ProfileApi extends Api {
 		// api test behavior
 		let testMode = process.env.NODE_ENV === 'test';
 		let currentUser = ctx.state.user;
-		let errors: { [key: string]: ApiValidationError } = {};
+		let errors:ApiValidationError[] = [];
 
 		const updatedUser = await ctx.models.User.findById(currentUser._id).exec();
 		if (!updatedUser) {
 			throw new ApiError('User not found. Seems be deleted since last login.').status(404);
 		}
 
+		// check for dupe name
 		if (ctx.request.body.name) {
 			const dupeNameUser = await ctx.models.User.findOne({
 				name: ctx.request.body.name,
@@ -75,15 +79,18 @@ export class ProfileApi extends Api {
 			}
 		}
 
+		// apply new data
+		extend(updatedUser, pick(ctx.request.body, updatableFields));
+
 		// CHANGE PASSWORD
 		if (ctx.request.body.password && !ctx.request.body.username) {
 
 			// check for current password
 			if (!ctx.request.body.current_password) {
-				errors.current_password = {
+				errors.push({
 					message: 'You must provide your current password.',
 					path: 'current_password'
-				};
+				});
 
 			} else {
 				// change password
@@ -91,7 +98,7 @@ export class ProfileApi extends Api {
 					updatedUser.password = ctx.request.body.password;
 					await LogUserUtil.success(ctx, updatedUser, 'change_password');
 				} else {
-					errors.current_password = { message: 'Invalid password.', path: 'current_password' };
+					errors.push({ message: 'Invalid password.', path: 'current_password' });
 					logger.warn('[api|user:update] User <%s> provided wrong current password while changing.', currentUser.email);
 				}
 			}
@@ -101,7 +108,7 @@ export class ProfileApi extends Api {
 		if (ctx.request.body.username && !currentUser.is_local) {
 
 			if (!ctx.request.body.password) {
-				errors.password = { message: 'You must provide your new password.', path: 'password' };
+				errors.push({ message: 'You must provide your new password.', path: 'password' });
 
 			} else {
 				updatedUser.password = ctx.request.body.password;
@@ -111,31 +118,34 @@ export class ProfileApi extends Api {
 			}
 		}
 		if (ctx.request.body.username && currentUser.is_local && ctx.request.body.username !== updatedUser.username) {
-			errors.username = {
+			errors.push({
 				message: 'Cannot change username for already local account.',
 				path: 'username',
 				value: ctx.request.body.username,
 				kind: 'read_only'
-			};
+			});
 		}
 
 		// CHANNEL CONFIG
-		// if (ctx.request.body.channel_config && !pusher.isUserEnabled(updatedUser)) {
-		// 	errors.channel_config = {
-		// 		message: 'Realtime features are not enabled for this account.',
-		// 		path: 'channel_config'
-		// 	};
-		// }
+		if (ctx.request.body.channel_config && !realtime.isUserEnabled(updatedUser)) {
+			errors.push({
+				message: 'Realtime features are not enabled for this account.',
+				path: 'channel_config'
+			});
+		}
 
 		// validate
 		try {
 			await updatedUser.validate();
 		} catch (validationErr) {
-			// merge errors
-			if (validationErr || keys(errors).length) {
-				let errs = extend(errors, validationErr ? validationErr.errors : {});
-				throw new ApiError().validationErrors(errs).warn().status(422);
+			if (validationErr.name === 'ValidationError') {
+				values(validationErr.errors).forEach(err => errors.push(err));
 			}
+		}
+
+		// if there are validation errors, die.
+		if (errors.length > 0) {
+			throw new ApiError().validationErrors(errors).warn().status(422);
 		}
 
 		// EMAIL CHANGE
@@ -210,7 +220,6 @@ export class ProfileApi extends Api {
 		// if all good, enrich with ACLs
 		const acls = await this.getACLs(user);
 
-		// return result now and send email afterwards
 		if (testMode && ctx.request.body.returnEmailToken) {
 			return this.success(ctx, extend(ctx.serializers.User.detailed(ctx, user), acls, { email_token: (user.email_status as any).toObject().token }), 200);
 		}

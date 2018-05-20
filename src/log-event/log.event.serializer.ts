@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-import { pick } from 'lodash';
+import { pick, isEmpty } from 'lodash';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { LogEvent } from './log.event';
 import { Context } from '../common/types/context';
@@ -60,7 +60,7 @@ export class LogEventSerializer extends Serializer<LogEvent> {
 		if (this._populated(doc, '_ref.game_request')) {
 			logEvent.ref.game_request = ctx.serializers.GameRequest.reduced(ctx, doc._ref.game_request as GameRequest, opts);
 		}
-		if (_.isEmpty(logEvent.ref)) {
+		if (isEmpty(logEvent.ref)) {
 			delete logEvent.ref;
 		}
 

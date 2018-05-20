@@ -17,10 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { BackglassSerializer } from '../../backglasses/backglass.serializer';
+import { BackglassVersionSerializer } from '../../backglasses/backglass.version.serializer';
 import { BuildSerializer } from '../../builds/build.serializer';
 import { ContentAuthorSerializer } from '../../users/content.author.serializer';
 import { FileSerializer } from '../../files/file.serializer';
 import { GameSerializer } from '../../games/game.serializer';
+import { GameRequestSerializer } from '../../game-requests/game.request.serializer';
 import { LogEventSerializer } from '../../log-event/log.event.serializer';
 import { LogUserSerializer } from '../../log-user/log.user.serializer';
 import { ReleaseSerializer } from '../../releases/release.serializer';
@@ -31,10 +34,13 @@ import { TokenSerializer } from '../../tokens/token.serializer';
 import { UserSerializer } from '../../users/user.serializer';
 
 export interface Serializers {
+	Backglass: BackglassSerializer;
+	BackglassVersion: BackglassVersionSerializer;
 	Build: BuildSerializer;
 	ContentAuthor: ContentAuthorSerializer;
 	File: FileSerializer;
 	Game: GameSerializer;
+	GameRequest: GameRequestSerializer;
 	LogEvent: LogEventSerializer;
 	LogUser: LogUserSerializer;
 	Release: ReleaseSerializer;

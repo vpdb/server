@@ -25,7 +25,7 @@ import { Models } from '../common/types/models';
 import { Serializers } from '../common/types/serializers';
 import { EndPoint } from '../common/types/endpoint';
 import { Token } from './token';
-import { schema } from './token.schema';
+import { tokenSchema } from './token.schema';
 import { router } from './token.api.router';
 import { TokenSerializer } from './token.serializer';
 
@@ -38,7 +38,7 @@ export class TokenEndPoint implements EndPoint {
 
 	constructor() {
 		this._router = router;
-		this._schema = schema;
+		this._schema = tokenSchema;
 	}
 
 	getRouter(): Router {

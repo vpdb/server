@@ -18,6 +18,8 @@
  */
 
 import { compact, includes, isArray, pick } from 'lodash';
+
+import { state } from '../state';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { ReleaseVersion } from './release.version';
 import { Context } from '../common/types/context';
@@ -31,14 +33,14 @@ export class ReleaseVersionSerializer extends Serializer<ReleaseVersion> {
 
 	protected _simple(ctx: Context, doc: ReleaseVersion, opts: SerializerOptions): ReleaseVersion {
 		const version = pick(doc, ['version', 'released_at']) as ReleaseVersion;
-		version.files = doc.files.map(versionFile => ctx.serializers.ReleaseVersionFile.simple(ctx, versionFile, opts));
+		version.files = doc.files.map(versionFile => state.serializers.ReleaseVersionFile.simple(ctx, versionFile, opts));
 		return version;
 	}
 
 	protected _detailed(ctx: Context, doc: ReleaseVersion, opts: SerializerOptions): ReleaseVersion {
 		const version = pick(doc, ['version', 'released_at', 'changes']) as ReleaseVersion;
 		version.counter = (doc.counter as any).toObject();
-		version.files = doc.files.map(versionFile => ctx.serializers.ReleaseVersionFile.detailed(ctx, versionFile, opts));
+		version.files = doc.files.map(versionFile => state.serializers.ReleaseVersionFile.detailed(ctx, versionFile, opts));
 		return version;
 	}
 

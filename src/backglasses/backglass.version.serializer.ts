@@ -17,8 +17,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-
 import { pick } from 'lodash';
+
+import { state } from '../state';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { BackglassVersion } from './backglass.version';
 import { Context } from '../common/types/context';
@@ -27,11 +28,11 @@ import { File } from '../files/file';
 export class BackglassVersionSerializer extends Serializer<BackglassVersion> {
 
 	protected _reduced(ctx: Context, doc: BackglassVersion, opts: SerializerOptions): BackglassVersion {
-		return this._serialize(ctx, doc, opts, ctx.serializers.File.reduced.bind(ctx.serializers.File));
+		return this._serialize(ctx, doc, opts, state.serializers.File.reduced.bind(state.serializers.File));
 	}
 
 	protected _simple(ctx: Context, doc: BackglassVersion, opts: SerializerOptions): BackglassVersion {
-		return this._serialize(ctx, doc, opts, ctx.serializers.File.simple.bind(ctx.serializers.File));
+		return this._serialize(ctx, doc, opts, state.serializers.File.simple.bind(state.serializers.File));
 	}
 
 	protected _detailed(ctx: Context, doc: BackglassVersion, opts: SerializerOptions): BackglassVersion {

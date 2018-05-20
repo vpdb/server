@@ -17,10 +17,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document, FileReferenceDocument, FileReferenceOptions, Model, Schema } from 'mongoose';
+import { Document, FileReferenceDocument, FileReferenceOptions, Schema } from 'mongoose';
 import { get, keys, omitBy, pickBy } from 'lodash';
 
-import { server } from '../../server';
+import { state } from '../../state';
 import { explodePaths, traversePaths } from './util';
 
 /**
@@ -49,7 +49,7 @@ export function fileReferencePlugin(schema: Schema, options: FileReferenceOption
 			if (!fileId || !this._created_by) {
 				return true;
 			}
-			const file = await server.models().File.findOne({ _id: fileId._id || fileId.toString() }).exec();
+			const file = await state.models.File.findOne({ _id: fileId._id || fileId.toString() }).exec();
 			if (!file) {
 				return true;
 			}
@@ -80,7 +80,7 @@ export function fileReferencePlugin(schema: Schema, options: FileReferenceOption
 				ids.push(id._id || id);
 			}
 		});
-		const files = await server.models().File.find({ _id: { $in: ids }, is_active: false }).exec();
+		const files = await state.models.File.find({ _id: { $in: ids }, is_active: false }).exec();
 		for (let file of files) {
 			await file.switchToActive();
 		}
@@ -101,7 +101,7 @@ export function fileReferencePlugin(schema: Schema, options: FileReferenceOption
 				ids.push(id);
 			}
 		});
-		const files = await server.models().File.find({ _id: { $in: ids } }).exec();
+		const files = await state.models.File.find({ _id: { $in: ids } }).exec();
 
 		// remove file references from db
 		for (let file of files) {

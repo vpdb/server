@@ -17,6 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { state } from '../state';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { ReleaseVersionFile } from './release.version.file';
 import { Context } from '../common/types/context';
@@ -31,17 +32,17 @@ export class ReleaseVersionFileSerializer extends Serializer<ReleaseVersionFile>
 	}
 
 	protected _simple(ctx: Context, doc: ReleaseVersionFile, opts: SerializerOptions): ReleaseVersionFile {
-		return this.serializeReleaseVersionFile(ctx, doc, opts, ctx.serializers.Build.reduced.bind(ctx.serializers.Build), ctx.serializers.File.simple.bind(ctx.serializers.File));
+		return this.serializeReleaseVersionFile(ctx, doc, opts, state.serializers.Build.reduced.bind(state.serializers.Build), state.serializers.File.simple.bind(state.serializers.File));
 	}
 
 	protected _detailed(ctx: Context, doc: ReleaseVersionFile, opts: SerializerOptions): ReleaseVersionFile {
-		const versionFile = this.serializeReleaseVersionFile(ctx, doc, opts, ctx.serializers.Build.simple.bind(ctx.serializers.Build), ctx.serializers.File.detailed.bind(ctx.serializers.File)) as ReleaseVersionFile;
+		const versionFile = this.serializeReleaseVersionFile(ctx, doc, opts, state.serializers.Build.simple.bind(state.serializers.Build), state.serializers.File.detailed.bind(state.serializers.File)) as ReleaseVersionFile;
 		// media
 		if (this._populated(doc, '_playfield_image')) {
-			versionFile.playfield_image = ctx.serializers.File.detailed(ctx, doc._playfield_image as File, opts);
+			versionFile.playfield_image = state.serializers.File.detailed(ctx, doc._playfield_image as File, opts);
 		}
 		if (doc._playfield_video && this._populated(doc, '_playfield_video')) {
-			versionFile.playfield_video = ctx.serializers.File.detailed(ctx, doc._playfield_video as File, opts);
+			versionFile.playfield_video = state.serializers.File.detailed(ctx, doc._playfield_video as File, opts);
 		}
 		return versionFile;
 	}
@@ -72,7 +73,7 @@ export class ReleaseVersionFileSerializer extends Serializer<ReleaseVersionFile>
 				status: doc.validation.status,
 				message: doc.validation.message,
 				validated_at: doc.validation.validated_at,
-				validated_by: this._populated(doc, 'validation._validated_by') ? ctx.serializers.User.reduced(ctx, doc.validation._validated_by as User, opts) : undefined
+				validated_by: this._populated(doc, 'validation._validated_by') ? state.serializers.User.reduced(ctx, doc.validation._validated_by as User, opts) : undefined
 			};
 		}
 

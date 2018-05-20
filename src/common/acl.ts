@@ -18,9 +18,10 @@
  */
 
 import ACL = require('acl');
+
+import { state } from '../state';
 import { logger } from './logger';
 import { config } from './settings';
-import { server } from '../server';
 
 const redis = require('redis').createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
 
@@ -110,7 +111,7 @@ export async function init():Promise<void> {
 	await acl.addRoleParents('release-contributor', [ 'member' ]);
 	await acl.addRoleParents('backglass-contributor', [ 'member' ]);
 	logger.info('[acl] Added permissions to roles.');
-	const users = await server.models().User.find({}).lean().exec();
+	const users = await state.models.User.find({}).lean().exec();
 	logger.info('[acl] Applying ACLs to %d users...', users.length);
 	for (let user of users) {
 		await acl.addUserRoles(user.id, user.roles);

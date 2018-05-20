@@ -23,8 +23,8 @@ import { fileReferencePlugin } from '../common/mongoose/file.reference.plugin';
 import { prettyIdPlugin } from '../common/mongoose/pretty.id.plugin';
 import { releaseVersionFileFields, releaseVersionFileSchema } from './release.version.file.schema';
 import { ReleaseFileFlavor, ReleaseVersionFile } from './release.version.file';
+import { state } from '../state';
 import { Release } from './release';
-import { server } from '../server';
 
 export const releaseVersionFields = {
 	version: { type: String, required: 'Version must be provided.' },
@@ -133,7 +133,7 @@ async function validateFile(release: Release, tableFile: ReleaseVersionFile, ind
 		return Promise.resolve(false);
 	}
 
-	const f = await server.models().File.findById(tableFile._file).exec();
+	const f = await state.models.File.findById(tableFile._file).exec();
 
 	// will fail by reference plugin
 	if (!f) {
@@ -170,7 +170,7 @@ async function validateFile(release: Release, tableFile: ReleaseVersionFile, ind
 
 	// validate playfield image
 	if (tableFile._playfield_image) {
-		mediaValidations.push(server.models().File.findById(tableFile._playfield_image).exec().then(playfieldImage => {
+		mediaValidations.push(state.models.File.findById(tableFile._playfield_image).exec().then(playfieldImage => {
 			if (!playfieldImage) {
 				release.invalidate('files.' + index + '._playfield_image',
 					'Playfield "' + tableFile._playfield_image + '" does not exist.', tableFile._playfield_image);

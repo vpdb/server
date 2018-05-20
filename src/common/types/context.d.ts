@@ -18,28 +18,11 @@
  */
 
 import { Context as KoaContext } from 'koa';
-import { RedisClient } from 'redis';
 import { User } from '../../users/user';
-import { Models } from './models';
-import { Serializers } from './serializers';
 import { Token } from '../../tokens/token';
 import { ApiError } from '../api.error';
 
 export interface Context extends KoaContext {
-	/**
-	 * Reference to all our database models.
-	 */
-	models: Models;
-
-	/**
-	 * Reference to all serializers
-	 */
-	serializers: Serializers;
-
-	/**
-	 * Promisified Redis client
-	 */
-	redis: RedisClient;
 
 	state: {
 		/**

@@ -1,11 +1,11 @@
 import { Context } from '../types/context';
 import { config, settings } from '../settings';
+import { state } from '../../state';
 import { User } from '../../users/user';
 import { ApiError } from '../api.error';
 import { decode as jwtDecode } from 'jwt-simple';
 import { Scope } from '../scope';
 import { AuthenticationUtil, Jwt } from '../../authentication/authentication.util';
-import { logger } from '../logger';
 
 /**
  * Middleware that populates the authentication state. It sets:
@@ -120,7 +120,7 @@ async function authenticateWithAppToken(ctx: Context, token: { value: string, fr
 		throw new ApiError('App tokens must be provided in the header.').status(401);
 	}
 
-	const appToken = await ctx.models.Token.findOne({ token: token }).populate('_created_by').exec();
+	const appToken = await state.models.Token.findOne({ token: token }).populate('_created_by').exec();
 
 	// fail if not found
 	if (!appToken) {
@@ -160,7 +160,7 @@ async function authenticateWithAppToken(ctx: Context, token: { value: string, fr
 
 		// vpdb user id header provided
 		if (userId) {
-			user = await ctx.models.User.findOne({ id: userId });
+			user = await state.models.User.findOne({ id: userId });
 			if (!user) {
 				throw new ApiError('No user with ID "%s".', userId).status(400);
 			}
@@ -170,7 +170,7 @@ async function authenticateWithAppToken(ctx: Context, token: { value: string, fr
 
 		// provider id header provided
 		} else if (providerUserId) {
-			user = await ctx.models.User.findOne({ ['providers.' + appToken.provider + '.id']: String(providerUserId) });
+			user = await state.models.User.findOne({ ['providers.' + appToken.provider + '.id']: String(providerUserId) });
 
 			if (!user) {
 				throw new ApiError('No user with ID "%s" for provider "%s".', providerUserId, appToken.provider).status(400);
@@ -223,7 +223,7 @@ async function authenticateWithJwt(ctx: Context, token: { value: string, fromUrl
 	}
 
 	const user = await
-		ctx.models.User.findOne({ id: decoded.iss });
+		state.models.User.findOne({ id: decoded.iss });
 	if (!user) {
 		throw new ApiError('No user with ID %s found.', decoded.iss).status(403).log();
 	}

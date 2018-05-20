@@ -18,6 +18,8 @@
  */
 
 import { pick } from 'lodash';
+
+import { state } from '../state';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { Context } from '../common/types/context';
 import { LogUser } from './log.user';
@@ -35,12 +37,12 @@ export class LogUserSerializer extends Serializer<LogUser> {
 
 		// actor
 		if (this._populated(doc, '_actor')) {
-			logUser.actor = ctx.serializers.User.reduced(ctx, doc._actor as User, opts);
+			logUser.actor = state.serializers.User.reduced(ctx, doc._actor as User, opts);
 		}
 
 		// creator
 		if (this._populated(doc, '_user')) {
-			logUser.user = ctx.serializers.User.reduced(ctx, doc._user as User, opts);
+			logUser.user = state.serializers.User.reduced(ctx, doc._user as User, opts);
 		}
 
 		return logUser;

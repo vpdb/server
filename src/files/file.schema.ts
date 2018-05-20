@@ -21,15 +21,15 @@ import { resolve } from 'path';
 import { Schema } from 'mongoose';
 import { includes } from 'lodash';
 
-import { server } from '../server';
-import { mimeTypeNames, mimeTypes } from './file.mimetypes';
-import { File, FilePathOptions} from './file';
-import { fileTypes } from './file.types';
+import { state } from '../state';
 import { quota } from '../common/quota';
 import { storage } from '../common/storage';
 import { config, settings } from '../common/settings';
-import { FileVariation } from './file.variations';
 import { metricsPlugin } from '../common/mongoose/metrics.plugin';
+import { mimeTypeNames, mimeTypes } from './file.mimetypes';
+import { File, FilePathOptions} from './file';
+import { fileTypes } from './file.types';
+import { FileVariation } from './file.variations';
 
 const shortId = require('shortid32');
 
@@ -222,7 +222,7 @@ fileSchema.methods.toString = function (variation: FileVariation = null): string
  * @return {Promise<File>} Moved file
  */
 fileSchema.methods.switchToActive = async function (): Promise<File> {
-	await server.models().File.update({ _id: this._id }, { is_active: true });
+	await state.models.File.update({ _id: this._id }, { is_active: true });
 	this.is_active = true;
 	return await storage.switchToPublic(this);
 };
@@ -334,10 +334,10 @@ fileSchema.post('remove', async function (obj:File) {
 		await storage.remove(obj);
 
 		// remove table blocks
-		await server.models().TableBlock.update(
+		await state.models.TableBlock.update(
 			{ _files: obj._id },
 			{ $pull: { _files: obj._id } },
 			{ multi: true }
 		);
-		await server.models().TableBlock.remove({ _files: { $size: 0 } });
+		await state.models.TableBlock.remove({ _files: { $size: 0 } });
 });

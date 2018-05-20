@@ -20,6 +20,7 @@
 import { pick, sortBy, sumBy } from 'lodash';
 import Busboy from 'busboy';
 
+import { state } from '../state';
 import { Api } from '../common/api';
 import { Context } from '../common/types/context';
 import { ApiError } from '../common/api.error';
@@ -61,7 +62,7 @@ export class FileApi extends Api {
 		} else {
 			file = await this.handleUpload(ctx);
 		}
-		return this.success(ctx, ctx.serializers.File.detailed(ctx, file), 201);
+		return this.success(ctx, state.serializers.File.detailed(ctx, file), 201);
 	}
 
 	/**
@@ -69,7 +70,7 @@ export class FileApi extends Api {
 	 * @param {Application.Context} ctx Koa context
 	 */
 	public async del(ctx: Context) {
-		const file = await ctx.models.File.findOne({ id: ctx.params.id });
+		const file = await state.models.File.findOne({ id: ctx.params.id });
 
 		// fail if not found
 		if (!file) {
@@ -96,7 +97,7 @@ export class FileApi extends Api {
 	 * @param {Application.Context} ctx Koa context
 	 */
 	public async view(ctx: Context) {
-		const file = await ctx.models.File.findOne({ id: ctx.params.id });
+		const file = await state.models.File.findOne({ id: ctx.params.id });
 
 		// fail if not found
 		if (!file) {
@@ -108,7 +109,7 @@ export class FileApi extends Api {
 		if (!file.is_active && (!ctx.state.user || !isOwner)) {
 			throw new ApiError('File "%s" is inactive.', ctx.params.id).status(ctx.state.user ? 403 : 401);
 		}
-		return this.success(ctx, ctx.serializers.File.detailed(ctx, file));
+		return this.success(ctx, state.serializers.File.detailed(ctx, file));
 	}
 
 	/**
@@ -121,7 +122,7 @@ export class FileApi extends Api {
 		const includeSameRelease = !!ctx.query.include_same_release;
 		const rlsFields = ['_game', 'authors._user', 'versions.files._file', 'versions.files._compatibility'];
 		const threshold = 50; // sum of matched bytes and object percentage must be >50%
-		const file = await ctx.models.File.findOne({ id: ctx.params.id });
+		const file = await state.models.File.findOne({ id: ctx.params.id });
 
 		// fail if not found
 		if (!file) {
@@ -132,7 +133,7 @@ export class FileApi extends Api {
 		if (file.getMimeCategory() !== 'table') {
 			throw new ApiError('Can only match table files, this is a %s', file.getMimeCategory(), ctx.params.id).status(400);
 		}
-		const release = await ctx.models.Release.findOne({ 'versions.files._file': file._id }).populate(rlsFields.join(' ')).exec();
+		const release = await state.models.Release.findOne({ 'versions.files._file': file._id }).populate(rlsFields.join(' ')).exec();
 
 		// fail if not found
 		if (!release) {
@@ -141,7 +142,7 @@ export class FileApi extends Api {
 
 		const result: TableBlockMatchResult = this.populateBlockmatch<TableBlockMatchResult>(ctx, release, file._id.toString());
 		const matches = new Map<string, TableBlock[]>();
-		const blocks = await ctx.models.TableBlock.find({ _files: file._id }).exec();
+		const blocks = await state.models.TableBlock.find({ _files: file._id }).exec();
 		// split blocks: { <file._id>: [ matched blocks ] }
 		blocks.forEach((block: TableBlock) => {
 			(block._files as File[]).forEach(f => {
@@ -157,7 +158,7 @@ export class FileApi extends Api {
 			});
 		});
 		// FIXME just fetch files, calc percentage, filter, THEN fetch releases for performance boost.
-		const matchedReleases = await ctx.models.Release.find({ 'versions.files._file': { $in: Array.from(matches.keys()) } }).populate(rlsFields).exec();
+		const matchedReleases = await state.models.Release.find({ 'versions.files._file': { $in: Array.from(matches.keys()) } }).populate(rlsFields).exec();
 
 		// map <file._id>: <release>
 		let releases = new Map<string, Release>();
@@ -201,7 +202,7 @@ export class FileApi extends Api {
 		if (!release) {
 			return;
 		}
-		let rls = ctx.serializers.Release.simple(ctx, release);
+		let rls = state.serializers.Release.simple(ctx, release);
 		base.release = pick(rls, ['id', 'name', 'created_at', 'authors']) as Release;
 		base.game = rls.game;
 		release.versions.forEach(version => {
@@ -211,7 +212,7 @@ export class FileApi extends Api {
 					let f = versionFile.toObject();
 					base.file = pick(f, ['released_at', 'flavor']) as ReleaseVersionFile;
 					base.file.compatibility = f._compatibility.map((c: Build) => pick(c, ['id', 'label']));
-					base.file.file = ctx.serializers.File.simple(ctx, versionFile._file as File);
+					base.file.file = state.serializers.File.simple(ctx, versionFile._file as File);
 				}
 			});
 		});

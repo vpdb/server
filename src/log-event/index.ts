@@ -21,9 +21,8 @@ import Application = require('koa');
 import mongoose, { Schema } from 'mongoose';
 import Router from 'koa-router';
 
-import { Models } from '../common/types/models';
+import { state } from '../state';
 import { EndPoint } from '../common/types/endpoint';
-import { Serializers } from '../common/types/serializers';
 import { logEventSchema } from './log.event.schema';
 import { LogEvent } from './log.event';
 import { LogEventSerializer } from './log.event.serializer';
@@ -44,7 +43,7 @@ export class LogEventEndPoint implements EndPoint {
 	}
 
 	register(app: Application): void {
-		(app.context.models as Models).LogEvent = mongoose.model<LogEvent>('LogEvent', this._schema);
-		(app.context.serializers as Serializers).LogEvent = new LogEventSerializer();
+		state.models.LogEvent = mongoose.model<LogEvent>('LogEvent', this._schema);
+		state.serializers.LogEvent = new LogEventSerializer();
 	}
 }

@@ -20,6 +20,7 @@
 import randomstring from 'randomstring';
 import { assign, keys, sum, uniq, values } from 'lodash';
 
+import { state } from '../state';
 import { Context } from '../common/types/context';
 import { acl } from '../common/acl';
 import { logger } from '../common/logger';
@@ -38,7 +39,7 @@ export class UserUtil {
 
 	public static async createUser(ctx: Context, userObj: User, confirmUserEmail: boolean): Promise<User> {
 
-		let user = new ctx.models.User(assign(userObj, {
+		let user = new state.models.User(assign(userObj, {
 			created_at: new Date(),
 			roles: ['member'],
 			_plan: config.vpdb.quota.defaultPlan
@@ -58,7 +59,7 @@ export class UserUtil {
 		}
 		await user.validate();
 
-		const count = await ctx.models.User.count({}).exec();
+		const count = await state.models.User.count({}).exec();
 
 		user.roles = count ? ['member'] : ['root'];
 		user = await user.save();
@@ -94,7 +95,7 @@ export class UserUtil {
 		} else {
 			// otherwise, fail and query merge resolution
 			throw new ApiError('Conflicted users, must merge.')
-				.body({ explanation: explanation, users: mergeUsers.map(u => ctx.serializers.User.detailed(ctx, u)) })
+				.body({ explanation: explanation, users: mergeUsers.map(u => state.serializers.User.detailed(ctx, u)) })
 				.status(409);
 		}
 	};
@@ -117,21 +118,21 @@ export class UserUtil {
 		let queries:Array<any>;
 
 		// 1. update references
-		await ctx.models.Backglass.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
-		await ctx.models.Build.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
-		await ctx.models.Comment.update({ _from: mergeUser._id.toString() }, { _from: keepUser._id.toString() });
-		await ctx.models.File.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
-		await ctx.models.Game.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
-		await ctx.models.GameRequest.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
-		await ctx.models.LogEvent.update({ _actor: mergeUser._id.toString() }, { _actor: keepUser._id.toString() });
-		await ctx.models.LogEvent.update({ '_ref.user': mergeUser._id.toString() }, { '_ref.user': keepUser._id.toString() });
-		await ctx.models.LogUser.update({ _user: mergeUser._id.toString() }, { _user: keepUser._id.toString() });
-		await ctx.models.LogUser.update({ _actor: mergeUser._id.toString() }, { _actor: keepUser._id.toString() });
-		await ctx.models.Medium.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
-		await ctx.models.Release.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
-		await ctx.models.Rom.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
-		await ctx.models.Tag.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
-		await ctx.models.Token.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
+		await state.models.Backglass.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
+		await state.models.Build.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
+		await state.models.Comment.update({ _from: mergeUser._id.toString() }, { _from: keepUser._id.toString() });
+		await state.models.File.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
+		await state.models.Game.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
+		await state.models.GameRequest.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
+		await state.models.LogEvent.update({ _actor: mergeUser._id.toString() }, { _actor: keepUser._id.toString() });
+		await state.models.LogEvent.update({ '_ref.user': mergeUser._id.toString() }, { '_ref.user': keepUser._id.toString() });
+		await state.models.LogUser.update({ _user: mergeUser._id.toString() }, { _user: keepUser._id.toString() });
+		await state.models.LogUser.update({ _actor: mergeUser._id.toString() }, { _actor: keepUser._id.toString() });
+		await state.models.Medium.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
+		await state.models.Release.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
+		await state.models.Rom.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
+		await state.models.Tag.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
+		await state.models.Token.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
 
 
 		// const strs = ['%s backglass(es)', '%s build(s)', '%s comment(s)', '%s file(s)', '%s game(s)', '%s game request(s)',
@@ -140,7 +141,7 @@ export class UserUtil {
 		// logger.info('[model|user] Merged %s', result.map((r, i) => assign(r, { str: strs[i].replace('%s', r.n) })).filter(r => r.n > 0).map(r => r.str).join(', '));
 
 		// 1.1 update release versions
-		const releasesByAuthor = await ctx.models.Release.find({ 'authors._user': mergeUser._id.toString() }).exec();
+		const releasesByAuthor = await state.models.Release.find({ 'authors._user': mergeUser._id.toString() }).exec();
 		await Promise.all(releasesByAuthor.map((release: any) => {
 			release.authors.forEach((author:ContentAuthor) => {
 				if (mergeUser._id.equals(author._user)) {
@@ -152,7 +153,7 @@ export class UserUtil {
 		}));
 
 		// 1.2 update release validation
-		const releasesByValidator = await ctx.models.Release.find({ 'versions.files.validation._validated_by': mergeUser._id.toString() }).exec();
+		const releasesByValidator = await state.models.Release.find({ 'versions.files.validation._validated_by': mergeUser._id.toString() }).exec();
 		logger.info('[model|user] Merged %s author(s)', num);
 		num = 0;
 		await Promise.all(releasesByValidator.map((release: Release) => {
@@ -167,7 +168,7 @@ export class UserUtil {
 			return release.save();
 		}));
 
-		const releasesByModeration = await ctx.models.Release.find({ 'moderation.history._created_by': mergeUser._id.toString() }).exec();
+		const releasesByModeration = await state.models.Release.find({ 'moderation.history._created_by': mergeUser._id.toString() }).exec();
 		logger.info('[model|user] Merged %s release moderation(s)', num);
 		num = 0;
 		// 1.3 release moderation
@@ -181,7 +182,7 @@ export class UserUtil {
 			return release.save();
 		}));
 
-		const backglasses = await ctx.models.Backglass.find({ 'moderation.history._created_by': mergeUser._id.toString() }).exec();
+		const backglasses = await state.models.Backglass.find({ 'moderation.history._created_by': mergeUser._id.toString() }).exec();
 
 		logger.info('[model|user] Merged %s item(s) in release moderation history', num);
 		num = 0;
@@ -202,13 +203,13 @@ export class UserUtil {
 		num = 0;
 
 		// 1.5 ratings. first, update user id of all ratings
-		const numRatings = await ctx.models.Rating.update({ _from: mergeUser._id.toString() }, { _from: keepUser._id.toString() });
+		const numRatings = await state.models.Rating.update({ _from: mergeUser._id.toString() }, { _from: keepUser._id.toString() });
 
 		logger.info('[model|user] Merged %s rating(s)', numRatings.n);
 
 		// then, remove duplicate ratings
 		const ratingMap = new Map();
-		const ratings = await ctx.models.Rating.find({ _from: mergeUser._id.toString() }).exec();
+		const ratings = await state.models.Rating.find({ _from: mergeUser._id.toString() }).exec();
 		// put ratings for the same thing into a map
 		ratings.forEach(rating => {
 			const key = keys(rating._ref).sort().join(',') + ':' + values(rating._ref).sort().join(',');
@@ -227,13 +228,13 @@ export class UserUtil {
 		await Promise.all(queries);
 
 		// 1.6 stars: first, update user id of all stars
-		const numStars = await ctx.models.Star.update({ _from: mergeUser._id.toString() }, { _from: keepUser._id.toString() });
+		const numStars = await state.models.Star.update({ _from: mergeUser._id.toString() }, { _from: keepUser._id.toString() });
 
 		logger.info('[model|user] Merged %s star(s)', numStars.n);
 
 		// then, remove duplicate stars
 		const starMap = new Map();
-		const stars = await ctx.models.Star.find({ _from: mergeUser._id.toString() }).exec();
+		const stars = await state.models.Star.find({ _from: mergeUser._id.toString() }).exec();
 		// put ratings for the same thing into a map
 		stars.forEach(star => {
 			const key = keys(star._ref).sort().join(',') + ':' + values(star._ref).sort().join(',');
@@ -286,7 +287,7 @@ export class UserUtil {
 		await keepUser.save();
 
 		// 3. log
-		//ctx.models.LogUser.success(ctx, keepUser, 'merge_users', { kept: keepUser, merged: mergeUser });
+		//state.models.LogUser.success(ctx, keepUser, 'merge_users', { kept: keepUser, merged: mergeUser });
 
 		// 4. notify
 		if (explanation) {

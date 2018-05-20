@@ -17,15 +17,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { reduce, pick, isEqual, isObject, keys } from 'lodash';
+
+import { state } from '../state';
 import { Context } from '../common/types/context';
 import { slackbot } from '../common/slackbot';
-import { reduce, pick, isEqual, isObject } from 'lodash';
 
 export class LogEventUtil {
 
 	public static async log(ctx: Context, event: string, isPublic: boolean, payload: any, ref: any) {
 		const actor = ctx.state.user ? ctx.state.user._id : null;
-		let log = new ctx.models.LogEvent({
+		let log = new state.models.LogEvent({
 			_actor: actor,
 			_ref: ref,
 			event: event,
@@ -40,7 +42,7 @@ export class LogEventUtil {
 
 	public static diff(fromDB: { [key: string]: any }, fromAPI: { [key: string]: any }) {
 
-		fromDB = pick(fromDB, _.keys(fromAPI));
+		fromDB = pick(fromDB, keys(fromAPI));
 		return reduce(fromDB, (result: { old: { [key: string]: any }, new: { [key: string]: any } }, val, key) => {
 			if (!isEqual(fromAPI[key], val)) {
 				if (isObject(val)) {

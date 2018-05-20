@@ -16,7 +16,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+
 import { pick } from 'lodash';
+
+import { state } from '../state';
 import { Api } from '../common/api';
 import { Context } from '../common/types/context';
 import { config } from '../common/settings';
@@ -48,7 +51,7 @@ export class LogUserApi extends Api {
 		}
 
 		// query
-		const result = await ctx.models.LogUser.paginate(this.searchQuery(query));
+		const result = await state.models.LogUser.paginate(this.searchQuery(query));
 		const providerInfo: { [key: string]: { name: string, icon: string } } = {
 			google: { name: 'Google', icon: 'google-g' },
 			github: { name: 'GitHub', icon: 'github' },
@@ -64,7 +67,7 @@ export class LogUserApi extends Api {
 			if (providerInfo[log.payload.provider]) {
 				log.payload.providerInfo = providerInfo[log.payload.provider];
 			}
-			return ctx.serializers.LogUser.detailed(ctx, log);
+			return state.serializers.LogUser.detailed(ctx, log);
 		});
 		return this.success(ctx, logs, 200, this.paginationOpts(pagination, result.total));
 	}

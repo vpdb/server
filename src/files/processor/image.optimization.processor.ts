@@ -20,6 +20,7 @@
 import { createWriteStream, createReadStream } from 'fs';
 
 const PngQuant = require('pngquant');
+import { sep } from "path";
 const OptiPng = require('optipng');
 
 import { Processor } from './processor';
@@ -27,7 +28,7 @@ import { File} from '../file';
 import { logger } from '../../common/logger';
 import { ApiError } from '../../common/api.error';
 import { FileVariation } from '../file.variations';
-import { ProcessorQueueType } from './processor.queue';
+import { ProcessorQueueName } from './processor.queue';
 
 export class ImageOptimizationProcessor extends Processor<FileVariation> {
 
@@ -43,29 +44,31 @@ export class ImageOptimizationProcessor extends Processor<FileVariation> {
 		return 500;
 	}
 
-	getQueue(): ProcessorQueueType {
-		return ProcessorQueueType.LOW_PRIO_SLOW;
+	getQueue(): ProcessorQueueName {
+		return 'LOW_PRIO_SLOW';
 	}
 
-	async process(file: File, src: string, dest: string, variation?: FileVariation): Promise<File> {
+	async process(file: File, src: string, dest: string, variation?: FileVariation): Promise<string> {
 
+		const srcLog = src.split(sep).slice(-3).join('/');
+		const destLog = dest.split(sep).slice(-3).join('/');
 		if (file.file_type === 'playfield') {
-			logger.info('[ImageOptimizationProcessor] Skipping pass 2 for %s (will process when orientation is set)', file.toString(variation));
-			return file;
+			logger.info('[ImageOptimizationProcessor] Skipping (will process when orientation is set): %s', file.toDetailedString(variation));
+			return dest;
 		}
 
 		const quanter = new PngQuant([128]);
 		const optimizer = new OptiPng(['-o7']);
 
-		return new Promise<File>((resolve, reject) => {
+		return new Promise<string>((resolve, reject) => {
 
 			// create destination stream
 			let writeStream = createWriteStream(dest);
 
 			// setup success handler
 			writeStream.on('finish', function () {
-				logger.debug('[ImageOptimizationProcessor] Finished pass 2 for %s', file.toString(variation));
-				resolve(file);
+				logger.debug('[ImageOptimizationProcessor] Done: %s', file.toDetailedString(variation));
+				resolve(dest);
 			});
 			writeStream.on('error', reject);
 
@@ -77,7 +80,7 @@ export class ImageOptimizationProcessor extends Processor<FileVariation> {
 			};
 
 			// do the processing
-			logger.debug('[ImageOptimizationProcessor] Optimizing %s %s', file.getMimeSubtype(variation), file.toString(variation));
+			logger.debug('[ImageOptimizationProcessor] Start: %s from %s to %s', file.toDetailedString(variation), srcLog, destLog);
 			createReadStream(src).on('error', handleErr('reading'))
 				.pipe(quanter).on('error', handleErr('quanter'))
 				.pipe(optimizer).on('error', handleErr('optimizer'))

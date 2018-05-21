@@ -30,8 +30,7 @@ const ApiClient = require('../../test/modules/api.client');
 const FileHelper = require('../../test/modules/file.helper');
 
 const api = new ApiClient();
-const storage = new ApiClient({ path: '/storage' });
-const fileHelper = new FileHelper(api, storage);
+const fileHelper = new FileHelper(api);
 
 let res;
 
@@ -51,7 +50,8 @@ describe('The VPDB `file` API', () => {
 
 		it('should fail when no "Content-Disposition" header is provided', async () => {
 			const member = api.getUser('member');
-			await storage
+			await api
+				.onStorage()
 				.as(member)
 				.withQuery({ type: 'backglass' })
 				.post('/v1/files', 'xxx')
@@ -60,7 +60,8 @@ describe('The VPDB `file` API', () => {
 
 		it('should fail when a bogus "Content-Disposition" header is provided', async () => {
 			const member = api.getUser('member');
-			await storage
+			await api
+				.onStorage()
 				.as(member)
 				.withHeader('Content-Disposition', 'zurg!!')
 				.withQuery({ type: 'backglass' })
@@ -70,7 +71,8 @@ describe('The VPDB `file` API', () => {
 
 		it('should fail when no "type" query parameter is provided', async () => {
 			const member = api.getUser('member');
-			await storage
+			await api
+				.onStorage()
 				.as(member)
 				.withHeader('Content-Disposition', 'attachment; filename="foo.bar"')
 				.post('/v1/files', 'xxx')
@@ -79,7 +81,8 @@ describe('The VPDB `file` API', () => {
 
 		it('should fail when providing wrong mime type in header', async () => {
 			const member = api.getUser('member');
-			res = await storage
+			res = await api
+				.onStorage()
 				.as(member)
 				.withHeader('Content-Disposition', 'attachment; filename="foo.bar"')
 				.withQuery({ type: 'release' })

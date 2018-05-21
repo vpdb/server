@@ -18,7 +18,8 @@
  */
 
 import { promisify } from 'util';
-import { createWriteStream, stat } from 'fs';
+import { dirname, resolve } from 'path';
+import { createWriteStream, createReadStream, stat, exists, mkdir,  } from 'fs';
 import * as Stream from 'stream';
 
 import { state } from '../state';
@@ -30,8 +31,12 @@ import { Metadata } from './metadata/metadata';
 import { processorQueue } from './processor/processor.queue';
 
 const statAsync = promisify(stat);
+const existsAsync = promisify(exists);
+const mkdirAsync = promisify(mkdir);
 
 export class FileUtil {
+
+	private static MODE_0777 = parseInt('0777', 8);
 
 	/**
 	 * Creates a new file from a HTTP request stream.
@@ -42,11 +47,15 @@ export class FileUtil {
 	 * @param opts Options passed to postprocessor
 	 * @returns {Promise<File>}
 	 */
-	public static async create(ctx: Context, fileData: File, readStream: Stream, opts:any): Promise<File> {
+	public static async create(ctx: Context, fileData: File, readStream: Stream, opts: any): Promise<File> {
 
 		let file = new state.models.File(fileData);
 		file = await file.save();
-		const path = file.getPath();
+		const path = file.getPath(null, { tmpSuffix: '_original' });
+
+		if (!(await existsAsync(dirname(path)))) {
+			await FileUtil.mkdirp(dirname(path));
+		}
 
 		await new Promise((resolve, reject) => {
 			const writeStream = createWriteStream(path);
@@ -54,6 +63,9 @@ export class FileUtil {
 			writeStream.on('error', reject);
 			readStream.pipe(writeStream);
 		});
+
+		// copy to final destination
+		await FileUtil.cp(path, file.getPath());
 
 		// we don't have the file size for multipart uploads before-hand, so get it now
 		if (!file.bytes) {
@@ -67,18 +79,13 @@ export class FileUtil {
 		try {
 			const stats = await statAsync(file.getPath());
 			const metadata = await Metadata.readFrom(file, path);
-			logger.debug('[FileUtil.create] Got metadata:', metadata);
 			file.metadata = metadata;
 			file.bytes = stats.size;
-			await state.models.File.update({ _id: file._id }, { metadata: metadata, bytes: stats.size });
-
+			await state.models.File.findByIdAndUpdate(file._id, { metadata: metadata, bytes: stats.size }).exec();
 			logger.info('[FileUtil.create] File upload of %s successfully completed.', file.toString());
 
 			await processorQueue.processFile(file, path);
 			logger.info('[FileUtil.create] File sent to processor queue.');
-
-
-			// FIXME return storage.postprocess(file, opts).then(() => file);
 
 		} catch (err) {
 			try {
@@ -91,5 +98,58 @@ export class FileUtil {
 		}
 
 		return file;
+	}
+
+	/**
+	 * Create a directory recursively.
+	 *
+	 * @param {string} path Directory to create
+	 * @param {{mode?: number}} opts Optional mode
+	 * @return {Promise<string>} Absolute path of created directory
+	 */
+	static async mkdirp(path: string, opts: { mode?: number } = {}): Promise<string> {
+		let mode = opts.mode;
+		if (mode === undefined) {
+			mode = FileUtil.MODE_0777 & (~process.umask());
+		}
+		path = resolve(path);
+		try {
+			await mkdirAsync(path, mode);
+			return path;
+
+		} catch (err) {
+			switch (err.code) {
+				case 'ENOENT':
+					await FileUtil.mkdirp(dirname(path), opts);
+					return await FileUtil.mkdirp(path, opts);
+
+				default:
+					const stat = await statAsync(path);
+					if (!stat || !stat.isDirectory()) {
+						throw err;
+					}
+					break;
+			}
+		}
+	}
+
+	/**
+	 * Copies a file.
+	 * @param {string} source Source
+	 * @param {string} target Destination
+	 */
+	static async cp(source:string, target:string): Promise<void> {
+		const rd = createReadStream(source);
+		const wr = createWriteStream(target);
+		return new Promise<void>(function(resolve, reject) {
+			rd.on('error', reject);
+			wr.on('error', reject);
+			wr.on('finish', resolve);
+			rd.pipe(wr);
+		}).catch(function(error) {
+			rd.destroy();
+			wr.end();
+			throw error;
+		});
 	}
 }

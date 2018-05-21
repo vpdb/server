@@ -19,7 +19,7 @@
 
 import { File} from '../file';
 import { FileVariation } from '../file.variations';
-import { ProcessorQueueType } from './processor.queue';
+import { ProcessorQueueName } from './processor.queue';
 
 export abstract class Processor<V extends FileVariation> {
 
@@ -41,9 +41,9 @@ export abstract class Processor<V extends FileVariation> {
 	/**
 	 * Returns the type of queue the processor should be run under.
 	 *
-	 * @returns {ProcessorQueue}
+	 * @returns {string}
 	 */
-	abstract getQueue(): ProcessorQueueType;
+	abstract getQueue(): ProcessorQueueName;
 
 	/**
 	 * Returns a number indicating the order of execution of this processor.
@@ -63,7 +63,7 @@ export abstract class Processor<V extends FileVariation> {
 	 * @param {string} src Source path of the file
 	 * @param {string} dest Destination path
 	 * @param variation Variation to process
-	 * @returns {Promise<File>}
+	 * @returns {Promise<string>} Path to processed file
 	 */
-	abstract async process(file: File, src:string, dest:string, variation?: V): Promise<File>;
+	abstract async process(file: File, src:string, dest:string, variation?: V): Promise<string>;
 }

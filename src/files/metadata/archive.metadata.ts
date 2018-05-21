@@ -25,23 +25,23 @@ import { FileVariation } from '../file.variations';
 const Unrar = require('unrar');
 require('bluebird').promisifyAll(Unrar.prototype);
 
-export class ArchiveMetadata implements Metadata {
+export class ArchiveMetadata extends Metadata {
 
 	isValid(file: File, variation?: FileVariation): boolean {
 		const mimeType = variation && variation.mimeType ? variation.mimeType : file.getMimeType();
 		return mimeType.split('/')[0] === 'archive';
 	}
 
-	async getMetadata(file: File, variation?: FileVariation): Promise<{ [p: string]: any }> {
+	async getMetadata(file: File, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
 		const mimeType = variation && variation.mimeType ? variation.mimeType : file.getMimeType();
 		const type = mimeType.split('/')[1];
 		switch (type) {
 			case 'x-rar-compressed':
 			case 'rar':
-				return await this.getRarMetadata(file);
+				return await this.getRarMetadata(path);
 
 			case 'zip':
-				return this.getZipMetadata(file);
+				return this.getZipMetadata(path);
 		}
 	}
 
@@ -55,12 +55,12 @@ export class ArchiveMetadata implements Metadata {
 
 	/**
 	 * Reads metadata from rar file
-	 * @param {FileSchema} file
+	 * @param {string} path Path to file to read
 	 * @return {Promise<{ entries: { filename: string, bytes: number, bytes_compressed: number, crc: string, modified_at: Date }[]}>}
 	 */
-	private async getRarMetadata(file: File) {
+	private async getRarMetadata(path: string) {
 
-		const archive = new Unrar(file.getPath());
+		const archive = new Unrar(path);
 		let entries = await archive.listAsync();
 
 		// filter directories
@@ -82,12 +82,12 @@ export class ArchiveMetadata implements Metadata {
 
 	/**
 	 * Reads metadata from zip file
-	 * @param {FileSchema} file
+	 * @param {string} path Path to file to read
 	 * @return {{ entries: { filename: string, bytes: number, bytes_compressed: number, crc: string, modified_at: Date }[]}}
 	 */
-	private getZipMetadata(file: File) {
+	private getZipMetadata(path: string) {
 
-		let entries = new Zip(file.getPath()).getEntries();
+		let entries = new Zip(path).getEntries();
 
 		// filter directories
 		entries = entries.filter(entry => !entry.isDirectory);

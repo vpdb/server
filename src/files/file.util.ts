@@ -17,17 +17,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { promisify } from 'util';
 import { createWriteStream, stat } from 'fs';
 import * as Stream from 'stream';
-import Bluebird = require('bluebird');
 
 import { state } from '../state';
-import { Context } from '../common/types/context';
 import { File } from './file';
+import { Context } from '../common/types/context';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
+import { Metadata } from './metadata/metadata';
+import { processorQueue } from './processor/processor.queue';
 
-const statAsync = Bluebird.promisify(stat);
+const statAsync = promisify(stat);
 
 export class FileUtil {
 
@@ -44,9 +46,10 @@ export class FileUtil {
 
 		let file = new state.models.File(fileData);
 		file = await file.save();
+		const path = file.getPath();
 
 		await new Promise((resolve, reject) => {
-			const writeStream = createWriteStream(file.getPath());
+			const writeStream = createWriteStream(path);
 			writeStream.on('finish', resolve);
 			writeStream.on('error', reject);
 			readStream.pipe(writeStream);
@@ -62,16 +65,15 @@ export class FileUtil {
 		// FIXME await storage.preprocess(file);
 
 		try {
-			// FIXME const metadata = await storage.metadata(file);
-			const metadata = {};
 			const stats = await statAsync(file.getPath());
-
-			// TODO File.sanitizeObject(metadata);
+			const metadata = await Metadata.readFrom(file, path);
 			file.metadata = metadata;
 			file.bytes = stats.size;
 			await state.models.File.update({ _id: file._id }, { metadata: metadata, bytes: stats.size });
 
 			logger.info('[api|file:save] File upload of %s successfully completed.', file.toString());
+
+			await processorQueue.processFile(file, path)
 			// FIXME return storage.postprocess(file, opts).then(() => file);
 
 		} catch (err) {

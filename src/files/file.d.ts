@@ -20,6 +20,8 @@
 import { MetricsDocument, Schema } from 'mongoose';
 import { User } from '../users/user';
 import { FileVariation } from './file.variations';
+import { fileSchema } from './file.schema';
+import { fileTypes } from './file.types';
 
 export interface File extends MetricsDocument {
 	id: string;
@@ -132,6 +134,13 @@ export interface File extends MetricsDocument {
 	 * @returns {FileVariation[]} Existing variations
 	 */
 	getExistingVariations(): FileVariation[];
+
+	/**
+	 * Returns all defined variations for this file.
+	 *
+	 * @returns {FileVariation[]}
+	 */
+	getVariations(): FileVariation[];
 
 	/**
 	 * Returns something useful for logging.

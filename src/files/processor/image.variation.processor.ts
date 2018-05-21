@@ -18,14 +18,16 @@
  */
 
 import gm from 'gm';
+import { sep } from 'path';
 import { createWriteStream } from 'fs';
 
 import { Processor } from './processor';
 import { File } from '../file';
 import { logger } from '../../common/logger';
 import { FileVariation, ImageFileVariation } from '../file.variations';
-import { ProcessorQueueType } from './processor.queue';
-import { sep } from 'path';
+import { ProcessorQueueName } from './processor.queue';
+
+require('bluebird').promisifyAll(gm.prototype);
 
 export class ImageVariationProcessor extends Processor<ImageFileVariation> {
 
@@ -39,17 +41,17 @@ export class ImageVariationProcessor extends Processor<ImageFileVariation> {
 		return 100 + (variation && variation.priority ? variation.priority : 0);
 	}
 
-	getQueue(): ProcessorQueueType {
-		return ProcessorQueueType.HI_PRIO_FAST;
+	getQueue(): ProcessorQueueName {
+		return 'HI_PRIO_FAST';
 	}
 
-	async process(file: File, src: string, dest: string, variation?: ImageFileVariation): Promise<File> {
+	async process(file: File, src: string, dest: string, variation?: ImageFileVariation): Promise<string> {
 
+		const srcLog = src.split(sep).slice(-3).join('/');
 		const destLog = dest.split(sep).slice(-3).join('/');
-		logger.debug('[ImageVariationProcessor] Starting processing %s at %s.', file.toString(variation), destLog);
+		logger.debug('[ImageVariationProcessor] Start: %s from %s to %s', file.toDetailedString(variation), srcLog, destLog);
 
 		// do the processing
-		logger.debug('[ImageVariationProcessor] Resizing %s', file.toDetailedString(variation));
 		const img = gm(src);
 		img.quality(variation.quality || 70);
 		img.interlace('Line');
@@ -85,22 +87,21 @@ export class ImageVariationProcessor extends Processor<ImageFileVariation> {
 		if (variation.landscape && file.metadata.size.width < file.metadata.size.height) {
 			img.rotate('black', 90);
 		}
+		img.setFormat(file.getMimeSubtype(variation));
 
-		img.setFormat(file.getExt(variation));
+		logger.debug('[ImageVariationProcessor] Saving: %s to %s', file.toDetailedString(variation), destLog);
+		//await (img as any).writeAsync(dest);
 
-
-		return new Promise<File>((resolve, reject) => {
-
+		await new Promise<File>((resolve, reject) => {
 			const writeStream = createWriteStream(dest);
-
 			// setup success handler
 			writeStream.on('finish', function () {
-				logger.debug('[ImageVariationProcessor] Saved resized image to "%s".', destLog);
 				resolve(file);
 			});
 			writeStream.on('error', reject);
-
 			img.stream().on('error', reject).pipe(writeStream).on('error', reject);
 		});
+		logger.debug('[ImageVariationProcessor] Done: %s at %s', file.toDetailedString(variation), destLog);
+		return dest;
 	}
 }

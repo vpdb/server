@@ -25,7 +25,7 @@ class FileTypes {
 
 	private readonly backglassImage:FileType<ImageFileVariation> = {
 		name: 'backglass',
-		mimeTypes: [ 'image/jpeg', 'image/png' ],
+		mimeTypes: ['image/jpeg', 'image/png'],
 		variations: [
 			{ name: 'full',                               mimeType: 'image/jpeg', quality: 60 },
 			{ name: 'medium',    width: 364, height: 291, mimeType: 'image/jpeg' },
@@ -37,7 +37,7 @@ class FileTypes {
 
 	private readonly backglassDirectB2s:FileType<BackglassVariation> = {
 		name: 'backglass',
-		mimeTypes: [ 'application/x-directb2s' ],
+		mimeTypes: ['application/x-directb2s'],
 		variations: [
 			{ name: 'full',                               mimeType: 'image/jpeg', cutGrill: false },
 			{ name: 'medium',    width: 364, height: 291, mimeType: 'image/jpeg', cutGrill: true, quality: 85, modulate: 200 },
@@ -64,7 +64,7 @@ class FileTypes {
 
 	private readonly playfieldImagePortrait:FileType<ImageFileVariation> = {
 		name: 'playfield-fs',
-		mimeTypes: ['image/jpeg', 'image/png' ],
+		mimeTypes: ['image/jpeg', 'image/png'],
 		variations: [
 			{ name: 'full',                                         mimeType: 'image/jpeg', quality: 60 },
 			{ name: 'medium',              width: 280, height: 498, mimeType: 'image/jpeg' },
@@ -85,7 +85,7 @@ class FileTypes {
 
 	private readonly playfieldImageLandscape:FileType<ImageFileVariation> = {
 		name: 'playfield-ws',
-		mimeTypes: ['image/jpeg', 'image/png' ],
+		mimeTypes: ['image/jpeg', 'image/png'],
 		variations: [
 			{ name: 'full',                               mimeType: 'image/jpeg', quality: 60 },
 			{ name: 'medium',    width: 280, height: 158, mimeType: 'image/jpeg' },
@@ -139,32 +139,59 @@ class FileTypes {
 		this.names = uniq(this.fileTypes.map(t => t.name));
 	}
 
+	/**
+	 * Returns all MIME types for a given file type
+	 * @param {string} name File type
+	 * @return {string[]} Available MIME types
+	 */
 	getMimeTypes(name: string): string[] {
 		return flatten(this.fileTypes.filter(t => t.name === name).map(t => t.mimeTypes));
 	}
 
+	/**
+	 * Returns all variations for a given file type and MIME type.
+	 * @param {string} name File type
+	 * @param {string} mimeType MIME type
+	 * @return {V[]} Variations
+	 */
 	getVariations<V extends FileVariation>(name: string, mimeType: string): V[] {
 		return this.fileTypes.find(t => t.name === name && t.mimeTypes.includes(mimeType)).variations as V[];
 	}
 
-	getVariation<V extends FileVariation>(name: string, mimeType: string, variationName: string) {
-		return this.getVariations(name, mimeType).find(v => v.name === variationName);
-	}
-
-	exists(name: string) {
-		return this.names.includes(name);
+	/**
+	 * Returns the variation for a given file type, MIME type and variation name.
+	 * @param {string} name File type
+	 * @param {string} mimeType MIME type
+	 * @param {string} variationName Variation name
+	 * @return {V} File variation
+	 */
+	getVariation<V extends FileVariation>(name: string, mimeType: string, variationName: string): V {
+		if (!variationName) {
+			return null;
+		}
+		return this.getVariations<V>(name, mimeType).find(v => v.name === variationName);
 	}
 
 	/**
 	 * Returns variation names of a number of file types.
 	 * For example, getting all playfield variations would be:
 	 *
-	 * @example    getVariationNames(['playfield','playfield-fs','playfield-ws'])
+	 * @example getVariationNames(['playfield','playfield-fs','playfield-ws'])
 	 * @param {string[]} fileTypes
 	 * @return {string[]}
 	 */
 	getVariationNames(fileTypes: string[]): string[] {
 		return uniq(flatten(this.fileTypes.filter(t => fileTypes.includes(t.name)).map(t => t.variations.map(v => v.name))));
+	}
+
+	/**
+	 * Checks whether a given file type exists.
+	 *
+	 * @param {string} name Name of the file type
+	 * @return {boolean} True if exists, false otherwise.
+	 */
+	exists(name: string) {
+		return this.names.includes(name);
 	}
 }
 

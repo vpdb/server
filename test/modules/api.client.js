@@ -193,6 +193,15 @@ class ApiClient {
 	}
 
 	/**
+	 * Use the storage API.
+	 * @returns {ApiClient}
+	 */
+	onStorage() {
+		this._config.baseURL = this._baseUrl + '/storage';
+		return this;
+	}
+
+	/**
 	 * Use the given token as authentication bearer token.
 	 * @param {string} token Token
 	 * @returns {ApiClient}
@@ -329,7 +338,7 @@ class ApiClient {
 			if (path) {
 				teardown.path = path + '/' + get(res.data, pathToId);
 			} else {
-				teardown.url = res.config.url + '/' + get(res.data, pathToId);
+				teardown.url = res.config.url.replace('/storage/', '/api/') + '/' + get(res.data, pathToId);
 			}
 			if (user) {
 				teardown.user = user;
@@ -338,6 +347,7 @@ class ApiClient {
 			} else {
 				teardown.user = '__root';
 			}
+			console.log('mark as teardown: ', teardown);
 			this._tearDown.push(teardown);
 		});
 		return this;

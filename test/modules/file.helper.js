@@ -24,9 +24,8 @@ require('bluebird').promisifyAll(gm.prototype);
 
 class FileHelper {
 
-	constructor(api, storage) {
+	constructor(api) {
 		this.api = api;
-		this.storage = storage;
 	}
 
 	async createPlayfield(user, orientation, type) {
@@ -47,10 +46,10 @@ class FileHelper {
 
 			const img = gm(isFS ? 1080 : 1920, isFS ? 1920 : 1080, pleasejs.make_color());
 			const data = await img.toBufferAsync('PNG');
-			const res = await this.storage
-				.debug()
+			const res = await this.api
+				.onStorage()
 				.as(user)
-				.markTeardown()
+				//.markTeardown()
 				.withQuery({ type: fileType })
 				.withContentType(mimeType)
 				.withHeader('Content-Disposition', 'attachment; filename="' + name + '"')

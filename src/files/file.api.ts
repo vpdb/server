@@ -234,7 +234,7 @@ export class FileApi extends Api {
 			throw new ApiError('Header "Content-Disposition" must contain file name.').status(422);
 		}
 		const filename = ctx.get('content-disposition').match(/filename=([^;]+)/i)[1].replace(/(^"|^'|"$|'$)/g, '');
-		logger.info('[api|file:upload] Starting file upload of "%s"...', filename);
+		logger.info('[file:upload] Starting file upload of "%s"...', filename);
 		const fileData = {
 			name: filename,
 			bytes: ctx.get('content-length') || 0,
@@ -245,7 +245,7 @@ export class FileApi extends Api {
 			_created_by: ctx.state.user._id
 		};
 
-		return FileUtil.create(ctx, fileData as File, null, { processInBackground: true });
+		return FileUtil.create(ctx, fileData as File, ctx.req, { processInBackground: true });
 	}
 
 	/**

@@ -19,6 +19,7 @@
 
 import { rename } from 'fs';
 import { promisify } from 'util';
+import { sep } from 'path';
 import Bull, { Job, JobOptions, Queue, QueueOptions } from 'bull';
 
 import { state } from '../../state';
@@ -63,6 +64,8 @@ class ProcessorQueue {
 
 	public async processFile(file: File, src: string): Promise<any> {
 
+		let n = 0;
+
 		// match processors against file variations
 		for (let processor of this.processors.values()) {
 
@@ -72,6 +75,7 @@ class ProcessorQueue {
 					priority: processor.getOrder()
 				} as JobOptions);
 				logger.debug('[queue] Added original file %s (%s/%s) to queue (%s).', file.id, file.file_type, file.mime_type, job.id);
+				n++;
 			}
 
 			// then for each variation
@@ -80,9 +84,13 @@ class ProcessorQueue {
 					const job = await this.queues.get(processor.getQueue().toString()).add(this.getJobData(file, src, processor, variation), {
 						priority: processor.getOrder(variation)
 					} as JobOptions);
-					logger.debug('[queue] Added %s variation %s of file %s (%s/%s) to queue (%s).', variation.name, file.id, file.file_type, file.mime_type, job.id);
+					logger.debug('[QueueProcessor.processFile] Added %s variation %s of file %s (%s/%s) to queue (%s).', variation.name, file.id, file.file_type, file.mime_type, job.id);
+					n++;
 				}
 			}
+		}
+		if (n === 0) {
+			logger.info('[QueueProcessor.processFile] No processors matched the file or any variation.');
 		}
 	}
 
@@ -91,7 +99,7 @@ class ProcessorQueue {
 			src: src,
 			fileId: file.id,
 			processor: processor.name,
-			variation: variation.name
+			variation: variation ? variation.name : undefined
 		}
 	}
 
@@ -104,16 +112,18 @@ class ProcessorQueue {
 		const variation = fileTypes.getVariation(file.file_type, file.mime_type, data.variation);
 
 		const tmpPath = file.getPath(variation, { tmpSuffix: '_processing' });
+		const tmpPathLog = tmpPath.split(sep).slice(-3).join('/');
+		const pathLog = file.getPath(variation).split(sep).slice(-3).join('/');
 		// process to temp file
-		logger.debug('[queue] Processing file %s (%s/%s) for %s at %s...', file.id, file.file_type, file.mime_type, variation.name, tmpPath);
+		logger.debug('[QueueProcessor.processJob] Start: %s at %s...', file.toDetailedString(variation), tmpPathLog);
 		await processor.process(file, data.src, tmpPath, variation);
 
 		// update metadata
 
 		// rename
-		logger.debug('[queue] Processing of file %s for %s done, renaming back to %s.', file.id, variation.name, file.getPath(variation));
+		logger.debug('[QueueProcessor.processJob] Done: %s, renaming to back to %s.', file.toDetailedString(variation), pathLog);
 		await renameAsync(tmpPath, file.getPath(variation));
-		logger.debug('[queue] Processing of file %s for %s done!.', file.id, variation.name);
+		logger.debug('[QueueProcessor.processJob] Done: %s.', file.toDetailedString(variation));
 	}
 }
 

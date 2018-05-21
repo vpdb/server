@@ -177,7 +177,9 @@ export class ApiError extends Error {
 	 */
 	public respond(ctx:Context) {
 
-		const body:any = this.data || { error: this.responseMessage || this.message };
+		// if the message contains a stack trace, replace.
+		const message = this.message.match(/\n\s+at/) ? 'Internal error.' : this.message;
+		const body:any = this.data || { error: this.responseMessage || message };
 		if (this.errors) {
 			body.errors = this.errors.map(error => {
 				return {
@@ -207,7 +209,13 @@ export class ApiError extends Error {
 			logger.error('\n\n' + ApiError.colorStackTrace(this) + cause + requestLog + '\n\n');
 
 		} else if (cause || this.logLevel === 'warn') {
-			logger.warn(chalk.yellowBright(this.message.trim()) + cause + (requestLog ? requestLog + '\n' : ''));
+			// sometimes the message is the stack, if that's the case then print the real stack.
+			if (this.message.match(/\n\s+at/)) {
+				logger.warn('\n\n' + ApiError.colorStackTrace(this) + cause + (requestLog ? requestLog + '\n' : ''));
+			} else {
+				logger.warn(chalk.yellowBright(this.message.trim()) + cause + (requestLog ? requestLog + '\n' : ''));
+			}
+
 		}
 	}
 

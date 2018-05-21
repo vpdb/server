@@ -98,56 +98,60 @@ class FileTypes {
 		]
 	};
 
-	private readonly playfieldVideoLandscape:FileType<ImageFileVariation> = {
+	private readonly playfieldVideoLandscape: FileType<ImageFileVariation> = {
 		name: 'playfield-ws',
 		mimeTypes: ['video/mp4', 'video/x-flv', 'video/avi', 'video/x-f4v'],
 		variations: []
 	};
 
-	private readonly landscape:FileType<ImageFileVariation> = {
+	private readonly landscape: FileType<ImageFileVariation> = {
 		name: 'landscape',
 		mimeTypes: ['image/jpeg', 'image/png'],
 		variations: []
 	};
 
-	private readonly releaseTable:FileType<FileVariation> = {
+	private readonly releaseTable: FileType<FileVariation> = {
 		name: 'release',
-		mimeTypes: ['application/x-visual-pinball-table', 'application/x-visual-pinball-table-x' ],
+		mimeTypes: ['application/x-visual-pinball-table', 'application/x-visual-pinball-table-x'],
 		variations: []
 	};
 
-	private readonly release:FileType<FileVariation> = {
+	private readonly release: FileType<FileVariation> = {
 		name: 'release',
 		mimeTypes: ['text/plain', 'application/vbscript', 'audio/mpeg', 'audio/mp3', 'application/zip', 'application/rar', 'application/x-rar-compressed', 'application/x-zip-compressed'],
 		variations: []
 	};
 
-	private readonly rom:FileType<FileVariation> = {
+	private readonly rom: FileType<FileVariation> = {
 		name: 'rom',
 		mimeTypes: ['application/zip', 'application/x-zip-compressed'],
 		variations: []
 	};
 
-	public names:string[];
-	private fileTypes:FileType<FileVariation>[];
+	public names: string[];
+	private fileTypes: FileType<FileVariation>[];
 
 	constructor() {
-		this.fileTypes = [ this.backglassImage, this.backglassDirectB2s, this.logo, this.playfield,
+		this.fileTypes = [this.backglassImage, this.backglassDirectB2s, this.logo, this.playfield,
 			this.playfieldImageLandscape, this.playfieldImagePortrait, this.playfieldVideoLandscape,
-			this.playfieldVideoPortrait, this.landscape, this.releaseTable, this.release, this.rom ];
+			this.playfieldVideoPortrait, this.landscape, this.releaseTable, this.release, this.rom];
 
 		this.names = uniq(this.fileTypes.map(t => t.name));
 	}
 
-	getMimeTypes(name:string):string[] {
+	getMimeTypes(name: string): string[] {
 		return flatten(this.fileTypes.filter(t => t.name === name).map(t => t.mimeTypes));
 	}
 
-	getVariations<V extends FileVariation>(name:string, mimeType:string):V[] {
+	getVariations<V extends FileVariation>(name: string, mimeType: string): V[] {
 		return this.fileTypes.find(t => t.name === name && t.mimeTypes.includes(mimeType)).variations as V[];
 	}
 
-	exists(name:string) {
+	getVariation<V extends FileVariation>(name: string, mimeType: string, variationName: string) {
+		return this.getVariations(name, mimeType).find(v => v.name === variationName);
+	}
+
+	exists(name: string) {
 		return this.names.includes(name);
 	}
 
@@ -155,11 +159,11 @@ class FileTypes {
 	 * Returns variation names of a number of file types.
 	 * For example, getting all playfield variations would be:
 	 *
-	 * @example	getVariationNames(['playfield','playfield-fs','playfield-ws'])
+	 * @example    getVariationNames(['playfield','playfield-fs','playfield-ws'])
 	 * @param {string[]} fileTypes
 	 * @return {string[]}
 	 */
-	getVariationNames(fileTypes:string[]):string[] {
+	getVariationNames(fileTypes: string[]): string[] {
 		return uniq(flatten(this.fileTypes.filter(t => fileTypes.includes(t.name)).map(t => t.variations.map(v => v.name))));
 	}
 }

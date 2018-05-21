@@ -17,11 +17,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-
 import { File} from '../file';
 import { FileVariation } from '../file.variations';
+import { ProcessorQueueType } from './processor.queue';
 
 export abstract class Processor<V extends FileVariation> {
+
+	/**
+	 * Filename of the processor without "processor" suffix, e.g. "image.optimization".
+	 */
+	public abstract name:string;
 
 	/**
 	 * Checks whether the variation of the given file can be processed by this
@@ -38,7 +43,7 @@ export abstract class Processor<V extends FileVariation> {
 	 *
 	 * @returns {ProcessorQueue}
 	 */
-	abstract getQueue(): ProcessorQueue;
+	abstract getQueue(): ProcessorQueueType;
 
 	/**
 	 * Returns a number indicating the order of execution of this processor.
@@ -61,9 +66,4 @@ export abstract class Processor<V extends FileVariation> {
 	 * @returns {Promise<File>}
 	 */
 	abstract async process(file: File, src:string, dest:string, variation?: V): Promise<File>;
-}
-
-export enum ProcessorQueue {
-	HI_PRIO_FAST,
-	LOW_PRIO_SLOW
 }

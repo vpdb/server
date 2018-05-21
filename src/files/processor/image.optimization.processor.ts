@@ -22,13 +22,16 @@ import { createWriteStream, createReadStream } from 'fs';
 const PngQuant = require('pngquant');
 const OptiPng = require('optipng');
 
-import { Processor, ProcessorQueue } from './processor';
+import { Processor } from './processor';
 import { File} from '../file';
 import { logger } from '../../common/logger';
 import { ApiError } from '../../common/api.error';
 import { FileVariation } from '../file.variations';
+import { ProcessorQueueType } from './processor.queue';
 
 export class ImageOptimizationProcessor extends Processor<FileVariation> {
+
+	name: string = 'image.optimization';
 
 	canProcess(file: File, variation?: FileVariation): boolean {
 		const mimeType = variation ? variation.mimeType : file.getMimeType();
@@ -40,8 +43,8 @@ export class ImageOptimizationProcessor extends Processor<FileVariation> {
 		return 500;
 	}
 
-	getQueue(): ProcessorQueue {
-		return ProcessorQueue.LOW_PRIO_SLOW;
+	getQueue(): ProcessorQueueType {
+		return ProcessorQueueType.LOW_PRIO_SLOW;
 	}
 
 	async process(file: File, src: string, dest: string, variation?: FileVariation): Promise<File> {

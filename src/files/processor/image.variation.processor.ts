@@ -20,12 +20,15 @@
 import gm from 'gm';
 import { createWriteStream } from 'fs';
 
-import { Processor, ProcessorQueue } from './processor';
+import { Processor } from './processor';
 import { File} from '../file';
 import { logger } from '../../common/logger';
 import { FileVariation, ImageFileVariation } from '../file.variations';
+import { ProcessorQueueType } from './processor.queue';
 
 export class ImageVariationProcessor extends Processor<ImageFileVariation> {
+
+	name: string = 'image.variation';
 
 	canProcess(file: File, variation?: FileVariation): boolean {
 		return !!variation && file.getMimeTypePrimary() === 'image';
@@ -35,8 +38,8 @@ export class ImageVariationProcessor extends Processor<ImageFileVariation> {
 		return 100 + (variation && variation.priority ? variation.priority : 0);
 	}
 
-	getQueue(): ProcessorQueue {
-		return ProcessorQueue.HI_PRIO_FAST;
+	getQueue(): ProcessorQueueType {
+		return ProcessorQueueType.HI_PRIO_FAST;
 	}
 
 	async process(file: File, src:string, dest:string, variation?: ImageFileVariation): Promise<File> {

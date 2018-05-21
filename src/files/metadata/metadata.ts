@@ -19,8 +19,12 @@
 
 import { File } from '../file';
 import { FileVariation } from '../file.variations';
+import { ArchiveMetadata } from './archive.metadata';
+import { ImageMetadata } from './image.metadata';
 
-export interface Metadata {
+export abstract class Metadata {
+
+	private static instances: Metadata[] = [new ArchiveMetadata(), new ImageMetadata()];
 
 	/**
 	 * Checks if the metadata class can be applied to a given file.
@@ -29,28 +33,65 @@ export interface Metadata {
 	 * @param {FileVariation} [variation] Variation to check
 	 * @return {boolean}
 	 */
-	isValid(file: File, variation?: FileVariation): boolean;
+	public abstract isValid(file: File, variation?: FileVariation): boolean;
 
 	/**
 	 * Reads the metadata from the file.
 	 *
 	 * @param {File} file File to read
+	 * @param {string} path Path to file to read
 	 * @param {FileVariation} [variation] Variation of the file to read
 	 * @return Full metadata
 	 */
-	getMetadata(file: File, variation?: FileVariation): Promise<{ [key: string]: any }>;
+	public abstract async getMetadata(file: File, path: string, variation?: FileVariation): Promise<{ [key: string]: any }>;
 
 	/**
 	 * This is what's returned in the detail view of the file
 	 * @param metadata Full metadata
 	 * @return Subset for detailed view
 	 */
-	serializeDetailed(metadata: { [key: string]: any }): { [key: string]: any };
+	public abstract serializeDetailed(metadata: { [key: string]: any }): { [key: string]: any };
 
 	/**
 	 * This is what's returned in the variation view of the file. Pure minimum.
 	 * @param metadata Full metadata
 	 * @return Subset for reduced view
 	 */
-	serializeVariation(metadata: { [key: string]: any }): { [key: string]: any };
+	public abstract serializeVariation(metadata: { [key: string]: any }): { [key: string]: any };
+
+	/**
+	 * Reads and returns metadata from the file.
+	 * @param {File} file
+	 * @param {string} path
+	 * @param {FileVariation} variation
+	 * @returns {Promise<void>}
+	 */
+	public static async readFrom(file: File, path: string, variation?: FileVariation) {
+		const reader = Metadata.instances.find(m => m.isValid(file));
+		return Metadata.sanitizeObject(await reader.getMetadata(file, path, variation));
+	}
+
+	/**
+	 * A helper method that replaces the "$" and "." character in order to be able
+	 * to store non-structured objects in MongoDB.
+	 *
+	 * @param {object} object Object that is going to end up in MongoDB
+	 * @param {string} [replacement=-] (optional) Replacement character
+	 */
+	private static sanitizeObject(object:any, replacement='-') {
+		let oldProp;
+		for (let property in object) {
+			if (object.hasOwnProperty(property)) {
+				if (/\.|\$/.test(property)) {
+					oldProp = property;
+					property = oldProp.replace(/\.|\$/g, replacement);
+					object[property] = object[oldProp];
+					delete object[oldProp];
+				}
+				if (typeof object[property] === 'object') {
+					Metadata.sanitizeObject(object[property]);
+				}
+			}
+		}
+	}
 }

@@ -25,15 +25,15 @@ import { FileVariation } from '../file.variations';
 
 require('bluebird').promisifyAll(gm.prototype);
 
-export class ImageMetadata implements Metadata {
+export class ImageMetadata extends Metadata {
 
 	isValid(file: File, variation?: FileVariation): boolean {
 		const mimeType = variation && variation.mimeType ? variation.mimeType : file.getMimeType();
 		return mimeType.split('/')[0] === 'image';
 	}
 
-	async getMetadata(file: File, variation?: FileVariation): Promise<{ [p: string]: any }> {
-		return await (gm(file.getPath(variation)) as any).identifyAsync();
+	async getMetadata(file: File, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
+		return await (gm(path) as any).identifyAsync();
 	}
 
 	serializeDetailed(metadata: { [p: string]: any }): { [p: string]: any } {

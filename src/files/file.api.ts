@@ -41,6 +41,7 @@ export class FileApi extends Api {
 	 * End-point for uploading files. Data can be sent either as entire body or
 	 * as multipart, although only one file is allowed in a multipart body.
 	 *
+	 * @see POST /v1/files
 	 * @param {Application.Context} ctx Koa context
 	 */
 	public async upload(ctx: Context) {
@@ -55,7 +56,7 @@ export class FileApi extends Api {
 			throw new ApiError('Query parameter "type" must be provided.').status(422);
 		}
 
-		// stream either directly from req or user a multipart parser
+		// stream either directly from req or use a multipart parser
 		let file: File;
 		if (/multipart\/form-data/i.test(ctx.get('content-type'))) {
 			file = await this.handleMultipartUpload(ctx);

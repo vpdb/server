@@ -149,6 +149,14 @@ export interface File extends MetricsDocument {
 	 * @returns {string}
 	 */
 	toString(variation?: FileVariation): string;
+
+	/**
+	 * Returns something even more useful for logging.
+	 *
+	 * @param {FileVariation} [variation] File variation or null for original file
+	 * @returns {string}
+	 */
+	toDetailedString(variation?:FileVariation): string;
 }
 
 export interface FilePathOptions {

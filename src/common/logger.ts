@@ -35,7 +35,8 @@ export class Logger {
 			format: alignedWithColorsAndTime,
 			transports: [
 				new winston.transports.Console(),
-			]
+			],
+			level: 'silly'
 		});
 	}
 

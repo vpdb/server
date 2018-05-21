@@ -36,11 +36,11 @@ export class FileUtil {
 	/**
 	 * Creates a new file from a HTTP request stream.
 	 *
-	 * @param {object} fileData Model data
-	 * @param {Stream} readStream Binary stream of file content
-	 * @param {function} error Error logger
-	 * @param {{ [processInBackground]: boolean }} [opts] Options passed to postprocessor
-	 * @return {Promise.<FileSchema>}
+	 * @param {Context} ctx Koa context
+	 * @param {File} fileData File
+	 * @param {module:stream.internal} readStream Binary stream of file content
+	 * @param opts Options passed to postprocessor
+	 * @returns {Promise<File>}
 	 */
 	public static async create(ctx: Context, fileData: File, readStream: Stream, opts:any): Promise<File> {
 
@@ -67,13 +67,17 @@ export class FileUtil {
 		try {
 			const stats = await statAsync(file.getPath());
 			const metadata = await Metadata.readFrom(file, path);
+			logger.debug('[FileUtil.create] Got metadata:', metadata);
 			file.metadata = metadata;
 			file.bytes = stats.size;
 			await state.models.File.update({ _id: file._id }, { metadata: metadata, bytes: stats.size });
 
-			logger.info('[api|file:save] File upload of %s successfully completed.', file.toString());
+			logger.info('[FileUtil.create] File upload of %s successfully completed.', file.toString());
 
-			await processorQueue.processFile(file, path)
+			await processorQueue.processFile(file, path);
+			logger.info('[FileUtil.create] File sent to processor queue.');
+
+
 			// FIXME return storage.postprocess(file, opts).then(() => file);
 
 		} catch (err) {

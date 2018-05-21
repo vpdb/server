@@ -209,12 +209,24 @@ fileSchema.methods.getMimeCategory = function (this:File, variation: FileVariati
 
 /**
  * Returns something useful for logging.
- * @param {object|string} variation Variation name or whole object
+ *
+ * @param {FileVariation} variation File variation or null for original file
  * @returns {string}
  */
 fileSchema.methods.toString = function (this:File, variation: FileVariation = null): string {
 	return this.file_type + ' "' + this.id + '"' + (variation ? ' (' + variation.name + ')' : '');
 };
+
+/**
+ * Returns something even more useful for logging.
+ *
+ * @param {FileVariation} variation File variation or null for original file
+ * @returns {string}
+ */
+fileSchema.methods.toDetailedString = function (this: File, variation?:FileVariation): string {
+	return this.file_type + '@' + this.mime_type + ' "' + this.id + '"' + (variation ? ' (' + variation.name + ')' : '');
+};
+
 
 /**
  * Switches a files from inactive to active and moves it to the public folder if necessary.
@@ -249,7 +261,7 @@ fileSchema.methods.getExistingVariations = function (this:File): FileVariation[]
  * @returns {FileVariation[]}
  */
 fileSchema.methods.getVariations = function (this: File): FileVariation[] {
-	return fileTypes.getVariations(this.name, this.mime_type);
+	return fileTypes.getVariations(this.file_type, this.mime_type);
 };
 
 

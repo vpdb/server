@@ -196,7 +196,7 @@ export class Quota {
 		}
 
 		// if a variation is demanded and cost contains variation def, ignore the rest.
-		if (variation.name && !isUndefined(cost.variation)) {
+		if (variation && variation.name && !isUndefined(cost.variation)) {
 			if (isObject(cost.variation)) {
 				if (isUndefined(cost.variation[variation.name])) {
 					if (isUndefined(cost.variation['*'])) {

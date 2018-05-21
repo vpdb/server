@@ -1,11 +1,8 @@
-import { pick, assign } from 'lodash';
-
-import { storage } from '../common/storage';
+import { assign, pick } from 'lodash';
+import { quota } from '../common/quota';
 import { Context } from '../common/types/context';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { File } from './file';
-
-const quota = require('../common/quota');
 
 export class FileSerializer extends Serializer<File> {
 

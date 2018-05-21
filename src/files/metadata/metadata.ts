@@ -19,12 +19,8 @@
 
 import { File } from '../file';
 import { FileVariation } from '../file.variations';
-import { ArchiveMetadata } from './archive.metadata';
-import { ImageMetadata } from './image.metadata';
 
 export abstract class Metadata {
-
-	private static instances: Metadata[] = [new ArchiveMetadata(), new ImageMetadata()];
 
 	/**
 	 * Checks if the metadata class can be applied to a given file.
@@ -67,7 +63,7 @@ export abstract class Metadata {
 	 * @returns {Promise<void>}
 	 */
 	public static async readFrom(file: File, path: string, variation?: FileVariation) {
-		const reader = Metadata.instances.find(m => m.isValid(file));
+		const reader = require('.').instances.find((m:Metadata) => m.isValid(file));
 		return Metadata.sanitizeObject(await reader.getMetadata(file, path, variation));
 	}
 
@@ -75,8 +71,8 @@ export abstract class Metadata {
 	 * A helper method that replaces the "$" and "." character in order to be able
 	 * to store non-structured objects in MongoDB.
 	 *
-	 * @param {object} object Object that is going to end up in MongoDB
-	 * @param {string} [replacement=-] (optional) Replacement character
+	 * @param object Object that is going to end up in MongoDB
+	 * @param {string} [replacement='-'] Replacement character
 	 */
 	private static sanitizeObject(object:any, replacement='-') {
 		let oldProp;

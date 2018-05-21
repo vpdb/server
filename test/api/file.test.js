@@ -29,56 +29,6 @@ describe('The VPDB `file` API', function() {
 		hlp.cleanup(request, done);
 	});
 
-	describe('before trying to upload a file', function() {
-
-		it('should fail when no "Content-Disposition" header is provided', function(done) {
-			request
-				.post('/storage/v1/files')
-				.query({ type: 'backglass' })
-				.as('member')
-				.send('xxx')
-				.end(hlp.status(422, 'Content-Disposition', done));
-		});
-
-		it('should fail when a bogus "Content-Disposition" header is provided', function(done) {
-			request
-				.post('/storage/v1/files')
-				.query({ type: 'backglass' })
-				.as('member')
-				.set('Content-Disposition', 'zurg!!')
-				.send('xxx')
-				.end(hlp.status(422, 'Content-Disposition', done));
-		});
-
-		it('should fail when no "type" query parameter is provided', function(done) {
-			request
-				.post('/storage/v1/files')
-				.as('member')
-				.set('Content-Disposition','attachment; filename="foo.bar"')
-				.send('xxx')
-				.end(function(err, res) {
-					hlp.expectStatus(err, res, 422);
-					expect(err.response.body.error).to.contain('type');
-					done();
-				});
-		});
-
-		it('should fail when providing wrong mime type in header', function(done) {
-			request
-				.post('/storage/v1/files')
-				.query({ type: 'release' })
-				.as('member')
-				.set('Content-Disposition','attachment; filename="foo.bar"')
-				.send('xxx')
-				.end(function(err, res) {
-					hlp.expectStatus(err, res, 422);
-					expect(res.body.errors).to.be.an('array');
-					expect(res.body.errors[0].message).to.contain('Invalid MIME type');
-					done();
-				});
-		});
-	});
-
 	describe('when uploading a file using a multipart request', function() {
 
 		it('should fail when no content type is provided in the query', function(done) {

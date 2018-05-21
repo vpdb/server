@@ -75,7 +75,7 @@ class ApiClient {
 		 * @property {Object<string, string>} [headers] Custom headers to be sent
 		 * @property {Object<string, string>} [params] URL parameters to be sent with the request
 		 * @property {function} [paramsSerializer] Optional function in charge of serializing `params`
-		 * @property {mixed} [data] Data to be sent as the request body
+		 * @property {any} [data] Data to be sent as the request body
 		 * @property {number} [timeout] Number of milliseconds before the request times out.
 		 * @property {boolean} [withCredentials] Indicates whether or not cross-site Access-Control requests should be made using credentials
 		 * @property {function} [adapter] Allows custom handling of requests which makes testing easier.
@@ -223,6 +223,15 @@ class ApiClient {
 	withQuery(params) {
 		this._config.params = params;
 		return this;
+	}
+
+	/**
+	 * Sets the content type of the request.
+	 * @param {string} contentType Content type
+	 * @returns {ApiClient}
+	 */
+	withContentType(contentType) {
+		return this.withHeader('Content-Type', contentType);
 	}
 
 	/**

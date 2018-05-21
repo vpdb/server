@@ -3,6 +3,7 @@ import { quota } from '../common/quota';
 import { Context } from '../common/types/context';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { File } from './file';
+import { Metadata } from './metadata/metadata';
 
 export class FileSerializer extends Serializer<File> {
 
@@ -24,7 +25,21 @@ export class FileSerializer extends Serializer<File> {
 	protected _detailed(ctx: Context, doc: File, opts: SerializerOptions):File {
 		const file = this._simple(ctx, doc, opts);
 		assign(file, pick(doc, ['is_active', 'created_at', 'file_type' ]));
-		// FIXME file.metadata = storage.metadataShort(doc);
+		file.metadata = Metadata.getReader(doc).serializeDetailed(doc.metadata);
+
+		// file variations
+		file.variations = {};
+		doc.getVariations().forEach(variation => {
+			file.variations[variation.name] = doc.variations[variation.name] || {};
+			file.variations[variation.name].url = doc.getUrl(variation);
+			const cost = quota.getCost(file, variation);
+			if (!file.is_active || cost > -1) {
+				file.variations[variation.name].is_protected = true;
+			}
+			if (cost > 0) {
+				file.variations[variation.name].cost = cost;
+			}
+		});
 		return file;
 	}
 }

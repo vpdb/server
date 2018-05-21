@@ -63,8 +63,18 @@ export abstract class Metadata {
 	 * @returns {Promise<void>}
 	 */
 	public static async readFrom(file: File, path: string, variation?: FileVariation) {
-		const reader = require('.').instances.find((m:Metadata) => m.isValid(file));
+		const reader = Metadata.getReader(file, variation);
 		return Metadata.sanitizeObject(await reader.getMetadata(file, path, variation));
+	}
+
+	/**
+	 * Returns the metadata reader for a given file and variation.
+	 * @param {File} file File
+	 * @param {FileVariation} [variation] Variation or null for original file.
+	 * @return {Metadata} Metadata reader
+	 */
+	public static getReader(file: File, variation?: FileVariation): Metadata {
+		return require('.').instances.find((m: Metadata) => m.isValid(file));
 	}
 
 	/**
@@ -73,8 +83,9 @@ export abstract class Metadata {
 	 *
 	 * @param object Object that is going to end up in MongoDB
 	 * @param {string} [replacement='-'] Replacement character
+	 * @returns Sanitized object.
 	 */
-	private static sanitizeObject(object:any, replacement='-') {
+	private static sanitizeObject(object: any, replacement = '-'): any {
 		let oldProp;
 		for (let property in object) {
 			if (object.hasOwnProperty(property)) {
@@ -89,5 +100,6 @@ export abstract class Metadata {
 				}
 			}
 		}
+		return object;
 	}
 }

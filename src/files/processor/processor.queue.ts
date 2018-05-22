@@ -66,6 +66,7 @@ class ProcessorQueue {
 		for (let type of this.queueTypes) {
 			const queue = new Bull(type.name, opts);
 			queue.process(this.processJob.bind(this));
+			queue.on('completed', this.onJobCompleted(type));
 			this.queues.set(type.name, queue);
 		}
 
@@ -167,6 +168,69 @@ class ProcessorQueue {
 		}
 		// noinspection JSIgnoredPromiseFromCall: do this in the background
 		Promise.all(promises.map(fn => fn()));
+	}
+
+	private completeListeners:Map<string, ((result:any) => Promise<any>)[]> = new Map<string, ((result:any) => Promise<any>)[]>();
+
+	/**
+	 * Waits for all jobs of a given file/variation to be finished and executes
+	 * the provided callback. If there were any previous listeners, the value
+	 * passed to the callback is the last listener's result, otherwise it's the
+	 * job's result.
+	 *
+	 * @param {File} file
+	 * @param {FileVariation} variation
+	 * @param {(path: string) => Promise<string>} callback
+	 * @returns {Promise<void>}
+	 */
+	public async waitForCompletion(file:File, variation:FileVariation, callback:(result:any) => Promise<any>): Promise<void> {
+
+		// first, check if there are any waiting or active jobs
+		const numJobs = await this.countRemainingJobs(file.id, variation.name);
+
+		// if that's the case, add the listener
+		if (numJobs > 0) {
+
+			// add to callback stack
+			const id = file.id + ':' + variation.name;
+			if (!this.completeListeners.has(id)) {
+				this.completeListeners.set(id, []);
+			}
+			this.completeListeners.get(id).push(callback);
+		}
+	}
+
+	private async countRemainingJobs(fileId:string, variationName:string): Promise<number> {
+		let numbJobs = 0;
+		for (let q of this.queues.values()) {
+			const jobs = await (q as any).getJobs(['waiting', 'active']) as Job[];
+			const remainingJobs = jobs.filter(j => j.data.fileId === fileId && j.data.variation === variationName);
+			numbJobs += remainingJobs.length;
+		}
+		return numbJobs;
+	}
+
+	private onJobCompleted(queue:ProcessorQueueType) {
+		return async (job:Job, result:any) => {
+
+			// check if there are waiting complete listeners
+			const id = job.data.fileId + ':' + job.data.variation;
+			if (this.completeListeners.has(id)) {
+
+				// check if this was the last job in all queues
+				const numJobs = await this.countRemainingJobs(job.data.fileId, job.data.variation);
+
+				// if so, call them one by one
+				if (numJobs === 0) {
+					logger.info('[ProcessorQueue.onJobCompleted] Last job for %s finished, calling %s subscribers.', id, this.completeListeners.get(id).length);
+					let lastResult = result;
+					for (let fn of this.completeListeners.get(id)) {
+						lastResult = await fn(lastResult);
+					}
+					this.completeListeners.delete(id);
+				}
+			}
+		}
 	}
 
 	/**

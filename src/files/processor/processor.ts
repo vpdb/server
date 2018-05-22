@@ -17,16 +17,28 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { File} from '../file';
+import { File } from '../file';
 import { FileVariation } from '../file.variations';
 import { ProcessorQueueName } from './processor.queue';
 
+/**
+ * A processor takes in a physical file and produces or updates an optional
+ * variation of it.
+ *
+ * It's the processor deciding if it applies to a given file or variation, and
+ * it's also the processor deciding which queue to use. Furthermore, it can
+ * indicate the processing order within the queue based on the file or
+ * variation.
+ *
+ * Note that processors are singletons and don't contain any file- or variation
+ * specific state.
+ */
 export abstract class Processor<V extends FileVariation> {
 
 	/**
 	 * Filename of the processor without "processor" suffix, e.g. "image.optimization".
 	 */
-	public abstract name:string;
+	public abstract name: string;
 
 	/**
 	 * Checks whether the variation of the given file can be processed by this
@@ -57,7 +69,7 @@ export abstract class Processor<V extends FileVariation> {
 	abstract getOrder(variation?: FileVariation): number;
 
 	/**
-	 * Starts processing the file. This is executed in Bull.
+	 * Starts processing the file. This is executed in Bull's worker thread.
 	 *
 	 * @param {File} file File to process
 	 * @param {string} src Source path of the file
@@ -65,5 +77,5 @@ export abstract class Processor<V extends FileVariation> {
 	 * @param variation Variation to process
 	 * @returns {Promise<string>} Path to processed file
 	 */
-	abstract async process(file: File, src:string, dest:string, variation?: V): Promise<string>;
+	abstract async process(file: File, src: string, dest: string, variation?: V): Promise<string>;
 }

@@ -66,13 +66,13 @@ class FileTypes {
 		name: 'playfield-fs',
 		mimeTypes: ['image/jpeg', 'image/png'],
 		variations: [
-			{ name: 'full',                                         mimeType: 'image/jpeg', quality: 60 },
-			{ name: 'medium',              width: 280, height: 498, mimeType: 'image/jpeg' },
-			{ name: 'medium-2x',           width: 560, height: 996, mimeType: 'image/jpeg' },
-			{ name: 'square',    portraitToSquare: true, size: 120, mimeType: 'image/jpeg' },
-			{ name: 'square-2x', portraitToSquare: true, size: 240, mimeType: 'image/jpeg' },
-			{ name: 'landscape',    rotate: 90, width: 393, height: 393, mimeType: 'image/jpeg' },
-			{ name: 'landscape-2x', rotate: 90, width: 786, height: 786, mimeType: 'image/jpeg' },
+			// { name: 'full',                                         mimeType: 'image/jpeg', quality: 60 },
+			// { name: 'medium',              width: 280, height: 498, mimeType: 'image/jpeg' },
+			// { name: 'medium-2x',           width: 560, height: 996, mimeType: 'image/jpeg' },
+			// { name: 'square',    portraitToSquare: true, size: 120, mimeType: 'image/jpeg' },
+			// { name: 'square-2x', portraitToSquare: true, size: 240, mimeType: 'image/jpeg' },
+			// { name: 'landscape',    rotate: 90, width: 393, height: 393, mimeType: 'image/jpeg' },
+			// { name: 'landscape-2x', rotate: 90, width: 786, height: 786, mimeType: 'image/jpeg' },
 			{ name: 'hyperpin', rotate: 90,                         mimeType: 'image/png' }
 		]
 	};

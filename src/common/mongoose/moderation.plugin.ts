@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import mongoose, { Document, Model, ModeratedDocument, ModeratedModel, ModeratedSchema, Schema, ModerationData } from 'mongoose';
+import mongoose, { Document, Model, ModeratedDocument, ModeratedModel, Schema, ModerationData } from 'mongoose';
 import { assign, includes, isArray, isObject } from 'lodash';
 
 import { state } from '../../state';
@@ -510,13 +510,9 @@ declare module 'mongoose' {
 		approvedQuery(query: Array<any> | object): Array<any> | object,
 	}
 
-	export interface ModeratedSchema extends Schema {
-		//plugin(plugin: (schema: ModeratedSchema, options?: any) => void, options?: ModeratedSchema): this;
-	}
-
 	export function model<T extends ModeratedDocument>(
 		name: string,
-		schema?: ModeratedSchema,
+		schema?: Schema,
 		collection?: string,
 		skipInit?: boolean): ModeratedModel<T>;
 }

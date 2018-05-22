@@ -22,6 +22,7 @@ import { promisify } from 'util';
 import { dirname, sep } from 'path';
 import { assign } from 'lodash';
 import Bull, { Job, JobOptions, Queue, QueueOptions } from 'bull';
+import Bluebird from 'bluebird';
 
 import { state } from '../../state';
 import { config } from '../../common/settings';
@@ -125,7 +126,7 @@ class ProcessorQueue {
 		const job = await this.getJob(file, variation);
 		if (job) {
 			logger.info("[ProcessorQueue.getProcessedFile] Waiting for %s to finish processing", file.toString(variation));
-			return await this.waitForCompletion(file, variation);
+			return await this.waitForFileCompletion(file, variation);
 		} else {
 			// so it's not an active or waiting job, let's check the file system
 			if ((await existsAsync(path)) && (await statAsync(path)).size > 0) {
@@ -144,45 +145,49 @@ class ProcessorQueue {
 	 * @return {Promise<void>}
 	 */
 	public async deleteProcessingFile(file: File): Promise<void> {
-		for (let queue of this.queues.values()) {
+		const promises:(() => Bluebird<any> | Promise<any>)[] = [];
+		for (let q of this.queueTypes) {
+			const queue = this.queues.get(q.name);
+
 			// remove waiting jobs
 			const waitingJobs = await queue.getWaiting();
-			await Promise.all(waitingJobs
-				.filter(job => (job.data as JobData).fileId === file.id)
-				.map(job => job.remove()));
+			const waitingJobsForFile = waitingJobs.filter(job => (job.data as JobData).fileId === file.id);
+			if (waitingJobsForFile.length) {
+				logger.info('[ProcessorQueue.deleteProcessingFile] Removing %s jobs from queue %s', waitingJobsForFile.length, q.name);
+			}
+			promises.push(...waitingJobsForFile.map(job => () => job.remove()));
 
 			// wait for active jobs and delete afterwards.
 			const activeJobs = await queue.getActive();
-			await Promise.all(activeJobs
-				.filter(job => (job.data as JobData).fileId === file.id)
-				.map(job => this.waitForCompletion(null, null, job).then(path => unlinkAsync(path))));
+			const activeJobsForFile = activeJobs.filter(job => (job.data as JobData).fileId === file.id);
+			if (activeJobsForFile.length) {
+				logger.info('[ProcessorQueue.deleteProcessingFile] Cleaning up after %s active job(s) from queue %s.', activeJobsForFile.length, q.name);
+			}
+			promises.push(...activeJobsForFile.map(job => () => this.waitForJobCompletion(queue, job).then(path => unlinkAsync(path))));
 		}
+		// noinspection JSIgnoredPromiseFromCall: do this in the background
+		Promise.all(promises.map(fn => fn()));
 	}
 
 	/**
 	 * Subscribes to all queues and returns when the given file with the given variation has processed.
-	 * @param {File} [file] File ID to match
+	 * @param {File} file File ID to match
 	 * @param {FileVariation} variation Variation to match. If none given, any variation is matched.
-	 * @param {Job} [job] Job to match.
 	 * @return {Promise<any>} Resolves with the job's result.
 	 */
-	private async waitForCompletion(file?:File, variation?:FileVariation, job?:Job): Promise<any> {
+	private async waitForFileCompletion(file:File, variation?:FileVariation): Promise<any> {
 		return await new Promise<void>(resolve => {
 			const queues = this.queues;
 			function completeListener(j:Job, result:any) {
 				// if file ID doesn't match, ignore.
-				if (file && (j.data as JobData).fileId !== file.id) {
+				if ((j.data as JobData).fileId !== file.id) {
 					return;
 				}
 				// if variation given and no match, ignore.
 				if (variation && (j.data as JobData).variation !== variation.name) {
 					return;
 				}
-				// if job given and no match, ignore.
-				if (job && j.id !== job.id) {
-					return;
-				}
-				logger.debug("[ProcessorQueue.getProcessedFile] Finished waiting for %s.", file.toString(variation));
+				logger.debug("[ProcessorQueue.waitForFileCompletion] Finished waiting for %s.", file.toString(variation));
 				for (let queue of queues.values()) {
 					(queue as any).off('completed', completeListener);
 				}
@@ -191,6 +196,28 @@ class ProcessorQueue {
 			for (let queue of this.queues.values()) {
 				queue.on('completed', completeListener);
 			}
+		});
+	}
+
+	/**
+	 * Subscribes to the queue of a given job and returns when the job has finished.
+	 * @param {Bull.Queue} queue Queue to subscribe to
+	 * @param {Bull.Job} job Job to wait for
+	 * @returns {Promise<any>} Resolves with the job's result.
+	 */
+	private async waitForJobCompletion(queue:Queue, job:Job): Promise<any> {
+		return await new Promise<void>(resolve => {
+			logger.debug("[ProcessorQueue.waitForJobCompletion] Waiting for job %s to be completed.", job.id);
+			function completeListener(j:Job, result:any) {
+				// if job given and no match, ignore.
+				if (job && j.id !== job.id) {
+					return;
+				}
+				logger.debug("[ProcessorQueue.waitForJobCompletion] Finished waiting for job %s.", job.id);
+				(queue as any).off('completed', completeListener);
+				resolve(result);
+			}
+			queue.on('completed', completeListener);
 		});
 	}
 
@@ -233,7 +260,7 @@ class ProcessorQueue {
 			const data = job.data as JobData;
 			file = await state.models.File.findOne({ id: data.fileId }).exec();
 			if (!file) {
-				logger.warn('[ProcessorQueue.processJob] File "%s" has been removed from DB, ignoring.', data.fileId);
+				logger.warn('[ProcessorQueue.processJob] %s/#%s skip: File "%s" has been removed from DB, ignoring.', data.processor, job.id, data.fileId);
 				return null;
 			}
 			const processor = this.processors.get(data.processor);
@@ -257,7 +284,7 @@ class ProcessorQueue {
 			}
 
 			// process to temp file
-			logger.debug('[ProcessorQueue.processJob] Start: %s at %s', file.toDetailedString(variation), tmpPathLog);
+			logger.debug('[ProcessorQueue.processJob] %s/#%s start: %s at %s', data.processor, job.id, file.toDetailedString(variation), tmpPathLog);
 			await processor.process(file, src, tmpPath, variation);
 
 			// update metadata
@@ -277,7 +304,7 @@ class ProcessorQueue {
 
 			// rename
 			await renameAsync(tmpPath, file.getPath(variation));
-			logger.debug('[ProcessorQueue.processJob] Done: %s', file.toDetailedString(variation));
+			logger.debug('[ProcessorQueue.processJob] %s/#%s done: %s', data.processor, job.id, file.toDetailedString(variation));
 
 			return file.getPath(variation);
 

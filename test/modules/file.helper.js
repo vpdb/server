@@ -49,7 +49,7 @@ class FileHelper {
 			const res = await this.api
 				.onStorage()
 				.as(user)
-				//.markTeardown()
+				.markTeardown()
 				.withQuery({ type: fileType })
 				.withContentType(mimeType)
 				.withHeader('Content-Disposition', 'attachment; filename="' + name + '"')

@@ -30,8 +30,9 @@ import { FilesApiEndPoint, FilesStorageEndPoint } from './files';
 import { LogEventEndPoint } from './log-event';
 import { LogUserEndPoint } from './log-user';
 import { TokenEndPoint } from './tokens';
-import { UserEndPoint } from './users';
 import { ProfileEndPoint } from './profile';
+import { ReleaseEndPoint } from './releases';
+import { UserEndPoint } from './users';
 
 const shortId = require('shortid32');
 shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
@@ -51,6 +52,7 @@ shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 			new LogEventEndPoint(),
 			new LogUserEndPoint(),
 			new ProfileEndPoint(),
+			new ReleaseEndPoint(),
 			new TokenEndPoint(),
 			new UserEndPoint(),
 		];

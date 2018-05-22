@@ -25,7 +25,7 @@
 		"serve:test:debug": "node --inspect app.js",
 		"serve:protractor": "cross-env NODE_ENV=test APP_SETTINGS=src/config/settings-protractor.js PORT=7357 APP_NAME=local run-s test:dropdbs start",
 		"build:lint": "eslint src/**/*.js",
-		"build:prod": "tsc src/** ",
+		"build:prod": "tsc",
 		"test:dropdbs": "node deploy/tools/dropdb",
 		"test:rimraf": "rimraf .nyc_output coverage",
 		"test:wait": "node deploy/tools/wait",

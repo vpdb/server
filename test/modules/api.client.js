@@ -347,7 +347,6 @@ class ApiClient {
 			} else {
 				teardown.user = '__root';
 			}
-			console.log('mark as teardown: ', teardown);
 			this._tearDown.push(teardown);
 		});
 		return this;

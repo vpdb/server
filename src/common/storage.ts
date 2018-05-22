@@ -1,14 +1,13 @@
-import { File } from '../files/file';
+import { promisify } from 'util';
 import { rename, exists, open, close, unlink } from 'fs';
-import Bluebird = require('bluebird');
 import { logger } from './logger';
-import Timer = NodeJS.Timer;
+import { File } from '../files/file';
 
-const renameAsync = Bluebird.promisify(rename);
-const existsAsync = Bluebird.promisify(exists);
-const openAsync = Bluebird.promisify(open);
-const closeAsync = Bluebird.promisify(close);
-const unlinkAsync = Bluebird.promisify(unlink);
+const renameAsync = promisify(rename);
+const existsAsync = promisify(exists);
+const openAsync = promisify(open);
+const closeAsync = promisify(close);
+const unlinkAsync = promisify(unlink);
 
 export class Storage {
 
@@ -82,51 +81,38 @@ export class Storage {
 	}
 
 	/**
-	 * Removes a file and all its variations from storage.
+	 * Removes a file and all its variations from storage. On error, a warning
+	 * is printed but nothing else done.
 	 *
-	 * In case there are access exceptions, a retry mechanism is in place.
-	 *
-	 * @param file
+	 * @param file File to remove.
 	 */
 	async remove(file:File):Promise<void> {
-		let filePath = file.getPath();
-		if (await existsAsync(filePath)) {
-			logger.verbose('[storage] Removing file %s..', filePath);
+		// original
+		await this.removeFile(file.getPath(null, { tmpSuffix: '_original'}), file.toString());
+
+		// processed
+		await this.removeFile(file.getPath(), file.toString());
+
+		// variations
+		for (let variation of file.getExistingVariations()) {
+			await this.removeFile(file.getPath(variation), file.toString(variation));
+		}
+	}
+
+	/**
+	 * Physically removes a file and prints a warning when failed.
+	 *
+	 * @param {string} path Path to file
+	 * @param {string} what What to print
+	 */
+	async removeFile(path:string, what:string): Promise<void> {
+		if (await existsAsync(path)) {
+			logger.verbose('[Storage.remove] Removing %s at %s..', what, path);
 			try {
-				await unlinkAsync(filePath);
+				await unlinkAsync(path);
 			} catch (err) {
 				/* istanbul ignore next */
-				logger.error('[storage] %s', err);
-
-				// if this is a busy problem, try again in a few.
-				let retries = 0;
-				const intervalId:Timer = setInterval(async function() {
-					if (!(await existsAsync(filePath))) {
-						return clearInterval(intervalId);
-					}
-					if (++retries > 10) {
-						logger.error('[storage] Still could not unlink %s, giving up.', filePath);
-						return clearInterval(intervalId);
-					}
-					try {
-						await unlinkAsync(filePath);
-						clearInterval(intervalId);
-					} catch (err) {
-						logger.warn('[storage] Still could not unlink %s (try %d): %s', filePath, retries, err.toString());
-					}
-				}, 500);
-			}
-		}
-		for (let variation of file.getExistingVariations()) {
-			filePath = file.getPath(variation);
-			if (await existsAsync(filePath)) {
-				logger.verbose('[storage] Removing file variation %s..', filePath);
-				try {
-					await unlinkAsync(filePath);
-				} catch (err) {
-					/* istanbul ignore next */
-					logger.error('[storage] Error deleting file (ignoring): %s', err);
-				}
+				logger.warn('[Storage.remove] Could not remove %s: %s', what, err.message);
 			}
 		}
 	}

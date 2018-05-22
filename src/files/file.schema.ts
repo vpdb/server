@@ -30,6 +30,7 @@ import { mimeTypeNames, mimeTypes } from './file.mimetypes';
 import { File, FilePathOptions} from './file';
 import { fileTypes } from './file.types';
 import { FileVariation } from './file.variations';
+import { processorQueue } from './processor/processor.queue';
 
 const shortId = require('shortid32');
 
@@ -321,16 +322,19 @@ fileSchema.methods.getVariations = function (this: File): FileVariation[] {
 //-----------------------------------------------------------------------------
 // TRIGGERS
 //-----------------------------------------------------------------------------
-fileSchema.post('remove', async function (obj:File) {
+fileSchema.post('remove', async function (obj: File) {
 
-		// remove physical file
-		await storage.remove(obj);
+	// remove eventually processing files
+	await processorQueue.deleteProcessingFile(obj);
 
-		// remove table blocks
-		await state.models.TableBlock.update(
-			{ _files: obj._id },
-			{ $pull: { _files: obj._id } },
-			{ multi: true }
-		);
-		await state.models.TableBlock.remove({ _files: { $size: 0 } });
+	// remove physical file
+	await storage.remove(obj);
+
+	// remove table blocks
+	await state.models.TableBlock.update(
+		{ _files: obj._id },
+		{ $pull: { _files: obj._id } },
+		{ multi: true }
+	);
+	await state.models.TableBlock.remove({ _files: { $size: 0 } });
 });

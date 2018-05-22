@@ -36,20 +36,81 @@ import { FileVariation } from '../file.variations';
 import { Metadata } from '../metadata/metadata';
 import { FileUtil } from '../file.util';
 import { ApiError } from '../../common/api.error';
+import { ActivateFileAction, ProcessorAction } from './processor.action';
 
 const renameAsync = promisify(rename);
 const statAsync = promisify(stat);
 const existsAsync = promisify(exists);
 const unlinkAsync = promisify(unlink);
 
+/**
+ * Processes files after upload.
+ *
+ * When uploading a file, other versions of the file are created, and those
+ * along with the original file are further manipulated. For example, an image
+ * upload gets copies with different dimensions, and all versions get optimized.
+ * Or a DirectB2S gets optimized as well, plus a thumb for previews (which also
+ * gets optimized, but by a different processor).
+ *
+ * A *processor* is a class that takes in a file object from the database and
+ * produces a file on the disk. It is parameterized by an optional variation.
+ *
+ * A *variation* defines the produced file on the disk. It can be a different
+ * MIME type than the original. Providing no variation results in the original
+ * being processed.
+ *
+ * An *action* is a function linked to a file and all its variations that is
+ * added at the end of the processing stack. It is individually triggered but
+ * also blocking, i.e. adding multiple actions will execute sequentially and
+ * block until the last action is executed. An example is the
+ * `ActivateFileAction` which moves files into the public folder when the file
+ * becomes public.
+ *
+ * This queue allows executing processors in an optimal way with the following
+ * requirements:
+ *
+ * - Some items should be treated with high priority, because they are needed
+ *   immediately after upload (e.g. thumbs)
+ * - Some items need a previous processor to be completed first (e.g. optimizing
+ *   a thumb variation needs the variation to be created in the first place)
+ * - Items can be moved to another folder at any point (even when not finished
+ *   processing), because after activation, public files are moved into a public
+ *   folder served by Nginx.
+ * - Items can be deleted any time (even during processing).
+ * - Items can be accessed at any point, even when not finished or even started
+ *   processing. If multiple queued jobs apply to an item, the item should be
+ *   delivered when all jobs complete.
+ * - Node might run in a cluster, so dealing with state correctly is important.
+ */
 class ProcessorQueue {
 
-	private processors: Map<string, Processor<any>> = new Map();
-	private queues: Map<string, Queue> = new Map();
-	private queueTypes:ProcessorQueueType[] = [
-		{ name: 'HI_PRIO_FAST', source: 'original'},
-		{ name: 'LOW_PRIO_SLOW', source: 'variation'},
+	/**
+	 * Queue definitions. Queues are instantiated based on this list.
+	 */
+	private readonly queueDefinitions: ProcessorQueueDefinition[] = [
+		{ name: 'HI_PRIO_FAST', source: 'original' },
+		{ name: 'LOW_PRIO_SLOW', source: 'variation' },
 	];
+
+	/**
+	 * All available processor instances, accessible by name.
+	 */
+	private readonly processors: Map<string, Processor<any>> = new Map();
+
+	/**
+	 * All available actions, accessible by name.
+	 */
+	private readonly actions: Map<string, ProcessorAction> = new Map();
+
+	/**
+	 * All available processor queues, accessible by name.
+	 */
+	private readonly queues: Map<string, Queue> = new Map();
+
+	/**
+	 * Queue where post actions are executed.
+	 */
+	private readonly actionQueue: Queue;
 
 	constructor() {
 
@@ -63,25 +124,30 @@ class ProcessorQueue {
 		};
 
 		// create queues
-		for (let type of this.queueTypes) {
+		for (let type of this.queueDefinitions) {
 			const queue = new Bull(type.name, opts);
 			queue.process(this.processJob.bind(this));
-			queue.on('completed', this.onJobCompleted(type));
 			this.queues.set(type.name, queue);
 		}
+		this.actionQueue = new Bull('action.queue', opts);
+		this.actionQueue.process(this.processAction.bind(this));
 
 		// create processors
 		const processors: Processor<any>[] = [new ImageVariationProcessor(), new ImageOptimizationProcessor()];
 		processors.forEach(p => this.processors.set(p.name, p));
+
+		// create actions
+		const actions: ProcessorAction[] = [new ActivateFileAction()];
+		actions.forEach(a => this.actions.set(a.name, a));
 	}
 
 	/**
-	 * Adds a file to be processed by the queue.
-	 * @param {File} file Fiel to be processed
+	 * Adds a file and its variations to be processed to the corresponding queues.
+	 * @param {File} file File to be processed
 	 * @param {string} src Path to file
-	 * @return {Promise<any>}
+	 * @return {Promise<void>}
 	 */
-	public async processFile(file: File, src: string): Promise<any> {
+	public async processFile(file: File, src: string): Promise<void> {
 
 		// match processors against file variations
 		let n = 0;
@@ -97,7 +163,6 @@ class ProcessorQueue {
 				logger.debug('[ProcessorQueue.processFile] Added original file %s to queue %s with processor %s (%s).', file.toDetailedString(), processor.getQueue(), processor.name, job.id);
 				n++;
 			}
-
 			// then for each variation
 			for (let variation of file.getVariations()) {
 				if (processor.canProcess(file, variation)) {
@@ -112,30 +177,75 @@ class ProcessorQueue {
 			}
 		}
 		if (n === 0) {
-			logger.info('[ProcessorQueue.processFile] No processors matched the file or any variation.');
+			logger.info('[ProcessorQueue.processFile] No processors matched %s or any variation.', file.toDetailedString());
 		}
 	}
 
 	/**
-	 * Waits until a file variation is processed and returns the path.
-	 * @param {File} file
-	 * @param {FileVariation} variation
-	 * @return {Promise<void>} Path to the processed file
+	 * Subscribes to all queues and returns when the last job and action for
+	 * the given file/variation has completed.
+	 *
+	 * @param {File} file File to match
+	 * @param {FileVariation} variation Variation to match. If none given, original is matched
+	 * @return {Promise<any>} Resolves with the last job's result or `null` if any actions where executed
 	 */
-	public async getProcessedFile(file: File, variation: FileVariation): Promise<string> {
-		const path = file.getPath(variation);
-		const job = await this.getJob(file, variation);
-		if (job) {
-			logger.info("[ProcessorQueue.getProcessedFile] Waiting for %s to finish processing", file.toString(variation));
-			return await this.waitForFileCompletion(file, variation);
-		} else {
-			// so it's not an active or waiting job, let's check the file system
-			if ((await existsAsync(path)) && (await statAsync(path)).size > 0) {
-				logger.info("[ProcessorQueue.getProcessedFile] %s has finished processing", file.toString(variation));
-				return path;
+	public async waitForVariationCompletion(file: File, variation: FileVariation|null): Promise<any> {
+		return new Promise<any>(resolve => {
+			const queues = this.queues;
+			const completeListener = (j: Job, result: any) => {
+				(async () => {
+					const data:JobData = j.data as JobData;
+
+					// if it's not the same variation, abort
+					if (!ProcessorQueue.isSame(file.id, variation ? variation.name : null, data.fileId, data.variation)) {
+						return;
+					}
+					// if there are still jobs, abort.
+					const numJobs = await this.countRemainingVariationJobs(data.fileId, data.variation);
+					if (numJobs > 0) {
+						logger.debug('[ProcessorQueue.waitForVariationCompletion] Waiting for another %s job(s) to finish for %s.', numJobs, file.toString(variation));
+						return;
+					}
+					// unregister listener
+					for (let queue of queues.values()) {
+						(queue as any).off('completed', completeListener);
+					}
+					// wait for any actions to be completed
+					const numActions = await this.countRemainingActionJobs(data.fileId);
+					if (numActions > 0) {
+						await this.waitForActionCompletion(file.id);
+						result = null;
+					}
+					logger.debug('[ProcessorQueue.waitForVariationCompletion] Finished waiting for %s.', file.toString(variation));
+
+					// all good!
+					resolve(result);
+				})();
+			};
+			for (let queue of this.queues.values()) {
+				queue.on('completed', completeListener);
 			}
-			throw new ApiError('Cannot find job for %s at %s.', file.toString(variation), path);
+		});
+	}
+
+	/**
+	 * Adds an action to be executed after all
+	 * @param {File} file
+	 * @param {string} action
+	 * @return {Promise<void>}
+	 */
+	public async addAction(file: File, action: string): Promise<void> {
+
+		const numJobs = await this.countRemainingFileJobs(file.id);
+		if (numJobs > 0) {
+			// wait for pending processing jobs to complete
+			await this.waitForFileCompletion(file.id);
 		}
+		// add to action queue
+		await this.actionQueue.add({ fileId: file.id, action: action });
+
+		// wait for actions for file to complete
+		await this.waitForActionCompletion(file.id);
 	}
 
 	/**
@@ -146,8 +256,10 @@ class ProcessorQueue {
 	 * @return {Promise<void>}
 	 */
 	public async deleteProcessingFile(file: File): Promise<void> {
-		const promises:(() => Bluebird<any> | Promise<any>)[] = [];
-		for (let q of this.queueTypes) {
+		const promises: (() => Bluebird<any> | Promise<any>)[] = [];
+		const redisLock = 'queue:delete:' + file.id;
+		await state.redis.setAsync(redisLock, '1');
+		for (let q of this.queueDefinitions) {
 			const queue = this.queues.get(q.name);
 
 			// remove waiting jobs
@@ -155,111 +267,160 @@ class ProcessorQueue {
 			const waitingJobsForFile = waitingJobs.filter(job => (job.data as JobData).fileId === file.id);
 			if (waitingJobsForFile.length) {
 				logger.info('[ProcessorQueue.deleteProcessingFile] Removing %s jobs from queue %s', waitingJobsForFile.length, q.name);
+				promises.push(...waitingJobsForFile.map(job => () => job.remove()));
 			}
-			promises.push(...waitingJobsForFile.map(job => () => job.remove()));
+
+			// TODO remove actions
 
 			// wait for active jobs and delete afterwards.
 			const activeJobs = await queue.getActive();
 			const activeJobsForFile = activeJobs.filter(job => (job.data as JobData).fileId === file.id);
 			if (activeJobsForFile.length) {
 				logger.info('[ProcessorQueue.deleteProcessingFile] Cleaning up after %s active job(s) from queue %s.', activeJobsForFile.length, q.name);
+				promises.push(...activeJobsForFile.map(job => () => this.waitForJobCompletion(queue, job).then(path => unlinkAsync(path))));
 			}
-			promises.push(...activeJobsForFile.map(job => () => this.waitForJobCompletion(queue, job).then(path => unlinkAsync(path))));
 		}
+		logger.error("finishing up...");
 		// noinspection JSIgnoredPromiseFromCall: do this in the background
-		Promise.all(promises.map(fn => fn()));
+		await Promise.all(promises.map(fn => fn()))
+			.then(async () => {
+				logger.error("removing lock...");
+				await state.redis.delAsync(redisLock);
+			})
+			.then(() => async () => {
+				const originalPath = file.getPath(null, { tmpSuffix: '_original' });
+				logger.error("deleting %s...", originalPath);
+				if (await existsAsync(originalPath)) {
+					await unlinkAsync(originalPath);
+				}
+			});
 	}
 
-	private completeListeners:Map<string, ((result:any) => Promise<any>)[]> = new Map<string, ((result:any) => Promise<any>)[]>();
-
 	/**
-	 * Waits for all jobs of a given file/variation to be finished and executes
-	 * the provided callback. If there were any previous listeners, the value
-	 * passed to the callback is the last listener's result, otherwise it's the
-	 * job's result.
-	 *
+	 * Waits until a file variation is first created and returns the path.
 	 * @param {File} file
 	 * @param {FileVariation} variation
-	 * @param {(path: string) => Promise<string>} callback
-	 * @returns {Promise<void>}
+	 * @return {Promise<string>} Path to the processed file
 	 */
-	public async waitForCompletion(file:File, variation:FileVariation, callback:(result:any) => Promise<any>): Promise<void> {
-
-		// first, check if there are any waiting or active jobs
-		const numJobs = await this.countRemainingJobs(file.id, variation.name);
-
-		// if that's the case, add the listener
+	private async getCreatedVariation(file: File, variation: FileVariation): Promise<string> {
+		const path = file.getPath(variation);
+		const numJobs = await this.countRemainingVariationCreationJobs(file.id, variation.name);
 		if (numJobs > 0) {
-
-			// add to callback stack
-			const id = file.id + ':' + variation.name;
-			if (!this.completeListeners.has(id)) {
-				this.completeListeners.set(id, []);
+			logger.info('[ProcessorQueue.getProcessedFile] Waiting for %s to finish processing', file.toString(variation));
+			return await this.waitForVariationCreated(file, variation);
+		} else {
+			// so it's not an active or waiting job, let's check the file system
+			if ((await existsAsync(path)) && (await statAsync(path)).size > 0) {
+				logger.info('[ProcessorQueue.getProcessedFile] %s has finished processing', file.toString(variation));
+				return path;
 			}
-			this.completeListeners.get(id).push(callback);
-		}
-	}
-
-	private async countRemainingJobs(fileId:string, variationName:string): Promise<number> {
-		let numbJobs = 0;
-		for (let q of this.queues.values()) {
-			const jobs = await (q as any).getJobs(['waiting', 'active']) as Job[];
-			const remainingJobs = jobs.filter(j => j.data.fileId === fileId && j.data.variation === variationName);
-			numbJobs += remainingJobs.length;
-		}
-		return numbJobs;
-	}
-
-	private onJobCompleted(queue:ProcessorQueueType) {
-		return async (job:Job, result:any) => {
-
-			// check if there are waiting complete listeners
-			const id = job.data.fileId + ':' + job.data.variation;
-			if (this.completeListeners.has(id)) {
-
-				// check if this was the last job in all queues
-				const numJobs = await this.countRemainingJobs(job.data.fileId, job.data.variation);
-
-				// if so, call them one by one
-				if (numJobs === 0) {
-					logger.info('[ProcessorQueue.onJobCompleted] Last job for %s finished, calling %s subscribers.', id, this.completeListeners.get(id).length);
-					let lastResult = result;
-					for (let fn of this.completeListeners.get(id)) {
-						lastResult = await fn(lastResult);
-					}
-					this.completeListeners.delete(id);
-				}
-			}
+			throw new ApiError('Cannot find job for %s at %s.', file.toString(variation), path);
 		}
 	}
 
 	/**
-	 * Subscribes to all queues and returns when the given file with the given variation has processed.
-	 * @param {File} file File ID to match
-	 * @param {FileVariation} variation Variation to match. If none given, any variation is matched.
-	 * @return {Promise<any>} Resolves with the job's result.
+	 * Subscribes to all queues that source the original file and waits until
+	 * the given variation has been created.
+	 *
+	 * @param {File} file File to match
+	 * @param {FileVariation} variation Variation to match.
+	 * @return {Promise<any>} Resolves with the last job's result.
 	 */
-	private async waitForFileCompletion(file:File, variation?:FileVariation): Promise<any> {
-		return await new Promise<void>(resolve => {
-			const queues = this.queues;
-			function completeListener(j:Job, result:any) {
-				// if file ID doesn't match, ignore.
-				if ((j.data as JobData).fileId !== file.id) {
-					return;
-				}
-				// if variation given and no match, ignore.
-				if (variation && (j.data as JobData).variation !== variation.name) {
-					return;
-				}
-				logger.debug("[ProcessorQueue.waitForFileCompletion] Finished waiting for %s.", file.toString(variation));
-				for (let queue of queues.values()) {
-					(queue as any).off('completed', completeListener);
-				}
-				resolve(result);
+	private async waitForVariationCreated(file: File, variation: FileVariation): Promise<any> {
+		return new Promise<any>(resolve => {
+			const queues = this.getVariationCreationQueues();
+			const completeListener = (j: Job, result: any) => {
+				(async () => {
+					const data:JobData = j.data as JobData;
+
+					// if it's not the same variation, abort
+					if (!ProcessorQueue.isSame(file.id, variation ? variation.name : null, data.fileId, data.variation)) {
+						return;
+					}
+					for (let queue of queues) {
+						(queue as any).off('completed', completeListener);
+					}
+
+					// if the file is being deleted, abort.
+					if (await state.redis.getAsync('queue:delete:' + file.id)) {
+						logger.debug('[ProcessorQueue.waitForVariationCreated] Aborting wait, %s has been deleted.', file.toString(variation));
+						return;
+					}
+					logger.debug('[ProcessorQueue.waitForVariationCreated] Finished waiting for %s.', file.toString(variation));
+					resolve(result);
+				})();
+			};
+			for (let queue of queues) {
+				queue.on('completed', completeListener);
 			}
+		});
+	}
+
+	/**
+	 * Subscribes to all queues and returns when the last job for *every*
+	 * variation of a given file has completed.
+	 *
+	 * @param {string} fileId File ID to match
+	 */
+	private async waitForFileCompletion(fileId: string): Promise<void> {
+		return new Promise<void>(resolve => {
+			const queues = this.queues;
+			const completeListener = (job: Job) => {
+				(async () => {
+					const data:JobData = job.data as JobData;
+
+					// if it's not the same file, abort
+					if (fileId !== data.fileId) {
+						return;
+					}
+
+					// if there are still jobs, abort.
+					const numJobs = await this.countRemainingFileJobs(data.fileId);
+					if (numJobs > 0) {
+						logger.debug('[ProcessorQueue.waitForFileCompletion] Waiting for another %s job(s) to finish for file %s.', numJobs, fileId);
+						return;
+					}
+					logger.debug('[ProcessorQueue.waitForFileCompletion] Finished waiting for file %s.', fileId);
+					for (let queue of queues.values()) {
+						(queue as any).off('completed', completeListener);
+					}
+					resolve();
+				})();
+			};
 			for (let queue of this.queues.values()) {
 				queue.on('completed', completeListener);
 			}
+		});
+	}
+
+	/**
+	 * Waits until all actions for a given file ID have finished.
+	 *
+	 * @param {string} fileId File ID to match
+	 */
+	private async waitForActionCompletion(fileId: string): Promise<void> {
+		return new Promise<void>(resolve => {
+			const completeListener = (job: Job) => {
+				(async () => {
+					const data:JobData = job.data as JobData;
+
+					// if it's not the same file, abort
+					if (fileId !== data.fileId) {
+						return;
+					}
+
+					// if there are still jobs, abort.
+					const numJobs = await this.countRemainingActionJobs(data.fileId);
+					if (numJobs > 0) {
+						logger.debug('[ProcessorQueue.waitForActionCompletion] Waiting for another %s action(s) to for file %s.', numJobs, fileId);
+						return;
+					}
+					logger.debug('[ProcessorQueue.waitForActionCompletion] Finished waiting for file %s.', fileId);
+					(this.actionQueue as any).off('completed', completeListener);
+					resolve();
+				})();
+			};
+			this.actionQueue.on('completed', completeListener);
 		});
 	}
 
@@ -269,15 +430,15 @@ class ProcessorQueue {
 	 * @param {Bull.Job} job Job to wait for
 	 * @returns {Promise<any>} Resolves with the job's result.
 	 */
-	private async waitForJobCompletion(queue:Queue, job:Job): Promise<any> {
+	private async waitForJobCompletion(queue: Queue, job: Job): Promise<any> {
 		return await new Promise<void>(resolve => {
-			logger.debug("[ProcessorQueue.waitForJobCompletion] Waiting for job %s to be completed.", job.id);
-			function completeListener(j:Job, result:any) {
+			logger.debug('[ProcessorQueue.waitForJobCompletion] Waiting for job %s to be completed.', job.id);
+			function completeListener(j: Job, result: any) {
 				// if job given and no match, ignore.
 				if (job && j.id !== job.id) {
 					return;
 				}
-				logger.debug("[ProcessorQueue.waitForJobCompletion] Finished waiting for job %s.", job.id);
+				logger.debug('[ProcessorQueue.waitForJobCompletion] Finished waiting for job %s.', job.id);
 				(queue as any).off('completed', completeListener);
 				resolve(result);
 			}
@@ -286,39 +447,75 @@ class ProcessorQueue {
 	}
 
 	/**
-	 * Retrieves the job from the waiting or active jobs.
-	 * @param {File} file
-	 * @param {FileVariation} variation
-	 * @return {Promise<Bull.Job>}
+	 * Counts how many active or waiting jobs there are for a given variation
+	 * on original source queues.
+	 *
+	 * @param {string} fileId File ID
+	 * @param {string} variationName Variation name
+	 * @return {Promise<number>} Number of non-finished jobs
 	 */
-	private async getJob(file:File, variation?:FileVariation): Promise<Job> {
-		for (let queue of this.queues.values()) {
+	private async countRemainingVariationCreationJobs(fileId: string, variationName: string): Promise<number> {
+		return this.countRemainingJobs(this.getVariationCreationQueues(), job => ProcessorQueue.isSame(job.data.fileId, job.data.variation, fileId, variationName));
+	}
 
-			// try waiting jobs first
-			const waitingJobs = await queue.getWaiting();
-			const waitingJob = waitingJobs.find(job => (job.data as JobData).fileId === file.id && (variation ? (job.data as JobData).variation === variation.name : true));
-			if (waitingJob) {
-				return waitingJob;
-			}
+	/**
+	 * Counts how many active or waiting jobs there are for a given variation.
+	 *
+	 * @param {string} fileId File ID
+	 * @param {string} variationName Variation name
+	 * @return {Promise<number>} Number of non-finished jobs
+	 */
+	private async countRemainingVariationJobs(fileId: string, variationName: string): Promise<number> {
+		return this.countRemainingJobs([...this.queues.values()], job => ProcessorQueue.isSame(job.data.fileId, job.data.variation, fileId, variationName));
+	}
 
-			// then active jobs
-			const activeJobs = await queue.getActive();
-			const activeJob = activeJobs.find(job => (job.data as JobData).fileId === file.id && (variation ? (job.data as JobData).variation === variation.name : true));
-			if (activeJob) {
-				return activeJob;
-			}
+	/**
+	 * Counts how many active or waiting jobs there are for a given file and
+	 * all of its variations.
+	 *
+	 * @param {string} fileId File ID
+	 * @return {Promise<number>} Number of non-finished jobs
+	 */
+	private async countRemainingFileJobs(fileId: string): Promise<number> {
+		return this.countRemainingJobs([...this.queues.values()], job => job.data.fileId === fileId);
+	}
+
+	/**
+	 * Counts how many active or waiting actions there are for a given file.
+	 *
+	 * @param {string} fileId File ID
+	 * @return {Promise<number>} Number of non-finished jobs
+	 */
+	private async countRemainingActionJobs(fileId: string): Promise<number> {
+		const jobs = await (this.actionQueue as any).getJobs(['waiting', 'active']) as Job[];
+		return jobs.filter(j => j.data.fileId === fileId).length;
+	}
+
+	private async countRemainingJobs(queues:Queue[], filter:(job:Job) => boolean) {
+		let numbJobs = 0;
+		for (let q of queues) {
+			const jobs = await (q as any).getJobs(['waiting', 'active']) as Job[];
+			const remainingJobs = jobs.filter(filter);
+			numbJobs += remainingJobs.length;
 		}
-		return null;
+		return numbJobs;
+	}
+
+	private getVariationCreationQueues():Queue[] {
+		return this.queueDefinitions
+			.filter(qd => qd.source === 'original')
+			.map(qd => this.queues.get(qd.name));
 	}
 
 	/**
 	 * This is the worker function that is pulled from the queue.
+	 * Note that it's executed on one single worker, so not suitable for callback handling.
 	 *
 	 * @param {Bull.Job} job
 	 * @return {Promise<any>}
 	 */
 	private async processJob(job: Job): Promise<any> {
-		let file:File;
+		let file: File;
 		try {
 			// retrieve data from deserialized job
 			const data = job.data as JobData;
@@ -339,10 +536,10 @@ class ProcessorQueue {
 			}
 
 			// wait for source
-			const queue = this.queueTypes.find(q => q.name === processor.getQueue());
-			let src:string;
+			const queue = this.queueDefinitions.find(q => q.name === processor.getQueue());
+			let src: string;
 			if (variation && queue.source === 'variation') {
-				src = await this.getProcessedFile(file, variation);
+				src = await this.getCreatedVariation(file, variation);
 			} else {
 				src = data.src;
 			}
@@ -380,6 +577,19 @@ class ProcessorQueue {
 	}
 
 	/**
+	 * The worker function for executing actions.
+	 *
+	 * @param {Bull.Job} job
+	 * @return {Promise<any>}
+	 */
+	private async processAction(job: Job): Promise<any> {
+		const actionName: string = job.data.action;
+		const fileId: string = job.data.fileId;
+		const action = this.actions.get(actionName);
+		return await action.run(fileId);
+	}
+
+	/**
 	 * Returns the job data that will be serialized and given to the worker
 	 * function.
 	 *
@@ -397,6 +607,30 @@ class ProcessorQueue {
 			variation: variation ? variation.name : undefined
 		}
 	}
+
+	/**
+	 * Compares two fileIds and variation names and returns true if they match.
+	 * @param {string} fileId1
+	 * @param {string} variation1
+	 * @param {string} fileId2
+	 * @param {string} variation2
+	 * @return {boolean}
+	 */
+	private static isSame(fileId1: string, variation1: string, fileId2: string, variation2: string): boolean {
+		// if file ID doesn't match, ignore.
+		if (fileId1 !== fileId2) {
+			return false;
+		}
+		// if variation given and no match, ignore.
+		if (variation1 && variation1 !== variation2) {
+			return false;
+		}
+		// if no variation given and variation, ignore
+		if (!variation1 && variation2) {
+			return false;
+		}
+		return true;
+	}
 }
 
 interface JobData {
@@ -406,7 +640,10 @@ interface JobData {
 	variation?: string;
 }
 
-interface ProcessorQueueType {
+/**
+ * Defines the properties of a queue.
+ */
+interface ProcessorQueueDefinition {
 	/**
 	 * Name of the queue. Processors link to that name.
 	 */
@@ -414,7 +651,7 @@ interface ProcessorQueueType {
 
 	/**
 	 * Source file.
-	 *  - If set to `original`, the uploaded file is used even for variation.
+	 *  - If set to `original`, the uploaded file is used, even for variations.
 	 *  - If set to `variation`, the variation is awaited and used for variations.
 	 */
 	source: 'original' | 'variation'

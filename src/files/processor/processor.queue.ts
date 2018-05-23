@@ -25,18 +25,20 @@ import Bull, { Job, JobOptions, Queue, QueueOptions } from 'bull';
 import Bluebird from 'bluebird';
 
 import { state } from '../../state';
+import { ApiError } from '../../common/api.error';
 import { config } from '../../common/settings';
 import { logger } from '../../common/logger';
 import { File } from '../file';
-import { Processor } from './processor';
-import { ImageVariationProcessor } from './image.variation.processor';
-import { ImageOptimizationProcessor } from './image.optimization.processor';
 import { fileTypes } from '../file.types';
 import { FileVariation } from '../file.variations';
-import { Metadata } from '../metadata/metadata';
 import { FileUtil } from '../file.util';
-import { ApiError } from '../../common/api.error';
+import { Metadata } from '../metadata/metadata';
+import { Processor } from './processor';
 import { ActivateFileAction, ProcessorAction } from './processor.action';
+import { Directb2sOptimizationProcessor } from './directb2s.optimization.processor';
+import { Directb2sThumbProcessor } from './directb2s.thumb.processor';
+import { ImageOptimizationProcessor } from './image.optimization.processor';
+import { ImageVariationProcessor } from './image.variation.processor';
 
 const renameAsync = promisify(rename);
 const statAsync = promisify(stat);
@@ -133,7 +135,12 @@ class ProcessorQueue {
 		this.actionQueue.process(this.processAction.bind(this));
 
 		// create processors
-		const processors: Processor<any>[] = [new ImageVariationProcessor(), new ImageOptimizationProcessor()];
+		const processors: Processor<any>[] = [
+			new Directb2sOptimizationProcessor(),
+			new Directb2sThumbProcessor(),
+			new ImageVariationProcessor(),
+			new ImageOptimizationProcessor()
+		];
 		processors.forEach(p => this.processors.set(p.name, p));
 
 		// create actions

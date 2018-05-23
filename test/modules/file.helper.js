@@ -46,8 +46,7 @@ class FileHelper {
 
 			const img = gm(isFS ? 1080 : 1920, isFS ? 1920 : 1080, pleasejs.make_color());
 			const data = await img.toBufferAsync('PNG');
-			const res = await this.api
-				.onStorage()
+			const res = await this.api.onStorage()
 				.as(user)
 				.markTeardown()
 				.withQuery({ type: fileType })

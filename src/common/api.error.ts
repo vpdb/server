@@ -40,6 +40,11 @@ export class ApiError extends Error {
 	public statusCode: number = 500;
 
 	/**
+	 * An additional, machine-parsable error code in the body.
+	 */
+	public errorCode: string;
+
+	/**
 	 * The body that should be returned to the client.
 	 */
 	public data: { [key: string]: any };
@@ -93,6 +98,11 @@ export class ApiError extends Error {
 	 */
 	public status(status: number): ApiError {
 		this.statusCode = status;
+		return this;
+	}
+
+	public code(code: string): ApiError {
+		this.errorCode = code;
 		return this;
 	}
 
@@ -179,7 +189,7 @@ export class ApiError extends Error {
 
 		// if the message contains a stack trace, replace.
 		const message = this.message.match(/\n\s+at/) ? 'Internal error.' : this.message;
-		const body:any = this.data || { error: this.responseMessage || message };
+		const body:any = this.data || { error: this.responseMessage || message, code: this.errorCode || undefined };
 		if (this.errors) {
 			body.errors = this.errors.map(error => {
 				return {

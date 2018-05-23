@@ -251,7 +251,7 @@ export class FileApi extends Api {
 	/**
 	 * Handles uploaded data posted as multipart.
 	 * @param {Application.Context} ctx Koa context
-	 * @returns {Promise.<FileSchema>}
+	 * @returns {Promise<File>}
 	 */
 	private async handleMultipartUpload(ctx: Context): Promise<File> {
 
@@ -259,16 +259,18 @@ export class FileApi extends Api {
 			throw new ApiError('Mime type must be provided as query parameter "content_type" when using multipart.').status(422);
 		}
 
+		let err:ApiError;
 		const busboy = new Busboy({ headers: ctx.request.headers });
 		const parseResult = new Promise<File>((resolve, reject) => {
-
 			let numFiles = 0;
 			busboy.on('file', (fieldname, stream, filename) => {
 				numFiles++;
 				if (numFiles > 1) {
-					return reject(new ApiError('Multipart requests must only contain one file.').status(422));
+					err = new ApiError('Multipart requests must only contain one file.').code('too_many_files').status(422);
+					stream.resume();
+					return;
 				}
-				logger.info('[api|file:upload] Starting file (multipart) upload of "%s"...', filename);
+				logger.info('[FileApi.handleMultipartUpload] Starting file (multipart) upload of "%s"', filename);
 				const fileData = {
 					name: filename,
 					bytes: 0,
@@ -278,17 +280,24 @@ export class FileApi extends Api {
 					file_type: ctx.query.type,
 					_created_by: ctx.state.user._id
 				};
-				FileUtil.create(ctx, fileData as File, stream, { processInBackground: true }).then(file => resolve(file)).catch(reject);
+				FileUtil.create(ctx, fileData as File, stream, { processInBackground: true })
+					.then(file => resolve(file))
+					.catch(reject);
 			});
 		});
 
 		const parseMultipart = new Promise((resolve, reject) => {
 			busboy.on('finish', resolve);
 			busboy.on('error', reject);
-			ctx.pipe(busboy);
+			ctx.req.pipe(busboy);
 		});
 
 		const results = await Promise.all([parseResult, parseMultipart]);
+		if (err) {
+			logger.warn('[FileApi.handleMultipartUpload] Removing %s', results[0].toString());
+			await results[0].remove();
+			throw err;
+		}
 		return results[0];
 	}
 }

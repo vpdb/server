@@ -160,7 +160,8 @@ class ProcessorQueue {
 					// removeOnComplete: true,
 					// removeOnFail: true
 				} as JobOptions);
-				logger.debug('[ProcessorQueue.processFile] Added original file %s to queue %s with processor %s (%s).', file.toDetailedString(), processor.getQueue(), processor.name, job.id);
+				logger.debug('[ProcessorQueue.processFile] Added original file %s to queue %s with processor %s (%s).',
+					file.toDetailedString(), processor.getQueue(), processor.name, job.id);
 				n++;
 			}
 			// then for each variation
@@ -171,7 +172,8 @@ class ProcessorQueue {
 						// removeOnComplete: true,
 						// removeOnFail: true
 					} as JobOptions);
-					logger.debug('[ProcessorQueue.processFile] Added %s to queue %s with processor %s (%s).', file.toDetailedString(variation), processor.name, processor.getQueue(), job.id);
+					logger.debug('[ProcessorQueue.processFile] Added %s to queue %s with processor %s (%s).',
+						file.toDetailedString(variation), processor.name, processor.getQueue(), job.id);
 					n++;
 				}
 			}
@@ -203,7 +205,8 @@ class ProcessorQueue {
 					// if there are still jobs, abort.
 					const numJobs = await this.countRemainingVariationJobs(data.fileId, data.variation);
 					if (numJobs > 0) {
-						logger.debug('[ProcessorQueue.waitForVariationCompletion] Waiting for another %s job(s) to finish for %s.', numJobs, file.toString(variation));
+						logger.debug('[ProcessorQueue.waitForVariationCompletion] Waiting for another %s job(s) to finish for %s.',
+							numJobs, file.toString(variation));
 						return;
 					}
 					// unregister listener
@@ -266,7 +269,8 @@ class ProcessorQueue {
 			const waitingJobs = await queue.getWaiting();
 			const waitingJobsForFile = waitingJobs.filter(job => (job.data as JobData).fileId === file.id);
 			if (waitingJobsForFile.length) {
-				logger.info('[ProcessorQueue.deleteProcessingFile] Removing %s jobs from queue %s', waitingJobsForFile.length, q.name);
+				logger.info('[ProcessorQueue.deleteProcessingFile] Removing %s jobs from queue %s',
+					waitingJobsForFile.length, q.name);
 				promises.push(...waitingJobsForFile.map(job => () => job.remove()));
 			}
 
@@ -276,20 +280,17 @@ class ProcessorQueue {
 			const activeJobs = await queue.getActive();
 			const activeJobsForFile = activeJobs.filter(job => (job.data as JobData).fileId === file.id);
 			if (activeJobsForFile.length) {
-				logger.info('[ProcessorQueue.deleteProcessingFile] Cleaning up after %s active job(s) from queue %s.', activeJobsForFile.length, q.name);
-				promises.push(...activeJobsForFile.map(job => () => this.waitForJobCompletion(queue, job).then(path => unlinkAsync(path))));
+				logger.info('[ProcessorQueue.deleteProcessingFile] Cleaning up after %s active job(s) from queue %s.',
+					activeJobsForFile.length, q.name);
+				promises.push(...activeJobsForFile.map(job => () => this.waitForJobCompletion(q, job)
+					.then(path => { if (path) { return unlinkAsync(path); } })));
 			}
 		}
-		logger.error("finishing up...");
 		// noinspection JSIgnoredPromiseFromCall: do this in the background
-		await Promise.all(promises.map(fn => fn()))
-			.then(async () => {
-				logger.error("removing lock...");
-				await state.redis.delAsync(redisLock);
-			})
+		Promise.all(promises.map(fn => fn()))
+			.then(async () => state.redis.delAsync(redisLock))
 			.then(() => async () => {
 				const originalPath = file.getPath(null, { tmpSuffix: '_original' });
-				logger.error("deleting %s...", originalPath);
 				if (await existsAsync(originalPath)) {
 					await unlinkAsync(originalPath);
 				}
@@ -306,12 +307,14 @@ class ProcessorQueue {
 		const path = file.getPath(variation);
 		const numJobs = await this.countRemainingVariationCreationJobs(file.id, variation.name);
 		if (numJobs > 0) {
-			logger.info('[ProcessorQueue.getProcessedFile] Waiting for %s to finish processing', file.toString(variation));
+			logger.info('[ProcessorQueue.getProcessedFile] Waiting for %s to finish processing',
+				file.toString(variation));
 			return await this.waitForVariationCreated(file, variation);
 		} else {
 			// so it's not an active or waiting job, let's check the file system
 			if ((await existsAsync(path)) && (await statAsync(path)).size > 0) {
-				logger.info('[ProcessorQueue.getProcessedFile] %s has finished processing', file.toString(variation));
+				logger.info('[ProcessorQueue.getProcessedFile] %s has finished processing',
+					file.toString(variation));
 				return path;
 			}
 			throw new ApiError('Cannot find job for %s at %s.', file.toString(variation), path);
@@ -343,10 +346,13 @@ class ProcessorQueue {
 
 					// if the file is being deleted, abort.
 					if (await state.redis.getAsync('queue:delete:' + file.id)) {
-						logger.debug('[ProcessorQueue.waitForVariationCreated] Aborting wait, %s has been deleted.', file.toString(variation));
+						logger.debug('[ProcessorQueue.waitForVariationCreated] Aborting wait, %s has been deleted.',
+							file.toString(variation));
+						resolve(null);
 						return;
 					}
-					logger.debug('[ProcessorQueue.waitForVariationCreated] Finished waiting for %s.', file.toString(variation));
+					logger.debug('[ProcessorQueue.waitForVariationCreated] Finished waiting for %s.',
+						file.toString(variation));
 					resolve(result);
 				})();
 			};
@@ -377,7 +383,8 @@ class ProcessorQueue {
 					// if there are still jobs, abort.
 					const numJobs = await this.countRemainingFileJobs(data.fileId);
 					if (numJobs > 0) {
-						logger.debug('[ProcessorQueue.waitForFileCompletion] Waiting for another %s job(s) to finish for file %s.', numJobs, fileId);
+						logger.debug('[ProcessorQueue.waitForFileCompletion] Waiting for another %s job(s) to finish for file %s.',
+							numJobs, fileId);
 						return;
 					}
 					logger.debug('[ProcessorQueue.waitForFileCompletion] Finished waiting for file %s.', fileId);
@@ -412,7 +419,8 @@ class ProcessorQueue {
 					// if there are still jobs, abort.
 					const numJobs = await this.countRemainingActionJobs(data.fileId);
 					if (numJobs > 0) {
-						logger.debug('[ProcessorQueue.waitForActionCompletion] Waiting for another %s action(s) to for file %s.', numJobs, fileId);
+						logger.debug('[ProcessorQueue.waitForActionCompletion] Waiting for another %s action(s) to for file %s.',
+							numJobs, fileId);
 						return;
 					}
 					logger.debug('[ProcessorQueue.waitForActionCompletion] Finished waiting for file %s.', fileId);
@@ -426,19 +434,20 @@ class ProcessorQueue {
 
 	/**
 	 * Subscribes to the queue of a given job and returns when the job has finished.
-	 * @param {Bull.Queue} queue Queue to subscribe to
+	 * @param {ProcessorQueueDefinition} qd Queue to subscribe to
 	 * @param {Bull.Job} job Job to wait for
 	 * @returns {Promise<any>} Resolves with the job's result.
 	 */
-	private async waitForJobCompletion(queue: Queue, job: Job): Promise<any> {
+	private async waitForJobCompletion(qd: ProcessorQueueDefinition, job: Job): Promise<any> {
+		const queue = this.queues.get(qd.name);
 		return await new Promise<void>(resolve => {
-			logger.debug('[ProcessorQueue.waitForJobCompletion] Waiting for job %s to be completed.', job.id);
+			logger.debug('[ProcessorQueue.waitForJobCompletion] Waiting for job %s on queue %s to be completed.', job.id, qd.name);
 			function completeListener(j: Job, result: any) {
 				// if job given and no match, ignore.
 				if (job && j.id !== job.id) {
 					return;
 				}
-				logger.debug('[ProcessorQueue.waitForJobCompletion] Finished waiting for job %s.', job.id);
+				logger.debug('[ProcessorQueue.waitForJobCompletion] Finished waiting for job %s on queue %s.', job.id, qd.name);
 				(queue as any).off('completed', completeListener);
 				resolve(result);
 			}
@@ -455,7 +464,8 @@ class ProcessorQueue {
 	 * @return {Promise<number>} Number of non-finished jobs
 	 */
 	private async countRemainingVariationCreationJobs(fileId: string, variationName: string): Promise<number> {
-		return this.countRemainingJobs(this.getVariationCreationQueues(), job => ProcessorQueue.isSame(job.data.fileId, job.data.variation, fileId, variationName));
+		return this.countRemainingJobs(this.getVariationCreationQueues(),
+				job => ProcessorQueue.isSame(job.data.fileId, job.data.variation, fileId, variationName));
 	}
 
 	/**
@@ -466,7 +476,8 @@ class ProcessorQueue {
 	 * @return {Promise<number>} Number of non-finished jobs
 	 */
 	private async countRemainingVariationJobs(fileId: string, variationName: string): Promise<number> {
-		return this.countRemainingJobs([...this.queues.values()], job => ProcessorQueue.isSame(job.data.fileId, job.data.variation, fileId, variationName));
+		return this.countRemainingJobs([...this.queues.values()],
+				job => ProcessorQueue.isSame(job.data.fileId, job.data.variation, fileId, variationName));
 	}
 
 	/**
@@ -521,7 +532,8 @@ class ProcessorQueue {
 			const data = job.data as JobData;
 			file = await state.models.File.findOne({ id: data.fileId }).exec();
 			if (!file) {
-				logger.warn('[ProcessorQueue.processJob] %s/#%s skip: File "%s" has been removed from DB, ignoring.', data.processor, job.id, data.fileId);
+				logger.warn('[ProcessorQueue.processJob] %s/#%s skip: File "%s" has been removed from DB, ignoring.',
+					data.processor, job.id, data.fileId);
 				return null;
 			}
 			const processor = this.processors.get(data.processor);
@@ -544,8 +556,14 @@ class ProcessorQueue {
 				src = data.src;
 			}
 
+			// source might not be available anymore (when deleted), in this case abort.
+			if (src === null) {
+				return null;
+			}
+
 			// process to temp file
-			logger.debug('[ProcessorQueue.processJob] %s/#%s start: %s at %s', data.processor, job.id, file.toDetailedString(variation), tmpPathLog);
+			logger.debug('[ProcessorQueue.processJob] %s/#%s start: %s at %s',
+				data.processor, job.id, file.toDetailedString(variation), tmpPathLog);
 			await processor.process(file, src, tmpPath, variation);
 
 			// update metadata

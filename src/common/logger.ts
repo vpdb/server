@@ -28,7 +28,7 @@ export class Logger {
 		const alignedWithColorsAndTime = logFormat.combine(
 			logFormat.colorize(),
 			logFormat.timestamp(),
-			logFormat.align(),
+			//logFormat.align(),
 			logFormat.printf(info => `${info.timestamp} ${info.level}: ${info.message}`)
 		);
 		this.logger = winston.createLogger({

@@ -20,6 +20,7 @@
 'use strict';
 /*global describe, before, after, it*/
 
+const resolve = require('path').resolve;
 const expect = require('expect.js');
 
 const shortId = require('shortid32');
@@ -32,9 +33,11 @@ const FileHelper = require('../../test/modules/file.helper');
 const api = new ApiClient();
 const fileHelper = new FileHelper(api);
 
+const pngPath = resolve(__dirname, '../../data/test/files/backglass.png');
+
 let res;
 
-describe('The VPDB `file` API', () => {
+describe.only('The VPDB `file` API', () => {
 
 	before(async () => {
 		await api.setupUsers({
@@ -46,12 +49,64 @@ describe('The VPDB `file` API', () => {
 
 	after(async () => await api.teardown());
 
+	describe('when uploading a file using a multipart request', () => {
+
+		it('should fail when no content type is provided in the query', async () => {
+			const member = api.getUser('member');
+			await api.onStorage()
+				.as(member)
+				.withQuery({ type: 'release' })
+				.withAttachment('image', pngPath)
+				.post('/v1/files')
+				.then(res => res.expectError(422, 'mime type must be provided as query parameter'));
+		});
+
+		it('should fail when posting more than one file', async () => {
+			const member = api.getUser('member');
+			await api.onStorage()
+				.as(member)
+				.withQuery({ type: 'backglass', content_type: 'image/png' })
+				.withAttachment('image1', pngPath)
+				.withAttachment('image2', pngPath)
+				.post('/v1/files')
+				.then(res => res.expectError(422, 'must only contain one file'));
+		});
+
+		// it('should fail when posting a corrupted file', async () => {
+		// 	request
+		// 		.post('/storage/v1/files')
+		// 		.query({ type: 'rom', content_type: 'application/zip' })
+		// 		.as('member')
+		// 		.attach('zip', pngPath)
+		// 		.end(hlp.status(400, 'metadata parsing failed', done));
+		// });
+
+		// it('should succeed when uploading a backglass image', async () => {
+		// 	var stats = fs.statSync(pngPath);
+		// 	request
+		// 		.post('/storage/v1/files')
+		// 		.query({ type: 'backglass', content_type: 'image/png' })
+		// 		.as('member')
+		// 		.attach('image', pngPath)
+		// 		.end(function(err, res) {
+		// 			hlp.expectStatus(err, res, 201);
+		// 			hlp.doomFile('member', res.body.id);
+		// 			expect(res.body.id).to.be.ok();
+		// 			expect(res.body.bytes).to.equal(stats.size);
+		// 			expect(res.body.metadata).to.be.an('object');
+		// 			expect(res.body.metadata.size).to.be.an('object');
+		// 			expect(res.body.metadata.size.width).to.equal(1280);
+		// 			done();
+		// 		});
+		// });
+
+	});
+
 	describe('before trying to upload a file', () => {
 
 		it('should fail when no "Content-Disposition" header is provided', async () => {
 			const member = api.getUser('member');
-			await api
-				.onStorage()
+			await api.onStorage()
 				.as(member)
 				.withQuery({ type: 'backglass' })
 				.post('/v1/files', 'xxx')
@@ -60,8 +115,7 @@ describe('The VPDB `file` API', () => {
 
 		it('should fail when a bogus "Content-Disposition" header is provided', async () => {
 			const member = api.getUser('member');
-			await api
-				.onStorage()
+			await api.onStorage()
 				.as(member)
 				.withHeader('Content-Disposition', 'zurg!!')
 				.withQuery({ type: 'backglass' })
@@ -71,8 +125,7 @@ describe('The VPDB `file` API', () => {
 
 		it('should fail when no "type" query parameter is provided', async () => {
 			const member = api.getUser('member');
-			await api
-				.onStorage()
+			await api.onStorage()
 				.as(member)
 				.withHeader('Content-Disposition', 'attachment; filename="foo.bar"')
 				.post('/v1/files', 'xxx')
@@ -81,8 +134,7 @@ describe('The VPDB `file` API', () => {
 
 		it('should fail when providing wrong mime type in header', async () => {
 			const member = api.getUser('member');
-			res = await api
-				.onStorage()
+			res = await api.onStorage()
 				.as(member)
 				.withHeader('Content-Disposition', 'attachment; filename="foo.bar"')
 				.withQuery({ type: 'release' })
@@ -94,7 +146,7 @@ describe('The VPDB `file` API', () => {
 		});
 	});
 
-	describe.only('when uploading a playfield image', function() {
+	describe('when uploading a playfield image', () => {
 
 		it('should return the correct variations', async () => {
 			const member = api.getUser('member');

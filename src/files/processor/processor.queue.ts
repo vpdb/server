@@ -283,17 +283,25 @@ class ProcessorQueue {
 				logger.info('[ProcessorQueue.deleteProcessingFile] Cleaning up after %s active job(s) from queue %s.',
 					activeJobsForFile.length, q.name);
 				promises.push(...activeJobsForFile.map(job => () => this.waitForJobCompletion(q, job)
-					.then(path => { if (path) { return unlinkAsync(path); } })));
+					.then(path => {
+						if (path) {
+							logger.info('[ProcessorQueue.deleteProcessingFile] Finally removing %s', path);
+							return unlinkAsync(path);
+						}
+					})));
 			}
 		}
 		// noinspection JSIgnoredPromiseFromCall: do this in the background
 		Promise.all(promises.map(fn => fn()))
-			.then(async () => state.redis.delAsync(redisLock))
-			.then(() => async () => {
+			.then(() => state.redis.delAsync(redisLock))
+			.then(async () => {
 				const originalPath = file.getPath(null, { tmpSuffix: '_original' });
 				if (await existsAsync(originalPath)) {
+					logger.info('[ProcessorQueue.deleteProcessingFile] Finally removing original %s', originalPath);
 					await unlinkAsync(originalPath);
 				}
+			}).catch(err => {
+				logger.error('Error while processing finishing up removal:\n\n' + ApiError.colorStackTrace(err));
 			});
 	}
 
@@ -651,6 +659,9 @@ class ProcessorQueue {
 	}
 }
 
+/**
+ * Whats serialized between the worker and the main thread
+ */
 interface JobData {
 	src: string;
 	fileId: string;

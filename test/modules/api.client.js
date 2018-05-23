@@ -6,12 +6,15 @@ const randomstring = require('randomstring');
 const existsSync = require('fs').existsSync;
 const mkdirSync = require('fs').mkdirSync;
 const writeFileSync = require('fs').writeFileSync;
+const createReadStream = require('fs').createReadStream;
 const assign = require('lodash').assign;
 const pick = require('lodash').pick;
 const keys = require('lodash').keys;
 const get = require('lodash').get;
 const isString = require('lodash').isString;
 const isObject = require('lodash').isObject;
+const FormData = require('form-data');
+
 
 const ApiClientResult = require('./api.client.result');
 
@@ -244,6 +247,20 @@ class ApiClient {
 	}
 
 	/**
+	 * Adds a file as multipart.
+	 * @param filename
+	 * @param filePath
+	 * @returns {ApiClient}
+	 */
+	withAttachment(filename, filePath) {
+		if (!this._config.formData) {
+			this._config.formData = new FormData();
+		}
+		this._config.formData.append('file', createReadStream(filePath), { filename: filename });
+		return this;
+	}
+
+	/**
 	 * Saves the request to the documentation folder.
 	 * @param {string} path Where to save the request, e.g. "users/post".
 	 * @param {Object} [opts={}] Options
@@ -335,10 +352,14 @@ class ApiClient {
 		const trace = new Error();
 		this._actions.push(res => {
 			const teardown = { stack:trace.stack };
+			const id = get(res.data, pathToId);
+			if (!id) {
+				throw new Error('Could not parse ID "' + pathToId + ' from ' + JSON.stringify(res.data));
+			}
 			if (path) {
-				teardown.path = path + '/' + get(res.data, pathToId);
+				teardown.path = path + '/' + id;
 			} else {
-				teardown.url = res.config.url.replace('/storage/', '/api/') + '/' + get(res.data, pathToId);
+				teardown.url = res.config.url.replace('/storage/', '/api/') + '/' + id;
 			}
 			if (user) {
 				teardown.user = user;
@@ -376,16 +397,22 @@ class ApiClient {
 	/**
 	 * Posts a resource to the VPDB backend.
 	 * @param {string} path API path, usually starting with "/v1/..."
-	 * @param {Object} data Request body
+	 * @param {Object} [data] Request body
 	 * @returns {Promise<ApiClientResult>}
 	 */
 	async post(path, data) {
+		if (!data && this._config.formData) {
+			assign(this._config.headers, this._config.formData.getHeaders());
+			data = this._config.formData;
+			delete this._config.formData;
+		}
 		return await this._request({
 			url: path,
 			method: 'post',
 			data: data
 		});
 	}
+
 
 	/**
 	 * Gets a resource from the VPDB backend.

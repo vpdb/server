@@ -29,7 +29,7 @@ export interface TableBlock extends Document {
 	bytes: number,
 	type: 'image' | 'sound' | 'gameitem' | 'collection',
 	meta: any,
-	_files: File[] | Schema.Types.ObjectId[]
+	_files?: File[] | Schema.Types.ObjectId[]
 }
 
 export interface TableBlockMatchResult extends TableBlockBase {

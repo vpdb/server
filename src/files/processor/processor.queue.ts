@@ -39,6 +39,7 @@ import { Directb2sOptimizationProcessor } from './directb2s.optimization.process
 import { Directb2sThumbProcessor } from './directb2s.thumb.processor';
 import { ImageOptimizationProcessor } from './image.optimization.processor';
 import { ImageVariationProcessor } from './image.variation.processor';
+import { VptBlockindexProcessor } from './vpt.blockindex.processor';
 
 const renameAsync = promisify(rename);
 const statAsync = promisify(stat);
@@ -139,7 +140,8 @@ class ProcessorQueue {
 			new Directb2sOptimizationProcessor(),
 			new Directb2sThumbProcessor(),
 			new ImageVariationProcessor(),
-			new ImageOptimizationProcessor()
+			new ImageOptimizationProcessor(),
+			new VptBlockindexProcessor()
 		];
 		processors.forEach(p => this.processors.set(p.name, p));
 

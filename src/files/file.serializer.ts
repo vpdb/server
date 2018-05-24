@@ -25,7 +25,12 @@ export class FileSerializer extends Serializer<File> {
 	protected _detailed(ctx: Context, doc: File, opts: SerializerOptions):File {
 		const file = this._simple(ctx, doc, opts);
 		assign(file, pick(doc, ['is_active', 'created_at', 'file_type' ]));
-		file.metadata = Metadata.getReader(doc).serializeDetailed(doc.metadata);
+
+		// metadata
+		const metadataReader = Metadata.getReader(doc);
+		if (metadataReader && doc.metadata) {
+			file.metadata = metadataReader.serializeDetailed(doc.metadata);
+		}
 
 		// file variations
 		file.variations = {};

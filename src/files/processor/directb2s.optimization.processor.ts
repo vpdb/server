@@ -86,7 +86,7 @@ export class Directb2sOptimizationProcessor extends Processor<BackglassVariation
 					let started = false;
 					let quanter = new PngQuant([192, '--ordered']);
 					let handleError = (err: Error) => {
-						logger.error('ERROR: %s', err.message);
+						logger.error('[Directb2sOptimizationProcessor] %s', err.message);
 						if (!started) {
 							write(' ' + attr.name + '="');
 							write(this.escape(attr.value));

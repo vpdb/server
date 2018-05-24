@@ -32,6 +32,7 @@ import { ReleaseVersion } from '../releases/release.version';
 import { ReleaseVersionFile } from '../releases/release.version.file';
 import { Build } from '../builds/build';
 import { FileUtil } from './file.util';
+import { mimeTypeNames } from './file.mimetypes';
 
 //const fileModule = require('../../modules/file');
 
@@ -61,7 +62,7 @@ export class FileApi extends Api {
 		if (/multipart\/form-data/i.test(ctx.get('content-type'))) {
 			file = await this.handleMultipartUpload(ctx);
 		} else {
-			file = await this.handleUpload(ctx);
+			file = await this.handleRawUpload(ctx);
 		}
 		return this.success(ctx, state.serializers.File.detailed(ctx, file), 201);
 	}
@@ -89,7 +90,7 @@ export class FileApi extends Api {
 		}
 		await file.remove();
 
-		logger.info('[api|file:delete] File "%s" (%s) successfully removed.', file.name, file.id);
+		logger.info('[FileApi.del] File "%s" (%s) successfully removed.', file.name, file.id);
 		return this.success(ctx, null, 204);
 	}
 
@@ -222,10 +223,11 @@ export class FileApi extends Api {
 
 	/**
 	 * Handles uploaded data posted as-is with a content type
-	 * @param {Application.Context} ctx Koa context
-	 * @returns {Promise.<FileSchema>}
+	 *
+	 * @param {Context} ctx Koa context
+	 * @return {Promise<File>}
 	 */
-	private async handleUpload(ctx: Context): Promise<File> {
+	private async handleRawUpload(ctx: Context): Promise<File> {
 
 		if (!ctx.get('content-disposition')) {
 			throw new ApiError('Header "Content-Disposition" must be provided.').status(422);
@@ -233,8 +235,13 @@ export class FileApi extends Api {
 		if (!/filename=([^;]+)/i.test(ctx.get('content-disposition'))) {
 			throw new ApiError('Header "Content-Disposition" must contain file name.').status(422);
 		}
+		const validMimeTypes = [...mimeTypeNames, 'multipart/form-data' ];
+		if (!validMimeTypes.includes(ctx.get('content-type'))) {
+			throw new ApiError('Invalid "Content-Type" header "%s". Valid content types are: [ %s ]. You can also post multi-part binary data using "multipart/form-data".',
+				ctx.get('content-type'), mimeTypeNames.join(', ')).status(422);
+		}
 		const filename = ctx.get('content-disposition').match(/filename=([^;]+)/i)[1].replace(/(^"|^'|"$|'$)/g, '');
-		logger.info('[file:upload] Starting file upload of "%s"...', filename);
+		logger.info('[FileApi.handleRawUpload] Starting file upload of "%s"...', filename);
 		const fileData = {
 			name: filename,
 			bytes: ctx.get('content-length') || 0,
@@ -257,6 +264,10 @@ export class FileApi extends Api {
 
 		if (!ctx.query.content_type) {
 			throw new ApiError('Mime type must be provided as query parameter "content_type" when using multipart.').status(422);
+		}
+
+		if (!mimeTypeNames.includes(ctx.query.content_type)) {
+			throw new ApiError('Invalid "Content-Type" parameter "%s". Valid content types are: [ %s ].', ctx.query.content_type).status(422);
 		}
 
 		let err:ApiError;

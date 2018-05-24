@@ -70,8 +70,8 @@ export class Server {
 
 	public start() {
 		this.app.listen(config.vpdb.api.port);
-		logger.info('[app] Storage ready at %s', settings.storageProtectedUri());
-		logger.info('[app] API ready at %s', settings.apiUri());
+		logger.info('[Server.start] Storage ready at %s', settings.storageProtectedUri());
+		logger.info('[Server.start] API ready at %s', settings.apiUri());
 	}
 }
 

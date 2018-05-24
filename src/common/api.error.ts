@@ -223,9 +223,8 @@ export class ApiError extends Error {
 			if (this.message.match(/\n\s+at/)) {
 				logger.warn('\n\n' + ApiError.colorStackTrace(this) + cause + (requestLog ? requestLog + '\n' : ''));
 			} else {
-				logger.warn(chalk.yellowBright(this.message.trim()) + cause + (requestLog ? requestLog + '\n' : ''));
+				logger.warn(chalk.yellowBright(this.message.trim()) + '\n' + cause + (requestLog ? requestLog + '\n' : ''));
 			}
-
 		}
 	}
 
@@ -244,6 +243,9 @@ export class ApiError extends Error {
 	 * @returns {string} Colorized stack trace
 	 */
 	public static colorStackTrace(err: Error) {
+		if (!err.stack) {
+			return '';
+		}
 		return err.stack.split('\n').map((line, index) => {
 			if (index === 0) {
 				return chalk.redBright(line);

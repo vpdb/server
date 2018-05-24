@@ -173,7 +173,7 @@ releaseSchema.pre('remove', async function (this: Release) {
 			fileIds.push((file._file as File)._id || file._file);
 		});
 	});
-	logger.info('[model] Removing all table blocks for file IDs [ %s ]', fileIds.map(fid => fid.toString()).join(', '));
+	logger.info('[Release.remove] Removing all table blocks for file IDs [ %s ]', fileIds.map(fid => fid.toString()).join(', '));
 
 	for (let fileId of fileIds) {
 		await state.models.TableBlock.update(

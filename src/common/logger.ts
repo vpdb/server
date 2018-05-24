@@ -19,6 +19,9 @@
 
 import { format as sprintf } from 'util';
 import { format as logFormat } from 'logform';
+import chalk from 'chalk';
+import hasAnsi from 'has-ansi';
+
 const winston = require('winston'); // todo use typings when available (https://github.com/winstonjs/winston/issues/1190)
 
 export class Logger {
@@ -40,34 +43,58 @@ export class Logger {
 		});
 	}
 
+	private colorMessage(message: string, prefixColor:any, messageColor?:any): string {
+		if (hasAnsi(message)) {
+			return message;
+		}
+		const match = message.match(/^(\[[^\]]+])(.+)/);
+		if (match) {
+			let prefix:string;
+			if (prefixColor == null) {
+				let [m1, m2] = match[1].split('.', 2);
+				prefix = m2  ?
+					'[' + chalk.cyan(m1.substring(1)) + '.' + chalk.blueBright(m2.substring(0, m2.length - 1)) + ']' :
+					'[' + chalk.cyan(match[1].substring(1, match[1].length - 1)) + ']';
+			} else {
+				prefix = prefixColor(match[1]);
+			}
+			return prefix + (messageColor ? messageColor(match[2]) : match[2]);
+		}
+		return messageColor ? messageColor(message) : message;
+	}
+
 	error(format: any, ...param: any[]) {
 		this.logger.log({
 			level: 'error',
-			message: sprintf.apply(null, arguments)
+			message: this.colorMessage(sprintf.apply(null, arguments), chalk.bgBlack.redBright, chalk.whiteBright)
 		});
 	}
+
 	warn(format: any, ...param: any[]) {
 		this.logger.log({
 			level: 'warn',
-			message: sprintf.apply(null, arguments)
+			message: this.colorMessage(sprintf.apply(null, arguments), chalk.bgBlack.yellowBright, chalk.whiteBright)
 		});
 	}
+
 	info(format: any, ...param: any[]) {
 		this.logger.log({
 			level: 'info',
-			message: sprintf.apply(null, arguments)
+			message: this.colorMessage(sprintf.apply(null, arguments), null, chalk.white)
 		});
 	}
+
 	verbose(format: any, ...param: any[]) {
 		this.logger.log({
 			level: 'verbose',
-			message: sprintf.apply(null, arguments)
+			message: this.colorMessage(sprintf.apply(null, arguments), chalk.bgBlack.gray, chalk.gray)
 		});
 	}
+
 	debug(format: any, ...param: any[]) {
 		this.logger.log({
 			level: 'debug',
-			message: sprintf.apply(null, arguments)
+			message: this.colorMessage(sprintf.apply(null, arguments), chalk.bgBlack.gray, chalk.gray)
 		});
 	}
 }

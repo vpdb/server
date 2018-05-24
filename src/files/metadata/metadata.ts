@@ -60,10 +60,13 @@ export abstract class Metadata {
 	 * @param {File} file
 	 * @param {string} path
 	 * @param {FileVariation} variation
-	 * @returns {Promise<void>}
+	 * @returns {Promise<object | undefined>} Metadata or null if no metadata reader found.
 	 */
-	public static async readFrom(file: File, path: string, variation?: FileVariation) {
+	public static async readFrom(file: File, path: string, variation?: FileVariation): Promise<{ [key: string]: any } | undefined> {
 		const reader = Metadata.getReader(file, variation);
+		if (reader === undefined) {
+			return undefined;
+		}
 		return Metadata.sanitizeObject(await reader.getMetadata(file, path, variation));
 	}
 
@@ -71,7 +74,7 @@ export abstract class Metadata {
 	 * Returns the metadata reader for a given file and variation.
 	 * @param {File} file File
 	 * @param {FileVariation} [variation] Variation or null for original file.
-	 * @return {Metadata} Metadata reader
+	 * @return {Metadata | undefined} Metadata reader
 	 */
 	public static getReader(file: File, variation?: FileVariation): Metadata {
 		return require('.').instances.find((m: Metadata) => m.isValid(file));
@@ -85,7 +88,7 @@ export abstract class Metadata {
 	 * @param {string} [replacement='-'] Replacement character
 	 * @returns Sanitized object.
 	 */
-	private static sanitizeObject(object: any, replacement = '-'): any {
+	private static sanitizeObject(object: { [key: string]: any }, replacement = '-'): { [key: string]: any } {
 		let oldProp;
 		for (let property in object) {
 			if (object.hasOwnProperty(property)) {

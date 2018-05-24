@@ -72,14 +72,15 @@ describe.only('The VPDB `file` API', () => {
 				.then(res => res.expectError(422, 'must only contain one file'));
 		});
 
-		// it('should fail when posting a corrupted file', async () => {
-		// 	request
-		// 		.post('/storage/v1/files')
-		// 		.query({ type: 'rom', content_type: 'application/zip' })
-		// 		.as('member')
-		// 		.attach('zip', pngPath)
-		// 		.end(hlp.status(400, 'metadata parsing failed', done));
-		// });
+		it('should fail when posting a corrupted file', async () => {
+			const member = api.getUser('member');
+			await api.onStorage()
+				.as(member)
+				.withQuery({ type: 'rom', content_type: 'application/zip' })
+				.withAttachment('zip', pngPath)
+				.post('/v1/files')
+				.then(res => res.expectError(400, 'metadata parsing failed'));
+		});
 
 		// it('should succeed when uploading a backglass image', async () => {
 		// 	var stats = fs.statSync(pngPath);
@@ -137,12 +138,10 @@ describe.only('The VPDB `file` API', () => {
 			res = await api.onStorage()
 				.as(member)
 				.withHeader('Content-Disposition', 'attachment; filename="foo.bar"')
+				.withHeader('Content-Type', 'suck/it')
 				.withQuery({ type: 'release' })
 				.post('/v1/files', 'xxx')
-				.then(res => res.expectError(422));
-
-			expect(res.data.errors).to.be.an('array');
-			expect(res.data.errors[0].message).to.contain('Invalid MIME type');
+				.then(res => res.expectError(422, 'Invalid "Content-Type" header'));
 		});
 	});
 

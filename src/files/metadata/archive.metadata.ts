@@ -28,8 +28,7 @@ require('bluebird').promisifyAll(Unrar.prototype);
 export class ArchiveMetadata extends Metadata {
 
 	isValid(file: File, variation?: FileVariation): boolean {
-		const mimeType = variation && variation.mimeType ? variation.mimeType : file.getMimeType();
-		return mimeType.split('/')[0] === 'archive';
+		return file.getMimeCategory(variation) === 'archive';
 	}
 
 	async getMetadata(file: File, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
@@ -86,23 +85,27 @@ export class ArchiveMetadata extends Metadata {
 	 * @return {{ entries: { filename: string, bytes: number, bytes_compressed: number, crc: string, modified_at: Date }[]}}
 	 */
 	private getZipMetadata(path: string) {
+		try {
 
-		let entries = new Zip(path).getEntries();
+			let entries = new Zip(path).getEntries();
 
-		// filter directories
-		entries = entries.filter(entry => !entry.isDirectory);
+			// filter directories
+			entries = entries.filter(entry => !entry.isDirectory);
 
-		// map data to something useful
-		return {
-			entries: entries.map((entry:any) => {
-				return {
-					filename: entry.entryName,
-					bytes: entry.header.size,
-					bytes_compressed: entry.header.compressedSize,
-					crc: entry.header.crc,
-					modified_at: new Date(entry.header.time)
-				};
-			})
-		};
+			// map data to something useful
+			return {
+				entries: entries.map((entry: any) => {
+					return {
+						filename: entry.entryName,
+						bytes: entry.header.size,
+						bytes_compressed: entry.header.compressedSize,
+						crc: entry.header.crc,
+						modified_at: new Date(entry.header.time)
+					};
+				})
+			};
+		} catch (err) {
+			throw new Error(err);
+		}
 	}
 }

@@ -44,7 +44,7 @@ export class AuthenticationEndPoint implements EndPoint {
 
 		// configure google strategy
 		if (config.vpdb.passport.google.enabled) {
-			logger.info('[passport] Enabling Google authentication strategy with callback at %s', settings.webUri('/auth/google/callback'));
+			logger.info('[AuthenticationEndPoint] Enabling Google authentication strategy with callback at %s', settings.webUri('/auth/google/callback'));
 			passport.use(new GoogleStrategy({
 				clientID: config.vpdb.passport.google.clientID,
 				clientSecret: config.vpdb.passport.google.clientSecret,
@@ -54,7 +54,7 @@ export class AuthenticationEndPoint implements EndPoint {
 
 		// configure github strategy
 		if (config.vpdb.passport.github.enabled) {
-			logger.info('[passport] Enabling GitHub authentication strategy with callback at %s', settings.webUri('/auth/github/callback'));
+			logger.info('[AuthenticationEndPoint] Enabling GitHub authentication strategy with callback at %s', settings.webUri('/auth/github/callback'));
 			passport.use(new GitHubStrategy({
 				passReqToCallback: true,
 				clientID: config.vpdb.passport.github.clientID,
@@ -69,7 +69,7 @@ export class AuthenticationEndPoint implements EndPoint {
 			if (ipbConfig.enabled) {
 
 				const callbackUrl = settings.webUri('/auth/' + ipbConfig.id + '/callback');
-				logger.info('[passport|ipboard:' + ipbConfig.id + '] Enabling IP.Board authentication strategy for "%s" at %s.', ipbConfig.name, callbackUrl);
+				logger.info('[AuthenticationEndPoint|ips:' + ipbConfig.id + '] Enabling IP.Board authentication strategy for "%s" at %s.', ipbConfig.name, callbackUrl);
 				if (ipbConfig.version === 3) {
 					passport.use(new IPBoard3Strategy({
 						passReqToCallback: true,

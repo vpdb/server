@@ -52,7 +52,7 @@ export class Settings {
 	 * @return {boolean} true if passes, false otherwise.
 	 */
 	validate() {
-		logger.info('[settings] Validating settings at %s', this.filePath);
+		logger.info('[Settings.validate] Validating settings at %s', this.filePath);
 		return this._validate(validators, this.current, '');
 	}
 
@@ -74,12 +74,12 @@ export class Settings {
 			// validation function
 			if (isFunction(validation[s])) {
 				if (isUndefined(setting[s]) && setting.enabled !== false) {
-					logger.error('[settings] %s [KO]: Setting is missing.', p);
+					logger.error('[Settings.validate] %s [KO]: Setting is missing.', p);
 					success = false;
 				} else {
 					validationError = validation[s](setting[s], setting, settings);
 					if (!validationError) {
-						logger.info('[settings] %s [OK]', p);
+						logger.info('[Settings.validate] %s [OK]', p);
 					} else {
 						if (isArray(validationError)) {
 							for (j = 0; j < validationError.length; j++) {
@@ -96,7 +96,7 @@ export class Settings {
 			// array
 			else if (validation[s].__array) {
 				if (!isArray(setting[s])) {
-					logger.error('[settings] %s [KO]: Setting must be an array.', p);
+					logger.error('[Settings.validate] %s [KO]: Setting must be an array.', p);
 					success = false;
 				} else {
 					for (i = 0; i < setting[s].length; i++) {
@@ -112,7 +112,7 @@ export class Settings {
 			else if (validation[s] && isObject(validation[s])) {
 
 				if (isUndefined(setting[s])) {
-					logger.error('[settings] %s [KO]: Setting block is missing.', p);
+					logger.error('[Settings.validate] %s [KO]: Setting block is missing.', p);
 					success = false;
 
 				} else if (!this._validate(validation[s], setting[s], path + '.' + s)) {
@@ -123,7 +123,7 @@ export class Settings {
 
 		}
 		if (success && !path) {
-			logger.info('[settings] Congrats, your settings look splendid!');
+			logger.info('[Settings.validate] Congrats, your settings look splendid!');
 		}
 		return success;
 	};
@@ -132,9 +132,9 @@ export class Settings {
 		setting = !isUndefined(error.setting) ? error.setting : setting;
 		let s = isObject(setting) ? JSON.stringify(setting) : setting;
 		if (isObject(error)) {
-			logger.error('[settings] %s.%s [KO]: %s (%s).', p, error.path, error.message, s);
+			logger.error('[Settings.validate] %s.%s [KO]: %s (%s).', p, error.path, error.message, s);
 		} else {
-			logger.error('[settings] %s [KO]: %s (%s).', p, error, s);
+			logger.error('[Settings.validate] %s [KO]: %s (%s).', p, error, s);
 		}
 	};
 

@@ -39,18 +39,18 @@ export class Quota {
 	 * Initializes quota plans
 	 */
 	constructor() {
-		logger.info('[quota] Initializing quotas...');
+		logger.info('[Quota] Initializing quotas...');
 		let duration;
 
 		// we create a quota module for each duration
 		this.config.plans.forEach(plan => {
 			if (plan.unlimited === true) {
-				logger.info('[quota] Skipping unlimited plan "%s".', plan.id);
+				logger.info('[Quota] Skipping unlimited plan "%s".', plan.id);
 				return;
 			}
 			duration = plan.per;
 			if (!this.quota[duration]) {
-				logger.info('[quota] Setting up quota per %s for plan %s...', duration, plan.id);
+				logger.info('[Quota] Setting up quota per %s for plan %s...', duration, plan.id);
 				this.quota[duration] = quotaModule.create({
 					timeUnit: duration,
 					interval: 1,
@@ -60,7 +60,7 @@ export class Quota {
 				});
 				Bluebird.promisifyAll(this.quota[duration]);
 			} else {
-				logger.info('[quota] Not setting up plan %s because volos needs setups per duration and we already set up per %s.', plan.id, duration);
+				logger.info('[Quota] Not setting up plan %s because volos needs setups per duration and we already set up per %s.', plan.id, duration);
 			}
 		});
 	}
@@ -191,7 +191,7 @@ export class Quota {
 
 		// undefined file_types are free
 		if (isUndefined(cost)) {
-			logger.warn('[quota] Undefined cost for file_type "%s".', file.file_type);
+			logger.warn('[Quota.getCost] Undefined cost for file_type "%s".', file.file_type);
 			return 0;
 		}
 
@@ -200,7 +200,7 @@ export class Quota {
 			if (isObject(cost.variation)) {
 				if (isUndefined(cost.variation[variation.name])) {
 					if (isUndefined(cost.variation['*'])) {
-						logger.warn('[quota] No cost defined for %s file of variation %s and no fallback given, returning 0.', file.file_type, variation.name);
+						logger.warn('[Quota.getCost] No cost defined for %s file of variation %s and no fallback given, returning 0.', file.file_type, variation.name);
 						return 0;
 					}
 					cost = cost.variation['*'];
@@ -214,14 +214,14 @@ export class Quota {
 
 		if (isObject(cost)) {
 			if (isUndefined(cost.category)) {
-				logger.warn('[quota] No cost defined for %s file (type is undefined).', file.file_type, file.getMimeCategory(variation));
+				logger.warn('[Quota.getCost] No cost defined for %s file (type is undefined).', file.file_type, file.getMimeCategory(variation));
 				return 0;
 			}
 			if (isObject(cost.category)) {
 				const costCategory = cost.category[file.getMimeCategory(variation)];
 				if (isUndefined(costCategory)) {
 					if (isUndefined(cost.category['*'])) {
-						logger.warn('[quota] No cost defined for %s file of type %s and no fallback given, returning 0.', file.file_type, file.getMimeCategory(variation));
+						logger.warn('[Quota.getCost] No cost defined for %s file of type %s and no fallback given, returning 0.', file.file_type, file.getMimeCategory(variation));
 						return 0;
 					}
 					return cost.category['*'];

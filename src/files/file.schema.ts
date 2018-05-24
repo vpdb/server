@@ -20,6 +20,7 @@
 import { resolve } from 'path';
 import { Schema } from 'mongoose';
 import { includes } from 'lodash';
+import chalk from 'chalk';
 
 import { state } from '../state';
 import { quota } from '../common/quota';
@@ -215,7 +216,7 @@ fileSchema.methods.getMimeCategory = function (this:File, variation: FileVariati
  * @returns {string}
  */
 fileSchema.methods.toString = function (this:File, variation: FileVariation = null): string {
-	return this.file_type + ' "' + this.id + '"' + (variation ? ' (' + variation.name + ')' : '');
+	return chalk.underline(this.file_type + ' "' + this.id + '"' + (variation ? ' (' + variation.name + ')' : ''));
 };
 
 /**
@@ -225,7 +226,7 @@ fileSchema.methods.toString = function (this:File, variation: FileVariation = nu
  * @returns {string}
  */
 fileSchema.methods.toDetailedString = function (this: File, variation?:FileVariation): string {
-	return this.file_type + '@' + this.mime_type + ' "' + this.id + '"' + (variation ? ' (' + variation.name + ')' : '');
+	return chalk.underline(this.file_type + '@' + this.mime_type + ' "' + this.id + '"' + (variation ? ' (' + variation.name + ')' : ''));
 };
 
 
@@ -235,9 +236,9 @@ fileSchema.methods.toDetailedString = function (this: File, variation?:FileVaria
  * @return {Promise<File>} Moved file
  */
 fileSchema.methods.switchToActive = async function (this:File): Promise<File> {
-	await state.models.File.update({ _id: this._id }, { is_active: true });
+	await processorQueue.addAction(this, 'file.activated');
 	this.is_active = true;
-	return await storage.switchToPublic(this);
+	return this;
 };
 
 /**
@@ -264,59 +265,6 @@ fileSchema.methods.getExistingVariations = function (this:File): FileVariation[]
 fileSchema.methods.getVariations = function (this: File): FileVariation[] {
 	return fileTypes.getVariations(this.file_type, this.mime_type);
 };
-
-
-/**
- * Locks a file as being processed.
- *
- * @param {Object|String} [variation] Either variation name or object containing attribute "name".
- */
-// FileSchema.methods.lock = function (variation) {
-// 	const lockfile = this.getLockFile(variation);
-// 	logger.debug('[file] Locking file at "%s"', lockfile);
-// 	try {
-// 		fs.closeSync(fs.openSync(lockfile, 'w'));
-// 	} catch (err) {
-// 		logger.error('[file] Error creating lock file at "%s": %s', lockfile, err.message);
-// 	}
-// };
-
-/**
- * Unlocks a file from being processed.
- *
- * @param {Object|String} [variation] Either variation name or object containing attribute "name".
- */
-// FileSchema.methods.unlock = function (variation) {
-// 	const lockfile = this.getLockFile(variation);
-// 	logger.debug('[file] Unlocking file at "%s"', lockfile);
-// 	try {
-// 		fs.unlinkSync(lockfile);
-// 	} catch (err) {
-// 		logger.error('[file] Error deleting lock file: %s', err.message);
-// 	}
-// };
-
-/**
- * Unlocks a file from being processed.
- *
- * @param {Object|String} [variation] Either variation name or object containing attribute "name".
- */
-// FileSchema.methods.isLocked = function (variation) {
-// 	const lockfile = this.getLockFile(variation);
-// 	return fs.existsSync(lockfile);
-// };
-
-/**
- * Returns the path of the lock file.
- *
- * Lock files indicate that the file is being processed.
- *
- * @param {Object|String} [variation] Either variation name or object containing attribute "name".
- * @returns {string}                  Lockfile
- */
-// FileSchema.methods.getLockFile = function (variation) {
-// 	return storage.path(this, variation, { lockFile: true });
-// };
 
 
 //-----------------------------------------------------------------------------

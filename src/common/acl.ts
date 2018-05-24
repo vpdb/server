@@ -21,25 +21,13 @@ import ACL = require('acl');
 
 import { state } from '../state';
 import { logger } from './logger';
-import { config } from './settings';
 
-const redis = require('redis').createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
-
-redis.select(config.vpdb.redis.db);
-redis.on('error', (err:Error) => logger.error('[acl] Redis error: %s', err.message));
-
-export const acl = new ACL(new ACL.redisBackend(redis, 'acl'));
+export const acl = new ACL(new ACL.redisBackend(state.redis, 'acl'));
 
 /**
  * Initializes the ACLs.
  */
 export async function init():Promise<void> {
-
-	// do at least one error check on redis
-	redis.on('error', /* istanbul ignore next */ (err:Error) => {
-		logger.error('[app] Error connecting to Redis: ' + err);
-		process.exit(1);
-	});
 
 	// permissions
 	await acl.allow([
@@ -110,11 +98,11 @@ export async function init():Promise<void> {
 	await acl.addRoleParents('game-contributor', [ 'member' ]);
 	await acl.addRoleParents('release-contributor', [ 'member' ]);
 	await acl.addRoleParents('backglass-contributor', [ 'member' ]);
-	logger.info('[acl] Added permissions to roles.');
+	logger.info('[acl.init] Added permissions to roles.');
 	const users = await state.models.User.find({}).lean().exec();
-	logger.info('[acl] Applying ACLs to %d users...', users.length);
+	logger.info('[acl.init] Applying ACLs to %d users...', users.length);
 	for (let user of users) {
 		await acl.addUserRoles(user.id, user.roles);
 	}
-	logger.info('[acl] ACLs applied.');
+	logger.info('[acl.init] ACLs applied.');
 }

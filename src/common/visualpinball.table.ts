@@ -34,10 +34,10 @@ class VisualPinballTable {
 	 * Extracts the table script from a given .vpt file.
 	 *
 	 * @param {string} tablePath Path to the .vpt file. File must exist.
-	 * @return {Promise.<string>} Table script
+	 * @return {Promise} Table script
 	 */
-	public async readScriptFromTable(tablePath: string) {
-		const now = new Date().getTime();
+	public async readScriptFromTable(tablePath: string): Promise<{ code: string, head: Buffer, tail: Buffer }> {
+		const now = Date.now();
 		/* istanbul ignore if */
 		if (!existsSync(tablePath)) {
 			throw new Error('File "' + tablePath + '" does not exist.');
@@ -49,7 +49,7 @@ class VisualPinballTable {
 
 		const codeStart: number = bindexOf(buf, new Buffer('04000000434F4445', 'hex')); // 0x04000000 "CODE"
 		const codeEnd: number = bindexOf(buf, new Buffer('04000000454E4442', 'hex'));   // 0x04000000 "ENDB"
-		logger.info('[vp] [script] Found GameData for "%s" in %d ms.', tablePath, new Date().getTime() - now);
+		logger.info('[VisualPinballTable.readScriptFromTable] Found GameData for "%s" in %d ms.', tablePath, Date.now() - now);
 		/* istanbul ignore if */
 		if (codeStart < 0 || codeEnd < 0) {
 			throw new Error('Cannot find CODE part in BIFF structure.');
@@ -65,7 +65,7 @@ class VisualPinballTable {
 	 * Returns all TableInfo fields of the table file.
 	 *
 	 * @param {string} tablePath Path to the .vpt file. File must exist.
-	 * @returns {Promise.<{}>} Table properties
+	 * @return {Promise<object>} Table properties
 	 */
 	public async getTableInfo(tablePath: string): Promise<{ [key: string]: string }> {
 
@@ -78,7 +78,7 @@ class VisualPinballTable {
 		let storage = doc.storage('TableInfo');
 		let props: { [key: string]: string } = {};
 		if (!storage) {
-			logger.warn('[vp] [table info] Storage "TableInfo" not found in "%s".', tablePath);
+			logger.warn('[VisualPinballTable.getTableInfo] Storage "TableInfo" not found in "%s".', tablePath);
 			return props;
 		}
 		const streams: { [key: string]: string } = {
@@ -100,7 +100,7 @@ class VisualPinballTable {
 					props[propKey] = buf.toString().replace(/\0/g, '');
 				}
 			} catch (err) {
-				logger.warn('[vp] [table info] %s', err.message);
+				logger.warn('[VisualPinballTable.getTableInfo] %s', err.message);
 			}
 		}
 		return props;
@@ -114,11 +114,11 @@ class VisualPinballTable {
 	 * and metadata.
 	 *
 	 * @param {string} tablePath Path to table file
-	 * @return {Promise.<{ hash: Buffer, bytes: number, type: string, meta: object }>[]}
+	 * @return {Promise<TableBlock[]>}
 	 */
 	public async analyzeFile(tablePath: string): Promise<TableBlock[]> {
 		const started = Date.now();
-		logger.info('[vp] Analyzing %s..', tablePath);
+		logger.info('[VisualPinballTable.analyzeFile] Analyzing %s..', tablePath);
 		const doc = await this.readDoc(tablePath);
 		const storage = doc.storage('GameStg');
 		const data = await this.readStream(storage, 'GameData');
@@ -169,7 +169,7 @@ class VisualPinballTable {
 			}
 		}
 
-		logger.info('[vp] Found %d items in table file in %sms:', tableBlocks.length, new Date().getTime() - started);
+		logger.info('[VisualPinballTable.analyzeFile] Found %d items in table file in %sms:', tableBlocks.length, new Date().getTime() - started);
 		logger.info('        - %d textures.', gameData.numTextures);
 		logger.info('        - %d sounds.', gameData.numSounds);
 		logger.info('        - %d game items.', gameData.numGameItems);
@@ -179,6 +179,7 @@ class VisualPinballTable {
 
 	/**
 	 * Starts reading the compound documents.
+	 *
 	 * @param {string} filename Path to file to read
 	 * @returns {Promise.<OleCompoundDoc>}
 	 */
@@ -198,7 +199,7 @@ class VisualPinballTable {
 	 *
 	 * @param {Storage} storage Storage to read data from
 	 * @param {string} key Key within the storage
-	 * @returns {Promise.<Buffer>} Read data
+	 * @return {Promise<Buffer>} Read data
 	 */
 	private async readStream(storage: Storage, key: string): Promise<Buffer> {
 		return new Promise<Buffer>((resolve, reject) => {
@@ -223,7 +224,7 @@ class VisualPinballTable {
 	 *
 	 * @param {Buffer} buf Buffer to parse
 	 * @param {number} [offset=0] Where to start to read
-	 * @returns {[{ tag: string, data: Buffer }]} All BIFF blocks.
+	 * @returns {Block} All BIFF blocks.
 	 */
 	private parseBiff(buf: Buffer, offset: number = 0): Block[] {
 		offset = offset || 0;
@@ -299,7 +300,7 @@ class VisualPinballTable {
 	 *
 	 * @param {Buffer} buf Buffer to parse
 	 * @param {number} [offset=0] Where to start read
-	 * @returns {Buffer[]} All BIFF blocks.
+	 * @return {Buffer[]} All BIFF blocks.
 	 */
 	private parseUntaggedBiff(buf: Buffer, offset: number = 0): Buffer[] {
 		offset = offset || 0;
@@ -322,10 +323,10 @@ class VisualPinballTable {
 	/**
 	 * Parses the stream counters and table script from the "GameData" stream.
 	 *
-	 * @param {{ tag: string, data: Buffer }[]} blocks "GameData" blocks
-	 * @returns {{ numGameItems: number, numSounds: number, numTextures: number, numFonts: number, collections: number, script: string }} GameData values
+	 * @param {Block[]} blocks "GameData" blocks
+	 * @return {GameDataItem} GameData values
 	 */
-	private parseGameData(blocks: { tag: string, data: Buffer }[]): GameDataItem {
+	private parseGameData(blocks: Block[]): GameDataItem {
 		let gameData: GameDataItem = {};
 		blocks.forEach(block => {
 			switch (block.tag) {
@@ -367,30 +368,20 @@ class VisualPinballTable {
 	/**
 	 * Parses data from an image stream.
 	 *
-	 * @param {{ tag: string, data: Buffer }[]} blocks "Image" blocks
+	 * @param {Block[]} blocks "Image" blocks
 	 * @param {string} streamName Name of the stream, e.g. "Image0"
-	 * @returns {[ Buffer, { stream: string, name: string, path: string, width: number, height: number }]}
+	 * @return {[Buffer, ImageItem]}
 	 */
 	private parseImage(blocks: Block[], streamName: string): [Buffer, ImageItem] {
 		let meta: ImageItem = { stream: streamName };
 		let data = null;
 		blocks.forEach(block => {
 			switch (block.tag) {
-				case 'NAME':
-					meta.name = this.parseString(block.data);
-					break;
-				case 'PATH':
-					meta.path = this.parseString(block.data).replace(/\\+/g, '\\');
-					break;
-				case 'WDTH':
-					meta.width = block.data.readInt32LE(0);
-					break;
-				case 'HGHT':
-					meta.height = block.data.readInt32LE(0);
-					break;
-				case 'DATA':
-					data = block.data;
-					break;
+				case 'NAME': meta.name = this.parseString(block.data); break;
+				case 'PATH': meta.path = this.parseString(block.data).replace(/\\+/g, '\\'); break;
+				case 'WDTH': meta.width = block.data.readInt32LE(0); break;
+				case 'HGHT': meta.height = block.data.readInt32LE(0); break;
+				case 'DATA': data = block.data; break;
 			}
 		});
 		return [data, meta];
@@ -401,9 +392,9 @@ class VisualPinballTable {
 	 *
 	 * @param {Buffer[]} blocks "Sound" blocks
 	 * @param {string} streamName Name of the stream, e.g. "Sound0"
-	 * @returns  {[ Buffer, { stream: string, name: string, path: string, id: string }]}
+	 * @return {[Buffer, SoundItem]}
 	 */
-	private parseSound(blocks: Buffer[], streamName: string): [any, SoundItem] {
+	private parseSound(blocks: Buffer[], streamName: string): [Buffer, SoundItem] {
 		return [blocks[3], {
 			stream: streamName,
 			name: blocks[0].toString('utf8'),
@@ -415,12 +406,9 @@ class VisualPinballTable {
 	/**
 	 * Parses data from a game item stream.
 	 *
-	 * No idea how to distinguish between different game items, so we just try to
-	 * parse the name, which seems to be common.
-	 *
-	 * @param {{ tag: string, data: Buffer }[]} blocks "GameItem" blocks
+	 * @param {Block[]} blocks "GameItem" blocks
 	 * @param {string} streamName Name of the stream, e.g. "GameItem0"
-	 * @returns {{ stream: string, name: string }}
+	 * @return {BaseItem}
 	 */
 	private parseGameItem(blocks: Block[], streamName: string): BaseItem {
 		let meta: BaseItem = { stream: streamName };
@@ -437,9 +425,9 @@ class VisualPinballTable {
 	/**
 	 * Parses data from a collection stream.
 	 *
-	 * @param {{ tag: string, data: Buffer }[]} blocks "Collection" blocks
+	 * @param {Block[]} blocks "Collection" blocks
 	 * @param {string} streamName Name of the stream, e.g. "Collection0"
-	 * @returns {{ stream: string, name: string }}
+	 * @return {BaseItem}
 	 */
 	private parseCollection(blocks: Block[], streamName: string): BaseItem {
 		let meta: BaseItem = { stream: streamName };
@@ -457,7 +445,7 @@ class VisualPinballTable {
 	 * Parses a UTF-8 string from a block.
 	 *
 	 * @param {Buffer} block Block to parse
-	 * @returns {string} String
+	 * @returns {string} Parsed string
 	 */
 	private parseString(block: Buffer) {
 		return block.slice(4).toString('utf8');
@@ -467,7 +455,7 @@ class VisualPinballTable {
 	 * Parses a UTF-16 string from a block.
 	 *
 	 * @param {Buffer} block Block to parse
-	 * @returns {string} String
+	 * @return {string} Parsed string
 	 */
 	private parseString16(block: Buffer) {
 		let chars: number[] = [];
@@ -484,12 +472,12 @@ class VisualPinballTable {
 	 *
 	 * @param {Buffer} data Data to hash
 	 * @param {string} type Item type (image, sound, gameitem, collection)
-	 * @param {object} meta Parsed metadata
-	 * @returns {{ hash: Buffer, bytes: number, type: string, meta: object }}
+	 * @param meta Parsed metadata
+	 * @return {TableBlock}
 	 */
 	private analyzeBlock(data: Buffer, type: string, meta: any): TableBlock {
 		if (!data) {
-			logger.error('Ignoring empty data for %s.', meta.stream);
+			logger.error('[VisualPinballTable.analyzeBlock] Ignoring empty data for %s.', meta.stream);
 			return null;
 		}
 		return {

@@ -116,7 +116,7 @@ async function replaceIds(obj: Object, paths: { [key: string]: any }, options: P
 		const refObj = await RefModel.findOne({ id: prettyId }).exec();
 
 		if (!refObj) {
-			logger.warn('[model] %s ID "%s" not found in database for field %s.', refModelName, prettyId, objPath);
+			logger.warn('[prettyIdPlugin] %s ID "%s" not found in database for field %s.', refModelName, prettyId, objPath);
 			invalidations.push({
 				path: objPath,
 				message: 'No such ' + refModelName.toLowerCase() + ' with ID "' + prettyId + '".',

@@ -22,13 +22,13 @@ import { keys, times, isUndefined } from 'lodash';
 import { OleCompoundDoc, Storage } from 'ole-doc';
 
 import { logger } from './logger';
-import { storage } from './storage';
 import { createHash } from 'crypto';
+import { TableBlock } from '../releases/release.tableblock';
 
-//const OleCompoundDoc = require('ole-doc').OleCompoundDoc;
+const OleDoc = require('ole-doc').OleCompoundDoc;
 const bindexOf = require('buffer-indexof');
 
-class VisualPinball {
+class VisualPinballTable {
 
 	/**
 	 * Extracts the table script from a given .vpt file.
@@ -116,67 +116,65 @@ class VisualPinball {
 	 * @param {string} tablePath Path to table file
 	 * @return {Promise.<{ hash: Buffer, bytes: number, type: string, meta: object }>[]}
 	 */
-	public async analyzeFile(tablePath:string): Promise<{ hash: Buffer, bytes: number, type: string, meta: any }>[] {
-			const started = new Date().getTime();
-			logger.info('[vp] Analyzing %s..', tablePath);
-			const doc = await this.readDoc(tablePath);
-			const storage = doc.storage('GameStg');
-			const x  = 	await this.readStream(storage, 'GameData');
-			const y = await this.parseBiff(x);
-			const gameData = await this.parseGameData(y);
-		const tableBlocks = [];
+	public async analyzeFile(tablePath: string): Promise<TableBlock[]> {
+		const started = Date.now();
+		logger.info('[vp] Analyzing %s..', tablePath);
+		const doc = await this.readDoc(tablePath);
+		const storage = doc.storage('GameStg');
+		const data = await this.readStream(storage, 'GameData');
+		const block = this.parseBiff(data);
+		const gameData = this.parseGameData(block);
+		const tableBlocks:TableBlock[] = [];
 
 		// images
 		for (let streamName of times(gameData.numTextures, n => 'Image' + n)) {
-				const data = await this.readStream(storage, streamName);
-			let blocks = this.parseBiff(data);
-			let [parsedData, meta] = this.parseImage(blocks, streamName);
-			tableBlocks.push(...(await this.analyzeBlock(parsedData || data, 'image', meta)));
+			const data = await this.readStream(storage, streamName);
+			const blocks = this.parseBiff(data);
+			const [parsedData, meta] = this.parseImage(blocks, streamName);
+			const tableBlock = this.analyzeBlock(parsedData || data, 'image', meta);
+			if (tableBlock) {
+				tableBlocks.push(tableBlock);
+			}
 		}
-	// sounds
+		// sounds
 		for (let streamName of times(gameData.numSounds, n => 'Sound' + n)) {
 			const data = await this.readStream(storage, streamName);
-			let blocks = this.parseUntaggedBiff(data);
-			let [parsedData, meta] = await this.parseSound(blocks, streamName);
-			tableBlocks.push(...(await analyzeBlock(parsedData || data, 'sound', meta)));
+			const blocks = this.parseUntaggedBiff(data);
+			const [parsedData, meta] = await this.parseSound(blocks, streamName);
+			const tableBlock = this.analyzeBlock(parsedData || data, 'sound', meta);
+			if (tableBlock) {
+				tableBlocks.push(tableBlock);
+			}
 		}
 
+		// game items
+		for (let streamName of times(gameData.numGameItems, n => 'GameItem' + n)) {
+			const data = await this.readStream(storage, streamName);
+			const blocks = await this.parseBiff(data, 4);
+			const meta = await this.parseGameItem(blocks, streamName);
+			const tableBlock = this.analyzeBlock(data, 'gameitem', meta);
+			if (tableBlock) {
+				tableBlocks.push(tableBlock);
+			}
+		}
 
+		// collections
+		for (let streamName of times(gameData.numCollections, n => 'Collection' + n)) {
+			const data = await this.readStream(storage, streamName);
+			const blocks = await this.parseBiff(data);
+			const meta = await this.parseCollection(blocks, streamName);
+			const tableBlock = this.analyzeBlock(data, 'collection', meta);
+			if (tableBlock) {
+				tableBlocks.push(tableBlock);
+			}
+		}
 
-//			}).then(blocks => {
-				tableBlocks = tableBlocks.concat(blocks);
-
-				// game items
-				return Promise.mapSeries(_.times(gameData.numGameItems, n => 'GameItem' + n), streamName => {
-					return readStream(storage, streamName).then(data => {
-						let blocks = parseBiff(data, 4);
-						let meta = parseGameItem(blocks, streamName);
-						return analyzeBlock(data, 'gameitem', meta);
-					});
-				});
-
-//			}).then(blocks => {
-				tableBlocks = tableBlocks.concat(blocks);
-
-				// collections
-				return Promise.mapSeries(_.times(gameData.numCollections, n => 'Collection' + n), streamName => {
-					return readStream(storage, streamName).then(data => {
-						let blocks = parseBiff(data);
-						let meta = parseCollection(blocks, streamName);
-						return analyzeBlock(data, 'collection', meta);
-					});
-				});
-
-	//		}).then(blocks => {
-				tableBlocks = tableBlocks.concat(blocks);
-				logger.info('[vp] Found %d items in table file in %sms:', tableBlocks.length, new Date().getTime() - started);
-				logger.info('        - %d textures.', gameData.numTextures);
-				logger.info('        - %d sounds.', gameData.numSounds);
-				logger.info('        - %d game items.', gameData.numGameItems);
-				logger.info('        - %d collections.', gameData.numCollections);
-				return tableBlocks;
-//			});
-//		});
+		logger.info('[vp] Found %d items in table file in %sms:', tableBlocks.length, new Date().getTime() - started);
+		logger.info('        - %d textures.', gameData.numTextures);
+		logger.info('        - %d sounds.', gameData.numSounds);
+		logger.info('        - %d game items.', gameData.numGameItems);
+		logger.info('        - %d collections.', gameData.numCollections);
+		return tableBlocks;
 	}
 
 	/**
@@ -186,7 +184,7 @@ class VisualPinball {
 	 */
 	private async readDoc(filename: string): Promise<OleCompoundDoc> {
 		return new Promise<OleCompoundDoc>((resolve, reject) => {
-			const doc = new OleCompoundDoc(filename);
+			const doc = new OleDoc(filename) as any;
 			doc.on('err', reject);
 			doc.on('ready', () => {
 				resolve(doc);
@@ -227,10 +225,10 @@ class VisualPinball {
 	 * @param {number} [offset=0] Where to start to read
 	 * @returns {[{ tag: string, data: Buffer }]} All BIFF blocks.
 	 */
-	private parseBiff(buf: Buffer, offset: number = 0):Block[] {
+	private parseBiff(buf: Buffer, offset: number = 0): Block[] {
 		offset = offset || 0;
 		let tag, data, blockSize, block;
-		let blocks:Block[] = [];
+		let blocks: Block[] = [];
 		let i = offset;
 		try {
 			do {
@@ -489,16 +487,17 @@ class VisualPinball {
 	 * @param {object} meta Parsed metadata
 	 * @returns {{ hash: Buffer, bytes: number, type: string, meta: object }}
 	 */
-	private analyzeBlock(data: Buffer, type: string, meta: any) {
+	private analyzeBlock(data: Buffer, type: string, meta: any): TableBlock {
 		if (!data) {
-			return logger.error('Ignoring empty data for %s.', meta.stream);
+			logger.error('Ignoring empty data for %s.', meta.stream);
+			return null;
 		}
 		return {
 			hash: createHash('md5').update(data).digest(),
 			bytes: data.length,
 			type: type,
 			meta: meta
-		};
+		} as TableBlock;
 	}
 }
 
@@ -532,3 +531,5 @@ interface GameDataItem {
 	collections?: number,
 	script?: string
 }
+
+export const visualPinballTable = new VisualPinballTable();

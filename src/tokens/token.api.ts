@@ -101,7 +101,7 @@ export class TokenApi extends Api {
 		}
 		await newToken.save();
 
-		logger.info('[api|token:create] Token "%s" successfully created.', newToken.label);
+		logger.info('[TokenApi.create] Token "%s" successfully created.', newToken.label);
 		return this.success(ctx, state.serializers.Token.detailed(ctx, newToken), 201);
 	}
 
@@ -182,7 +182,7 @@ export class TokenApi extends Api {
 		const token = await state.models.Token.findOne({ id: ctx.params.id, _created_by: ctx.state.user._id }).exec();
 		extend(token, pick(ctx.request.body, updatableFields));
 		await token.save();
-		logger.info('[api|token:update] Token "%s" successfully updated.', token.label);
+		logger.info('[TokenApi.update] Token "%s" successfully updated.', token.label);
 		return this.success(ctx, state.serializers.Token.simple(ctx, token), 200);
 	}
 

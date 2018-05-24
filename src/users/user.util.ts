@@ -66,7 +66,7 @@ export class UserUtil {
 
 		await acl.addUserRoles(user.id, user.roles);
 
-		logger.info('[model|user] %s <%s> successfully created with ID "%s" and plan "%s".', count ? 'User' : 'Root user', user.email, user.id, user._plan);
+		logger.info('[UserUtil.createUser] %s <%s> successfully created with ID "%s" and plan "%s".', count ? 'User' : 'Root user', user.email, user.id, user._plan);
 		return user;
 	};
 
@@ -83,7 +83,7 @@ export class UserUtil {
 			const keepUser = mergeUsers.find(u => u.id === ctx.query.merged_user_id);
 			if (keepUser) {
 				const otherUsers = mergeUsers.filter(u => u.id !== ctx.query.merged_user_id);
-				logger.info('[model|user] Merging users [ %s ] into %s as per query parameter.', otherUsers.map(u => u.id).join(', '), keepUser.id);
+				logger.info('[UserUtil.tryMergeUsers] Merging users [ %s ] into %s as per query parameter.', otherUsers.map(u => u.id).join(', '), keepUser.id);
 				// merge users
 				for (let otherUser of otherUsers) {
 					await UserUtil.mergeUsers(ctx, keepUser, otherUser, explanation);
@@ -110,7 +110,7 @@ export class UserUtil {
 	 */
 	public static async mergeUsers(ctx: Context, keepUser: User, mergeUser: User, explanation:string): Promise<User> {
 
-		logger.info('[model|user] Merging %s into %s...', mergeUser.id, keepUser.id);
+		logger.info('[UserUtil.mergeUsers] Merging %s into %s...', mergeUser.id, keepUser.id);
 		if (keepUser.id === mergeUser.id) {
 			return Promise.reject('Cannot merge user ' + keepUser.id + ' into itself!');
 		}
@@ -154,7 +154,7 @@ export class UserUtil {
 
 		// 1.2 update release validation
 		const releasesByValidator = await state.models.Release.find({ 'versions.files.validation._validated_by': mergeUser._id.toString() }).exec();
-		logger.info('[model|user] Merged %s author(s)', num);
+		logger.info('[UserUtil.mergeUsers] Merged %s author(s)', num);
 		num = 0;
 		await Promise.all(releasesByValidator.map((release: Release) => {
 			release.versions.forEach(releaseVersion => {
@@ -169,7 +169,7 @@ export class UserUtil {
 		}));
 
 		const releasesByModeration = await state.models.Release.find({ 'moderation.history._created_by': mergeUser._id.toString() }).exec();
-		logger.info('[model|user] Merged %s release moderation(s)', num);
+		logger.info('[UserUtil.mergeUsers] Merged %s release moderation(s)', num);
 		num = 0;
 		// 1.3 release moderation
 		await Promise.all(releasesByModeration.map((release: Release) => {
@@ -184,7 +184,7 @@ export class UserUtil {
 
 		const backglasses = await state.models.Backglass.find({ 'moderation.history._created_by': mergeUser._id.toString() }).exec();
 
-		logger.info('[model|user] Merged %s item(s) in release moderation history', num);
+		logger.info('[UserUtil.mergeUsers] Merged %s item(s) in release moderation history', num);
 		num = 0;
 
 		// 1.4 backglass moderation
@@ -199,13 +199,13 @@ export class UserUtil {
 		}));
 
 
-		logger.info('[model|user] Merged %s item(s) in backglass moderation history', num);
+		logger.info('[UserUtil.mergeUsers] Merged %s item(s) in backglass moderation history', num);
 		num = 0;
 
 		// 1.5 ratings. first, update user id of all ratings
 		const numRatings = await state.models.Rating.update({ _from: mergeUser._id.toString() }, { _from: keepUser._id.toString() });
 
-		logger.info('[model|user] Merged %s rating(s)', numRatings.n);
+		logger.info('[UserUtil.mergeUsers] Merged %s rating(s)', numRatings.n);
 
 		// then, remove duplicate ratings
 		const ratingMap = new Map();
@@ -230,7 +230,7 @@ export class UserUtil {
 		// 1.6 stars: first, update user id of all stars
 		const numStars = await state.models.Star.update({ _from: mergeUser._id.toString() }, { _from: keepUser._id.toString() });
 
-		logger.info('[model|user] Merged %s star(s)', numStars.n);
+		logger.info('[UserUtil.mergeUsers] Merged %s star(s)', numStars.n);
 
 		// then, remove duplicate stars
 		const starMap = new Map();
@@ -295,7 +295,7 @@ export class UserUtil {
 			await userMergedKept(keepUser, mergeUser, explanation);
 		}
 
-		logger.info('[model|user] Done merging, removing merged user %s.', mergeUser.id);
+		logger.info('[UserUtil.mergeUsers] Done merging, removing merged user %s.', mergeUser.id);
 
 		// 5. delete merged user
 		await mergeUser.remove();

@@ -92,7 +92,7 @@ export function moderationPlugin(schema: Schema) {
 		}
 		const autoApprove = await acl.isAllowed(user.id, resource, 'auto-approve');
 		if (autoApprove) {
-			logger.info('[moderation] Auto-approving %s "%s" for user <%s>.', this.modelName, this.id, user.email);
+			logger.info('[moderationPlugin] Auto-approving %s "%s" for user <%s>.', this.modelName, this.id, user.email);
 			const now = new Date();
 			this.moderation = {
 				is_approved: true,

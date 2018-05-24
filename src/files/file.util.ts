@@ -19,7 +19,7 @@
 
 import { promisify } from 'util';
 import { dirname, resolve } from 'path';
-import { createWriteStream, createReadStream, stat, exists, mkdir,  } from 'fs';
+import { createWriteStream, createReadStream, stat, exists, mkdir, unlink } from 'fs';
 import * as Stream from 'stream';
 
 import { state } from '../state';
@@ -33,6 +33,7 @@ import { processorQueue } from './processor/processor.queue';
 const statAsync = promisify(stat);
 const existsAsync = promisify(exists);
 const mkdirAsync = promisify(mkdir);
+const unlinkAsync = promisify(unlink);
 
 export class FileUtil {
 
@@ -43,59 +44,67 @@ export class FileUtil {
 	 *
 	 * @param {Context} ctx Koa context
 	 * @param {File} fileData File
-	 * @param {module:stream.internal} readStream Binary stream of file content
+	 * @param {Stream} readStream Binary stream of file content
 	 * @param opts Options passed to postprocessor
 	 * @returns {Promise<File>}
 	 */
 	public static async create(ctx: Context, fileData: File, readStream: Stream, opts: any): Promise<File> {
 
+		// instantiate file without persisting it yet
 		let file = new state.models.File(fileData);
-		file = await file.save();
 		const path = file.getPath(null, { tmpSuffix: '_original' });
 
+		// create destination folder if necessary
 		if (!(await existsAsync(dirname(path)))) {
 			await FileUtil.mkdirp(dirname(path));
 		}
 
+		// now stream to disk
 		await new Promise((resolve, reject) => {
 			const writeStream = createWriteStream(path);
 			writeStream.on('finish', resolve);
 			writeStream.on('error', reject);
 			readStream.pipe(writeStream);
 		});
+		logger.info('[FileUtil.create] Saved %s to disk.', file.toString());
 
-		// copy to final destination
-		await FileUtil.cp(path, file.getPath());
-
-		// we don't have the file size for multipart uploads before-hand, so get it now
-		if (!file.bytes) {
-			const stats = await statAsync(file.getPath());
-			file.bytes = stats.size;
-			await state.models.File.update({ _id: file._id }, { bytes: stats.size });
-		}
+		// update file size
+		const stats = await statAsync(path);
+		file.bytes = stats.size;
 
 		// FIXME await storage.preprocess(file);
 
 		try {
-			const stats = await statAsync(file.getPath());
-			const metadata = await Metadata.readFrom(file, path);
-			file.metadata = metadata;
-			file.bytes = stats.size;
-			await state.models.File.findByIdAndUpdate(file._id, { metadata: metadata, bytes: stats.size }).exec();
-			logger.info('[FileUtil.create] File upload of %s successfully completed.', file.toString());
 
-			await processorQueue.processFile(file, path);
-			logger.info('[FileUtil.create] File sent to processor queue.');
+			logger.info('[FileUtil.create] Retrieving metadata for %s', file.toString());
+			const metadata = await Metadata.readFrom(file, path);
+			if (metadata) {
+				file.metadata = metadata;
+				await state.models.File.findByIdAndUpdate(file._id, { metadata: metadata }).exec();
+			} else {
+				logger.warn('[FileUtil.create] No metadata reader matched for %s, cannot validate integrity!', file.toDetailedString());
+			}
+
+			// here metadata is okay, so let's store it in the database.
+			file = await file.save();
 
 		} catch (err) {
 			try {
-				await file.remove();
+				logger.warn('[FileUtil.create] Metadata parsing failed: %s', err.message);
+				await unlinkAsync(path);
 			} catch (err) {
 				/* istanbul ignore next */
-				logger.error('[api|file:save] Error removing file: %s', err.message);
+				logger.error('[FileUtil.create] Error removing file at %s: %s', path, err.message);
 			}
-			throw new ApiError(err, 'Metadata parsing failed for type "%s": %s', file.mime_type, err.message).warn().status(400);
+			throw new ApiError('Metadata parsing failed for type "%s": %s', file.mime_type, err.message).log(err).warn().status(400);
 		}
+
+		// copy to final destination
+		await FileUtil.cp(path, file.getPath());
+
+		// start processing
+		await processorQueue.processFile(file, path);
+		logger.info('[FileUtil.create] File %s to processor queue.', file.toString());
 
 		return file;
 	}

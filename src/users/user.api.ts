@@ -303,7 +303,7 @@ export class UserApi extends Api {
 		// if caller is not root..
 		if (!includes(callerRoles, 'root')) {
 
-			logger.info('[api|user:update] Checking for privilege escalation. Added roles: [%s], Removed roles: [%s].', addedRoles.join(' '), removedRoles.join(' '));
+			logger.info('[UserApi.update] Checking for privilege escalation. Added roles: [%s], Removed roles: [%s].', addedRoles.join(' '), removedRoles.join(' '));
 
 			// if user to be updated is already root or admin, deny (unless it's the same user).
 			if (!user._id.equals(ctx.state.user._id) && (includes(currentUserRoles, 'root') || includes(currentUserRoles, 'admin'))) {
@@ -344,21 +344,21 @@ export class UserApi extends Api {
 		await user.save();
 
 		await LogUserUtil.successDiff(ctx, updatedUser, 'update', pick(user.toObject(), updatableFields), updatedUser, ctx.state.user);
-		logger.info('[api|user:update] Success!');
+		logger.info('[UserApi.update] Success!');
 
 		// 6. update ACLs if roles changed
 		if (removedRoles.length > 0) {
-			logger.info('[api|user:update] Updating ACLs: Removing roles [%s] from user <%s>.', removedRoles.join(' '), user.email);
+			logger.info('[UserApi.update] Updating ACLs: Removing roles [%s] from user <%s>.', removedRoles.join(' '), user.email);
 			await acl.removeUserRoles(user.id, removedRoles);
 		}
 		if (addedRoles.length > 0) {
-			logger.info('[api|user:update] Updating ACLs: Adding roles [%s] to user <%s>.', addedRoles.join(' '), user.email);
+			logger.info('[UserApi.update] Updating ACLs: Adding roles [%s] to user <%s>.', addedRoles.join(' '), user.email);
 			await acl.addUserRoles(user.id, addedRoles);
 		}
 
 		// 7. if changer is not changed user, mark user as dirty
 		if (!ctx.state.user._id.equals(user._id)) {
-			logger.info('[api|user:update] Marking user <%s> as dirty.', user.email);
+			logger.info('[UserApi.update] Marking user <%s> as dirty.', user.email);
 			await state.redis.setAsync('dirty_user_' + user.id, String(new Date().getTime()));
 			await state.redis.expireAsync('dirty_user_' + user.id, 10000);
 		}
@@ -397,7 +397,7 @@ export class UserApi extends Api {
 		await acl.removeUserRoles(user.id, user.roles);
 		await user.remove();
 
-		logger.info('[api|user:delete] User <%s> successfully deleted.', user.email);
+		logger.info('[UserApi.delete] User <%s> successfully deleted.', user.email);
 		return this.success(ctx, null, 204);
 	}
 

@@ -241,7 +241,7 @@ class ProcessorQueue {
 	}
 
 	/**
-	 * Adds an action to be executed after all
+	 * Adds an action to be executed
 	 * @param {File} file
 	 * @param {string} action
 	 * @return {Promise<void>}

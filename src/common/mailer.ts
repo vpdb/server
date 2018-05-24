@@ -356,7 +356,7 @@ async function sendEmail(user: User, subject: string, template: string, template
 
 	const what = template.replace(/-/g, ' ');
 	if (!emailEnabled(user, enabledFlag)) {
-		logger.info('[mailer] NOT sending %s email to <%s>.', what, user.email);
+		logger.info('[mailer.sendEmail] NOT sending %s email to <%s>.', what, user.email);
 		return;
 	}
 
@@ -374,13 +374,13 @@ async function sendEmail(user: User, subject: string, template: string, template
 
 	// create reusable transporter object using the default SMTP transport
 	const transport = nodemailer.createTransport(config.vpdb.email.nodemailer);
-	logger.info('[mailer] Sending %s email to <%s>...', what, (email.to as Address).address);
+	logger.info('[mailer.sendEmail] Sending %s email to <%s>...', what, (email.to as Address).address);
 	const status = await transport.sendMail(email);
 
 	if (status.messageId) {
-		logger.info('[mailer] Successfully sent %s mail to <%s> with message ID "%s" (%s).', what, (email.to as Address).address, status.messageId, status.response);
+		logger.info('[mailer.sendEmail] Successfully sent %s mail to <%s> with message ID "%s" (%s).', what, (email.to as Address).address, status.messageId, status.response);
 	} else {
-		logger.info('[mailer] Failed sending %s mail to <%s>: %s.', what, (email.to as Address).address, status.response);
+		logger.info('[mailer.sendEmail] Failed sending %s mail to <%s>: %s.', what, (email.to as Address).address, status.response);
 	}
 	return status;
 }

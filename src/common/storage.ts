@@ -1,11 +1,15 @@
 import { promisify } from 'util';
-import { close, exists, open, rename, unlink } from 'fs';
+import { exists, unlink } from 'fs';
 import { logger } from './logger';
 import { File } from '../files/file';
 
 const existsAsync = promisify(exists);
 const unlinkAsync = promisify(unlink);
 
+/**
+ * Storage utils
+ * @todo merge with FileUtil?
+ */
 export class Storage {
 
 	/**
@@ -14,9 +18,9 @@ export class Storage {
 	 *
 	 * @param file File to remove.
 	 */
-	async remove(file:File):Promise<void> {
+	async remove(file: File): Promise<void> {
 		// original
-		await this.removeFile(file.getPath(null, { tmpSuffix: '_original'}), file.toString());
+		await this.removeFile(file.getPath(null, { tmpSuffix: '_original' }), file.toString());
 
 		// processed
 		await this.removeFile(file.getPath(), file.toString());
@@ -33,7 +37,7 @@ export class Storage {
 	 * @param {string} path Path to file
 	 * @param {string} what What to print
 	 */
-	async removeFile(path:string, what:string): Promise<void> {
+	async removeFile(path: string, what: string): Promise<void> {
 		if (await existsAsync(path)) {
 			logger.verbose('[Storage.remove] Removing %s at %s..', what, path);
 			try {

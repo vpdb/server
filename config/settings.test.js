@@ -60,9 +60,6 @@ module.exports = {
 		services: {
 			raygun: { enabled: false, apiKey: '' },
 			sqreen: { enabled: false, token: '' }
-		},
-		test: {
-			enableKillSwitch: true
 		}
 	},
 	webapp: { ga: { enabled: false, id: '' } }

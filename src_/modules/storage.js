@@ -353,24 +353,24 @@ class Storage {
 		});
 	}
 
-	/**
-	 * Returns the absolute URL of a given file.
-	 * @param {File} file
-	 * @param {object|string} [variation] variation or variation name, main file if not given
-	 * @returns {string|null} URL or null if file is falsy.
-	 */
-	url(file, variation) {
-
-		if (!file) {
-			logger.warn('file is null!');
-			return null;
-		}
-		let storageUri = file.isPublic(variation) ? settings.storagePublicUri.bind(settings) : settings.storageProtectedUri.bind(settings);
-		let variationName = _.isObject(variation) ? variation.name : variation;
-		return variationName ?
-			storageUri('/files/' + variationName + '/' + file.id + file.getExt(variation)) :
-			storageUri('/files/' + file.id + file.getExt(variation));
-	}
+	// /**
+	//  * Returns the absolute URL of a given file.
+	//  * @param {File} file
+	//  * @param {object|string} [variation] variation or variation name, main file if not given
+	//  * @returns {string|null} URL or null if file is falsy.
+	//  */
+	// url(file, variation) {
+	//
+	// 	if (!file) {
+	// 		logger.warn('file is null!');
+	// 		return null;
+	// 	}
+	// 	let storageUri = file.isPublic(variation) ? settings.storagePublicUri.bind(settings) : settings.storageProtectedUri.bind(settings);
+	// 	let variationName = _.isObject(variation) ? variation.name : variation;
+	// 	return variationName ?
+	// 		storageUri('/files/' + variationName + '/' + file.id + file.getExt(variation)) :
+	// 		storageUri('/files/' + file.id + file.getExt(variation));
+	// }
 
 	/**
 	 * Returns the absolute local file path of a given file.
@@ -395,35 +395,35 @@ class Storage {
 			path.resolve(baseDir, file.id) + suffix + ext;
 	}
 
-	/**
-	 * Enriches a file's variations with the URLs (or creates the `variations` property
-	 * if non-existent).
-	 *
-	 * @param {File} file
-	 * @returns {object} Keys are the variation name, values are the urls
-	 */
-	urls(file) {
-		if (!file) {
-			return {};
-		}
-		const that = this;
-		const variations = file.variations || {};
-		const mimeCategory = file.getMimeCategory();
-		if (this.variations[mimeCategory] && this.variations[mimeCategory][file.file_type]) {
-			this.variations[mimeCategory][file.file_type].forEach(variation => {
-				variations[variation.name] = variations[variation.name] || {};
-				variations[variation.name].url = that.url(file, variation);
-				const cost = quota.getCost(file, variation);
-				if (!file.is_active || cost > -1) {
-					variations[variation.name].is_protected = true;
-				}
-				if (cost > 0) {
-					variations[variation.name].cost = cost;
-				}
-			});
-		}
-		return variations;
-	}
+	// /**
+	//  * Enriches a file's variations with the URLs (or creates the `variations` property
+	//  * if non-existent).
+	//  *
+	//  * @param {File} file
+	//  * @returns {object} Keys are the variation name, values are the urls
+	//  */
+	// urls(file) {
+	// 	if (!file) {
+	// 		return {};
+	// 	}
+	// 	const that = this;
+	// 	const variations = file.variations || {};
+	// 	const mimeCategory = file.getMimeCategory();
+	// 	if (this.variations[mimeCategory] && this.variations[mimeCategory][file.file_type]) {
+	// 		this.variations[mimeCategory][file.file_type].forEach(variation => {
+	// 			variations[variation.name] = variations[variation.name] || {};
+	// 			variations[variation.name].url = that.url(file, variation);
+	// 			const cost = quota.getCost(file, variation);
+	// 			if (!file.is_active || cost > -1) {
+	// 				variations[variation.name].is_protected = true;
+	// 			}
+	// 			if (cost > 0) {
+	// 				variations[variation.name].cost = cost;
+	// 			}
+	// 		});
+	// 	}
+	// 	return variations;
+	// }
 
 	/**
 	 * Tries to fstat a file and returns null if the file is still being processed or

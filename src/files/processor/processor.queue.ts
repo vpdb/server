@@ -343,7 +343,7 @@ class ProcessorQueue {
 					await unlinkAsync(originalPath);
 				}
 			}).catch(err => {
-				logger.error('Error while processing finishing up removal:\n\n' + ApiError.colorStackTrace(err));
+				logger.warn('[ProcessorQueue.deleteProcessingFile] Error while processing finishing up removal: %s', err.message);
 			});
 	}
 

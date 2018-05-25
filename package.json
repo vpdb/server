@@ -21,8 +21,7 @@
 		"start": "node src/app.js",
 		"serve:dev": "nodemon --config deploy/nodemon/dev.json --inspect -r ts-node/register src/app",
 		"serve:test": "nyc node src/app",
-		"serve:test:nyc": "nyc --reporter=lcov --reporter=html node app.js",
-		"serve:test:debug": "node --inspect app.js",
+		"serve:test:debug": "node --inspect -r ts-node/register src/app",
 		"serve:protractor": "cross-env NODE_ENV=test APP_SETTINGS=src/config/settings-protractor.js PORT=7357 APP_NAME=local run-s test:dropdbs start",
 		"build:lint": "eslint src/**/*.js",
 		"build:prod": "tsc",
@@ -32,8 +31,8 @@
 		"test:finish": "cross-env PORT=7357 node deploy/tools/finish",
 		"test:mocha": "mocha --reporter spec --timeout 120000 src/**/*.spec.js",
 		"test:run": "run-s test:wait test:mocha test:finish",
-		"test:serve": "cross-env NODE_ENV=test APP_SETTINGS=config/settings.test.js PORT=7357 APP_NAME=local run-s test:dropdbs test:rimraf serve:test",
-		"test:serve:debug": "cross-env NODE_ENV=test APP_SETTINGS=src/config/settings.test.js PORT=7357 APP_NAME=local run-s test:dropdbs test:rimraf serve:test:debug",
+		"test:serve": "cross-env NODE_ENV=test APP_SETTINGS=config/settings.test.js PORT=7357 APP_NAME=local ENABLE_KILL_SWITCH=1 run-s test:dropdbs test:rimraf serve:test",
+		"test:serve:debug": "cross-env NODE_ENV=test APP_SETTINGS=config/settings.test.js PORT=7357 APP_NAME=local run-s test:dropdbs test:rimraf serve:test:debug",
 		"test:ci": "run-p test:serve test:run"
 	},
 	"engines": {

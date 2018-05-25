@@ -14,11 +14,25 @@ export class FileSerializer extends Serializer<File> {
 	protected _simple(ctx: Context, doc: File, opts: SerializerOptions):File {
 		const file = this._reduced(ctx, doc, opts);
 		file.bytes = doc.bytes;
-		// FIXME file.variations = storage.urls(doc);
 		file.cost = quota.getCost(doc);
-		// FIXME file.url = storage.url(doc);
+		file.url = doc.getUrl();
 		file.is_protected = !doc.is_active || file.cost > -1;
 		file.counter = (doc.counter as any).toObject();
+
+		// file variations
+		file.variations = {};
+		doc.getVariations().forEach(variation => {
+			file.variations[variation.name] = doc.variations[variation.name] || {};
+			file.variations[variation.name].url = doc.getUrl(variation);
+			const cost = quota.getCost(doc, variation);
+			if (!file.is_active || cost > -1) {
+				file.variations[variation.name].is_protected = true;
+			}
+			if (cost > 0) {
+				file.variations[variation.name].cost = cost;
+			}
+		});
+
 		return file;
 	}
 
@@ -31,20 +45,6 @@ export class FileSerializer extends Serializer<File> {
 		if (metadataReader && doc.metadata) {
 			file.metadata = metadataReader.serializeDetailed(doc.metadata);
 		}
-
-		// file variations
-		file.variations = {};
-		doc.getVariations().forEach(variation => {
-			file.variations[variation.name] = doc.variations[variation.name] || {};
-			file.variations[variation.name].url = doc.getUrl(variation);
-			const cost = quota.getCost(file, variation);
-			if (!file.is_active || cost > -1) {
-				file.variations[variation.name].is_protected = true;
-			}
-			if (cost > 0) {
-				file.variations[variation.name].cost = cost;
-			}
-		});
 		return file;
 	}
 }

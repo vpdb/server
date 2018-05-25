@@ -18,7 +18,6 @@
  */
 
 import { MiscApi } from './misc.api';
-import { config } from '../common/settings';
 
 const api = new MiscApi();
 export const router = api.apiRouter();
@@ -26,7 +25,7 @@ export const router = api.apiRouter();
 router.get('index', '/v1',  api.anon(api.index.bind(api)));
 router.get('/v1/ping',           api.ping.bind(api));
 
-if (config.vpdb.test && config.vpdb.test.enableKillSwitch) {
+if (process.env.ENABLE_KILL_SWITCH) {
 	router.post('/v1/kill',       api.kill.bind(api));
 }
 

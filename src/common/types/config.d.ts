@@ -504,6 +504,17 @@ export interface VpdbConfig {
 				enabled: boolean,
 				token: string
 			}
+		},
+
+		/**
+		 * Settings for test environment
+		 */
+		test?: {
+
+			/**
+			 * If set, enable a `/v1/kill` route that exits the server after tests.
+			 */
+			enableKillSwitch: boolean
 		}
 	},
 

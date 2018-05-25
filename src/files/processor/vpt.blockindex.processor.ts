@@ -28,7 +28,6 @@ import { state } from '../../state';
 import { Schema } from 'mongoose';
 import { TableBlock } from '../../releases/release.tableblock';
 
-
 export class VptBlockindexProcessor extends Processor<ImageFileVariation> {
 
 	name: string = 'vpt.blockindex';

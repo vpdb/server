@@ -63,6 +63,13 @@ export class Logger {
 		return messageColor ? messageColor(message) : message;
 	}
 
+	wtf(format: any, ...param: any[]) {
+		this.logger.log({
+			level: 'info',
+			message: this.colorMessage(sprintf.apply(null, arguments), chalk.bgBlack.redBright, chalk.bgRedBright.whiteBright)
+		});
+	}
+
 	error(format: any, ...param: any[]) {
 		this.logger.log({
 			level: 'error',

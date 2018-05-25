@@ -77,6 +77,7 @@ shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 		server.start();
 
 	} catch (err) {
+		/* istanbul ignore next */
 		console.error(err);
 	}
 })();

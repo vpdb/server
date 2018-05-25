@@ -30,6 +30,7 @@ import { FilesApiEndPoint, FilesStorageEndPoint } from './files';
 import { LogEventEndPoint } from './log-event';
 import { LogUserEndPoint } from './log-user';
 import { TokenEndPoint } from './tokens';
+import { MiscEndPoint } from './misc';
 import { ProfileEndPoint } from './profile';
 import { ReleaseEndPoint } from './releases';
 import { UserEndPoint } from './users';
@@ -51,6 +52,7 @@ shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 			new FilesStorageEndPoint(),
 			new LogEventEndPoint(),
 			new LogUserEndPoint(),
+			new MiscEndPoint(),
 			new ProfileEndPoint(),
 			new ReleaseEndPoint(),
 			new TokenEndPoint(),

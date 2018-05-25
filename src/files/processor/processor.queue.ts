@@ -241,7 +241,40 @@ class ProcessorQueue {
 	}
 
 	/**
-	 * Adds an action to be executed
+	 * Waits until the last job finishes processing.
+	 * @returns {Promise<void>}
+	 */
+	public async waitForAnyCompletion(): Promise<void> {
+		const numJobs = await this.countRemainingJobs();
+		if (numJobs === 0) {
+			return;
+		}
+		return new Promise<any>(resolve => {
+			const queues = this.queues;
+			const completeListener = (j: Job, result: any) => {
+				(async () => {
+					// if there are still jobs, abort.
+					const numJobs = await this.countRemainingJobs();
+					if (numJobs > 0) {
+						logger.debug('[ProcessorQueue.waitForAnyCompletion] Waiting for another %s job(s) to complete.', numJobs);
+						return;
+					}
+					// unregister listener
+					for (let queue of queues.values()) {
+						(queue as any).off('completed', completeListener);
+					}
+					logger.debug('[ProcessorQueue.waitForAnyCompletion] All jobs done.');
+					resolve(result);
+				})();
+			};
+			for (let queue of this.queues.values()) {
+				queue.on('completed', completeListener);
+			}
+		});
+	}
+
+	/**
+	 * Adds an action to be executed.
 	 * @param {File} file
 	 * @param {string} action
 	 * @return {Promise<void>}
@@ -481,7 +514,7 @@ class ProcessorQueue {
 	 * @return {Promise<number>} Number of non-finished jobs
 	 */
 	private async countRemainingVariationCreationJobs(fileId: string, variationName: string): Promise<number> {
-		return this.countRemainingJobs(this.getVariationCreationQueues(),
+		return this.countRemaining(this.getVariationCreationQueues(),
 				job => ProcessorQueue.isSame(job.data.fileId, job.data.variation, fileId, variationName));
 	}
 
@@ -493,7 +526,7 @@ class ProcessorQueue {
 	 * @return {Promise<number>} Number of non-finished jobs
 	 */
 	private async countRemainingVariationJobs(fileId: string, variationName: string): Promise<number> {
-		return this.countRemainingJobs([...this.queues.values()],
+		return this.countRemaining([...this.queues.values()],
 				job => ProcessorQueue.isSame(job.data.fileId, job.data.variation, fileId, variationName));
 	}
 
@@ -505,7 +538,7 @@ class ProcessorQueue {
 	 * @return {Promise<number>} Number of non-finished jobs
 	 */
 	private async countRemainingFileJobs(fileId: string): Promise<number> {
-		return this.countRemainingJobs([...this.queues.values()], job => job.data.fileId === fileId);
+		return this.countRemaining([...this.queues.values()], job => job.data.fileId === fileId);
 	}
 
 	/**
@@ -519,7 +552,16 @@ class ProcessorQueue {
 		return jobs.filter(j => j.data.fileId === fileId).length;
 	}
 
-	private async countRemainingJobs(queues:Queue[], filter:(job:Job) => boolean) {
+	/**
+	 * Counts how many active or waiting actions there are for any file.
+	 *
+	 * @return {Promise<number>} Number of non-finished jobs
+	 */
+	private async countRemainingJobs(): Promise<number> {
+		return this.countRemaining([...this.queues.values()],() => true);
+	}
+
+	private async countRemaining(queues:Queue[], filter:(job:Job) => boolean) {
 		let numbJobs = 0;
 		for (let q of queues) {
 			const jobs = await (q as any).getJobs(['waiting', 'active']) as Job[];

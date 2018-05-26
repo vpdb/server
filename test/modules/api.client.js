@@ -7,6 +7,7 @@ const existsSync = require('fs').existsSync;
 const mkdirSync = require('fs').mkdirSync;
 const writeFileSync = require('fs').writeFileSync;
 const createReadStream = require('fs').createReadStream;
+const parseUrl = require('url').parse;
 const assign = require('lodash').assign;
 const pick = require('lodash').pick;
 const keys = require('lodash').keys;
@@ -14,7 +15,6 @@ const get = require('lodash').get;
 const isString = require('lodash').isString;
 const isObject = require('lodash').isObject;
 const FormData = require('form-data');
-
 
 const ApiClientResult = require('./api.client.result');
 
@@ -761,6 +761,16 @@ class ApiClient {
 		}
 		return root + '/' + p[1] + suffix;
 	}
+
+	static urlPath(url) {
+		if (url[0] === '/') {
+			return url;
+		}
+		let u = parseUrl(url);
+		let q = u.search || '';
+		let h = u.hash || '';
+		return u.pathname + q + h;
+	};
 
 }
 

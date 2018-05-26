@@ -17,10 +17,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+const readFileSync = require('fs').readFileSync;
+const resolve = require('path').resolve;
 const gm = require('gm');
 const pleasejs = require('pleasejs');
 
 require('bluebird').promisifyAll(gm.prototype);
+
+const rar = resolve(__dirname, '../../data/test/files/dmd.rar');
+const zip = resolve(__dirname, '../../data/test/files/dmd.zip');
 
 class FileHelper {
 
@@ -60,6 +65,52 @@ class FileHelper {
 		}
 		return results;
 	}
+
+	async createBackglass(user) {
+		const fileType = 'backglass';
+		const mimeType = 'image/png';
+		const name = 'backglass.png';
+		const img = gm(640, 512, pleasejs.make_color());
+		const data =  await img.toBufferAsync('PNG');
+		const res = await this.api.onStorage()
+			.as(user)
+			.markTeardown()
+			.withQuery({ type: fileType })
+			.withContentType(mimeType)
+			.withHeader('Content-Disposition', 'attachment; filename="' + name + '"')
+			.withHeader('Content-Length', data.length)
+			.post('/v1/files', data)
+			.then(res => res.expectStatus(201));
+		return res.data;
+	}
+
+	async createRar(user) {
+		const data = readFileSync(rar);
+		const res = await this.api.onStorage()
+			.as(user)
+			.markTeardown()
+			.withQuery({ type: 'release' })
+			.withContentType('application/rar')
+			.withHeader('Content-Disposition', 'attachment; filename="dmd.rar"')
+			.withHeader('Content-Length', String(data.length))
+			.post('/v1/files', data)
+			.then(res => res.expectStatus(201));
+		return res.data;
+	}
+
+	async createZip(user) {
+		const data = readFileSync(zip);
+		const res = await this.api.onStorage()
+			.as(user)
+			.markTeardown()
+			.withQuery({ type: 'release' })
+			.withContentType('application/zip')
+			.withHeader('Content-Disposition', 'attachment; filename="dmd.zip"')
+			.withHeader('Content-Length', data.length)
+			.post('/v1/files', data)
+			.then(res => res.expectStatus(201));
+		return res.data;
+	};
 }
 
 module.exports = FileHelper;

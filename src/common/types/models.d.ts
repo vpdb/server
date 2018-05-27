@@ -36,13 +36,14 @@ import { User } from '../../users/user';
 import { LogEventModel } from '../../log-event/log.event.schema';
 import { LogUserModel } from '../../log-user/log.user.schema';
 import { ReleaseModel } from '../../releases/release.schema';
+import { GameModel } from '../../games/game.schema';
 
 export interface Models {
 	Backglass: Model<Backglass>;
 	Build: Model<Build>;
 	Comment: Model<Comment>;
 	File: Model<File>;
-	Game: Model<Game>;
+	Game: GameModel;
 	GameRequest: Model<GameRequest>;
 	LogEvent: LogEventModel;
 	LogUser: LogUserModel;

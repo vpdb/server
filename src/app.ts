@@ -25,7 +25,7 @@ import { init as initAcls } from './common/acl';
 import { logger } from './common/logger';
 import { EndPoint } from './common/types/endpoint';
 
-import { AuthenticationEndPoint } from './authentication';
+import { AuthenticationEndPoint, AuthenticationStorageEndPoint } from './authentication';
 import { FilesApiEndPoint, FilesProtectedStorageEndPoint, FilesPublicStorageEndPoint } from './files';
 import { LogEventEndPoint } from './log-event';
 import { LogUserEndPoint } from './log-user';
@@ -48,6 +48,7 @@ shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 
 		const endPoints: EndPoint[] = [
 			new AuthenticationEndPoint(),
+			new AuthenticationStorageEndPoint(),
 			new FilesApiEndPoint(),
 			new FilesPublicStorageEndPoint(),
 			new FilesProtectedStorageEndPoint(),

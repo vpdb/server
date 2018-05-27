@@ -17,23 +17,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { GameReferenceDocument, Schema } from 'mongoose';
-import { File } from '../files/file';
-import { User } from '../users/user';
+import { AuthenticationStorageApi } from './authentication.storage';
 
-export interface Rom extends GameReferenceDocument {
-	id: string,
-	_file: File | Schema.Types.ObjectId,
-	_ipdb_number: number,
-	rom_files: {
-		filename: string,
-		bytes: number,
-		crc: number,
-		modified_at: Date,
-	}[],
-	version: string,
-	languages: string[],
-	notes: string,
-	created_at: Date,
-	_created_by: User | Schema.Types.ObjectId
-}
+export const api = new AuthenticationStorageApi();
+export const router = api.storageRouter(true);
+
+// url authentication
+router.post('/v1/authenticate', api.anon(api.authenticateUrls.bind(api)));

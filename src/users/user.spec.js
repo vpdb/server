@@ -280,7 +280,7 @@ describe('The VPDB `user` API', () => {
 				]));
 		});
 
-		it('should add a new user with an unknown email address', async () => {
+		it.skip('should add a new user with an unknown email address', async () => {
 			res = await api.markRootTeardown()
 				.withToken(appToken)
 				.put('/v1/users', { email: 'by-isp@vpdb.io', username: 'böh', provider_id: 1234})
@@ -290,7 +290,7 @@ describe('The VPDB `user` API', () => {
 			expect(res.data.roles).to.eql([ 'member' ]);
 		});
 
-		it('should update a user with a known email address', async () => {
+		it.skip('should update a user with a known email address', async () => {
 			const user = await api.createUser();
 			res = await api.withToken(appToken)
 				.put('/v1/users', { email: user.email, username: 'böh', provider_id: 4321 })
@@ -317,7 +317,7 @@ describe('The VPDB `user` API', () => {
 
 	});
 
-	describe('when authenticating with OAuth', () => {
+	describe.skip('when authenticating with OAuth', () => {
 
 		it('should merge multiple accounts when matched', async () => {
 
@@ -501,7 +501,7 @@ describe('The VPDB `user` API', () => {
 		})
 	});
 
-	describe('when authenticating locally', () => {
+	describe.skip('when authenticating locally', () => {
 
 		it('should merge an existing user with a previously unconfirmed email', async () => {
 			const email = faker.internet.email().toLowerCase();
@@ -541,7 +541,7 @@ describe('The VPDB `user` API', () => {
 		});
 	});
 
-	describe('when linking another account', () => {
+	describe.skip('when linking another account', () => {
 
 		it('should fail when logged with the same provider but different id', async () => {
 			// 1. login with provider1/id1, email1 -> account1

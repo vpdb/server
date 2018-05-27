@@ -24,52 +24,52 @@ describe('The storage engine of VPDB', function() {
 		hlp.cleanup(request, done);
 	});
 
-	describe('when providing cache information', function() {
-
-		it('should return a "Last-Modified" header for all storage items.', function(done) {
-
-			hlp.file.createBackglass('member', request, function(backglass) {
-				hlp.doomFile('member', backglass.id);
-				hlp.storageToken(request, 'member', backglass.url, function(token) {
-					request
-						.get(hlp.urlPath(backglass.url))
-						.query({ token: token })
-						.end(function(err, res) {
-							hlp.expectStatus(err, res, 200);
-							expect(res.headers['last-modified']).not.to.be.empty();
-							done();
-						});
-				});
-			});
-		});
-
-		it('should return a HTTP 304 Not Modified if a file is requested with the "If-Modified-Since" header', function(done) {
-
-			hlp.file.createBackglass('member', request, function(backglass) {
-				hlp.doomFile('member', backglass.id);
-				hlp.storageToken(request, 'member', backglass.url, function(token) {
-					request
-						.get(hlp.urlPath(backglass.url))
-						.query({ token: token })
-						.end(function(err, res) {
-							hlp.expectStatus(err, res, 200);
-
-							var lastModified = res.headers['last-modified'];
-							request
-								.get(hlp.urlPath(backglass.url))
-								.query({ token: token })
-								.set('If-Modified-Since', lastModified)
-								.end(function(err, res) {
-									hlp.expectStatus(err, res, 304);
-									expect(res.body).to.be.empty();
-									done();
-								});
-						});
-				});
-			});
-		});
-
-	});
+	// describe('when providing cache information', function() {
+	//
+	// 	it('should return a "Last-Modified" header for all storage items.', function(done) {
+	//
+	// 		hlp.file.createBackglass('member', request, function(backglass) {
+	// 			hlp.doomFile('member', backglass.id);
+	// 			hlp.storageToken(request, 'member', backglass.url, function(token) {
+	// 				request
+	// 					.get(hlp.urlPath(backglass.url))
+	// 					.query({ token: token })
+	// 					.end(function(err, res) {
+	// 						hlp.expectStatus(err, res, 200);
+	// 						expect(res.headers['last-modified']).not.to.be.empty();
+	// 						done();
+	// 					});
+	// 			});
+	// 		});
+	// 	});
+	//
+	// 	it('should return a HTTP 304 Not Modified if a file is requested with the "If-Modified-Since" header', function(done) {
+	//
+	// 		hlp.file.createBackglass('member', request, function(backglass) {
+	// 			hlp.doomFile('member', backglass.id);
+	// 			hlp.storageToken(request, 'member', backglass.url, function(token) {
+	// 				request
+	// 					.get(hlp.urlPath(backglass.url))
+	// 					.query({ token: token })
+	// 					.end(function(err, res) {
+	// 						hlp.expectStatus(err, res, 200);
+	//
+	// 						var lastModified = res.headers['last-modified'];
+	// 						request
+	// 							.get(hlp.urlPath(backglass.url))
+	// 							.query({ token: token })
+	// 							.set('If-Modified-Since', lastModified)
+	// 							.end(function(err, res) {
+	// 								hlp.expectStatus(err, res, 304);
+	// 								expect(res.body).to.be.empty();
+	// 								done();
+	// 							});
+	// 					});
+	// 			});
+	// 		});
+	// 	});
+	//
+	// });
 
 	describe('after successfully uploading a public file', function() {
 

@@ -95,6 +95,7 @@ class ApiClientResult {
 	 *
 	 * @param {string[][]} errors Array of <field>, <contains> arrays
 	 * @param {number} [numErrors] If provided, the number of validation errors must match.
+	 * @return {ApiClientResult}
 	 */
 	expectValidationErrors(errors, numErrors) {
 		for (let i = 0; i < errors.length; i++) {
@@ -103,6 +104,7 @@ class ApiClientResult {
 		if (numErrors && this.response.data.errors.length !== numErrors) {
 			throw new Error('Expected ' + numErrors + ' validation errors, but got ' + this.response.data.errors.length + '.');
 		}
+		return this;
 	}
 
 	/**
@@ -110,6 +112,7 @@ class ApiClientResult {
 	 *
 	 * @param {string} field Field
 	 * @param {string} [contains] If provided, message must contain this string
+	 * @return {ApiClientResult}
 	 */
 	expectValidationError(field, contains) {
 		this.expectStatus(422);
@@ -126,12 +129,14 @@ class ApiClientResult {
 				throw new Error('Expected validation error on field "' + field + '" to contain "' + contains.toLowerCase() + '".');
 			}
 		}
+		return this;
 	}
 
 	/**
 	 * Expects a given response header.
 	 * @param {string} name Name of the header
 	 * @param {string} [contains] If set, must be contained, otherwise the header must just exist
+	 * @return {ApiClientResult}
 	 */
 	expectHeader(name, contains) {
 		if (!this.response.headers[name.toLowerCase()]) {
@@ -140,6 +145,7 @@ class ApiClientResult {
 		if (contains && !this.response.headers[name.toLowerCase()].toLowerCase().includes(contains.toLowerCase())) {
 			throw new Error('Expected header "' + name.toLowerCase() + '" with value "' + this.response.headers[name.toLowerCase()].toLowerCase() + '" to contain "' + contains.toLowerCase() + '".');
 		}
+		return this;
 	}
 
 	_logResponse() {

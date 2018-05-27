@@ -27,7 +27,7 @@ import { File } from './file';
 import { FileSerializer } from './file.serializer';
 import { fileSchema } from './file.schema';
 import { router as apiRouter } from './file.api.router';
-import { router as storageRouter } from './file.storage.router';
+import { protectedRouter, publicRouter } from './file.storage.router';
 
 export class FilesApiEndPoint implements EndPoint {
 
@@ -51,14 +51,33 @@ export class FilesApiEndPoint implements EndPoint {
 	}
 }
 
-export class FilesStorageEndPoint implements EndPoint {
+export class FilesProtectedStorageEndPoint implements EndPoint {
 
-	readonly name: string = 'Storage Files API';
+	readonly name: string = 'Storage Protected Files API';
 
 	private readonly _router: Router;
 
 	constructor() {
-		this._router = storageRouter;
+		this._router = protectedRouter;
+	}
+
+	getRouter(): Router {
+		return this._router;
+	}
+
+	register(app: Application): void {
+		// nothing to register
+	}
+}
+
+export class FilesPublicStorageEndPoint implements EndPoint {
+
+	readonly name: string = 'Storage Public Files API';
+
+	private readonly _router: Router;
+
+	constructor() {
+		this._router = publicRouter;
 	}
 
 	getRouter(): Router {

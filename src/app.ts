@@ -26,7 +26,7 @@ import { logger } from './common/logger';
 import { EndPoint } from './common/types/endpoint';
 
 import { AuthenticationEndPoint } from './authentication';
-import { FilesApiEndPoint, FilesStorageEndPoint } from './files';
+import { FilesApiEndPoint, FilesProtectedStorageEndPoint, FilesPublicStorageEndPoint } from './files';
 import { LogEventEndPoint } from './log-event';
 import { LogUserEndPoint } from './log-user';
 import { TokenEndPoint } from './tokens';
@@ -49,7 +49,8 @@ shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 		const endPoints: EndPoint[] = [
 			new AuthenticationEndPoint(),
 			new FilesApiEndPoint(),
-			new FilesStorageEndPoint(),
+			new FilesPublicStorageEndPoint(),
+			new FilesProtectedStorageEndPoint(),
 			new LogEventEndPoint(),
 			new LogUserEndPoint(),
 			new MiscEndPoint(),

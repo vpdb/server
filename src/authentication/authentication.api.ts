@@ -37,7 +37,7 @@ export class AuthenticationApi extends Api {
 	/**
 	 * Authenticates a user with local credentials or a login token.
 	 *
-	 * @see /v1/authenticate
+	 * @see POST /v1/authenticate
 	 * @param {Context} ctx
 	 * @returns {Promise<boolean>}
 	 */

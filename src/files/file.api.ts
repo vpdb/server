@@ -34,8 +34,6 @@ import { Build } from '../builds/build';
 import { FileUtil } from './file.util';
 import { mimeTypeNames } from './file.mimetypes';
 
-//const fileModule = require('../../modules/file');
-
 export class FileApi extends Api {
 
 	/**
@@ -80,13 +78,13 @@ export class FileApi extends Api {
 		}
 
 		// fail if not owner
-		if (!(file._created_by as any).equals(ctx.state.user._id)) {
-			new ApiError('Permission denied, must be owner.').status(403);
+		if (!file._created_by._id.equals(ctx.state.user._id)) {
+			throw new ApiError('Permission denied, must be owner.').status(403);
 		}
 
 		// only allow inactive files (for now)
 		if (file.is_active !== false) {
-			new ApiError('Cannot remove active file.').status(400);
+			throw new ApiError('Cannot remove active file.').status(400);
 		}
 		await file.remove();
 
@@ -107,7 +105,7 @@ export class FileApi extends Api {
 		}
 
 		// fail if inactive and not owner
-		let isOwner = ctx.state.user && (file._created_by as any).equals(ctx.state.user._id);
+		let isOwner = ctx.state.user && file._created_by._id.equals(ctx.state.user._id);
 		if (!file.is_active && (!ctx.state.user || !isOwner)) {
 			throw new ApiError('File "%s" is inactive.', ctx.params.id).status(ctx.state.user ? 403 : 401);
 		}
@@ -305,7 +303,7 @@ export class FileApi extends Api {
 
 		const results = await Promise.all([parseResult, parseMultipart]);
 		if (err) {
-			logger.warn('[FileApi.handleMultipartUpload] Removing %s', results[0].toString());
+			logger.warn('[FileApi.handleMultipartUpload] Removing %s', results[0].toShortString());
 			await results[0].remove();
 			throw err;
 		}

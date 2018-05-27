@@ -28,6 +28,7 @@ import { ApiError } from '../common/api.error';
 import { acl } from '../common/acl';
 import { logger } from '../common/logger';
 import { File } from './file';
+import { processorQueue } from './processor/processor.queue';
 
 const statAsync = promisify(stat);
 
@@ -104,7 +105,7 @@ export class FileStorage extends Api {
 			if (!ctx.state.user) {
 				throw new ApiError('You must provide credentials for inactive files.').log(ctx.state.authError).status(401);
 			}
-			if (!(file._created_by as any).equals(ctx.state.user._id)) {
+			if (!file._created_by._id.equals(ctx.state.user._id)) {
 				throw new ApiError('You must own inactive files in order to access them.').status(403);
 			}
 		}
@@ -147,6 +148,8 @@ export class FileStorage extends Api {
 	private async serve(ctx: Context, file: File, variationName: string, headOnly = false) {
 
 		const now = Date.now();
+
+		// validate variation
 		const variation = file.getVariation(variationName);
 		if (variationName && !variation) {
 			throw new ApiError('No such variation. Valid variations for this file: [ %s ].',
@@ -158,10 +161,12 @@ export class FileStorage extends Api {
 		try {
 			stats = await statAsync(path);
 			if (stats.size === 0) {
-				throw new ApiError('File size at %s is 0.', path);
+				await processorQueue.waitForVariationCompletion(file, variation);
+				stats = await statAsync(path);
 			}
 		} catch (err) {
-			throw new ApiError('Error accessing file at %s (%s)', path, err.code);
+			await processorQueue.waitForVariationCompletion(file, variation);
+			stats = await statAsync(path);
 		}
 
 		// Now serve the file!
@@ -197,7 +202,7 @@ export class FileStorage extends Api {
 
 			// configure stream
 			readStream.on('error', err => {
-				logger.error('[FileStorage.serve] Error before streaming %s from storage: %s', file.toString(variation), err);
+				logger.error('[FileStorage.serve] Error before streaming %s from storage: %s', file.toShortString(variation), err);
 				reject(err);
 			});
 			readStream.on('close', resolve);
@@ -212,15 +217,15 @@ export class FileStorage extends Api {
 
 			// start streaming
 			ctx.status = 200;
-			readStream.pipe(ctx.response.body)
+			readStream.pipe(ctx.res)
 				.on('error', (err: Error) => {
-					logger.error('[FileStorage.serve] Error while streaming %s from storage: %s', file.toString(variation), err);
+					logger.error('[FileStorage.serve] Error while streaming %s from storage: %s', file.toShortString(variation), err);
 					reject(err);
 				});
 
 		});
 
-		logger.verbose('[FileStorage.serve] File %s successfully served to <%s> in %sms.', file.toString(variation), ctx.state.user ? ctx.state.user.email : 'anonymous', Date.now() - now);
+		logger.verbose('[FileStorage.serve] File %s successfully served to <%s> in %sms.', file.toShortString(variation), ctx.state.user ? ctx.state.user.email : 'anonymous', Date.now() - now);
 
 		// for the file, only count original downloads
 		if (!variationName) {

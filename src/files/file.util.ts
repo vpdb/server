@@ -66,7 +66,7 @@ export class FileUtil {
 			writeStream.on('error', reject);
 			readStream.pipe(writeStream);
 		});
-		logger.info('[FileUtil.create] Saved %s to disk.', file.toString());
+		logger.info('[FileUtil.create] Saved %s to %s', file.toDetailedString(), path);
 
 		// update file size
 		const stats = await statAsync(path);
@@ -76,7 +76,7 @@ export class FileUtil {
 
 		try {
 
-			logger.info('[FileUtil.create] Retrieving metadata for %s', file.toString());
+			logger.info('[FileUtil.create] Retrieving metadata for %s', file.toDetailedString());
 			const metadata = await Metadata.readFrom(file, path);
 			if (metadata) {
 				file.metadata = metadata;
@@ -104,7 +104,7 @@ export class FileUtil {
 
 		// start processing
 		await processorQueue.processFile(file, path);
-		logger.info('[FileUtil.create] File %s to processor queue.', file.toString());
+		logger.info('[FileUtil.create] File %s to processor queue.', file.toShortString());
 
 		return file;
 	}

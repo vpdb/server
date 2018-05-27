@@ -23,7 +23,6 @@ import { config } from '../common/settings';
 
 export const api = new AuthenticationApi();
 export const router = api.apiRouter();
-export const prefixes = [ '/v1/authenticate', '/v1/redirect', '/auth' ];
 
 // local authentication
 router.post('/v1/authenticate', api.anon(api.authenticate.bind(api)));

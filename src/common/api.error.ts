@@ -164,7 +164,7 @@ export class ApiError extends Error {
 		this.statusCode = 422;
 		this.stripFields();
 		return this;
-	};
+	}
 
 	/**
 	 * Adds multiple validation errors and sets the status to 422.
@@ -283,7 +283,7 @@ export class ApiError extends Error {
 			map.set(key, true);
 			return error;
 		}));
-	};
+	}
 }
 
 export interface ApiValidationError {

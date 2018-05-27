@@ -51,7 +51,7 @@ export class Directb2sOptimizationProcessor extends Processor<BackglassVariation
 
 	async process(file: File, src: string, dest: string, variation?: BackglassVariation): Promise<string> {
 
-		logger.debug('[Directb2sOptimizationProcessor] Starting processing %s at %s.', file.toString(variation), dest);
+		logger.debug('[Directb2sOptimizationProcessor] Starting processing %s at %s.', file.toShortString(variation), dest);
 
 		const now = new Date().getTime();
 		let originalSize = (await statAsync(src)).size;
@@ -180,7 +180,7 @@ export class Directb2sOptimizationProcessor extends Processor<BackglassVariation
 			});
 
 			parser.on('error', err => {
-				reject(new ApiError('Error parsing direct2b file at %s', file.toString(variation)).log(err));
+				reject(new ApiError('Error parsing direct2b file at %s', file.toShortString(variation)).log(err));
 			});
 
 			parser.stream(true);

@@ -39,7 +39,7 @@ export class AuthenticationUtil {
 			exp: new Date(now.getTime() + config.vpdb.apiTokenLifetime),
 			irt: isRefreshToken
 		}, config.vpdb.secret);
-	};
+	}
 
 	/**
 	 * Creates a media token.
@@ -52,7 +52,7 @@ export class AuthenticationUtil {
 	 * @param {string} path Path the token will be valid for
 	 * @returns {string} JSON Web Token for a storage item
 	 */
-	static generateStorageToken(user: User, now: Date, path: string) {
+	static generateStorageToken(user: User, now: Date, path: string): string {
 		if (!path.startsWith('/')) {
 			path = AuthenticationUtil.urlPath(path);
 		}
@@ -62,7 +62,7 @@ export class AuthenticationUtil {
 			exp: new Date(now.getTime() + config.vpdb.storageTokenLifetime),
 			path: path
 		}, config.vpdb.secret);
-	};
+	}
 
 	/**
 	 * Normalizes the URL.
@@ -75,7 +75,6 @@ export class AuthenticationUtil {
 		let h = u.hash || '';
 		return u.pathname + q + h;
 	}
-
 }
 
 

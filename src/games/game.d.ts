@@ -17,11 +17,11 @@
  * Foundation; Inc.; 51 Franklin Street; Fifth Floor; Boston; MA  02110-1301; USA.
  */
 
-import { Document, Schema } from 'mongoose';
+import { FileReferenceDocument, MetricsDocument, PrettyIdDocument, Schema } from 'mongoose';
 import { File } from '../files/file';
 import { User } from '../users/user';
 
-export interface Game extends Document {
+export interface Game extends FileReferenceDocument, MetricsDocument, PrettyIdDocument {
 	id?: string;
 	title: string;
 	title_sortable?: string;

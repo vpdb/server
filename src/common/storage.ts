@@ -20,14 +20,14 @@ export class Storage {
 	 */
 	async remove(file: File): Promise<void> {
 		// original
-		await this.removeFile(file.getPath(null, { tmpSuffix: '_original' }), file.toString());
+		await this.removeFile(file.getPath(null, { tmpSuffix: '_original' }), file.toShortString());
 
 		// processed
-		await this.removeFile(file.getPath(), file.toString());
+		await this.removeFile(file.getPath(), file.toShortString());
 
 		// variations
 		for (let variation of file.getExistingVariations()) {
-			await this.removeFile(file.getPath(variation), file.toString(variation));
+			await this.removeFile(file.getPath(variation), file.toShortString(variation));
 		}
 	}
 

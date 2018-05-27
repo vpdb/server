@@ -201,6 +201,13 @@ class ProcessorQueue {
 	 * @return {Promise<any>} Resolves with the last job's result or `null` if any actions where executed
 	 */
 	public async waitForVariationCompletion(file: File, variation: FileVariation|null): Promise<any> {
+
+		// fail fast if no jobs running
+		const numJobs = await this.countRemainingVariationJobs(file.id, variation.name);
+		if (numJobs === 0) {
+			throw new ApiError('No job for %s currently running.', file.toShortString(variation));
+		}
+
 		return new Promise<any>(resolve => {
 			const queues = this.queues;
 			const completeListener = (j: Job, result: any) => {
@@ -208,14 +215,14 @@ class ProcessorQueue {
 					const data:JobData = j.data as JobData;
 
 					// if it's not the same variation, abort
-					if (!ProcessorQueue.isSame(file.id, variation ? variation.name : null, data.fileId, data.variation)) {
+					if (!ProcessorQueue.isSame(data, file.id, variation ? variation.name : null)) {
 						return;
 					}
 					// if there are still jobs, abort.
 					const numJobs = await this.countRemainingVariationJobs(data.fileId, data.variation);
 					if (numJobs > 0) {
 						logger.debug('[ProcessorQueue.waitForVariationCompletion] Waiting for another %s job(s) to finish for %s.',
-							numJobs, file.toString(variation));
+							numJobs, file.toShortString(variation));
 						return;
 					}
 					// unregister listener
@@ -228,7 +235,7 @@ class ProcessorQueue {
 						await this.waitForActionCompletion(file.id);
 						result = null;
 					}
-					logger.debug('[ProcessorQueue.waitForVariationCompletion] Finished waiting for %s.', file.toString(variation));
+					logger.debug('[ProcessorQueue.waitForVariationCompletion] Finished waiting for %s.', file.toShortString(variation));
 
 					// all good!
 					resolve(result);
@@ -358,16 +365,16 @@ class ProcessorQueue {
 		const numJobs = await this.countRemainingVariationCreationJobs(file.id, variation.name);
 		if (numJobs > 0) {
 			logger.info('[ProcessorQueue.getProcessedFile] Waiting for %s to finish processing',
-				file.toString(variation));
+				file.toShortString(variation));
 			return await this.waitForVariationCreated(file, variation);
 		} else {
 			// so it's not an active or waiting job, let's check the file system
 			if ((await existsAsync(path)) && (await statAsync(path)).size > 0) {
 				logger.info('[ProcessorQueue.getProcessedFile] %s has finished processing',
-					file.toString(variation));
+					file.toShortString(variation));
 				return path;
 			}
-			throw new ApiError('Cannot find job for %s at %s.', file.toString(variation), path);
+			throw new ApiError('Cannot find job for %s at %s.', file.toShortString(variation), path);
 		}
 	}
 
@@ -387,7 +394,7 @@ class ProcessorQueue {
 					const data:JobData = j.data as JobData;
 
 					// if it's not the same variation, abort
-					if (!ProcessorQueue.isSame(file.id, variation ? variation.name : null, data.fileId, data.variation)) {
+					if (!ProcessorQueue.isSame(data, file.id, variation ? variation.name : null)) {
 						return;
 					}
 					for (let queue of queues) {
@@ -397,12 +404,12 @@ class ProcessorQueue {
 					// if the file is being deleted, abort.
 					if (await state.redis.getAsync('queue:delete:' + file.id)) {
 						logger.debug('[ProcessorQueue.waitForVariationCreated] Aborting wait, %s has been deleted.',
-							file.toString(variation));
+							file.toShortString(variation));
 						resolve(null);
 						return;
 					}
 					logger.debug('[ProcessorQueue.waitForVariationCreated] Finished waiting for %s.',
-						file.toString(variation));
+						file.toShortString(variation));
 					resolve(result);
 				})();
 			};
@@ -515,7 +522,7 @@ class ProcessorQueue {
 	 */
 	private async countRemainingVariationCreationJobs(fileId: string, variationName: string): Promise<number> {
 		return this.countRemaining(this.getVariationCreationQueues(),
-				job => ProcessorQueue.isSame(job.data.fileId, job.data.variation, fileId, variationName));
+				job => ProcessorQueue.isSame(job.data, fileId, variationName));
 	}
 
 	/**
@@ -527,7 +534,7 @@ class ProcessorQueue {
 	 */
 	private async countRemainingVariationJobs(fileId: string, variationName: string): Promise<number> {
 		return this.countRemaining([...this.queues.values()],
-				job => ProcessorQueue.isSame(job.data.fileId, job.data.variation, fileId, variationName));
+				job => ProcessorQueue.isSame(job.data, fileId, variationName));
 	}
 
 	/**
@@ -648,7 +655,7 @@ class ProcessorQueue {
 
 		} catch (err) {
 			// nothing to return here because it's in the background.
-			logger.error('Error while processing %s with %s:\n\n' + ApiError.colorStackTrace(err) + '\n\n', file ? file.toString() : 'null', job.data.processor);
+			logger.error('Error while processing %s with %s:\n\n' + ApiError.colorStackTrace(err) + '\n\n', file ? file.toShortString() : 'null', job.data.processor);
 			// TODO log to raygun
 		}
 	}
@@ -687,23 +694,22 @@ class ProcessorQueue {
 
 	/**
 	 * Compares two fileIds and variation names and returns true if they match.
-	 * @param {string} fileId1
-	 * @param {string} variation1
+	 * @param jobData Job data to compare
 	 * @param {string} fileId2
 	 * @param {string} variation2
 	 * @return {boolean}
 	 */
-	private static isSame(fileId1: string, variation1: string, fileId2: string, variation2: string): boolean {
+	private static isSame(jobData:JobData, fileId2: string, variation2: string): boolean {
 		// if file ID doesn't match, ignore.
-		if (fileId1 !== fileId2) {
+		if (jobData.fileId !== fileId2) {
 			return false;
 		}
 		// if variation given and no match, ignore.
-		if (variation1 && variation1 !== variation2) {
+		if (jobData.variation && jobData.variation !== variation2) {
 			return false;
 		}
 		// if no variation given and variation, ignore
-		if (!variation1 && variation2) {
+		if (!jobData.variation && variation2) {
 			return false;
 		}
 		return true;

@@ -266,6 +266,19 @@ fileSchema.methods.getVariations = function (this: File): FileVariation[] {
 	return fileTypes.getVariations(this.file_type, this.mime_type);
 };
 
+/**
+ * Checks whether a variation for the given file exists.
+ *
+ * @param {string} variationName Name of the variation
+ * @returns {FileVariation | null} File variation or null if the variation doesn't exist.
+ */
+fileSchema.methods.getVariation = function (this: File, variationName:string): FileVariation | null {
+	if (!variationName) {
+		return null;
+	}
+	return fileTypes.getVariations(this.file_type, this.mime_type).find(v => v.name === variationName);
+};
+
 
 //-----------------------------------------------------------------------------
 // TRIGGERS

@@ -143,6 +143,14 @@ export interface File extends MetricsDocument {
 	getVariations(): FileVariation[];
 
 	/**
+	 * Checks whether a variation for the given file exists.
+	 *
+	 * @param {string} variationName Name of the variation
+	 * @returns {FileVariation | null} File variation or null if the variation doesn't exist.
+	 */
+	getVariation(variationName:string): FileVariation | null;
+
+	/**
 	 * Returns something useful for logging.
 	 *
 	 * @param {FileVariation} [variation] File variation or null for original file

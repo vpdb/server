@@ -52,7 +52,7 @@ export class Directb2sThumbProcessor extends Processor<BackglassVariation> {
 
 	async process(file: File, src: string, dest: string, variation?: BackglassVariation): Promise<string> {
 		const now = new Date().getTime();
-		logger.debug('[Directb2sThumbProcessor] Starting processing %s at %s.', file.toString(variation), dest);
+		logger.debug('[Directb2sThumbProcessor] Starting processing %s at %s.', file.toShortString(variation), dest);
 		return new Promise<string>((resolve, reject) => {
 
 			logger.debug('[Directb2sThumbProcessor] Reading DirectB2S Backglass %s...', src);
@@ -85,7 +85,7 @@ export class Directb2sThumbProcessor extends Processor<BackglassVariation> {
 						if (variation.cutGrill && file.metadata.grill_height && size) {
 							img.crop(size.width, size.height - file.metadata.grill_height, 0, 0);
 							logger.info(size);
-							logger.info('[Directb2sThumbProcessor] Cutting off grill for variation %s, new height = ', file.toString(variation), size.height - file.metadata.grill_height);
+							logger.info('[Directb2sThumbProcessor] Cutting off grill for variation %s, new height = ', file.toShortString(variation), size.height - file.metadata.grill_height);
 						}
 
 						if (variation.width && variation.height) {
@@ -114,7 +114,7 @@ export class Directb2sThumbProcessor extends Processor<BackglassVariation> {
 				}
 			});
 			parser.on('error', err => {
-				reject(new ApiError('Error parsing direct2b file at %s', file.toString(variation)).log(err));
+				reject(new ApiError('Error parsing direct2b file.').log(err));
 			});
 
 			parser.on('end', resolve);

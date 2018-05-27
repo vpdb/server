@@ -156,7 +156,7 @@ export interface File extends MetricsDocument {
 	 * @param {FileVariation} [variation] File variation or null for original file
 	 * @returns {string}
 	 */
-	toString(variation?: FileVariation): string;
+	toShortString(variation?: FileVariation): string;
 
 	/**
 	 * Returns something even more useful for logging.

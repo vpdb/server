@@ -341,68 +341,68 @@ describe('The VPDB `file` API', function() {
 
 	describe('when deleting a file', function() {
 
-		it('should succeed as owner of the file', function(done) {
-			var id, url, user = 'member';
-			async.series([
-				// 1. upload
-				function(next) {
-					request
-						.post('/storage/v1/files')
-						.query({ type: 'release' })
-						.as(user)
-						.type('text/plain')
-						.set('Content-Disposition', 'attachment; filename="text.txt"')
-						.send('should succeed as owner of the file')
-						.end(function(err, res) {
-							hlp.expectStatus(err, res, 201);
-							expect(res.body.url).to.be.ok();
-							id = res.body.id;
-							url = res.body.url;
-							next();
-						});
-				},
-				// 2. check it's there
-				function(next) {
-					request.get(hlp.urlPath(url)).as(user).end(hlp.status(200, next));
-				},
-				// 3. delete
-				function(next) {
-					request.del('/api/v1/files/' + id).as(user).end(hlp.status(204, next));
-				},
-				// 4. check it's not there
-				function(next) {
-					request.get(hlp.urlPath(url)).as(user).end(hlp.status(404, next));
-				}
-			], done);
-		});
-
-		it('should fail if not owner of the file', function(done) {
-			var id, url, user = 'member';
-			async.series([
-				// 1. upload
-				function(next) {
-					request
-						.post('/storage/v1/files')
-						.query({ type: 'release' })
-						.as(user)
-						.type('text/plain')
-						.set('Content-Disposition', 'attachment; filename="text.txt"')
-						.send('should fail if not owner of the file')
-						.end(function(err, res) {
-							hlp.expectStatus(err, res, 201);
-							hlp.doomFile(user, res.body.id);
-							expect(res.body.id).to.be.ok();
-							expect(res.body.url).to.be.ok();
-							id = res.body.id;
-							url = res.body.url;
-							next();
-						});
-				},
-				function(next) {
-					request.del('/api/v1/files/' + id).as('anothermember').end(hlp.status(403, next));
-				}
-			], done);
-		});
+		// it('should succeed as owner of the file', function(done) {
+		// 	var id, url, user = 'member';
+		// 	async.series([
+		// 		// 1. upload
+		// 		function(next) {
+		// 			request
+		// 				.post('/storage/v1/files')
+		// 				.query({ type: 'release' })
+		// 				.as(user)
+		// 				.type('text/plain')
+		// 				.set('Content-Disposition', 'attachment; filename="text.txt"')
+		// 				.send('should succeed as owner of the file')
+		// 				.end(function(err, res) {
+		// 					hlp.expectStatus(err, res, 201);
+		// 					expect(res.body.url).to.be.ok();
+		// 					id = res.body.id;
+		// 					url = res.body.url;
+		// 					next();
+		// 				});
+		// 		},
+		// 		// 2. check it's there
+		// 		function(next) {
+		// 			request.get(hlp.urlPath(url)).as(user).end(hlp.status(200, next));
+		// 		},
+		// 		// 3. delete
+		// 		function(next) {
+		// 			request.del('/api/v1/files/' + id).as(user).end(hlp.status(204, next));
+		// 		},
+		// 		// 4. check it's not there
+		// 		function(next) {
+		// 			request.get(hlp.urlPath(url)).as(user).end(hlp.status(404, next));
+		// 		}
+		// 	], done);
+		// });
+		//
+		// it('should fail if not owner of the file', function(done) {
+		// 	var id, url, user = 'member';
+		// 	async.series([
+		// 		// 1. upload
+		// 		function(next) {
+		// 			request
+		// 				.post('/storage/v1/files')
+		// 				.query({ type: 'release' })
+		// 				.as(user)
+		// 				.type('text/plain')
+		// 				.set('Content-Disposition', 'attachment; filename="text.txt"')
+		// 				.send('should fail if not owner of the file')
+		// 				.end(function(err, res) {
+		// 					hlp.expectStatus(err, res, 201);
+		// 					hlp.doomFile(user, res.body.id);
+		// 					expect(res.body.id).to.be.ok();
+		// 					expect(res.body.url).to.be.ok();
+		// 					id = res.body.id;
+		// 					url = res.body.url;
+		// 					next();
+		// 				});
+		// 		},
+		// 		function(next) {
+		// 			request.del('/api/v1/files/' + id).as('anothermember').end(hlp.status(403, next));
+		// 		}
+		// 	], done);
+		// });
 
 		it('should fail if the file is active', function(done) {
 			var user = 'moderator';

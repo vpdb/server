@@ -215,7 +215,7 @@ fileSchema.methods.getMimeCategory = function (this:File, variation: FileVariati
  * @param {FileVariation} variation File variation or null for original file
  * @returns {string}
  */
-fileSchema.methods.toString = function (this:File, variation: FileVariation = null): string {
+fileSchema.methods.toShortString = function (this:File, variation: FileVariation = null): string {
 	return chalk.underline(this.file_type + ' "' + this.id + '"' + (variation ? ' (' + variation.name + ')' : ''));
 };
 

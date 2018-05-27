@@ -111,8 +111,8 @@ export abstract class Serializer<T extends Document | ModeratedDocument> {
 	 * @returns {boolean}
 	 */
 	protected _populated(doc: Document, field: string) {
-		if (doc.populated && doc.populated(field)) {
-			return true;
+		if (doc.populated) {
+			return doc.populated(field);
 		}
 		let obj = get(doc, field);
 		if (isArray(obj) && obj.length > 0) {

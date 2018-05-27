@@ -413,13 +413,25 @@ class ApiClient {
 		});
 	}
 
-
 	/**
 	 * Gets a resource from the VPDB backend.
 	 * @param {string} path API path, usually starting with "/v1/..."
 	 * @returns {Promise<ApiClientResult>}
 	 */
 	async get(path) {
+		return await this._request({
+			url: path,
+			method: 'get',
+		});
+	}
+
+	/**
+	 * Gets a resource from the VPDB backend.
+	 * @param {string} path Absolute path
+	 * @returns {Promise<ApiClientResult>}
+	 */
+	async getAbsolute(path) {
+		this._config.baseURL = this._baseUrl;
 		return await this._request({
 			url: path,
 			method: 'get',

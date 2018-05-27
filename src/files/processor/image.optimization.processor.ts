@@ -76,7 +76,7 @@ export class ImageOptimizationProcessor extends Processor<FileVariation> {
 			const handleErr = function (what:string) {
 				/* istanbul ignore next */
 				return function (err:Error) {
-					reject(new ApiError(err, 'Error at %s while processing %s', what, file.toString(variation)).log());
+					reject(new ApiError('Error at %s while processing.', what).display('Error at %s while processing %s.', what, file.toShortString(variation)).log(err));
 				};
 			};
 

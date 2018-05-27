@@ -23,7 +23,8 @@ import { EndPoint } from '../common/types/endpoint';
 
 import { logger } from '../common/logger';
 import { config, settings } from '../common/settings';
-import { api, router, prefixes } from './authentication.api.router';
+import { api, router as apiRouter } from './authentication.api.router';
+import { router as storageRouter } from './authentication.storage.router';
 import Application = require('koa');
 
 const GitHubStrategy = require('passport-github').Strategy;
@@ -40,7 +41,7 @@ export class AuthenticationEndPoint implements EndPoint {
 
 	constructor() {
 
-		this._router = router;
+		this._router = apiRouter;
 
 		// configure google strategy
 		if (config.vpdb.passport.google.enabled) {
@@ -111,5 +112,24 @@ export class AuthenticationEndPoint implements EndPoint {
 
 	register(app: Application): void {
 		app.use(passport.initialize());
+	}
+}
+
+export class AuthenticationStorageEndPoint implements EndPoint {
+
+	readonly name: string = 'Storage Authentication API';
+
+	private readonly _router: Router;
+
+	constructor() {
+		this._router = storageRouter;
+	}
+
+	getRouter(): Router {
+		return this._router;
+	}
+
+	register(app: Application): void {
+		// nothing to register
 	}
 }

@@ -178,7 +178,7 @@ export abstract class Api {
 		}
 
 		if (opts.headers) {
-			keys(opts.headers).forEach(name => ctx.set(name, opts.headers[name]));
+			keys(opts.headers).forEach(name => ctx.set(name, opts.headers[name] as string));
 		}
 
 		ctx.status = status;
@@ -302,9 +302,10 @@ export abstract class Api {
 	 * Instantiates a new router with the storage prefix.
 	 * @return Storage router
 	 */
-	public storageRouter() {
-		if (config.vpdb.storage.protected.api.pathname) {
-			return new Router({ prefix: config.vpdb.storage.protected.api.pathname });
+	public storageRouter(useProtected: boolean) {
+		const storageConfig = useProtected ? config.vpdb.storage.protected.api : config.vpdb.storage.public.api;
+		if (storageConfig.pathname) {
+			return new Router({ prefix: storageConfig.pathname });
 		} else {
 			return new Router();
 		}
@@ -320,7 +321,7 @@ export interface SuccessOpts {
 	/**
 	 * Use this to add additional custom headers
 	 */
-	headers?: { [key: string]: string };
+	headers?: { [key: string]: string | number };
 }
 
 export interface PaginationOpts {

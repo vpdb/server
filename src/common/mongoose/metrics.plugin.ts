@@ -63,7 +63,7 @@ declare module 'mongoose' {
 		 * @param {boolean} [decrement=false] If set to true, decrement instead counter instead of increment.
 		 * @returns {Promise}
 		 */
-		incrementCounter(what:string, decrement:boolean): Promise<MetricsDocument>
+		incrementCounter(what:string, decrement?:boolean): Promise<MetricsDocument>
 	}
 
 	// plugin options

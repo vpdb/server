@@ -19,19 +19,21 @@
 
 import { Scope } from '../common/scope';
 import { FileApi } from './file.api';
+import { FileStorage } from './file.storage';
 
 const api = new FileApi();
-export const router = api.storageRouter();
-export const prefixes = [ '/v1/files' ];
+const storage = new FileStorage();
+export const protectedRouter = api.storageRouter(true);
+export const publicRouter = api.storageRouter(false);
 
-router.post('/v1/files',                      api.auth(api.upload.bind(api), 'files', 'upload', [ Scope.ALL ]));
-// router.head('/v1/files/:id.[^/]+',            api.anon(storage.files.head));
-// router.head('/v1/files/:variation/:id.[^/]+', api.anon(storage.files.head));
-// router.get('/v1/files/:id.[^/]+',             api.anon(storage.files.get));  // permission/quota handling is inside.
-// router.get('/v1/files/:variation/:id.[^/]+',  api.anon(storage.files.get));
+protectedRouter.post('/v1/files',                      api.auth(api.upload.bind(api), 'files', 'upload', [ Scope.ALL ]));
+protectedRouter.head('/v1/files/:id.[^/]+',            api.anon(storage.head.bind(storage)));
+protectedRouter.head('/v1/files/:variation/:id.[^/]+', api.anon(storage.head.bind(storage)));
+protectedRouter.get('/v1/files/:id.[^/]+',             api.anon(storage.get.bind(storage)));  // permission/quota handling is inside.
+protectedRouter.get('/v1/files/:variation/:id.[^/]+',  api.anon(storage.get.bind(storage)));
 
-// nginx is taking care of this in production
-// router.head(settings.storagePublicPath('/files/:id.[^/]+'),            api.anon(storage.files.head));
-// router.head(settings.storagePublicPath('/files/:variation/:id.[^/]+'), api.anon(storage.files.head));
-// router.get(settings.storagePublicPath('/files/:id.[^/]+'),             api.anon(storage.files.get));  // permission/quota handling is inside.
-// router.get(settings.storagePublicPath('/files/:variation/:id.[^/]+'),  api.anon(storage.files.get));
+// this is usually handled by nginx directly, but might be used as fallback when there's no file before processors finish.
+publicRouter.head('/files/:id.[^/]+',            api.anon(storage.head.bind(storage)));
+publicRouter.head('/files/:variation/:id.[^/]+', api.anon(storage.head.bind(storage)));
+publicRouter.get('/files/:id.[^/]+',             api.anon(storage.get.bind(storage)));  // permission/quota handling is inside.
+publicRouter.get('/files/:variation/:id.[^/]+',  api.anon(storage.get.bind(storage)));

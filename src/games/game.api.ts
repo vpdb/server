@@ -17,20 +17,25 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { assign, pick, cloneDeep, keys, intersection } from 'lodash';
+import { assign, cloneDeep, intersection, isEmpty, keys, omit, pick, sum, upperFirst, values } from 'lodash';
+import { createReadStream } from 'fs';
 import { inspect } from 'util';
 
 import { state } from '../state';
 import { Api } from '../common/api';
+import { ApiError } from '../common/api.error';
+import { acl } from '../common/acl';
+import { config } from '../common/settings';
 import { Context } from '../common/types/context';
 import { logger } from '../common/logger';
-import { GameRequest } from '../game-requests/game.request';
+import { SerializerOptions } from '../common/serializer';
 import { gameRequestProcessed } from '../common/mailer';
+import { GameRequest } from '../game-requests/game.request';
 import { User } from '../users/user';
-import { Game } from './game';
+import { Release } from '../releases/release';
 import { File } from '../files/file';
 import { LogEventUtil } from '../log-event/log.event.util';
-import { ApiError } from '../common/api.error';
+import { Game } from './game';
 
 const generate = require('project-name-generator');
 
@@ -155,8 +160,8 @@ export class GameApi extends Api {
 			logo: game._logo
 		};
 		const oldMedia = {
-			_backglass: game._backglass.id,
-			_logo: game._logo ? game._logo.id : null
+			_backglass: (game._backglass as File).id,
+			_logo: game._logo ? (game._logo as File).id : null
 		};
 		const newMedia = {
 			_backglass: ctx.request.body._backglass || oldMedia._backglass,
@@ -164,8 +169,8 @@ export class GameApi extends Api {
 		};
 
 		// copy media if not submitted so it doesn't get erased
-		req.body._backglass = newMedia._backglass;
-		req.body._logo = newMedia._logo;
+		ctx.request.body._backglass = newMedia._backglass;
+		ctx.request.body._logo = newMedia._logo;
 
 		// apply changes
 		game = await game.updateInstance(ctx.request.body) as Game;
@@ -185,7 +190,7 @@ export class GameApi extends Api {
 			mediaCopies.push(oldMediaObj.backglass.remove());
 		}
 		if (oldMedia._logo !== newMedia._logo) {
-			mediaCopies.push(this.copyMedia(req.user, game, game._logo, 'wheel_image'));
+			mediaCopies.push(this.copyMedia(ctx.state.user, game, game._logo, 'wheel_image'));
 			if (oldMediaObj.logo) {
 				mediaCopies.push(oldMediaObj.logo.remove());
 			}
@@ -206,49 +211,32 @@ export class GameApi extends Api {
 	 */
 	public async del(ctx: Context) {
 
-		let game;
-		return Promise.try(() => {
-			return Game.findOne({ id: req.params.id })
-				.populate({ path: '_backglass' })
-				.populate({ path: '_logo' })
-				.exec();
+		const game = await state.models.Game.findOne({ id: ctx.params.id })
+			.populate({ path: '_backglass' })
+			.populate({ path: '_logo' })
+			.exec();
 
-		}).then(g => {
-			game = g;
-			if (!game) {
-				throw error('No such game with ID "%s".', req.params.id).status(404);
-			}
+		if (!game) {
+			throw new ApiError('No such game with ID "%s".', ctx.params.id).status(404);
+		}
 
-			// check for release and backglass reference and fail if there are
-			let refs = { releases: 0, backglasses: 0 };
-			return Promise.all([
-				[Release, '_game', 'releases'],
-				[Backglass, '_game', 'backglasses']
-			].map(([Model, ref, key]) => {
-				return Model.find({ [ref]: game._id }).exec().then(items => {
-					if (_.isEmpty(items)) {
-						return;
-					}
-					refs[key] = items.length;
-				});
+		// check for release and backglass reference and fail if there are
+		let refs: { [key: string]: number } = {
+			releases: await state.models.Release.find({ _game: game._id }).count().exec(),
+			backglasses: await state.models.Backglass.find({ _game: game._id }).count().exec()
+		};
+		if (sum(values(refs)) > 0) {
+			throw new ApiError('Cannot delete game because it is referenced by %s.', Object.keys(refs).map(f => `${refs[f]} ${f}`).join(' and '))
+				.status(400).warn();
+		}
+		await game.remove();
 
-			})).then(() => {
-				if (_.sum(_.values(refs)) > 0) {
-					throw error('Cannot delete game because it is referenced by %s.', Object.keys(refs).map(f => `${refs[f]} ${f}`).join(' and '))
-						.status(400).warn('delete');
-				}
-				return game.remove();
-			});
+		logger.info('[GameApi.del] Game "%s" (%s) successfully deleted.', game.title, game.id);
 
-		}).then(() => {
-			logger.info('[api|game:delete] Game "%s" (%s) successfully deleted.', game.title, game.id);
+		// log event
+		LogEventUtil.log(ctx, 'delete_game', false, { game: omit(state.serializers.Game.simple(ctx, game), ['rating', 'counter']) }, { game: game._id });
 
-			// log event
-			LogEvent.log(req, 'delete_game', false, { game: _.omit(GameSerializer.simple(game, req), ['rating', 'counter']) }, { game: game._id });
-
-			return api.success(res, null, 204);
-
-		}).catch(api.handleError(res, error, 'Error deleting game'));
+		return this.success(ctx, null, 204);
 	}
 
 
@@ -258,111 +246,95 @@ export class GameApi extends Api {
 	 */
 	public async list(ctx: Context) {
 
-		let pagination = api.pagination(req, 12, 60);
-		let query = [];
+		let pagination = this.pagination(ctx, 12, 60);
+		let query: any[] = [];
 
-		return Promise.try(() => {
 
-			// text search
-			if (req.query.q) {
-				if (req.query.q.trim().length < 2) {
-					throw error('Query must contain at least two characters.').status(400);
-				}
-				// sanitize and build regex
-				let titleQuery = req.query.q.trim().replace(/[^a-z0-9-]+/gi, '');
-				let titleRegex = new RegExp(titleQuery.split('').join('.*?'), 'i');
-				let idQuery = req.query.q.trim().replace(/[^a-z0-9-]+/gi, ''); // TODO tune
-				query.push({ $or: [{ title: titleRegex }, { id: idQuery }] });
+		// text search
+		if (ctx.query.q) {
+			if (ctx.query.q.trim().length < 2) {
+				throw new ApiError('Query must contain at least two characters.').status(400);
 			}
+			// sanitize and build regex
+			let titleQuery = ctx.query.q.trim().replace(/[^a-z0-9-]+/gi, '');
+			let titleRegex = new RegExp(titleQuery.split('').join('.*?'), 'i');
+			let idQuery = ctx.query.q.trim().replace(/[^a-z0-9-]+/gi, ''); // TODO tune
+			query.push({ $or: [{ title: titleRegex }, { id: idQuery }] });
+		}
 
-			// filter by manufacturer
-			if (req.query.mfg) {
-				let mfgs = req.query.mfg.split(',');
-				query.push({ manufacturer: mfgs.length === 1 ? mfgs[0] : { $in: mfgs } });
+		// filter by manufacturer
+		if (ctx.query.mfg) {
+			let mfgs = ctx.query.mfg.split(',');
+			query.push({ manufacturer: mfgs.length === 1 ? mfgs[0] : { $in: mfgs } });
+		}
+
+		// filter by decade
+		if (ctx.query.decade) {
+			let decades: string[] = ctx.query.decade.split(',');
+			let d: any[] = [];
+			decades.forEach(decade => {
+				d.push({ year: { $gte: parseInt(decade, 10), $lt: parseInt(decade, 10) + 10 } });
+			});
+			if (d.length === 1) {
+				query.push(d[0]);
+			} else {
+				query.push({ $or: d });
 			}
+		}
 
-			// filter by decade
-			if (req.query.decade) {
-				let decades = req.query.decade.split(',');
-				let d = [];
-				decades.forEach(function (decade) {
-					d.push({ year: { $gte: parseInt(decade, 10), $lt: parseInt(decade, 10) + 10 } });
-				});
-				if (d.length === 1) {
-					query.push(d[0]);
+		/*
+		 * If min_releases is set, only list where's actually content (by content we mean "releases"):
+		 *   - if logged as moderator, just query counter.releases
+		 *   - if not logged, retrieve restricted game IDs and exclude them
+		 *   - if member, retrieve restricted game IDs, retrieve authored/created game IDs and exclude difference
+		 *
+		 * Note that this a quick fix and doesn't work for min_releases > 1, though this use case isn't very useful.
+		 */
+		const minReleases = parseInt(ctx.query.min_releases);
+		if (minReleases) {
+
+			// counter includes restricted releases
+			query.push({ 'counter.releases': { $gte: minReleases } });
+
+			// check if additional conditions are needed
+			const isModerator = ctx.state.user ? (await acl.isAllowed(ctx.state.user.id, 'releases', 'view-restriced')) : false;
+
+			// moderator gets unfiltered list
+			if (!isModerator) {
+
+				// user gets owned/authored releases
+				if (ctx.state.user) {
+					const releases = await state.models.Release.find({ $or: [{ _created_by: ctx.state.user._id }, { 'authors._user': ctx.state.user._id }] }).exec();
+					query.push({
+						$or: [
+							{ 'ipdb.mpu': { $nin: config.vpdb.restrictions.release.denyMpu } },
+							{ _id: { $in: releases.map(r => r._game) } }
+						]
+					});
 				} else {
-					query.push({ $or: d });
-				}
-			}
-
-			/*
-			 * If min_releases is set, only list where's actually content (by content we mean "releases"):
-			 *   - if logged as moderator, just query counter.releases
-			 *   - if not logged, retrieve restricted game IDs and exclude them
-			 *   - if member, retrieve restricted game IDs, retrieve authored/created game IDs and exclude difference
-			 *
-			 * Note that this a quick fix and doesn't work for min_releases > 1, though this use case isn't very useful.
-			 */
-			const minReleases = parseInt(req.query.min_releases);
-			if (minReleases) {
-
-				// counter includes restricted releases
-				query.push({ 'counter.releases': { $gte: minReleases } });
-
-				// check if additional conditions are needed
-				return Promise.try(() => {
-					return req.user ? acl.isAllowed(req.user.id, 'releases', 'view-restriced') : false;
-
-				}).then(isModerator => {
-
-					// moderator gets unfiltered list
-					if (isModerator) {
-						return;
-					}
-
-					// user gets owned/authored releases
-					if (req.user) {
-						return Release.find({ $or: [{ _created_by: req.user._id }, { 'authors._user': req.user._id }] }).exec().then(releases => {
-							query.push({
-								$or: [
-									{ 'ipdb.mpu': { $nin: config.vpdb.restrictions.release.denyMpu } },
-									{ _id: { $in: releases.map(r => r._game) } }
-								]
-							});
-						});
-					}
-
 					// just exclude all restricted games for anon
 					query.push({ 'ipdb.mpu': { $nin: config.vpdb.restrictions.release.denyMpu } });
-					return null;
-				});
+				}
 			}
-			return null;
+		}
 
-		}).then(() => {
+		let sort = this.sortParams(ctx, { title: 1 }, {
+			popularity: '-metrics.popularity',
+			rating: '-rating.score',
+			title: 'title_sortable'
+		});
 
-			let sort = api.sortParams(req, { title: 1 }, {
-				popularity: '-metrics.popularity',
-				rating: '-rating.score',
-				title: 'title_sortable'
-			});
+		let q = this.searchQuery(query);
+		logger.info('[GameApi.list] query: %s, sort: %j', inspect(q, { depth: null }), inspect(sort));
 
-			let q = api.searchQuery(query);
-			logger.info('[api|game:list] query: %s, sort: %j', util.inspect(q, { depth: null }), util.inspect(sort));
-
-			return Game.paginate(q, {
-				page: pagination.page,
-				limit: pagination.perPage,
-				populate: ['_backglass', '_logo'],
-				sort: sort
-			}).then(result => [result.docs, result.total]);
-
-		}).spread((results, count) => {
-
-			let games = results.map(game => GameSerializer.simple(game, req));
-			return api.success(res, games, 200, api.paginationOpts(pagination, count));
-
-		}).catch(api.handleError(res, error, 'Error listing games'));
+		const result = await state.models.Game.paginate(q, {
+			page: pagination.page,
+			limit: pagination.perPage,
+			populate: ['_backglass', '_logo'],
+			sort: sort
+		});
+		const games = result.docs.map(game => state.serializers.Game.simple(ctx, game));
+		return this.success(ctx, games, 200, this.paginationOpts(pagination, result.total));
 	}
 
 
@@ -372,95 +344,68 @@ export class GameApi extends Api {
 	 */
 	public async view(ctx: Context) {
 
-		let game, result;
-		return Promise.try(() => {
-			// retrieve game
-			return Game.findOne({ id: req.params.id })
-				.populate({ path: '_backglass' })
-				.populate({ path: '_logo' })
-				.exec();
+		// retrieve game
+		const game = await state.models.Game.findOne({ id: ctx.params.id })
+			.populate({ path: '_backglass' })
+			.populate({ path: '_logo' })
+			.exec();
 
-		}).then(g => {
-			game = g;
-			if (!game) {
-				throw error('No such game with ID "%s"', req.params.id).status(404);
+		if (!game) {
+			throw new ApiError('No such game with ID "%s"', ctx.params.id).status(404);
+		}
+		const result = state.serializers.Game.detailed(ctx, game);
+		await game.incrementCounter('views');
+
+		// retrieve linked releases
+		let opts: SerializerOptions = {};
+		const rlsQuery = await state.models.Release.restrictedQuery(ctx, game, { _game: game._id });
+		if (rlsQuery) {
+			// retrieve stars if logged
+			if (ctx.state.user) {
+				const stars = await state.models.Star.find({
+					type: 'release',
+					_from: ctx.state.user._id
+				}).populate('_ref.release').exec()
+				opts.starredReleaseIds = stars.map(star => (star._ref.release as Release).id.toString());
 			}
-			result = GameSerializer.detailed(game, req);
-			return game.incrementCounter('views');
+			const releases = await state.models.Release.find(state.models.Release.approvedQuery(rlsQuery))
+				.populate({ path: '_tags' })
+				.populate({ path: '_created_by' })
+				.populate({ path: 'authors._user' })
+				.populate({ path: 'versions.files._file' })
+				.populate({ path: 'versions.files._playfield_image' })
+				.populate({ path: 'versions.files._playfield_video' })
+				.populate({ path: 'versions.files._compatibility' })
+				.exec();
+			opts.excludedFields = ['game'];
+			result.releases = releases.map(release => state.serializers.Release.detailed(ctx, release, opts));
 
-		}).then(() => {
+		} else {
+			result.releases = [];
+		}
 
-			// retrieve linked releases
-			let opts = {};
-			return Release.restrictedQuery(req, game, { _game: game._id }).then(rlsQuery => {
-
-				if (!rlsQuery) {
-					return [];
-				}
-
-				return Promise.try(() => {
-
-					// retrieve stars if logged
-					if (!req.user) {
-						return null;
-					}
-					return Star
-						.find({ type: 'release', _from: req.user._id }, '_ref.release')
-						.exec()
-						.then(stars => stars.map(star => star._ref.release.id.toString()));
-
-				}).then(starredReleaseIds => {
-					opts.starredReleaseIds = starredReleaseIds;
-					return Release.find(Release.approvedQuery(rlsQuery))
-						.populate({ path: '_tags' })
-						.populate({ path: '_created_by' })
-						.populate({ path: 'authors._user' })
-						.populate({ path: 'versions.files._file' })
-						.populate({ path: 'versions.files._playfield_image' })
-						.populate({ path: 'versions.files._playfield_video' })
-						.populate({ path: 'versions.files._compatibility' })
-						.exec();
-				});
-
-			}).then(releases => {
-				opts.excludedFields = ['game'];
-				result.releases = releases.map(release => ReleaseSerializer.detailed(release, req, opts));
-				return null;
-			});
-
-		}).then(() => {
-
-			// retrieve linked backglasses
-			return Backglass.restrictedQuery(req, game, { _game: game._id }).then(backglassQuery => {
-
-				//logger.info('BACKGLASS query: %s', util.inspect(backglassQuery, { depth: null }));
-
-				if (!backglassQuery) {
-					return [];
-				}
-				return Backglass.find(Backglass.approvedQuery(backglassQuery))
-					.populate({ path: 'authors._user' })
-					.populate({ path: 'versions._file' })
-					.populate({ path: '_created_by' })
-					.exec();
-
-			}).then(backglasses => {
-				result.backglasses = backglasses.map(backglass => BackglassSerializer.simple(backglass, req, { excludedFields: ['game'] }));
-				return null;
-			});
-
-		}).then(() => {
-			return Medium.find({ '_ref.game': game._id })
-				.populate({ path: '_file' })
+		// retrieve linked backglasses
+		const backglassQuery = await state.models.Backglass.restrictedQuery(ctx, game, { _game: game._id });
+		if (backglassQuery) {
+			const backglasses = await state.models.Backglass.find(state.models.Backglass.approvedQuery(backglassQuery))
+				.populate({ path: 'authors._user' })
+				.populate({ path: 'versions._file' })
 				.populate({ path: '_created_by' })
 				.exec();
+			result.backglasses = backglasses.map(backglass => state.serializers.Backglass.simple(ctx, backglass, { excludedFields: ['game'] }));
 
-		}).then(media => {
-			result.media = media.map(medium => MediumSerializer.simple(medium, req), { excludedFields: ['game'] });
+		} else {
+			result.backglasses = [];
+		}
 
-			return api.success(res, result, 200);
+		const media = await state.models.Medium.find({ '_ref.game': game._id })
+			.populate({ path: '_file' })
+			.populate({ path: '_created_by' })
+			.exec();
 
-		}).catch(api.handleError(res, error, 'Error viewing game'));
+		result.media = media.map(medium => state.serializers.Medium.simple(ctx, medium), { excludedFields: ['game'] });
+
+		return this.success(ctx, result, 200);
 	}
 
 	/**
@@ -470,24 +415,18 @@ export class GameApi extends Api {
 	 */
 	public async releaseName(ctx: Context) {
 
-		let game;
-		return Promise.try(() => {
-			return Game.findOne({ id: req.params.id }).exec();
+		const game = await state.models.Game.findOne({ id: ctx.params.id }).exec();
 
-		}).then(g => {
-			game = g;
-			if (!game) {
-				throw error('No such game with ID "%s".', req.params.id).status(404);
-			}
-			let words = generate().raw;
-			if (!_.isEmpty(game.keywords)) {
-				words.splice(words.length - 1);
-				words.push(game.keywords[Math.floor(Math.random() * game.keywords.length)]);
-			}
-			words.push('edition');
-			return api.success(res, { name: words.map(w => w.toLowerCase()).map(_.upperFirst).join(' ') }, 200);
-
-		}).catch(api.handleError(res, error, 'Error generating release name'));
+		if (!game) {
+			throw new ApiError('No such game with ID "%s".', ctx.params.id).status(404);
+		}
+		let words: string[] = generate().raw;
+		if (!isEmpty(game.keywords)) {
+			words.splice(words.length - 1);
+			words.push(game.keywords[Math.floor(Math.random() * game.keywords.length)]);
+		}
+		words.push('edition');
+		return this.success(ctx, { name: words.map(w => w.toLowerCase()).map(upperFirst).join(' ') }, 200);
 	};
 
 	/**
@@ -500,33 +439,27 @@ export class GameApi extends Api {
 	 * @param {function} [check] Function called with file parameter. Media gets discarded if false is returned.
 	 */
 	private async copyMedia(user: User, game: Game, file: File, category: string, check?: (file: File) => boolean) {
-		return Promise.try(() => {
 
-			check = check || (() => true);
-			if (file && check(file)) {
+		check = check || (() => true);
+		if (file && check(file)) {
 
-				const fieldsToCopy = ['name', 'bytes', 'created_at', 'mime_type', 'file_type'];
-				const fileToCopy = _.assign(_.pick(file, fieldsToCopy), {
-					_created_by: user,
-					variations: {}
-				});
-				return fileModule.create(fileToCopy, fs.createReadStream(file.getPath()), error).then(copiedFile => {
-					logger.info('[api|game:create] Copied file "%s" to "%s".', file.id, copiedFile.id);
-					const medium = new Medium({
-						_file: copiedFile._id,
-						_ref: { game: game._id },
-						category: category,
-						created_at: new Date(),
-						_created_by: user
-					});
-					return medium.save();
-
-				}).then(medium => {
-					logger.info('[api|game:create] Copied %s as media to %s.', category, medium.id);
-					return medium.activateFiles();
-				});
-			}
-			return null;
-		});
+			const fieldsToCopy = ['name', 'bytes', 'created_at', 'mime_type', 'file_type'];
+			const fileToCopy = assign(pick(file, fieldsToCopy), {
+				_created_by: user,
+				variations: {}
+			});
+			const copiedFile = await fileModule.create(fileToCopy, createReadStream(file.getPath()));
+			logger.info('[GameApi.copyMedia] Copied file "%s" to "%s".', file.id, copiedFile.id);
+			let medium = new state.models.Medium({
+				_file: copiedFile._id,
+				_ref: { game: game._id },
+				category: category,
+				created_at: new Date(),
+				_created_by: user
+			});
+			medium = await medium.save();
+			logger.info('[GameApi.copyMedia] Copied %s as media to %s.', category, medium.id);
+			return await medium.activateFiles();
+		}
 	}
 }

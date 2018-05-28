@@ -19,12 +19,11 @@
 
 import { promisify } from 'util';
 import { dirname, resolve } from 'path';
-import { createWriteStream, createReadStream, stat, exists, mkdir, unlink } from 'fs';
+import { createReadStream, createWriteStream, exists, mkdir, stat, unlink } from 'fs';
 import * as Stream from 'stream';
 
 import { state } from '../state';
 import { File } from './file';
-import { Context } from '../common/types/context';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
 import { Metadata } from './metadata/metadata';
@@ -42,13 +41,11 @@ export class FileUtil {
 	/**
 	 * Creates a new file from a HTTP request stream.
 	 *
-	 * @param {Context} ctx Koa context
 	 * @param {File} fileData File
 	 * @param {Stream} readStream Binary stream of file content
-	 * @param opts Options passed to postprocessor
 	 * @returns {Promise<File>}
 	 */
-	public static async create(ctx: Context, fileData: File, readStream: Stream, opts: any): Promise<File> {
+	public static async create(fileData: File, readStream: Stream): Promise<File> {
 
 		// instantiate file without persisting it yet
 		let file = new state.models.File(fileData);
@@ -71,8 +68,6 @@ export class FileUtil {
 		// update file size
 		const stats = await statAsync(path);
 		file.bytes = stats.size;
-
-		// FIXME await storage.preprocess(file);
 
 		try {
 

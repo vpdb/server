@@ -17,34 +17,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { FileReferenceDocument, MetricsDocument, PrettyIdDocument, Schema } from 'mongoose';
+import { Schema } from 'mongoose';
+import { fileReferencePlugin } from '../common/mongoose/file.reference.plugin';
 
-import { User } from '../users/user';
-import { Game } from '../games/game';
-import { Release } from '../releases/release';
-import { File } from '../files/file';
-
-export interface Medium extends PrettyIdDocument, FileReferenceDocument, MetricsDocument {
-
-	// from model
-	id: string;
-	_file: File | Schema.Types.ObjectId;
-	_ref: {
-		game?: Game | Schema.Types.ObjectId;
-		release?: Release | Schema.Types.ObjectId;
-	},
-	category: string;
-	description: string;
-	acknowledgements: string;
+//-----------------------------------------------------------------------------
+// SCHEMA
+//-----------------------------------------------------------------------------
+export const backglassVersionFields = {
+	version: { type: String, required: 'Version must be provided.' },
+	changes: { type: String },
+	_file:  { type: Schema.Types.ObjectId, required: 'You must provide a file reference.', ref: 'File' },
+	released_at: { type: Date, required: true },
 	counter: {
-		stars: number;
-	},
-	created_at: Date;
-	_created_by: User | Schema.Types.ObjectId;
+		downloads: { type: Number, 'default': 0 }
+	}
+};
 
-	// serialized
-	file?: File;
-	release?: Release;
-	game?: Game;
-	created_by?: User;
-}
+export const backglassVersionSchema = new Schema(backglassVersionFields, { toObject: { virtuals: true, versionKey: false } });
+backglassVersionSchema.plugin(fileReferencePlugin);

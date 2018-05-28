@@ -219,6 +219,42 @@ export abstract class Api {
 	}
 
 	/**
+	 * Computes the Mongoose order parameters based on the HTTP request.
+	 *
+	 * @param {Context} ctx Koa context
+	 * @param {object} defaultSort Sort modes when none provided
+	 * @param {object} map Maps URL parameters to Mongoose fields.
+	 * @returns {object} Sort parameter
+	 */
+	protected sortParams(ctx: Context, defaultSort: { [key: string]: number }, map?: { [key: string]: string }) {
+		let key, order, mapOrder;
+		const sortBy: { [key: string]: number } = {};
+		defaultSort = defaultSort || { title: 1 };
+		map = map || {};
+		if (ctx.query.sort) {
+			let s = ctx.query.sort.match(/^(-?)([a-z0-9_-]+)+$/);
+			if (s) {
+				order = s[1] ? -1 : 1;
+				key = s[2];
+				if (map[key]) {
+					s = map[key].match(/^(-?)([a-z0-9_.]+)+$/);
+					key = s[2];
+					mapOrder = s[1] ? -1 : 1;
+				} else {
+					mapOrder = 1;
+				}
+				sortBy[key] = mapOrder * order;
+			} else {
+				return defaultSort;
+			}
+		} else {
+			return defaultSort;
+		}
+		return sortBy;
+	};
+
+
+	/**
 	 * Returns the pagination object.
 	 *
 	 * @param ctx Koa context

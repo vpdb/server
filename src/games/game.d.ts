@@ -23,6 +23,7 @@ import { User } from '../users/user';
 import { Release } from '../releases/release';
 import { Backglass } from '../backglasses/backglass';
 import { Medium } from '../media/medium';
+import { gameSchema } from './game.schema';
 
 export interface Game extends FileReferenceDocument, MetricsDocument, PrettyIdDocument {
 	id?: string;
@@ -89,6 +90,9 @@ export interface Game extends FileReferenceDocument, MetricsDocument, PrettyIdDo
 	mpu?: number;
 	owner?: string;
 	restrictions?: GameRestrictions;
+
+	// methods
+	isRestricted(what: string): boolean;
 }
 
 export interface GameRestrictions {

@@ -18,11 +18,9 @@
  */
 
 import { Model } from 'mongoose';
-import { Backglass } from '../../backglasses/backglass';
 import { Build } from '../../builds/build';
 import { Comment } from '../../comments/comment';
 import { File } from '../../files/file';
-import { Game } from '../../games/game';
 import { GameRequest } from '../../game-requests/game.request';
 import { Medium } from '../../media/medium';
 import { Rating } from '../../ratings/rating';
@@ -33,13 +31,14 @@ import { Token } from '../../tokens/token';
 import { Star } from '../../stars/star';
 import { User } from '../../users/user';
 
+import { GameModel } from '../../games/game.schema';
+import { BackglassModel } from '../../backglasses/backglass.schema';
 import { LogEventModel } from '../../log-event/log.event.schema';
 import { LogUserModel } from '../../log-user/log.user.schema';
 import { ReleaseModel } from '../../releases/release.schema';
-import { GameModel } from '../../games/game.schema';
 
 export interface Models {
-	Backglass: Model<Backglass>;
+	Backglass: BackglassModel;
 	Build: Model<Build>;
 	Comment: Model<Comment>;
 	File: Model<File>;

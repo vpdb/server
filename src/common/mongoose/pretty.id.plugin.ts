@@ -68,7 +68,7 @@ export function prettyIdPlugin(schema: Schema, options: PrettyIdOptions = {}) {
 
 	};
 
-	schema.methods.updateInstance = async function (obj: Object): Promise<PrettyIdDocument> {
+	schema.methods.updateInstance = async function<T extends Document>(this:T, obj: Object): Promise<T> {
 
 		const invalidations = await replaceIds(obj, paths, options);
 		assign(this, obj);
@@ -162,11 +162,12 @@ declare module 'mongoose' {
 	// methods
 	export interface PrettyIdDocument extends Document {
 		/**
-		 * Updates the Mongoose document with IDs received in the API.
+		 * Updates the Mongoose document with IDs received in the API and invalidates them.
+		 *
 		 * @param {Object} obj Object received
-		 * @returns {Promise<module:mongoose.PrettyIdDocument>} IDs converted from pretty to Mongoose.
+		 * @returns {Promise<T extends module:mongoose.Document>} Updated document with IDs converted from pretty to Mongoose.
 		 */
-		updateInstance(obj: Object): Promise<PrettyIdDocument>;
+		updateInstance<T extends Document>(this: T, obj: Object): Promise<T>;
 	}
 
 	// statics

@@ -155,7 +155,7 @@ gameSchema.path('_backglass').validate(async function (backglass: File) {
 // METHODS
 //-----------------------------------------------------------------------------
 
-gameSchema.methods.isRestricted = function (what: 'release' | 'backglass') {
+gameSchema.methods.isRestricted = function (what: 'release' | 'backglass'):boolean {
 	return this.ipdb.mpu && config.vpdb.restrictions[what].denyMpu.includes(this.ipdb.mpu);
 };
 

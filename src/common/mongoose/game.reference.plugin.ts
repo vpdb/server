@@ -199,7 +199,7 @@ export function gameReferencePlugin(schema: Schema, options: GameReferenceOption
  * @param {Array<any> | object} query Original query
  * @return {Array<any> | object} Merged query
  */
-function addToQuery(toAdd: object, query: Array<any> | object): Array<any> | object {
+function addToQuery<T>(toAdd: object, query: Array<any> | object): Array<any> | object {
 	if (isArray(query)) {
 		query.push(toAdd);
 		return query;

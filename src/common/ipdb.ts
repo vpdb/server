@@ -945,7 +945,7 @@ class Ipdb {
 		702: 'Marx Toys'
 	};
 
-	public systems: { [key: number]: { long: string, short: string } } = {
+	public systems: { [key: number]: Mpu } = {
 
 		44: { long: 'Atari Generation/System 1', short: 'System 1' },
 		45: { long: 'Atari Generation/System 2', short: 'System 2' },
@@ -1012,4 +1012,8 @@ class Ipdb {
 	};
 }
 
+export interface Mpu {
+	long: string;
+	short:string;
+}
 export const ipdb = new Ipdb();

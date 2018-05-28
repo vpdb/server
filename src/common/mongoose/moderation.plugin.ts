@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import mongoose, { Document, Model, ModeratedDocument, ModeratedModel, Schema, ModerationData } from 'mongoose';
+import { Document, Model, ModeratedDocument, ModeratedModel, Schema, ModerationData } from 'mongoose';
 import { assign, includes, isArray, isObject } from 'lodash';
 
 import { state } from '../../state';
@@ -45,7 +45,7 @@ const modelReferenceMap: { [key: string]: string } = {
  * the `approve` permission to manually sign it off.
  *
  * This plugin adds a `moderation` property to the entity and offers
- * methods to make quering easier.
+ * methods to make querying easier.
  *
  * @param schema
  */
@@ -300,7 +300,7 @@ export function moderationPlugin(schema: Schema) {
 	 */
 	schema.methods.approve = async function (user: User, message: string): Promise<ModerationData> {
 
-		const model = mongoose.model<ModeratedDocument>(this.constructor.modelName);
+		const model = require('mongoose').model(this.constructor.modelName) as ModeratedModel<ModeratedDocument>;
 		let previousModeration = { isApproved: this.moderation.is_approved, isRefused: this.moderation.is_refused };
 		await model.findByIdAndUpdate(this._id, {
 			'moderation.is_approved': true,
@@ -330,7 +330,7 @@ export function moderationPlugin(schema: Schema) {
 	 */
 	schema.methods.refuse = async function (user: User, reason: string): Promise<ModerationData> {
 
-		const model = mongoose.model<ModeratedDocument>(this.constructor.modelName);
+		const model = require('mongoose').model(this.constructor.modelName) as ModeratedModel<ModeratedDocument>;
 		let previousModeration = { isApproved: this.moderation.is_approved, isRefused: this.moderation.is_refused };
 		await model.findByIdAndUpdate(this._id, {
 			'moderation.is_approved': false,
@@ -360,7 +360,7 @@ export function moderationPlugin(schema: Schema) {
 	 */
 	schema.methods.moderate = async function (user: User, message: string): Promise<ModerationData> {
 
-		const model = mongoose.model<ModeratedDocument>(this.constructor.modelName);
+		const model = require('mongoose').model(this.constructor.modelName) as ModeratedModel<ModeratedDocument>;
 		let previousModeration = { isApproved: this.moderation.is_approved, isRefused: this.moderation.is_refused };
 		await model.findByIdAndUpdate(this._id, {
 			'moderation.is_approved': false,

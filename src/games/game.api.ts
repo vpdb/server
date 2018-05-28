@@ -168,22 +168,16 @@ export class GameApi extends Api {
 			throw new ApiError('Invalid field%s: ["%s"]. Allowed fields: ["%s"]', invalidFields.length === 1 ? '' : 's', invalidFields.join('", "'), updateableFields.join('", "')).status(400).log();
 		}
 
-		const oldMediaObj: { [key: string]: File } = {
-			backglass: game._backglass as File,
-			logo: game._logo as File
-		};
-		const oldMedia: { [key: string]: string } = {
-			_backglass: (game._backglass as File).id,
-			_logo: game._logo ? (game._logo as File).id : null
-		};
-		const newMedia: { [key: string]: string } = {
-			_backglass: ctx.request.body._backglass || oldMedia._backglass,
-			_logo: ctx.request.body._logo || oldMedia._logo,
-		};
+		const oldMediaBackglassObj = game._backglass as File;
+		const oldMediaLogoObj = game._logo as File;
+		const oldMediaBackglass = (game._backglass as File).id;
+		const oldMediaLogo = game._logo ? (game._logo as File).id : null;
+		const newMediaBackglass = ctx.request.body._backglass || oldMediaBackglass;
+		const newMediaLogo = ctx.request.body._logo || oldMediaLogo;
 
 		// copy media if not submitted so it doesn't get erased
-		ctx.request.body._backglass = newMedia._backglass;
-		ctx.request.body._logo = newMedia._logo;
+		ctx.request.body._backglass = newMediaBackglass;
+		ctx.request.body._logo = newMediaLogo;
 
 		// apply changes
 		game = await game.updateInstance(ctx.request.body) as Game;
@@ -198,14 +192,14 @@ export class GameApi extends Api {
 
 		// copy to media and delete old media if changed
 		try {
-			if (oldMedia._backglass !== newMedia._backglass) {
+			if (oldMediaBackglass !== newMediaBackglass) {
 				await this.copyMedia(ctx.state.user, game, game._backglass as File, 'backglass_image', bg => bg.metadata.size.width * bg.metadata.size.height > 647000);  // > 900x720
-				await oldMediaObj.backglass.remove();
+				await oldMediaBackglassObj.remove();
 			}
-			if (oldMedia._logo !== newMedia._logo) {
+			if (oldMediaLogo !== newMediaLogo) {
 				await this.copyMedia(ctx.state.user, game, game._logo as File, 'wheel_image');
-				if (oldMediaObj.logo) {
-					await oldMediaObj.logo.remove();
+				if (oldMediaLogoObj) {
+					await oldMediaLogoObj.remove();
 				}
 			}
 		} catch (err) {
@@ -246,7 +240,7 @@ export class GameApi extends Api {
 		logger.info('[GameApi.del] Game "%s" (%s) successfully deleted.', game.title, game.id);
 
 		// log event
-		LogEventUtil.log(ctx, 'delete_game', false, { game: omit(state.serializers.Game.simple(ctx, game), ['rating', 'counter']) }, { game: game._id });
+		await LogEventUtil.log(ctx, 'delete_game', false, { game: omit(state.serializers.Game.simple(ctx, game), ['rating', 'counter']) }, { game: game._id });
 
 		return this.success(ctx, null, 204);
 	}
@@ -260,7 +254,6 @@ export class GameApi extends Api {
 
 		let pagination = this.pagination(ctx, 12, 60);
 		let query: any[] = [];
-
 
 		// text search
 		if (ctx.query.q) {
@@ -377,7 +370,7 @@ export class GameApi extends Api {
 				const stars = await state.models.Star.find({
 					type: 'release',
 					_from: ctx.state.user._id
-				}).populate('_ref.release').exec()
+				}).populate('_ref.release').exec();
 				opts.starredReleaseIds = stars.map(star => (star._ref.release as Release).id.toString());
 			}
 			const releases = await state.models.Release.find(state.models.Release.approvedQuery(rlsQuery))

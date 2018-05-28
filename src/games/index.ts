@@ -18,36 +18,34 @@
  */
 
 import Application = require('koa');
-import mongoose, { Schema } from 'mongoose';
 import Router from 'koa-router';
+import { default as mongoose, Schema } from 'mongoose';
 
 import { state } from '../state';
 import { EndPoint } from '../common/types/endpoint';
-import { ReleaseSerializer } from './release.serializer';
-import { TableBlock } from './release.tableblock';
-import { tableBlockSchema } from './release.tableblock.schema';
-import { Release } from './release';
-import { ReleaseModel, releaseSchema } from './release.schema';
+import { Game } from './game';
+import { GameSerializer } from './game.serializer';
+import { GameModel, gameSchema } from './game.schema';
+import { router } from './game.api.router';
 
-export class ReleaseEndPoint implements EndPoint {
+export class GamesApiEndPoint implements EndPoint {
 
-	readonly name: string = 'Release API';
+	readonly name: string = 'Games API';
 
 	private readonly _router: Router;
 	private readonly _schema: Schema;
 
 	constructor() {
-		//this._router = router;
-		this._schema = releaseSchema;
+		this._schema = gameSchema;
+		this._router = router;
 	}
 
 	getRouter(): Router {
-		return null; //return this._router;
+		return this._router;
 	}
 
 	register(app: Application): void {
-		state.models.Release = mongoose.model<Release>('Release', this._schema) as ReleaseModel;
-		state.models.TableBlock = mongoose.model<TableBlock>('TableBlock', tableBlockSchema);
-		state.serializers.Release = new ReleaseSerializer();
+		state.models.Game = mongoose.model<Game>('Game', this._schema) as GameModel;
+		state.serializers.Game = new GameSerializer();
 	}
 }

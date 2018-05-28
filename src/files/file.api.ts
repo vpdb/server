@@ -250,7 +250,7 @@ export class FileApi extends Api {
 			_created_by: ctx.state.user._id
 		};
 
-		return FileUtil.create(ctx, fileData as File, ctx.req, { processInBackground: true });
+		return FileUtil.create(fileData as File, ctx.req);
 	}
 
 	/**
@@ -289,7 +289,7 @@ export class FileApi extends Api {
 					file_type: ctx.query.type,
 					_created_by: ctx.state.user._id
 				};
-				FileUtil.create(ctx, fileData as File, stream, { processInBackground: true })
+				FileUtil.create(fileData as File, stream)
 					.then(file => resolve(file))
 					.catch(reject);
 			});

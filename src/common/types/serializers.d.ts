@@ -26,6 +26,7 @@ import { GameSerializer } from '../../games/game.serializer';
 import { GameRequestSerializer } from '../../game-requests/game.request.serializer';
 import { LogEventSerializer } from '../../log-event/log.event.serializer';
 import { LogUserSerializer } from '../../log-user/log.user.serializer';
+import { MediumSerializer } from '../../media/medium.serializer';
 import { ReleaseSerializer } from '../../releases/release.serializer';
 import { ReleaseVersionSerializer } from '../../releases/release.version.serializer';
 import { ReleaseVersionFileSerializer } from '../../releases/release.version.file.serializer';
@@ -43,6 +44,7 @@ export interface Serializers {
 	GameRequest: GameRequestSerializer;
 	LogEvent: LogEventSerializer;
 	LogUser: LogUserSerializer;
+	Medium: MediumSerializer;
 	Release: ReleaseSerializer;
 	ReleaseVersion: ReleaseVersionSerializer;
 	ReleaseVersionFile: ReleaseVersionFileSerializer;

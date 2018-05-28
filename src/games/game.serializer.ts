@@ -6,8 +6,7 @@ import { Game, GameRestrictions } from './game';
 import { File } from '../files/file';
 import { Context } from '../common/types/context';
 import { config } from '../common/settings';
-
-const ipdb = require('../modules/ipdb');
+import { ipdb } from '../common/ipdb';
 
 export class GameSerializer extends Serializer<Game> {
 

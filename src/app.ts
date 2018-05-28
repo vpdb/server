@@ -27,6 +27,7 @@ import { EndPoint } from './common/types/endpoint';
 
 import { AuthenticationEndPoint, AuthenticationStorageEndPoint } from './authentication';
 import { FilesApiEndPoint, FilesProtectedStorageEndPoint, FilesPublicStorageEndPoint } from './files';
+import { GamesApiEndPoint } from './games';
 import { LogEventEndPoint } from './log-event';
 import { LogUserEndPoint } from './log-user';
 import { TokenEndPoint } from './tokens';
@@ -52,6 +53,7 @@ shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 			new FilesApiEndPoint(),
 			new FilesPublicStorageEndPoint(),
 			new FilesProtectedStorageEndPoint(),
+			new GamesApiEndPoint(),
 			new LogEventEndPoint(),
 			new LogUserEndPoint(),
 			new MiscEndPoint(),

@@ -18,12 +18,12 @@
  */
 
 import { FileReferenceDocument, MetricsDocument, PrettyIdDocument, Schema } from 'mongoose';
+import { Mpu } from '../common/ipdb';
 import { File } from '../files/file';
 import { User } from '../users/user';
 import { Release } from '../releases/release';
 import { Backglass } from '../backglasses/backglass';
 import { Medium } from '../media/medium';
-import { gameSchema } from './game.schema';
 
 export interface Game extends FileReferenceDocument, MetricsDocument, PrettyIdDocument {
 	id?: string;
@@ -87,7 +87,7 @@ export interface Game extends FileReferenceDocument, MetricsDocument, PrettyIdDo
 	media?: Medium[];
 
 	// generated
-	mpu?: number;
+	mpu?: Mpu;
 	owner?: string;
 	restrictions?: GameRestrictions;
 

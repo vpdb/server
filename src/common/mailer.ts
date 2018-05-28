@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { readFileSync } from 'fs';
+import { readFile } from 'fs';
 import { resolve } from 'path';
 import { isEmpty, upperFirst, uniqWith, flatten } from 'lodash';
 import handlebars from 'handlebars';
@@ -34,7 +34,9 @@ import { ReleaseVersionFile } from '../releases/release.version.file';
 import { Backglass } from '../backglasses/backglass';
 import { Game } from '../games/game';
 import { ContentAuthor } from '../users/content.author';
+import { promisify } from "util";
 
+const readFileAsync = promisify(readFile);
 const templatesDir = resolve(__dirname, '../email-templates');
 
 export async function registrationConfirmation(user: User): Promise<SentMessageInfo> {
@@ -361,7 +363,7 @@ async function sendEmail(user: User, subject: string, template: string, template
 	}
 
 	// generate content
-	const tpl = getTemplate(template);
+	const tpl = await getTemplate(template);
 	const text = wrap(tpl(templateData), 60);
 
 	// setup email
@@ -388,10 +390,11 @@ async function sendEmail(user: User, subject: string, template: string, template
 /**
  * Returns a Handlebar renderer for a given template name.
  * @param {string} template Template file without path or extension
- * @returns {Function} Handlebar renderer
+ * @returns {HandlebarsTemplateDelegate} Handlebar renderer
  */
-function getTemplate(template: string) {
-	return handlebars.compile(readFileSync(resolve(templatesDir, template + '.handlebars')).toString());
+async function getTemplate(template: string): Promise<HandlebarsTemplateDelegate> {
+	const tpl = await readFileAsync(resolve(templatesDir, template + '.handlebars'));
+	return handlebars.compile(tpl.toString());
 }
 
 /**

@@ -20,6 +20,9 @@
 import { FileReferenceDocument, MetricsDocument, PrettyIdDocument, Schema } from 'mongoose';
 import { File } from '../files/file';
 import { User } from '../users/user';
+import { Release } from '../releases/release';
+import { Backglass } from '../backglasses/backglass';
+import { Medium } from '../media/medium';
 
 export interface Game extends FileReferenceDocument, MetricsDocument, PrettyIdDocument {
 	id?: string;
@@ -78,13 +81,14 @@ export interface Game extends FileReferenceDocument, MetricsDocument, PrettyIdDo
 	// serialized
 	backglass?: File;
 	logo?: File;
+	releases?: Release[];
+	backglasses?: Backglass[];
+	media?: Medium[];
 
 	// generated
 	mpu?: number;
 	owner?: string;
 	restrictions?: GameRestrictions;
-
-	isRestricted(what:string):boolean;
 }
 
 export interface GameRestrictions {

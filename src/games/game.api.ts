@@ -17,7 +17,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { assign, cloneDeep, intersection, isEmpty, keys, omit, pick, sum, upperFirst, values } from 'lodash';
+import {
+	assign,
+	cloneDeep,
+	intersection,
+	isEmpty,
+	keys,
+	omit,
+	pick,
+	sum,
+	upperFirst,
+	values,
+	difference
+} from 'lodash';
 import { createReadStream } from 'fs';
 import { inspect } from 'util';
 
@@ -36,6 +48,7 @@ import { Release } from '../releases/release';
 import { File } from '../files/file';
 import { LogEventUtil } from '../log-event/log.event.util';
 import { Game } from './game';
+import { FileUtil } from '../files/file.util';
 
 const generate = require('project-name-generator');
 
@@ -62,7 +75,7 @@ export class GameApi extends Api {
 		const game = await state.models.Game.getInstance(assign(ctx.request.body, {
 			_created_by: ctx.state.user._id,
 			created_at: new Date()
-		}));
+		})) as Game;
 
 		logger.info('[GameApi.create] %s', inspect(ctx.request.body));
 		await game.validate();
@@ -115,14 +128,14 @@ export class GameApi extends Api {
 		// copy backglass and logo to media
 		try {
 			await Promise.all([
-				this.copyMedia(ctx.state.user, game, game._backglass, 'backglass_image', bg => bg.metadata.size.width * bg.metadata.size.height > 647000),  // > 900x720
-				this.copyMedia(ctx.state.user, game, game._logo, 'wheel_image')
+				this.copyMedia(ctx.state.user, game, game._backglass as File, 'backglass_image', bg => bg.metadata.size.width * bg.metadata.size.height > 647000),  // > 900x720
+				this.copyMedia(ctx.state.user, game, game._logo as File, 'wheel_image')
 			]);
 		} catch (err) {
 			logger.error('[api|game:create] Error while copying media: %s', err.message);
 			logger.error(err);
 		}
-		await LogEventUtil.log(ctx, 'create_game', true, { game: _.omit(state.serializers.Game.simple(ctx, game), ['rating', 'counter']) }, { game: game._id });
+		await LogEventUtil.log(ctx, 'create_game', true, { game: omit(state.serializers.Game.simple(ctx, game), ['rating', 'counter']) }, { game: game._id });
 		return this.success(ctx, state.serializers.Game.detailed(ctx, game), 201);
 	}
 
@@ -151,19 +164,19 @@ export class GameApi extends Api {
 		// fail if invalid fields provided
 		const submittedFields = keys(ctx.request.body);
 		if (intersection(updateableFields, submittedFields).length !== submittedFields.length) {
-			let invalidFields = _.difference(submittedFields, updateableFields);
+			let invalidFields = difference(submittedFields, updateableFields);
 			throw new ApiError('Invalid field%s: ["%s"]. Allowed fields: ["%s"]', invalidFields.length === 1 ? '' : 's', invalidFields.join('", "'), updateableFields.join('", "')).status(400).log();
 		}
 
-		const oldMediaObj = {
-			backglass: game._backglass,
-			logo: game._logo
+		const oldMediaObj: { [key: string]: File } = {
+			backglass: game._backglass as File,
+			logo: game._logo as File
 		};
-		const oldMedia = {
+		const oldMedia: { [key: string]: string } = {
 			_backglass: (game._backglass as File).id,
 			_logo: game._logo ? (game._logo as File).id : null
 		};
-		const newMedia = {
+		const newMedia: { [key: string]: string } = {
 			_backglass: ctx.request.body._backglass || oldMedia._backglass,
 			_logo: ctx.request.body._logo || oldMedia._logo,
 		};
@@ -184,22 +197,21 @@ export class GameApi extends Api {
 		logger.info('[GameApi.update] Activated %s new file%s.', activatedFileIds.length, activatedFileIds.length === 1 ? '' : 's');
 
 		// copy to media and delete old media if changed
-		let mediaCopies = [];
-		if (oldMedia._backglass !== newMedia._backglass) {
-			mediaCopies.push(this.copyMedia(ctx.state.user, game, game._backglass, 'backglass_image', bg => bg.metadata.size.width * bg.metadata.size.height > 647000));  // > 900x720
-			mediaCopies.push(oldMediaObj.backglass.remove());
-		}
-		if (oldMedia._logo !== newMedia._logo) {
-			mediaCopies.push(this.copyMedia(ctx.state.user, game, game._logo, 'wheel_image'));
-			if (oldMediaObj.logo) {
-				mediaCopies.push(oldMediaObj.logo.remove());
+		try {
+			if (oldMedia._backglass !== newMedia._backglass) {
+				await this.copyMedia(ctx.state.user, game, game._backglass as File, 'backglass_image', bg => bg.metadata.size.width * bg.metadata.size.height > 647000);  // > 900x720
+				await oldMediaObj.backglass.remove();
 			}
-		}
-		await Promise.all(mediaCopies).catch(err => {
+			if (oldMedia._logo !== newMedia._logo) {
+				await this.copyMedia(ctx.state.user, game, game._logo as File, 'wheel_image');
+				if (oldMediaObj.logo) {
+					await oldMediaObj.logo.remove();
+				}
+			}
+		} catch (err) {
 			logger.error('[api|game:update] Error while copying and cleaning media: %s', err.message);
 			logger.error(err);
-		});
-
+		}
 		await LogEventUtil.log(ctx, 'update_game', false, LogEventUtil.diff(oldGame, body), { game: game._id });
 		return this.success(ctx, state.serializers.Game.detailed(ctx, game), 200);
 	}
@@ -318,7 +330,7 @@ export class GameApi extends Api {
 			}
 		}
 
-		let sort = this.sortParams(ctx, { title: 1 }, {
+		const sort = this.sortParams(ctx, { title: 1 }, {
 			popularity: '-metrics.popularity',
 			rating: '-rating.score',
 			title: 'title_sortable'
@@ -438,7 +450,7 @@ export class GameApi extends Api {
 	 * @param {string} category Media category
 	 * @param {function} [check] Function called with file parameter. Media gets discarded if false is returned.
 	 */
-	private async copyMedia(user: User, game: Game, file: File, category: string, check?: (file: File) => boolean) {
+	private async copyMedia(user: User, game: Game, file: File, category: string, check?: (file: File) => boolean): Promise<string[]> {
 
 		check = check || (() => true);
 		if (file && check(file)) {
@@ -447,8 +459,8 @@ export class GameApi extends Api {
 			const fileToCopy = assign(pick(file, fieldsToCopy), {
 				_created_by: user,
 				variations: {}
-			});
-			const copiedFile = await fileModule.create(fileToCopy, createReadStream(file.getPath()));
+			}) as File;
+			const copiedFile = await FileUtil.create(fileToCopy, createReadStream(file.getPath()));
 			logger.info('[GameApi.copyMedia] Copied file "%s" to "%s".', file.id, copiedFile.id);
 			let medium = new state.models.Medium({
 				_file: copiedFile._id,

@@ -19,7 +19,6 @@
 
 import { File } from '../file';
 import { FileVariation } from '../file.variations';
-import { ProcessorQueueName } from './processor.queue';
 
 /**
  * A processor takes in a physical file and produces or updates an optional
@@ -33,29 +32,12 @@ import { ProcessorQueueName } from './processor.queue';
  * Note that processors are singletons and don't contain any file- or variation
  * specific state.
  */
-export abstract class Processor<V extends FileVariation> {
+export interface Processor<V extends FileVariation> {
 
 	/**
 	 * Filename of the processor without "processor" suffix, e.g. "image.optimization".
 	 */
-	public abstract name: string;
-
-	/**
-	 * Checks whether the variation of the given file can be processed by this
-	 * processor.
-	 *
-	 * @param {File} file File to check
-	 * @param {FileVariation} variation Variation of the file to check, original if not set.
-	 * @returns {boolean} True if it can be processed, false otherwise.
-	 */
-	abstract canProcess(file: File, variation?: FileVariation): boolean;
-
-	/**
-	 * Returns the type of queue the processor should be run under.
-	 *
-	 * @returns {string}
-	 */
-	abstract getQueue(): ProcessorQueueName;
+	name: string;
 
 	/**
 	 * Returns a number indicating the order of execution of this processor.
@@ -63,10 +45,10 @@ export abstract class Processor<V extends FileVariation> {
 	 * This is needed to define an order for multiple processors, but it can also
 	 * be used to prefer some variations to others.
 	 *
-	 * @param {FileVariation} variation Variation of the file to process, or original if not set.
+	 * @param {FileVariation} variation Variation of the source file to process, or original if not set.
 	 * @returns {number} Order of processing
 	 */
-	abstract getOrder(variation?: FileVariation): number;
+	getOrder(variation?: FileVariation): number;
 
 	/**
 	 * Starts processing the file. This is executed in Bull's worker thread.
@@ -77,5 +59,32 @@ export abstract class Processor<V extends FileVariation> {
 	 * @param variation Variation to process
 	 * @returns {Promise<string>} Path to processed file
 	 */
-	abstract async process(file: File, src: string, dest: string, variation?: V): Promise<string>;
+	process(file: File, src: string, dest: string, variation?: V): Promise<string>;
+}
+
+export interface CreationProcessor<V extends FileVariation> extends Processor<V> {
+
+	/**
+	 * Checks whether the variation of the given file can be processed by this
+	 * processor.
+	 *
+	 * @param {File} file File to check
+	 * @param {FileVariation} srcVariation Variation of source file to process, original if null.
+	 * @param {FileVariation} destVariation Variation of destination file to process
+	 * @returns {boolean} True if it can be processed, false otherwise.
+	 */
+	canProcess(file: File, srcVariation: FileVariation, destVariation:FileVariation): boolean;
+}
+
+export interface OptimizationProcessor<V extends FileVariation> extends Processor<V> {
+
+	/**
+	 * Checks whether the variation of the given file can be processed by this
+	 * processor.
+	 *
+	 * @param {File} file File to check
+	 * @param {FileVariation} variation Variation to process, original if not set.
+	 * @returns {boolean} True if it can be processed, false otherwise.
+	 */
+	canProcess(file: File, variation?: FileVariation): boolean;
 }

@@ -21,28 +21,23 @@ import gm from 'gm';
 import { sep } from 'path';
 import { createWriteStream } from 'fs';
 
-import { Processor } from './processor';
+import { CreationProcessor } from './processor';
 import { File } from '../file';
 import { logger } from '../../common/logger';
 import { FileVariation, ImageFileVariation } from '../file.variations';
-import { ProcessorQueueName } from './processor.queue';
 
 require('bluebird').promisifyAll(gm.prototype);
 
-export class ImageVariationProcessor extends Processor<ImageFileVariation> {
+export class ImageVariationProcessor implements CreationProcessor<ImageFileVariation> {
 
 	name: string = 'image.variation';
 
-	canProcess(file: File, variation?: FileVariation): boolean {
-		return !!variation && file.getMimeTypePrimary() === 'image';
+	canProcess(file: File, srcVariation: FileVariation, destVariation: FileVariation): boolean {
+		return file.getMimeTypePrimary(srcVariation) === 'image' && file.getMimeTypePrimary(srcVariation) === 'image';
 	}
 
 	getOrder(variation?: FileVariation): number {
 		return 100 + (variation && variation.priority ? variation.priority : 0);
-	}
-
-	getQueue(): ProcessorQueueName {
-		return 'HI_PRIO_FAST';
 	}
 
 	async process(file: File, src: string, dest: string, variation?: ImageFileVariation): Promise<string> {

@@ -59,7 +59,7 @@ class GameHelper {
 		return games;
 	}
 
-	async getGame(attrs, ipdbNumber) {
+	getGame(attrs, ipdbNumber) {
 		const game = this._popGame(ipdbNumber);
 		if (game.short) {
 			game.id = game.short[0].replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
@@ -84,4 +84,4 @@ class GameHelper {
 	}
 }
 
-module.exports = FileHelper;
+module.exports = GameHelper;

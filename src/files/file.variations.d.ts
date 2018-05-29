@@ -35,6 +35,11 @@ export interface FileVariation {
 	 * Should be between 0 (hightest) and 100 (lowest).
 	 */
 	priority?: number;
+
+	/**
+	 * References another variation as source. When not set, the original file is the source.
+	 */
+	source?: string;
 }
 
 export interface ImageFileVariation extends FileVariation {
@@ -80,22 +85,7 @@ export interface ImageFileVariation extends FileVariation {
 	landscape?: boolean;
 }
 
-export interface BackglassVariation extends FileVariation {
-	/**
-	 * Encoding quality, 0-100.
-	 */
-	quality?: number;
-
-	/**
-	 * Width in pixels.
-	 */
-	width?: number;
-
-	/**
-	 * Height in pixels.
-	 */
-	height?: number;
-
+export interface BackglassVariation extends ImageFileVariation {
 	cutGrill?: boolean;
 	modulate?: number;
 }

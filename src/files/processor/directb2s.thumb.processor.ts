@@ -24,22 +24,22 @@ import gm, { State } from 'gm';
 import { logger } from '../../common/logger';
 import { Parser } from '../../common/sax.async';
 import { ApiError } from '../../common/api.error';
-import { Processor } from './processor';
 import { ProcessorQueueName } from './processor.queue';
 import { File } from '../file';
 import { mimeTypes } from '../file.mimetypes';
 import { BackglassVariation, FileVariation } from '../file.variations';
+import { CreationProcessor } from './processor';
 
 const base64 = require('base64-stream');
 
 require('bluebird').promisifyAll(gm.prototype);
 
-export class Directb2sThumbProcessor extends Processor<BackglassVariation> {
+export class Directb2sThumbProcessor implements CreationProcessor<BackglassVariation> {
 
 	name: string = 'directb2s.thumb';
 
-	canProcess(file: File, variation?: FileVariation): boolean {
-		return file.getMimeType(variation) === 'application/x-directb2s';
+	canProcess(file: File, srcVariation: FileVariation, destVariation: FileVariation): boolean {
+		return file.getMimeType(srcVariation) === 'application/x-directb2s' && file.getMimeCategory(destVariation) === 'image';
 	}
 
 	getOrder(variation?: FileVariation): number {
@@ -121,4 +121,5 @@ export class Directb2sThumbProcessor extends Processor<BackglassVariation> {
 			parser.stream(true);
 		});
 	}
+
 }

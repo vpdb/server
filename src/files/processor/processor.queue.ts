@@ -29,17 +29,17 @@ import { ApiError } from '../../common/api.error';
 import { config } from '../../common/settings';
 import { logger } from '../../common/logger';
 import { File } from '../file';
-import { fileTypes } from '../file.types';
 import { FileVariation } from '../file.variations';
 import { FileUtil } from '../file.util';
 import { Metadata } from '../metadata/metadata';
-import { Processor } from './processor';
+import { CreationProcessor, OptimizationProcessor, Processor } from './processor';
 import { ActivateFileAction, ProcessorAction } from './processor.action';
 import { Directb2sOptimizationProcessor } from './directb2s.optimization.processor';
 import { Directb2sThumbProcessor } from './directb2s.thumb.processor';
 import { ImageOptimizationProcessor } from './image.optimization.processor';
 import { ImageVariationProcessor } from './image.variation.processor';
 import { VptBlockindexProcessor } from './vpt.blockindex.processor';
+import { mimeTypeCategories } from '../file.mimetypes';
 
 const renameAsync = promisify(rename);
 const statAsync = promisify(stat);
@@ -55,12 +55,14 @@ const unlinkAsync = promisify(unlink);
  * Or a DirectB2S gets optimized as well, plus a thumb for previews (which also
  * gets optimized, but by a different processor).
  *
- * A *processor* is a class that takes in a file object from the database and
- * produces a file on the disk. It is parameterized by an optional variation.
+ * A *processor* is a class that takes in a file from the disk and produces a
+ * new or optimized version of the file on the disk.
  *
- * A *variation* defines the produced file on the disk. It can be a different
- * MIME type than the original. Providing no variation results in the original
- * being processed.
+ * We distinguish between *creation* processors and *optimization processors*.
+ * Creation processor produce new *variations* of the file, while the latter
+ * update the same file with an optimized version.
+ *
+ * A variation can have the same or a different MIME type than the original.
  *
  * An *action* is a function linked to a file and all its variations that is
  * added at the end of the processing stack. It is individually triggered but
@@ -98,7 +100,8 @@ class ProcessorQueue {
 	/**
 	 * All available processor instances, accessible by name.
 	 */
-	private readonly processors: Map<string, Processor<any>> = new Map();
+	private readonly creationProcessors: CreationProcessor<any>[] = [];
+	private readonly optimizationProcessors: OptimizationProcessor<any>[] = [];
 
 	/**
 	 * All available actions, accessible by name.
@@ -106,9 +109,9 @@ class ProcessorQueue {
 	private readonly actions: Map<string, ProcessorAction> = new Map();
 
 	/**
-	 * All available processor queues, accessible by name.
+	 * All available processor queues. There are two queues for every mime category.
 	 */
-	private readonly queues: Map<string, Queue> = new Map();
+	private readonly queues: Map<ProcessorQueueType, Map<string, Queue>> = new Map();
 
 	/**
 	 * Queue where post actions are executed.
@@ -126,24 +129,33 @@ class ProcessorQueue {
 			}
 		};
 
+		// define worker function per type
+		const workers:Map<ProcessorQueueType, (job: Job)=>Promise<any>> = new Map();
+		workers.set(ProcessorQueueType.CREATION, this.create.bind(this));
+		workers.set(ProcessorQueueType.OPTIMIZATION, this.optimize.bind(this));
+
 		// create queues
-		for (let type of this.queueDefinitions) {
-			const queue = new Bull(type.name, opts);
-			queue.process(this.processJob.bind(this));
-			this.queues.set(type.name, queue);
+		for (let type of [ProcessorQueueType.CREATION, ProcessorQueueType.OPTIMIZATION]) {
+			this.queues.set(type, new Map());
+			for (let category of mimeTypeCategories) {
+				const queue = new Bull(`${type}:${category}`, opts);
+				queue.process(workers.get(type));
+				this.queues.get(type).set(category, queue);
+			}
 		}
-		this.actionQueue = new Bull('action.queue', opts);
-		this.actionQueue.process(this.processAction.bind(this));
+		// this.actionQueue = new Bull('action.queue', opts);
+		// this.actionQueue.process(this.processAction.bind(this));
 
 		// create processors
-		const processors: Processor<any>[] = [
-			new Directb2sOptimizationProcessor(),
+		this.creationProcessors = [
 			new Directb2sThumbProcessor(),
 			new ImageVariationProcessor(),
-			new ImageOptimizationProcessor(),
 			new VptBlockindexProcessor()
 		];
-		processors.forEach(p => this.processors.set(p.name, p));
+		this.optimizationProcessors = [
+			new Directb2sOptimizationProcessor(),
+			new ImageOptimizationProcessor()
+		];
 
 		// create actions
 		const actions: ProcessorAction[] = [new ActivateFileAction()];
@@ -153,48 +165,40 @@ class ProcessorQueue {
 	/**
 	 * Adds a file and its variations to be processed to the corresponding queues.
 	 * @param {File} file File to be processed
-	 * @param {string} src Path to file
 	 * @return {Promise<void>}
 	 */
-	public async processFile(file: File, src: string): Promise<void> {
+	public async processFile(file: File): Promise<void> {
 
 		// match processors against file variations
 		let n = 0;
-		for (let processor of this.processors.values()) {
 
-			// first, add jobs for the original
-			if (processor.canProcess(file)) {
-				const job = await this.queues.get(processor.getQueue()).add(this.getJobData(file, src, processor), {
-					priority: processor.getOrder(),
-					// removeOnComplete: true,
-					// removeOnFail: true
-				} as JobOptions);
-				logger.debug('[ProcessorQueue.processFile] Added original file %s to queue %s with processor %s (%s).',
-					file.toDetailedString(), processor.getQueue(), processor.name, job.id);
-				n++;
-			}
-			// then for each variation
-			for (let variation of file.getVariations()) {
-				if (processor.canProcess(file, variation)) {
-					const job = await this.queues.get(processor.getQueue()).add(this.getJobData(file, src, processor, variation), {
-						priority: processor.getOrder(variation),
-						// removeOnComplete: true,
-						// removeOnFail: true
-					} as JobOptions);
-					logger.debug('[ProcessorQueue.processFile] Added %s to queue %s with processor %s (%s).',
-						file.toDetailedString(variation), processor.name, processor.getQueue(), job.id);
+		// add variations creation queue
+		for (let processor of this.creationProcessors) {
+
+			// for each variation with original as source
+			for (let variation of file.getVariations().filter(v => !v.source)) {
+				if (processor.canProcess(file, null, variation)) {
+					await this.queueFile(ProcessorQueueType.CREATION, processor, file, null, variation);
 					n++;
 				}
 			}
 		}
+
+		// add original to optimization queue
+		for (let processor of this.optimizationProcessors) {
+			if (processor.canProcess(file)) {
+				await this.queueFile(ProcessorQueueType.OPTIMIZATION, processor, file);
+				n++;
+			}
+		}
+
 		if (n === 0) {
-			logger.info('[ProcessorQueue.processFile] No processors matched %s or any variation.', file.toDetailedString());
+			logger.info('[ProcessorQueue.processFile] No processors matched %s.', file.toDetailedString());
 		}
 	}
 
 	/**
-	 * Subscribes to all queues and returns when the last job and action for
-	 * the given file/variation has completed.
+	 * Subscribes to the creation queue and returns when the variation has been created.
 	 *
 	 * @param {File} file File to match
 	 * @param {FileVariation} variation Variation to match. If none given, original is matched
@@ -203,7 +207,7 @@ class ProcessorQueue {
 	public async waitForVariationCompletion(file: File, variation: FileVariation|null): Promise<any> {
 
 		// fail fast if no jobs running
-		const numJobs = await this.countRemainingVariationJobs(file.id, variation.name);
+		const numJobs = await this.countRemainingVariationJobs(file);
 		if (numJobs === 0) {
 			throw new ApiError('No job for %s currently running.', file.toShortString(variation));
 		}
@@ -532,9 +536,9 @@ class ProcessorQueue {
 	 * @param {string} variationName Variation name
 	 * @return {Promise<number>} Number of non-finished jobs
 	 */
-	private async countRemainingVariationJobs(fileId: string, variationName: string): Promise<number> {
-		return this.countRemaining([...this.queues.values()],
-				job => ProcessorQueue.isSame(job.data, fileId, variationName));
+	private async countRemainingVariationJobs(file:File, variation:FileVariation): Promise<number> {
+		return this.countRemaining([this.queues.get(ProcessorQueueType.CREATION).get(file.getMimeCategory(variation))],
+				job => ProcessorQueue.isSame(job.data, file.id, variation.name));
 	}
 
 	/**
@@ -585,25 +589,24 @@ class ProcessorQueue {
 	}
 
 	/**
-	 * This is the worker function that is pulled from the queue.
-	 * Note that it's executed on one single worker, so not suitable for callback handling.
+	 * This is the worker function that *optimizes* an existing variation (or original)
 	 *
-	 * @param {Bull.Job} job
+	 * @param {Job} job
 	 * @return {Promise<any>}
 	 */
-	private async processJob(job: Job): Promise<any> {
+	private async optimize(job: Job): Promise<any> {
 		let file: File;
 		try {
 			// retrieve data from deserialized job
 			const data = job.data as JobData;
 			file = await state.models.File.findOne({ id: data.fileId }).exec();
 			if (!file) {
-				logger.warn('[ProcessorQueue.processJob] %s/#%s skip: File "%s" has been removed from DB, ignoring.',
+				logger.warn('[ProcessorQueue.optimize] %s/#%s skip: File "%s" has been removed from DB, ignoring.',
 					data.processor, job.id, data.fileId);
 				return null;
 			}
-			const processor = this.processors.get(data.processor);
-			const variation = fileTypes.getVariation(file.file_type, file.mime_type, data.variation);
+			const processor = this.creationProcessors.find(p => p.name === data.processor);
+			const variation = file.getVariation(data.destVariation);
 
 			const tmpPath = file.getPath(variation, { tmpSuffix: '_' + processor.name + '.processing' });
 			const tmpPathLog = tmpPath.split(sep).slice(-3).join('/');
@@ -613,22 +616,10 @@ class ProcessorQueue {
 				await FileUtil.mkdirp(dirname(tmpPath));
 			}
 
-			// wait for source
-			const queue = this.queueDefinitions.find(q => q.name === processor.getQueue());
-			let src: string;
-			if (variation && queue.source === 'variation') {
-				src = await this.getCreatedVariation(file, variation);
-			} else {
-				src = data.src;
-			}
-
-			// source might not be available anymore (when deleted), in this case abort.
-			if (src === null) {
-				return null;
-			}
+			const src = file.getPath(variation);
 
 			// process to temp file
-			logger.debug('[ProcessorQueue.processJob] %s/#%s start: %s at %s',
+			logger.debug('[ProcessorQueue.optimize] %s/#%s start: %s at %s',
 				data.processor, job.id, file.toDetailedString(variation), tmpPathLog);
 			await processor.process(file, src, tmpPath, variation);
 
@@ -649,7 +640,7 @@ class ProcessorQueue {
 
 			// rename
 			await renameAsync(tmpPath, file.getPath(variation));
-			logger.debug('[ProcessorQueue.processJob] %s/#%s done: %s', data.processor, job.id, file.toDetailedString(variation));
+			logger.debug('[ProcessorQueue.optimize] %s/#%s done: %s', data.processor, job.id, file.toDetailedString(variation));
 
 			return file.getPath(variation);
 
@@ -658,6 +649,125 @@ class ProcessorQueue {
 			logger.error('Error while processing %s with %s:\n\n' + ApiError.colorStackTrace(err) + '\n\n', file ? file.toShortString() : 'null', job.data.processor);
 			// TODO log to raygun
 		}
+	}
+
+
+	/**
+	 * This is the worker function that *creates* new variations.
+	 *
+	 * @param {Job} job
+	 * @return {Promise<any>}
+	 */
+	private async create(job: Job): Promise<any> {
+		let file: File;
+		try {
+			// retrieve data from deserialized job
+			const data = job.data as JobData;
+			file = await state.models.File.findOne({ id: data.fileId }).exec();
+			if (!file) {
+				logger.warn('[ProcessorQueue.create] %s/#%s skip: File "%s" has been removed from DB, ignoring.',
+					data.processor, job.id, data.fileId);
+				return null;
+			}
+			const processor = this.creationProcessors.find(p => p.name === data.processor);
+			const variation = file.getVariation(data.destVariation);
+			if (!variation) {
+				throw new ApiError('Got a non-variation on the creation queue: %s', file.toDetailedString());
+			}
+
+			const tmpPath = file.getPath(variation, { tmpSuffix: '_' + processor.name + '.processing' });
+			const tmpPathLog = tmpPath.split(sep).slice(-3).join('/');
+
+			// create directory
+			if (!(await existsAsync(dirname(tmpPath)))) {
+				await FileUtil.mkdirp(dirname(tmpPath));
+			}
+
+			let src:string;
+			if (data.srcVariation) {
+				const srcVariation = file.getVariation(data.srcVariation);
+				src = file.getPath(srcVariation);
+			} else {
+				src = file.getPath(null, { tmpSuffix: '_original' });
+			}
+
+			// process to temp file
+			logger.debug('[ProcessorQueue.create] %s/#%s start: %s at %s',
+				data.processor, job.id, file.toDetailedString(variation), tmpPathLog);
+			await processor.process(file, src, tmpPath, variation);
+
+			// update metadata
+			const metadataReader = Metadata.getReader(file, variation);
+			const metadata = await metadataReader.getMetadata(file, tmpPath, variation);
+			const fileData: any = {};
+			fileData['variations.' + variation.name] = assign(metadataReader.serializeVariation(metadata), {
+				bytes: (await statAsync(tmpPath)).size,
+				mime_type: variation.mimeType
+			});
+			await state.models.File.findByIdAndUpdate(file._id, { $set: fileData }, { 'new': true }).exec();
+
+			// rename
+			await renameAsync(tmpPath, file.getPath(variation));
+			logger.debug('[ProcessorQueue.processJob] %s/#%s done: %s', data.processor, job.id, file.toDetailedString(variation));
+
+			// if this variation isn't referenced, send it to optimization queue.
+			const dependentVariations = file.getVariations().filter(v => v.source === variation.name); // todo check with a tree to include dependents of dependents
+			if (dependentVariations.length === 0) {
+				for (let processor of this.optimizationProcessors) {
+					if (processor.canProcess(file, variation)) {
+						await this.queueFile(ProcessorQueueType.OPTIMIZATION, processor, file, variation);
+					}
+				}
+			// otherwise, send references to creation queue
+			} else {
+				for (let processor of this.creationProcessors) {
+					for (let dependentVariation of dependentVariations) {
+						if (processor.canProcess(file, variation, dependentVariation)) {
+							await this.queueFile(ProcessorQueueType.CREATION, processor, file, variation, dependentVariation);
+						}
+					}
+				}
+			}
+
+			return file.getPath(variation);
+
+		} catch (err) {
+			// nothing to return here because it's in the background.
+			logger.error('Error while processing %s with %s:\n\n' + ApiError.colorStackTrace(err) + '\n\n', file ? file.toShortString() : 'null', job.data.processor);
+			// TODO log to raygun
+		}
+	}
+
+	/**
+	 * Adds a file to the correct queue for processing.
+	 *
+	 * @param {ProcessorQueueType} type Which queue type to add
+	 * @param {Processor<any>} processor Processor to use
+	 * @param {File} file File to process
+	 * @param {FileVariation} srcVariation Source variation (or null for optimizing original)
+	 * @param {FileVariation} destVariation Destination variation (or null for optimization)
+	 * @returns {Promise<Job>} Added Bull job
+	 */
+	private async queueFile(type:ProcessorQueueType, processor:Processor<any>, file:File, srcVariation?:FileVariation, destVariation?:FileVariation):Promise<Job> {
+		const queue = this.queues.get(type).get(file.getMimeCategory(srcVariation));
+		const job = await queue.add({
+			fileId: file.id,
+			processor: processor.name,
+			srcVariation: srcVariation ? srcVariation.name : undefined,
+			destVariation: destVariation ? destVariation.name : undefined
+		}, {
+			priority: processor.getOrder(destVariation || srcVariation),
+			// removeOnComplete: true,
+			// removeOnFail: true
+		} as JobOptions);
+		if (destVariation) {
+			logger.debug('[ProcessorQueue.createJob] Added %s based on %s to queue %s with processor %s (%s).',
+				file.toDetailedString(destVariation), file.toDetailedString(srcVariation), type, processor.name, job.id);
+		} else {
+			logger.debug('[ProcessorQueue.createJob] Added %s to queue %s with processor %s (%s).',
+				file.toDetailedString(srcVariation), type, processor.name, job.id);
+		}
+		return job;
 	}
 
 	/**
@@ -673,24 +783,6 @@ class ProcessorQueue {
 		return await action.run(fileId);
 	}
 
-	/**
-	 * Returns the job data that will be serialized and given to the worker
-	 * function.
-	 *
-	 * @param {File} file File to be processed
-	 * @param {string} src Path to file
-	 * @param {Processor<any>} processor Processor
-	 * @param {FileVariation} variation File variation
-	 * @return {JobData}
-	 */
-	private getJobData(file: File, src: string, processor: Processor<any>, variation?: FileVariation): JobData {
-		return {
-			src: src,
-			fileId: file.id,
-			processor: processor.name,
-			variation: variation ? variation.name : undefined
-		}
-	}
 
 	/**
 	 * Compares two fileIds and variation names and returns true if they match.
@@ -705,11 +797,11 @@ class ProcessorQueue {
 			return false;
 		}
 		// if variation given and no match, ignore.
-		if (jobData.variation && jobData.variation !== variation2) {
+		if (jobData.destVariation && jobData.destVariation !== variation2) {
 			return false;
 		}
 		// if no variation given and variation, ignore
-		if (!jobData.variation && variation2) {
+		if (!jobData.destVariation && variation2) {
 			return false;
 		}
 		return true;
@@ -720,10 +812,14 @@ class ProcessorQueue {
  * Whats serialized between the worker and the main thread
  */
 interface JobData {
-	src: string;
 	fileId: string;
 	processor: string;
-	variation?: string;
+	srcVariation?: string;
+	destVariation?: string;
+}
+
+export enum ProcessorQueueType {
+	CREATION, OPTIMIZATION
 }
 
 /**

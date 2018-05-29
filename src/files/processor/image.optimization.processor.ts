@@ -23,14 +23,13 @@ const PngQuant = require('pngquant');
 import { sep } from "path";
 const OptiPng = require('optipng');
 
-import { Processor } from './processor';
+import { OptimizationProcessor } from './processor';
 import { File} from '../file';
 import { logger } from '../../common/logger';
 import { ApiError } from '../../common/api.error';
 import { FileVariation } from '../file.variations';
-import { ProcessorQueueName } from './processor.queue';
 
-export class ImageOptimizationProcessor extends Processor<FileVariation> {
+export class ImageOptimizationProcessor implements OptimizationProcessor<FileVariation> {
 
 	name: string = 'image.optimization';
 
@@ -42,10 +41,6 @@ export class ImageOptimizationProcessor extends Processor<FileVariation> {
 
 	getOrder(variation?: FileVariation): number {
 		return 500;
-	}
-
-	getQueue(): ProcessorQueueName {
-		return 'LOW_PRIO_SLOW';
 	}
 
 	async process(file: File, src: string, dest: string, variation?: FileVariation): Promise<string> {

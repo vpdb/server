@@ -51,7 +51,7 @@ describe('The VPDB `game` API', () => {
 
 		after(async () => await api.teardown());
 
-		it.only('should succeed if provided data is correct', async () => {
+		it('should succeed if provided data is correct', async () => {
 
 			const backglass = await fileHelper.createBackglass('member');
 			await api

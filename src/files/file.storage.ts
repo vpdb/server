@@ -161,11 +161,11 @@ export class FileStorage extends Api {
 		try {
 			stats = await statAsync(path);
 			if (stats.size === 0) {
-				await processorQueue.waitForVariationCompletion(file, variation);
+				await processorQueue.waitForVariationCreation(file, variation);
 				stats = await statAsync(path);
 			}
 		} catch (err) {
-			await processorQueue.waitForVariationCompletion(file, variation);
+			await processorQueue.waitForVariationCreation(file, variation);
 			stats = await statAsync(path);
 		}
 

@@ -71,7 +71,7 @@ class FileHelper {
 		const mimeType = 'image/png';
 		const name = 'backglass.png';
 		const img = gm(640, 512, pleasejs.make_color());
-		const data =  await img.toBufferAsync('PNG');
+		const data = await img.toBufferAsync('PNG');
 		const res = await this.api.onStorage()
 			.as(user)
 			.markTeardown()
@@ -110,6 +110,66 @@ class FileHelper {
 			.post('/v1/files', data)
 			.then(res => res.expectStatus(201));
 		return res.data;
+	};
+
+	async createDirectB2S(user, gameName) {
+		gameName = gameName || 'aavenger';
+		const image = gm(1280, 1024, pleasejs.make_color());
+		const data = `<B2SBackglassData Version="1.2">
+			  <ProjectGUID Value="41664711-BFB7-4911-ABE1-31542BFD0014" />
+			  <ProjectGUID2 Value="C29873B0-D97B-4461-91CD-8897167F5CA0" />
+			  <AssemblyGUID Value="BF0C830A-6FFB-449C-8770-68E2D3A9FFF3" />
+			  <Name Value="VPDB Test" />
+			  <VSName Value="VPDB Test.vpt" />
+			  <DualBackglass Value="0" />
+			  <Author Value="test" />
+			  <Artwork Value="test" />
+			  <GameName Value="${gameName}" />
+			  <TableType Value="3" />
+			  <AddEMDefaults Value="0" />
+			  <DMDType Value="1" />
+			  <CommType Value="1" />
+			  <DestType Value="1" />
+			  <NumberOfPlayers Value="4" />
+			  <B2SDataCount Value="5" />
+			  <ReelType Value="" />
+			  <UseDream7LEDs Value="1" />
+			  <D7Glow Value="0" />
+			  <D7Thickness Value="0" />
+			  <D7Shear Value="0" />
+			  <ReelRollingDirection Value="0" />
+			  <ReelRollingInterval Value="0" />
+			  <ReelIntermediateImageCount Value="0" />
+			  <GrillHeight Value="0" />
+			  <DMDDefaultLocationX Value="0" />
+			  <DMDDefaultLocationY Value="0" />
+			  <Animations />
+			  <Scores />
+			  <Illumination />
+			  <Images>
+				<ThumbnailImages>
+				  <MainImage Image="iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACx&#xD;&#xA;jwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAvSURBVFhH7c4hAQAACAMw+tDfvhrEuJmY3+zm&#xD;&#xA;mgQEBAQEBAQEBAQEBAQEBMqB3AOdXkx5NpzLCAAAAABJRU5ErkJggg==" />
+				</ThumbnailImages>
+				<BackgroundImages>
+				  <MainImage Type="0" RomID="0" RomIDType="0" FileName="backglass.png" Image="${image.toString('base64')}" />
+				</BackgroundImages>
+				<IlluminatedImages />
+				<DMDImages>
+				  <MainImage />
+				</DMDImages>
+			  </Images>
+			</B2SBackglassData>`;
+		const res = await this.api.onStorage()
+			.as(user)
+			//.markTeardown()
+			.withQuery({ type: 'backglass' })
+			.withContentType('application/x-directb2s')
+			.withHeader('Content-Disposition', 'attachment; filename="test.directb2s"')
+			.withHeader('Content-Length', data.length)
+			.post('/v1/files', data)
+			.then(res => res.expectStatus(201));
+		return res.data;
+
 	};
 }
 

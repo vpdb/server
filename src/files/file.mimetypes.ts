@@ -1,5 +1,3 @@
-import { keys } from 'lodash';
-
 /*
  * VPDB - Visual Pinball Database
  * Copyright (C) 2016 freezy <freezy@xbmc.org>
@@ -18,6 +16,8 @@ import { keys } from 'lodash';
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+
+import { keys, uniq, values } from 'lodash';
 
 /**
  * This are the allowed MIME types.
@@ -116,6 +116,7 @@ export const mimeTypes: { [key: string]: MimeType } = {
 };
 
 export const mimeTypeNames = keys(mimeTypes);
+export const mimeTypeCategories = uniq(values(mimeTypes).map(m => m.category));
 
 export interface MimeType {
 	name: string,

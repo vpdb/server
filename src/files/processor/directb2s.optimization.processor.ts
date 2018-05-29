@@ -24,8 +24,7 @@ import { promisify } from 'util';
 import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
 import { Parser } from '../../common/sax.async';
-import { Processor } from './processor';
-import { ProcessorQueueName } from './processor.queue';
+import { OptimizationProcessor } from './processor';
 import { File } from '../file';
 import { BackglassVariation, FileVariation } from '../file.variations';
 
@@ -33,7 +32,7 @@ const PngQuant = require('pngquant');
 const base64 = require('base64-stream');
 const statAsync = promisify(stat);
 
-export class Directb2sOptimizationProcessor extends Processor<BackglassVariation> {
+export class Directb2sOptimizationProcessor implements OptimizationProcessor<BackglassVariation> {
 
 	name: string = 'directb2s.optimization';
 
@@ -43,10 +42,6 @@ export class Directb2sOptimizationProcessor extends Processor<BackglassVariation
 
 	getOrder(variation?: FileVariation): number {
 		return 600 + (variation && variation.priority ? variation.priority : 0);
-	}
-
-	getQueue(): ProcessorQueueName {
-		return 'LOW_PRIO_SLOW';
 	}
 
 	async process(file: File, src: string, dest: string, variation?: BackglassVariation): Promise<string> {
@@ -202,4 +197,5 @@ export class Directb2sOptimizationProcessor extends Processor<BackglassVariation
 		pattern = '([&"<>\'\n\r])';
 		return string.replace(new RegExp(pattern, 'g'), (str, item) => map[item]);
 	}
+
 }

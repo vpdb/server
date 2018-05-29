@@ -216,7 +216,7 @@ class ApiClient {
 	/**
 	 * Adds a custom header to the request.
 	 * @param {string} name Name of the header
-	 * @param {string} value Value
+	 * @param {string|number} value Value
 	 * @return {ApiClient}
 	 */
 	withHeader(name, value) {

@@ -32,7 +32,7 @@ export class Directb2sMetadata extends Metadata {
 		return file.getMimeType(variation) === 'application/x-directb2s';
 	}
 
-	async getMetadata(file: File, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
+	async getMetadata(file: File, path: string): Promise<{ [p: string]: any }> {
 		const now = Date.now();
 		return new Promise((resolve, reject) => {
 			const metadata:any = {};
@@ -55,7 +55,7 @@ export class Directb2sMetadata extends Metadata {
 				logger.info('[Directb2sMetadata] Retrieved metadata in %sms.', Date.now() - now);
 				resolve(metadata);
 			});
-			createReadStream(file.getPath()).on('error', reject)
+			createReadStream(path).on('error', reject)
 				.pipe(saxStream).on('error', reject);
 		});
 	}

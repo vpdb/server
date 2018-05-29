@@ -19,7 +19,7 @@
 
 import { createReadStream, ReadStream } from 'fs';
 import { EventEmitter } from 'events';
-import sax, { createStream } from 'sax';
+import sax = require('sax');
 
 (sax as any).MAX_BUFFER_LENGTH = 64 * 1024 * 1024;
 
@@ -84,7 +84,7 @@ export class Parser extends EventEmitter {
 	 * @returns {*}
 	 */
 	createStream(strict:boolean, options?:any) {
-		this.saxStream = createStream(strict, options);
+		this.saxStream = sax.createStream(strict, options);
 		this.saxStream.on('error', (data:any) => this._emit('error', data));
 		this.saxStream.on('text', (data:any) => this._emit('text', data));
 		this.saxStream.on('doctype', (data:any) => this._emit('doctype', data));
@@ -115,6 +115,10 @@ export class Parser extends EventEmitter {
 		this.readStream.pause();
 	}
 
+	close() {
+		this.readStream.close();
+	}
+
 	/**
 	 * Resumes a paused stream.
 	 */
@@ -122,7 +126,7 @@ export class Parser extends EventEmitter {
 		this.paused = false;
 		while (this.stack.length > 0 && !this.paused) {
 			let e = this.stack.shift();
-			this.emit(e.name, e.data);
+			this._emit(e.name, e.data);
 		}
 		if (this.stack.length === 0) {
 			this.readStream.resume();

@@ -1,3 +1,4 @@
+///<reference path="processor.ts"/>
 /*
  * VPDB - Virtual Pinball Database
  * Copyright (C) 2018 freezy <freezy@vpdb.io>
@@ -19,16 +20,15 @@
 
 import { differenceWith, uniqWith } from 'lodash';
 
-import { Processor } from './processor';
+import { OptimizationProcessor } from './processor';
 import { File } from '../file';
 import { FileVariation, ImageFileVariation } from '../file.variations';
-import { ProcessorQueueName } from './processor.queue';
 import { visualPinballTable } from '../../common/visualpinball.table';
 import { state } from '../../state';
 import { Schema } from 'mongoose';
 import { TableBlock } from '../../releases/release.tableblock';
 
-export class VptBlockindexProcessor extends Processor<ImageFileVariation> {
+export class VptBlockindexProcessor implements OptimizationProcessor<ImageFileVariation> {
 
 	name: string = 'vpt.blockindex';
 
@@ -41,9 +41,6 @@ export class VptBlockindexProcessor extends Processor<ImageFileVariation> {
 		return 700 + (variation && variation.priority ? variation.priority : 0);
 	}
 
-	getQueue(): ProcessorQueueName {
-		return 'LOW_PRIO_SLOW';
-	}
 
 	async process(file: File, src: string, dest: string, variation?: ImageFileVariation): Promise<string> {
 
@@ -68,10 +65,8 @@ export class VptBlockindexProcessor extends Processor<ImageFileVariation> {
 			block._files = uniqWith(block._files, VptBlockindexProcessor.objectIdCompare);
 			await block.save();
 		}
-
 		return null;
 	}
-
 
 	/**
 	 * Compares the hashes of two blocks.

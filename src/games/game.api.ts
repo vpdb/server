@@ -86,6 +86,8 @@ export class GameApi extends Api {
 		logger.info('[GameApi.create] Game "%s" created.', game.title);
 		await game.activateFiles();
 
+		logger.info('[GameApi.create] Files activated.');
+
 		// link roms if available
 		if (game.ipdb && game.ipdb.number) {
 			const roms = await state.models.Rom.find({ _ipdb_number: game.ipdb.number }).exec();

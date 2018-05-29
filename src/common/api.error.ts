@@ -251,7 +251,7 @@ export class ApiError extends Error {
 				return chalk.redBright(line);
 			}
 			const match = line.match(/(\s*)at ([^\s]+)\s*\(([^)]{2}[^:]+):(\d+):(\d+)\)/i);
-			if (line.indexOf('node_modules') > 0 || (match && /^internal\//i.test(match[3]))) {
+			if (line.indexOf('node_modules') > 0 || (match && /^internal\/|^events|^fs|^_stream_readable/i.test(match[3]))) {
 				return chalk.gray(line);
 			} else {
 				if (match) {

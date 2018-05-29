@@ -106,7 +106,7 @@ export class MiscApi extends Api {
 		this.success(ctx, { result: 'shutting down.' }, 200);
 
 		// wait for jobs to finish
-		processorQueue.waitForAnyCompletion().then(() => {
+		processorQueue.waitForLastJob().then(() => {
 			// and off we go.
 			logger.wtf('[MiscApi] Shutting down.');
 			setTimeout(() => process.exit(0), 500);

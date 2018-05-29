@@ -99,7 +99,7 @@ export class FileUtil {
 
 		// start processing
 		await processorQueue.processFile(file);
-		logger.info('[FileUtil.create] File %s to processor queue.', file.toShortString());
+		logger.info('[FileUtil.create] File %s added to processor queue.', file.toShortString());
 
 		return file;
 	}

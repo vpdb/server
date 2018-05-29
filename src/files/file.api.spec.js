@@ -246,6 +246,10 @@ describe('The VPDB `file` API', () => {
 				.post('/v1/files', data)
 				.then(res => res.expectError(400, 'metadata parsing failed'));
 		});
+
+		it.only('should succeed with valid data', async () => {
+			await fileHelper.createDirectB2S('member');
+		});
 	});
 
 	describe('after successfully uploading a file', () => {

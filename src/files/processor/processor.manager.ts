@@ -98,7 +98,7 @@ class ProcessorManager {
 			new VptBlockindexProcessor()
 		];
 		this.optimizationProcessors = [
-			//new Directb2sOptimizationProcessor(),
+			new Directb2sOptimizationProcessor(),
 			new ImageOptimizationProcessor()
 		];
 	}

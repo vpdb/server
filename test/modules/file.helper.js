@@ -153,7 +153,7 @@ class FileHelper {
 			</B2SBackglassData>`;
 		const res = await this.api.onStorage()
 			.as(user)
-			//.markTeardown()
+			.markTeardown()
 			.withQuery({ type: 'backglass' })
 			.withContentType('application/x-directb2s')
 			.withHeader('Content-Disposition', 'attachment; filename="test.directb2s"')

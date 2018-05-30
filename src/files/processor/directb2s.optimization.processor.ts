@@ -23,7 +23,7 @@ import { promisify } from 'util';
 
 import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
-import { Parser } from '../../common/sax.async';
+import { XmlParser } from '../../common/xml.parser';
 import { OptimizationProcessor } from './processor';
 import { File } from '../file';
 import { BackglassVariation, FileVariation } from '../file.variations';
@@ -51,7 +51,7 @@ export class Directb2sOptimizationProcessor implements OptimizationProcessor<Bac
 		const now = new Date().getTime();
 		let originalSize = (await statAsync(src)).size;
 		let out = createWriteStream(dest);
-		let parser = new Parser(src);
+		let parser = new XmlParser(src);
 		let closePrevious = '';
 		let emptyElement: boolean;
 		let level = 0;

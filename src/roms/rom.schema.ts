@@ -17,31 +17,26 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-'use strict';
+import { isString } from 'lodash';
+import { GameReferenceModel, PaginateModel, PrettyIdModel, Schema } from 'mongoose';
+import paginatePlugin = require('mongoose-paginate');
+import uniqueValidator from 'mongoose-unique-validator';
 
-const _ = require('lodash');
-const logger = require('winston');
-const mongoose = require('mongoose');
-const paginate = require('mongoose-paginate');
-const validator = require('validator');
-const uniqueValidator = require('mongoose-unique-validator');
-
-const prettyId = require('./plugins/pretty-id');
-const gameRef = require('../../src/common/mongoose/game-ref');
-const fileRef = require('./plugins/file-ref');
-
-const Schema = mongoose.Schema;
+import { prettyIdPlugin } from '../common/mongoose/pretty.id.plugin';
+import { fileReferencePlugin } from '../common/mongoose/file.reference.plugin';
+import { gameReferencePlugin } from '../common/mongoose/game.reference.plugin';
+import { Rom } from './rom';
 
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
-const fields = {
+export const romFields = {
 	id: {
 		type: String,
 		required: 'ID must be provided. Use the name of the ROM file without file extension.',
 		unique: true
 	},
-	_file: { type: Schema.ObjectId, ref: 'File', required: 'File reference must be provided.' },
+	_file: { type: Schema.Types.ObjectId, ref: 'File', required: 'File reference must be provided.' },
 	_ipdb_number: { type: Number },
 	rom_files: [{
 		filename: { type: String },
@@ -53,32 +48,25 @@ const fields = {
 	languages: { type: [String] },
 	notes: { type: String },
 	created_at: { type: Date, required: true },
-	_created_by: { type: Schema.ObjectId, ref: 'User', required: true }
+	_created_by: { type: Schema.Types.ObjectId, ref: 'User', required: true }
 };
-const RomSchema = new Schema(fields, { usePushEach: true });
+export interface RomModel extends PrettyIdModel<Rom>, PaginateModel<Rom>, GameReferenceModel<Rom> {}
+export const romSchema = new Schema(romFields, { toObject: { virtuals: true, versionKey: false } });
 
 //-----------------------------------------------------------------------------
 // PLUGINS
 //-----------------------------------------------------------------------------
-RomSchema.plugin(gameRef, { isOptional: true });
-RomSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.', code: 'duplicate_field' });
-RomSchema.plugin(prettyId, { model: 'Rom', ignore: [ '_created_by', '_game' ], validations: [
+romSchema.plugin(gameReferencePlugin, { isOptional: true });
+romSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.', code: 'duplicate_field' });
+romSchema.plugin(prettyIdPlugin, { model: 'Rom', ignore: [ '_created_by', '_game' ], validations: [
 	{ path: '_file', fileType: 'rom', message: 'Must be a file of type "rom".' }
 ] });
-RomSchema.plugin(fileRef);
-RomSchema.plugin(paginate);
+romSchema.plugin(fileReferencePlugin);
+romSchema.plugin(paginatePlugin);
 
 //-----------------------------------------------------------------------------
 // VALIDATIONS
 //-----------------------------------------------------------------------------
-RomSchema.path('id').validate(function(id) {
-	return _.isString(id) && validator.isLength(id ? id.trim() : '', 2);
+romSchema.path('id').validate((id:any) => {
+	return isString(id) && validator.isLength(id ? id.trim() : '', 2);
 }, 'ID must contain at least 2 characters.');
-
-//-----------------------------------------------------------------------------
-// OPTIONS
-//-----------------------------------------------------------------------------
-RomSchema.options.toObject = { virtuals: true, versionKey: false };
-
-mongoose.model('Rom', RomSchema);
-logger.info('[model] Schema "Rom" registered.');

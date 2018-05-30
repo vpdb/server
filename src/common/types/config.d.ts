@@ -507,6 +507,14 @@ export interface VpdbConfig {
 		}
 	},
 
+	ffmpeg?: {
+
+		/**
+		 * Path to the ffmpeg binary.
+		 */
+		path: string;
+	}
+
 	/**
 	 * Web application-specific options.
 	 */

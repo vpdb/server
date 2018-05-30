@@ -24,7 +24,6 @@ import { File } from '../../files/file';
 import { GameRequest } from '../../game-requests/game.request';
 import { Medium } from '../../media/medium';
 import { Rating } from '../../ratings/rating';
-import { Rom } from '../../roms/rom';
 import { TableBlock } from '../../releases/release.tableblock';
 import { Tag } from '../../tags/tag';
 import { Token } from '../../tokens/token';
@@ -36,6 +35,7 @@ import { BackglassModel } from '../../backglasses/backglass.schema';
 import { LogEventModel } from '../../log-event/log.event.schema';
 import { LogUserModel } from '../../log-user/log.user.schema';
 import { ReleaseModel } from '../../releases/release.schema';
+import { RomModel } from '../../roms/rom.schema';
 
 export interface Models {
 	Backglass: BackglassModel;
@@ -49,7 +49,7 @@ export interface Models {
 	Medium: Model<Medium>;
 	Rating: Model<Rating>;
 	Release: ReleaseModel;
-	Rom: Model<Rom>;
+	Rom: RomModel;
 	TableBlock: Model<TableBlock>;
 	Tag: Model<Tag>;
 	Token: Model<Token>;

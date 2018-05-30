@@ -17,18 +17,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-'use strict';
+import { Scope } from '../common/scope';
+import { RomApi } from './rom.api';
 
-const scope = require('../../../src/common/scope');
-const settings = require('../../../src/common/settings');
+const api = new RomApi();
+export const router = api.apiRouter();
 
-exports.register = function(app, api) {
+router.get('/v1/roms', api.anon(api.list.bind(api)));
+router.post('/v1/roms', api.auth(api.create.bind(api), 'roms', 'add', [ Scope.ALL , Scope.CREATE ]));
+router.get('/v1/roms/:id',  api.anon(api.view.bind(api)));
+router.delete('/v1/roms/:id',  api.auth(api.del.bind(api), 'roms', 'delete-own', [ Scope.ALL , Scope.CREATE ]));
 
-	app.get(settings.apiPath('/roms'), api.anon(api.roms.list));
-	app.post(settings.apiPath('/roms'), api.auth(api.roms.create, 'roms', 'add', [ scope.ALL , scope.CREATE ]));
-	app.get(settings.apiPath('/roms/:id'),  api.anon(api.roms.view));
-	app.delete(settings.apiPath('/roms/:id'),  api.auth(api.roms.del, 'roms', 'delete-own', [ scope.ALL , scope.CREATE ]));
-
-	app.get(settings.apiPath('/games/:gameId/roms'), api.anon(api.roms.list));
-	app.post(settings.apiPath('/games/:gameId/roms'), api.auth(api.roms.create, 'roms', 'add', [ scope.ALL , scope.CREATE ]));
-};
+router.get('/v1/games/:gameId/roms', api.anon(api.list.bind(api)));
+router.post('/v1/games/:gameId/roms', api.auth(api.create.bind(api), 'roms', 'add', [ Scope.ALL , Scope.CREATE ]));

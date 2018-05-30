@@ -31,6 +31,7 @@ import { File } from '../file';
 import { FileUtil } from '../file.util';
 import { processorManager } from './processor.manager';
 import { JobData } from './processor.queue';
+import { FileVariation } from '../file.variations';
 
 const renameAsync = promisify(rename);
 const statAsync = promisify(stat);
@@ -82,7 +83,11 @@ export class ProcessorWorker {
 			// process to temp file
 			logger.debug('[ProcessorWorker.create] [%s | #%s] start: %s from %s to %s',
 				data.processor, job.id, file.toDetailedString(variation), srcLog, destPathLog);
+
+			// run processor
 			await processor.process(file, src, destPath, variation);
+			logger.debug('[ProcessorWorker.create] [%s | #%s] end: %s from %s to %s',
+				data.processor, job.id, file.toDetailedString(variation), srcLog, destPathLog);
 
 			// update metadata
 			const metadataReader = Metadata.getReader(file, variation);
@@ -98,26 +103,18 @@ export class ProcessorWorker {
 			await renameAsync(destPath, file.getPath(variation));
 			logger.debug('[ProcessorWorker.processJob] [%s | #%s] done: %s', data.processor, job.id, file.toDetailedString(variation));
 
-			// if this variation isn't referenced, send it to optimization queue.
-			const dependentVariations = file.getVariations().filter(v => v.source === variation.name); // todo check with a tree to include dependents of dependents
-			if (dependentVariations.length === 0) {
-				for (let processor of processorManager.getValidOptimizationProcessors(file, variation)) {
-					await processorManager.queueFile('optimization', processor, file, variation);
-				}
-				// otherwise, send references to creation queue
-			} else {
-				for (let dependentVariation of dependentVariations) {
-					const processor = processorManager.getValidCreationProcessor(file, variation, dependentVariation);
-					if (processor) {
-						await processorManager.queueFile('creation', processor, file, variation, dependentVariation);
-					}
-				}
-			}
+			// continue with dependents
+			await ProcessorWorker.continueCreation(file, variation);
+
 			return file.getPath(variation);
 
 		} catch (err) {
 			// nothing to return here because it's in the background.
-			logger.error('[ProcessorWorker.create] Error while processing %s with %s:\n\n%s\n\n', file ? file.toDetailedString(variation) : 'null', job.data.processor, ApiError.colorStackTrace(err));
+			if (err.isApiError) {
+				logger.error(err.print());
+			} else {
+				logger.error('[ProcessorWorker.create] Error while processing %s with %s:\n\n%s\n\n', file ? file.toDetailedString(variation) : 'null', job.data.processor, ApiError.colorStackTrace(err));
+			}
 			// TODO log to raygun
 		}
 	}
@@ -182,6 +179,36 @@ export class ProcessorWorker {
 			// nothing to return here because it's in the background.
 			logger.error('[ProcessorWorker.optimize] Error while processing %s with %s:\n\n' + ApiError.colorStackTrace(err) + '\n\n', file ? file.toShortString() : 'null', job.data.processor);
 			// TODO log to raygun
+		}
+	}
+
+	private static async continueCreation(file:File, variation:FileVariation) {
+
+		// if this variation isn't referenced, send it to optimization queue.
+		const dependentVariations = file.getVariationDependencies(variation);
+		let n = 0;
+		if (dependentVariations.length === 0) {
+			for (let processor of processorManager.getValidOptimizationProcessors(file, variation)) {
+				n++;
+				await processorManager.queueFile('optimization', processor, file, variation);
+			}
+			logger.debug('[ProcessorWorker.processJob] Found no references, passed %s to optimization %s processor(s).',
+				file.toShortString(variation), n);
+
+		// otherwise, send direct references to creation queue
+		} else {
+			const directlyDependentVariations = file.getDirectVariationDependencies(variation);
+			for (let dependentVariation of directlyDependentVariations) {
+				const processor = processorManager.getValidCreationProcessor(file, variation, dependentVariation);
+				if (processor) {
+					await processorManager.queueFile('creation', processor, file, variation, dependentVariation);
+				} else {
+					logger.error('[ProcessorWorker.processJob] Cannot find a processor for %s which dependent on %s.',
+						file.toShortString(dependentVariation), file.toShortString(variation))
+				}
+			}
+			logger.debug('[ProcessorWorker.processJob] Found [ %s ] as direct references for %s, passed them to creation processors.',
+				directlyDependentVariations.map(v => v.name).join(', '), file.toShortString(variation));
 		}
 	}
 }

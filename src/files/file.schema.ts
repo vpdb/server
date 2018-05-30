@@ -28,7 +28,7 @@ import { storage } from '../common/storage';
 import { config, settings } from '../common/settings';
 import { metricsPlugin } from '../common/mongoose/metrics.plugin';
 import { mimeTypeNames, mimeTypes } from './file.mimetypes';
-import { File, FilePathOptions} from './file';
+import { File, FilePathOptions } from './file';
 import { fileTypes } from './file.types';
 import { FileVariation } from './file.variations';
 import { processorQueue } from './processor/processor.queue';
@@ -106,7 +106,7 @@ fileSchema.path('mime_type').validate(function (mimeType: string) {
  * @param {FilePathOptions} opts Path options
  * @return {string} Absolute path to storage
  */
-fileSchema.methods.getPath = function (this:File, variation: FileVariation = null, opts: FilePathOptions = {}): string {
+fileSchema.methods.getPath = function (this: File, variation: FileVariation = null, opts: FilePathOptions = {}): string {
 	const baseDir = this.isPublic(variation) && !opts.forceProtected ? config.vpdb.storage.public.path : config.vpdb.storage.protected.path;
 	const suffix = opts.tmpSuffix || '';
 	return variation ?
@@ -120,7 +120,7 @@ fileSchema.methods.getPath = function (this:File, variation: FileVariation = nul
  * @param {FileVariation} [variation] File variation or null for original file
  * @return {string} File extension
  */
-fileSchema.methods.getExt = function (this:File, variation: FileVariation = null): string {
+fileSchema.methods.getExt = function (this: File, variation: FileVariation = null): string {
 	return '.' + mimeTypes[this.getMimeType(variation)].ext;
 };
 
@@ -134,7 +134,7 @@ fileSchema.methods.getExt = function (this:File, variation: FileVariation = null
  * @param {FileVariation} [variation] File variation or null for original file
  * @return {string}
  */
-fileSchema.methods.getUrl = function (this:File, variation: FileVariation = null): string {
+fileSchema.methods.getUrl = function (this: File, variation: FileVariation = null): string {
 	let storageUri = this.isPublic(variation) ? settings.storagePublicUri.bind(settings) : settings.storageProtectedUri.bind(settings);
 	return variation ?
 		storageUri('/files/' + variation.name + '/' + this.id + this.getExt(variation)) :
@@ -147,7 +147,7 @@ fileSchema.methods.getUrl = function (this:File, variation: FileVariation = null
  * @param {FileVariation} [variation] File variation or null for original file
  * @return {boolean}
  */
-fileSchema.methods.isPublic = function (this:File, variation: FileVariation = null): boolean {
+fileSchema.methods.isPublic = function (this: File, variation: FileVariation = null): boolean {
 	return this.is_active && quota.getCost(this, variation) === -1;
 };
 
@@ -157,7 +157,7 @@ fileSchema.methods.isPublic = function (this:File, variation: FileVariation = nu
  * @param {FileVariation} [variation] File variation or null for original file
  * @return {boolean} True if free, false otherwise.
  */
-fileSchema.methods.isFree = function (this:File, variation: FileVariation = null): boolean {
+fileSchema.methods.isFree = function (this: File, variation: FileVariation = null): boolean {
 	return quota.getCost(this, variation) <= 0;
 };
 
@@ -167,7 +167,7 @@ fileSchema.methods.isFree = function (this:File, variation: FileVariation = null
  * @param {FileVariation} [variation] File variation or null for original file
  * @return {string} MIME type of the file or its variation.
  */
-fileSchema.methods.getMimeType = function (this:File, variation?: FileVariation): string {
+fileSchema.methods.getMimeType = function (this: File, variation?: FileVariation): string {
 	if (variation && this.variations && this.variations[variation.name] && this.variations[variation.name].mime_type) {
 		return this.variations[variation.name].mime_type;
 
@@ -185,7 +185,7 @@ fileSchema.methods.getMimeType = function (this:File, variation?: FileVariation)
  * @param {FileVariation} [variation] File variation or null for original file
  * @return {string} Primary part of the MIME type.
  */
-fileSchema.methods.getMimeTypePrimary = function (this:File, variation: FileVariation = null): string {
+fileSchema.methods.getMimeTypePrimary = function (this: File, variation: FileVariation = null): string {
 	return this.getMimeType(variation).split('/')[0];
 };
 
@@ -195,7 +195,7 @@ fileSchema.methods.getMimeTypePrimary = function (this:File, variation: FileVari
  * @param {FileVariation} [variation] File variation or null for original file
  * @return {string} Secondary part of the MIME type.
  */
-fileSchema.methods.getMimeSubtype = function (this:File, variation: FileVariation = null): string {
+fileSchema.methods.getMimeSubtype = function (this: File, variation: FileVariation = null): string {
 	return this.getMimeType(variation).split('/')[1];
 };
 
@@ -205,7 +205,7 @@ fileSchema.methods.getMimeSubtype = function (this:File, variation: FileVariatio
  * @param {FileVariation} [variation] File variation or null for original file
  * @return {string}
  */
-fileSchema.methods.getMimeCategory = function (this:File, variation: FileVariation = null): string {
+fileSchema.methods.getMimeCategory = function (this: File, variation: FileVariation = null): string {
 	return mimeTypes[this.getMimeType(variation)].category;
 };
 
@@ -215,8 +215,9 @@ fileSchema.methods.getMimeCategory = function (this:File, variation: FileVariati
  * @param {FileVariation} variation File variation or null for original file
  * @returns {string}
  */
-fileSchema.methods.toShortString = function (this:File, variation: FileVariation = null): string {
-	return chalk.underline(this.file_type + ' "' + this.id + '"' + (variation ? ' (' + variation.name + ')' : ''));
+fileSchema.methods.toShortString = function (this: File, variation: FileVariation = null): string {
+	const color = variation ? chalk.underline : chalk.underline.bold;
+	return color(this.file_type + ' "' + this.id + '"' + (variation ? ' (' + variation.name + ')' : ''));
 };
 
 /**
@@ -225,8 +226,9 @@ fileSchema.methods.toShortString = function (this:File, variation: FileVariation
  * @param {FileVariation} variation File variation or null for original file
  * @returns {string}
  */
-fileSchema.methods.toDetailedString = function (this: File, variation?:FileVariation): string {
-	return chalk.underline(this.file_type + '@' + this.mime_type + ' "' + this.id + '"' + (variation ? ' (' + variation.name + ')' : ''));
+fileSchema.methods.toDetailedString = function (this: File, variation?: FileVariation): string {
+	const color = variation ? chalk.underline : chalk.underline.bold;
+	return color(this.file_type + '@' + this.getMimeType(variation) + ' "' + this.id + '"' + (variation ? ' (' + variation.name + ')' : ''));
 };
 
 
@@ -235,7 +237,7 @@ fileSchema.methods.toDetailedString = function (this: File, variation?:FileVaria
  *
  * @return {Promise<File>} Moved file
  */
-fileSchema.methods.switchToActive = async function (this:File): Promise<File> {
+fileSchema.methods.switchToActive = async function (this: File): Promise<File> {
 	//await processorQueue.addAction(this, 'file.activated');
 	this.is_active = true;
 	return this;
@@ -246,8 +248,8 @@ fileSchema.methods.switchToActive = async function (this:File): Promise<File> {
  *
  * @returns {FileVariation[]} Existing variations
  */
-fileSchema.methods.getExistingVariations = function (this:File): FileVariation[] {
-	const variations:FileVariation[] = [];
+fileSchema.methods.getExistingVariations = function (this: File): FileVariation[] {
+	const variations: FileVariation[] = [];
 	if (!this.variations) {
 		return [];
 	}
@@ -272,11 +274,40 @@ fileSchema.methods.getVariations = function (this: File): FileVariation[] {
  * @param {string} variationName Name of the variation
  * @returns {FileVariation | null} File variation or null if the variation doesn't exist.
  */
-fileSchema.methods.getVariation = function (this: File, variationName:string): FileVariation | null {
+fileSchema.methods.getVariation = function (this: File, variationName: string): FileVariation | null {
 	if (!variationName) {
 		return null;
 	}
 	return fileTypes.getVariations(this.file_type, this.mime_type).find(v => v.name === variationName);
+};
+
+/**
+ * Returns all direct and indirect dependencies of a variation.
+ *
+ * A dependency is the `source` attribute that indicates that the variation
+ * is not generated based on the original file, but rather on another
+ * variation.
+ *
+ * @param {FileVariation} variation Variation
+ * @param {FileVariation[]} [deps] Only used for internal recursive usage, ignore.
+ * @returns {FileVariation[]} All variations that depend directly or indirectly on the given variation.
+ */
+fileSchema.methods.getVariationDependencies = function (this: File, variation: FileVariation, deps: FileVariation[] = []): FileVariation[] {
+	deps = deps || [];
+	for (let dep of this.getVariations().filter(v => v.source === variation.name)) {
+		deps = this.getVariationDependencies(dep, [...deps, dep]);
+	}
+	return deps;
+};
+
+/**
+ * Returns all direct dependencies of a variation.
+ *
+ * @param {FileVariation} variation Variation
+ * @returns {FileVariation[]} All variations that depend directly on the given variation.
+ */
+fileSchema.methods.getDirectVariationDependencies = function (this: File, variation: FileVariation): FileVariation[] {
+	return this.getVariations().filter(v => v.source === variation.name);
 };
 
 

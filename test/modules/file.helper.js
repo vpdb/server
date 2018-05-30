@@ -114,7 +114,7 @@ class FileHelper {
 
 	async createDirectB2S(user, gameName) {
 		gameName = gameName || 'aavenger';
-		const image = gm(1280, 1024, pleasejs.make_color());
+		const image = await gm(1280, 1024, pleasejs.make_color()).toBufferAsync('PNG');
 		const data = `<B2SBackglassData Version="1.2">
 			  <ProjectGUID Value="41664711-BFB7-4911-ABE1-31542BFD0014" />
 			  <ProjectGUID2 Value="C29873B0-D97B-4461-91CD-8897167F5CA0" />
@@ -147,16 +147,8 @@ class FileHelper {
 			  <Scores />
 			  <Illumination />
 			  <Images>
-				<ThumbnailImages>
-				  <MainImage Image="iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACx&#xD;&#xA;jwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAvSURBVFhH7c4hAQAACAMw+tDfvhrEuJmY3+zm&#xD;&#xA;mgQEBAQEBAQEBAQEBAQEBMqB3AOdXkx5NpzLCAAAAABJRU5ErkJggg==" />
-				</ThumbnailImages>
-				<BackgroundImages>
-				  <MainImage Type="0" RomID="0" RomIDType="0" FileName="backglass.png" Image="${image.toString('base64')}" />
-				</BackgroundImages>
-				<IlluminatedImages />
-				<DMDImages>
-				  <MainImage />
-				</DMDImages>
+				<ThumbnailImage Value="iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACx&#xD;&#xA;jwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAvSURBVFhH7c4hAQAACAMw+tDfvhrEuJmY3+zm&#xD;&#xA;mgQEBAQEBAQEBAQEBAQEBMqB3AOdXkx5NpzLCAAAAABJRU5ErkJggg==" />
+				<BackglassImage Type="0" RomID="0" RomIDType="0" FileName="backglass.png" Value="${image.toString('base64')}" />
 			  </Images>
 			</B2SBackglassData>`;
 		const res = await this.api.onStorage()

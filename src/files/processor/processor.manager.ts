@@ -33,7 +33,9 @@ import { Directb2sOptimizationProcessor } from './directb2s.optimization.process
 import { Directb2sThumbProcessor } from './directb2s.thumb.processor';
 import { ImageOptimizationProcessor } from './image.optimization.processor';
 import { ImageVariationProcessor } from './image.variation.processor';
+import { VideoOptimizationProcessor } from './video.optimization.processor';
 import { VptBlockindexProcessor } from './vpt.blockindex.processor';
+import { VideoScreenshotProcessor } from './video.screenshot.processor';
 
 export const processorTypes: ProcessorQueueType[] = ['creation', 'optimization'];
 
@@ -95,11 +97,13 @@ class ProcessorManager {
 		this.creationProcessors = [
 			new Directb2sThumbProcessor(),
 			new ImageVariationProcessor(),
+			new VideoScreenshotProcessor(),
 			new VptBlockindexProcessor()
 		];
 		this.optimizationProcessors = [
 			new Directb2sOptimizationProcessor(),
-			new ImageOptimizationProcessor()
+			new ImageOptimizationProcessor(),
+			new VideoOptimizationProcessor()
 		];
 	}
 

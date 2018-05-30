@@ -30,7 +30,6 @@ import { sortableTitlePlugin } from '../common/mongoose/sortable.title.plugin';
 
 import paginatePlugin = require('mongoose-paginate');
 import { isInteger, isString } from 'lodash';
-import { Release } from '../releases/release';
 import { Game } from './game';
 
 const gameTypes = ['ss', 'em', 'pm', 'og', 'na'];

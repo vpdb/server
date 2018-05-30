@@ -48,17 +48,10 @@ const unlinkAsync = promisify(unlink);
  * new or optimized version of the file on the disk.
  *
  * We distinguish between *creation* processors and *optimization processors*.
- * Creation processor produce new *variations* of the file, while the latter
+ * Creation processor produce *new variations* of the file, while the latter
  * update the same file with an optimized version.
  *
  * A variation can have the same or a different MIME type than the original.
- *
- * An *action* is a function linked to a file and all its variations that is
- * added at the end of the processing stack. It is individually triggered but
- * also blocking, i.e. adding multiple actions will execute sequentially and
- * block until the last action is executed. An example is the
- * `ActivateFileAction` which moves files into the public folder when the file
- * becomes public.
  *
  * This queue allows executing processors in an optimal way with the following
  * requirements:
@@ -72,8 +65,11 @@ const unlinkAsync = promisify(unlink);
  *   folder served by Nginx.
  * - Items can be deleted any time (even during processing).
  * - Items can be accessed at any point, even when not finished or even started
- *   processing. If multiple queued jobs apply to an item, the item should be
- *   delivered when all jobs complete.
+ *   processing. In this case the socket is kept alive until the first version
+ *   of the item is available.
+ * - A variation might gets produced based on anther variation. For example,
+ *   the backglass image from a DirectB2S file is extracted from the original,
+ *   while its thumbs are generated from the extracted image.
  * - Node might run in a cluster, so dealing with state correctly is important.
  */
 class ProcessorQueue {

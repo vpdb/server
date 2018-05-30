@@ -22,10 +22,12 @@ import { ArchiveMetadata } from './archive.metadata';
 import { Directb2sMetadata } from './directb2s.metadata';
 import { ImageMetadata } from './image.metadata';
 import { VptMetadata } from './vpt.metadata';
+import { VideoMetadata } from './video.metadata';
 
 export const instances: Metadata[] = [
 	new ArchiveMetadata(),
 	new Directb2sMetadata(),
 	new ImageMetadata(),
+	new VideoMetadata(),
 	new VptMetadata()
 ];

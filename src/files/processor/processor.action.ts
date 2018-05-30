@@ -40,21 +40,3 @@ export class ActivateFileAction extends ProcessorAction {
 	}
 }
 
-
-export class DeleteFileAction extends ProcessorAction {
-
-	name: string = 'delete.file';
-
-	async run(fileId: string): Promise<void> {
-		// update database
-		const file = await state.models.File.findOne({ id: fileId }).exec();
-		await state.models.File.findByIdAndUpdate(file._id, { $set: { is_active: true } }).exec();
-		file.is_active = true;
-
-		// rename files
-		await renameAsync(file.getPath(null, { forceProtected: true }), file.getPath());
-		for (let variation of file.getVariations()) {
-			await renameAsync(file.getPath(variation, { forceProtected: true }), file.getPath(variation));
-		}
-	}
-}

@@ -34,6 +34,7 @@ import { TokenEndPoint } from './tokens';
 import { MiscEndPoint } from './misc';
 import { ProfileEndPoint } from './profile';
 import { ReleaseEndPoint } from './releases';
+import { RomApiEndPoint } from './roms';
 import { UserEndPoint } from './users';
 
 const shortId = require('shortid32');
@@ -59,6 +60,7 @@ shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 			new MiscEndPoint(),
 			new ProfileEndPoint(),
 			new ReleaseEndPoint(),
+			new RomApiEndPoint(),
 			new TokenEndPoint(),
 			new UserEndPoint(),
 		];

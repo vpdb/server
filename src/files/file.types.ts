@@ -18,7 +18,7 @@
  */
 
 import { uniq, flatten } from 'lodash';
-import { BackglassVariation} from './file.variations';
+import { BackglassVariation, VideoFileVariation } from './file.variations';
 import { FileVariation, ImageFileVariation } from './file.variations';
 
 class FileTypes {
@@ -77,10 +77,13 @@ class FileTypes {
 		]
 	};
 
-	private readonly playfieldVideoPortrait:FileType<FileVariation> = {
+	private readonly playfieldVideoPortrait:FileType<VideoFileVariation> = {
 		name: 'playfield-fs',
 		mimeTypes: ['video/mp4', 'video/x-flv', 'video/avi', 'video/x-f4v'],
-		variations: []
+		variations: [
+			{ name: 'still',         mimeType: 'image/png', screenshot: true, position: '0:0.500' },
+			{ name: 'small-rotated', mimeType: 'video/mp4', width: 394, height: 234, rotate: true }
+		]
 	};
 
 	private readonly playfieldImageLandscape:FileType<ImageFileVariation> = {
@@ -98,10 +101,13 @@ class FileTypes {
 		]
 	};
 
-	private readonly playfieldVideoLandscape: FileType<ImageFileVariation> = {
+	private readonly playfieldVideoLandscape: FileType<VideoFileVariation> = {
 		name: 'playfield-ws',
 		mimeTypes: ['video/mp4', 'video/x-flv', 'video/avi', 'video/x-f4v'],
-		variations: []
+		variations: [
+			{ name: 'still',         mimeType: 'image/png', screenshot: true, position: '0:0.500' },
+			{ name: 'small-rotated', mimeType: 'video/mp4', width: 394, height: 234 }
+		]
 	};
 
 	private readonly landscape: FileType<ImageFileVariation> = {

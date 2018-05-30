@@ -30,6 +30,7 @@ import { MediumSerializer } from '../../media/medium.serializer';
 import { ReleaseSerializer } from '../../releases/release.serializer';
 import { ReleaseVersionSerializer } from '../../releases/release.version.serializer';
 import { ReleaseVersionFileSerializer } from '../../releases/release.version.file.serializer';
+import { RomSerializer } from '../../roms/rom.serializer';
 import { TagSerializer } from '../../tags/tag.serializer';
 import { TokenSerializer } from '../../tokens/token.serializer';
 import { UserSerializer } from '../../users/user.serializer';
@@ -48,6 +49,7 @@ export interface Serializers {
 	Release: ReleaseSerializer;
 	ReleaseVersion: ReleaseVersionSerializer;
 	ReleaseVersionFile: ReleaseVersionFileSerializer;
+	Rom: RomSerializer;
 	Tag: TagSerializer;
 	Token: TokenSerializer;
 	User: UserSerializer;

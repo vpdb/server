@@ -25,6 +25,7 @@ import { Metadata } from './metadata';
 import { File } from '../file';
 import { FileVariation } from '../file.variations';
 import { logger } from '../../common/logger';
+import { ApiError } from '../../common/api.error';
 
 export class Directb2sMetadata extends Metadata {
 
@@ -37,7 +38,7 @@ export class Directb2sMetadata extends Metadata {
 		return new Promise((resolve, reject) => {
 			const metadata:any = {};
 			const saxStream = createStream(true, {});
-			saxStream.on('error', reject);
+			saxStream.on('error', this.error(reject, 'Error parsing Directb2s metadata.'));
 			saxStream.on('opentag', node => {
 				switch (node.name) {
 					case 'DirectB2SData': metadata.version = node.attributes.Version; break;
@@ -55,8 +56,8 @@ export class Directb2sMetadata extends Metadata {
 				logger.info('[Directb2sMetadata] Retrieved metadata in %sms.', Date.now() - now);
 				resolve(metadata);
 			});
-			createReadStream(path).on('error', reject)
-				.pipe(saxStream).on('error', reject);
+			createReadStream(path).on('error', this.error(reject, 'Error reading file at ' + path))
+				.pipe(saxStream).on('error', this.error(reject, 'Error parsing XML metadata.'));
 		});
 	}
 
@@ -66,5 +67,11 @@ export class Directb2sMetadata extends Metadata {
 
 	serializeVariation(metadata: { [p: string]: any }): { [p: string]: any } {
 		return undefined;
+	}
+
+	private error(reject: (err: Error) => void, message: string) {
+		return (err: Error) => {
+			reject(new ApiError(message).log(err));
+		}
 	}
 }

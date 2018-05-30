@@ -20,6 +20,7 @@
 import { createReadStream, ReadStream } from 'fs';
 import { EventEmitter } from 'events';
 import sax = require('sax');
+import { logger } from './logger';
 
 (sax as any).MAX_BUFFER_LENGTH = 64 * 1024 * 1024;
 
@@ -33,7 +34,7 @@ import sax = require('sax');
  * @param filename
  * @constructor
  */
-export class Parser extends EventEmitter {
+export class XmlParser extends EventEmitter {
 	private filename: string;
 	private stack: any[];
 	private paused: boolean;
@@ -115,10 +116,6 @@ export class Parser extends EventEmitter {
 		this.readStream.pause();
 	}
 
-	close() {
-		this.readStream.close();
-	}
-
 	/**
 	 * Resumes a paused stream.
 	 */
@@ -126,7 +123,7 @@ export class Parser extends EventEmitter {
 		this.paused = false;
 		while (this.stack.length > 0 && !this.paused) {
 			let e = this.stack.shift();
-			this._emit(e.name, e.data);
+			this.emit(e.name, e.data);
 		}
 		if (this.stack.length === 0) {
 			this.readStream.resume();

@@ -38,7 +38,7 @@ const gameHelper = new GameHelper(api);
 
 let res;
 
-describe('The VPDB `game` API', () => {
+describe.skip('The VPDB `game` API', () => {
 
 	describe('when posting a new game', () => {
 

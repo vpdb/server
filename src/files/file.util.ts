@@ -98,7 +98,7 @@ export class FileUtil {
 		await FileUtil.cp(path, file.getPath());
 
 		// start processing
-		await processorQueue.processFile(file);
+		await processorQueue.processFile(file, path);
 		logger.info('[FileUtil.create] File %s added to processor queue.', file.toShortString());
 
 		return file;

@@ -77,7 +77,7 @@ export abstract class Metadata {
 	 * @return {Metadata | undefined} Metadata reader
 	 */
 	public static getReader(file: File, variation?: FileVariation): Metadata {
-		return require('.').instances.find((m: Metadata) => m.isValid(file));
+		return require('.').instances.find((m: Metadata) => m.isValid(file, variation));
 	}
 
 	/**

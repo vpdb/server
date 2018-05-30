@@ -151,6 +151,27 @@ export interface File extends MetricsDocument {
 	getVariation(variationName:string): FileVariation | null;
 
 	/**
+	 * Returns all direct and indirect dependencies of a variation.
+	 *
+	 * A dependency is the `source` attribute that indicates that the variation
+	 * is not generated based on the original file, but rather on another
+	 * variation.
+	 *
+	 * @param {FileVariation} variation Variation
+	 * @param {FileVariation[]} [deps] Only used for internal recursive usage, ignore.
+	 * @returns {FileVariation[]} All variations that depend directly or indirectly on the given variation.
+	 */
+	getVariationDependencies(variation: FileVariation, deps?: FileVariation[]): FileVariation[];
+
+	/**
+	 * Returns all direct dependencies of a variation.
+	 *
+	 * @param {FileVariation} variation Variation
+	 * @returns {FileVariation[]} All variations that depend directly on the given variation.
+	 */
+	getDirectVariationDependencies(variation: FileVariation): FileVariation[];
+
+	/**
 	 * Returns something useful for logging.
 	 *
 	 * @param {FileVariation} [variation] File variation or null for original file

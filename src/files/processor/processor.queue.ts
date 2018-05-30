@@ -100,9 +100,10 @@ class ProcessorQueue {
 	/**
 	 * Adds a file and its variations to be processed to the corresponding queues.
 	 * @param {File} file File to be processed
+	 * @param {string} srcPath Path to source file
 	 * @return {Promise<void>}
 	 */
-	public async processFile(file: File): Promise<void> {
+	public async processFile(file: File, srcPath: string): Promise<void> {
 
 		// match processors against file variations
 		let n = 0;
@@ -111,14 +112,14 @@ class ProcessorQueue {
 		for (let variation of file.getVariations().filter(v => !v.source)) {
 			const processor = processorManager.getValidCreationProcessor(file, null, variation);
 			if (processor) {
-				await processorManager.queueFile('creation', processor, file, null, variation);
+				await processorManager.queueFile('creation', processor, file, srcPath, null, variation);
 				n++;
 			}
 		}
 
 		// add original to optimization queue
 		for (let processor of processorManager.getValidOptimizationProcessors(file)) {
-			await processorManager.queueFile('optimization', processor, file);
+			await processorManager.queueFile('optimization', processor, file, srcPath);
 			n++;
 		}
 
@@ -134,7 +135,7 @@ class ProcessorQueue {
 	 * @param {FileVariation} variation Variation to match. If none given, original is matched
 	 * @return {Promise<any>} Resolves with the last job's result or `null` if any actions where executed
 	 */
-	public async waitForVariationCreation(file: File, variation: FileVariation|null): Promise<any> {
+	public async waitForVariationCreation(file: File, variation: FileVariation | null): Promise<any> {
 
 		// fail fast if no jobs running
 		const hasJob = await this.hasRemainingCreationJob(file, variation);
@@ -146,7 +147,7 @@ class ProcessorQueue {
 			const queue = processorManager.getQueue('creation', file, variation);
 			const completeListener = (j: Job, result: any) => {
 				(async () => {
-					const data:JobData = j.data as JobData;
+					const data: JobData = j.data as JobData;
 
 					// if it's not the same variation, abort
 					if (!ProcessorQueue.isSame(data, file.id, variation ? variation.name : null)) {
@@ -273,8 +274,8 @@ class ProcessorQueue {
 					await unlinkAsync(originalPath);
 				}
 			}).catch(err => {
-				logger.warn('[ProcessorQueue.deleteProcessingFile] Error while processing finishing up removal: %s', err.message);
-			});
+			logger.warn('[ProcessorQueue.deleteProcessingFile] Error while processing finishing up removal: %s', err.message);
+		});
 	}
 
 	/**
@@ -417,6 +418,7 @@ class ProcessorQueue {
 	private async waitForJobCompletion(queue: Queue, job: Job): Promise<any> {
 		return await new Promise<void>(resolve => {
 			logger.debug('[ProcessorQueue.waitForJobCompletion] Waiting for job %s on queue %s to be completed.', job.id, (queue as any).name);
+
 			function completeListener(j: Job, result: any) {
 				// if job given and no match, ignore.
 				if (job && j.id !== job.id) {
@@ -426,6 +428,7 @@ class ProcessorQueue {
 				(queue as any).off('completed', completeListener);
 				resolve(result);
 			}
+
 			queue.on('completed', completeListener);
 		});
 	}
@@ -450,9 +453,9 @@ class ProcessorQueue {
 	 * @param {string} variation Variation
 	 * @return {Promise<boolean>} True if there is a non-finished job, false otherwise.
 	 */
-	private async hasRemainingCreationJob(file:File, variation:FileVariation): Promise<boolean> {
+	private async hasRemainingCreationJob(file: File, variation: FileVariation): Promise<boolean> {
 		const numJobs = await this.countRemaining([processorManager.getQueue('creation', file, variation)],
-				job => ProcessorQueue.isSame(job.data, file.id, variation.name));
+			job => ProcessorQueue.isSame(job.data, file.id, variation.name));
 		return numJobs > 0;
 	}
 
@@ -484,10 +487,10 @@ class ProcessorQueue {
 	 * @return {Promise<number>} Number of non-finished jobs
 	 */
 	private async countRemainingJobs(): Promise<number> {
-		return this.countRemaining(processorManager.getQueues(),() => true);
+		return this.countRemaining(processorManager.getQueues(), () => true);
 	}
 
-	private async countRemaining(queues:Queue[], filter:(job:Job) => boolean) {
+	private async countRemaining(queues: Queue[], filter: (job: Job) => boolean) {
 		let numbJobs = 0;
 		for (let q of queues) {
 			const jobs = await (q as any).getJobs(['waiting', 'active']) as Job[];
@@ -518,7 +521,7 @@ class ProcessorQueue {
 	 * @param {string} variation2
 	 * @return {boolean}
 	 */
-	private static isSame(jobData:JobData, fileId2: string, variation2: string): boolean {
+	private static isSame(jobData: JobData, fileId2: string, variation2: string): boolean {
 		// if file ID doesn't match, ignore.
 		if (jobData.fileId !== fileId2) {
 			return false;
@@ -541,6 +544,7 @@ class ProcessorQueue {
 export interface JobData {
 	fileId: string;
 	processor: string;
+	srcPath: string;
 	srcVariation?: string;
 	destVariation?: string;
 }

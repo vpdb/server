@@ -28,7 +28,7 @@ import { FileVariation } from '../file.variations';
 import { mimeTypeCategories } from '../file.mimetypes';
 import { CreationProcessor, OptimizationProcessor, Processor } from './processor';
 import { ProcessorWorker } from './processor.worker';
-import { ProcessorQueueType } from './processor.queue';
+import { JobData, ProcessorQueueType } from './processor.queue';
 import { Directb2sOptimizationProcessor } from './directb2s.optimization.processor';
 import { Directb2sThumbProcessor } from './directb2s.thumb.processor';
 import { ImageOptimizationProcessor } from './image.optimization.processor';
@@ -206,19 +206,21 @@ class ProcessorManager {
 	 *
 	 * @param {ProcessorQueueType} type Which queue type to add
 	 * @param {Processor<any>} processor Processor to use
+	 * @param {string} srcPath Path to source file
 	 * @param {File} file File to process
 	 * @param {FileVariation} srcVariation Source variation (or null for optimizing original)
 	 * @param {FileVariation} destVariation Destination variation (or null for optimization)
 	 * @returns {Promise<Job>} Added Bull job
 	 */
-	public async queueFile(type: ProcessorQueueType, processor: Processor<any>, file: File, srcVariation?: FileVariation, destVariation?: FileVariation): Promise<Job> {
+	public async queueFile(type: ProcessorQueueType, processor: Processor<any>, file: File, srcPath: string, srcVariation?: FileVariation, destVariation?: FileVariation): Promise<Job> {
 		const queue = this.queues.get(type).get(file.getMimeCategory(srcVariation));
 		const job = await queue.add({
 			fileId: file.id,
 			processor: processor.name,
+			srcPath: srcPath,
 			srcVariation: srcVariation ? srcVariation.name : undefined,
 			destVariation: destVariation ? destVariation.name : undefined
-		}, {
+		} as JobData, {
 			priority: processor.getOrder(destVariation || srcVariation),
 			// removeOnComplete: true,
 			// removeOnFail: true

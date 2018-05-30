@@ -34,9 +34,8 @@ export class ImageOptimizationProcessor implements OptimizationProcessor<FileVar
 	name: string = 'image.optimization';
 
 	canProcess(file: File, variation?: FileVariation): boolean {
-		const mimeType = variation ? variation.mimeType : file.getMimeType();
 		// currently only png files.
-		return mimeType === 'image/png';
+		return file.getMimeType(variation) === 'image/png';
 	}
 
 	getOrder(variation?: FileVariation): number {

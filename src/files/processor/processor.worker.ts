@@ -19,7 +19,7 @@
 
 import { promisify } from 'util';
 import { dirname, sep } from 'path';
-import { exists, stat, rename } from 'fs';
+import { exists, stat, rename, unlink } from 'fs';
 import { assign } from 'lodash';
 import { Job } from 'bull';
 
@@ -36,6 +36,7 @@ import { FileVariation } from '../file.variations';
 const renameAsync = promisify(rename);
 const statAsync = promisify(stat);
 const existsAsync = promisify(exists);
+const unlinkAsync = promisify(unlink);
 
 export class ProcessorWorker {
 
@@ -65,29 +66,22 @@ export class ProcessorWorker {
 		try {
 			const destPath = file.getPath(variation, { tmpSuffix: '_' + processor.name + '.processing' });
 			const destPathLog = destPath.split(sep).slice(-3).join('/');
+			const srcPath = data.srcPath;
+			const srcPathLog = srcPath.split(sep).slice(-3).join('/');
 
 			// create directory
 			if (!(await existsAsync(dirname(destPath)))) {
 				await FileUtil.mkdirp(dirname(destPath));
 			}
 
-			let src: string;
-			if (data.srcVariation) {
-				const srcVariation = file.getVariation(data.srcVariation);
-				src = file.getPath(srcVariation);
-			} else {
-				src = file.getPath(null, { tmpSuffix: '_original' });
-			}
-			const srcLog = src.split(sep).slice(-3).join('/');
-
 			// process to temp file
 			logger.debug('[ProcessorWorker.create] [%s | #%s] start: %s from %s to %s',
-				data.processor, job.id, file.toDetailedString(variation), srcLog, destPathLog);
+				data.processor, job.id, file.toDetailedString(variation), srcPathLog, destPathLog);
 
 			// run processor
-			await processor.process(file, src, destPath, variation);
+			await processor.process(file, srcPath, destPath, variation);
 			logger.debug('[ProcessorWorker.create] [%s | #%s] end: %s from %s to %s',
-				data.processor, job.id, file.toDetailedString(variation), srcLog, destPathLog);
+				data.processor, job.id, file.toDetailedString(variation), srcPathLog, destPathLog);
 
 			// update metadata
 			const metadataReader = Metadata.getReader(file, variation);
@@ -102,6 +96,12 @@ export class ProcessorWorker {
 			// rename
 			await renameAsync(destPath, file.getPath(variation));
 			logger.debug('[ProcessorWorker.processJob] [%s | #%s] done: %s', data.processor, job.id, file.toDetailedString(variation));
+
+			// clean up source if necessary
+			if (variation.source) {
+				logger.debug('[ProcessorWorker.processJob] Cleaning up variation source at %s', srcPathLog);
+				await unlinkAsync(srcPath);
+			}
 
 			// continue with dependents
 			await ProcessorWorker.continueCreation(file, variation);
@@ -184,31 +184,32 @@ export class ProcessorWorker {
 
 	private static async continueCreation(file:File, variation:FileVariation) {
 
-		// if this variation isn't referenced, send it to optimization queue.
-		const dependentVariations = file.getVariationDependencies(variation);
-		let n = 0;
-		if (dependentVariations.length === 0) {
-			for (let processor of processorManager.getValidOptimizationProcessors(file, variation)) {
-				n++;
-				await processorManager.queueFile('optimization', processor, file, variation);
+		// send direct references to creation queue (with a copy)
+		const directlyDependentVariations = file.getDirectVariationDependencies(variation);
+		for (let dependentVariation of directlyDependentVariations) {
+			const processor = processorManager.getValidCreationProcessor(file, variation, dependentVariation);
+			if (processor) {
+				const tmpPath = file.getPath(variation, { tmpSuffix: '_' + dependentVariation.name + '.source' });
+				await FileUtil.cp(file.getPath(variation), tmpPath);
+				await processorManager.queueFile('creation', processor, file, tmpPath, variation, dependentVariation);
+			} else {
+				logger.error('[ProcessorWorker.continueCreation] Cannot find a processor for %s which is dependent on %s.',
+					file.toShortString(dependentVariation), file.toShortString(variation))
 			}
-			logger.debug('[ProcessorWorker.processJob] Found no references, passed %s to optimization %s processor(s).',
-				file.toShortString(variation), n);
-
-		// otherwise, send direct references to creation queue
-		} else {
-			const directlyDependentVariations = file.getDirectVariationDependencies(variation);
-			for (let dependentVariation of directlyDependentVariations) {
-				const processor = processorManager.getValidCreationProcessor(file, variation, dependentVariation);
-				if (processor) {
-					await processorManager.queueFile('creation', processor, file, variation, dependentVariation);
-				} else {
-					logger.error('[ProcessorWorker.processJob] Cannot find a processor for %s which dependent on %s.',
-						file.toShortString(dependentVariation), file.toShortString(variation))
-				}
-			}
-			logger.debug('[ProcessorWorker.processJob] Found [ %s ] as direct references for %s, passed them to creation processors.',
+		}
+		if (directlyDependentVariations.length) {
+			logger.debug('[ProcessorWorker.continueCreation] Found [ %s ] as direct references for %s, passed them to creation processors.',
 				directlyDependentVariations.map(v => v.name).join(', '), file.toShortString(variation));
 		}
+
+		// send variation to optimization queue.
+		let n = 0;
+		for (let processor of processorManager.getValidOptimizationProcessors(file, variation)) {
+			n++;
+			await processorManager.queueFile('optimization', processor, file, file.getPath(variation), variation);
+		}
+		logger.debug('[ProcessorWorker.continueCreation] Passed %s to optimization %s processor(s).',
+			file.toShortString(variation), n);
+
 	}
 }

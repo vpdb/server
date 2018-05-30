@@ -83,6 +83,12 @@ export class ProcessorWorker {
 			logger.debug('[ProcessorWorker.create] [%s | #%s] end: %s from %s to %s',
 				data.processor, job.id, file.toDetailedString(variation), srcPathLog, destPathLog);
 
+			// clean up source if necessary
+			if (variation.source) {
+				logger.debug('[ProcessorWorker.processJob] Cleaning up variation source at %s', srcPathLog);
+				await unlinkAsync(srcPath);
+			}
+
 			// update metadata
 			const metadataReader = Metadata.getReader(file, variation);
 			const metadata = await metadataReader.getMetadata(file, destPath, variation);
@@ -96,12 +102,6 @@ export class ProcessorWorker {
 			// rename
 			await renameAsync(destPath, file.getPath(variation));
 			logger.debug('[ProcessorWorker.processJob] [%s | #%s] done: %s', data.processor, job.id, file.toDetailedString(variation));
-
-			// clean up source if necessary
-			if (variation.source) {
-				logger.debug('[ProcessorWorker.processJob] Cleaning up variation source at %s', srcPathLog);
-				await unlinkAsync(srcPath);
-			}
 
 			// continue with dependents
 			await ProcessorWorker.continueCreation(file, variation);
@@ -184,6 +184,11 @@ export class ProcessorWorker {
 
 	private static async continueCreation(file:File, variation:FileVariation) {
 
+		if (await state.redis.getAsync('queue:delete:' + file.id)) {
+			logger.info('[ProcessorWorker.continueCreation] Aborting worker continuation for file %s', file.id);
+			return;
+		}
+
 		// send direct references to creation queue (with a copy)
 		const directlyDependentVariations = file.getDirectVariationDependencies(variation);
 		for (let dependentVariation of directlyDependentVariations) {
@@ -194,7 +199,7 @@ export class ProcessorWorker {
 				await processorManager.queueFile('creation', processor, file, tmpPath, variation, dependentVariation);
 			} else {
 				logger.error('[ProcessorWorker.continueCreation] Cannot find a processor for %s which is dependent on %s.',
-					file.toShortString(dependentVariation), file.toShortString(variation))
+					file.toShortString(dependentVariation), file.toShortString(variation));
 			}
 		}
 		if (directlyDependentVariations.length) {

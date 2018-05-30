@@ -247,9 +247,6 @@ describe('The VPDB `file` API', () => {
 				.then(res => res.expectError(400, 'metadata parsing failed'));
 		});
 
-		it.only('should succeed with valid data', async () => {
-			await fileHelper.createDirectB2S('member');
-		});
 	});
 
 	describe('after successfully uploading a file', () => {
@@ -310,6 +307,7 @@ describe('The VPDB `file` API', () => {
 		it('should fail when trying to retrieve the file as anonymous', async () => {
 			res = await api.onStorage()
 				.as('member')
+				.markTeardown()
 				.withQuery({ type: 'release' })
 				.withContentType('text/plain')
 				.withHeader('Content-Disposition', 'attachment; filename="text.txt"')

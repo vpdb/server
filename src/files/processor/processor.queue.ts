@@ -244,7 +244,15 @@ class ProcessorQueue {
 			if (waitingJobsForFile.length) {
 				logger.info('[ProcessorQueue.deleteProcessingFile] Removing %s jobs from queue %s',
 					waitingJobsForFile.length, (queue as any).name);
-				promises.push(...waitingJobsForFile.map(job => () => job.remove()));
+				promises.push(...waitingJobsForFile.map(job => () => job.remove().then(() => {
+					if (job.data.destVariation) {
+						const variation = file.getVariation(job.data.destVariation);
+						if (variation.source) {
+							logger.info('[ProcessorQueue.deleteProcessingFile] Removing copied source at %s', job.data.srcPath);
+							return unlinkAsync(job.data.srcPath);
+						}
+					}
+				})));
 			}
 
 			// TODO remove actions
@@ -260,6 +268,14 @@ class ProcessorQueue {
 						if (path) {
 							logger.info('[ProcessorQueue.deleteProcessingFile] Finally removing %s', path);
 							return unlinkAsync(path);
+						}
+					}).then(() => {
+						if (job.data.destVariation) {
+							const variation = file.getVariation(job.data.destVariation);
+							if (variation.source) {
+								logger.info('[ProcessorQueue.deleteProcessingFile] Also finally removing %s', job.data.srcPath);
+								return unlinkAsync(job.data.srcPath);
+							}
 						}
 					})));
 			}

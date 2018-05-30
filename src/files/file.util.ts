@@ -91,6 +91,11 @@ export class FileUtil {
 				/* istanbul ignore next */
 				logger.error('[FileUtil.create] Error removing file at %s: %s', path, err.message);
 			}
+			try {
+				await unlinkAsync(path);
+			} catch (err) {
+				logger.warn('[FileUtil.create] Could not delete file after metadata failed: %s', err.message);
+			}
 			throw new ApiError('Metadata parsing failed for type "%s": %s', file.mime_type, err.message).log(err).warn().status(400);
 		}
 

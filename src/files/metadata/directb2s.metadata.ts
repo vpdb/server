@@ -33,6 +33,7 @@ export class Directb2sMetadata extends Metadata {
 		return file.getMimeType(variation) === 'application/x-directb2s';
 	}
 
+	// TODO try https://github.com/nikku/saxen
 	async getMetadata(file: File, path: string): Promise<{ [p: string]: any }> {
 		const now = Date.now();
 		return new Promise((resolve, reject) => {

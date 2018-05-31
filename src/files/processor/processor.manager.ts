@@ -185,6 +185,68 @@ class ProcessorManager {
 		return queues;
 	}
 
+	public getCreationQueues(file: File) {
+		const queues: Queue[] = [];
+		const categories = uniq([file.getMimeCategory(), ...file.getVariations().map(v => file.getMimeCategory(v))]);
+		for (let category of mimeTypeCategories) {
+			if (categories.includes(category)) {
+				queues.push(this.queues.get('creation').get(category));
+			}
+		}
+		return queues;
+	}
+
+	public async waitForSrcProcessingFinished(file:File, srcPath:string): Promise<void> {
+		const queues = this.getCreationQueues(file);
+		const numJobs = await this.countRemainingProcessingWithSrc(queues, srcPath);
+		if (numJobs === 0) {
+			return;
+		}
+		return new Promise<void>(resolve => {
+
+			const completeListener = (job: Job) => {
+				(async () => {
+					const data:JobData = job.data as JobData;
+
+					// if it's not the same path, ignore
+					if (data.srcPath !== srcPath) {
+						return;
+					}
+
+					// if there are still jobs, continue waiting.
+					const numJobs = await this.countRemainingProcessingWithSrc(queues, srcPath);
+					if (numJobs > 0) {
+						logger.debug('[ProcessorQueue.waitForSrcProcessingFinished] Waiting for another %s job(s) to finish for file %s.',
+							numJobs, srcPath);
+						return;
+					}
+					logger.debug('[ProcessorQueue.waitForSrcProcessingFinished] Finished waiting for file %s.', srcPath);
+					for (let queue of queues.values()) {
+						(queue as any).off('completed', completeListener);
+					}
+					resolve();
+				})();
+			};
+			for (let queue of queues) {
+				queue.on('completed', completeListener);
+			}
+		});
+	}
+
+	private async countRemainingProcessingWithSrc(queues: Queue[], srcPath: string):Promise<number> {
+		return this.countRemaining(queues, job => job.data.srcPath === srcPath);
+	}
+
+	private async countRemaining(queues: Queue[], filter: (job: Job) => boolean):Promise<number> {
+		let numbJobs = 0;
+		for (let queue of queues) {
+			const jobs = await (queue as any).getJobs(['waiting', 'active']) as Job[];
+			const remainingJobs = jobs.filter(filter);
+			numbJobs += remainingJobs.length;
+		}
+		return numbJobs;
+	}
+
 	/**
 	 * Returns a creation processor by name.
 	 *
@@ -211,17 +273,19 @@ class ProcessorManager {
 	 * @param {ProcessorQueueType} type Which queue type to add
 	 * @param {Processor<any>} processor Processor to use
 	 * @param {string} srcPath Path to source file
+	 * @param {string} destPath Path to destination file
 	 * @param {File} file File to process
 	 * @param {FileVariation} srcVariation Source variation (or null for optimizing original)
 	 * @param {FileVariation} destVariation Destination variation (or null for optimization)
 	 * @returns {Promise<Job>} Added Bull job
 	 */
-	public async queueFile(type: ProcessorQueueType, processor: Processor<any>, file: File, srcPath: string, srcVariation?: FileVariation, destVariation?: FileVariation): Promise<Job> {
+	public async queueFile(type: ProcessorQueueType, processor: Processor<any>, file: File, srcPath: string, destPath: string, srcVariation?: FileVariation, destVariation?: FileVariation): Promise<Job> {
 		const queue = this.queues.get(type).get(file.getMimeCategory(srcVariation));
 		const job = await queue.add({
 			fileId: file.id,
 			processor: processor.name,
 			srcPath: srcPath,
+			destPath: destPath,
 			srcVariation: srcVariation ? srcVariation.name : undefined,
 			destVariation: destVariation ? destVariation.name : undefined
 		} as JobData, {

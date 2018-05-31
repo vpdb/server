@@ -27,7 +27,6 @@ import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
 import { File } from '../file';
 import { FileVariation } from '../file.variations';
-import { ActivateFileAction, ProcessorAction } from './processor.action';
 import { processorManager } from './processor.manager';
 
 const renameAsync = promisify(rename);
@@ -75,25 +74,6 @@ const unlinkAsync = promisify(unlink);
 class ProcessorQueue {
 
 	/**
-	 * All available actions, accessible by name.
-	 */
-	private readonly actions: Map<string, ProcessorAction> = new Map();
-
-	/**
-	 * Queue where post actions are executed.
-	 */
-	private readonly actionQueue: Queue;
-
-	constructor() {
-		// this.actionQueue = new Bull('action.queue', opts);
-		// this.actionQueue.process(this.processAction.bind(this));
-
-		// create actions
-		const actions: ProcessorAction[] = [new ActivateFileAction()];
-		actions.forEach(a => this.actions.set(a.name, a));
-	}
-
-	/**
 	 * Adds a file and its variations to be processed to the corresponding queues.
 	 * @param {File} file File to be processed
 	 * @param {string} srcPath Path to source file
@@ -108,14 +88,16 @@ class ProcessorQueue {
 		for (let variation of file.getVariations().filter(v => !v.source)) {
 			const processor = processorManager.getValidCreationProcessor(file, null, variation);
 			if (processor) {
-				await processorManager.queueFile('creation', processor, file, srcPath, null, variation);
+				const destPath = file.getPath(variation, { tmpSuffix: '_' + processor.name + '.processing' });
+				await processorManager.queueFile('creation', processor, file, srcPath, destPath, null, variation);
 				n++;
 			}
 		}
 
 		// add original to optimization queue
 		for (let processor of processorManager.getValidOptimizationProcessors(file)) {
-			await processorManager.queueFile('optimization', processor, file, srcPath);
+			const destPath = file.getPath(null, { tmpSuffix: '_' + processor.name + '.processing' });
+			await processorManager.queueFile('optimization', processor, file, srcPath, destPath);
 			n++;
 		}
 
@@ -152,12 +134,6 @@ class ProcessorQueue {
 					// unregister listener
 					(queue as any).off('completed', completeListener);
 
-					// wait for any actions to be completed
-					// const numActions = await this.countRemainingActionJobs(data.fileId);
-					// if (numActions > 0) {
-					// 	await this.waitForActionCompletion(file.id);
-					// 	result = null;
-					// }
 					logger.debug('[ProcessorQueue.waitForVariationCreation] Finished waiting for %s.', file.toShortString(variation));
 
 					// all good!
@@ -202,26 +178,6 @@ class ProcessorQueue {
 	}
 
 	/**
-	 * Adds an action to be executed.
-	 * @param {File} file
-	 * @param {string} action
-	 * @return {Promise<void>}
-	 */
-	// public async addAction(file: File, action: string): Promise<void> {
-	//
-	// 	const numJobs = await this.countRemainingFileJobs(file.id);
-	// 	if (numJobs > 0) {
-	// 		// wait for pending processing jobs to complete
-	// 		await this.waitForFileCompletion(file.id);
-	// 	}
-	// 	// add to action queue
-	// 	await this.actionQueue.add({ fileId: file.id, action: action });
-	//
-	// 	// wait for actions for file to complete
-	// 	await this.waitForActionCompletion(file.id);
-	// }
-
-	/**
 	 * Removes all waiting jobs for a given file from all queues and deletes
 	 * the result of all currently active jobs for the given file.
 	 *
@@ -250,8 +206,6 @@ class ProcessorQueue {
 					}
 				})));
 			}
-
-			// TODO remove actions
 
 			// wait for active jobs and delete afterwards.
 			const activeJobs = await queue.getActive();
@@ -291,135 +245,108 @@ class ProcessorQueue {
 	}
 
 	/**
-	 * Waits until a file variation is first created and returns the path.
+	 * Moves files to the public directory.
+	 *
+	 * This gets tricky when there are active jobs running on a file that
+	 * should be renamed. For example:
+	 *
+	 * - Optimization job of variation A is active
+	 * - At the same time, variation B uses A as source (A's original copy)
+	 * - Variation C is queued to use variation B as well
+	 * - B might finish before A is finished.
+	 *
+	 * Problem:
+	 * - Cannot rename A upon completion because B or C might still be using it
+	 *
+	 * Solution:
+	 * - After an optimization is done, we actually check whether there are any
+	 *   active or waiting creation jobs using the original source before
+	 *   overwriting it. So we wait until all creation jobs using the source
+	 *   finish before renaming.
+	 * - Before renaming, we check in any case if the destination changed (i.e.
+	 *   the file was activated) which could also have happened without any
+	 *   dependent jobs during optimization.
+	 * - If that's the case, rename directly to activated path (and cleanup the
+	 *   source on the old path).
+	 *
+	 * Note that additional optimization jobs will always run after, because
+	 * by definition they run as the same MIME category on the same queue and
+	 * will be delayed until the file is activated.
+	 *
+	 * Also note that *all* optimization jobs for that category will be delayed
+	 * until the depending creation jobs finish. This is hard to avoid without
+	 * delegating the rename operation of the optimize processor to the
+	 * depending creation jobs, which will significantly complicate things.
+	 *
+	 * The drawback however is acceptable, because files are already available
+	 * in their non-optimized version, thus the optimizer jobs are not time-
+	 * critical.
+	 *
 	 * @param {File} file
-	 * @param {FileVariation} variation
-	 * @return {Promise<string>} Path to the processed file
+	 * @returns {Promise<void>}
 	 */
-	// private async getCreatedVariation(file: File, variation: FileVariation): Promise<string> {
-	// 	const path = file.getPath(variation);
-	// 	const numJobs = await this.countRemainingVariationCreationJobs(file.id, variation.name);
-	// 	if (numJobs > 0) {
-	// 		logger.info('[ProcessorQueue.getProcessedFile] Waiting for %s to finish processing',
-	// 			file.toShortString(variation));
-	// 		return await this.waitForVariationCreated(file, variation);
-	// 	} else {
-	// 		// so it's not an active or waiting job, let's check the file system
-	// 		if ((await existsAsync(path)) && (await statAsync(path)).size > 0) {
-	// 			logger.info('[ProcessorQueue.getProcessedFile] %s has finished processing',
-	// 				file.toShortString(variation));
-	// 			return path;
-	// 		}
-	// 		throw new ApiError('Cannot find job for %s at %s.', file.toShortString(variation), path);
-	// 	}
-	// }
+	public async activateFile(file:File): Promise<void> {
 
-	/**
-	 * Subscribes to all queues that source the original file and waits until
-	 * the given variation has been created.
-	 *
-	 * @param {File} file File to match
-	 * @param {FileVariation} variation Variation to match.
-	 * @return {Promise<any>} Resolves with the last job's result.
-	 */
-	// private async waitForVariationCreated(file: File, variation: FileVariation): Promise<any> {
-	// 	return new Promise<any>(resolve => {
-	// 		const queue = processorManager.getQueue(ProcessorQueueType.CREATION, file, variation);
-	// 		const completeListener = (j: Job, result: any) => {
-	// 			(async () => {
-	// 				const data:JobData = j.data as JobData;
-	//
-	// 				// if it's not the same variation, abort
-	// 				if (!ProcessorQueue.isSame(data, file.id, variation ? variation.name : null)) {
-	// 					return;
-	// 				}
-	// 				(queue as any).off('completed', completeListener);
-	//
-	// 				// if the file is being deleted, abort.
-	// 				if (await state.redis.getAsync('queue:delete:' + file.id)) {
-	// 					logger.debug('[ProcessorQueue.waitForVariationCreated] Aborting wait, %s has been deleted.',
-	// 						file.toShortString(variation));
-	// 					resolve(null);
-	// 					return;
-	// 				}
-	// 				logger.debug('[ProcessorQueue.waitForVariationCreated] Finished waiting for %s.',
-	// 					file.toShortString(variation));
-	// 				resolve(result);
-	// 			})();
-	// 		};
-	// 		queue.on('completed', completeListener);
-	// 	});
-	// }
+		const now = Date.now();
+		const activeFiles:Map<string, Job[]> = new Map(); // key = path, value = dependent jobs
 
-	/**
-	 * Subscribes to all queues and returns when the last job for *every*
-	 * variation of a given file has completed.
-	 *
-	 * @param {string} fileId File ID to match
-	 */
-	// private async waitForFileCompletion(fileId: string): Promise<void> {
-	// 	return new Promise<void>(resolve => {
-	// 		const queues = this.queues;
-	// 		const completeListener = (job: Job) => {
-	// 			(async () => {
-	// 				const data:JobData = job.data as JobData;
-	//
-	// 				// if it's not the same file, abort
-	// 				if (fileId !== data.fileId) {
-	// 					return;
-	// 				}
-	//
-	// 				// if there are still jobs, abort.
-	// 				const numJobs = await this.countRemainingFileJobs(data.fileId);
-	// 				if (numJobs > 0) {
-	// 					logger.debug('[ProcessorQueue.waitForFileCompletion] Waiting for another %s job(s) to finish for file %s.',
-	// 						numJobs, fileId);
-	// 					return;
-	// 				}
-	// 				logger.debug('[ProcessorQueue.waitForFileCompletion] Finished waiting for file %s.', fileId);
-	// 				for (let queue of queues.values()) {
-	// 					(queue as any).off('completed', completeListener);
-	// 				}
-	// 				resolve();
-	// 			})();
-	// 		};
-	// 		for (let queue of this.queues.values()) {
-	// 			queue.on('completed', completeListener);
-	// 		}
-	// 	});
-	// }
+		// map old path -> new path of all variations and original
+		const changes: Map<string, string> = new Map();
+		if (file.getPath() !== file.getPath(null, { forceProtected: true })) {
+			changes.set(file.getPath(null, { forceProtected: true }), file.getPath());
+		}
+		file.getVariations()
+			.filter(v => file.getPath(v) !== file.getPath(v, { forceProtected: true }))
+			.forEach(v => changes.set(file.getPath(v, { forceProtected: true }), file.getPath(v)));
 
-	/**
-	 * Waits until all actions for a given file ID have finished.
-	 *
-	 * @param {string} fileId File ID to match
-	 */
-	// private async waitForActionCompletion(fileId: string): Promise<void> {
-	// 	return new Promise<void>(resolve => {
-	// 		const completeListener = (job: Job) => {
-	// 			(async () => {
-	// 				const data:JobData = job.data as JobData;
-	//
-	// 				// if it's not the same file, abort
-	// 				if (fileId !== data.fileId) {
-	// 					return;
-	// 				}
-	//
-	// 				// if there are still jobs, abort.
-	// 				const numJobs = await this.countRemainingActionJobs(data.fileId);
-	// 				if (numJobs > 0) {
-	// 					logger.debug('[ProcessorQueue.waitForActionCompletion] Waiting for another %s action(s) to for file %s.',
-	// 						numJobs, fileId);
-	// 					return;
-	// 				}
-	// 				logger.debug('[ProcessorQueue.waitForActionCompletion] Finished waiting for file %s.', fileId);
-	// 				(this.actionQueue as any).off('completed', completeListener);
-	// 				resolve();
-	// 			})();
-	// 		};
-	// 		this.actionQueue.on('completed', completeListener);
-	// 	});
-	// }
+		// active jobs first (those are the only ones we have to wait for to finish)
+		for (let queue of processorManager.getQueues(file)) {
+			const jobs = (await queue.getActive()).filter(job => job.data.fileId === file.id);
+			for (let job of jobs) {
+				const data = job.data as JobData;
+				if (changes.has(data.srcPath)) {
+					await state.redis.setAsync('queue:srcPath', changes.get(data.srcPath));
+				}
+				if (changes.has(data.destPath)) {
+					// create a new array for waiting jobs that start before this job finishes.
+					activeFiles.set(data.destPath, []);
+					await state.redis.setAsync('queue:destPath', changes.get(data.destPath));
+				}
+			}
+		}
+
+		// waiting jobs
+		for (let queue of processorManager.getQueues(file)) {
+			const jobs = (await queue.getWaiting()).filter(job => job.data.fileId === file.id);
+			for (let job of jobs) {
+				const data = job.data as JobData;
+				if (changes.has(data.srcPath)) {
+					if (activeFiles.has(data.srcPath)) {
+						// if the job's source is active, add job as dependent.
+						activeFiles.get(data.srcPath).push(job);
+					} else {
+						// otherwise just update the job and we're fine.
+						data.srcPath = changes.get(data.srcPath);
+					}
+				}
+				if (changes.has(data.destPath)) {
+					// update destination path (although the finally renamed file will be at the right place anyway).
+					data.destPath = changes.get(data.destPath);
+				}
+				await job.update(data);
+			}
+		}
+
+
+
+		// update job with new path and rename file
+
+		// get all active jobs and set a redis flag
+
+		// rename the remaining variations
+
+		// update database
+	}
 
 	/**
 	 * Subscribes to the queue of a given job and returns when the job has finished.
@@ -513,20 +440,6 @@ class ProcessorQueue {
 	}
 
 	/**
-	 * The worker function for executing actions.
-	 *
-	 * @param {Bull.Job} job
-	 * @return {Promise<any>}
-	 */
-	// private async processAction(job: Job): Promise<any> {
-	// 	const actionName: string = job.data.action;
-	// 	const fileId: string = job.data.fileId;
-	// 	const action = this.actions.get(actionName);
-	// 	return await action.run(fileId);
-	// }
-
-
-	/**
 	 * Compares two fileIds and variation names and returns true if they match.
 	 * @param jobData Job data to compare
 	 * @param {string} fileId2
@@ -557,6 +470,7 @@ export interface JobData {
 	fileId: string;
 	processor: string;
 	srcPath: string;
+	destPath: string;
 	srcVariation?: string;
 	destVariation?: string;
 }

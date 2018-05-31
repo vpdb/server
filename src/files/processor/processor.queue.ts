@@ -268,7 +268,7 @@ class ProcessorQueue {
 	 * in their non-optimized version, thus the optimizer jobs are not time-
 	 * critical.
 	 *
-	 * @param {File} file
+	 * @param {File} file File with is_active set to true
 	 * @returns {Promise<void>}
 	 */
 	public async activateFile(file:File): Promise<void> {
@@ -284,45 +284,35 @@ class ProcessorQueue {
 			.filter(v => file.getPath(v) !== file.getPath(v, { forceProtected: true }))
 			.forEach(v => changes.set(file.getPath(v, { forceProtected: true }), file.getPath(v)));
 
-		// active jobs first (those are the only ones we have to wait for to finish)
+		// active jobs get new destPath announcement
 		for (let queue of processorManager.getQueues(file)) {
 			const jobs = (await queue.getActive()).filter(job => job.data.fileId === file.id);
 			for (let job of jobs) {
-				const data = job.data as JobData;
-				if (changes.has(data.srcPath)) {
-					await state.redis.setAsync('queue:rename:' + data.srcPath, changes.get(data.srcPath));
-				}
-				if (changes.has(data.destPath)) {
-					// announce rename after job completion
-					await state.redis.setAsync('queue:rename:' + data.destPath, changes.get(data.destPath));
+				const variation = file.getVariation(job.data.destVariation);
+				const destPath = file.getPath(variation, { forceProtected: true });
+				if (changes.has(destPath)) {
+					await state.redis.setAsync('queue:rename:' + destPath, changes.get(destPath));
+					changes.delete(destPath);
 				}
 			}
 		}
 
-		// waiting jobs
+		// waiting jobs get srcPath updated
 		for (let queue of processorManager.getQueues(file)) {
 			const jobs = (await queue.getWaiting()).filter(job => job.data.fileId === file.id);
 			for (let job of jobs) {
 				const data = job.data as JobData;
+				// we only care about the source, because the final destination comes from the database when the worker starts
 				if (changes.has(data.srcPath)) {
 					data.srcPath = changes.get(data.srcPath);
+					await job.update(data);
 				}
-				if (changes.has(data.destPath)) {
-					// update destination path (although the finally renamed file will be at the right place anyway).
-					data.destPath = changes.get(data.destPath);
-				}
-				await job.update(data);
 			}
 		}
 
+		// now wait for all jobs with a changing source to finish
 
-		// update job with new path and rename file
-
-		// get all active jobs and set a redis flag
-
-		// rename the remaining variations
-
-		// update database
+		// finally, rename remaining files.
 	}
 
 	/**

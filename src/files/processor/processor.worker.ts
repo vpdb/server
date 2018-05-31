@@ -104,13 +104,15 @@ export class ProcessorWorker {
 			}
 
 			// rename
-			await renameAsync(destPath, file.getPath(variation));
+			const newPath = await ProcessorWorker.isFileRenamed(file.getPath(variation), 'create');
+			const finalPath = newPath || file.getPath(variation);
+			await renameAsync(destPath, finalPath);
 			logger.debug('[ProcessorWorker.processJob] [%s | #%s] done: %s', data.processor, job.id, file.toDetailedString(variation));
 
-			// continue with dependents
-			await ProcessorWorker.continueCreation(file, variation);
+			// continue with dependents (and fresh data)
+			await ProcessorWorker.continueCreation(await state.models.File.findOne({ id: data.fileId }).exec(), variation);
 
-			return file.getPath(variation);
+			return finalPath;
 
 		} catch (err) {
 			// nothing to return here because it's in the background.
@@ -180,15 +182,15 @@ export class ProcessorWorker {
 			}
 
 			// wait for other jobs accessing destination
-			await processorManager.waitForSrcProcessingFinished(file, file.getPath(variation));
-
-			// see if dest changed meanwhile through activation
+			await processorManager.waitForDependingJobsToFinish(file, file.getPath(variation));
 
 			// rename
-			await renameAsync(destPath, file.getPath(variation)); // overwrites destination
+			const newPath = await ProcessorWorker.isFileRenamed(file.getPath(variation), 'optimize');
+			const finalPath = newPath || file.getPath(variation);
+			await renameAsync(destPath, finalPath); // overwrites destination
 			logger.debug('[ProcessorWorker.optimize] [%s | #%s] done: %s', data.processor, job.id, file.toDetailedString(variation));
 
-			return file.getPath(variation);
+			return finalPath;
 
 		} catch (err) {
 			// nothing to return here because it's in the background.
@@ -239,5 +241,14 @@ export class ProcessorWorker {
 			return true;
 		}
 		return false;
+	}
+
+	private static async isFileRenamed(path:string, what:string):Promise<string|null> {
+		const newPath = await state.redis.getAsync('queue:rename:' + path);
+		if (newPath) {
+			logger.info('[ProcessorWorker.%s] Rename %s to %s', what, path, newPath);
+			return newPath;
+		}
+		return null;
 	}
 }

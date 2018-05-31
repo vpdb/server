@@ -97,7 +97,9 @@ export class ProcessorWorker {
 			});
 			await state.models.File.findByIdAndUpdate(file._id, { $set: fileData }, { 'new': true }).exec();
 
-			if (await this.isFileDeleted(file, 'create')) {
+			// abort if deleted
+			if (await ProcessorWorker.isFileDeleted(file, 'create')) {
+				await unlinkAsync(destPath);
 				return null;
 			}
 
@@ -171,8 +173,9 @@ export class ProcessorWorker {
 			}
 			await state.models.File.findByIdAndUpdate(file._id, { $set: fileData }, { 'new': true }).exec();
 
-			// if deleting, abort.
-			if (await this.isFileDeleted(file, 'optimize')) {
+			// abort if deleted
+			if (await ProcessorWorker.isFileDeleted(file, 'optimize')) {
+				await unlinkAsync(destPath);
 				return null;
 			}
 

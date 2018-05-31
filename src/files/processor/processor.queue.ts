@@ -207,27 +207,13 @@ class ProcessorQueue {
 				})));
 			}
 
-			// wait for active jobs and delete afterwards.
+			// announce to active jobs
 			const activeJobs = await queue.getActive();
 			const activeJobsForFile = activeJobs.filter(job => (job.data as JobData).fileId === file.id);
 			if (activeJobsForFile.length) {
 				logger.info('[ProcessorQueue.deleteProcessingFile] Cleaning up after %s active job(s) from queue %s.',
 					activeJobsForFile.length, (queue as any).name);
-				promises.push(...activeJobsForFile.map(job => () => this.waitForJobCompletion(queue, job)
-					.then(path => {
-						if (path) {
-							logger.info('[ProcessorQueue.deleteProcessingFile] Finally removing %s', path);
-							return unlinkAsync(path);
-						}
-					}).then(() => {
-						if (job.data.destVariation) {
-							const variation = file.getVariation(job.data.destVariation);
-							if (variation.source) {
-								logger.info('[ProcessorQueue.deleteProcessingFile] Also finally removing %s', job.data.srcPath);
-								return unlinkAsync(job.data.srcPath);
-							}
-						}
-					})));
+				promises.push(...activeJobsForFile.map(job => () => this.waitForJobCompletion(queue, job)));
 			}
 		}
 		// noinspection JSIgnoredPromiseFromCall: do this in the background
@@ -288,7 +274,6 @@ class ProcessorQueue {
 	public async activateFile(file:File): Promise<void> {
 
 		const now = Date.now();
-		const activeFiles:Map<string, Job[]> = new Map(); // key = path, value = dependent jobs
 
 		// map old path -> new path of all variations and original
 		const changes: Map<string, string> = new Map();
@@ -305,12 +290,11 @@ class ProcessorQueue {
 			for (let job of jobs) {
 				const data = job.data as JobData;
 				if (changes.has(data.srcPath)) {
-					await state.redis.setAsync('queue:srcPath', changes.get(data.srcPath));
+					await state.redis.setAsync('queue:rename:' + data.srcPath, changes.get(data.srcPath));
 				}
 				if (changes.has(data.destPath)) {
-					// create a new array for waiting jobs that start before this job finishes.
-					activeFiles.set(data.destPath, []);
-					await state.redis.setAsync('queue:destPath', changes.get(data.destPath));
+					// announce rename after job completion
+					await state.redis.setAsync('queue:rename:' + data.destPath, changes.get(data.destPath));
 				}
 			}
 		}
@@ -321,13 +305,7 @@ class ProcessorQueue {
 			for (let job of jobs) {
 				const data = job.data as JobData;
 				if (changes.has(data.srcPath)) {
-					if (activeFiles.has(data.srcPath)) {
-						// if the job's source is active, add job as dependent.
-						activeFiles.get(data.srcPath).push(job);
-					} else {
-						// otherwise just update the job and we're fine.
-						data.srcPath = changes.get(data.srcPath);
-					}
+					data.srcPath = changes.get(data.srcPath);
 				}
 				if (changes.has(data.destPath)) {
 					// update destination path (although the finally renamed file will be at the right place anyway).
@@ -336,7 +314,6 @@ class ProcessorQueue {
 				await job.update(data);
 			}
 		}
-
 
 
 		// update job with new path and rename file

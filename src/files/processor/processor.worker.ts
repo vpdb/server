@@ -53,7 +53,7 @@ export class ProcessorWorker {
 		const data = job.data as JobData;
 		file = await state.models.File.findOne({ id: data.fileId }).exec();
 		if (!file) {
-			logger.warn('[ProcessorWorker.create] %s/#%s skip: File "%s" has been removed from DB, ignoring.',
+			logger.warn('[ProcessorWorker.create] [%s | #%s] skip: File "%s" has been removed from DB, ignoring.',
 				data.processor, job.id, data.fileId);
 			return null;
 		}
@@ -64,17 +64,15 @@ export class ProcessorWorker {
 		}
 
 		try {
-			const destPath = file.getPath(variation, { tmpSuffix: '_' + processor.name + '.processing' });
-			const destPathLog = destPath.split(sep).slice(-3).join('/');
 			const srcPath = data.srcPath;
 			const srcPathLog = srcPath.split(sep).slice(-3).join('/');
+			const destPath = data.destPath;
+			const destPathLog = destPath.split(sep).slice(-3).join('/');
 
 			// create directory
 			if (!(await existsAsync(dirname(destPath)))) {
 				await FileUtil.mkdirp(dirname(destPath));
 			}
-
-			// process to temp file
 			logger.debug('[ProcessorWorker.create] [%s | #%s] start: %s from %s to %s',
 				data.processor, job.id, file.toDetailedString(variation), srcPathLog, destPathLog);
 
@@ -98,6 +96,10 @@ export class ProcessorWorker {
 				mime_type: variation.mimeType
 			});
 			await state.models.File.findByIdAndUpdate(file._id, { $set: fileData }, { 'new': true }).exec();
+
+			if (await this.isFileDeleted(file, 'create')) {
+				return null;
+			}
 
 			// rename
 			await renameAsync(destPath, file.getPath(variation));
@@ -127,76 +129,86 @@ export class ProcessorWorker {
 	 */
 	public static async optimize(job: Job): Promise<any> {
 		let file: File;
-		try {
-			// retrieve data from deserialized job
-			const data = job.data as JobData;
-			file = await state.models.File.findOne({ id: data.fileId }).exec();
-			if (!file) {
-				logger.warn('[ProcessorWorker.optimize] %s/#%s skip: File "%s" has been removed from DB, ignoring.',
-					data.processor, job.id, data.fileId);
-				return null;
-			}
-			const processor = processorManager.getOptimizationProcessor(data.processor);
-			const variation = file.getVariation(data.destVariation);
 
-			const tmpPath = file.getPath(variation, { tmpSuffix: '_' + processor.name + '.processing' });
-			const tmpPathLog = tmpPath.split(sep).slice(-3).join('/');
+		// retrieve data from deserialized job
+		const data = job.data as JobData;
+		file = await state.models.File.findOne({ id: data.fileId }).exec();
+		if (!file) {
+			logger.warn('[ProcessorWorker.optimize] [%s | #%s] skip: File "%s" has been removed from DB, ignoring.',
+				data.processor, job.id, data.fileId);
+			return null;
+		}
+		const processor = processorManager.getOptimizationProcessor(data.processor);
+		const variation = file.getVariation(data.destVariation);
+
+		try {
+			const srcPath = data.srcPath;
+			const destPath = data.destPath;
+			const destPathLog = destPath.split(sep).slice(-3).join('/');
 
 			// create directory
-			if (!(await existsAsync(dirname(tmpPath)))) {
-				await FileUtil.mkdirp(dirname(tmpPath));
+			if (!(await existsAsync(dirname(destPath)))) {
+				await FileUtil.mkdirp(dirname(destPath));
 			}
-
-			const src = file.getPath(variation);
-
-			// process to temp file
 			logger.debug('[ProcessorWorker.optimize] [%s | #%s] start: %s at %s',
-				data.processor, job.id, file.toDetailedString(variation), tmpPathLog);
-			await processor.process(file, src, tmpPath, variation);
+				data.processor, job.id, file.toDetailedString(variation), destPathLog);
+
+			// run processor
+			await processor.process(file, srcPath, destPath, variation);
 
 			// update metadata
 			const metadataReader = Metadata.getReader(file, variation);
-			const metadata = await metadataReader.getMetadata(file, tmpPath, variation);
+			const metadata = await metadataReader.getMetadata(file, destPath, variation);
 			const fileData: any = {};
 			if (variation) {
 				fileData['variations.' + variation.name] = assign(metadataReader.serializeVariation(metadata), {
-					bytes: (await statAsync(tmpPath)).size,
+					bytes: (await statAsync(destPath)).size,
 					mime_type: variation.mimeType
 				});
 			} else {
-				fileData.metadata = await Metadata.readFrom(file, tmpPath);
-				fileData.bytes = (await statAsync(tmpPath)).size;
+				fileData.metadata = await Metadata.readFrom(file, destPath);
+				fileData.bytes = (await statAsync(destPath)).size;
 			}
 			await state.models.File.findByIdAndUpdate(file._id, { $set: fileData }, { 'new': true }).exec();
 
+			// if deleting, abort.
+			if (await this.isFileDeleted(file, 'optimize')) {
+				return null;
+			}
+
+			// wait for other jobs accessing destination
+			await processorManager.waitForSrcProcessingFinished(file, file.getPath(variation));
+
+			// see if dest changed meanwhile through activation
+
 			// rename
-			await renameAsync(tmpPath, file.getPath(variation));
+			await renameAsync(destPath, file.getPath(variation)); // overwrites destination
 			logger.debug('[ProcessorWorker.optimize] [%s | #%s] done: %s', data.processor, job.id, file.toDetailedString(variation));
 
 			return file.getPath(variation);
 
 		} catch (err) {
 			// nothing to return here because it's in the background.
-			logger.error('[ProcessorWorker.optimize] Error while processing %s with %s:\n\n' + ApiError.colorStackTrace(err) + '\n\n', file ? file.toShortString() : 'null', job.data.processor);
+			if (err.isApiError) {
+				logger.error(err.print());
+			} else {
+				logger.error('[ProcessorWorker.optimize] Error while processing %s with %s:\n\n%s\n\n', file ? file.toDetailedString(variation) : 'null', job.data.processor, ApiError.colorStackTrace(err));
+			}
 			// TODO log to raygun
 		}
 	}
 
 	private static async continueCreation(file:File, variation:FileVariation) {
 
-		if (await state.redis.getAsync('queue:delete:' + file.id)) {
-			logger.info('[ProcessorWorker.continueCreation] Aborting worker continuation for file %s', file.id);
-			return;
-		}
-
 		// send direct references to creation queue (with a copy)
 		const directlyDependentVariations = file.getDirectVariationDependencies(variation);
 		for (let dependentVariation of directlyDependentVariations) {
 			const processor = processorManager.getValidCreationProcessor(file, variation, dependentVariation);
 			if (processor) {
-				const tmpPath = file.getPath(variation, { tmpSuffix: '_' + dependentVariation.name + '.source' });
-				await FileUtil.cp(file.getPath(variation), tmpPath);
-				await processorManager.queueFile('creation', processor, file, tmpPath, variation, dependentVariation);
+				const srcPath = file.getPath(variation, { tmpSuffix: '_' + dependentVariation.name + '.source' });
+				const destPath = file.getPath(variation, { tmpSuffix: '_' + processor.name + '.processing' });
+				await FileUtil.cp(file.getPath(variation), srcPath);
+				await processorManager.queueFile('creation', processor, file, srcPath, destPath, variation, dependentVariation);
 			} else {
 				logger.error('[ProcessorWorker.continueCreation] Cannot find a processor for %s which is dependent on %s.',
 					file.toShortString(dependentVariation), file.toShortString(variation));
@@ -211,10 +223,18 @@ export class ProcessorWorker {
 		let n = 0;
 		for (let processor of processorManager.getValidOptimizationProcessors(file, variation)) {
 			n++;
-			await processorManager.queueFile('optimization', processor, file, file.getPath(variation), variation);
+			const destPath = file.getPath(null, { tmpSuffix: '_' + processor.name + '.processing' });
+			await processorManager.queueFile('optimization', processor, file, file.getPath(variation), destPath, variation);
 		}
 		logger.debug('[ProcessorWorker.continueCreation] Passed %s to optimization %s processor(s).',
 			file.toShortString(variation), n);
+	}
 
+	private static async isFileDeleted(file:File, what:string):Promise<boolean> {
+		if (await state.redis.getAsync('queue:delete:' + file.id)) {
+			logger.info('[ProcessorWorker.%s] File %s is deleted, aborting.', what, file.id);
+			return true;
+		}
+		return false;
 	}
 }

@@ -196,9 +196,9 @@ class ProcessorManager {
 		return queues;
 	}
 
-	public async waitForSrcProcessingFinished(file:File, srcPath:string): Promise<void> {
+	public async waitForDependingJobsToFinish(file:File, srcPath:string): Promise<void> {
 		const queues = this.getCreationQueues(file);
-		const numJobs = await this.countRemainingProcessingWithSrc(queues, srcPath);
+		const numJobs = await this.countDependingJobs(queues, srcPath);
 		if (numJobs === 0) {
 			return;
 		}
@@ -214,7 +214,7 @@ class ProcessorManager {
 					}
 
 					// if there are still jobs, continue waiting.
-					const numJobs = await this.countRemainingProcessingWithSrc(queues, srcPath);
+					const numJobs = await this.countDependingJobs(queues, srcPath);
 					if (numJobs > 0) {
 						logger.debug('[ProcessorQueue.waitForSrcProcessingFinished] Waiting for another %s job(s) to finish for file %s.',
 							numJobs, srcPath);
@@ -233,7 +233,7 @@ class ProcessorManager {
 		});
 	}
 
-	private async countRemainingProcessingWithSrc(queues: Queue[], srcPath: string):Promise<number> {
+	private async countDependingJobs(queues: Queue[], srcPath: string):Promise<number> {
 		return this.countRemaining(queues, job => job.data.srcPath === srcPath);
 	}
 

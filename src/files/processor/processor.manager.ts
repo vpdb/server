@@ -185,68 +185,6 @@ class ProcessorManager {
 		return queues;
 	}
 
-	public getCreationQueues(file: File) {
-		const queues: Queue[] = [];
-		const categories = uniq([file.getMimeCategory(), ...file.getVariations().map(v => file.getMimeCategory(v))]);
-		for (let category of mimeTypeCategories) {
-			if (categories.includes(category)) {
-				queues.push(this.queues.get('creation').get(category));
-			}
-		}
-		return queues;
-	}
-
-	public async waitForDependingJobsToFinish(file:File, srcPath:string): Promise<void> {
-		const queues = this.getCreationQueues(file);
-		const numJobs = await this.countDependingJobs(queues, srcPath);
-		if (numJobs === 0) {
-			return;
-		}
-		return new Promise<void>(resolve => {
-
-			const completeListener = (job: Job) => {
-				(async () => {
-					const data:JobData = job.data as JobData;
-
-					// if it's not the same path, ignore
-					if (data.srcPath !== srcPath) {
-						return;
-					}
-
-					// if there are still jobs, continue waiting.
-					const numJobs = await this.countDependingJobs(queues, srcPath);
-					if (numJobs > 0) {
-						logger.debug('[ProcessorQueue.waitForSrcProcessingFinished] Waiting for another %s job(s) to finish for file %s.',
-							numJobs, srcPath);
-						return;
-					}
-					logger.debug('[ProcessorQueue.waitForSrcProcessingFinished] Finished waiting for file %s.', srcPath);
-					for (let queue of queues.values()) {
-						(queue as any).off('completed', completeListener);
-					}
-					resolve();
-				})();
-			};
-			for (let queue of queues) {
-				queue.on('completed', completeListener);
-			}
-		});
-	}
-
-	private async countDependingJobs(queues: Queue[], srcPath: string):Promise<number> {
-		return this.countRemaining(queues, job => job.data.srcPath === srcPath);
-	}
-
-	private async countRemaining(queues: Queue[], filter: (job: Job) => boolean):Promise<number> {
-		let numbJobs = 0;
-		for (let queue of queues) {
-			const jobs = await (queue as any).getJobs(['waiting', 'active']) as Job[];
-			const remainingJobs = jobs.filter(filter);
-			numbJobs += remainingJobs.length;
-		}
-		return numbJobs;
-	}
-
 	/**
 	 * Returns a creation processor by name.
 	 *

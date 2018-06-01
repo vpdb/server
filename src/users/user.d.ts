@@ -17,13 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document } from 'mongoose';
+import { Document, MetricsDocument } from 'mongoose';
 import { VpdbQuotaConfigPlan } from '../common/types/config';
 
 /**
  * The user model as it comes from the database.
  */
-export interface User extends Document {
+export interface User extends MetricsDocument {
 	id?: string;
 	name?: string;
 	username?: string;
@@ -40,7 +40,11 @@ export interface User extends Document {
 	location?: string;
 	preferences?: UserPreferences;
 	credits?: number;
-	counter?: UserCounter;
+	counter?: {
+		comments?: number;
+		downloads?: number;
+		stars?: number;
+	};
 	created_at?: Date;
 	is_active?: boolean;
 	validated_emails?: string[];
@@ -94,12 +98,6 @@ export interface User extends Document {
 	 * @return {boolean} True if at least one role matches, false otherwise.
 	 */
 	hasRole?(role: string | string[]): boolean;
-}
-
-export interface UserCounter extends Document {
-	comments?: number;
-	downloads?: number;
-	stars?: number;
 }
 
 export interface UserPreferences extends Document {

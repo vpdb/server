@@ -199,4 +199,5 @@ export interface SerializerOptions {
 	thumbPerFile?: boolean;
 	includeProviderId?: string;
 	starredReleaseIds?: string[];
+	fields?:string[];
 }

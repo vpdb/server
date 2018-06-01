@@ -17,18 +17,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-'use strict';
+import { Scope } from '../common/scope';
+import { MediumApi } from './medium.api';
 
-const scope = require('../../../src/common/scope');
-const settings = require('../../../src/common/settings');
+const api = new MediumApi();
+export const router = api.apiRouter();
 
-exports.register = function(app, api) {
+router.post('/v1/media',       api.auth(api.create.bind(api), 'media', 'add', [Scope.ALL, Scope.CREATE]));
+router.delete('/v1/media/:id', api.auth(api.del.bind(api), 'media', 'delete-own', [Scope.ALL, Scope.CREATE]));
 
-	app.post(settings.apiPath('/media'),       api.auth(api.media.create, 'media', 'add', [ scope.ALL, scope.CREATE ]));
-	app.delete(settings.apiPath('/media/:id'), api.auth(api.media.del, 'media', 'delete-own', [ scope.ALL, scope.CREATE ]));
-
-	app.post(settings.apiPath('/media/:id/star'),   api.auth(api.stars.star('medium'), 'media', 'star', [ scope.ALL, scope.COMMUNITY ]));
-	app.delete(settings.apiPath('/media/:id/star'), api.auth(api.stars.unstar('medium'), 'media', 'star', [ scope.ALL, scope.COMMUNITY ]));
-	app.get(settings.apiPath('/media/:id/star'),    api.auth(api.stars.get('medium'), 'media', 'star', [ scope.ALL, scope.COMMUNITY ]));
-
-};
+// router.post(settings.apiPath('/media/:id/star'),   api.auth(api.stars.star('medium'), 'media', 'star', [ scope.ALL, scope.COMMUNITY ]));
+// router.delete(settings.apiPath('/media/:id/star'), api.auth(api.stars.unstar('medium'), 'media', 'star', [ scope.ALL, scope.COMMUNITY ]));
+// router.get(settings.apiPath('/media/:id/star'),    api.auth(api.stars.get('medium'), 'media', 'star', [ scope.ALL, scope.COMMUNITY ]));

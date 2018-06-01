@@ -61,7 +61,7 @@ export class RomApi extends Api {
 		let game = await state.models.Game.findOne(q).exec();
 
 		const rom = extend(pick(ctx.body, validFields), {
-			_created_by: ctx.user._id,
+			_created_by: ctx.state.user._id,
 			created_at: new Date()
 		}) as Rom;
 

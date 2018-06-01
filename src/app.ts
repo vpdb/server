@@ -26,11 +26,14 @@ import { logger } from './common/logger';
 import { EndPoint } from './common/types/endpoint';
 
 import { AuthenticationEndPoint, AuthenticationStorageEndPoint } from './authentication';
+import { BackglassEndPoint } from './backglasses';
 import { FilesApiEndPoint, FilesProtectedStorageEndPoint, FilesPublicStorageEndPoint } from './files';
 import { GamesApiEndPoint } from './games';
+import { GameRequestApiEndPoint } from './game-requests';
 import { LogEventEndPoint } from './log-event';
 import { LogUserEndPoint } from './log-user';
 import { TokenEndPoint } from './tokens';
+import { MediaApiEndPoint } from './media';
 import { MiscEndPoint } from './misc';
 import { ProfileEndPoint } from './profile';
 import { ReleaseEndPoint } from './releases';
@@ -51,12 +54,15 @@ shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 		const endPoints: EndPoint[] = [
 			new AuthenticationEndPoint(),
 			new AuthenticationStorageEndPoint(),
+			new BackglassEndPoint(),
 			new FilesApiEndPoint(),
 			new FilesPublicStorageEndPoint(),
 			new FilesProtectedStorageEndPoint(),
 			new GamesApiEndPoint(),
+			new GameRequestApiEndPoint(),
 			new LogEventEndPoint(),
 			new LogUserEndPoint(),
+			new MediaApiEndPoint(),
 			new MiscEndPoint(),
 			new ProfileEndPoint(),
 			new ReleaseEndPoint(),

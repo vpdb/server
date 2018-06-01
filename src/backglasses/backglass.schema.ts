@@ -18,7 +18,7 @@
  */
 
 import { isArray } from 'lodash';
-import { GameReferenceModel, ModeratedModel, PrettyIdModel, Schema } from 'mongoose';
+import { GameReferenceModel, ModeratedModel, PaginateModel, PrettyIdModel, Schema } from 'mongoose';
 import paginatePlugin from 'mongoose-paginate';
 import uniqueValidatorPlugin from 'mongoose-unique-validator';
 
@@ -50,7 +50,7 @@ export const backglassFields = {
 	created_at:   { type: Date, required: true },
 	_created_by:  { type: Schema.Types.ObjectId, ref: 'User', required: true }
 };
-export interface BackglassModel extends GameReferenceModel<Backglass>, PrettyIdModel<Backglass>, ModeratedModel<Backglass> {}
+export interface BackglassModel extends GameReferenceModel<Backglass>, PrettyIdModel<Backglass>, ModeratedModel<Backglass>, PaginateModel<Backglass> {}
 export const backglassSchema = new Schema(backglassFields, { toObject: { virtuals: true, versionKey: false } });
 
 //-----------------------------------------------------------------------------
@@ -71,7 +71,7 @@ backglassSchema.plugin(metricsPlugin);
 // METHODS
 //-----------------------------------------------------------------------------
 
-backglassSchema.methods.isCreatedBy = function(user:User) {
+backglassSchema.methods.isCreatedBy = function(user:User):boolean {
 	if (!user) {
 		return false;
 	}

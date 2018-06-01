@@ -17,17 +17,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { createWriteStream, createReadStream } from 'fs';
-
-const PngQuant = require('pngquant');
-import { sep } from "path";
-const OptiPng = require('optipng');
-
+import { createReadStream, createWriteStream } from 'fs';
 import { OptimizationProcessor } from './processor';
-import { File} from '../file';
+import { File } from '../file';
 import { logger } from '../../common/logger';
 import { ApiError } from '../../common/api.error';
 import { FileVariation } from '../file.variations';
+import { FileUtil } from '../file.util';
+
+const PngQuant = require('pngquant');
+const OptiPng = require('optipng');
 
 export class ImageOptimizationProcessor implements OptimizationProcessor<FileVariation> {
 
@@ -44,8 +43,6 @@ export class ImageOptimizationProcessor implements OptimizationProcessor<FileVar
 
 	async process(file: File, src: string, dest: string, variation?: FileVariation): Promise<string> {
 
-		const srcLog = src.split(sep).slice(-3).join('/');
-		const destLog = dest.split(sep).slice(-3).join('/');
 		if (file.file_type === 'playfield') {
 			logger.info('[ImageOptimizationProcessor] Skipping (will process when orientation is set): %s', file.toDetailedString(variation));
 			return dest;
@@ -75,7 +72,7 @@ export class ImageOptimizationProcessor implements OptimizationProcessor<FileVar
 			};
 
 			// do the processing
-			logger.debug('[ImageOptimizationProcessor] Start: %s from %s to %s', file.toDetailedString(variation), srcLog, destLog);
+			logger.debug('[ImageOptimizationProcessor] Start: %s from %s to %s', file.toDetailedString(variation), FileUtil.log(src), FileUtil.log(dest));
 			createReadStream(src).on('error', handleErr('reading'))
 				.pipe(quanter).on('error', handleErr('quanter'))
 				.pipe(optimizer).on('error', handleErr('optimizer'))

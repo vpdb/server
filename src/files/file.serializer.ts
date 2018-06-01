@@ -22,7 +22,7 @@ export class FileSerializer extends Serializer<File> {
 		// file variations
 		file.variations = {};
 		doc.getVariations().forEach(variation => {
-			file.variations[variation.name] = doc.variations[variation.name] || {};
+			file.variations[variation.name] = doc.variations ? doc.variations[variation.name] || {} : {};
 			file.variations[variation.name].url = doc.getUrl(variation);
 			const cost = quota.getCost(doc, variation);
 			if (!file.is_active || cost > -1) {

@@ -19,7 +19,7 @@
 
 import Application = require('koa');
 import Router from 'koa-router';
-import { default as mongoose, Schema } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 import { state } from '../state';
 import { EndPoint } from '../common/types/endpoint';

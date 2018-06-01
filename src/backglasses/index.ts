@@ -18,34 +18,33 @@
  */
 
 import Application = require('koa');
-import Router from 'koa-router';
 import mongoose, { Schema } from 'mongoose';
+import Router from 'koa-router';
 
 import { state } from '../state';
 import { EndPoint } from '../common/types/endpoint';
-import { Rom } from './rom';
-import { RomModel, romSchema } from './rom.schema';
-import { RomSerializer } from './rom.serializer';
-import { router } from './rom.api.router';
+import { BackglassModel, backglassSchema } from './backglass.schema';
+import { Backglass } from './backglass';
+import { BackglassSerializer } from './backglass.serializer';
 
-export class RomApiEndPoint implements EndPoint {
+export class BackglassEndPoint implements EndPoint {
 
-	readonly name: string = 'Rom API';
+	readonly name: string = 'Backglass API';
 
 	private readonly _router: Router;
 	private readonly _schema: Schema;
 
 	constructor() {
-		this._schema = romSchema;
-		this._router = router;
+		//this._router = router;
+		this._schema = backglassSchema;
 	}
 
 	getRouter(): Router {
-		return this._router;
+		return null; //return this._router;
 	}
 
 	register(app: Application): void {
-		state.models.Rom = mongoose.model<Rom>('Rom', this._schema) as RomModel;
-		state.serializers.Rom = new RomSerializer();
+		state.models.Backglass = mongoose.model<Backglass>('Backglass', this._schema) as BackglassModel;
+		state.serializers.Backglass = new BackglassSerializer();
 	}
 }

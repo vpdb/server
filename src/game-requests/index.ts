@@ -23,20 +23,20 @@ import mongoose, { Schema } from 'mongoose';
 
 import { state } from '../state';
 import { EndPoint } from '../common/types/endpoint';
-import { Rom } from './rom';
-import { RomModel, romSchema } from './rom.schema';
-import { RomSerializer } from './rom.serializer';
-import { router } from './rom.api.router';
+import { gameRequestSchema } from './game.request.schema';
+import { GameRequestSerializer } from './game.request.serializer';
+import { router } from './game.request.api.router';
+import { GameRequest } from './game.request';
 
-export class RomApiEndPoint implements EndPoint {
+export class GameRequestApiEndPoint implements EndPoint {
 
-	readonly name: string = 'Rom API';
+	readonly name: string = 'Game Request API';
 
 	private readonly _router: Router;
 	private readonly _schema: Schema;
 
 	constructor() {
-		this._schema = romSchema;
+		this._schema = gameRequestSchema;
 		this._router = router;
 	}
 
@@ -45,7 +45,7 @@ export class RomApiEndPoint implements EndPoint {
 	}
 
 	register(app: Application): void {
-		state.models.Rom = mongoose.model<Rom>('Rom', this._schema) as RomModel;
-		state.serializers.Rom = new RomSerializer();
+		state.models.GameRequest = mongoose.model<GameRequest>('GameRequest', this._schema);
+		state.serializers.GameRequest = new GameRequestSerializer();
 	}
 }

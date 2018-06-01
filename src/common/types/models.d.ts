@@ -22,7 +22,6 @@ import { Build } from '../../builds/build';
 import { Comment } from '../../comments/comment';
 import { File } from '../../files/file';
 import { GameRequest } from '../../game-requests/game.request';
-import { Medium } from '../../media/medium';
 import { Rating } from '../../ratings/rating';
 import { TableBlock } from '../../releases/release.tableblock';
 import { Tag } from '../../tags/tag';
@@ -34,6 +33,7 @@ import { GameModel } from '../../games/game.schema';
 import { BackglassModel } from '../../backglasses/backglass.schema';
 import { LogEventModel } from '../../log-event/log.event.schema';
 import { LogUserModel } from '../../log-user/log.user.schema';
+import { MediumModel } from '../../media/medium.schema';
 import { ReleaseModel } from '../../releases/release.schema';
 import { RomModel } from '../../roms/rom.schema';
 
@@ -46,7 +46,7 @@ export interface Models {
 	GameRequest: Model<GameRequest>;
 	LogEvent: LogEventModel;
 	LogUser: LogUserModel;
-	Medium: Model<Medium>;
+	Medium: MediumModel;
 	Rating: Model<Rating>;
 	Release: ReleaseModel;
 	Rom: RomModel;

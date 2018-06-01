@@ -112,15 +112,12 @@ config.vpdb.passport.ipboard.forEach(function (ipbConfig) {
 
 export const userSchema = new Schema(userFields, { toObject: { virtuals: true, versionKey: false } });
 userSchema.index({ name: 'text', username: 'text', email: 'text' });
-userSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
-
 
 //-----------------------------------------------------------------------------
 // PLUGINS
 //-----------------------------------------------------------------------------
-
+userSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
 userSchema.plugin(metricsPlugin);
-
 
 //-----------------------------------------------------------------------------
 // VIRTUALS

@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { default as mongoose, Document, Query, Schema } from 'mongoose';
+import mongoose, { Document, Query, Schema } from 'mongoose';
 
 export function idReferenceValidatorPlugin(schema: Schema, options: IdReferenceValidatorOpts = {}) {
 

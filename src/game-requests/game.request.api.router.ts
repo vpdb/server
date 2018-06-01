@@ -17,15 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-'use strict';
+import { GameRequestApi } from './game.request.api';
+import { Scope } from '../common/scope';
 
-const scope = require('../../../src/common/scope');
-const settings = require('../../../src/common/settings');
+const api = new GameRequestApi();
+export const router = api.apiRouter();
 
-exports.register = function(app, api) {
-
-	app.post(settings.apiPath('/game_requests'), api.auth(api.gameRequests.create, 'game_requests', 'add', [ scope.ALL, scope.COMMUNITY ]));
-	app.get(settings.apiPath('/game_requests'), api.auth(api.gameRequests.list, 'game_requests', 'list', [ scope.ALL ]));
-	app.patch(settings.apiPath('/game_requests/:id'),  api.auth(api.gameRequests.update, 'game_requests', 'update', [ scope.ALL, scope.COMMUNITY ]));
-	app.delete(settings.apiPath('/game_requests/:id'), api.auth(api.gameRequests.del, 'game_requests', 'delete-own', [ scope.ALL, scope.COMMUNITY ]));
-};
+router.post('/v1/game_requests', api.auth(api.create.bind(api), 'game_requests', 'add', [Scope.ALL, Scope.COMMUNITY]));
+router.get('/v1/game_requests', api.auth(api.list.bind(api), 'game_requests', 'list', [Scope.ALL]));
+router.patch('/v1/game_requests/:id', api.auth(api.update.bind(api), 'game_requests', 'update', [Scope.ALL, Scope.COMMUNITY]));
+router.delete('/v1/game_requests/:id', api.auth(api.del.bind(api), 'game_requests', 'delete-own', [Scope.ALL, Scope.COMMUNITY]));

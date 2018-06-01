@@ -19,6 +19,7 @@
 
 import { PaginateModel, PrettyIdModel, Schema } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
+import paginatePlugin = require('mongoose-paginate');
 
 import { state } from '../state';
 import { config } from '../common/settings';
@@ -28,7 +29,7 @@ import { metricsPlugin } from '../common/mongoose/metrics.plugin';
 import { prettyIdPlugin } from '../common/mongoose/pretty.id.plugin';
 import { sortableTitlePlugin } from '../common/mongoose/sortable.title.plugin';
 
-import paginatePlugin = require('mongoose-paginate');
+
 import { isInteger, isString } from 'lodash';
 import { Game } from './game';
 
@@ -164,7 +165,8 @@ gameSchema.methods.isRestricted = function (what: 'release' | 'backglass'):boole
 //-----------------------------------------------------------------------------
 gameSchema.pre('remove', async function () {
 
-	await state.models.Rating.remove({ '_ref.game':this._id }).exec();
-	await state.models.Star.remove({ '_ref.game':this._id }).exec();
-	await state.models.Medium.remove({ '_ref.game':this._id }).exec();
+	// fixme re-add when models available.
+	// await state.models.Rating.remove({ '_ref.game':this._id }).exec();
+	// await state.models.Star.remove({ '_ref.game':this._id }).exec();
+	// await state.models.Medium.remove({ '_ref.game':this._id }).exec();
 });

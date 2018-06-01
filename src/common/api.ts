@@ -18,7 +18,7 @@
  */
 
 import { parse as parseUrl, format as formatUrl } from 'url';
-import { difference, isObject, keys, pick, extend, values, map } from 'lodash';
+import { difference, isObject, keys, pick, extend, values, map, intersection } from 'lodash';
 import { Context } from './types/context';
 import { logger } from './logger';
 import { config, settings } from './settings';
@@ -281,7 +281,6 @@ export abstract class Api {
 		return { pagination: extend(pagination, { count: count }) };
 	}
 
-
 	/**
 	 * Checks is an object has only changes of a given field.
 	 *
@@ -318,8 +317,25 @@ export abstract class Api {
 				});
 			}
 		});
-
 		return errors.length ? errors : false;
+	}
+
+	/**
+	 * Makes sure the post body only contains the given fields and throws an exception otherwise.
+	 * @param {Context} ctx Koa context
+	 * @param {string[]} updatableFields Updatable fields
+	 */
+	protected assertFields(ctx: Context, updatableFields: string[]) {
+		// fail if invalid fields provided
+		let submittedFields = keys(ctx.body);
+		if (intersection(updatableFields, submittedFields).length !== submittedFields.length) {
+			let invalidFields = difference(submittedFields, updatableFields);
+			throw new ApiError('Invalid field%s: ["%s"]. Allowed fields: ["%s"]',
+				invalidFields.length === 1 ? '' : 's',
+				invalidFields.join('", "'),
+				updatableFields.join('", "')
+			).status(400);
+		}
 	}
 
 	/**

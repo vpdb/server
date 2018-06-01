@@ -17,18 +17,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-'use strict';
-
-const logger = require('winston');
+import { Schema } from 'mongoose';
 const shortId = require('shortid32');
-const mongoose = require('mongoose');
-
-const Schema = mongoose.Schema;
 
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
-const fields = {
+
+const gameRequestFields = {
 	id:          { type: String, required: true, unique: true, 'default': shortId.generate },
 	title:       { type: String },
 	notes:       { type: String },
@@ -36,16 +32,8 @@ const fields = {
 	ipdb_title:  { type: String, required: 'Must be fetched from IPDB' },
 	is_closed:   { type: Boolean, required: true, 'default': false },
 	message:     { type: String }, // moderator feedback sent to user
-	_game:       { type: Schema.ObjectId, ref: 'Game' },
-	_created_by: { type: Schema.ObjectId, required: true, ref: 'User', index: true },
+	_game:       { type: Schema.Types.ObjectId, ref: 'Game' },
+	_created_by: { type: Schema.Types.ObjectId, required: true, ref: 'User', index: true },
 	created_at:  { type: Date, required: true }
 };
-const GameRequestSchema = new Schema(fields, { usePushEach: true });
-
-//-----------------------------------------------------------------------------
-// OPTIONS
-//-----------------------------------------------------------------------------
-GameRequestSchema.options.toObject = { virtuals: true, versionKey: false };
-
-mongoose.model('GameRequest', GameRequestSchema);
-logger.info('[model] Schema "GameRequest" registered.');
+export const gameRequestSchema = new Schema(gameRequestFields, { toObject: { virtuals: true, versionKey: false } });

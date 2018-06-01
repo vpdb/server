@@ -238,8 +238,9 @@ fileSchema.methods.toDetailedString = function (this: File, variation?: FileVari
  * @return {Promise<File>} Moved file
  */
 fileSchema.methods.switchToActive = async function (this: File): Promise<File> {
-	//await processorQueue.addAction(this, 'file.activated');
 	this.is_active = true;
+	await this.save();
+	await processorQueue.activateFile(this);
 	return this;
 };
 

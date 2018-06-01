@@ -18,7 +18,7 @@
  */
 
 import { promisify } from 'util';
-import { dirname, resolve } from 'path';
+import { dirname, resolve, sep } from 'path';
 import { createReadStream, createWriteStream, exists, mkdir, stat, unlink } from 'fs';
 import * as Stream from 'stream';
 
@@ -28,6 +28,7 @@ import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
 import { Metadata } from './metadata/metadata';
 import { processorQueue } from './processor/processor.queue';
+import chalk from 'chalk';
 
 const statAsync = promisify(stat);
 const existsAsync = promisify(exists);
@@ -116,7 +117,7 @@ export class FileUtil {
 	 * @param {{mode?: number}} opts Optional mode
 	 * @return {Promise<string>} Absolute path of created directory
 	 */
-	static async mkdirp(path: string, opts: { mode?: number } = {}): Promise<string> {
+	public static async mkdirp(path: string, opts: { mode?: number } = {}): Promise<string> {
 		let mode = opts.mode;
 		if (mode === undefined) {
 			mode = FileUtil.MODE_0777 & (~process.umask());
@@ -147,18 +148,26 @@ export class FileUtil {
 	 * @param {string} source Source
 	 * @param {string} target Destination
 	 */
-	static async cp(source:string, target:string): Promise<void> {
+	public static async cp(source: string, target: string): Promise<void> {
 		const rd = createReadStream(source);
 		const wr = createWriteStream(target);
-		return new Promise<void>(function(resolve, reject) {
+		return new Promise<void>(function (resolve, reject) {
 			rd.on('error', reject);
 			wr.on('error', reject);
 			wr.on('finish', resolve);
 			rd.pipe(wr);
-		}).catch(function(error) {
+		}).catch(function (error) {
 			rd.destroy();
 			wr.end();
 			throw error;
 		});
+	}
+
+	public static log(path: string): string {
+		return path
+			.replace(/storage(-test)?-protected/, chalk.gray('priv'))
+			.replace(/storage(-test)?-public/, chalk.gray('pub'))
+			.split(sep).slice(-3).join('/')
+			.replace(/^data\//, '');
 	}
 }

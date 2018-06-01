@@ -19,7 +19,7 @@
 
 import { MetricsDocument, MetricsOptions, Schema } from 'mongoose';
 
-export function metricsPlugin<T>(schema: Schema, options:MetricsOptions = {}) {
+export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 
 	/**
 	 * Increments a counter.
@@ -28,9 +28,9 @@ export function metricsPlugin<T>(schema: Schema, options:MetricsOptions = {}) {
 	 * @param {boolean} [decrement] If set to true, decrement instead counter instead of increment.
 	 * @returns {Promise}
 	 */
-	schema.methods.incrementCounter = async function(counterName:string, decrement:boolean = false): Promise<T> {
+	schema.methods.incrementCounter = async function (counterName: string, decrement: boolean = false): Promise<T> {
 		const incr = decrement ? -1 : 1;
-		const q:any = {
+		const q: any = {
 			$inc: { ['counter.' + counterName]: incr }
 		};
 
@@ -63,13 +63,18 @@ declare module 'mongoose' {
 		 * @param {boolean} [decrement=false] If set to true, decrement instead counter instead of increment.
 		 * @returns {Promise}
 		 */
-		incrementCounter(what:string, decrement?:boolean): Promise<MetricsDocument>
+		incrementCounter(what: string, decrement?: boolean): Promise<MetricsDocument>;
+
+		/**
+		 * The counter object
+		 */
+		counter?: { [key: string]: number }
 	}
 
 	// plugin options
 	export interface MetricsOptions {
 		hotness?: {
-			[key:string]: { [key:string]: number }
+			[key: string]: { [key: string]: number }
 		}
 	}
 }

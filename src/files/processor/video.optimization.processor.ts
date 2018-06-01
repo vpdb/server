@@ -40,8 +40,7 @@ export class VideoOptimizationProcessor implements OptimizationProcessor<VideoFi
 	}
 
 	canProcess(file: File, variation?: VideoFileVariation): boolean {
-		// currently only png files.
-		return file.getMimeType(variation) === 'image/png';
+		return file.getMimeCategory(variation) === 'video';
 	}
 
 	getOrder(variation?: VideoFileVariation): number {

@@ -18,8 +18,8 @@
  */
 
 import { promisify } from 'util';
-import { dirname, sep } from 'path';
-import { exists, stat, rename, unlink } from 'fs';
+import { dirname } from 'path';
+import { exists, rename, stat, unlink } from 'fs';
 import { assign } from 'lodash';
 import { Job } from 'bull';
 
@@ -43,6 +43,9 @@ export class ProcessorWorker {
 	/**
 	 * This is the worker function that *creates* new variations.
 	 *
+	 * Note that creator jobs always get their own copy of the source file in
+	 * order to avoid concurrency issues.
+	 *
 	 * @param {Job} job
 	 * @return {Promise<any>}
 	 */
@@ -51,6 +54,9 @@ export class ProcessorWorker {
 
 		// retrieve data from deserialized job
 		const data = job.data as JobData;
+		const srcPath = data.srcPath;
+		const destPath = data.destPath;
+
 		file = await state.models.File.findOne({ id: data.fileId }).exec();
 		if (!file) {
 			logger.warn('[ProcessorWorker.create] [%s | #%s] skip: File "%s" has been removed from DB, ignoring.',
@@ -64,28 +70,22 @@ export class ProcessorWorker {
 		}
 
 		try {
-			const srcPath = data.srcPath;
-			const srcPathLog = srcPath.split(sep).slice(-3).join('/');
-			const destPath = data.destPath;
-			const destPathLog = destPath.split(sep).slice(-3).join('/');
 
 			// create directory
 			if (!(await existsAsync(dirname(destPath)))) {
 				await FileUtil.mkdirp(dirname(destPath));
 			}
 			logger.debug('[ProcessorWorker.create] [%s | #%s] start: %s from %s to %s',
-				data.processor, job.id, file.toDetailedString(variation), srcPathLog, destPathLog);
+				data.processor, job.id, file.toDetailedString(variation), FileUtil.log(srcPath), FileUtil.log(destPath));
 
 			// run processor
 			await processor.process(file, srcPath, destPath, variation);
 			logger.debug('[ProcessorWorker.create] [%s | #%s] end: %s from %s to %s',
-				data.processor, job.id, file.toDetailedString(variation), srcPathLog, destPathLog);
+				data.processor, job.id, file.toDetailedString(variation), FileUtil.log(srcPath), FileUtil.log(destPath));
 
-			// clean up source if necessary
-			if (variation.source) {
-				logger.debug('[ProcessorWorker.processJob] Cleaning up variation source at %s', srcPathLog);
-				await unlinkAsync(srcPath);
-			}
+			// clean up source
+			logger.debug('[ProcessorWorker.create] Cleaning up variation source at %s', FileUtil.log(srcPath));
+			await unlinkAsync(srcPath);
 
 			// update metadata
 			const metadataReader = Metadata.getReader(file, variation);
@@ -98,7 +98,8 @@ export class ProcessorWorker {
 			await state.models.File.findByIdAndUpdate(file._id, { $set: fileData }, { 'new': true }).exec();
 
 			// abort if deleted
-			if (await ProcessorWorker.isFileDeleted(file, 'create')) {
+			if (await ProcessorWorker.isFileDeleted(file)) {
+				logger.debug('[ProcessorWorker.create] Removing created file due to deletion %s', FileUtil.log(destPath));
 				await unlinkAsync(destPath);
 				return null;
 			}
@@ -106,8 +107,11 @@ export class ProcessorWorker {
 			// rename
 			const newPath = await ProcessorWorker.isFileRenamed(file.getPath(variation), 'create');
 			const finalPath = newPath || file.getPath(variation);
+			if (!(await existsAsync(dirname(finalPath)))) {
+				await FileUtil.mkdirp(dirname(finalPath));
+			}
 			await renameAsync(destPath, finalPath);
-			logger.debug('[ProcessorWorker.processJob] [%s | #%s] done: %s', data.processor, job.id, file.toDetailedString(variation));
+			logger.debug('[ProcessorWorker.processJob] [%s | #%s] done: %s at %s', data.processor, job.id, file.toDetailedString(variation), FileUtil.log(finalPath));
 
 			// continue with dependents (and fresh data)
 			await ProcessorWorker.continueCreation(await state.models.File.findOne({ id: data.fileId }).exec(), variation);
@@ -115,6 +119,12 @@ export class ProcessorWorker {
 			return finalPath;
 
 		} catch (err) {
+
+			// clean up source
+			if (await existsAsync(srcPath)) {
+				await unlinkAsync(srcPath)
+			}
+
 			// nothing to return here because it's in the background.
 			if (err.isApiError) {
 				logger.error(err.print());
@@ -128,6 +138,11 @@ export class ProcessorWorker {
 	/**
 	 * This is the worker function that *optimizes* an existing variation (or original)
 	 *
+	 * Note that we assume that original files always stay in the protected
+	 * folder and aren't moved on activation. If that changes, the optimization
+	 * queue must also work with a copy of the original file to avoid file
+	 * access conflicts.
+	 *
 	 * @param {Job} job
 	 * @return {Promise<any>}
 	 */
@@ -136,6 +151,9 @@ export class ProcessorWorker {
 
 		// retrieve data from deserialized job
 		const data = job.data as JobData;
+		const srcPath = data.srcPath;
+		const destPath = data.destPath;
+
 		file = await state.models.File.findOne({ id: data.fileId }).exec();
 		if (!file) {
 			logger.warn('[ProcessorWorker.optimize] [%s | #%s] skip: File "%s" has been removed from DB, ignoring.',
@@ -146,16 +164,13 @@ export class ProcessorWorker {
 		const variation = file.getVariation(data.destVariation);
 
 		try {
-			const srcPath = data.srcPath;
-			const destPath = data.destPath;
-			const destPathLog = destPath.split(sep).slice(-3).join('/');
 
 			// create directory
 			if (!(await existsAsync(dirname(destPath)))) {
 				await FileUtil.mkdirp(dirname(destPath));
 			}
 			logger.debug('[ProcessorWorker.optimize] [%s | #%s] start: %s at %s',
-				data.processor, job.id, file.toDetailedString(variation), destPathLog);
+				data.processor, job.id, file.toDetailedString(variation), FileUtil.log(destPath));
 
 			// run processor
 			await processor.process(file, srcPath, destPath, variation);
@@ -176,19 +191,17 @@ export class ProcessorWorker {
 			await state.models.File.findByIdAndUpdate(file._id, { $set: fileData }, { 'new': true }).exec();
 
 			// abort if deleted
-			if (await ProcessorWorker.isFileDeleted(file, 'optimize')) {
+			if (await ProcessorWorker.isFileDeleted(file)) {
+				logger.debug('[ProcessorWorker.optimize] Removing created file due to deletion %s', FileUtil.log(destPath));
 				await unlinkAsync(destPath);
 				return null;
 			}
-
-			// wait for other jobs accessing destination
-			await processorManager.waitForDependingJobsToFinish(file, file.getPath(variation));
 
 			// rename
 			const newPath = await ProcessorWorker.isFileRenamed(file.getPath(variation), 'optimize');
 			const finalPath = newPath || file.getPath(variation);
 			await renameAsync(destPath, finalPath); // overwrites destination
-			logger.debug('[ProcessorWorker.optimize] [%s | #%s] done: %s', data.processor, job.id, file.toDetailedString(variation));
+			logger.debug('[ProcessorWorker.optimize] [%s | #%s] done: %s at %s', data.processor, job.id, file.toDetailedString(variation), FileUtil.log(finalPath));
 
 			return finalPath;
 
@@ -203,6 +216,17 @@ export class ProcessorWorker {
 		}
 	}
 
+	/**
+	 * Queues variations that depend on the finished creation job.
+	 *
+	 * Since variations might take another variation as source, they can't be
+	 * queued at the beginning when the source variation doesn't exist yet.
+	 * If the given variation has dependent variations, this queues the them
+	 * now they are available.
+	 *
+	 * @param {File} file File
+	 * @param {FileVariation} variation Created variation
+	 */
 	private static async continueCreation(file:File, variation:FileVariation) {
 
 		// send direct references to creation queue (with a copy)
@@ -235,18 +259,28 @@ export class ProcessorWorker {
 			file.toShortString(variation), n);
 	}
 
-	private static async isFileDeleted(file:File, what:string):Promise<boolean> {
-		if (await state.redis.getAsync('queue:delete:' + file.id)) {
-			logger.info('[ProcessorWorker.%s] File %s is deleted, aborting.', what, file.id);
-			return true;
-		}
-		return false;
+	/**
+	 * Checks whether a file has been marked as deleted and processing should be stopped.
+	 *
+	 * @param {File} file File to check
+	 * @return {Promise<boolean>} True if the file was deleted, false otherwise.
+	 */
+	private static async isFileDeleted(file:File):Promise<boolean> {
+		return !!(await state.redis.getAsync('queue:delete:' + file.id));
 	}
 
+	/**
+	 * Checks whether a file has been renamed ("activated") in order to write
+	 * the file to the correct destination.
+	 *
+	 * @param {string} path Original path of the file
+	 * @param {string} what Calling function for logging purpose
+	 * @return {Promise<string | null>} Path to new destination or null if no rename
+	 */
 	private static async isFileRenamed(path:string, what:string):Promise<string|null> {
 		const newPath = await state.redis.getAsync('queue:rename:' + path);
 		if (newPath) {
-			logger.info('[ProcessorWorker.%s] Rename %s to %s', what, path, newPath);
+			logger.info('[ProcessorWorker.%s] Activation rename from %s to %s', what, FileUtil.log(path), FileUtil.log(newPath));
 			return newPath;
 		}
 		return null;

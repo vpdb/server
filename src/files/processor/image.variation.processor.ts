@@ -18,13 +18,13 @@
  */
 
 import gm from 'gm';
-import { sep } from 'path';
 import { createWriteStream } from 'fs';
 
 import { CreationProcessor } from './processor';
 import { File } from '../file';
 import { logger } from '../../common/logger';
 import { FileVariation, ImageFileVariation } from '../file.variations';
+import { FileUtil } from '../file.util';
 
 require('bluebird').promisifyAll(gm.prototype);
 
@@ -42,9 +42,7 @@ export class ImageVariationProcessor implements CreationProcessor<ImageFileVaria
 
 	async process(file: File, src: string, dest: string, variation?: ImageFileVariation): Promise<string> {
 
-		const srcLog = src.split(sep).slice(-3).join('/');
-		const destLog = dest.split(sep).slice(-3).join('/');
-		logger.debug('[ImageVariationProcessor] Start: %s from %s to %s', file.toDetailedString(variation), srcLog, destLog);
+		logger.debug('[ImageVariationProcessor] Start: %s from %s to %s', file.toDetailedString(variation), FileUtil.log(src), FileUtil.log(dest));
 
 		// do the processing
 		const img = gm(src);
@@ -84,7 +82,7 @@ export class ImageVariationProcessor implements CreationProcessor<ImageFileVaria
 		}
 		img.setFormat(file.getMimeSubtype(variation));
 
-		logger.debug('[ImageVariationProcessor] Saving: %s to %s', file.toDetailedString(variation), destLog);
+		logger.debug('[ImageVariationProcessor] Saving: %s to %s', file.toDetailedString(variation), FileUtil.log(dest));
 		//await (img as any).writeAsync(dest);
 
 		await new Promise<File>((resolve, reject) => {
@@ -96,7 +94,7 @@ export class ImageVariationProcessor implements CreationProcessor<ImageFileVaria
 			writeStream.on('error', reject);
 			img.stream().on('error', reject).pipe(writeStream).on('error', reject);
 		});
-		logger.debug('[ImageVariationProcessor] Done: %s at %s', file.toDetailedString(variation), destLog);
+		logger.debug('[ImageVariationProcessor] Done: %s at %s', file.toDetailedString(variation), FileUtil.log(dest));
 		return dest;
 	}
 }

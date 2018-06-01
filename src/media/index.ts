@@ -23,20 +23,20 @@ import mongoose, { Schema } from 'mongoose';
 
 import { state } from '../state';
 import { EndPoint } from '../common/types/endpoint';
-import { Rom } from './rom';
-import { RomModel, romSchema } from './rom.schema';
-import { RomSerializer } from './rom.serializer';
-import { router } from './rom.api.router';
+import { MediumSerializer } from './medium.serializer';
+import { MediumModel, mediumSchema } from './medium.schema';
+import { router } from './medium.api.router';
+import { Medium } from './medium';
 
-export class RomApiEndPoint implements EndPoint {
+export class MediaApiEndPoint implements EndPoint {
 
-	readonly name: string = 'Rom API';
+	readonly name: string = 'Media API';
 
 	private readonly _router: Router;
 	private readonly _schema: Schema;
 
 	constructor() {
-		this._schema = romSchema;
+		this._schema = mediumSchema;
 		this._router = router;
 	}
 
@@ -45,7 +45,7 @@ export class RomApiEndPoint implements EndPoint {
 	}
 
 	register(app: Application): void {
-		state.models.Rom = mongoose.model<Rom>('Rom', this._schema) as RomModel;
-		state.serializers.Rom = new RomSerializer();
+		state.models.Medium = mongoose.model<Medium>('Medium', this._schema) as MediumModel;
+		state.serializers.Medium = new MediumSerializer();
 	}
 }

@@ -23,7 +23,7 @@ import { config } from '../common/settings';
 import { Context } from '../common/types/context';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { realtime } from '../common/realtime';
-import { User, UserCounter } from './user';
+import { User } from './user';
 
 export class UserSerializer extends Serializer<User> {
 
@@ -51,7 +51,7 @@ export class UserSerializer extends Serializer<User> {
 		assign(user, pick(doc, ['location']));
 
 		// counter
-		user.counter = pick(doc.counter.toObject(), ['comments', 'stars']) as UserCounter;
+		user.counter = pick((doc.counter as any).toObject(), ['comments', 'stars']);
 		return user;
 	}
 
@@ -64,7 +64,7 @@ export class UserSerializer extends Serializer<User> {
 
 		user.roles = doc.roles;
 		user.preferences = doc.preferences.toObject();
-		user.counter = doc.counter.toObject();
+		user.counter = (doc.counter as any).toObject();
 
 		// plan
 		const plan = find(config.vpdb.quota.plans, p => p.id === doc._plan);

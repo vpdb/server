@@ -17,20 +17,32 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { GameReferenceDocument, ModeratedDocument, PrettyIdDocument, Schema } from 'mongoose';
+import {
+	FileReferenceDocument,
+	GameReferenceDocument,
+	MetricsDocument,
+	ModeratedDocument,
+	PrettyIdDocument,
+	Schema
+} from 'mongoose';
 import { User } from '../users/user';
 import { BackglassVersion } from './backglass.version';
 import { ContentAuthor } from '../users/content.author';
 
-export interface Backglass extends ModeratedDocument, GameReferenceDocument, PrettyIdDocument {
-	id: string,
-	versions: BackglassVersion[],
-	description: { type: String },
-	authors: ContentAuthor[]
-	acknowledgements: string,
+export interface Backglass extends ModeratedDocument, GameReferenceDocument, PrettyIdDocument, MetricsDocument, FileReferenceDocument {
+	id: string;
+	versions: BackglassVersion[];
+	description: { type: String };
+	authors: ContentAuthor[];
+	acknowledgements: string;
 	counter: {
-		stars: number
-	},
-	created_at: Date,
-	_created_by: User | Schema.Types.ObjectId
+		stars: number;
+	};
+	created_at: Date;
+	_created_by: User | Schema.Types.ObjectId;
+
+	// serialized
+	created_by: User;
+
+	isCreatedBy(user:User):boolean;
 }

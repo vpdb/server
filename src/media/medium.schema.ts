@@ -17,26 +17,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-'use strict';
+import { keys } from 'lodash';
+import { PaginateModel, PrettyIdModel, Schema } from 'mongoose';
+import uniqueValidator from 'mongoose-unique-validator';
+import paginatePlugin = require('mongoose-paginate');
 
-const _ = require('lodash');
-const logger = require('winston');
+import { state } from '../state';
+import { prettyIdPlugin } from '../common/mongoose/pretty.id.plugin';
+import { fileReferencePlugin } from '../common/mongoose/file.reference.plugin';
+import { metricsPlugin } from '../common/mongoose/metrics.plugin';
+import { Medium } from './medium';
+
 const shortId = require('shortid32');
-const mongoose = require('mongoose');
-const paginate = require('mongoose-paginate');
-const uniqueValidator = require('mongoose-unique-validator');
-
-const prettyId = require('./plugins/pretty-id');
-const fileRef = require('./plugins/file-ref');
-const metrics = require('../../src/common/mongoose/metrics');
-
-const Schema = mongoose.Schema;
 
 // NOTE: All categories without "fileType" fail validation. Add fileType when supported.
-const categories = {
+export const mediumCategories: { [key: string]: MediumCategory } = {
 	flyer_image: {
 		folder: 'Flyer Images',
-		children: [ 'Back', 'Front', 'Inside1', 'Inside2' , 'Inside3' , 'Inside4' , 'Inside5' , 'Inside6' ],
+		children: ['Back', 'Front', 'Inside1', 'Inside2', 'Inside3', 'Inside4', 'Inside5', 'Inside6'],
 		mimeCategory: 'image',
 		reference: 'game'
 	},
@@ -90,7 +88,8 @@ const categories = {
 	playfield_image: {
 		variations: {
 			fs: { folder: 'Table Images', fileType: 'playfield-fs' },
-			ws: { folder: 'Table Images Desktop', fileType: 'playfield-ws' } },
+			ws: { folder: 'Table Images Desktop', fileType: 'playfield-ws' }
+		},
 		mimeCategory: 'image',
 		reference: 'release'
 	},
@@ -110,50 +109,48 @@ const categories = {
 	}
 };
 
-
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
-const mediumFields = {
-	id:            { type: String, required: true, unique: true, 'default': shortId.generate },
-	_file:         { type: Schema.ObjectId, required: 'You must provide a file reference.', ref: 'File' },
+export const mediumFields = {
+	id: { type: String, required: true, unique: true, 'default': shortId.generate },
+	_file: { type: Schema.Types.ObjectId, required: 'You must provide a file reference.', ref: 'File' },
 	_ref: {
-		game:      { type: Schema.ObjectId, ref: 'Game', index: true },
-		release:   { type: Schema.ObjectId, ref: 'Release', index: true }
+		game: { type: Schema.Types.ObjectId, ref: 'Game', index: true },
+		release: { type: Schema.Types.ObjectId, ref: 'Release', index: true }
 	},
-	category:      { type: String, required: 'You must provide a category' },
-	description:   { type: String },
+	category: { type: String, required: 'You must provide a category' },
+	description: { type: String },
 	acknowledgements: { type: String },
-	counter:       {
-		stars:     { type: Number, 'default': 0 }
+	counter: {
+		stars: { type: Number, 'default': 0 }
 	},
-	created_at:   { type: Date, required: true },
-	_created_by:  { type: Schema.ObjectId, ref: 'User', required: true }
+	created_at: { type: Date, required: true },
+	_created_by: { type: Schema.Types.ObjectId, ref: 'User', required: true }
 };
-const MediumSchema = new Schema(mediumFields, { usePushEach: true });
 
+export interface MediumModel extends PrettyIdModel<Medium>, PaginateModel<Medium> { }
+export const mediumSchema = new Schema(mediumFields, { toObject: { virtuals: true, versionKey: false } });
 
 //-----------------------------------------------------------------------------
 // PLUGINS
 //-----------------------------------------------------------------------------
-MediumSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.', code: 'duplicate_field' });
-MediumSchema.plugin(prettyId, { model: 'Medium', ignore: [ '_created_by' ] });
-MediumSchema.plugin(fileRef);
-MediumSchema.plugin(paginate);
-MediumSchema.plugin(metrics);
-
+mediumSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.', code: 'duplicate_field' });
+mediumSchema.plugin(prettyIdPlugin, { model: 'Medium', ignore: ['_created_by'] });
+mediumSchema.plugin(fileReferencePlugin);
+mediumSchema.plugin(paginatePlugin);
+mediumSchema.plugin(metricsPlugin);
 
 //-----------------------------------------------------------------------------
 // VALIDATIONS
 //-----------------------------------------------------------------------------
-
-MediumSchema.path('category').validate(function() {
-	let [ categoryName, childName ] = this.category.split('/');
-	let category = categories[categoryName];
+mediumSchema.path('category').validate(() => {
+	let [categoryName, childName] = this.category.split('/');
+	let category = mediumCategories[categoryName];
 
 	// validate category
 	if (!category) {
-		this.invalidate('category', 'Invalid category "' + categoryName + '". Must be one of: [ "' + _.keys(categories).join('", "') + '" ].');
+		this.invalidate('category', 'Invalid category "' + categoryName + '". Must be one of: [ "' + keys(mediumCategories).join('", "') + '" ].');
 		return true;
 	}
 
@@ -171,10 +168,10 @@ MediumSchema.path('category').validate(function() {
 	// validate variation children
 	if (category.variations) {
 		if (!childName) {
-			this.invalidate('category', 'Must provide sub-category for "' + categoryName + '". Possible values: [ "' + _.keys(category.variations).join('", "') + '" ].');
+			this.invalidate('category', 'Must provide sub-category for "' + categoryName + '". Possible values: [ "' + keys(category.variations).join('", "') + '" ].');
 
 		} else if (!category.variations[childName]) {
-			this.invalidate('category', 'Invalid sub-category "' + childName + '" for "' + categoryName + '". Must be one of: [ "' + _.keys(category.variations).join('", "') + '" ].');
+			this.invalidate('category', 'Invalid sub-category "' + childName + '" for "' + categoryName + '". Must be one of: [ "' + keys(category.variations).join('", "') + '" ].');
 
 		} else if (!category.variations[childName].fileType) {
 			// invalidate if no fileType is set
@@ -192,48 +189,39 @@ MediumSchema.path('category').validate(function() {
 	if (!this._ref[category.reference]) {
 		this.invalidate('_ref', 'Reference to ' + category.reference + ' missing.');
 	}
-
-
 });
 
-MediumSchema.path('_file').validate(function(value) {
-	const File =  mongoose.model('File');
-	return Promise.try(() => {
-		return File.findById(value).exec();
+mediumSchema.path('_file').validate(async (value: any) => {
+	const file = await state.models.File.findById(value).exec();
+	let [categoryName, childName] = this.category.split('/');
+	let category = mediumCategories[categoryName];
+	if (category) {
 
-	}).then(file => {
-		let [ categoryName, childName ] = this.category.split('/');
-		let category = categories[categoryName];
-		if (category) {
-
-			// check mime type
-			if (file.getMimeCategory() !== category.mimeCategory) {
-				this.invalidate('_file', 'Invalid MIME type, must be a ' + category.mimeCategory + ' but is a ' + file.getMimeCategory() + '.');
-			}
-
-			// check file type
-			if (category.variations) {
-				if (category.variations[childName] && category.variations[childName].fileType && category.variations[childName].fileType !== file.file_type) {
-					this.invalidate('_file', 'Invalid file type, must be a ' + category.variations[childName].fileType + ' but is a ' + file.file_type + '.');
-				}
-
-			} else {
-				if (category.fileType && category.fileType !== file.file_type) {
-					this.invalidate('_file', 'Invalid file type, must be a ' + category.fileType + ' but is a ' + file.file_type + '.');
-				}
-			}
-
+		// check mime type
+		if (file.getMimeCategory() !== category.mimeCategory) {
+			this.invalidate('_file', 'Invalid MIME type, must be a ' + category.mimeCategory + ' but is a ' + file.getMimeCategory() + '.');
 		}
-		return true;
 
-	});
+		// check file type
+		if (category.variations) {
+			if (category.variations[childName] && category.variations[childName].fileType && category.variations[childName].fileType !== file.file_type) {
+				this.invalidate('_file', 'Invalid file type, must be a ' + category.variations[childName].fileType + ' but is a ' + file.file_type + '.');
+			}
+
+		} else {
+			if (category.fileType && category.fileType !== file.file_type) {
+				this.invalidate('_file', 'Invalid file type, must be a ' + category.fileType + ' but is a ' + file.file_type + '.');
+			}
+		}
+	}
+	return true;
 });
 
-
-//-----------------------------------------------------------------------------
-// OPTIONS
-//-----------------------------------------------------------------------------
-MediumSchema.options.toObject = { virtuals: true, versionKey: false };
-
-mongoose.model('Medium', MediumSchema);
-logger.info('[model] Schema "Medium" registered.');
+interface MediumCategory {
+	folder?: string;
+	fileType?: string;
+	children?: string[];
+	variations?: { [key: string]: { folder: string, fileType?: string } };
+	mimeCategory: string;
+	reference: string;
+}

@@ -18,11 +18,12 @@
  */
 
 import { keys } from 'lodash';
-import { PrettyIdOptions, Schema } from 'mongoose';
+import { PrettyIdModel, PrettyIdOptions, Schema } from 'mongoose';
 
 import { flavors } from './release.flavors';
 import { fileReferencePlugin } from '../common/mongoose/file.reference.plugin';
 import { prettyIdPlugin } from '../common/mongoose/pretty.id.plugin';
+import { ReleaseVersionFile } from './release.version.file';
 
 const validationStatusValues = ['verified', 'playable', 'broken'];
 
@@ -47,6 +48,7 @@ export const releaseVersionFileFields = {
 	}
 };
 
+export interface ReleaseVersionFileModel extends PrettyIdModel<ReleaseVersionFile> {}
 export const releaseVersionFileSchema = new Schema(releaseVersionFileFields,{ toObject: { virtuals: true, versionKey: false } });
 
 releaseVersionFileSchema.plugin(fileReferencePlugin);

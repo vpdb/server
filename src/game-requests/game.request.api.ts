@@ -27,7 +27,7 @@ import { acl } from '../common/acl';
 import { logger } from '../common/logger';
 import { Context } from '../common/types/context';
 import { ipdb } from '../common/ipdb';
-import { gameRequestDenied } from '../common/mailer';
+import { mailer } from '../common/mailer';
 import { LogEventUtil } from '../log-event/log.event.util';
 import { User } from '../users/user';
 
@@ -140,7 +140,7 @@ export class GameRequestApi extends Api {
 		});
 
 		if (requestClosed) {
-			await gameRequestDenied(user as User, gameRequest.ipdb_title, gameRequest.message);
+			await mailer.gameRequestDenied(user as User, gameRequest.ipdb_title, gameRequest.message);
 		}
 		return this.success(ctx, state.serializers.GameRequest.simple(ctx, gameRequest), 200);
 	}

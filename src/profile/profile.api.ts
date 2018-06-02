@@ -29,7 +29,7 @@ import { logger } from '../common/logger';
 import { LogUserUtil } from '../log-user/log.user.util';
 import { ApiError, ApiValidationError } from '../common/api.error';
 import { User } from '../users/user';
-import { emailUpdateConfirmation, welcomeLocal } from '../common/mailer';
+import { mailer } from '../common/mailer';
 import { config } from '../common/settings';
 import { realtime } from '../common/realtime';
 import { UserUtil } from '../users/user.util';
@@ -184,7 +184,7 @@ export class ProfileApi extends Api {
 						'old': { email: currentUser.email },
 						'new': { email: updatedUser.email_status.value }
 					});
-					await emailUpdateConfirmation(updatedUser);
+					await mailer.emailUpdateConfirmation(updatedUser);
 				}
 			}
 
@@ -316,7 +316,7 @@ export class ProfileApi extends Api {
 		await LogUserUtil.success(ctx, user, logEvent, { email: user.email });
 
 		if (logEvent === 'registration_email_confirmed' && config.vpdb.email.confirmUserEmail) {
-			await welcomeLocal(user);
+			await mailer.welcomeLocal(user);
 		}
 
 		return this.success(ctx, {

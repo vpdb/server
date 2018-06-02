@@ -18,7 +18,7 @@
  */
 
 
-import { GameReferenceModel, ModeratedDocument, ModeratedModel, PrettyIdModel, Schema } from 'mongoose';
+import { GameReferenceModel, ModeratedDocument, ModeratedModel, PaginateModel, PrettyIdModel, Schema } from 'mongoose';
 import { isArray, compact, map, flatten, uniq } from 'lodash';
 import uniqueValidatorPlugin from 'mongoose-unique-validator';
 import paginatePlugin from 'mongoose-paginate';
@@ -88,7 +88,9 @@ export const releaseFields = {
 	_created_by:   { type: Schema.Types.ObjectId, required: true, ref: 'User' }
 };
 
-export interface ReleaseModel extends GameReferenceModel<Release>, PrettyIdModel<Release>, ModeratedModel<Release> {}
+export interface ReleaseModel extends GameReferenceModel<Release>, PrettyIdModel<Release>, ModeratedModel<Release>, PaginateModel<Release> {
+}
+
 export const releaseSchema = new Schema(releaseFields, { toObject: { virtuals: true, versionKey: false } });
 
 
@@ -98,21 +100,21 @@ export const releaseSchema = new Schema(releaseFields, { toObject: { virtuals: t
 releaseSchema.plugin(gameReferencePlugin);
 releaseSchema.plugin(uniqueValidatorPlugin, { message: 'The {PATH} "{VALUE}" is already taken.' });
 releaseSchema.plugin(fileReferencePlugin);
-releaseSchema.plugin(prettyIdPlugin, { model: 'Release', ignore: [ '_created_by', '_tags' ] });
-releaseSchema.plugin(idReferenceValidatorPlugin, { fields: [ '_tags' ] });
+releaseSchema.plugin(prettyIdPlugin, { model: 'Release', ignore: ['_created_by', '_tags'] });
+releaseSchema.plugin(idReferenceValidatorPlugin, { fields: ['_tags'] });
 releaseSchema.plugin(paginatePlugin);
 releaseSchema.plugin(moderationPlugin);
-releaseSchema.plugin(metricsPlugin, { hotness: { popularity: { views: 1, downloads: 10, comments: 20, stars: 30 }}});
+releaseSchema.plugin(metricsPlugin, { hotness: { popularity: { views: 1, downloads: 10, comments: 20, stars: 30 } } });
 releaseSchema.plugin(sortableTitlePlugin, { src: 'name', dest: 'name_sortable' });
 
 //-----------------------------------------------------------------------------
 // VALIDATIONS
 //-----------------------------------------------------------------------------
-function nonEmptyArray(value:any) {
+function nonEmptyArray(value: any) {
 	return isArray(value) && value.length > 0;
 }
 
-releaseSchema.path('versions').validate(function() {
+releaseSchema.path('versions').validate(function () {
 	const ids = compact(map(flatten(map(this.versions, 'files')), '_file')).map(id => id.toString());
 	if (uniq(ids).length !== ids.length) {
 		this.invalidate('versions', 'You cannot reference a file multiple times.');
@@ -124,12 +126,12 @@ releaseSchema.path('versions').validate(function() {
 // METHODS
 //-----------------------------------------------------------------------------
 
-releaseSchema.methods.moderationChanged = async function(previousModeration: { isApproved: boolean, isRefused: boolean }, moderation: { isApproved: boolean, isRefused: boolean }): Promise<ModeratedDocument> {
+releaseSchema.methods.moderationChanged = async function (previousModeration: { isApproved: boolean, isRefused: boolean }, moderation: { isApproved: boolean, isRefused: boolean }): Promise<ModeratedDocument> {
 	if (previousModeration.isApproved && !moderation.isApproved) {
-		return await state.models.Game.update({ _id: this._game  }, { $inc: { 'counter.releases': -1 } });
+		return await state.models.Game.update({ _id: this._game }, { $inc: { 'counter.releases': -1 } });
 	}
 	if (!previousModeration.isApproved && moderation.isApproved) {
-		return await state.models.Game.update({ _id: this._game  }, { $inc: { 'counter.releases': 1 } });
+		return await state.models.Game.update({ _id: this._game }, { $inc: { 'counter.releases': 1 } });
 	}
 };
 
@@ -137,7 +139,7 @@ releaseSchema.methods.moderationChanged = async function(previousModeration: { i
  * Returns all database IDs of all linked files as strings.
  * @returns {string[]}
  */
-releaseSchema.methods.getFileIds = function() {
+releaseSchema.methods.getFileIds = function (): string[] {
 	let files = flatten(map(this.versions, 'files'));
 	let tableFileIds = map(files, '_file').map(file => file ? (file._id ? file._id.toString() : file.toString()) : null);
 	let playfieldImageId = compact(map(files, '_playfield_image')).map(file => file._id ? file._id.toString() : file.toString());
@@ -145,12 +147,12 @@ releaseSchema.methods.getFileIds = function() {
 	return compact(flatten([...tableFileIds, playfieldImageId, playfieldVideoId]));
 };
 
-releaseSchema.methods.getPlayfieldImageIds = function() {
+releaseSchema.methods.getPlayfieldImageIds = function (): string[] {
 	let files = flatten(map(this.versions, 'files'));
 	return compact(map(files, '_playfield_image')).map(file => file._id ? file._id.toString() : file.toString());
 };
 
-releaseSchema.methods.isCreatedBy = function(user:User) {
+releaseSchema.methods.isCreatedBy = function (user: User): boolean {
 	if (!user) {
 		return false;
 	}

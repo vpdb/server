@@ -164,9 +164,7 @@ gameSchema.methods.isRestricted = function (what: 'release' | 'backglass'):boole
 // TRIGGERS
 //-----------------------------------------------------------------------------
 gameSchema.pre('remove', async function () {
-
-	// fixme re-add when models available.
-	// await state.models.Rating.remove({ '_ref.game':this._id }).exec();
-	// await state.models.Star.remove({ '_ref.game':this._id }).exec();
-	// await state.models.Medium.remove({ '_ref.game':this._id }).exec();
+	await state.models.Rating.remove({ '_ref.game':this._id }).exec();
+	await state.models.Star.remove({ '_ref.game':this._id }).exec();
+	await state.models.Medium.remove({ '_ref.game':this._id }).exec();
 });

@@ -64,7 +64,7 @@ export function gameReferencePlugin(schema: Schema, options: GameReferenceOption
 	 * @param {Array<any> | object} query Input query
 	 * @return {Promise<Array<any> | object>} Output query
 	 */
-	schema.statics.handleGameQuery = async function (this: ModelProperties, ctx: Context, query: Array<any> | object): Promise<Array<any> | object> {
+	schema.statics.handleGameQuery = async function<T>(this: ModelProperties, ctx: Context, query: T): Promise<T> {
 
 		const reference = modelReferenceMap[this.modelName];
 		const resource = modelResourceMap[this.modelName];
@@ -106,7 +106,7 @@ export function gameReferencePlugin(schema: Schema, options: GameReferenceOption
 	 * @param {Array<any> | object} query Query to append
 	 * @return {Promise<Array<any> | object | null>} Updated query on restriction, same without restriction and null if not logged.
 	 */
-	schema.statics.restrictedQuery = async function (ctx: Context, game: Game, query: Array<any> | object): Promise<Array<any> | object | null> {
+	schema.statics.restrictedQuery = async function<T>(ctx: Context, game: Game, query: T): Promise<T | null> {
 
 		const acl = require('../acl');
 		const reference = modelReferenceMap[this.modelName];
@@ -199,7 +199,7 @@ export function gameReferencePlugin(schema: Schema, options: GameReferenceOption
  * @param {Array<any> | object} query Original query
  * @return {Array<any> | object} Merged query
  */
-function addToQuery<T>(toAdd: object, query: Array<any> | object): Array<any> | object {
+function addToQuery<T>(toAdd: object, query: T): T {
 	if (isArray(query)) {
 		query.push(toAdd);
 		return query;
@@ -207,7 +207,7 @@ function addToQuery<T>(toAdd: object, query: Array<any> | object): Array<any> | 
 	if (isObject(query)) {
 		return assign(query, toAdd);
 	}
-	return toAdd;
+	return query;
 }
 
 
@@ -244,20 +244,20 @@ declare module 'mongoose' {
 		 * Returns the query used for listing only approved entities.
 		 *
 		 * @param {Application.Context} ctx Koa context
-		 * @param {Array<any> | object} query Input query
-		 * @return {Promise<Array<any> | object>} Output query
+		 * @param {T} query Input query
+		 * @return {Promise<T>} Output query
 		 */
-		handleGameQuery(this: ModelProperties, ctx: Context, query: Array<any> | object): Promise<Array<any> | object>;
+		handleGameQuery<T>(this: ModelProperties, ctx: Context, query: T): Promise<T>;
 
 		/**
 		 * Returns the query for listing only approved entities for a given game.
 		 *
 		 * @param {Application.Context} ctx Koa context
 		 * @param {Game} game Game to fetch entities for.
-		 * @param {Array<any> | object} query Query to append
-		 * @return {Promise<Array<any> | object | null>} Updated query on restriction, same without restriction and null if not logged.
+		 * @param {T} query Query to append
+		 * @return {Promise<T | null>} Updated query on restriction, same without restriction and null if not logged.
 		 */
-		restrictedQuery(ctx: Context, game: Game, query: Array<any> | object): Promise<Array<any> | object | null>;
+		restrictedQuery<T>(ctx: Context, game: Game, query: T): Promise<T | null>;
 
 		/**
 		 * Checks whether a user can access a given game.

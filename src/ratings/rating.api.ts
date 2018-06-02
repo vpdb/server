@@ -24,9 +24,10 @@ import { state } from '../state';
 import { Api } from '../common/api';
 import { Context } from '../common/types/context';
 import { ApiError } from '../common/api.error';
-import { Rating } from './rating';
+import { metrics } from '../common/metrics';
 import { logger } from '../common/logger';
 import { LogEventUtil } from '../log-event/log.event.util';
+import { Rating } from './rating';
 
 export class RatingApi extends Api {
 
@@ -121,18 +122,17 @@ export class RatingApi extends Api {
 	 * @return {Promise<boolean>}
 	 */
 	private async updateRatedEntity(ctx: Context, ref: string, entity: any, rating: Rating, status: number) {
-		// FIXME: Uncomment when metrics module migrated.
-		// const result = await metrics.onRatingUpdated(ref, entity, rating);
-		//
-		// // if not 201, add modified date
-		// if (status === 200) {
-		// 	result.modified_at = rating.modified_at;
-		// 	logger.info('[RatingApi.updateRatedEntity] User <%s> updated rating for %s %s to %s.', ctx.state.user, ref, entity.id, rating.value);
-		// } else {
-		// 	logger.info('[RatingApi.updateRatedEntity] User <%s> added new rating for %s %s with %s.', ctx.state.user, ref, entity.id, rating.value);
-		// }
-		// await LogEventUtil.log(ctx, 'rate_' + ref, true, this.logPayload(rating, entity, ref, status === 200), this.logRefs(rating, entity, ref));
-		// return this.success(ctx, result, status);
+		const result = await metrics.onRatingUpdated(ref, entity, rating);
+
+		// if not 201, add modified date
+		if (status === 200) {
+			result.modified_at = rating.modified_at;
+			logger.info('[RatingApi.updateRatedEntity] User <%s> updated rating for %s %s to %s.', ctx.state.user, ref, entity.id, rating.value);
+		} else {
+			logger.info('[RatingApi.updateRatedEntity] User <%s> added new rating for %s %s with %s.', ctx.state.user, ref, entity.id, rating.value);
+		}
+		await LogEventUtil.log(ctx, 'rate_' + ref, true, this.logPayload(rating, entity, ref, status === 200), this.logRefs(rating, entity, ref));
+		return this.success(ctx, result, status);
 	}
 
 	/**

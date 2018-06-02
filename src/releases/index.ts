@@ -28,17 +28,25 @@ import { TableBlock } from './release.tableblock';
 import { tableBlockSchema } from './release.tableblock.schema';
 import { Release } from './release';
 import { ReleaseModel, releaseSchema } from './release.schema';
+import { ReleaseVersionModel, releaseVersionSchema } from './release.version.schema';
+import { ReleaseVersionFileModel, releaseVersionFileSchema } from './release.version.file.schema';
+import { ReleaseVersion } from './release.version';
+import { ReleaseVersionFile } from './release.version.file';
 
 export class ReleaseEndPoint implements EndPoint {
 
 	readonly name: string = 'Release API';
 
 	private readonly _router: Router;
-	private readonly _schema: Schema;
+	private readonly _releaseSchema: Schema;
+	private readonly _releaseVersionSchema: Schema;
+	private readonly _releaseVersionFileSchema: Schema;
 
 	constructor() {
 		//this._router = router;
-		this._schema = releaseSchema;
+		this._releaseSchema = releaseSchema;
+		this._releaseVersionSchema = releaseVersionSchema;
+		this._releaseVersionFileSchema = releaseVersionFileSchema;
 	}
 
 	getRouter(): Router {
@@ -46,7 +54,9 @@ export class ReleaseEndPoint implements EndPoint {
 	}
 
 	register(app: Application): void {
-		state.models.Release = mongoose.model<Release>('Release', this._schema) as ReleaseModel;
+		state.models.Release = mongoose.model<Release>('Release', this._releaseSchema) as ReleaseModel;
+		state.models.ReleaseVersion = mongoose.model<ReleaseVersion>('ReleaseVersion', this._releaseVersionSchema) as ReleaseVersionModel;
+		state.models.ReleaseVersionFile = mongoose.model<ReleaseVersionFile>('ReleaseVersionFile', this._releaseVersionFileSchema) as ReleaseVersionFileModel;
 		state.models.TableBlock = mongoose.model<TableBlock>('TableBlock', tableBlockSchema);
 		state.serializers.Release = new ReleaseSerializer();
 	}

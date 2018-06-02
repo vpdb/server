@@ -37,7 +37,7 @@ export interface ReleaseVersionFile extends FileReferenceDocument, PrettyIdDocum
 	_compatibility: Build[] | Schema.Types.ObjectId[];
 	_playfield_image?: File | Schema.Types.ObjectId;
 	_playfield_video?: File | Schema.Types.ObjectId;
-	released_at: Date;
+	released_at: Date | string;
 	counter: {
 		downloads: number;
 	};

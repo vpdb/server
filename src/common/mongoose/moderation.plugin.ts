@@ -117,11 +117,11 @@ export function moderationPlugin(schema: Schema) {
 	/**
 	 * Returns the query used for listing only approved entities.
 	 *
-	 * @param {Application.Context} ctx Koa context
-	 * @param {Array|object} query Current query
-	 * @returns {Promise<Array|object>} Moderated query
+	 * @param {Context} ctx Koa context
+	 * @param {T} query Current query
+	 * @returns {Promise<T>} Moderated query
 	 */
-	schema.statics.handleModerationQuery = async function (ctx: Context, query: Array<any> | object): Promise<Array<any> | object> {
+	schema.statics.handleModerationQuery = async function<T>(ctx: Context, query: T): Promise<T> {
 		const acl = require('../acl');
 		let isModerator = false;
 		if (ctx.query && ctx.query.moderation) {
@@ -214,10 +214,10 @@ export function moderationPlugin(schema: Schema) {
 
 	/**
 	 * Returns the query used for listing only approved entities.
-	 * @param {Array | object} query
-	 * @returns {Array | object}
+	 * @param {T} query
+	 * @returns {T}
 	 */
-	schema.statics.approvedQuery = function (query: Array<any> | object): Array<any> | object {
+	schema.statics.approvedQuery = function<T>(query: T): T {
 		return addToQuery({ 'moderation.is_approved': true }, query);
 	};
 
@@ -391,10 +391,10 @@ export function moderationPlugin(schema: Schema) {
  * array. Otherwise, just the condition is returned.
  *
  * @param {object} toAdd Query to add
- * @param {Array<any> | object} query Original query
- * @return {Array<any> | object} Merged query
+ * @param {T} query Original query
+ * @return {T} Merged query
  */
-function addToQuery(toAdd: object, query: Array<any> | object): Array<any> | object {
+function addToQuery<T>(toAdd: object, query: T): T {
 	if (isArray(query)) {
 		query.push(toAdd);
 		return query;
@@ -402,7 +402,7 @@ function addToQuery(toAdd: object, query: Array<any> | object): Array<any> | obj
 	if (isObject(query)) {
 		return assign(query, toAdd);
 	}
-	return toAdd;
+	return query;
 }
 
 declare module 'mongoose' {
@@ -420,7 +420,7 @@ declare module 'mongoose' {
 		 * @param {Application.Context} ctx Koa context
 		 * @returns {Promise.<ModeratedDocument>} This entity
 		 */
-		assertModeratedView(ctx: Context): Promise<ModeratedDocument>;
+		assertModeratedView(ctx: Context): Promise<this>;
 
 		/**
 		 * If moderation field is demanded in request, populates it.
@@ -429,7 +429,7 @@ declare module 'mongoose' {
 		 * @param {{includedFields: string[]}} opts Options
 		 * @returns {ModeratedDocument | boolean} Populated entity if fields added, false otherwise.
 		 */
-		populateModeration(ctx: Context, opts: { includedFields: string[] }): Promise<ModeratedDocument | false>;
+		populateModeration(ctx: Context, opts: { includedFields: string[] }): Promise<this | false>;
 
 		/**
 		 * Marks the entity as approved.
@@ -489,10 +489,10 @@ declare module 'mongoose' {
 		 * Returns the query used for listing only approved entities.
 		 *
 		 * @param {Application.Context} ctx Koa context
-		 * @param {Array|object} query Current query
-		 * @returns {Promise<Array|object>} Moderated query
+		 * @param {T} query Current query
+		 * @returns {Promise<T>} Moderated query
 		 */
-		handleModerationQuery(ctx: Context, query: Array<any> | object): Promise<Array<any> | object>,
+		handleModerationQuery<T>(ctx: Context, query: T): Promise<T>,
 
 		/**
 		 * Handles moderation requests from the API.
@@ -504,10 +504,10 @@ declare module 'mongoose' {
 
 		/**
 		 * Returns the query used for listing only approved entities.
-		 * @param {Array | object} query
-		 * @returns {Array | object}
+		 * @param {T} query
+		 * @returns {T} Updated query
 		 */
-		approvedQuery(query: Array<any> | object): Array<any> | object,
+		approvedQuery<T>(query: T): T,
 	}
 
 	export function model<T extends ModeratedDocument>(

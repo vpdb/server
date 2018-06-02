@@ -16,7 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-import { Schema } from 'mongoose';
+import { Schema, PrettyIdModel } from 'mongoose';
 import { compact, filter, flatten, isArray, isEqual, keys, map, uniq } from 'lodash';
 
 import { fileReferencePlugin } from '../common/mongoose/file.reference.plugin';
@@ -25,6 +25,7 @@ import { releaseVersionFileFields, releaseVersionFileSchema } from './release.ve
 import { ReleaseFileFlavor, ReleaseVersionFile } from './release.version.file';
 import { state } from '../state';
 import { Release } from './release';
+import { ReleaseVersion } from './release.version';
 
 export const releaseVersionFields = {
 	version: { type: String, required: 'Version must be provided.' },
@@ -40,6 +41,8 @@ export const releaseVersionFields = {
 		comments: { type: Number, 'default': 0 }
 	}
 };
+
+export interface ReleaseVersionModel extends PrettyIdModel<ReleaseVersion> {}
 export const releaseVersionSchema = new Schema(releaseVersionFields, { toObject: { virtuals: true, versionKey: false } });
 
 releaseVersionSchema.plugin(fileReferencePlugin);
@@ -238,7 +241,7 @@ function nonEmptyArray(value:any[]) {
 	return isArray(value) && value.length > 0;
 }
 
-releaseVersionSchema.methods.getFileIds = function (files?:ReleaseVersionFile[]):string[] {
+releaseVersionSchema.methods.getFileIds = function (files?: ReleaseVersionFile[]): string[] {
 	files = files || this.files as ReleaseVersionFile[];
 	let tableFileIds = files.map(f => f._file as any).map(file => file ? (file._id ? file._id.toString() : file.toString()) : null);
 	let playfieldImageId = compact(files.map(f => f._playfield_image as any).map(file => file._id ? file._id.toString() : file.toString()));
@@ -246,6 +249,6 @@ releaseVersionSchema.methods.getFileIds = function (files?:ReleaseVersionFile[])
 	return compact(flatten([...tableFileIds, playfieldImageId, playfieldVideoId]));
 };
 
-releaseVersionSchema.methods.getPlayfieldImageIds = function ():string[] {
+releaseVersionSchema.methods.getPlayfieldImageIds = function (): string[] {
 	return compact((this.files as ReleaseVersionFile[]).map(f => f._playfield_image as any).map(file => file._id ? file._id.toString() : file.toString()));
 };

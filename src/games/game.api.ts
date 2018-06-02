@@ -41,7 +41,7 @@ import { config } from '../common/settings';
 import { Context } from '../common/types/context';
 import { logger } from '../common/logger';
 import { SerializerOptions } from '../common/serializer';
-import { gameRequestProcessed } from '../common/mailer';
+import { mailer } from '../common/mailer';
 import { GameRequest } from '../game-requests/game.request';
 import { User } from '../users/user';
 import { Release } from '../releases/release';
@@ -113,7 +113,7 @@ export class GameApi extends Api {
 				.exec();
 		}
 		if (gameRequest) {
-			await gameRequestProcessed(gameRequest._created_by as User, game);
+			await mailer.gameRequestProcessed(gameRequest._created_by as User, game);
 			gameRequest.is_closed = true;
 			gameRequest._game = game._id;
 			await gameRequest.save();

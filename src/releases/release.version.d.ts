@@ -17,16 +17,31 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document } from 'mongoose';
+import { FileReferenceDocument, PrettyIdDocument } from 'mongoose';
 import { ReleaseVersionFile } from './release.version.file';
 
-export interface ReleaseVersion extends Document {
+export interface ReleaseVersion extends FileReferenceDocument, PrettyIdDocument {
 	version: string,
-	released_at: Date,
+	released_at: Date | string,
 	changes: string,
 	files: ReleaseVersionFile[],
 	counter: {
 		downloads: number,
 		comments: number
 	}
+
+	/**
+	 * Returns all file IDs of the version files.
+	 *
+	 * @param {ReleaseVersionFile[]} [files] Subset of version files, all files if not set
+	 * @returns {string[]} File IDs
+	 */
+	getFileIds(files?: ReleaseVersionFile[]): string[];
+
+	/**
+	 * Returns all playfield image IDs of this release version.
+	 *
+	 * @returns {string[]} Playfield image IDs
+	 */
+	getPlayfieldImageIds (): string[];
 }

@@ -23,7 +23,7 @@ import { state } from '../state';
 import { Context } from '../common/types/context';
 import { Api } from '../common/api';
 import { ApiError, ApiValidationError } from '../common/api.error';
-import { registrationConfirmation } from '../common/mailer';
+import { mailer } from '../common/mailer';
 import { acl } from '../common/acl';
 import { logger } from '../common/logger';
 import { config } from '../common/settings';
@@ -80,7 +80,7 @@ export class UserApi extends Api {
 
 		// user validated and created. time to send the activation email.
 		if (config.vpdb.email.confirmUserEmail) {
-			await registrationConfirmation(user);
+			await mailer.registrationConfirmation(user);
 		}
 
 		// return result now and send email afterwards
@@ -427,7 +427,7 @@ export class UserApi extends Api {
 		user.email_status.expires_at = new Date(new Date().getTime() + 86400000); // 1d valid
 
 		await user.save();
-		await registrationConfirmation(user);
+		await mailer.registrationConfirmation(user);
 
 		return this.success(ctx, null, 200);
 	};

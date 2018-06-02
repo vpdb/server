@@ -25,7 +25,7 @@ import { ApiError } from '../common/api.error';
 import { Context } from '../common/types/context';
 import { logger } from '../common/logger';
 import { config } from '../common/settings';
-import { welcomeOAuth } from '../common/mailer';
+import { mailer } from '../common/mailer';
 import { User } from '../users/user';
 import { UserUtil } from '../users/user.util';
 import { LogUserUtil } from '../log-user/log.user.util';
@@ -554,7 +554,7 @@ export class AuthenticationApi extends Api {
 			email: newUser.email
 		});
 		logger.info('[AuthenticationApi.createOAuthUser] New user <%s> created.', newUser.email);
-		await welcomeOAuth(newUser);
+		await mailer.welcomeOAuth(newUser);
 
 		return newUser;
 	}

@@ -35,6 +35,8 @@ import { LogEventModel } from '../../log-event/log.event.schema';
 import { LogUserModel } from '../../log-user/log.user.schema';
 import { MediumModel } from '../../media/medium.schema';
 import { ReleaseModel } from '../../releases/release.schema';
+import { ReleaseVersionModel } from '../../releases/release.version.schema';
+import { ReleaseVersionFileModel } from '../../releases/release.version.file.schema';
 import { RomModel } from '../../roms/rom.schema';
 
 export interface Models {
@@ -49,6 +51,8 @@ export interface Models {
 	Medium: MediumModel;
 	Rating: Model<Rating>;
 	Release: ReleaseModel;
+	ReleaseVersion: ReleaseVersionModel;
+	ReleaseVersionFile: ReleaseVersionFileModel;
 	Rom: RomModel;
 	TableBlock: Model<TableBlock>;
 	Tag: Model<Tag>;

@@ -25,15 +25,15 @@ import { Context } from '../common/types/context';
 import { acl } from '../common/acl';
 import { logger } from '../common/logger';
 import { config } from '../common/settings';
-import { User } from './user';
+import { mailer } from '../common/mailer';
 import { ApiError } from '../common/api.error';
 import { Release } from '../releases/release';
 import { ReleaseVersionFile } from '../releases/release.version.file';
-import { ContentAuthor } from './content.author';
 import { Backglass } from '../backglasses/backglass';
 import { Rating } from '../ratings/rating';
-import { userMergedDeleted, userMergedKept } from '../common/mailer';
 import { Star } from '../stars/star';
+import { ContentAuthor } from './content.author';
+import { User } from './user';
 
 export class UserUtil {
 
@@ -291,8 +291,8 @@ export class UserUtil {
 
 		// 4. notify
 		if (explanation) {
-			await userMergedDeleted(keepUser, mergeUser, explanation);
-			await userMergedKept(keepUser, mergeUser, explanation);
+			await mailer.userMergedDeleted(keepUser, mergeUser, explanation);
+			await mailer.userMergedKept(keepUser, mergeUser, explanation);
 		}
 
 		logger.info('[UserUtil.mergeUsers] Done merging, removing merged user %s.', mergeUser.id);

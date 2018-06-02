@@ -27,8 +27,8 @@ import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
 import { acl } from '../common/acl';
 import { SerializerOptions } from '../common/serializer';
-import { backglassApproved, backglassAutoApproved, backglassRefused, backglassSubmitted } from '../common/mailer';
 import { logger } from '../common/logger';
+import { mailer } from '../common/mailer';
 import { LogEventUtil } from '../log-event/log.event.util';
 import { Game } from '../games/game';
 import { User } from '../users/user';
@@ -92,9 +92,9 @@ export class BackglassApi extends Api {
 
 		// send moderation mail
 		if (populatedBackglass.moderation.is_approved) {
-			await backglassAutoApproved(ctx.state.user, populatedBackglass);
+			await mailer.backglassAutoApproved(ctx.state.user, populatedBackglass);
 		} else {
-			await backglassSubmitted(ctx.state.user, populatedBackglass);
+			await mailer.backglassSubmitted(ctx.state.user, populatedBackglass);
 		}
 
 		// event log
@@ -256,14 +256,13 @@ export class BackglassApi extends Api {
 		if (!isModerator && (backglass._game as Game).isRestricted('backglass') && !backglass.isCreatedBy(ctx.state.user)) {
 			throw new ApiError('No such backglass with ID "%s"', ctx.params.id).status(404);
 		}
-		backglass = await backglass.assertModeratedView(ctx) as Backglass;
+		backglass = await backglass.assertModeratedView(ctx);
 		const fields = ctx.query && ctx.query.fields ? ctx.query.fields.split(',') : [];
 		const populated = await backglass.populateModeration(ctx, { includedFields: fields });
 		if (populated !== false) {
 			serializerOpts.includedFields = ['moderation'];
 		}
-		backglass = populated as Backglass;
-		return this.success(ctx, state.serializers.Backglass.detailed(ctx, backglass, serializerOpts));
+		return this.success(ctx, state.serializers.Backglass.detailed(ctx, populated as Backglass, serializerOpts));
 	}
 
 	/**
@@ -321,10 +320,10 @@ export class BackglassApi extends Api {
 			const errHandler = (err: Error) => logger.error('[moderation|backglass] Error sending moderation mail: %s', err.message);
 			switch (lastEvent.event) {
 				case 'approved':
-					await backglassApproved(backglass._created_by as User, backglass, lastEvent.message).catch(errHandler);
+					await mailer.backglassApproved(backglass._created_by as User, backglass, lastEvent.message).catch(errHandler);
 					break;
 				case 'refused':
-					await backglassRefused(backglass._created_by as User, backglass, lastEvent.message).catch(errHandler);
+					await mailer.backglassRefused(backglass._created_by as User, backglass, lastEvent.message).catch(errHandler);
 					break;
 			}
 		}

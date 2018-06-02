@@ -17,7 +17,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Schema, ModeratedDocument, GameReferenceDocument, PrettyIdDocument, MetricsDocument } from 'mongoose';
+import {
+	Schema,
+	ModeratedDocument,
+	GameReferenceDocument,
+	PrettyIdDocument,
+	MetricsDocument,
+	FileReferenceDocument
+} from 'mongoose';
 import { User } from '../users/user';
 import { ReleaseVersion } from './release.version';
 import { ContentAuthor } from '../users/content.author';
@@ -25,7 +32,7 @@ import { Tag } from '../tags/tag';
 import { Thumb } from '../common/types/serializers';
 import { ReleaseFileFlavor } from './release.version.file';
 
-export interface Release extends ModeratedDocument, GameReferenceDocument, PrettyIdDocument, MetricsDocument {
+export interface Release extends ModeratedDocument, GameReferenceDocument, PrettyIdDocument, MetricsDocument, FileReferenceDocument {
 
 	// from model
 	id: string;
@@ -74,4 +81,31 @@ export interface Release extends ModeratedDocument, GameReferenceDocument, Prett
 	// generated
 	thumb?: { image: Thumb, flavor: ReleaseFileFlavor };
 	starred: boolean;
+
+	// posted
+	ipdb: {
+		number: number,
+		mfg?: number,
+		rating?: number
+	};
+
+	/**
+	 * Returns all database IDs of all linked files as strings.
+	 * @returns {string[]}
+	 */
+	getFileIds(): string[];
+
+	/**
+	 * Returns all playfield image database IDs of the release.
+ 	 * @returns {string[]}
+	 */
+	getPlayfieldImageIds(): string[];
+
+	/**
+	 * Checks whether the release was created by given user.
+	 * @param {User} user User to check
+	 * @returns {boolean} True if release was created by user, false otherwise.
+	 */
+	isCreatedBy(user: User): boolean;
+
 }

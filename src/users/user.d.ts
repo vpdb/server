@@ -101,21 +101,21 @@ export interface User extends MetricsDocument {
 }
 
 export interface UserPreferences extends Document {
-	tablefile_name: string;
-	flavor_tags: any;
-	notify_release_moderation_status: boolean;
-	notify_release_validation_status: boolean;
-	notify_backglass_moderation_status: boolean;
-	notify_game_requests: boolean;
-	notify_created_release_comments: boolean;
-	notify_created_release_followers: boolean;
-	notify_mentions: boolean;
-	contributor_notify_game_request_created: boolean;
-	moderator_notify_release_submitted: boolean;
-	moderator_notify_release_auto_approved: boolean;
-	moderator_notify_release_commented: boolean;
-	moderator_notify_backglass_submitted: boolean;
-	moderator_notify_backglass_auto_approved: boolean;
+	tablefile_name?: string;
+	flavor_tags?: any;
+	notify_release_moderation_status?: boolean;
+	notify_release_validation_status?: boolean;
+	notify_backglass_moderation_status?: boolean;
+	notify_game_requests?: boolean;
+	notify_created_release_comments?: boolean;
+	notify_created_release_followers?: boolean;
+	notify_mentions?: boolean;
+	contributor_notify_game_request_created?: boolean;
+	moderator_notify_release_submitted?: boolean;
+	moderator_notify_release_auto_approved?: boolean;
+	moderator_notify_release_commented?: boolean;
+	moderator_notify_backglass_submitted?: boolean;
+	moderator_notify_backglass_auto_approved?: boolean;
 
 	[key: string]: any;
 }

@@ -1,6 +1,6 @@
 /*
- * VPDB - Visual Pinball Database
- * Copyright (C) 2016 freezy <freezy@xbmc.org>
+ * VPDB - Virtual Pinball Database
+ * Copyright (C) 2018 freezy <freezy@vpdb.io>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,22 +17,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-'use strict';
+import { Schema } from 'mongoose';
+import { isString, isDate } from 'lodash';
+import validator from 'validator';
+import uniqueValidator from 'mongoose-unique-validator';
 
-const _ = require('lodash');
-const logger = require('winston');
-const mongoose = require('mongoose');
-const validator = require('validator');
-const uniqueValidator = require('mongoose-unique-validator');
-
-const Schema = mongoose.Schema;
-const platforms = ['vp'];
-const types = ['release', 'nightly', 'experimental'];
+export const platforms = ['vp'];
+export const types = ['release', 'nightly', 'experimental'];
 
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
-const fields = {
+const buildFields = {
 	id: { type: String, required: true, unique: true },
 	platform: {
 		type: String,
@@ -60,32 +56,23 @@ const fields = {
 	},
 	is_active: { type: Boolean, required: true, default: false },
 	created_at: { type: Date, required: true },
-	_created_by: { type: Schema.ObjectId, ref: 'User', required: true }
+	_created_by: { type: Schema.Types.ObjectId, ref: 'User', required: true }
 };
-const BuildSchema = new Schema(fields, { usePushEach: true });
-
-//-----------------------------------------------------------------------------
-// VALIDATIONS
-//-----------------------------------------------------------------------------
-BuildSchema.path('label').validate(function(label) {
-	return validator.isLength(_.isString(label) ? label.trim() : '', 3);
-}, 'Label must contain at least three characters.');
-
-BuildSchema.path('built_at').validate(function(dateString) {
-	return _.isDate(dateString) || (_.isString(dateString) && validator.isISO8601(dateString));
-}, 'Date must be a string parsable by Javascript.');
-
+export const buildSchema = new Schema(buildFields, { toObject: { virtuals: true, versionKey: false } });
 
 //-----------------------------------------------------------------------------
 // PLUGINS
 //-----------------------------------------------------------------------------
-BuildSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
+buildSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
 
 
 //-----------------------------------------------------------------------------
-// OPTIONS
+// VALIDATIONS
 //-----------------------------------------------------------------------------
-BuildSchema.options.toObject = { virtuals: true, versionKey: false };
+buildSchema.path('label').validate((label: any) => {
+	return validator.isLength(isString(label) ? label.trim() : '', 3);
+}, 'Label must contain at least three characters.');
 
-mongoose.model('Build', BuildSchema);
-logger.info('[model] Schema "Build" registered.');
+buildSchema.path('built_at').validate((dateString: any) => {
+	return isDate(dateString) || (isString(dateString) && validator.isISO8601(dateString));
+}, 'Date must be a string parsable by Javascript.');

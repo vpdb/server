@@ -33,6 +33,7 @@ import { GamesApiEndPoint } from './games';
 import { GameRequestApiEndPoint } from './game-requests';
 import { LogEventEndPoint } from './log-event';
 import { LogUserEndPoint } from './log-user';
+import { TagApiEndPoint } from './tags';
 import { TokenEndPoint } from './tokens';
 import { MediaApiEndPoint } from './media';
 import { MiscEndPoint } from './misc';
@@ -76,6 +77,7 @@ shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 			new ReleaseStorageEndPoint(),
 			new RomApiEndPoint(),
 			new StarEndPoint(),
+			new TagApiEndPoint(),
 			new TokenEndPoint(),
 			new UserEndPoint(),
 		];

@@ -36,8 +36,10 @@ import { TokenEndPoint } from './tokens';
 import { MediaApiEndPoint } from './media';
 import { MiscEndPoint } from './misc';
 import { ProfileEndPoint } from './profile';
+import { RatingEndPoint } from './ratings';
 import { ReleaseEndPoint, ReleaseStorageEndPoint } from './releases';
 import { RomApiEndPoint } from './roms';
+import { StarEndPoint } from './stars';
 import { UserEndPoint } from './users';
 
 const shortId = require('shortid32');
@@ -65,9 +67,11 @@ shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 			new MediaApiEndPoint(),
 			new MiscEndPoint(),
 			new ProfileEndPoint(),
+			new RatingEndPoint(),
 			new ReleaseEndPoint(),
 			new ReleaseStorageEndPoint(),
 			new RomApiEndPoint(),
+			new StarEndPoint(),
 			new TokenEndPoint(),
 			new UserEndPoint(),
 		];

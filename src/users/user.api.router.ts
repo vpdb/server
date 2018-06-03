@@ -19,8 +19,12 @@
 
 import { Scope } from '../common/scope';
 import { UserApi } from './user.api';
+import { StarApi } from '../stars/star.api';
+import { LogEventApi } from '../log-event/log.event.api';
 
 const api = new UserApi();
+const starApi = new StarApi();
+const eventApi = new LogEventApi();
 export const router = api.apiRouter();
 
 router.post('/v1/users',    api.anon(api.create.bind(api)));
@@ -30,10 +34,9 @@ router.get('/v1/users/:id', api.auth(api.view.bind(api), 'users', 'view', [ Scop
 router.put('/v1/users/:id', api.auth(api.update.bind(api), 'users', 'update', [ Scope.ALL ]));
 router.del('/v1/users/:id', api.auth(api.del.bind(api), 'users', 'delete', [ Scope.ALL ]));
 
+router.post('/v1/users/:id/star',   api.auth(starApi.star('user').bind(starApi), 'users', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
+router.delete('/v1/users/:id/star', api.auth(starApi.unstar('user').bind(starApi), 'users', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
+router.get('/v1/users/:id/star',    api.auth(starApi.get('user').bind(starApi), 'users', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
 
-// router.post(settings.apiPath('/users/:id/star'),   api.auth(api.stars.star('user'), 'users', 'star', [ scope.ALL, scope.COMMUNITY ]));
-// router.delete(settings.apiPath('/users/:id/star'), api.auth(api.stars.unstar('user'), 'users', 'star', [ scope.ALL, scope.COMMUNITY ]));
-// router.get(settings.apiPath('/users/:id/star'),    api.auth(api.stars.get('user'), 'users', 'star', [ scope.ALL, scope.COMMUNITY ]));
-
-//router.get(settings.apiPath('/users/:id/events'),             api.anon(api.events.list({ byActor: true })));
-//router.post(settings.apiPath('/users/:id/send-confirmation'), api.auth(api.sendConfirmationMail.bind(api), 'users', 'send-confirmation', [ Scope.ALL ]));
+router.get('/v1/users/:id/events',             api.anon(eventApi.list({ byActor: true }).bind(eventApi)));
+router.post('/v1/users/:id/send-confirmation', api.auth(api.sendConfirmationMail.bind(api), 'users', 'send-confirmation', [ Scope.ALL ]));

@@ -17,12 +17,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import passport from 'koa-passport';
+import { config, settings } from '../common/settings';
 import { AuthenticationApi } from './authentication.api';
-import { config } from '../common/settings';
+import { GoogleStrategy } from './strategies/google.strategy';
+import { GitHubStrategy } from './strategies/github.strategy';
 
 export const api = new AuthenticationApi();
 export const router = api.apiRouter();
+
+const googleAuth = new GoogleStrategy(settings.apiUri('/auth/google'));
+const githubAuth = new GitHubStrategy(settings.apiUri('/auth/github'));
 
 // local authentication
 router.post('/v1/authenticate', api.anon(api.authenticate.bind(api)));
@@ -34,19 +38,23 @@ router.post('/v1/authenticate', api.anon(api.authenticate.bind(api)));
 
 // oauth init
 if (config.vpdb.passport.github.enabled) {
-	router.get('/auth/github', passport.authenticate('github', { session: false, scope: [ 'user:email' ] }));
-	router.get('/v1/redirect/github', passport.authenticate('github', { session: false, scope: [ 'user:email' ] }));
+	router.get('/v1/redirect/github', githubAuth.redirectToProvider.bind(githubAuth));
+	router.get('/auth/github',        githubAuth.authenticateOAuth.bind(githubAuth));
 }
+
 if (config.vpdb.passport.google.enabled) {
-	router.get('/auth/google', passport.authenticate('google', { session: false, scope: 'email' }));
-	router.get('/v1/redirect/google', passport.authenticate('google', { session: false, scope: 'email' }));
+	router.get('/v1/redirect/google', googleAuth.redirectToProvider.bind(googleAuth));
+	router.get('/auth/google',        googleAuth.authenticateOAuth.bind(googleAuth));
+
+	// router.get('/auth/google', passport.authenticate('google', { session: false, scope: 'email' }));
+	// router.get('/v1/redirect/google', passport.authenticate('google', { session: false, scope: 'email' }));
 }
-config.vpdb.passport.ipboard.forEach(ipbConfig => {
-	if (ipbConfig.enabled) {
-		router.get('/auth/' + ipbConfig.id, passport.authenticate(ipbConfig.id, { session: false }));
-		router.get('/v1/redirect/' + ipbConfig.id, passport.authenticate(ipbConfig.id, { session: false }));
-	}
-});
+// config.vpdb.passport.ipboard.forEach(ipbConfig => {
+// 	if (ipbConfig.enabled) {
+// 		router.get('/auth/' + ipbConfig.id, passport.authenticate(ipbConfig.id, { session: false }));
+// 		router.get('/v1/redirect/' + ipbConfig.id, passport.authenticate(ipbConfig.id, { session: false }));
+// 	}
+// });
 
 // oauth callback
 //router.get('/v1/authenticate/:strategy', api.anon(api.authenticateOAuth2.bind(api)));

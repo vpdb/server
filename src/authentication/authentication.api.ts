@@ -48,7 +48,7 @@ export class AuthenticationApi extends Api {
 		const backoffNumKey = 'auth_delay_num:' + ipAddress;
 		const backoffDelayKey = 'auth_delay_time:' + ipAddress;
 
-		let how: string;
+		let how: 'password' | 'token';
 		let authenticatedUser: User;
 		try {
 
@@ -75,30 +75,7 @@ export class AuthenticationApi extends Api {
 			}
 
 			// here we're authenticated (but not yet authorized)
-			await this.assetUserIsActive(ctx, authenticatedUser);
-
-			// generate token and return.
-			const now = new Date();
-			const expires = new Date(now.getTime() + config.vpdb.apiTokenLifetime);
-			const token = AuthenticationUtil.generateApiToken(authenticatedUser, now, how !== 'password');
-
-			await LogUserUtil.success(ctx, authenticatedUser, 'authenticate', { provider: 'local', how: how });
-			logger.info('[AuthenticationApi.authenticate] User <%s> successfully authenticated using %s.', authenticatedUser.email, how);
-			if (config.vpdb.services.sqreen.enabled) {
-				require('sqreen').auth_track(true, { email: authenticatedUser.email });
-			}
-			const acls = await UserUtil.getACLs(authenticatedUser);
-			const response = {
-				token: token,
-				expires: expires,
-				user: assign(state.serializers.User.detailed(ctx, authenticatedUser), acls)
-			};
-
-			if (config.vpdb.services.sqreen.enabled) {
-				require('sqreen').auth_track(true, { email: authenticatedUser.email });
-			}
-
-			return this.success(ctx, response, 200);
+			await this.authenticateUser(ctx, authenticatedUser, how);
 
 		} catch (err) {
 			const num: number = await state.redis.incrAsync(backoffNumKey);
@@ -113,6 +90,40 @@ export class AuthenticationApi extends Api {
 			}
 			throw err;
 		}
+	}
+
+	/**
+	 * Makes sure the user is active and returns token and profile on success.
+	 *
+	 * @param {Context} ctx Koa context
+	 * @param {User} authenticatedUser Authenticated user
+	 * @param {"password" | "token" | "oauth"} how Auth method
+	 */
+	protected async authenticateUser(ctx: Context, authenticatedUser: User, how: 'password' | 'token' | 'oauth'): Promise<boolean> {
+
+		await this.assertUserIsActive(ctx, authenticatedUser);
+
+		// generate token and return.
+		const now = new Date();
+		const expires = new Date(now.getTime() + config.vpdb.apiTokenLifetime);
+		const token = AuthenticationUtil.generateApiToken(authenticatedUser, now, how !== 'password' && how !== 'oauth');
+
+		await LogUserUtil.success(ctx, authenticatedUser, 'authenticate', { provider: 'local', how: how });
+		logger.info('[AuthenticationApi.authenticate] User <%s> successfully authenticated using %s.', authenticatedUser.email, how);
+		if (config.vpdb.services.sqreen.enabled) {
+			require('sqreen').auth_track(true, { email: authenticatedUser.email });
+		}
+		const acls = await UserUtil.getACLs(authenticatedUser);
+		const response = {
+			token: token,
+			expires: expires,
+			user: assign(state.serializers.User.detailed(ctx, authenticatedUser), acls)
+		};
+
+		if (config.vpdb.services.sqreen.enabled) {
+			require('sqreen').auth_track(true, { email: authenticatedUser.email });
+		}
+		return this.success(ctx, response, 200);
 	}
 
 	/**
@@ -216,7 +227,7 @@ export class AuthenticationApi extends Api {
 	 * @throws {ApiError} When user is inactive
 	 * @return {Promise<void>}
 	 */
-	private async assetUserIsActive(ctx: Context, user: User): Promise<void> {
+	private async assertUserIsActive(ctx: Context, user: User): Promise<void> {
 		if (!user.is_active) {
 			if (config.vpdb.services.sqreen.enabled) {
 				require('sqreen').auth_track(false, { email: user.email });
@@ -252,61 +263,38 @@ export class AuthenticationApi extends Api {
 	 *
 	 * Note that if profile data is incomplete, callback will fail.
 	 *
-	 * @param {string} strategy Name of the strategy (e.g. "GitHub", "IPBoard")
-	 * @param {string} [providerName] For IPBoard we can have multiple configurations, (e.g. "Gameex", "VP*", ...)
-	 * @returns {function} "Verify Callback" function that is passed to passport
-	 * @see http://passportjs.org/guide/oauth/
+	 * @param {Context} ctx Koa context
+	 * @param {string} strategy Name of the strategy (e.g. "github", "google", "ips")
+	 * @param {string | null} providerName For IPS we can have multiple configurations, (e.g. "gameex", "vpu", ...)
+	 * @param profile Profile retrieved from the provider
+	 * @return {Promise<User>} Authenticated user
 	 */
-	public verifyCallbackOAuth(strategy: string, providerName?: string) {
-
+	public async verifyCallbackOAuth(ctx: Context, strategy: string, providerName: string | null, profile: OAuthProfile): Promise<User> {
 		const provider = providerName || strategy;
-		const logtag = providerName ? strategy + ':' + providerName : strategy;
+		const logTag = providerName ? strategy + ':' + providerName : strategy;
 
-		return (req: { ctx: Context }, accessToken: string, refreshToken: string, profile: any, callback: Function) => { // accessToken and refreshToken are ignored
+		// retrieve emails from profile or fail if there are none
+		const emails = this.getEmailsFromProfile(ctx, provider, logTag, profile);
 
-			// passport still uses callbacks (wtf!), so wrap this into an async block:
-			(async () => {
-				const ctx = req.ctx;
-				try {
-					// retrieve emails from profile or fail if there are none
-					const emails = this.getEmailsFromProfile(ctx, provider, logtag, profile);
+		// remove non-confirmed users with matching email
+		await this.removePendingUsers(ctx, emails);
 
-					// remove non-confirmed users with matching email
-					await this.removePendingUsers(ctx, emails);
+		// find users who match confirmed email or provider id
+		const otherUsers = await this.findOtherUsers(ctx, provider, profile.id, emails);
 
-					// find users who match confirmed email or provider id
-					const otherUsers = await this.findOtherUsers(ctx, provider, profile.id, emails);
+		// boil down found users to one
+		const foundUser = await this.identifyUser(ctx, otherUsers, provider, profile.id, emails);
 
-					// boil down found users to one
-					const foundUser = await this.identifyUser(ctx, otherUsers, provider, profile.id, emails);
+		let user: User;
+		if (foundUser) {
+			// if user found, update and return.
+			user = await this.updateOAuthUser(ctx, foundUser, provider, profile, emails);
 
-					let user: User;
-					if (foundUser) {
-						// if user found, update and return.
-						user = await this.updateOAuthUser(ctx, foundUser, provider, profile, emails);
-
-					} else {
-						// otherwise, create new user.
-						user = await this.createOAuthUser(ctx, provider, profile, emails);
-					}
-					return callback(null, user);
-
-				} catch (err) {
-
-					if (err.constructor && err.constructor.name === 'ApiError') {
-						callback(err);
-
-					} else if (err.errors && err.constructor && err.constructor.name === 'MongooseError') {
-						callback(new ApiError('User validations failed. See below for details.').validationErrors(err.errors).warn(), 422);
-
-						/* istanbul ignore next: we always wrap errors in Err. */
-					} else {
-						logger.error(err.stack);
-						callback(new ApiError(err, 'Error during authentication.').log());
-					}
-				}
-			})();
-		};
+		} else {
+			// otherwise, create new user.
+			user = await this.createOAuthUser(ctx, provider, profile, emails);
+		}
+		return user;
 	}
 
 	/**
@@ -314,22 +302,22 @@ export class AuthenticationApi extends Api {
 	 * are none, an exception in thrown.
 	 * @param {Context} ctx Koa context
 	 * @param {string} provider Provider ID
-	 * @param {string} logtag For Logging purpose
+	 * @param {string} logTag For Logging purpose
 	 * @param profile Received profile
 	 * @return {string[]} Email addresses
 	 */
-	private getEmailsFromProfile(ctx: Context, provider: string, logtag: string, profile: any): string[] {
+	private getEmailsFromProfile(ctx: Context, provider: string, logTag: string, profile: OAuthProfile): string[] {
 		if (!profile) {
-			logger.warn('[AuthenticationApi.getEmailsFromProfile|%s] No profile data received.', logtag);
-			throw new ApiError('No profile received from %s.', logtag);
+			logger.warn('[AuthenticationApi.getEmailsFromProfile|%s] No profile data received.', logTag);
+			throw new ApiError('No profile received from %s.', logTag);
 		}
 		if (!isArray(profile.emails) || !profile.emails.length) {
-			logger.warn('[AuthenticationApi.getEmailsFromProfile|%s] Profile data does not contain any email address: %s', logtag, JSON.stringify(profile));
-			throw new ApiError('Received profile from %s does not contain any email address.', logtag);
+			logger.warn('[AuthenticationApi.getEmailsFromProfile|%s] Profile data does not contain any email address: %s', logTag, JSON.stringify(profile));
+			throw new ApiError('Received profile from %s does not contain any email address.', logTag);
 		}
 		if (!profile.id) {
-			logger.warn('[AuthenticationApi.getEmailsFromProfile|%s] Profile data does not contain any user ID: %s', logtag, JSON.stringify(profile));
-			throw new ApiError('Received profile from %s does not contain user id.', logtag);
+			logger.warn('[AuthenticationApi.getEmailsFromProfile|%s] Profile data does not contain any user ID: %s', logTag, JSON.stringify(profile));
+			throw new ApiError('Received profile from %s does not contain user id.', logTag);
 		}
 
 		// exclude login with different account at same provider
@@ -448,7 +436,7 @@ export class AuthenticationApi extends Api {
 	 * @param {string[]} emails Emails collected from profile
 	 * @return {Promise<User>} Updated user
 	 */
-	private async updateOAuthUser(ctx: Context, user: User, provider: string, profile: any, emails: string[]): Promise<User> {
+	private async updateOAuthUser(ctx: Context, user: User, provider: string, profile: OAuthProfile, emails: string[]): Promise<User> {
 
 		if (config.vpdb.services.sqreen.enabled) {
 			require('sqreen').auth_track(true, { email: user.email });
@@ -500,7 +488,7 @@ export class AuthenticationApi extends Api {
 	 * @param {string[]} emails Emails collected from profile
 	 * @return {Promise<User>} Created user
 	 */
-	private async createOAuthUser(ctx: Context, provider: string, profile: any, emails: string[]): Promise<User> {
+	private async createOAuthUser(ctx: Context, provider: string, profile: OAuthProfile, emails: string[]): Promise<User> {
 		// compute username
 		let name: string;
 		if (!profile.displayName && !profile.username) {
@@ -571,4 +559,71 @@ export class AuthenticationApi extends Api {
 			|| (profile.name ? profile.name.givenName || profile.name.familyName : '')
 			|| profile.emails[0].value.substr(0, profile.emails[0].value.indexOf('@'));
 	}
+}
+
+/**
+ * The normalized user profile fetched from the OAuth provider.
+ *
+ * @see https://tools.ietf.org/html/draft-smarr-vcarddav-portable-contacts-00
+ */
+export interface OAuthProfile {
+	/**
+	 * The provider with which the user authenticated (facebook, twitter, etc.).
+	 */
+	provider: string;
+
+	/**
+	 * A unique identifier for the user, as generated by the service provider.
+	 */
+	id: string;
+
+	/**
+	 * The name login name of the user
+	 */
+	username?: string;
+
+	/**
+	 * The name of this user, suitable for display.
+	 */
+	displayName?: string;
+
+	name?: {
+		/**
+		 * The family name of this user, or "last name" in most Western languages.
+		 */
+		familyName?: string;
+		/**
+		 * The given name of this user, or "first name" in most Western languages.
+		 */
+		givenName?: string;
+
+		/**
+		 * The middle name of this user.
+		 */
+		middleName?: string;
+	}
+
+	emails: {
+		/**
+		 * The actual email address.
+		 */
+		value: string;
+
+		/**
+		 * The type of email address (home, work, etc.).
+		 */
+		type: string;
+	}[];
+
+	photos?: {
+		/**
+		 * The URL of the image.
+		 */
+		value: string;
+	}[];
+
+	/**
+	 * The original JSON profile as fetched from the provider.
+	 */
+	_json: { [key: string]: any };
 }

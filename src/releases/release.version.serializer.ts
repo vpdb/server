@@ -21,8 +21,9 @@ import { compact, includes, isArray, pick } from 'lodash';
 
 import { state } from '../state';
 import { Serializer, SerializerOptions } from '../common/serializer';
-import { ReleaseVersion } from './release.version';
 import { Context } from '../common/types/context';
+import { File } from '../files/file';
+import { ReleaseVersion } from './release.version';
 import { flavors } from './release.flavors';
 
 export class ReleaseVersionSerializer extends Serializer<ReleaseVersion> {

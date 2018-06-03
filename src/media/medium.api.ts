@@ -79,7 +79,7 @@ export class MediumApi extends Api {
 	 */
 	public async del(ctx: Context) {
 
-		const canDelete = await acl.isAllowed(ctx.user.id, 'media', 'delete');
+		const canDelete = await acl.isAllowed(ctx.state.user.id, 'media', 'delete');
 		const medium = await state.models.Medium.findOne({ id: ctx.params.id }).exec();
 		if (!medium) {
 			throw new ApiError('No such medium with ID "%s".', ctx.params.id).status(404);

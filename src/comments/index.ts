@@ -23,17 +23,17 @@ import Router from 'koa-router';
 
 import { state } from '../state';
 import { EndPoint } from '../common/types/endpoint';
-import { starSchema } from './star.schema';
-import { Star } from './star';
+import { CommentModel, commentSchema } from './comment.schema';
+import { Comment } from './comment';
 
-export class StarEndPoint implements EndPoint {
+export class CommentEndPoint implements EndPoint {
 
-	readonly name: string = 'Star API';
+	readonly name: string = 'Comment API';
 
 	private readonly _schema: Schema;
 
 	constructor() {
-		this._schema = starSchema;
+		this._schema = commentSchema;
 	}
 
 	getRouter(): Router {
@@ -41,6 +41,6 @@ export class StarEndPoint implements EndPoint {
 	}
 
 	register(app: Application): void {
-		state.models.Star = mongoose.model<Star>('Star', this._schema);
+		state.models.Comment = mongoose.model<Comment, CommentModel>('Comment', this._schema);
 	}
 }

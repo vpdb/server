@@ -19,7 +19,6 @@
 
 import { Model } from 'mongoose';
 import { Build } from '../../builds/build';
-import { Comment } from '../../comments/comment';
 import { File } from '../../files/file';
 import { GameRequest } from '../../game-requests/game.request';
 import { Rating } from '../../ratings/rating';
@@ -29,6 +28,7 @@ import { Token } from '../../tokens/token';
 import { Star } from '../../stars/star';
 import { User } from '../../users/user';
 
+import { CommentModel } from '../../comments/comment.schema';
 import { GameModel } from '../../games/game.schema';
 import { BackglassModel } from '../../backglasses/backglass.schema';
 import { LogEventModel } from '../../log-event/log.event.schema';
@@ -42,7 +42,7 @@ import { RomModel } from '../../roms/rom.schema';
 export interface Models {
 	Backglass: BackglassModel;
 	Build: Model<Build>;
-	Comment: Model<Comment>;
+	Comment: CommentModel;
 	File: Model<File>;
 	Game: GameModel;
 	GameRequest: Model<GameRequest>;

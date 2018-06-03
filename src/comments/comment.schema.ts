@@ -1,6 +1,6 @@
 /*
- * VPDB - Visual Pinball Database
- * Copyright (C) 2016 freezy <freezy@xbmc.org>
+ * VPDB - Virtual Pinball Database
+ * Copyright (C) 2018 freezy <freezy@vpdb.io>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,54 +17,41 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-'use strict';
+import { PaginateModel, Schema } from 'mongoose';
+import { Comment } from './comment';
+import { isString } from 'lodash';
+import validator from 'validator';
+import paginatePlugin = require('mongoose-paginate');
 
-const _ = require('lodash');
-const logger = require('winston');
 const shortId = require('shortid32');
-const mongoose = require('mongoose');
-const paginate = require('mongoose-paginate');
-const validator = require('validator');
-
-const Schema = mongoose.Schema;
-
 
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
-const fields = {
+export const commentFields = {
 	id: { type: String, required: true, unique: true, 'default': shortId.generate },
-	_from: { type: Schema.ObjectId, required: true, ref: 'User', index: true },
+	_from: { type: Schema.Types.ObjectId, required: true, ref: 'User', index: true },
 	_ref: {
-		release: { type: Schema.ObjectId, ref: 'Release', index: true, sparse: true },
-		release_moderation: { type: Schema.ObjectId, ref: 'Release', index: true, sparse: true }
+		release: { type: Schema.Types.ObjectId, ref: 'Release', index: true, sparse: true },
+		release_moderation: { type: Schema.Types.ObjectId, ref: 'Release', index: true, sparse: true }
 	},
 	message: { type: String, required: 'You must provide a message when commenting.' },
 	ip: { type: String, required: true },
 	created_at: { type: Date, required: true }
 };
 
-const CommentSchema = new Schema(fields, { usePushEach: true });
-
+export interface CommentModel extends PaginateModel<Comment> {}
+export const commentSchema = new Schema(commentFields, { toObject: { virtuals: true, versionKey: false } });
 
 //-----------------------------------------------------------------------------
 // PLUGINS
 //-----------------------------------------------------------------------------
-CommentSchema.plugin(paginate);
+commentSchema.plugin(paginatePlugin);
 
 
 //-----------------------------------------------------------------------------
 // VALIDATIONS
 //-----------------------------------------------------------------------------
-CommentSchema.path('message').validate(function(msg) {
-	return _.isString(msg) && validator.isLength(msg, 3, 5000);
+commentSchema.path('message').validate((msg:any) => {
+	return isString(msg) && validator.isLength(msg, 3, 5000);
 }, 'Message must be at least 3 chars and no longer than 5k characters.');
-
-
-//-----------------------------------------------------------------------------
-// OPTIONS
-//-----------------------------------------------------------------------------
-CommentSchema.options.toObject = { virtuals: true, versionKey: false };
-
-mongoose.model('Comment', CommentSchema);
-logger.info('[model] Schema "Comment" registered.');

@@ -27,6 +27,7 @@ import { EndPoint } from './common/types/endpoint';
 
 import { AuthenticationEndPoint, AuthenticationStorageEndPoint } from './authentication';
 import { BackglassEndPoint } from './backglasses';
+import { CommentEndPoint } from './comments';
 import { FilesApiEndPoint, FilesProtectedStorageEndPoint, FilesPublicStorageEndPoint } from './files';
 import { GamesApiEndPoint } from './games';
 import { GameRequestApiEndPoint } from './game-requests';
@@ -57,6 +58,7 @@ shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 			new AuthenticationEndPoint(),
 			new AuthenticationStorageEndPoint(),
 			new BackglassEndPoint(),
+			new CommentEndPoint(),
 			new FilesApiEndPoint(),
 			new FilesPublicStorageEndPoint(),
 			new FilesProtectedStorageEndPoint(),

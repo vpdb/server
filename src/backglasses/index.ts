@@ -44,7 +44,7 @@ export class BackglassEndPoint implements EndPoint {
 	}
 
 	register(app: Application): void {
-		state.models.Backglass = mongoose.model<Backglass>('Backglass', this._schema) as BackglassModel;
+		state.models.Backglass = mongoose.model<Backglass, BackglassModel>('Backglass', this._schema);
 		state.serializers.Backglass = new BackglassSerializer();
 	}
 }

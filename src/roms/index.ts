@@ -45,7 +45,7 @@ export class RomApiEndPoint implements EndPoint {
 	}
 
 	register(app: Application): void {
-		state.models.Rom = mongoose.model<Rom>('Rom', this._schema) as RomModel;
+		state.models.Rom = mongoose.model<Rom, RomModel>('Rom', this._schema);
 		state.serializers.Rom = new RomSerializer();
 	}
 }

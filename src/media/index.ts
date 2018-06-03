@@ -45,7 +45,7 @@ export class MediaApiEndPoint implements EndPoint {
 	}
 
 	register(app: Application): void {
-		state.models.Medium = mongoose.model<Medium>('Medium', this._schema) as MediumModel;
+		state.models.Medium = mongoose.model<Medium, MediumModel>('Medium', this._schema);
 		state.serializers.Medium = new MediumSerializer();
 	}
 }

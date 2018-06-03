@@ -45,7 +45,7 @@ export class GamesApiEndPoint implements EndPoint {
 	}
 
 	register(app: Application): void {
-		state.models.Game = mongoose.model<Game>('Game', this._schema) as GameModel;
+		state.models.Game = mongoose.model<Game, GameModel>('Game', this._schema);
 		state.serializers.Game = new GameSerializer();
 	}
 }

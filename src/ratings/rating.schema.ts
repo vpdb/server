@@ -1,6 +1,6 @@
 /*
- * VPDB - Visual Pinball Database
- * Copyright (C) 2016 freezy <freezy@xbmc.org>
+ * VPDB - Virtual Pinball Database
+ * Copyright (C) 2018 freezy <freezy@vpdb.io>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,46 +17,36 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-'use strict';
+import { Schema } from 'mongoose';
+import { isNumber } from 'lodash';
 
-const _ = require('lodash');
-const logger = require('winston');
 const shortId = require('shortid32');
-const mongoose = require('mongoose');
-
-const Schema = mongoose.Schema;
-
 
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
-const fields = {
+export const ratingFields = {
 	id: { type: String, required: true, unique: true, 'default': shortId.generate },
-	_from: { type: Schema.ObjectId, required: true, ref: 'User', index: true },
+	_from: { type: Schema.Types.ObjectId, required: true, ref: 'User', index: true },
 	_ref: {
-		game: { type: Schema.ObjectId, ref: 'Game', index: true, sparse: true },
-		release: { type: Schema.ObjectId, ref: 'Release', index: true, sparse: true }
+		game: { type: Schema.Types.ObjectId, ref: 'Game', index: true, sparse: true },
+		release: { type: Schema.Types.ObjectId, ref: 'Release', index: true, sparse: true }
 	},
 	value: { type: Number, required: 'You must provide a value when rating.' },
 	modified_at: { type: Date },
 	created_at: { type: Date, required: true }
 };
 
-const RatingSchema = new Schema(fields, { usePushEach: true });
+export const ratingSchema = new Schema(ratingFields, { toObject: { virtuals: true, versionKey: false } });
 // TODO autoindex: false in production: http://mongoosejs.com/docs/guide.html#indexes
-
 
 //-----------------------------------------------------------------------------
 // VALIDATIONS
 //-----------------------------------------------------------------------------
-RatingSchema.path('value').validate(function(val) {
-	return _.isNumber(val) && val % 1 === 0;
+ratingSchema.path('value').validate((val:any) => {
+	return isNumber(val) && val % 1 === 0;
 }, 'Value must be an integer.');
 
-RatingSchema.path('value').validate(function(val) {
+ratingSchema.path('value').validate((val:any) => {
 	return val > 0 && val <= 10;
 }, 'Value must be between 1 and 10.');
-
-
-mongoose.model('Rating', RatingSchema);
-logger.info('[model] Schema "Rating" registered.');

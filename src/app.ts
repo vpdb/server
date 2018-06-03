@@ -36,7 +36,7 @@ import { TokenEndPoint } from './tokens';
 import { MediaApiEndPoint } from './media';
 import { MiscEndPoint } from './misc';
 import { ProfileEndPoint } from './profile';
-import { ReleaseEndPoint } from './releases';
+import { ReleaseEndPoint, ReleaseStorageEndPoint } from './releases';
 import { RomApiEndPoint } from './roms';
 import { UserEndPoint } from './users';
 
@@ -66,6 +66,7 @@ shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 			new MiscEndPoint(),
 			new ProfileEndPoint(),
 			new ReleaseEndPoint(),
+			new ReleaseStorageEndPoint(),
 			new RomApiEndPoint(),
 			new TokenEndPoint(),
 			new UserEndPoint(),

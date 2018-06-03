@@ -32,7 +32,8 @@ import { ReleaseVersionModel, releaseVersionSchema } from './release.version.sch
 import { ReleaseVersionFileModel, releaseVersionFileSchema } from './release.version.file.schema';
 import { ReleaseVersion } from './release.version';
 import { ReleaseVersionFile } from './release.version.file';
-import { router } from './release.api.router';
+import { router as apiRouter } from './release.api.router';
+import { router as storageRouter } from './release.storage.router';
 
 export class ReleaseEndPoint implements EndPoint {
 
@@ -44,7 +45,7 @@ export class ReleaseEndPoint implements EndPoint {
 	private readonly _releaseVersionFileSchema: Schema;
 
 	constructor() {
-		this._router = router;
+		this._router = apiRouter;
 		this._releaseSchema = releaseSchema;
 		this._releaseVersionSchema = releaseVersionSchema;
 		this._releaseVersionFileSchema = releaseVersionFileSchema;
@@ -60,5 +61,24 @@ export class ReleaseEndPoint implements EndPoint {
 		state.models.ReleaseVersionFile = mongoose.model<ReleaseVersionFile, ReleaseVersionFileModel>('ReleaseVersionFile', this._releaseVersionFileSchema);
 		state.models.TableBlock = mongoose.model<TableBlock>('TableBlock', tableBlockSchema);
 		state.serializers.Release = new ReleaseSerializer();
+	}
+}
+
+export class ReleaseStorageEndPoint implements EndPoint {
+
+	readonly name: string = 'Release storage API';
+
+	private readonly _router: Router;
+
+	constructor() {
+		this._router = storageRouter;
+	}
+
+	getRouter(): Router {
+		return this._router;
+	}
+
+	register(app: Application): void {
+		// nothing to register
 	}
 }

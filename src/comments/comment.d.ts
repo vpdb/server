@@ -22,13 +22,17 @@ import { User } from '../users/user';
 import { Release } from '../releases/release';
 
 export interface Comment extends Document {
-	id: string,
-	_from: User | Schema.Types.ObjectId
+	id: string;
+	_from: User | Schema.Types.ObjectId;
 	_ref: {
-		release: Release | Schema.Types.ObjectId
-		release_moderation: Release | Schema.Types.ObjectId
-	},
-	message: string,
-	ip: string,
-	created_at: Date
+		release: Release | Schema.Types.ObjectId;
+		release_moderation: Release | Schema.Types.ObjectId;
+	};
+	message: string;
+	ip: string;
+	created_at: Date;
+
+	// serialized
+	from?: User;
+	release?: Release;
 }

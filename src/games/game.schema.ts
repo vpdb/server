@@ -19,6 +19,7 @@
 
 import { PaginateModel, PrettyIdModel, Schema } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
+import validator from 'validator';
 import paginatePlugin = require('mongoose-paginate');
 
 import { state } from '../state';

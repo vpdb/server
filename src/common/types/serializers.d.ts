@@ -20,6 +20,7 @@
 import { BackglassSerializer } from '../../backglasses/backglass.serializer';
 import { BackglassVersionSerializer } from '../../backglasses/backglass.version.serializer';
 import { BuildSerializer } from '../../builds/build.serializer';
+import { CommentSerializer } from '../../comments/comment.serializer';
 import { ContentAuthorSerializer } from '../../users/content.author.serializer';
 import { FileSerializer } from '../../files/file.serializer';
 import { GameSerializer } from '../../games/game.serializer';
@@ -39,6 +40,7 @@ export interface Serializers {
 	Backglass: BackglassSerializer;
 	BackglassVersion: BackglassVersionSerializer;
 	Build: BuildSerializer;
+	Comment: CommentSerializer;
 	ContentAuthor: ContentAuthorSerializer;
 	File: FileSerializer;
 	Game: GameSerializer;

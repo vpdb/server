@@ -26,6 +26,7 @@ import { EndPoint } from '../common/types/endpoint';
 import { BackglassModel, backglassSchema } from './backglass.schema';
 import { Backglass } from './backglass';
 import { BackglassSerializer } from './backglass.serializer';
+import { router } from './backglass.api.router';
 
 export class BackglassEndPoint implements EndPoint {
 
@@ -35,12 +36,12 @@ export class BackglassEndPoint implements EndPoint {
 	private readonly _schema: Schema;
 
 	constructor() {
-		//this._router = router;
+		this._router = router;
 		this._schema = backglassSchema;
 	}
 
 	getRouter(): Router {
-		return null; //return this._router;
+		return this._router;
 	}
 
 	register(app: Application): void {

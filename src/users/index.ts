@@ -25,6 +25,7 @@ import { state } from '../state';
 import { EndPoint } from '../common/types/endpoint';
 import { User } from './user';
 import { UserSerializer } from './user.serializer';
+import { ContentAuthorSerializer } from './content.author.serializer';
 import { userSchema } from './user.schema';
 import { router } from './user.api.router';
 
@@ -47,5 +48,6 @@ export class UserEndPoint implements EndPoint {
 	register(app: Application): void {
 		state.models.User = mongoose.model<User>('User', this._schema);
 		state.serializers.User = new UserSerializer();
+		state.serializers.ContentAuthor = new ContentAuthorSerializer();
 	}
 }

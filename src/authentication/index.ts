@@ -18,20 +18,11 @@
  */
 
 import Router from 'koa-router';
-import passport from 'koa-passport';
 import { EndPoint } from '../common/types/endpoint';
 
-import { logger } from '../common/logger';
-import { config, settings } from '../common/settings';
-import { api, router as apiRouter } from './authentication.api.router';
+import { router as apiRouter } from './authentication.api.router';
 import { router as storageRouter } from './authentication.storage.router';
 import Application = require('koa');
-
-const GitHubStrategy = require('passport-github').Strategy;
-const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-const IPBoard3Strategy = require('./passport-ipboard3').Strategy;
-const IPBoard4Strategy = require('./passport-ipboard4').Strategy;
-const IPBoard43Strategy = require('./passport-ipboard43').Strategy;
 
 export class AuthenticationEndPoint implements EndPoint {
 
@@ -43,67 +34,67 @@ export class AuthenticationEndPoint implements EndPoint {
 
 		this._router = apiRouter;
 
-		// configure google strategy
-		if (config.vpdb.passport.google.enabled) {
-			logger.info('[AuthenticationEndPoint] Enabling Google authentication strategy with callback at %s', settings.webUri('/auth/google/callback'));
-			passport.use(new GoogleStrategy({
-				clientID: config.vpdb.passport.google.clientID,
-				clientSecret: config.vpdb.passport.google.clientSecret,
-				callbackURL: settings.webUri('/auth/google/callback')
-			}, api.verifyCallbackOAuth('google').bind(api)));
-		}
-
-		// configure github strategy
-		if (config.vpdb.passport.github.enabled) {
-			logger.info('[AuthenticationEndPoint] Enabling GitHub authentication strategy with callback at %s', settings.webUri('/auth/github/callback'));
-			passport.use(new GitHubStrategy({
-				passReqToCallback: true,
-				clientID: config.vpdb.passport.github.clientID,
-				clientSecret: config.vpdb.passport.github.clientSecret,
-				callbackURL: settings.webUri('/auth/github/callback'),
-				scope: ['user:email']
-			}, api.verifyCallbackOAuth('github').bind(api)));
-		}
-
-		// configure ips strategies
-		config.vpdb.passport.ipboard.forEach(ipbConfig => {
-			if (ipbConfig.enabled) {
-
-				const callbackUrl = settings.webUri('/auth/' + ipbConfig.id + '/callback');
-				logger.info('[AuthenticationEndPoint|ips:' + ipbConfig.id + '] Enabling IP.Board authentication strategy for "%s" at %s.', ipbConfig.name, callbackUrl);
-				if (ipbConfig.version === 3) {
-					passport.use(new IPBoard3Strategy({
-						passReqToCallback: true,
-						name: ipbConfig.id,
-						baseURL: ipbConfig.baseURL,
-						clientID: ipbConfig.clientID,
-						clientSecret: ipbConfig.clientSecret,
-						callbackURL: callbackUrl
-					}, api.verifyCallbackOAuth('ipboard', ipbConfig.id).bind(api)));
-				}
-				if (ipbConfig.version === 4) {
-					passport.use(new IPBoard4Strategy({
-						passReqToCallback: true,
-						name: ipbConfig.id,
-						baseURL: ipbConfig.baseURL,
-						clientID: ipbConfig.clientID,
-						clientSecret: ipbConfig.clientSecret,
-						callbackURL: callbackUrl
-					}, api.verifyCallbackOAuth('ipboard', ipbConfig.id).bind(api)));
-				}
-				if (ipbConfig.version === 4.3) {
-					passport.use(new IPBoard43Strategy({
-						passReqToCallback: true,
-						name: ipbConfig.id,
-						baseURL: ipbConfig.baseURL,
-						clientID: ipbConfig.clientID,
-						clientSecret: ipbConfig.clientSecret,
-						callbackURL: callbackUrl,
-						scope: ['profile', 'email']
-					}, api.verifyCallbackOAuth('ipboard', ipbConfig.id).bind(api)));
-				}
-			}
-		});
+		// // configure google strategy
+		// if (config.vpdb.passport.google.enabled) {
+		// 	logger.info('[AuthenticationEndPoint] Enabling Google authentication strategy with callback at %s', settings.webUri('/auth/google/callback'));
+		// 	passport.use(new GoogleStrategy({
+		// 		clientID: config.vpdb.passport.google.clientID,
+		// 		clientSecret: config.vpdb.passport.google.clientSecret,
+		// 		callbackURL: settings.webUri('/auth/google/callback')
+		// 	}, api.verifyCallbackOAuth('google').bind(api)));
+		// }
+		//
+		// // configure github strategy
+		// if (config.vpdb.passport.github.enabled) {
+		// 	logger.info('[AuthenticationEndPoint] Enabling GitHub authentication strategy with callback at %s', settings.webUri('/auth/github/callback'));
+		// 	passport.use(new GitHubStrategy({
+		// 		passReqToCallback: true,
+		// 		clientID: config.vpdb.passport.github.clientID,
+		// 		clientSecret: config.vpdb.passport.github.clientSecret,
+		// 		callbackURL: settings.webUri('/auth/github/callback'),
+		// 		scope: ['user:email']
+		// 	}, api.verifyCallbackOAuth('github').bind(api)));
+		// }
+		//
+		// // configure ips strategies
+		// config.vpdb.passport.ipboard.forEach(ipbConfig => {
+		// 	if (ipbConfig.enabled) {
+		//
+		// 		const callbackUrl = settings.webUri('/auth/' + ipbConfig.id + '/callback');
+		// 		logger.info('[AuthenticationEndPoint|ips:' + ipbConfig.id + '] Enabling IP.Board authentication strategy for "%s" at %s.', ipbConfig.name, callbackUrl);
+		// 		if (ipbConfig.version === 3) {
+		// 			passport.use(new IPBoard3Strategy({
+		// 				passReqToCallback: true,
+		// 				name: ipbConfig.id,
+		// 				baseURL: ipbConfig.baseURL,
+		// 				clientID: ipbConfig.clientID,
+		// 				clientSecret: ipbConfig.clientSecret,
+		// 				callbackURL: callbackUrl
+		// 			}, api.verifyCallbackOAuth('ipboard', ipbConfig.id).bind(api)));
+		// 		}
+		// 		if (ipbConfig.version === 4) {
+		// 			passport.use(new IPBoard4Strategy({
+		// 				passReqToCallback: true,
+		// 				name: ipbConfig.id,
+		// 				baseURL: ipbConfig.baseURL,
+		// 				clientID: ipbConfig.clientID,
+		// 				clientSecret: ipbConfig.clientSecret,
+		// 				callbackURL: callbackUrl
+		// 			}, api.verifyCallbackOAuth('ipboard', ipbConfig.id).bind(api)));
+		// 		}
+		// 		if (ipbConfig.version === 4.3) {
+		// 			passport.use(new IPBoard43Strategy({
+		// 				passReqToCallback: true,
+		// 				name: ipbConfig.id,
+		// 				baseURL: ipbConfig.baseURL,
+		// 				clientID: ipbConfig.clientID,
+		// 				clientSecret: ipbConfig.clientSecret,
+		// 				callbackURL: callbackUrl,
+		// 				scope: ['profile', 'email']
+		// 			}, api.verifyCallbackOAuth('ipboard', ipbConfig.id).bind(api)));
+		// 		}
+		// 	}
+		//});
 	}
 
 	getRouter(): Router {
@@ -111,7 +102,7 @@ export class AuthenticationEndPoint implements EndPoint {
 	}
 
 	register(app: Application): void {
-		app.use(passport.initialize());
+		// nothing to initialize
 	}
 }
 

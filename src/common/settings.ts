@@ -161,8 +161,8 @@ export class Settings {
 	 * Returns the external URL of the API
 	 * @returns {string} External URL
 	 */
-	apiUri() {
-		return this.apiHost() + this.current.vpdb.api.pathname;
+	apiUri(path = '') {
+		return this.apiHost() + this.apiPath(path);
 	};
 
 	/**

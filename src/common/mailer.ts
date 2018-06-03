@@ -37,7 +37,7 @@ import { ContentAuthor } from '../users/content.author';
 import { promisify } from "util";
 
 const readFileAsync = promisify(readFile);
-const templatesDir = resolve(__dirname, '../email-templates');
+const templatesDir = resolve(__dirname, './email-templates');
 
 class Mailer {
 

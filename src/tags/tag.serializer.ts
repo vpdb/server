@@ -24,5 +24,3 @@ export class TagSerializer extends Serializer<Tag> {
 		return this._simple(ctx, doc, opts);
 	}
 }
-
-module.exports = new TagSerializer();

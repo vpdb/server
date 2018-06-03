@@ -34,6 +34,8 @@ import { ReleaseVersion } from './release.version';
 import { ReleaseVersionFile } from './release.version.file';
 import { router as apiRouter } from './release.api.router';
 import { router as storageRouter } from './release.storage.router';
+import { ReleaseVersionSerializer } from './release.version.serializer';
+import { ReleaseVersionFileSerializer } from './release.version.file.serializer';
 
 export class ReleaseEndPoint implements EndPoint {
 
@@ -59,8 +61,10 @@ export class ReleaseEndPoint implements EndPoint {
 		state.models.Release = mongoose.model<Release>('Release', this._releaseSchema) as ReleaseModel;
 		state.models.ReleaseVersion = mongoose.model<ReleaseVersion, ReleaseVersionModel>('ReleaseVersion', this._releaseVersionSchema);
 		state.models.ReleaseVersionFile = mongoose.model<ReleaseVersionFile, ReleaseVersionFileModel>('ReleaseVersionFile', this._releaseVersionFileSchema);
-		state.models.TableBlock = mongoose.model<TableBlock>('TableBlock', tableBlockSchema);
 		state.serializers.Release = new ReleaseSerializer();
+		state.serializers.ReleaseVersion = new ReleaseVersionSerializer();
+		state.serializers.ReleaseVersionFile = new ReleaseVersionFileSerializer();
+		state.models.TableBlock = mongoose.model<TableBlock>('TableBlock', tableBlockSchema);
 	}
 }
 

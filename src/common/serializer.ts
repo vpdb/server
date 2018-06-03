@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document, ModeratedDocument } from 'mongoose';
+import { Document, ModeratedDocument, Schema } from 'mongoose';
 import { get, isArray, defaultsDeep, assign, pick } from 'lodash';
 
 import { state } from '../state';
@@ -111,14 +111,14 @@ export abstract class Serializer<T extends Document | ModeratedDocument> {
 	 * @returns {boolean}
 	 */
 	protected _populated(doc: Document, field: string) {
-		if (doc.populated) {
-			return doc.populated(field);
+		if (doc.populated && doc.populated(field)) {
+			return true;
 		}
 		let obj = get(doc, field);
 		if (isArray(obj) && obj.length > 0) {
 			obj = obj[0];
 		}
-		return obj && obj._id;
+		return !(obj instanceof Schema.Types.ObjectId)
 	}
 
 	protected _defaultOpts(opts: SerializerOptions): SerializerOptions {

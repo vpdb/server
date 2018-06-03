@@ -708,6 +708,7 @@ export class ReleaseApi extends Api {
 					return version.files.length > 0;
 				});
 			}
+			return release;
 		});
 
 		return this.success(ctx, releases, 200, this.paginationOpts(pagination, results.total));

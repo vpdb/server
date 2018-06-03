@@ -42,6 +42,7 @@ import { ReleaseEndPoint, ReleaseStorageEndPoint } from './releases';
 import { RomApiEndPoint } from './roms';
 import { StarEndPoint } from './stars';
 import { UserEndPoint } from './users';
+import { BuildApiEndPoint } from './builds';
 
 const shortId = require('shortid32');
 shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
@@ -58,6 +59,7 @@ shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 			new AuthenticationEndPoint(),
 			new AuthenticationStorageEndPoint(),
 			new BackglassEndPoint(),
+			new BuildApiEndPoint(),
 			new CommentEndPoint(),
 			new FilesApiEndPoint(),
 			new FilesPublicStorageEndPoint(),

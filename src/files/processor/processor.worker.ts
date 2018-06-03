@@ -114,7 +114,11 @@ export class ProcessorWorker {
 			logger.debug('[ProcessorWorker.processJob] [%s | #%s] done: %s at %s', data.processor, job.id, file.toDetailedString(variation), FileUtil.log(finalPath));
 
 			// continue with dependents (and fresh data)
-			await ProcessorWorker.continueCreation(await state.models.File.findOne({ id: data.fileId }).exec(), variation);
+			file = await state.models.File.findOne({ id: data.fileId }).exec();
+			if (!file) {
+				return null;
+			}
+			await ProcessorWorker.continueCreation(file, variation);
 
 			return finalPath;
 

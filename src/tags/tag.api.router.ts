@@ -17,15 +17,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-'use strict';
+import { Scope } from '../common/scope';
+import { TagApi } from './tag.api';
 
-const scope = require('../../../src/common/scope');
-const settings = require('../../../src/common/settings');
+const api = new TagApi();
+export const router = api.apiRouter();
 
-exports.register = function(app, api) {
-
-	app.get(settings.apiPath('/tags'),        api.anon(api.tags.list));
-	app.post(settings.apiPath('/tags'),       api.auth(api.tags.create, 'tags', 'add', [ scope.ALL , scope.CREATE ]));
-	app.delete(settings.apiPath('/tags/:id'), api.auth(api.tags.del, 'tags', 'delete-own', [ scope.ALL , scope.CREATE ]));
-
-};
+router.get('/v1/tags',        api.anon(api.list.bind(api)));
+router.post('/v1/tags',       api.auth(api.create.bind(api), 'tags', 'add', [Scope.ALL, Scope.CREATE]));
+router.delete('/v1/tags/:id', api.auth(api.del.bind(api), 'tags', 'delete-own', [Scope.ALL, Scope.CREATE]));

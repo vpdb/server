@@ -30,6 +30,7 @@ import { koa404Handler } from './common/middleware/notfound.handler';
 import { logger } from './common/logger';
 
 const koaResponseTime = require('koa-response-time');
+const koaCors = require('@koa/cors');
 
 export class Server {
 
@@ -42,6 +43,7 @@ export class Server {
 		this.app.use(koaResponseTime());
 		this.app.use(koaErrorHandler());
 		this.app.use(koaAuth());
+		this.app.use(koaCors());
 	}
 
 	public register<T>(endPoint: EndPoint) {

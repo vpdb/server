@@ -26,6 +26,10 @@ declare module 'redis' {
 
 		getAsync(key: string): Promise<string>;
 
+		hsetAsync(hash: string, key: string, value: string): Promise<void>;
+
+		hgetAsync(hash: string, key: string): Promise<string>;
+
 		delAsync(key: string): Promise<void>;
 
 		ttlAsync(key: string): Promise<number>;

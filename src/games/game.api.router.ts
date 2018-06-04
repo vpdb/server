@@ -34,9 +34,9 @@ const backglassApi = new BackglassApi();
 
 export const router = api.apiRouter();
 
-router.get('/v1/games',        api.anon(api.list.bind(api)));
-router.head('/v1/games/:id',   api.anon(api.head.bind(api)));
-router.get('/v1/games/:id',    api.anon(api.view.bind(api)));
+router.get('/v1/games',       api.list.bind(api));
+router.head('/v1/games/:id',  api.head.bind(api));
+router.get('/v1/games/:id',   api.view.bind(api));
 router.patch('/v1/games/:id',  api.auth(api.update.bind(api), 'games', 'update', [ Scope.ALL ]));
 router.post('/v1/games',       api.auth(api.create.bind(api), 'games', 'add', [ Scope.ALL ]));
 router.delete('/v1/games/:id', api.auth(api.del.bind(api), 'games', 'delete', [ Scope.ALL ]));
@@ -50,10 +50,10 @@ router.delete('/v1/games/:id/star', api.auth(starsApi.unstar('game').bind(starsA
 router.get('/v1/games/:id/star',    api.auth(starsApi.get('game').bind(starsApi), 'games', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
 
 router.post('/v1/games/:gameId/backglasses', api.auth(backglassApi.create.bind(backglassApi), 'backglasses', 'add', [ Scope.ALL, Scope.CREATE ]));
-router.get('/v1/games/:gameId/backglasses',  api.anon(backglassApi.list.bind(backglassApi)));
+router.get('/v1/games/:gameId/backglasses', backglassApi.list.bind(backglassApi));
 
-router.get('/v1/games/:gameId/media', api.anon(mediumApi.list.bind(mediumApi)));
+router.get('/v1/games/:gameId/media', mediumApi.list.bind(mediumApi));
 
-router.get('/v1/games/:id/events', api.anon(eventsApi.list({ byGame: true }).bind(eventsApi)));
+router.get('/v1/games/:id/events', eventsApi.list({ byGame: true }).bind(eventsApi));
 
 router.get('/v1/games/:id/release-name', api.auth(api.releaseName.bind(api), 'releases', 'add', [ Scope.ALL, Scope.CREATE ]));

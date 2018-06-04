@@ -32,16 +32,6 @@ import { state } from '../state';
 export abstract class Api {
 
 	/**
-	 * Handles an API request with no authorization.
-	 *
-	 * @param handler The API controller launched
-	 * @returns A middleware function for Koa
-	 */
-	public anon(handler: (ctx: Context) => boolean) {
-		return async (ctx: Context) => await this.handleRequest(ctx, handler);
-	}
-
-	/**
 	 * Protects a resource by verifying the permissions of an authenticated user
 	 * and the token used for authentication. Also the plan can is verified if
 	 * provided.
@@ -66,7 +56,7 @@ export abstract class Api {
 
 			// if this resource is a service resource, we don't need a user.
 			if (scopes && scope.isValid([Scope.SERVICE], scopes) && !resource && !permission && ctx.state.tokenType === 'application') {
-				return await this.handleRequest(ctx, handler);
+				return await handler(ctx);
 			}
 
 			// if authentication failed, abort.
@@ -93,7 +83,7 @@ export abstract class Api {
 
 
 			// continue with request
-			await this.handleRequest(ctx, handler);
+			await handler(ctx);
 		};
 	}
 
@@ -186,20 +176,6 @@ export abstract class Api {
 			ctx.body = body;
 		}
 		return true;
-	}
-
-	/**
-	 * Executes the API request provided by the router.
-	 *
-	 * @param {Context} ctx Koa context
-	 * @param {(ctx: Context) => boolean} handler Handler function
-	 * @returns {Promise<void>}
-	 */
-	private async handleRequest(ctx: Context, handler: (ctx: Context) => boolean): Promise<void> {
-		const result = await handler(ctx);
-		if (result !== true) {
-			throw new ApiError('Must return success() in API controller.');
-		}
 	}
 
 	/**

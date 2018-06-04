@@ -23,13 +23,13 @@ import { Scope } from '../common/scope';
 const api = new MiscApi();
 export const router = api.apiRouter();
 
-router.get('/v1/ping',            api.anon(api.ping.bind(api)));
-router.get('/v1/plans',           api.anon(api.plans.bind(api)));
-router.get('/v1/roles',           api.auth(api.roles.bind(api), 'roles', 'list', [ Scope.ALL ]));
-router.get('/v1/ipdb/:id',        api.auth(api.ipdbDetails.bind(api), 'ipdb', 'view', [ Scope.ALL ]));
+router.get('/v1/ping',    api.ping.bind(api));
+router.get('/v1/plans',   api.plans.bind(api));
+router.get('/v1/roles',    api.auth(api.roles.bind(api), 'roles', 'list', [ Scope.ALL ]));
+router.get('/v1/ipdb/:id', api.auth(api.ipdbDetails.bind(api), 'ipdb', 'view', [ Scope.ALL ]));
 
 if (process.env.ENABLE_KILL_SWITCH) {
-	router.post('/v1/kill',       api.kill.bind(api));
+	router.post('/v1/kill',     api.kill.bind(api));
 }
-router.get('index', '/v1',  api.anon(api.index.bind(api)));
+router.get('index', '/v1', api.index.bind(api));
 router.redirect('/', 'index');

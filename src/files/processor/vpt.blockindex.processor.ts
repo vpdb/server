@@ -1,4 +1,3 @@
-///<reference path="processor.ts"/>
 /*
  * VPDB - Virtual Pinball Database
  * Copyright (C) 2018 freezy <freezy@vpdb.io>
@@ -17,6 +16,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+
+///<reference path="processor.ts"/>
+
 
 import { differenceWith, uniqWith } from 'lodash';
 

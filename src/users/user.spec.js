@@ -247,7 +247,7 @@ describe('The VPDB `user` API', () => {
 					label: 'User test token',
 					password: api.getUser('admin').password,
 					provider: 'ipbtest',
-					type: 'provider',
+					type: 'application',
 					scopes: ['community', 'service']
 				})
 				.then(res => res.expectStatus(201));

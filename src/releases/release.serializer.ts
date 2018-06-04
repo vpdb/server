@@ -111,7 +111,6 @@ export class ReleaseSerializer extends Serializer<Release> {
 		if (!isUndefined(opts.starred)) {
 			release.starred = opts.starred;
 		}
-
 		return release;
 	}
 
@@ -120,13 +119,13 @@ export class ReleaseSerializer extends Serializer<Release> {
 	 *
 	 * Basically it looks at thumbFlavor and thumbFormat and tries to return
 	 * the best match.
-	 * @param {Document[]} versions Version documents
-	 * @param req
-	 * @param {{ thumbFlavor:string, thumbFormat:string, fullThumbData:boolean }} opts thumbFlavor: "orientation:fs,lighting:day", thumbFormat: variation name or "original"
-	 * @private
-	 * @returns {{image: *, flavor: *}}
+	 *
+	 * @param {Context} ctx Koa context
+	 * @param {ReleaseVersion[]} versions Version documents
+	 * @param {SerializerOptions} opts thumbFlavor: "orientation:fs,lighting:day", thumbFormat: variation name or "original"
+	 * @return {{image: Thumb, flavor: ReleaseFileFlavor}}
 	 */
-	findThumb(ctx: Context, versions: ReleaseVersion[], opts: SerializerOptions) : { image: Thumb, flavor: ReleaseFileFlavor } {
+	public findThumb(ctx: Context, versions: ReleaseVersion[], opts: SerializerOptions) : { image: Thumb, flavor: ReleaseFileFlavor } {
 
 		opts.thumbFormat = opts.thumbFormat || 'original';
 

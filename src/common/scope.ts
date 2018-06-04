@@ -88,7 +88,7 @@ export class ScopeHelper {
 	 * Returns all scopes that are valid for a given token type at token
 	 * creation.
 	 *
-	 * @param {"personal"|"provider"} type Token type
+	 * @param {"personal"|"application"} type Token type
 	 * @return {string[]} Valid scopes
 	 */
 	getScopes(type: 'personal' | 'application'): Scope[] {
@@ -110,7 +110,7 @@ export class ScopeHelper {
 	 * Makes sure that at least one scope is valid. Basically as soon as one
 	 * of the given scopes is in the valid scopes, return trie.
 	 *
-	 * @param {string[]|"personal"|"provider"} [validScopes] If string given, match against valid scopes of given type. Otherwise match against given scopes.
+	 * @param {string[]|"personal"|"application"} [validScopes] If string given, match against valid scopes of given type. Otherwise match against given scopes.
 	 * @param {string[]} scopesToValidate Scopes to check
 	 * @return {boolean} True if all scopes are valid
 	 */

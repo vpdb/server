@@ -39,7 +39,7 @@ export const tokenFields = {
 	label: { type: String, required: 'A label must be provided' },
 	type: { type: String, 'enum': validTypes, required: true },
 	scopes: { type: [String] },
-	provider: { type: String }, // must be set for provider tokens
+	provider: { type: String }, // must be set for application tokens
 	is_active: { type: Boolean, required: true, 'default': true },
 	last_used_at: { type: Date },
 	expires_at: { type: Date, required: true },
@@ -62,7 +62,7 @@ tokenSchema.path('scopes').validate(function (scopes: string[]) {
 		return true;
 	}
 	// for scope validation, fall back to private if invalid type given
-	const type = validTypes.includes(this.type) ? this.type : 'personal';
+	const type = validTypes.includes(this.type) ? this.type : 'private';
 	if (!scope.isValid(type, scopes)) {
 		this.invalidate('scopes', 'Scopes must be one or more of the following: [ "' + scope.getScopes(type).join('", "') + '" ].');
 	}
@@ -72,7 +72,7 @@ tokenSchema.path('scopes').validate(function (scopes: string[]) {
 tokenSchema.path('type').validate(function (type: string) {
 	if (type === 'application') {
 		if (!this.provider) {
-			this.invalidate('provider', 'Provider is required for provider tokens.');
+			this.invalidate('provider', 'Provider is required for application tokens.');
 		}
 		const providers: string[] = [];
 		if (config.vpdb.passport.google.enabled) {
@@ -89,7 +89,6 @@ tokenSchema.path('type').validate(function (type: string) {
 		if (!providers.includes(this.provider)) {
 			this.invalidate('provider', 'Provider must be one of: [ "' + providers.join('", "') + '" ].');
 		}
-
 	}
 	return true;
 });

@@ -17,7 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import mongoose, { Schema } from 'mongoose';
+
+import { Schema } from 'mongoose';
 import { each, find, isArray, isBoolean, isString, isUndefined, keys } from 'lodash';
 import { createHmac } from 'crypto';
 import validator from 'validator';
@@ -87,7 +88,7 @@ export const userFields:any = {
 		subscribed_releases: { type: [String], index: true }     // linked releases on client side, so we can announce properly in realtime
 	}
 };
-const providerSchema = new mongoose.Schema({
+const providerSchema = new Schema({
 	id: { type: String, required: 'Provider ID is required.', index: true },
 	name: { type: String },
 	emails: { type: [String], required: false },

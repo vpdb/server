@@ -89,7 +89,8 @@ export class FileStorage extends Api {
 			throw new ApiError('No such file with ID "%s".', ctx.params.id).status(404);
 		}
 
-		let isPublic = file.isPublic(file.getVariation(ctx.params.variation));
+		const variation = file.getVariation(ctx.params.variation);
+		const isPublic = file.isPublic(variation);
 
 		// file is not public - user must be logged in.
 		if (!isPublic && !ctx.state.user) {
@@ -116,7 +117,7 @@ export class FileStorage extends Api {
 		}
 
 		// we also serve it if it's free and the user is logged
-		if (file.isFree(ctx.params.variation) && ctx.state.user) {
+		if (file.isFree(variation) && ctx.state.user) {
 			return [file, isPublic];
 		}
 

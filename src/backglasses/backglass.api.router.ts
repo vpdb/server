@@ -27,9 +27,9 @@ const starApi = new StarApi();
 
 export const router = api.apiRouter();
 
-router.get('/v1/backglasses',        api.anon(api.list.bind(api)));
+router.get('/v1/backglasses',       api.list.bind(api));
 router.post('/v1/backglasses',       api.auth(api.create.bind(api), 'backglasses', 'add', [ Scope.ALL, Scope.CREATE ]));
-router.get('/v1/backglasses/:id',    api.anon(api.view.bind(api)));
+router.get('/v1/backglasses/:id',   api.view.bind(api));
 router.patch('/v1/backglasses/:id',  api.auth(api.update.bind(api), 'backglasses', 'update-own', [ Scope.ALL, Scope.CREATE ]));
 router.delete('/v1/backglasses/:id', api.auth(api.del.bind(api), 'backglasses', 'delete-own', [ Scope.ALL, Scope.CREATE ]));
 

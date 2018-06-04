@@ -23,6 +23,6 @@ import { FileApi } from './file.api';
 const api = new FileApi();
 export const router = api.apiRouter();
 
-router.get('/v1/files/:id',            api.anon(api.view.bind(api)));
+router.get('/v1/files/:id',           api.view.bind(api));
 router.del('/v1/files/:id',            api.auth(api.del.bind(api), 'files', 'delete-own', [ Scope.ALL, Scope.CREATE ]));
 router.get('/v1/files/:id/blockmatch', api.auth(api.blockmatch.bind(api), 'files', 'blockmatch', [ Scope.ALL, Scope.CREATE ]));

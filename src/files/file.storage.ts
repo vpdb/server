@@ -89,7 +89,7 @@ export class FileStorage extends Api {
 			throw new ApiError('No such file with ID "%s".', ctx.params.id).status(404);
 		}
 
-		let isPublic = file.isPublic(ctx.params.variation);
+		let isPublic = file.isPublic(file.getVariation(ctx.params.variation));
 
 		// file is not public - user must be logged in.
 		if (!isPublic && !ctx.state.user) {

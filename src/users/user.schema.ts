@@ -17,8 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import mongoose = require('mongoose');
-import { Schema } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import { each, find, isArray, isBoolean, isString, isUndefined, keys } from 'lodash';
 import { createHmac } from 'crypto';
 import validator from 'validator';

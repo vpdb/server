@@ -23,7 +23,7 @@ import { ReleaseStorage } from './release.storage';
 const storage = new ReleaseStorage();
 export const router = storage.storageRouter(true);
 
-router.get('/v1/releases/:release_id', storage.auth(storage.download.bind(storage), 'files', 'download', [ Scope.ALL ]));
-router.head('/v1/releases/:release_id', storage.auth(storage.checkDownload.bind(storage), 'files', 'download', [ Scope.ALL ]));
-router.post('/v1/releases/:release_id', storage.auth(storage.download.bind(storage), 'files', 'download', [ Scope.ALL ]));
-router.get('/v1/releases/:release_id/thumb', storage.anon(storage.thumbRedirect.bind(storage)));
+router.get('/v1/releases/:release_id',        storage.auth(storage.download.bind(storage), 'files', 'download', [ Scope.ALL ]));
+router.head('/v1/releases/:release_id',       storage.auth(storage.checkDownload.bind(storage), 'files', 'download', [ Scope.ALL ]));
+router.post('/v1/releases/:release_id',       storage.auth(storage.download.bind(storage), 'files', 'download', [ Scope.ALL ]));
+router.get('/v1/releases/:release_id/thumb', storage.thumbRedirect.bind(storage));

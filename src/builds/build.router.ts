@@ -23,8 +23,8 @@ import { BuildApi } from './build.api';
 const api = new BuildApi();
 export const router = api.apiRouter();
 
-router.get('/v1/builds',        api.anon(api.list.bind(api)));
+router.get('/v1/builds',       api.list.bind(api));
 router.post('/v1/builds',       api.auth(api.create.bind(api), 'builds', 'add', [ Scope.ALL, Scope.CREATE ]));
-router.get('/v1/builds/:id',    api.anon(api.view.bind(api)));
+router.get('/v1/builds/:id',   api.view.bind(api));
 router.patch('/v1/builds/:id',  api.auth(api.update.bind(api), 'builds', 'update', [ Scope.ALL, Scope.CREATE ]));
 router.delete('/v1/builds/:id', api.auth(api.del.bind(api), 'builds', 'delete-own', [ Scope.ALL, Scope.CREATE ]));

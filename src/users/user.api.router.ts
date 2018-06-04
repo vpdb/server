@@ -27,7 +27,7 @@ const starApi = new StarApi();
 const eventApi = new LogEventApi();
 export const router = api.apiRouter();
 
-router.post('/v1/users',    api.anon(api.create.bind(api)));
+router.post('/v1/users',   api.create.bind(api));
 router.put('/v1/users',     api.auth(api.createOrUpdate.bind(api), '', '', [ Scope.SERVICE ]));
 router.get('/v1/users',     api.auth(api.list.bind(api), 'users', 'search', [ Scope.ALL ]));
 router.get('/v1/users/:id', api.auth(api.view.bind(api), 'users', 'view', [ Scope.ALL ]));
@@ -38,5 +38,5 @@ router.post('/v1/users/:id/star',   api.auth(starApi.star('user').bind(starApi),
 router.delete('/v1/users/:id/star', api.auth(starApi.unstar('user').bind(starApi), 'users', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
 router.get('/v1/users/:id/star',    api.auth(starApi.get('user').bind(starApi), 'users', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
 
-router.get('/v1/users/:id/events',             api.anon(eventApi.list({ byActor: true }).bind(eventApi)));
+router.get('/v1/users/:id/events',            eventApi.list({ byActor: true }).bind(eventApi));
 router.post('/v1/users/:id/send-confirmation', api.auth(api.sendConfirmationMail.bind(api), 'users', 'send-confirmation', [ Scope.ALL ]));

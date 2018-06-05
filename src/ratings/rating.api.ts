@@ -28,6 +28,7 @@ import { metrics } from '../common/metrics';
 import { logger } from '../common/logger';
 import { LogEventUtil } from '../log-event/log.event.util';
 import { Rating } from './rating';
+import { apiCache } from '../common/api.cache';
 
 export class RatingApi extends Api {
 
@@ -44,7 +45,7 @@ export class RatingApi extends Api {
 	};
 
 	public async createForRelease(ctx: Context) {
-		return await  this.create(ctx, 'release', this.find(state.models.Release, 'release', '_game'));
+		return await this.create(ctx, 'release', this.find(state.models.Release, 'release', '_game'));
 	};
 
 	public async getForRelease(ctx: Context) {
@@ -109,6 +110,9 @@ export class RatingApi extends Api {
 		rating.value = ctx.body.value;
 		rating.modified_at = new Date();
 		await rating.save();
+
+		// invalidate cache
+		await apiCache.invalidate({ user: ctx.state.user }, { resources: [ ref ]});
 	}
 
 	/**
@@ -131,8 +135,13 @@ export class RatingApi extends Api {
 		} else {
 			logger.info('[RatingApi.updateRatedEntity] User <%s> added new rating for %s %s with %s.', ctx.state.user, ref, entity.id, rating.value);
 		}
+
+		this.success(ctx, result, status);
+
 		await LogEventUtil.log(ctx, 'rate_' + ref, true, this.logPayload(rating, entity, ref, status === 200), this.logRefs(rating, entity, ref));
-		return this.success(ctx, result, status);
+
+		// invalidate cache
+		await apiCache.invalidate({ user: ctx.state.user }, { resources: [ ref ]});
 	}
 
 	/**

@@ -713,7 +713,7 @@ class ApiClient {
 		return assign({
 			username: username,
 			password: randomstring.generate(10),
-			email: faker.internet.email().toLowerCase()
+			email: faker.internet.email().toLowerCase().replace('_', '.')
 		}, attrs || {});
 	}
 

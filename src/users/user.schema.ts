@@ -21,7 +21,7 @@
 import { Schema } from 'mongoose';
 import { each, find, isArray, isBoolean, isString, isUndefined, keys } from 'lodash';
 import { createHmac } from 'crypto';
-import validator from 'validator';
+import { isEmail, isLength, matches } from 'validator';
 import uniqueValidator from 'mongoose-unique-validator';
 
 import { state } from '../state';
@@ -31,6 +31,7 @@ import { config } from '../common/settings';
 import { metricsPlugin } from '../common/mongoose/metrics.plugin';
 import { flavors } from '../releases/release.flavors';
 import { User } from './user';
+
 
 const shortId = require('shortid32');
 
@@ -183,7 +184,7 @@ userSchema.path('name').validate(function (name: string) {
 	if (this.isNew) {
 		return true;
 	}
-	return isString(name) && validator.isLength(name, 3, 30);
+	return isString(name) && isLength(name, 3, 30);
 }, 'Name must be between 3 and 30 characters.');
 
 userSchema.path('name').validate(function (name: string) {
@@ -199,11 +200,11 @@ userSchema.path('email').validate(function (email: string) {
 	if (this.isNew && !this.is_local) {
 		return true;
 	}
-	return isString(email) && validator.isEmail(email);
+	return isString(email) && isEmail(email);
 }, 'Email must be in the correct format.');
 
 userSchema.path('location').validate(function (location: string) {
-	return isString(location) && validator.isLength(location, 0, 100);
+	return isString(location) && isLength(location, 0, 100);
 }, 'Location must not be longer than 100 characters.');
 
 userSchema.path('is_local').validate(async function (isLocal: boolean) {
@@ -228,10 +229,10 @@ userSchema.path('is_local').validate(async function (isLocal: boolean) {
 		if (!isString(this.username)) {
 			this.invalidate('username', 'Username must be a string between 3 and 30 characters.');
 		} else {
-			if (!validator.isLength(this.username, 3, 30)) {
+			if (!isLength(this.username, 3, 30)) {
 				this.invalidate('username', 'Username must be between 3 and 30 characters.');
 			}
-			if (!validator.matches(this.username, /^[a-z0-9]+$/i)) {
+			if (!matches(this.username, /^[a-z0-9]+$/i)) {
 				this.invalidate('username', 'Username must only contain alpha-numeric characters.');
 			}
 		}
@@ -298,7 +299,7 @@ userSchema.path('is_local').validate(async function (isLocal: boolean) {
 userSchema.path('password_hash').validate(function () {
 	// here we check the length. remember that the virtual _password field is
 	// the one that triggers the hashing.
-	if (this._password && isString(this._password) && !validator.isLength(this._password, 6)) {
+	if (this._password && isString(this._password) && !isLength(this._password, 6)) {
 		this.invalidate('password', 'Password must be at least 6 characters.');
 	}
 }, null);

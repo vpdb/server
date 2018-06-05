@@ -26,6 +26,8 @@ require('bluebird').promisifyAll(gm.prototype);
 
 const rar = resolve(__dirname, '../../data/test/files/dmd.rar');
 const zip = resolve(__dirname, '../../data/test/files/dmd.zip');
+const vpt = resolve(__dirname, '../../data/test/files/empty.vpt');
+const vpt2 = resolve(__dirname, '../../data/test/files/table.vpt');
 
 class FileHelper {
 
@@ -36,19 +38,15 @@ class FileHelper {
 	async createPlayfield(user, orientation, type) {
 		const playfields = await this.createPlayfields(user, orientation, 1, type);
 		return playfields[0];
-	};
+	}
 
 	async createPlayfields(user, orientation, times, type) {
-
 		const fileType = type || 'playfield-' + orientation;
 		const mimeType = 'image/png';
-
 		const isFS = orientation === 'fs';
 		const results = [];
-
 		for (let i = 0; i < times; i++) {
 			const name = 'playfield-' + i + '.png';
-
 			const img = gm(isFS ? 1080 : 1920, isFS ? 1920 : 1080, pleasejs.make_color());
 			const data = await img.toBufferAsync('PNG');
 			const res = await this.api.onStorage()
@@ -60,7 +58,6 @@ class FileHelper {
 				.withHeader('Content-Length', data.length)
 				.post('/v1/files', data)
 				.then(res => res.expectStatus(201));
-
 			results.push(res.data);
 		}
 		return results;
@@ -110,7 +107,28 @@ class FileHelper {
 			.post('/v1/files', data)
 			.then(res => res.expectStatus(201));
 		return res.data;
-	};
+	}
+
+	async createVpt(user, opts) {
+		return this.createVpts(user, 1, opts);
+	}
+
+	async createVpts(user, times, opts) {
+		opts = opts || {};
+		const data = opts.alternateVpt ? readFileSync(vpt2) : readFileSync(vpt);
+		const vpts = [];
+		for (let n = 0; n < times; n++) {
+			const res = await this.api.onStorage()
+				.as(user)
+				.withQuery({ type: 'release' })
+				.withContentType('application/x-visual-pinball-table')
+				.withHeader('Content-Disposition', 'attachment; filename="test-table-' + n + '.vpt"')
+				.withHeader('Content-Length', data.length)
+				.post('/v1/files', data)
+				.then(res => res.expectStatus(201));
+			vpts.push(res.data);
+		}
+	}
 
 	async createDirectB2S(user, gameName) {
 		gameName = gameName || 'aavenger';

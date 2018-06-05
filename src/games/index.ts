@@ -49,10 +49,10 @@ export class GamesApiEndPoint implements EndPoint {
 		state.models.Game = mongoose.model<Game, GameModel>('Game', this._schema);
 		state.serializers.Game = new GameSerializer();
 
-		apiCache.enable(this._router, '/v1/games', [ 'game', 'release', 'user']);
-		apiCache.enable(this._router, '/v1/games/:id', [ 'game', 'release', 'user']);
-		apiCache.enable(this._router, '/v1/games/:gameId/backglasses', [ 'backglass', 'user' ]);
-		apiCache.enable(this._router, '/v1/games/:gameId/media', [ 'medium', 'user' ]);
-		apiCache.enable(this._router, '/v1/games/:id/events', [ 'log_event' ]);
+		apiCache.enable(this._router, '/v1/games', { resources: ['game', 'release', 'user'] });
+		apiCache.enable(this._router, '/v1/games/:id', { resources: ['game', 'release', 'user'] });
+		apiCache.enable(this._router, '/v1/games/:gameId/backglasses', { resources: ['backglass', 'user'] });
+		apiCache.enable(this._router, '/v1/games/:gameId/media', { resources: ['medium', 'user'] });
+		apiCache.enable(this._router, '/v1/games/:id/events', { resources: ['log_event'] });
 	}
 }

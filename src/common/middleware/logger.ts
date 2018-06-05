@@ -104,6 +104,10 @@ function log(ctx: Context, start: number, len: number, err: any = null, event: s
 	} else {
 		length = bytes(len).toLowerCase();
 	}
+	let cache:string = '';
+	if (ctx.response.headers['x-cache-api']) {
+		cache = ' [' + ctx.response.headers['x-cache-api'].toLowerCase() + ']';
+	}
 
 	const ip = ctx.request.get('x-forwarded-for') || ctx.ip || '0.0.0.0';
 	const user = ctx.state.user ? ctx.state.user.name || ctx.state.user.username : '';
@@ -122,8 +126,6 @@ function log(ctx: Context, start: number, len: number, err: any = null, event: s
 	if (statusCode >= 500 && statusCode < 600) {
 		logger.error('[%s] %s%s %s %sms - %s', logUserIp, upstream, logStatus(' ' + statusCode + ' '), logMethod(ctx.method + ' ' + ctx.originalUrl), Date.now() - start, length);
 	} else {
-		logger.info('[%s] %s%s %s %sms - %s', logUserIp, upstream, logStatus(' ' + statusCode + ' '), logMethod(ctx.method + ' ' + ctx.originalUrl), Date.now() - start, length);
+		logger.info('[%s] %s%s %s %sms - %s%s', logUserIp, upstream, logStatus(' ' + statusCode + ' '), logMethod(ctx.method + ' ' + ctx.originalUrl), Date.now() - start, length, cache);
 	}
-
-
 }

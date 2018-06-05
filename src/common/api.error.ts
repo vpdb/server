@@ -250,19 +250,36 @@ export class ApiError extends Error {
 			if (index === 0) {
 				return chalk.redBright(line);
 			}
-			const match = line.match(/(\s*)at ([^\s]+)\s*\(([^)]{2}[^:]+):(\d+):(\d+)\)/i);
-			if (line.indexOf('node_modules') > 0 || (match && /^internal\/|^events|^fs|^_stream_readable/i.test(match[3]))) {
+			let match = line.match(/(\s*)at\s+([^\s]+)\s*\(([^)]{2}[^:]+):(\d+):(\d+)\)/i);
+			let lineMatch:{ ident: string, method?: string, fileName: string, row: string, col:string };
+			if (match) {
+				lineMatch = { ident: match[1], method: match[2], fileName: match[3], row: match[4], col: match[5] }
+			} else {
+				match = line.match(/(\s*)at\s+(.*?):(\d+):(\d+)/i);
+				if (match) {
+					lineMatch = { ident: match[1], fileName: match[2], row: match[3], col: match[4] }
+				}
+			}
+			if (line.indexOf('node_modules') > 0 || (lineMatch && /^internal\/|^events|^fs|^_stream_readable/i.test(lineMatch.fileName))) {
 				return chalk.gray(line);
 			} else {
-				if (match) {
-					return match[1] + chalk.gray('at ') + chalk.whiteBright(match[2]) + ' (' +
-						dirname(match[3]) + sep + chalk.yellowBright(basename(match[3])) +
-						':' + chalk.cyanBright(match[4]) + ':' + chalk.cyan(match[5]) + ')';
+				if (lineMatch && lineMatch.method) {
+					return lineMatch.ident + chalk.gray('at ') + chalk.whiteBright(lineMatch.method) + ' (' +
+						dirname(lineMatch.fileName) + sep + chalk.yellowBright(basename(lineMatch.fileName)) +
+						':' + chalk.cyanBright(lineMatch.row) + ':' + chalk.cyan(lineMatch.col) + ')';
+				} else if (lineMatch) {
+					return lineMatch.ident + chalk.gray('at ') +
+						dirname(lineMatch.fileName) + sep + chalk.yellowBright(basename(lineMatch.fileName)) +
+						':' + chalk.cyanBright(lineMatch.row) + ':' + chalk.cyan(lineMatch.col);
 				} else {
 					return chalk.gray(line);
 				}
 			}
 		}).join('\n');
+	}
+
+	private static colorPath() {
+
 	}
 
 	/**

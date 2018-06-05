@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { isArray } from 'lodash';
+import { intersection } from 'lodash';
 import Router, { IRouterOptions } from 'koa-router';
 import pathToRegexp from 'path-to-regexp';
 
@@ -26,12 +26,24 @@ import { logger } from './logger';
 import { Context } from './types/context';
 import { User } from '../users/user';
 
+/**
+ * An in-memory cache using Redis.
+ *
+ * It's used as a middleware in Koa. Routes must enable caching explicitly.
+ * Invalidation is done with tags.
+ */
 class ApiCache {
 
-	private readonly redisPrefix = 'koacache:';
-
+	private readonly redisPrefix = 'api-cache:';
 	private readonly cacheRoutes: CacheRoute[] = [];
 
+	/**
+	 * The middleware. Stops the chain on cache hit or continues and saves
+	 * result to cache, if enabled.
+	 *
+	 * @param {Context} ctx Koa context
+	 * @param {() => Promise<any>} next Next middleware
+	 */
 	public async middleware(ctx: Context, next: () => Promise<any>) {
 
 		// if not a GET or HEAD operation, abort.
@@ -39,12 +51,13 @@ class ApiCache {
 			return await next();
 		}
 
-		// check if route to cache
+		// check if enabled for this route
 		const cacheRoute = this.cacheRoutes.find(route => route.regex.test(ctx.request.path));
 		if (!cacheRoute) {
 			return await next();
 		}
 
+		// retrieve the cached response
 		const key = this.getCacheKey(ctx);
 		const hit = await state.redis.getAsync(key);
 		if (hit) {
@@ -59,47 +72,90 @@ class ApiCache {
 
 		await next();
 
+		// only cache successful responses
 		if (ctx.status >= 200 && ctx.status < 300) {
 			await this.setCache(ctx, key, cacheRoute);
 		}
 	}
 
-	public enable(router: Router, path: string, resource: string[], entities?: CacheEntity) {
+	/**
+	 * Enables caching for the given route.
+	 *
+	 * The config defines how caches on that route are tagged for invalidation.
+	 *
+	 * @param {Router} router Router
+	 * @param {string} path Path of the route (same passed to the router)
+	 * @param {CacheInvalidationTag} config How responses from the route get invalidated.
+	 */
+	public enable(router: Router, path: string, config: CacheInvalidationConfig) {
 		const opts = (router as any).opts as IRouterOptions;
-		this.cacheRoutes.push({ regex: pathToRegexp(opts.prefix + path), resources: resource, entities: entities });
+		this.cacheRoutes.push({ regex: pathToRegexp(opts.prefix + path), config: config });
 	}
 
-	public async invalidateAll(): Promise<number> {
-		return this.invalidate(this.cacheRoutes.map(r => r.resources).reduce((acc, r) => acc.concat(r), []));
-	}
+	/**
+	 * Invalidates a cache.
+	 *
+	 * The tags describe how the cache is invalidated. Every
+	 * `CacheInvalidationTag` is an operator in a logical `and`, while its attributes
+	 * compose an `or` condition.
+	 *
+	 * @param {CacheInvalidationTag[]} tags
+	 * @return {Promise<number>}
+	 */
+	public async invalidate(...tags: CacheInvalidationTag[]): Promise<number> {
 
-	public async invalidate(resources?: string[] | string, entities?: CacheEntity): Promise<number> {
-		resources = resources || [];
-		entities = entities || {};
+		const now = Date.now();
+		const keys:string[][] = [];
+		const allRefs:string[][] = [];
+		for (const tag of tags) {
+			const refs:string[] = [];
 
-		if (!isArray(resources)) {
-			resources = [ resources ];
+			// resources
+			if (tag.resources) {
+				for (const resource of tag.resources) {
+					refs.push(this.getResourceKey(resource));
+				}
+			}
+			// entities
+			if (tag.entities) {
+				for (const entity of Object.keys(tag.entities)) {
+					refs.push(this.getEntityKey(entity, tag.entities[entity]));
+				}
+			}
+			// user
+			if (tag.user) {
+				refs.push(this.getUserKey(tag.user));
+			}
+			allRefs.push(refs);
+			keys.push(await state.redis.sunionAsync(...refs));
 		}
-		let keys:string[];
-		const refs:string[] = [];
-		for (const resource of resources) {
-			refs.push(this.getResourceKey(resource));
-		}
-		for (const entity of Object.keys(entities)) {
-			refs.push(this.getEntityKey(entity, entities[entity]));
-		}
-		logger.info('[Cache.invalidate]: Invalidating caches: [%s].', refs.join(', '));
+		const invalidationKeys = intersection(...keys); // redis could do this too using SUNIONSTORE to temp sets and INTER them
+		logger.info('[Cache.invalidate]: Invalidating caches: (%s).', allRefs.map(r => r.join(' || ')).join(') && ('));
 
-		keys = await state.redis.sunionAsync(...refs);
 		let n = 0;
-		for (const key of keys) {
+		for (const key of invalidationKeys) {
 			await state.redis.delAsync(key);
 			n++;
 		}
-		logger.info('[Cache.invalidate]: Cleared %s caches.', n);
+		logger.info('[Cache.invalidate]: Cleared %s caches in %sms.', n, Date.now() - now);
 		return n;
 	}
 
+	/**
+	 * Invalidates all caches.
+	 * @return {Promise<number>} Number of invalidated caches
+	 */
+	public async invalidateAll(): Promise<number> {
+		return await state.redis.delAsync(this.redisPrefix + '*');
+	}
+
+	/**
+	 * Caches a miss.
+	 *
+	 * @param {Context} ctx Koa context
+	 * @param {string} key Cache key
+	 * @param {CacheRoute} cacheRoute Route where the miss occurred
+	 */
 	private async setCache(ctx: Context, key: string, cacheRoute: CacheRoute) {
 
 		const refs:string[] = [];
@@ -113,9 +169,18 @@ class ApiCache {
 		await state.redis.setAsync(key, JSON.stringify(response));
 
 		// reference resources
-		if (cacheRoute.resources) {
-			for (const resource of cacheRoute.resources) {
+		if (cacheRoute.config.resources) {
+			for (const resource of cacheRoute.config.resources) {
 				const refKey = this.getResourceKey(resource);
+				await state.redis.saddAsync(refKey, key);
+				refs.push(refKey);
+			}
+		}
+
+		// reference entities
+		if (cacheRoute.config.entities) {
+			for (const entity of Object.keys(cacheRoute.config.entities)) {
+				const refKey = this.getEntityKey(entity, ctx.params[cacheRoute.config.entities[entity]]);
 				await state.redis.saddAsync(refKey, key);
 				refs.push(refKey);
 			}
@@ -127,20 +192,12 @@ class ApiCache {
 			await state.redis.saddAsync(refKey, key);
 			refs.push(refKey);
 		}
-
-		// reference entities
-		if (cacheRoute.entities) {
-			for (const entity of Object.keys(cacheRoute.entities)) {
-				const refKey = this.getEntityKey(entity, ctx.params[cacheRoute.entities[entity]]);
-				await state.redis.saddAsync(refKey, key);
-				refs.push(refKey);
-			}
-		}
 		logger.debug('[Cache] No hit, saving as "%s" with references [ %s ].', key, refs.join(', '));
 	}
 
 	private getCacheKey(ctx: Context): string {
-		return this.redisPrefix + (ctx.state.user ? ctx.state.user.id : 'anon') + ':' + ctx.request.path + '?' + this.normalizeQuery(ctx);
+		const normalizedQuery = this.normalizeQuery(ctx);
+		return this.redisPrefix + (ctx.state.user ? ctx.state.user.id : 'anon') + ':' + ctx.request.path + (normalizedQuery ? '?' : '') + normalizedQuery;
 	}
 
 	private getResourceKey(resource: string): string {
@@ -158,17 +215,56 @@ class ApiCache {
 	private normalizeQuery(ctx: Context) {
 		return Object.keys(ctx.query).sort().map(key => key + '=' + ctx.query[key]).join('&');
 	}
-
 }
 
-export interface CacheEntity {
-	[key: string]: string;
-}
-
+/**
+ * Defines how to invalidate cached responses from a given route.
+ */
 interface CacheRoute {
 	regex: RegExp;
-	resources: string[];
-	entities?: CacheEntity;
+	config: CacheInvalidationConfig;
+}
+
+/**
+ * Defines which caches to invalidate.
+ *
+ * If multiple properties are set, all of them are applied (logical `or`).
+ */
+export interface CacheInvalidationTag {
+	/**
+	 * Invalidate one or multiple resources.
+	 * All caches tagged with any of the provided resources will be invalidated.
+	 */
+	resources?: string[],
+	/**
+	 * Invalidate a specific entity.
+	 * The key is the entity's name and the value its parsed ID.
+	 * All caches tagged with the entity and ID will be invalidated.
+	 */
+	entities?: { [key: string]: string; };
+	/**
+	 * Invalidate user-specific caches.
+	 * All caches for that user will be invalidated.
+	 */
+	user?: User;
+}
+
+export interface CacheInvalidationConfig {
+	/**
+	 * Reference one or multiple resources.
+	 *
+	 * Multiple resources are needed if a resource is dependent on another
+	 * resource, e.g. the games resource which also includes releases and
+	 * users.
+	 */
+	resources?: string[],
+
+	/**
+	 * Reference a specific entity.
+	 * The key is the entity's name and the value how it's parsed from the URL
+	 * (`:id` becomes `id`).
+	 */
+	entities?: { [key: string]: string; };
 }
 
 interface CacheResponse {

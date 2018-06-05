@@ -27,6 +27,7 @@ import { gitInfo } from '../common/gitinfo';
 import { ipdb } from '../common/ipdb';
 import { roles } from '../common/acl';
 import { processorQueue } from '../files/processor/processor.queue';
+import { apiCache } from '../common/api.cache';
 
 const pak = require('../../package.json');
 
@@ -92,6 +93,18 @@ export class MiscApi extends Api {
 	 */
 	public async ping(ctx: Context) {
 		return this.success(ctx, { result: 'pong' }, 200);
+	}
+
+	/**
+	 * Clears the API cache.
+	 *
+	 * @param {Context} ctx Koa context
+	 * @return {Promise<boolean>} Number of caches cleared
+	 */
+	public async invalidateCache(ctx: Context) {
+		const num = await apiCache.invalidateAll();
+		logger.info("[MiscApi.invalidateCache] Cleared %s caches.", num);
+		return this.success(ctx, { cleared: num });
 	}
 
 	/**

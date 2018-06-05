@@ -26,6 +26,7 @@ import { EndPoint } from '../common/types/endpoint';
 import { BackglassModel, backglassSchema } from './backglass.schema';
 import { Backglass } from './backglass';
 import { BackglassSerializer } from './backglass.serializer';
+import { BackglassVersionSerializer } from './backglass.version.serializer';
 import { router } from './backglass.api.router';
 
 export class BackglassEndPoint implements EndPoint {
@@ -47,5 +48,6 @@ export class BackglassEndPoint implements EndPoint {
 	register(app: Application): void {
 		state.models.Backglass = mongoose.model<Backglass, BackglassModel>('Backglass', this._schema);
 		state.serializers.Backglass = new BackglassSerializer();
+		state.serializers.BackglassVersion = new BackglassVersionSerializer();
 	}
 }

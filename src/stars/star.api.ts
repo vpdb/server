@@ -26,16 +26,22 @@ import { Context } from '../common/types/context';
 import { ApiError } from '../common/api.error';
 import { LogEventUtil } from '../log-event/log.event.util';
 import { Star } from './star';
+import { apiCache } from '../common/api.cache';
 
 export class StarApi extends Api {
 
-	private readonly models: { [key: string]: { model: Model<MetricsDocument>, titleAttr?: string, populate?: string } } = {
-		release: { model: state.models.Release, titleAttr: 'name', populate: '_game' },
-		game: { model: state.models.Game, titleAttr: 'title' },
-		user: { model: state.models.User, titleAttr: 'email' },
-		backglass: { model: state.models.Backglass },
-		medium: { model: state.models.Medium }
-	};
+	private readonly models: { [key: string]: { model: string, titleAttr?: string, populate?: string } };
+
+	constructor() {
+		super();
+		this.models = {
+			release: { model: 'Release', titleAttr: 'name', populate: '_game' },
+			game: { model: 'Game', titleAttr: 'title' },
+			user: { model: 'User', titleAttr: 'email' },
+			backglass: { model: 'Backglass' },
+			medium: { model: 'Medium' }
+		};
+	}
 
 	/**
 	 * Stars an entity.
@@ -48,7 +54,7 @@ export class StarApi extends Api {
 		if (!model) {
 			throw new Error('Unknown model "' + name + '".');
 		}
-		return async (ctx: Context) => this._star(ctx, name, this.find(model.model, name, model.populate));
+		return async (ctx: Context) => this._star(ctx, name, this.find(state.models[model.model] as  Model<MetricsDocument>, name, model.populate));
 	}
 
 	/**
@@ -62,7 +68,7 @@ export class StarApi extends Api {
 		if (!model) {
 			throw new Error('Unknown model "' + name + '".');
 		}
-		return async (ctx: Context) => this._unstar(ctx, name, this.find(model.model, name, model.populate));
+		return async (ctx: Context) => this._unstar(ctx, name, this.find(state.models[model.model] as  Model<MetricsDocument>, name, model.populate));
 	}
 
 	/**
@@ -76,7 +82,7 @@ export class StarApi extends Api {
 		if (!model) {
 			throw new Error('Unknown model "' + name + '".');
 		}
-		return async (ctx: Context) => this._view(ctx, this.find(model.model, name), model.titleAttr || 'id');
+		return async (ctx: Context) => this._view(ctx, this.find(state.models[model.model] as  Model<MetricsDocument>, name), model.titleAttr || 'id');
 	}
 
 	/**
@@ -119,6 +125,11 @@ export class StarApi extends Api {
 		const star = new state.models.Star(obj);
 		await star.save();
 		await entity.incrementCounter('stars');
+
+		// invalidate cache
+		await apiCache.invalidate({ user: ctx.state.user }, { resources: [type] });
+		await apiCache.invalidate({ user: ctx.state.user, entities: { release: entity.id } });
+
 		await LogEventUtil.log(ctx, 'star_' + type, true, this.logPayload(entity, type), this.logRefs(star, entity, type));
 		//pusher.star(type, entity, req.user);
 		return this.success(ctx, { created_at: obj.created_at, total_stars: entity.counter.stars + 1 }, 201);
@@ -139,6 +150,10 @@ export class StarApi extends Api {
 		await star.remove();
 		await entity.incrementCounter('stars', true);
 		await LogEventUtil.log(ctx, 'unstar_' + type, true, this.logPayload(entity, type), this.logRefs(star, entity, type));
+
+		// invalidate cache
+		await apiCache.invalidate({ user: ctx.state.user }, { resources: [type] });
+		await apiCache.invalidate({ user: ctx.state.user, entities: { release: entity.id } });
 		//pusher.unstar(type, entity, req.user);
 	}
 

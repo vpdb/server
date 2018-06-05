@@ -31,7 +31,7 @@ const hlp = require('../../test/modules/helper');
 
 superagentTest(request);
 
-describe.only('The VPDB `game` API', function() {
+describe('The VPDB `game` API', function() {
 
 	describe('when posting a new game', function() {
 
@@ -227,7 +227,7 @@ describe.only('The VPDB `game` API', function() {
 				});
 		});
 
-		it.only('should succeed with minimal data', function(done) {
+		it('should succeed with minimal data', function(done) {
 			const title = 'Hi, I am your new title.';
 			request
 				.patch('/api/v1/games/' + game.id)

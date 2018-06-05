@@ -46,7 +46,7 @@ class GameHelper {
 		const res = await this.api
 			.as(user)
 			.markTeardown()
-			.post('/api/v1/games', assign(this.getGame({ _backglass: backglass.id }), game))
+			.post('/v1/games', assign(this.getGame({ _backglass: backglass.id }), game))
 			.then(res => res.expectStatus(201));
 		return res.data;
 	}

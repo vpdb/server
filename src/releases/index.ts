@@ -67,9 +67,9 @@ export class ReleaseEndPoint implements EndPoint {
 		state.serializers.ReleaseVersionFile = new ReleaseVersionFileSerializer();
 		state.models.TableBlock = mongoose.model<TableBlock>('TableBlock', tableBlockSchema);
 
-		apiCache.enable(this._router, '/v1/releases', [ 'release', 'user' ]);
-		apiCache.enable(this._router, '/v1/releases/:id', null, { release: 'id' });
-		apiCache.enable(this._router, '/v1/releases/:id/comments', null, { releaseComment: 'id' });
+		apiCache.enable(this._router, '/v1/releases', { resources: [ 'release', 'user' ] });
+		apiCache.enable(this._router, '/v1/releases/:id',  { entities: { release: 'id' } });
+		apiCache.enable(this._router, '/v1/releases/:id/comments', { entities: { release: 'id' } });
 		//apiCache.enable(this._router, '/v1/releases/:id/events');
 	}
 }

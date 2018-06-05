@@ -27,6 +27,7 @@ import { Game } from './game';
 import { GameSerializer } from './game.serializer';
 import { GameModel, gameSchema } from './game.schema';
 import { router } from './game.api.router';
+import { apiCache } from '../common/api.cache';
 
 export class GamesApiEndPoint implements EndPoint {
 
@@ -47,5 +48,11 @@ export class GamesApiEndPoint implements EndPoint {
 	register(app: Application): void {
 		state.models.Game = mongoose.model<Game, GameModel>('Game', this._schema);
 		state.serializers.Game = new GameSerializer();
+
+		apiCache.enable(this._router, '/v1/games', [ 'game', 'release', 'user']);
+		apiCache.enable(this._router, '/v1/games/:id', [ 'game', 'release', 'user']);
+		apiCache.enable(this._router, '/v1/games/:gameId/backglasses', [ 'backglass', 'user' ]);
+		apiCache.enable(this._router, '/v1/games/:gameId/media', [ 'medium', 'user' ]);
+		apiCache.enable(this._router, '/v1/games/:id/events', [ 'log_event' ]);
 	}
 }

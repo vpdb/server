@@ -36,6 +36,7 @@ import { router as apiRouter } from './release.api.router';
 import { router as storageRouter } from './release.storage.router';
 import { ReleaseVersionSerializer } from './release.version.serializer';
 import { ReleaseVersionFileSerializer } from './release.version.file.serializer';
+import { apiCache } from '../common/api.cache';
 
 export class ReleaseEndPoint implements EndPoint {
 
@@ -65,6 +66,11 @@ export class ReleaseEndPoint implements EndPoint {
 		state.serializers.ReleaseVersion = new ReleaseVersionSerializer();
 		state.serializers.ReleaseVersionFile = new ReleaseVersionFileSerializer();
 		state.models.TableBlock = mongoose.model<TableBlock>('TableBlock', tableBlockSchema);
+
+		apiCache.enable(this._router, '/v1/releases', [ 'release', 'user' ]);
+		apiCache.enable(this._router, '/v1/releases/:id', null, { release: 'id' });
+		apiCache.enable(this._router, '/v1/releases/:id/comments', null, { releaseComment: 'id' });
+		//apiCache.enable(this._router, '/v1/releases/:id/events');
 	}
 }
 

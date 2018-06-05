@@ -42,6 +42,7 @@ import { ReleaseVersion } from './release.version';
 import { flavors } from './release.flavors';
 import { Metadata } from '../files/metadata/metadata';
 import { processorQueue } from '../files/processor/processor.queue';
+import { apiCache } from '../common/api.cache';
 
 const existsAsync = promisify(exists);
 require('bluebird').promisifyAll(gm.prototype);
@@ -106,6 +107,7 @@ export class ReleaseApi extends Api {
 		await (release._game as Game).update({ modified_at: new Date() });
 
 		release = await this.getDetails(release._id);
+		this.success(ctx, state.serializers.Release.detailed(ctx, release), 201);
 
 		await LogEventUtil.log(ctx, 'create_release', true, {
 			release: state.serializers.Release.detailed(ctx, release, { thumbFormat: 'medium' }),
@@ -121,7 +123,9 @@ export class ReleaseApi extends Api {
 				await mailer.releaseAdded(ctx.state.user, author._user as User, release);
 			}
 		}
-		return this.success(ctx, state.serializers.Release.detailed(ctx, release), 201);
+
+		// invalidate cache
+		await apiCache.invalidate('release');
 	}
 
 	/**
@@ -175,14 +179,16 @@ export class ReleaseApi extends Api {
 
 		// re-fetch release object tree
 		release = await this.getDetails(release._id);
+		this.success(ctx, state.serializers.Release.detailed(ctx, release), 200);
+
+		// invalidate cache
+		await apiCache.invalidate('release', { release: release.id });
 
 		// log event
 		await LogEventUtil.log(ctx, 'update_release', false,
 			LogEventUtil.diff(oldRelease, ctx.body),
 			{ release: release._id, game: release._game._id }
 		);
-
-		return this.success(ctx, state.serializers.Release.detailed(ctx, release), 200);
 	}
 
 	/**
@@ -271,6 +277,9 @@ export class ReleaseApi extends Api {
 		release = await this.getDetails(release._id);
 
 		this.success(ctx, state.serializers.Release.detailed(ctx, release).versions.filter(v => v.version === newVersion.version)[0], 201);
+
+		// invalidate cache
+		await apiCache.invalidate('release', { release: release.id });
 
 		// log event
 		await LogEventUtil.log(ctx, 'create_release_version', true, {
@@ -398,6 +407,9 @@ export class ReleaseApi extends Api {
 
 		version = state.serializers.Release.detailed(ctx, release).versions.find(v => v.version = ctx.params.version);
 		this.success(ctx, version, 200);
+
+		// invalidate cache
+		await apiCache.invalidate('release', { release: release.id });
 
 		// log event
 		await LogEventUtil.log(ctx, 'update_release_version', false,
@@ -540,8 +552,8 @@ export class ReleaseApi extends Api {
 		const query = await state.models.Release.handleGameQuery(ctx, await state.models.Release.handleModerationQuery(ctx, []));
 
 		// filter by tag
-		if (ctx.query.tags) {
-			let t = ctx.query.tags.split(',');
+		if (ctx.query.resources) {
+			let t = ctx.query.resources.split(',');
 			// all tags must be matched
 			for (let i = 0; i < t.length; i++) {
 				query.push({ _tags: { $in: [t[i]] } });

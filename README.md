@@ -59,17 +59,16 @@ For more info, see [tests](TESTS.md).
 ### Code Quality
 
 When running the server in development or test mode, the code is linted using [JSHint](http://www.jshint.com/about/). If
-the code doesn't pass, tests fail. You can run the linting manually with the `jshint` task.
+the code doesn't pass, tests fail. You can run the linting manually with the `lint` task.
 
-There's also continuous integration running on three services:
+There's also continuous integration running on two services:
 
 |           | Status                                                   |
 |-----------|----------------------------------------------------------|
 | Travis CI | [![Build Status Travis CI][travis-image]][travis-url]    |
 | Codeship  | [![Build Status Codeship][codeship-image]][codeship-url] |
 
-After every test run, code coverage stats are sent to [Coveralls.io](https://coveralls.io/r/vpdb/backend). Note that 
-both CI and code coverage only concern server-side code.
+After every test run, code coverage stats are sent to [Coveralls.io](https://coveralls.io/r/vpdb/backend).
 
 Code is also run through Code Climate, with the following result: [![Code Climate][codeclimate-image]][codeclimate-url]
 

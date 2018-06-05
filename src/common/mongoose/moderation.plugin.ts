@@ -23,6 +23,7 @@ import { assign, includes, isArray, isObject } from 'lodash';
 import { state } from '../../state';
 import { Context } from '../types/context';
 import { User } from '../../users/user';
+import { acl } from '../acl';
 import { ApiError } from '../api.error';
 import { logger } from '../logger';
 
@@ -267,7 +268,6 @@ export function moderationPlugin(schema: Schema) {
 	 * @returns {ModeratedDocument | boolean} Populated entity if fields added, false otherwise.
 	 */
 	schema.methods.populateModeration = async function (ctx: Context, opts: { includedFields: string[] }): Promise<ModeratedDocument | false> {
-		const acl = require('../acl');
 		const resource: string = modelResourceMap[this.constructor.modelName];
 		if (opts.includedFields.includes('moderation')) {
 			if (!ctx.state.user) {

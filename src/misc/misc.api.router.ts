@@ -27,6 +27,7 @@ router.get('/v1/ping',    api.ping.bind(api));
 router.get('/v1/plans',   api.plans.bind(api));
 router.get('/v1/roles',    api.auth(api.roles.bind(api), 'roles', 'list', [ Scope.ALL ]));
 router.get('/v1/ipdb/:id', api.auth(api.ipdbDetails.bind(api), 'ipdb', 'view', [ Scope.ALL ]));
+router.delete('/v1/cache', api.auth(api.invalidateCache.bind(api), 'cache', 'delete', [ Scope.ALL ]));
 
 if (process.env.ENABLE_KILL_SWITCH) {
 	router.post('/v1/kill',     api.kill.bind(api));

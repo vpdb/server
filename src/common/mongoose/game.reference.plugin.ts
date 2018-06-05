@@ -26,6 +26,7 @@ import { config } from '../settings';
 import { Game } from '../../games/game';
 import { User } from '../../users/user';
 import { ContentAuthor } from '../../users/content.author';
+import { acl } from '../acl';
 
 const modelResourceMap: { [key: string]: string } = {
 	Release: 'releases',
@@ -73,7 +74,6 @@ export function gameReferencePlugin(schema: Schema, options: GameReferenceOption
 			return Promise.resolve(query);
 		}
 
-		const acl = require('../acl');
 		const isModerator = ctx.state.user ? await acl.isAllowed(ctx.state.user.id, resource, 'view-restriced') : false;
 
 		// if moderator, don't filter.
@@ -108,7 +108,6 @@ export function gameReferencePlugin(schema: Schema, options: GameReferenceOption
 	 */
 	schema.statics.restrictedQuery = async function<T>(ctx: Context, game: Game, query: T): Promise<T | null> {
 
-		const acl = require('../acl');
 		const reference = modelReferenceMap[this.modelName];
 		const resource = modelResourceMap[this.modelName];
 
@@ -143,7 +142,6 @@ export function gameReferencePlugin(schema: Schema, options: GameReferenceOption
 	 */
 	schema.statics.hasRestrictionAccess = async function (ctx: Context, game: Game, entity: GameReferenceDocument): Promise<boolean> {
 
-		const acl = require('../acl');
 		const reference = modelReferenceMap[this.modelName];
 		const resource = modelResourceMap[this.modelName];
 

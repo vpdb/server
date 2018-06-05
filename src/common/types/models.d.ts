@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Model } from 'mongoose';
+import { Document, Model } from 'mongoose';
 import { Build } from '../../builds/build';
 import { File } from '../../files/file';
 import { GameRequest } from '../../game-requests/game.request';
@@ -59,4 +59,5 @@ export interface Models {
 	Token: Model<Token>;
 	Star: Model<Star>;
 	User: Model<User>;
+	[key:string]: Model<Document>;
 }

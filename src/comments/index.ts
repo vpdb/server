@@ -25,6 +25,7 @@ import { state } from '../state';
 import { EndPoint } from '../common/types/endpoint';
 import { CommentModel, commentSchema } from './comment.schema';
 import { Comment } from './comment';
+import { CommentSerializer } from './comment.serializer';
 
 export class CommentEndPoint implements EndPoint {
 
@@ -42,5 +43,6 @@ export class CommentEndPoint implements EndPoint {
 
 	register(app: Application): void {
 		state.models.Comment = mongoose.model<Comment, CommentModel>('Comment', this._schema);
+		state.serializers.Comment = new CommentSerializer();
 	}
 }

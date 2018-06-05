@@ -47,5 +47,3 @@ export class CommentSerializer extends Serializer<Comment> {
 		return this._simple(ctx, doc, opts);
 	}
 }
-
-module.exports = new CommentSerializer();

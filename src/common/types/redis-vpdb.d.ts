@@ -17,25 +17,94 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Commands } from 'redis';
+import { Commands, OverloadedAsyncCommand, OverloadedAsyncKeyCommand, OverloadedCommand } from 'redis';
 import { EventEmitter } from 'events';
 
 declare module 'redis' {
 	interface RedisClient extends Commands<boolean>, EventEmitter {
-		setAsync(key: string, value: string): Promise<void>;
 
+		/**
+		 * Set the string value of a key.
+		 */
+		setAsync(key: string, value: string): Promise<'OK'>;
+		setAsync(key: string, value: string, flag: string): Promise<'OK'>;
+		setAsync(key: string, value: string, mode: string, duration: number): Promise<'OK'>;
+		setAsync(key: string, value: string, mode: string, duration: number, flag: string): Promise<'OK' | undefined>;
+
+		/**
+		 * Get the value of a key.
+		 */
 		getAsync(key: string): Promise<string>;
 
-		hsetAsync(hash: string, key: string, value: string): Promise<void>;
+		/**
+		 * Add the specified members to the set stored at `key`.
+		 *
+		 * Specified members that are already a member of this set are ignored. If `key` does not exist, a new set is created before adding the specified members.
+		 *
+		 * An error is returned when the value stored at key is not a set.
+		 *
+		 * @param {string} key
+		 * @param {string} value
+		 * @returns {Promise<number>} The number of elements that were added to the set, not including all the elements already present into the set.
+		 */
+		saddAsync(key: string, value: string): Promise<number>;
 
-		hgetAsync(hash: string, key: string): Promise<string>;
+		/**
+		 * Returns all the members of the set value stored at key.
+		 * @param {string} key
+		 * @returns {Promise<string[]>} All elements of the set.
+		 */
+		smembersAsync(key: string): Promise<string[]>;
 
-		delAsync(key: string): Promise<void>;
+		/**
+		 * Returns the members of the set resulting from the intersection of all the given sets.
+		 */
+		sinterAsync: OverloadedAsyncKeyCommand<string, string[]>;
 
+		/**
+		 * Returns the members of the set resulting from the union of all the given sets.
+		 */
+		sunionAsync: OverloadedAsyncCommand<string, string[]>;
+
+		/**
+		 * Delete a key.
+		 */
+		delAsync: OverloadedAsyncCommand<string, number>;
+
+		/**
+		 * Get the time to live for a key.
+		 */
 		ttlAsync(key: string): Promise<number>;
 
+		/**
+		 * Increment the integer value of a key by one.
+		 */
 		incrAsync(key: string): Promise<number>;
 
+		/**
+		 * Set a key's time to live in seconds.
+		 */
 		expireAsync(key: string, seconds: number): Promise<number>;
+	}
+
+	export interface OverloadedAsyncCommand<T, U> {
+		(arg1: T, arg2: T, arg3: T, arg4: T, arg5: T, arg6: T): Promise<U>;
+		(arg1: T, arg2: T, arg3: T, arg4: T, arg5: T): Promise<U>;
+		(arg1: T, arg2: T, arg3: T, arg4: T): Promise<U>;
+		(arg1: T, arg2: T, arg3: T): Promise<U>;
+		(arg1: T, arg2: T | T[]): Promise<U>;
+		(arg1: T | T[]): Promise<U>;
+		(...args: Array<T>): Promise<U>;
+	}
+
+	export interface OverloadedAsyncKeyCommand<T, U> {
+		(key: string, arg1: T, arg2: T, arg3: T, arg4: T, arg5: T, arg6: T): Promise<U>;
+		(key: string, arg1: T, arg2: T, arg3: T, arg4: T, arg5: T): Promise<U>;
+		(key: string, arg1: T, arg2: T, arg3: T, arg4: T): Promise<U>;
+		(key: string, arg1: T, arg2: T, arg3: T): Promise<U>;
+		(key: string, arg1: T, arg2: T): Promise<U>;
+		(key: string, arg1: T| T[]): Promise<U>;
+		(key: string, ...args: Array<T>): Promise<U>;
+		(...args: Array<string | T>): Promise<U>;
 	}
 }

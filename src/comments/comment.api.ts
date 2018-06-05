@@ -27,6 +27,7 @@ import { LogEventUtil } from '../log-event/log.event.util';
 import { mailer } from '../common/mailer';
 import { User } from '../users/user';
 import { acl } from '../common/acl';
+import { apiCache } from '../common/api.cache';
 
 export class CommentApi extends Api {
 
@@ -68,6 +69,9 @@ export class CommentApi extends Api {
 		comment = await state.models.Comment.findById(comment._id).populate('_from').exec();
 
 		this.success(ctx, state.serializers.Comment.simple(ctx, comment), 201);
+
+		// invalidate cache
+		await apiCache.invalidate(null,{ releaseComment: release.id });
 
 		// notify release creator (only if not the same user)
 		if ((release._created_by as User).id !== ctx.state.user.id) {

@@ -25,10 +25,10 @@ import { EndPoint } from './common/types/endpoint';
 import { config, settings } from './common/settings'
 import { koaLogger } from './common/middleware/logger';
 import { koaAuth } from './common/middleware/auth';
-import { koaRedisCache } from './common/middleware/cache';
 import { koaErrorHandler } from './common/middleware/error.handler';
 import { koa404Handler } from './common/middleware/notfound.handler';
 import { logger } from './common/logger';
+import { apiCache } from './common/api.cache';
 
 const koaResponseTime = require('koa-response-time');
 const koaCors = require('@koa/cors');
@@ -45,7 +45,7 @@ export class Server {
 		this.app.use(koaErrorHandler());
 		this.app.use(koaAuth());
 		this.app.use(koaCors());
-//		this.app.use(koaRedisCache());
+		this.app.use(apiCache.middleware.bind(apiCache));
 	}
 
 	public register<T>(endPoint: EndPoint) {

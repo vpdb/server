@@ -22,12 +22,12 @@ import mongoose, { Schema } from 'mongoose';
 import Router from 'koa-router';
 
 import { state } from '../state';
-import { EndPoint } from '../common/types/endpoint';
+import { EndPoint } from '../common/api.endpoint';
 import { logEventSchema } from './log.event.schema';
 import { LogEvent } from './log.event';
 import { LogEventSerializer } from './log.event.serializer';
 
-export class LogEventEndPoint implements EndPoint {
+export class LogEventEndPoint extends EndPoint {
 
 	readonly name: string = 'Event Log API';
 
@@ -35,6 +35,7 @@ export class LogEventEndPoint implements EndPoint {
 	private readonly _schema: Schema;
 
 	constructor() {
+		super();
 		this._schema = logEventSchema;
 	}
 
@@ -42,7 +43,7 @@ export class LogEventEndPoint implements EndPoint {
 		return this._router;
 	}
 
-	register(app: Application): void {
+	async register(app: Application): Promise<void> {
 		state.models.LogEvent = mongoose.model<LogEvent>('LogEvent', this._schema);
 		state.serializers.LogEvent = new LogEventSerializer();
 	}

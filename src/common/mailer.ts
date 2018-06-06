@@ -91,7 +91,7 @@ class Mailer {
 				game: release._game,
 				url: settings.webUri('/games/' + game.id + '/releases/' + release.id)
 			}, 'moderator_notify_release_auto_approved');
-			result.push(result);
+			results.push(result);
 		}
 		return results;
 	}

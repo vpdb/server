@@ -34,27 +34,45 @@ export class RatingApi extends Api {
 
 	public async createForGame(ctx: Context) {
 		return await this.create(ctx, 'game', this.find(state.models.Game, 'game'));
-	};
+	}
 
 	public async getForGame(ctx: Context) {
 		return await this.view(ctx, this.find(state.models.Game, 'game'), 'title');
-	};
+	}
 
 	public async updateForGame(ctx: Context) {
 		return await this.update(ctx, 'game', this.find(state.models.Game, 'game'), 'title');
-	};
+	}
 
+	/**
+	 * Creates a new rating for a release.
+	 *
+	 * @see POST /v1/releases/:id/rating
+	 * @param {Context} ctx Koa context
+	 */
 	public async createForRelease(ctx: Context) {
 		return await this.create(ctx, 'release', this.find(state.models.Release, 'release', '_game'));
-	};
+	}
 
+	/**
+	 * Retrieves the rating for a release.
+	 *
+	 * @see GET /v1/releases/:id/rating
+	 * @param {Context} ctx Koa context
+	 */
 	public async getForRelease(ctx: Context) {
 		return await this.view(ctx, this.find(state.models.Release, 'release'), 'name');
-	};
+	}
 
+	/**
+	 * Updates a rating for a release.
+	 *
+	 * @see PUT /v1/releases/:id/rating
+	 * @param {Context} ctx Koa context
+	 */
 	public async updateForRelease(ctx: Context) {
 		return await this.update(ctx, 'release', this.find(state.models.Release, 'release', '_game'), 'name');
-	};
+	}
 
 	/**
 	 * Generic function for viewing a rating.

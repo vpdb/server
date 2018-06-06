@@ -22,7 +22,7 @@ import mongoose, { Schema } from 'mongoose';
 import Router from 'koa-router';
 
 import { state } from '../state';
-import { EndPoint } from '../common/types/endpoint';
+import { EndPoint } from '../common/api.endpoint';
 import { ReleaseSerializer } from './release.serializer';
 import { TableBlock } from './release.tableblock';
 import { tableBlockSchema } from './release.tableblock.schema';
@@ -38,7 +38,7 @@ import { ReleaseVersionSerializer } from './release.version.serializer';
 import { ReleaseVersionFileSerializer } from './release.version.file.serializer';
 import { apiCache } from '../common/api.cache';
 
-export class ReleaseEndPoint implements EndPoint {
+export class ReleaseEndPoint extends EndPoint {
 
 	readonly name: string = 'Release API';
 
@@ -48,6 +48,7 @@ export class ReleaseEndPoint implements EndPoint {
 	private readonly _releaseVersionFileSchema: Schema;
 
 	constructor() {
+		super();
 		this._router = apiRouter;
 		this._releaseSchema = releaseSchema;
 		this._releaseVersionSchema = releaseVersionSchema;
@@ -58,7 +59,7 @@ export class ReleaseEndPoint implements EndPoint {
 		return this._router;
 	}
 
-	register(app: Application): void {
+	async register(app: Application): Promise<void> {
 		state.models.Release = mongoose.model<Release>('Release', this._releaseSchema) as ReleaseModel;
 		state.models.ReleaseVersion = mongoose.model<ReleaseVersion, ReleaseVersionModel>('ReleaseVersion', this._releaseVersionSchema);
 		state.models.ReleaseVersionFile = mongoose.model<ReleaseVersionFile, ReleaseVersionFileModel>('ReleaseVersionFile', this._releaseVersionFileSchema);
@@ -74,13 +75,14 @@ export class ReleaseEndPoint implements EndPoint {
 	}
 }
 
-export class ReleaseStorageEndPoint implements EndPoint {
+export class ReleaseStorageEndPoint extends EndPoint {
 
 	readonly name: string = 'Release storage API';
 
 	private readonly _router: Router;
 
 	constructor() {
+		super();
 		this._router = storageRouter;
 	}
 
@@ -88,7 +90,7 @@ export class ReleaseStorageEndPoint implements EndPoint {
 		return this._router;
 	}
 
-	register(app: Application): void {
+	async register(app: Application): Promise<void> {
 		// nothing to register
 	}
 }

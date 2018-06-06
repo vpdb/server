@@ -46,6 +46,7 @@ export class StarApi extends Api {
 	/**
 	 * Stars an entity.
 	 *
+	 * @see POST /v1/releases/:id/star
 	 * @param {string} name Name of the model
 	 * @return {(ctx: Context) => Promise<void>}
 	 */
@@ -60,6 +61,7 @@ export class StarApi extends Api {
 	/**
 	 * Unstars an entity.
 	 *
+	 * @see DELETE /v1/releases/:id/star
 	 * @param {string} name Name of the model
 	 * @return {(ctx: Context) => Promise<void>}
 	 */
@@ -74,6 +76,7 @@ export class StarApi extends Api {
 	/**
 	 * Checks if an entity is starred.
 	 *
+	 * @see GET /v1/releases/:id/star
 	 * @param {string} name Name of the model
 	 * @return {(ctx: Context) => Promise<void>}
 	 */

@@ -22,14 +22,14 @@ import Router from 'koa-router';
 import mongoose, { Schema } from 'mongoose';
 
 import { state } from '../state';
-import { EndPoint } from '../common/types/endpoint';
+import { EndPoint } from '../common/api.endpoint';
 import { File } from './file';
 import { FileSerializer } from './file.serializer';
 import { fileSchema } from './file.schema';
 import { router as apiRouter } from './file.api.router';
 import { protectedRouter, publicRouter } from './file.storage.router';
 
-export class FilesApiEndPoint implements EndPoint {
+export class FilesApiEndPoint extends EndPoint {
 
 	readonly name: string = 'Files API';
 
@@ -37,6 +37,7 @@ export class FilesApiEndPoint implements EndPoint {
 	private readonly _schema: Schema;
 
 	constructor() {
+		super();
 		this._schema = fileSchema;
 		this._router = apiRouter;
 	}
@@ -45,19 +46,20 @@ export class FilesApiEndPoint implements EndPoint {
 		return this._router;
 	}
 
-	register(app: Application): void {
+	async register(app: Application): Promise<void> {
 		state.models.File = mongoose.model<File>('File', this._schema);
 		state.serializers.File = new FileSerializer();
 	}
 }
 
-export class FilesProtectedStorageEndPoint implements EndPoint {
+export class FilesProtectedStorageEndPoint extends EndPoint {
 
 	readonly name: string = 'Storage Protected Files API';
 
 	private readonly _router: Router;
 
 	constructor() {
+		super();
 		this._router = protectedRouter;
 	}
 
@@ -65,18 +67,19 @@ export class FilesProtectedStorageEndPoint implements EndPoint {
 		return this._router;
 	}
 
-	register(app: Application): void {
+	async register(app: Application): Promise<void> {
 		// nothing to register
 	}
 }
 
-export class FilesPublicStorageEndPoint implements EndPoint {
+export class FilesPublicStorageEndPoint extends EndPoint {
 
 	readonly name: string = 'Storage Public Files API';
 
 	private readonly _router: Router;
 
 	constructor() {
+		super();
 		this._router = publicRouter;
 	}
 
@@ -84,7 +87,7 @@ export class FilesPublicStorageEndPoint implements EndPoint {
 		return this._router;
 	}
 
-	register(app: Application): void {
+	async register(app: Application): Promise<void> {
 		// nothing to register
 	}
 }

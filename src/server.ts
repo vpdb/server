@@ -21,7 +21,7 @@ import Application from 'koa';
 import koaBodyParser from 'koa-bodyparser';
 import { uniq } from 'lodash';
 
-import { EndPoint } from './common/types/endpoint';
+import { EndPoint } from './common/api.endpoint';
 import { config, settings } from './common/settings'
 import { koaLogger } from './common/middleware/logger';
 import { koaAuth } from './common/middleware/auth';
@@ -48,7 +48,7 @@ export class Server {
 		this.app.use(apiCache.middleware.bind(apiCache));
 	}
 
-	public register<T>(endPoint: EndPoint) {
+	public async register<T>(endPoint: EndPoint): Promise<void> {
 
 		// routes
 		const router = endPoint.getRouter();
@@ -65,7 +65,7 @@ export class Server {
 		}
 
 		// register app (set models and serializer)
-		endPoint.register(this.app);
+		await endPoint.register(this.app);
 	}
 
 	public postRegister() {

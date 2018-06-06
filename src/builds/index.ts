@@ -22,13 +22,14 @@ import Router from 'koa-router';
 import mongoose, { Schema } from 'mongoose';
 
 import { state } from '../state';
-import { EndPoint } from '../common/types/endpoint';
+import { EndPoint } from '../common/api.endpoint';
 import { BuildSerializer } from './build.serializer';
 import { buildSchema } from './build.schema';
 import { router } from './build.router';
 import { Build } from './build';
+import { initialBuilds } from './initial-data/builds';
 
-export class BuildApiEndPoint implements EndPoint {
+export class BuildApiEndPoint extends EndPoint {
 
 	readonly name: string = 'Build API';
 
@@ -36,6 +37,7 @@ export class BuildApiEndPoint implements EndPoint {
 	private readonly _schema: Schema;
 
 	constructor() {
+		super();
 		this._schema = buildSchema;
 		this._router = router;
 	}
@@ -44,8 +46,10 @@ export class BuildApiEndPoint implements EndPoint {
 		return this._router;
 	}
 
-	register(app: Application): void {
+	async register(app: Application): Promise<void> {
 		state.models.Build = mongoose.model<Build>('Build', this._schema);
 		state.serializers.Build = new BuildSerializer();
+
+		await this.importData(state.models.Build, initialBuilds);
 	}
 }

@@ -102,9 +102,10 @@ export class MiscApi extends Api {
 	 * @return {Promise<boolean>} Number of caches cleared
 	 */
 	public async invalidateCache(ctx: Context) {
+		const now = Date.now();
 		const num = await apiCache.invalidateAll();
-		logger.info("[MiscApi.invalidateCache] Cleared %s caches.", num);
-		return this.success(ctx, { cleared: num });
+		logger.info("[MiscApi.invalidateCache] Cleared %s caches in %sms.", num, Date.now() - now);
+		return this.success(ctx, { cleared: num }, 204);
 	}
 
 	/**

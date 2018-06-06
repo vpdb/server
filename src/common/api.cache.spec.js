@@ -20,10 +20,7 @@
 'use strict';
 /*global describe, before, after, it*/
 
-const resolve = require('path').resolve;
-
 const ApiClient = require('../../test/modules/api.client');
-const FileHelper = require('../../test/modules/file.helper');
 const ReleaseHelper = require('../../test/modules/release.helper');
 
 const api = new ApiClient();
@@ -37,18 +34,34 @@ describe('The VPDB API cache', () => {
 		await api.setupUsers({
 			member: { roles: ['member'] },
 			moderator: { roles: ['moderator'] },
-			administrator: { roles: ['administrator'] }
+			administrator: { roles: ['admin'] }
 		});
 		release = await releaseHelper.createRelease('moderator');
 	});
 
-	afterEach(async () => await api.as('administrator').del('/v1/cache'));
+	afterEach(async () => await api.as('administrator').del('/v1/cache').then(res => res.expectStatus(204)));
 	after(async () => await api.teardown());
 
-	describe('when listing releases', () => {
+	describe.only('when listing releases', () => {
 
-		it.only('should cache the second request', async () => {
+		it('should cache the second request', async () => {
 			await api.get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'hit'));
+		});
+
+		it('should not cache the same request for a different user', async () => {
+			await api.get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.as('member').get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.as('moderator').get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
+		});
+
+		it('should invalidate when a release is starred', async () => {
+			await api.get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.as('member').get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.as('member').get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'hit'));
+			await api.as('member').post('/v1/releases/' + release.id + '/star', {}).then(res => res.expectStatus(201));
+			await api.as('member').get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.as('member').get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'hit'));
 			await api.get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'hit'));
 		});
 	});

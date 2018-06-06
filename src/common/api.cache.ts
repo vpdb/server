@@ -25,12 +25,23 @@ import { state } from '../state';
 import { logger } from './logger';
 import { Context } from './types/context';
 import { User } from '../users/user';
+import { Release } from '../releases/release';
 
 /**
  * An in-memory cache using Redis.
  *
  * It's used as a middleware in Koa. Routes must enable caching explicitly.
  * Invalidation is done with tags.
+ *
+ * Procedure when adding a cache to a route:
+ *   1. Go through all end points performing a *write* operation.
+ *   2. Check if the route is affected by the operation. Besides obvious
+ *      changes of the entity, check:
+ *      - User downloads, votes & rating (does the payload contain counters?)
+ *      - Parent entities containing the object (release update invalidates
+ *        the release' game)
+ *   3. If that's the case, make sure the route's matched when invalidating in
+ *      the end point.
  */
 class ApiCache {
 
@@ -92,6 +103,28 @@ class ApiCache {
 		this.cacheRoutes.push({ regex: pathToRegexp(opts.prefix + path), config: config });
 	}
 
+	public async invalidateRelease(release?: Release) {
+		if (release) {
+			await this.invalidateEntity('release', release.id);
+		} else {
+			await this.invalidate([{ resources: ['release'] }]);
+		}
+	}
+
+	public async invalidateReleaseComment(release: Release) {
+		await this.invalidate([{ entities: { releaseComment: release.id } }]);
+	}
+
+	/**
+	 * Clears all caches listing the given entity and the entity's details.
+	 *
+	 * @param {string} entity Entity name, e.g. 'release', 'game'.
+	 * @param {string} entityId ID of the entity
+	 */
+	public async invalidateEntity(entity: string, entityId: string) {
+		await this.invalidate([{ resources: [entity], entities: { [entity]: entityId } }]);
+	}
+
 	/**
 	 * Invalidates a cache.
 	 *
@@ -99,38 +132,44 @@ class ApiCache {
 	 * `CacheInvalidationTag` is an operator in a logical `and`, while its attributes
 	 * compose an `or` condition.
 	 *
-	 * @param {CacheInvalidationTag[]} tags
+	 * @param {CacheInvalidationTag[][]} tagLists
 	 * @return {Promise<number>}
 	 */
-	public async invalidate(...tags: CacheInvalidationTag[]): Promise<number> {
+	private async invalidate(...tagLists: CacheInvalidationTag[][]): Promise<number> {
 
 		const now = Date.now();
 		const keys:string[][] = [];
-		const allRefs:string[][] = [];
-		for (const tag of tags) {
-			const refs:string[] = [];
+		const allRefs:string[][][] = [];
+		let invalidationKeys = new Set<string>();
+		for (let i = 0; i < tagLists.length; i++) {
+			const tags = tagLists[i];
+			allRefs[i] = [];
+			for (const tag of tags) {
+				const refs: string[] = [];
 
-			// resources
-			if (tag.resources) {
-				for (const resource of tag.resources) {
-					refs.push(this.getResourceKey(resource));
+				// resources
+				if (tag.resources) {
+					for (const resource of tag.resources) {
+						refs.push(this.getResourceKey(resource));
+					}
 				}
-			}
-			// entities
-			if (tag.entities) {
-				for (const entity of Object.keys(tag.entities)) {
-					refs.push(this.getEntityKey(entity, tag.entities[entity]));
+				// entities
+				if (tag.entities) {
+					for (const entity of Object.keys(tag.entities)) {
+						refs.push(this.getEntityKey(entity, tag.entities[entity]));
+					}
 				}
+				// user
+				if (tag.user) {
+					refs.push(this.getUserKey(tag.user));
+				}
+				allRefs[i].push(refs);
+				keys.push(await state.redis.sunionAsync(...refs));
 			}
-			// user
-			if (tag.user) {
-				refs.push(this.getUserKey(tag.user));
-			}
-			allRefs.push(refs);
-			keys.push(await state.redis.sunionAsync(...refs));
+			invalidationKeys = new Set([...invalidationKeys, ...intersection(...keys)]); // redis could do this too using SUNIONSTORE to temp sets and INTER them
 		}
-		const invalidationKeys = intersection(...keys); // redis could do this too using SUNIONSTORE to temp sets and INTER them
-		logger.info('[Cache.invalidate]: Invalidating caches: (%s).', allRefs.map(r => r.join(' || ')).join(') && ('));
+		logger.info('[Cache.invalidate]: Invalidating caches: (%s).',
+			'(' + allRefs.map(r => '(' + r.map(r => r.join(' || ')).join(') && (') + ')').join(') || (') + ')');
 
 		let n = 0;
 		for (const key of invalidationKeys) {

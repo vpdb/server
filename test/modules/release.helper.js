@@ -33,8 +33,8 @@ class ReleaseHelper {
 	}
 
 	async createReleaseForGame(user, game, opts) {
-		const vptFile = await this.fileHelper.createVpt(user, opts);
-		const playfield = await this.fileHelper.createPlayfield(user, 'fs');
+		const vptFile = await this.fileHelper.createVpt(user, { keep: true });
+		const playfield = await this.fileHelper.createPlayfield(user, 'fs', null, { keep: true });
 		const res = await this.api
 			.as(user)
 			.markTeardown()

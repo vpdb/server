@@ -78,7 +78,6 @@ export function moderationPlugin(schema: Schema) {
 			return;
 		}
 		// check if _created_by is a contributor and auto-approve.
-		const acl = require('../acl');
 		const User = state.models.User;
 		let user: User;
 		if (this.populated('_created_by')) {
@@ -87,13 +86,13 @@ export function moderationPlugin(schema: Schema) {
 			user = await User.findOne({ _id: this._created_by }).exec();
 		}
 
-		const resource = modelResourceMap[this.modelName];
+		const resource = modelResourceMap[(this.constructor as any).modelName];
 		if (!resource) {
-			throw new Error('Tried to check moderation permission for unmapped entity "' + this.modelName + '".');
+			throw new Error('Tried to check moderation permission for unmapped entity "' + (this.constructor as any).modelName + '".');
 		}
 		const autoApprove = await acl.isAllowed(user.id, resource, 'auto-approve');
 		if (autoApprove) {
-			logger.info('[moderationPlugin] Auto-approving %s "%s" for user <%s>.', this.modelName, this.id, user.email);
+			logger.info('[moderationPlugin] Auto-approving %s "%s" for user <%s>.', (this.constructor as any).modelName, this.id, user.email);
 			const now = new Date();
 			this.moderation = {
 				is_approved: true,
@@ -123,7 +122,6 @@ export function moderationPlugin(schema: Schema) {
 	 * @returns {Promise<T>} Moderated query
 	 */
 	schema.statics.handleModerationQuery = async function<T>(ctx: Context, query: T): Promise<T> {
-		const acl = require('../acl');
 		let isModerator = false;
 		if (ctx.query && ctx.query.moderation) {
 			if (!ctx.state.user) {

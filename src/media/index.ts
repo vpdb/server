@@ -22,13 +22,13 @@ import Router from 'koa-router';
 import mongoose, { Schema } from 'mongoose';
 
 import { state } from '../state';
-import { EndPoint } from '../common/types/endpoint';
+import { EndPoint } from '../common/api.endpoint';
 import { MediumSerializer } from './medium.serializer';
 import { MediumModel, mediumSchema } from './medium.schema';
 import { router } from './medium.api.router';
 import { Medium } from './medium';
 
-export class MediaApiEndPoint implements EndPoint {
+export class MediaApiEndPoint extends EndPoint {
 
 	readonly name: string = 'Media API';
 
@@ -36,6 +36,7 @@ export class MediaApiEndPoint implements EndPoint {
 	private readonly _schema: Schema;
 
 	constructor() {
+		super();
 		this._schema = mediumSchema;
 		this._router = router;
 	}
@@ -44,7 +45,7 @@ export class MediaApiEndPoint implements EndPoint {
 		return this._router;
 	}
 
-	register(app: Application): void {
+	async register(app: Application): Promise<void> {
 		state.models.Medium = mongoose.model<Medium, MediumModel>('Medium', this._schema);
 		state.serializers.Medium = new MediumSerializer();
 	}

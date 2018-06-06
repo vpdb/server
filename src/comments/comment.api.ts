@@ -31,6 +31,12 @@ import { apiCache } from '../common/api.cache';
 
 export class CommentApi extends Api {
 
+	/**
+	 * Creates a new comment for a release.
+	 *
+	 * @see POST /v1/releases/:id/comments
+	 * @param {Context} ctx Koa context
+	 */
 	public async createForRelease(ctx: Context) {
 
 		const release = await state.models.Release.findOne({ id: ctx.params.id })
@@ -79,6 +85,12 @@ export class CommentApi extends Api {
 		}
 	}
 
+	/**
+	 * Creates a new moderation comment for a release.
+	 *
+	 * @see POST /v1/releases/:id/moderate/comments
+	 * @param {Context} ctx Koa context
+	 */
 	public async createForReleaseModeration(ctx: Context) {
 
 		const release = await state.models.Release.findOne({ id: ctx.params.id })
@@ -121,6 +133,12 @@ export class CommentApi extends Api {
 
 	}
 
+	/**
+	 * Lists comments for a release
+	 *
+	 * @see GET /v1/releases/:id/comments
+	 * @param {Context} ctx Koa context
+	 */
 	public async listForRelease(ctx: Context) {
 
 		let pagination = this.pagination(ctx, 10, 50);
@@ -149,6 +167,12 @@ export class CommentApi extends Api {
 		return this.success(ctx, comments, 200, this.paginationOpts(pagination, results.total));
 	}
 
+	/**
+	 * Lists all moderation comments for a release.
+	 *
+	 * @see GET /v1/releases/:id/moderate/comments
+	 * @param {Context} ctx Koa context
+	 */
 	public async listForReleaseModeration(ctx: Context) {
 
 		const release = await state.models.Release.findOne({ id: ctx.params.id }).exec();

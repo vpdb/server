@@ -22,17 +22,18 @@ import mongoose, { Schema } from 'mongoose';
 import Router from 'koa-router';
 
 import { state } from '../state';
-import { EndPoint } from '../common/types/endpoint';
+import { EndPoint } from '../common/api.endpoint';
 import { ratingSchema } from './rating.schema';
 import { Rating } from './rating';
 
-export class RatingEndPoint implements EndPoint {
+export class RatingEndPoint extends EndPoint {
 
 	readonly name: string = 'Ratings API';
 
 	private readonly _schema: Schema;
 
 	constructor() {
+		super();
 		this._schema = ratingSchema;
 	}
 
@@ -40,7 +41,7 @@ export class RatingEndPoint implements EndPoint {
 		return null;
 	}
 
-	register(app: Application): void {
+	async register(app: Application): Promise<void> {
 		state.models.Rating = mongoose.model<Rating>('Rating', this._schema);
 	}
 }

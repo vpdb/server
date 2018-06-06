@@ -23,7 +23,7 @@ import { server } from './server';
 import { config } from './common/settings';
 import { init as initAcls } from './common/acl';
 import { logger } from './common/logger';
-import { EndPoint } from './common/types/endpoint';
+import { EndPoint } from './common/api.endpoint';
 
 import { AuthenticationEndPoint, AuthenticationStorageEndPoint } from './authentication';
 import { BackglassEndPoint } from './backglasses';
@@ -89,7 +89,7 @@ shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 		// bootstrap endpoints
 		for (let endPoint of endPoints) {
 			logger.info('[app] Registering %s:', endPoint.name);
-			server.register(endPoint);
+			await server.register(endPoint);
 		}
 		server.postRegister();
 

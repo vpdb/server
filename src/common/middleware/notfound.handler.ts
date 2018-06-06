@@ -30,7 +30,7 @@ export function koa404Handler() {
 		await next();
 		if (ctx.status === 404) {
 			if (!ctx.request.path.includes('/v1')) {
-				throw new ApiError('Resource not found. Maybe you forgot to use the /v1 prefix for the resouce?').status(404);
+				throw new ApiError('Resource not found. Maybe you forgot to use the /v1 prefix for the resource?').status(404);
 			}
 			throw new ApiError('Resource not found.').status(404);
 		}

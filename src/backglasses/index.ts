@@ -22,14 +22,14 @@ import mongoose, { Schema } from 'mongoose';
 import Router from 'koa-router';
 
 import { state } from '../state';
-import { EndPoint } from '../common/types/endpoint';
+import { EndPoint } from '../common/api.endpoint';
 import { BackglassModel, backglassSchema } from './backglass.schema';
 import { Backglass } from './backglass';
 import { BackglassSerializer } from './backglass.serializer';
 import { BackglassVersionSerializer } from './backglass.version.serializer';
 import { router } from './backglass.api.router';
 
-export class BackglassEndPoint implements EndPoint {
+export class BackglassEndPoint extends EndPoint {
 
 	readonly name: string = 'Backglass API';
 
@@ -37,6 +37,7 @@ export class BackglassEndPoint implements EndPoint {
 	private readonly _schema: Schema;
 
 	constructor() {
+		super();
 		this._router = router;
 		this._schema = backglassSchema;
 	}
@@ -45,7 +46,7 @@ export class BackglassEndPoint implements EndPoint {
 		return this._router;
 	}
 
-	register(app: Application): void {
+	async register(app: Application): Promise<void> {
 		state.models.Backglass = mongoose.model<Backglass, BackglassModel>('Backglass', this._schema);
 		state.serializers.Backglass = new BackglassSerializer();
 		state.serializers.BackglassVersion = new BackglassVersionSerializer();

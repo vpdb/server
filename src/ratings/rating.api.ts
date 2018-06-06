@@ -86,7 +86,7 @@ export class RatingApi extends Api {
 		const obj = {
 			_from: ctx.state.user._id,
 			_ref: { [ref]: entity._id },
-			value: ctx.body.value,
+			value: ctx.request.body.value,
 			created_at: new Date()
 		};
 		const rating = new state.models.Rating(obj);
@@ -107,7 +107,7 @@ export class RatingApi extends Api {
 		if (!rating) {
 			throw new ApiError('No rating of <%s> for "%s" found.', ctx.state.user.email, (entity as any)[titleAttr]).status(404);
 		}
-		rating.value = ctx.body.value;
+		rating.value = ctx.request.body.value;
 		rating.modified_at = new Date();
 		await rating.save();
 

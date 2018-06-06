@@ -31,8 +31,8 @@ export class VptMetadata extends Metadata {
 	}
 
 	async getMetadata(file: File, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
-		const script = await visualPinballTable.readScriptFromTable(file.getPath());
-		const props = await visualPinballTable.getTableInfo(file.getPath());
+		const script = await visualPinballTable.readScriptFromTable(path);
+		const props = await visualPinballTable.getTableInfo(path);
 		extend(props, { table_script: script.code });
 		return props;
 	}

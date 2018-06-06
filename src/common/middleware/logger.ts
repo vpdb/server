@@ -67,10 +67,10 @@ export function koaLogger() {
 		// by intercepting the stream with a counter.
 		// only necessary if a content-length header is currently not set.
 		const length = ctx.response.length;
-		const body = ctx.body;
+		const body = ctx.request.body;
 		let counter: { length: number };
 		if (length == null && body && body.readable) {
-			ctx.body = body.pipe(counter = Counter()).on('error', ctx.onerror);
+			ctx.response.body = body.pipe(counter = Counter()).on('error', ctx.onerror);
 		}
 
 		// log when the response is finished or closed,

@@ -57,8 +57,8 @@ export class TagApi extends Api {
 	 * @param {Context} ctx Koa context
 	 */
 	public async create(ctx: Context) {
-		const newTag = new state.models.Tag(extend(ctx.body, {
-			_id: ctx.body.name ? ctx.body.name.replace(/(^[^a-z0-9]+)|([^a-z0-9]+$)/gi, '').replace(/[^a-z0-9]+/gi, '-').toLowerCase() : '-',
+		const newTag = new state.models.Tag(extend(ctx.request.body, {
+			_id: ctx.request.body.name ? ctx.request.body.name.replace(/(^[^a-z0-9]+)|([^a-z0-9]+$)/gi, '').replace(/[^a-z0-9]+/gi, '-').toLowerCase() : '-',
 			is_active: false,
 			created_at: new Date(),
 			_created_by: ctx.state.user._id

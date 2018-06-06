@@ -19,16 +19,17 @@
 
 import Application = require('koa');
 import Router from 'koa-router';
-import { EndPoint } from '../common/types/endpoint';
+import { EndPoint } from '../common/api.endpoint';
 import { router } from './misc.api.router';
 
-export class MiscEndPoint implements EndPoint {
+export class MiscEndPoint extends EndPoint {
 
 	readonly name: string = 'Misc API';
 
 	private readonly _router: Router;
 
 	constructor() {
+		super();
 		this._router = router;
 	}
 
@@ -36,7 +37,7 @@ export class MiscEndPoint implements EndPoint {
 		return this._router;
 	}
 
-	register(app: Application): void {
+	async register(app: Application): Promise<void> {
 		// nothing to register
 	}
 }

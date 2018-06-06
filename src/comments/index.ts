@@ -22,18 +22,19 @@ import mongoose, { Schema } from 'mongoose';
 import Router from 'koa-router';
 
 import { state } from '../state';
-import { EndPoint } from '../common/types/endpoint';
+import { EndPoint } from '../common/api.endpoint';
 import { CommentModel, commentSchema } from './comment.schema';
 import { Comment } from './comment';
 import { CommentSerializer } from './comment.serializer';
 
-export class CommentEndPoint implements EndPoint {
+export class CommentEndPoint extends EndPoint {
 
 	readonly name: string = 'Comment API';
 
 	private readonly _schema: Schema;
 
 	constructor() {
+		super();
 		this._schema = commentSchema;
 	}
 
@@ -41,7 +42,7 @@ export class CommentEndPoint implements EndPoint {
 		return null;
 	}
 
-	register(app: Application): void {
+	async register(app: Application): Promise<void> {
 		state.models.Comment = mongoose.model<Comment, CommentModel>('Comment', this._schema);
 		state.serializers.Comment = new CommentSerializer();
 	}

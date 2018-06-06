@@ -52,7 +52,8 @@ export class ReleaseApi extends Api {
 	/**
 	 * Creates a new release.
 	 *
-	 * @param {Context} ctx Koa contextauthentication.ap
+	 * @see POST /v1/releases
+	 * @param {Context} ctx Koa context
 	 */
 	public async create(ctx: Context) {
 
@@ -131,6 +132,7 @@ export class ReleaseApi extends Api {
 	/**
 	 * Updates the release data (only basic data, no versions or files).
 	 *
+	 * @see PATCH /v1/releases/:id
 	 * @param {Context} ctx Koa context
 	 */
 	public async update(ctx: Context) {
@@ -194,6 +196,7 @@ export class ReleaseApi extends Api {
 	/**
 	 * Adds a new version to an existing release.
 	 *
+	 * @see POST /v1/releases/:id/versions
 	 * @param {Context} ctx Koa context
 	 */
 	public async addVersion(ctx: Context) {
@@ -304,6 +307,7 @@ export class ReleaseApi extends Api {
 	/**
 	 * Updates an existing version.
 	 *
+	 * @see PATCH /v1/releases/:id/versions/:version
 	 * @param {Context} ctx Koa context
 	 */
 	public async updateVersion(ctx: Context) {
@@ -430,6 +434,7 @@ export class ReleaseApi extends Api {
 	/**
 	 * Validates a release file.
 	 *
+	 * @see POST /v1/releases/:id/versions/:version/files/:file/validate
 	 * @param {Context} ctx Koa context
 	 */
 	public async validateFile(ctx: Context) {
@@ -510,6 +515,7 @@ export class ReleaseApi extends Api {
 	/**
 	 * Lists all releases.
 	 *
+	 * @see GET /v1/releases
 	 * @param {Context} ctx Koa context
 	 */
 	public async list(ctx: Context) {
@@ -729,6 +735,7 @@ export class ReleaseApi extends Api {
 	/**
 	 * Lists a release of a given ID.
 	 *
+	 * @see GET /v1/releases/:id
 	 * @param {Context} ctx Koa context
 	 */
 	public async view(ctx: Context) {
@@ -793,6 +800,7 @@ export class ReleaseApi extends Api {
 	/**
 	 * Deletes a release.
 	 *
+	 * @see DELETE /v1/releases/:id
 	 * @param {Context} ctx Koa context
 	 */
 	public async del(ctx: Context) {
@@ -829,6 +837,7 @@ export class ReleaseApi extends Api {
 	/**
 	 * Moderates a release.
 	 *
+	 * @see POST /v1/releases/:id/moderate
 	 * @param {Context} ctx Koa context
 	 */
 	public async moderate(ctx: Context) {

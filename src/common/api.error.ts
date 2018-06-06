@@ -187,21 +187,35 @@ export class ApiError extends Error {
 	 */
 	public respond(ctx:Context) {
 
+		const body = this.getResponse();
+		ctx.response.status = this.statusCode;
+		ctx.response.body = body;
+	}
+
+	/**
+	 * Returns the error response body.
+	 */
+	private getResponse() {
 		// if the message contains a stack trace, replace.
 		const message = this.message.match(/\n\s+at/) ? 'Internal error.' : this.message;
 		const body:any = this.data || { error: this.responseMessage || message, code: this.errorCode || undefined };
 		if (this.errors) {
-			body.errors = this.errors.map(error => {
-				return {
-					field: error.path,
-					message: error.message,
-					value: isEmpty(error.value) ? undefined : error.value,
-					code: isEmpty(error.kind) || error.kind == 'user defined' ? undefined : error.kind
-				}
-			});
+			body.errors = this.errors.map(ApiError.mapValidationError);
 		}
-		ctx.response.status = this.statusCode;
-		ctx.response.body = body;
+		return body;
+	}
+
+	/**
+	 * Maps the full validation error object to what we return in the API.
+ 	 * @param error Validation error
+	 */
+	private static mapValidationError(error:any) {
+		return {
+			field: error.path,
+			message: error.message,
+			value: isEmpty(error.value) ? undefined : error.value,
+			code: isEmpty(error.kind) || error.kind == 'user defined' ? undefined : error.kind
+		}
 	}
 
 	/**
@@ -215,15 +229,19 @@ export class ApiError extends Error {
 				.map(error => '\n' + ApiError.colorStackTrace(error.reason) + '\n')
 				.join('');
 		}
+		let responseLog = '';
+		if (requestLog) {
+			responseLog = '\n' + chalk.cyan(JSON.stringify(this.getResponse(), null, "  "));
+		}
 		if (this.statusCode === 500 || this.logLevel === 'error') {
 			logger.error('\n\n' + ApiError.colorStackTrace(this) + cause + requestLog + '\n\n');
 
 		} else if (cause || this.logLevel === 'warn') {
 			// sometimes the message is the stack, if that's the case then print the real stack.
 			if (this.message.match(/\n\s+at/)) {
-				logger.warn('\n\n' + ApiError.colorStackTrace(this) + cause + (requestLog ? requestLog + '\n' : ''));
+				logger.warn('\n\n' + ApiError.colorStackTrace(this) + cause + (requestLog ? requestLog + '\n' : '') + responseLog);
 			} else {
-				logger.warn(chalk.yellowBright(this.message.trim()) + '\n' + cause + (requestLog ? requestLog + '\n' : ''));
+				logger.warn(chalk.yellowBright(this.message.trim()) + '\n' + cause + (requestLog ? requestLog + '\n' : '') + responseLog);
 			}
 		}
 	}
@@ -276,10 +294,6 @@ export class ApiError extends Error {
 				}
 			}
 		}).join('\n');
-	}
-
-	private static colorPath() {
-
 	}
 
 	/**

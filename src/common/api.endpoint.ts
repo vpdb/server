@@ -19,6 +19,9 @@
 
 import Application = require('koa');
 import Router from 'koa-router';
+import { Document, Model } from 'mongoose';
+
+import { logger } from './logger';
 
 /**
  * An API end point (or, more RESTful, a "resource") bundles all the
@@ -29,23 +32,39 @@ import Router from 'koa-router';
  *    - Database model
  *    - Entity type
  */
-export interface EndPoint {
+export abstract class EndPoint {
 
 	/**
 	 * The name (plural) of the end point.
 	 */
-	readonly name: string;
+	abstract readonly name: string;
 
 	/**
 	 * Returns the router containing all the routes of the end point.
 	 * @return {Router}
 	 */
-	getRouter(): Router;
+	abstract getRouter(): Router;
 
 	/**
 	 * Registers the end point with the application.
 	 * @param {Application} app Koa application
 	 */
-	register(app:Application): void;
+	abstract register(app: Application): Promise<void>;
 
+	/**
+	 * Bulk-imports data.
+	 *
+	 * @param {Model<Document>} model Model to use
+	 * @param {any[]} data Data to import
+	 */
+	protected async importData(model: Model<Document>, data: any[]) {
+		const count = await model.count({});
+		/* istanbul ignore if: Database is always empty before running tests. */
+		if (count) {
+			logger.info('[EndPoint.importData] Skipping data population for model "%s", collection is not empty.', model.modelName);
+			return;
+		}
+		logger.info('[EndPoint.importData] Inserting %d rows into collection "%s"..', data.length, model.modelName);
+		await model.collection.insertMany(data);
+	}
 }

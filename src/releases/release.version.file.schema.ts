@@ -30,8 +30,8 @@ const validationStatusValues = ['verified', 'playable', 'broken'];
 export const releaseVersionFileFields = {
 	_file:  { type: Schema.Types.ObjectId, required: 'You must provide a file reference.', ref: 'File' },
 	flavor: {
-		orientation: { type: String, 'enum': { values: flavors.flavorValues('orientation'), message: 'Invalid orientation. Valid orientation are: ["' + keys(flavors.flavorValues('orientation')).join('", "') + '"].' }},
-		lighting:    { type: String, 'enum': { values: flavors.flavorValues('lighting'), message: 'Invalid lighting. Valid options are: ["' + keys(flavors.flavorValues('lighting')).join('", "') + '"].' }}
+		orientation: { type: String, 'enum': { values: keys(flavors.flavorValues('orientation')), message: 'Invalid orientation. Valid orientation are: ["' + keys(flavors.flavorValues('orientation')).join('", "') + '"].' }},
+		lighting:    { type: String, 'enum': { values: keys(flavors.flavorValues('lighting')), message: 'Invalid lighting. Valid options are: ["' + keys(flavors.flavorValues('lighting')).join('", "') + '"].' }}
 	},
 	validation: {
 		status:  { type: String, 'enum': { values: validationStatusValues, message: 'Invalid status, must be one of: ["' + validationStatusValues.join('", "') + '"].' }},

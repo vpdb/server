@@ -118,7 +118,7 @@ releaseVersionSchema.path('files').validate(async function (files: ReleaseVersio
 			this.invalidate('files.' + tableFile.index + '.flavor', 'A combination of compatibility and flavor already exists with the same values.');
 		}
 	});
-	return null;
+	return true;
 
 });
 

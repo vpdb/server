@@ -34,6 +34,7 @@ export class LogEventApi extends Api {
 	/**
 	 * Lists all events related to a user.
 	 *
+	 * @see GET /v1/releases/:id/events
 	 * @see GET /v1/profile/events
 	 */
 	list(opts: ListLogEventOpts) {

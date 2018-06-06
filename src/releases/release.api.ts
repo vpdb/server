@@ -60,8 +60,8 @@ export class ReleaseApi extends Api {
 		let release;
 
 		// defaults
-		if (ctx.body.versions) {
-			ctx.body.versions.forEach((version: ReleaseVersion) => {
+		if (ctx.request.body.versions) {
+			ctx.request.body.versions.forEach((version: ReleaseVersion) => {
 				version.released_at = version.released_at || now.toISOString();
 				if (version.files) {
 					const releasedAt = version.released_at || now.toISOString();
@@ -72,8 +72,8 @@ export class ReleaseApi extends Api {
 			});
 		}
 
-		logger.info('[ReleaseApi.create] Body: %s', inspect(ctx.body, { depth: null }));
-		const newRelease = await state.models.Release.getInstance(extend(ctx.body, {
+		logger.info('[ReleaseApi.create] Body: %s', inspect(ctx.request.body, { depth: null }));
+		const newRelease = await state.models.Release.getInstance(extend(ctx.request.body, {
 			_created_by: ctx.state.user._id,
 			modified_at: now,
 			created_at: now
@@ -155,24 +155,24 @@ export class ReleaseApi extends Api {
 			if (![creatorId, ...authorIds].includes(ctx.state.user._id.toString())) {
 				throw new ApiError('Only authors of the release can update it.').status(403).log();
 			}
-			if (!isUndefined(ctx.body.authors) && creatorId !== ctx.state.user._id.toString()) {
+			if (!isUndefined(ctx.request.body.authors) && creatorId !== ctx.state.user._id.toString()) {
 				throw new ApiError('Only the original uploader can edit authors.').status(403).log();
 			}
 		}
 
 		// fail if invalid fields provided
-		const submittedFields = keys(ctx.body);
+		const submittedFields = keys(ctx.request.body);
 		if (intersection(updatableFields, submittedFields).length !== submittedFields.length) {
 			const invalidFields = difference(submittedFields, updatableFields);
 			throw new ApiError('Invalid field%s: ["%s"]. Allowed fields: ["%s"]', invalidFields.length === 1 ? '' : 's', invalidFields.join('", "'), updatableFields.join('", "')).status(400).log();
 		}
-		if (ctx.body.ipdb) {
-			ctx.body.ipdb = assign(release.ipdb, pick(ctx.body.ipdb, 'mpu'));
+		if (ctx.request.body.ipdb) {
+			ctx.request.body.ipdb = assign(release.ipdb, pick(ctx.request.body.ipdb, 'mpu'));
 		}
 		const oldRelease = cloneDeep(release);
 
 		// apply changes
-		release = await release.updateInstance(ctx.body);
+		release = await release.updateInstance(ctx.request.body);
 
 		// validate and save
 		release = await release.save();
@@ -186,7 +186,7 @@ export class ReleaseApi extends Api {
 
 		// log event
 		await LogEventUtil.log(ctx, 'update_release', false,
-			LogEventUtil.diff(oldRelease, ctx.body),
+			LogEventUtil.diff(oldRelease, ctx.request.body),
 			{ release: release._id, game: release._game._id }
 		);
 	}
@@ -221,7 +221,7 @@ export class ReleaseApi extends Api {
 		}
 
 		// set defaults
-		const versionObj = defaults(ctx.body, { released_at: now }) as ReleaseVersion;
+		const versionObj = defaults(ctx.request.body, { released_at: now }) as ReleaseVersion;
 		if (versionObj.files) {
 			versionObj.files.forEach(file => {
 				defaults(file, { released_at: now });
@@ -350,9 +350,9 @@ export class ReleaseApi extends Api {
 		const oldVersion = cloneDeep(versionToUpdate);
 
 		const newFiles: ReleaseVersionFile[] = [];
-		logger.info('[ReleaseApi.updateVersion] %s', inspect(ctx.body, { depth: null }));
+		logger.info('[ReleaseApi.updateVersion] %s', inspect(ctx.request.body, { depth: null }));
 
-		for (const fileObj of (ctx.body.files || [])) {
+		for (const fileObj of (ctx.request.body.files || [])) {
 
 			// check if file reference is already part of this version
 			let existingVersionFile = version.files.find(f => (f._file as File).id === fileObj._file);
@@ -371,7 +371,7 @@ export class ReleaseApi extends Api {
 		await this.preprocess(ctx, versionToUpdate.getFileIds().concat(version.getFileIds(newFiles)));
 
 		// assign fields and validate
-		Object.assign(versionToUpdate, pick(ctx.body, updatableFields));
+		Object.assign(versionToUpdate, pick(ctx.request.body, updatableFields));
 		try {
 			await releaseToUpdate.validate();
 		} catch (err) {
@@ -413,7 +413,7 @@ export class ReleaseApi extends Api {
 
 		// log event
 		await LogEventUtil.log(ctx, 'update_release_version', false,
-			LogEventUtil.diff(oldVersion, ctx.body),
+			LogEventUtil.diff(oldVersion, ctx.request.body),
 			{ release: release._id, game: release._game._id }
 		);
 
@@ -455,15 +455,15 @@ export class ReleaseApi extends Api {
 
 		// validations
 		let validationErrors = [];
-		if (!ctx.body.message) {
+		if (!ctx.request.body.message) {
 			validationErrors.push({
 				path: 'message',
 				message: 'A message must be provided.',
-				value: ctx.body.message
+				value: ctx.request.body.message
 			});
 		}
-		if (!ctx.body.status) {
-			validationErrors.push({ path: 'status', message: 'Status must be provided.', value: ctx.body.status });
+		if (!ctx.request.body.status) {
+			validationErrors.push({ path: 'status', message: 'Status must be provided.', value: ctx.request.body.status });
 		}
 		if (validationErrors.length) {
 			throw new ApiError('Validation error').validationErrors(validationErrors);
@@ -476,8 +476,8 @@ export class ReleaseApi extends Api {
 		const fileToUpdate = versionToUpdate.files.find(f => f._id.equals(fileId));
 
 		fileToUpdate.validation = {
-			status: ctx.body.status,
-			message: ctx.body.message,
+			status: ctx.request.body.status,
+			message: ctx.request.body.message,
 			validated_at: now,
 			_validated_by: ctx.state.user._id
 		};

@@ -200,8 +200,8 @@ export class ApiError extends Error {
 				}
 			});
 		}
-		ctx.status = this.statusCode;
-		ctx.body = body;
+		ctx.response.status = this.statusCode;
+		ctx.response.body = body;
 	}
 
 	/**

@@ -48,7 +48,7 @@ export class CommentApi extends Api {
 		let comment = new state.models.Comment({
 			_from: ctx.state.user._id,
 			_ref: { release: release },
-			message: ctx.body.message,
+			message: ctx.request.body.message,
 			ip: ctx.ip || ctx.request.get('x-forwarded-for') || '0.0.0.0',
 			created_at: new Date()
 		});
@@ -75,7 +75,7 @@ export class CommentApi extends Api {
 
 		// notify release creator (only if not the same user)
 		if ((release._created_by as User).id !== ctx.state.user.id) {
-			await mailer.releaseCommented(release._created_by as User, ctx.state.user, game, release, ctx.body.message);
+			await mailer.releaseCommented(release._created_by as User, ctx.state.user, game, release, ctx.request.body.message);
 		}
 	}
 
@@ -106,7 +106,7 @@ export class CommentApi extends Api {
 		let comment = new state.models.Comment({
 			_from: ctx.state.user._id,
 			_ref: { release_moderation: release },
-			message: ctx.body.message,
+			message: ctx.request.body.message,
 			ip: ctx.ip || ctx.request.get('x-forwarded-for') || '0.0.0.0',
 			created_at: new Date()
 		});
@@ -117,7 +117,7 @@ export class CommentApi extends Api {
 		this.success(ctx, state.serializers.Comment.simple(ctx, comment), 201);
 
 		// notify
-		await mailer.releaseModerationCommented(ctx.state.user, release, ctx.body.message);
+		await mailer.releaseModerationCommented(ctx.state.user, release, ctx.request.body.message);
 
 	}
 

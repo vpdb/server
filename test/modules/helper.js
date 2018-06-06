@@ -59,7 +59,7 @@ exports.genUser = function(attrs) {
 	return _.extend({
 		username: username,
 		password: randomstring.generate(10),
-		email: faker.internet.email().toLowerCase()
+		email: faker.internet.email(faker.name.firstName(), faker.name.lastName(), faker.internet.domainName()).replace('_', '.')
 	}, attrs || {});
 };
 

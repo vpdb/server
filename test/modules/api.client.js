@@ -354,7 +354,7 @@ class ApiClient {
 			const teardown = { stack:trace.stack };
 			const id = get(res.data, pathToId);
 			if (!id) {
-				throw new Error('Could not parse ID "' + pathToId + ' from ' + JSON.stringify(res.data));
+				throw new Error('Could not parse ID "' + pathToId + '" from ' + JSON.stringify(res.data));
 			}
 			if (path) {
 				teardown.path = path + '/' + id;
@@ -713,7 +713,7 @@ class ApiClient {
 		return assign({
 			username: username,
 			password: randomstring.generate(10),
-			email: faker.internet.email().toLowerCase().replace('_', '.')
+			email: faker.internet.email(faker.name.firstName(), faker.name.lastName(), faker.internet.domainName()).replace('_', '.')
 		}, attrs || {});
 	}
 

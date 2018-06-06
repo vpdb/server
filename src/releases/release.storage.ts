@@ -191,14 +191,14 @@ export class ReleaseStorage extends Api {
 		try {
 			await this.collectFiles(ctx, true);
 			ctx.set('Content-Length', String(0));
-			ctx.status = 200;
-			ctx.body = null;
+			ctx.response.status = 200;
+			ctx.response.body = null;
 
 		} catch (err) {
 			ctx.set('Content-Length', String(0));
 			ctx.set('X-Error', err.message);
-			ctx.status = err.code;
-			ctx.body = null;
+			ctx.response.status = err.code;
+			ctx.response.body = null;
 		}
 	};
 
@@ -244,7 +244,7 @@ export class ReleaseStorage extends Api {
 				throw new ApiError(e, 'Error parsing JSON from URL query.').status(400);
 			}
 		}
-		body = body || ctx.body;
+		body = body || ctx.request.body;
 		requestedFileIds = body.files;
 
 		logger.info('[ReleaseStorage.collectFiles] RELEASE: %s', JSON.stringify(body));

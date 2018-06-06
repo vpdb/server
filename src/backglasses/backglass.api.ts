@@ -44,7 +44,7 @@ export class BackglassApi extends Api {
 
 		const now = new Date();
 
-		const backglass = await state.models.Backglass.getInstance(extend(ctx.body, {
+		const backglass = await state.models.Backglass.getInstance(extend(ctx.request.body, {
 			_created_by: ctx.state.user._id,
 			created_at: now
 		}));
@@ -137,13 +137,13 @@ export class BackglassApi extends Api {
 			if (![creatorId, ...authorIds].includes(ctx.state.user._id.toString())) {
 				throw new ApiError('Only authors, uploader or moderators can update a backglass.').status(403).log();
 			}
-			if (!isUndefined(ctx.body.authors) && creatorId !== ctx.state.user._id.toString()) {
+			if (!isUndefined(ctx.request.body.authors) && creatorId !== ctx.state.user._id.toString()) {
 				throw new ApiError('Only the original uploader can edit authors.').status(403).log();
 			}
 		}
 
 		// fail if invalid fields provided
-		const submittedFields = keys(ctx.body);
+		const submittedFields = keys(ctx.request.body);
 		if (intersection(updatableFields, submittedFields).length !== submittedFields.length) {
 			const invalidFields = difference(submittedFields, updatableFields);
 			throw new ApiError('Invalid field%s: ["%s"]. Allowed fields: ["%s"]', invalidFields.length === 1 ? '' : 's', invalidFields.join('", "'), updatableFields.join('", "')).status(400).log();
@@ -151,7 +151,7 @@ export class BackglassApi extends Api {
 		const oldBackglass = cloneDeep(backglass) as Backglass;
 
 		// apply changes
-		backglass = await backglass.updateInstance(ctx.body);
+		backglass = await backglass.updateInstance(ctx.request.body);
 
 		// validate and save
 		await backglass.save();
@@ -165,7 +165,7 @@ export class BackglassApi extends Api {
 			.exec();
 
 		// log event
-		await LogEventUtil.log(ctx, 'update_backglass', false, LogEventUtil.diff(oldBackglass, ctx.body),
+		await LogEventUtil.log(ctx, 'update_backglass', false, LogEventUtil.diff(oldBackglass, ctx.request.body),
 			{ backglass: backglass._id, game: backglass._game._id });
 
 		return this.success(ctx, state.serializers.Backglass.detailed(ctx, backglass), 200);

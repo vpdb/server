@@ -36,7 +36,7 @@ export class MediumApi extends Api {
 	public async create(ctx: Context) {
 
 		const now = new Date();
-		const medium = await state.models.Medium.getInstance(extend(ctx.body, {
+		const medium = await state.models.Medium.getInstance(extend(ctx.request.body, {
 			_created_by: ctx.state.user._id,
 			created_at: now
 		}));

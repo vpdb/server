@@ -74,7 +74,7 @@ export class BuildApi extends Api {
 
 		// check fields and assign to object
 		this.assertFields(ctx, updatableFields);
-		assign(build, pick(ctx.body, updatableFields));
+		assign(build, pick(ctx.request.body, updatableFields));
 
 
 		// those fields are empty if data comes from initialization, so populate them.
@@ -91,7 +91,7 @@ export class BuildApi extends Api {
 		this.success(ctx, state.serializers.Build.detailed(ctx, newBuild), 200);
 
 		// log event
-		await LogEventUtil.log(ctx, 'update_build', false, LogEventUtil.diff(oldBuild, ctx.body), { build: newBuild._id });
+		await LogEventUtil.log(ctx, 'update_build', false, LogEventUtil.diff(oldBuild, ctx.request.body), { build: newBuild._id });
 	}
 
 	/**
@@ -119,7 +119,7 @@ export class BuildApi extends Api {
 	 */
 	public async create(ctx: Context) {
 
-		const newBuild = new state.models.Build(ctx.body);
+		const newBuild = new state.models.Build(ctx.request.body);
 		const idFromLabel = newBuild.label ? newBuild.label.replace(/(^[^a-z0-9._-]+)|([^a-z0-9._-]+$)/gi, '').replace(/[^a-z0-9._-]+/gi, '-').toLowerCase() : '-';
 		newBuild.id = newBuild.id || idFromLabel;
 		newBuild.is_active = false;

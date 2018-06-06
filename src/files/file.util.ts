@@ -64,11 +64,12 @@ export class FileUtil {
 			writeStream.on('error', reject);
 			readStream.pipe(writeStream);
 		});
-		logger.info('[FileUtil.create] Saved %s to %s', file.toDetailedString(), path);
 
 		// update file size
 		const stats = await statAsync(path);
 		file.bytes = stats.size;
+
+		logger.info('[FileUtil.create] Saved %s bytes of %s to %s', file.bytes, file.toDetailedString(), path);
 
 		try {
 
@@ -87,7 +88,7 @@ export class FileUtil {
 		} catch (err) {
 			try {
 				logger.warn('[FileUtil.create] Metadata parsing failed: %s', err.message);
-				await unlinkAsync(path);
+				//await unlinkAsync(path);
 			} catch (err) {
 				/* istanbul ignore next */
 				logger.error('[FileUtil.create] Error removing file at %s: %s', path, err.message);

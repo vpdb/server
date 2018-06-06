@@ -173,7 +173,7 @@ export abstract class Api {
 
 		ctx.status = status;
 		if (body) {
-			ctx.body = body;
+			ctx.response.body = body;
 		}
 		return true;
 	}
@@ -303,7 +303,7 @@ export abstract class Api {
 	 */
 	protected assertFields(ctx: Context, updatableFields: string[]) {
 		// fail if invalid fields provided
-		let submittedFields = keys(ctx.body);
+		let submittedFields = keys(ctx.request.body);
 		if (intersection(updatableFields, submittedFields).length !== submittedFields.length) {
 			let invalidFields = difference(submittedFields, updatableFields);
 			throw new ApiError('Invalid field%s: ["%s"]. Allowed fields: ["%s"]',

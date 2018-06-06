@@ -48,8 +48,8 @@ export function koaErrorHandler() {
 
 			// unexpected errors
 			} else {
-				ctx.status = 500;
-				ctx.body = { error: 'Internal server error. Sorry about that, we will get a mail about this and fix it ASAP.' };
+				ctx.response.status = 500;
+				ctx.response.body = { error: 'Internal server error. Sorry about that, we will get a mail about this and fix it ASAP.' };
 			}
 
 			// log

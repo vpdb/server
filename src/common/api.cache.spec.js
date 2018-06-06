@@ -42,7 +42,7 @@ describe('The VPDB API cache', () => {
 		release = await releaseHelper.createRelease('moderator');
 	});
 
-	afterEach(async () => await api.as('administrator').delete('/v1/cache'));
+	afterEach(async () => await api.as('administrator').del('/v1/cache'));
 	after(async () => await api.teardown());
 
 	describe('when listing releases', () => {

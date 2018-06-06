@@ -35,23 +35,46 @@ class FileHelper {
 		this.api = api;
 	}
 
-	async createPlayfield(user, orientation, type) {
-		const playfields = await this.createPlayfields(user, orientation, 1, type);
+	/**
+	 * Uploads a playfield image.
+	 *
+	 * @param user Uploader
+	 * @param orientation
+	 * @param type File type
+	 * @param opts Options
+	 * @param {boolean} [opts.keep=false] If true, don't teardown.
+	 * @return Promise<File> Uploaded file
+	 */
+	async createPlayfield(user, orientation, type, opts) {
+		const playfields = await this.createPlayfields(user, orientation, 1, type, opts);
 		return playfields[0];
 	}
 
-	async createPlayfields(user, orientation, times, type) {
+	/**
+	 * Uploads multiple playfield images.
+	 *
+	 * @param user Uploader
+	 * @param orientation
+	 * @param times Number of files to upload
+	 * @param type File type
+	 * @param opts Options
+	 * @param {boolean} [opts.keep=false] If true, don't teardown.
+	 * @return Promise<File[]> Uploaded files
+	 */
+	async createPlayfields(user, orientation, times, type, opts) {
+		opts = opts || {};
 		const fileType = type || 'playfield-' + orientation;
 		const mimeType = 'image/png';
 		const isFS = orientation === 'fs';
 		const results = [];
+		const teardown = opts.keep ? false : undefined;
 		for (let i = 0; i < times; i++) {
 			const name = 'playfield-' + i + '.png';
 			const img = gm(isFS ? 1080 : 1920, isFS ? 1920 : 1080, pleasejs.make_color());
 			const data = await img.toBufferAsync('PNG');
 			const res = await this.api.onStorage()
 				.as(user)
-				.markTeardown()
+				.markTeardown(teardown)
 				.withQuery({ type: fileType })
 				.withContentType(mimeType)
 				.withHeader('Content-Disposition', 'attachment; filename="' + name + '"')
@@ -63,7 +86,17 @@ class FileHelper {
 		return results;
 	}
 
-	async createBackglass(user) {
+	/**
+	 * Uploads a backglass image.
+	 *
+	 * @param user Uploader
+	 * @param opts Options
+	 * @param {boolean} [opts.keep=false] If true, don't teardown.
+	 * @return Promise<File> Uploaded file
+	 */
+	async createBackglass(user, opts) {
+		opts = opts || {};
+		const teardown = opts.keep ? false : undefined;
 		const fileType = 'backglass';
 		const mimeType = 'image/png';
 		const name = 'backglass.png';
@@ -71,7 +104,7 @@ class FileHelper {
 		const data = await img.toBufferAsync('PNG');
 		const res = await this.api.onStorage()
 			.as(user)
-			.markTeardown()
+			.markTeardown(teardown)
 			.withQuery({ type: fileType })
 			.withContentType(mimeType)
 			.withHeader('Content-Disposition', 'attachment; filename="' + name + '"')
@@ -109,19 +142,37 @@ class FileHelper {
 		return res.data;
 	}
 
+	/**
+	 * Uploads a VPT file.
+	 *
+	 * @param user Uploader
+	 * @param opts Options
+	 * @param {boolean} [opts.keep=false] If true, don't teardown.
+	 * @return Promise<File> Uploaded file
+	 */
 	async createVpt(user, opts) {
 		const vpts = await this.createVpts(user, 1, opts);
 		return vpts[0];
 	}
 
+	/**
+	 * Uploads multiple VPT files.
+	 *
+	 * @param user Uploader
+	 * @param times Number of files to upload
+	 * @param opts Options
+	 * @param {boolean} [opts.keep=false] If true, don't teardown.
+	 * @return Promise<File[]> Uploaded files
+	 */
 	async createVpts(user, times, opts) {
 		opts = opts || {};
 		const data = opts.alternateVpt ? readFileSync(vpt2) : readFileSync(vpt);
+		const teardown = opts.keep ? false : undefined;
 		const vpts = [];
 		for (let n = 0; n < times; n++) {
 			const res = await this.api.onStorage()
 				.as(user)
-				.markTeardown()
+				.markTeardown(teardown)
 				.withQuery({ type: 'release' })
 				.withContentType('application/x-visual-pinball-table')
 				.withHeader('Content-Disposition', 'attachment; filename="test-table-' + n + '.vpt"')

@@ -340,12 +340,15 @@ class ApiClient {
 	/**
 	 * Marks the current entity to be torn down after tests.
 	 *
-	 * @param {string|null} [pathToId="id"] Path to the attribute containing the ID field of the response.
+	 * @param {string|boolean|null} [pathToId="id"] Path to the attribute containing the ID field of the response. If set to false, don't teardown.
 	 * @param {string|null} [path] If the DELETE path differs from the original request, this overrides it.
 	 * @param {string|null} [user] Use given user reference to tear down.
 	 * @returns {ApiClient}
 	 */
 	markTeardown(pathToId, path, user) {
+		if (pathToId === false) {
+			return this;
+		}
 		if (!pathToId) {
 			pathToId = 'id';
 		}

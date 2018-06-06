@@ -45,14 +45,14 @@ export class GameRequestApi extends Api {
 		let ipdbNumber: number;
 
 		// validate ipdb number syntax
-		if (!ctx.body.ipdb_number) {
-			throw new ApiError().validationError('ipdb_number', 'IPDB number must be provided', ctx.body.ipdb_number);
+		if (!ctx.request.body.ipdb_number) {
+			throw new ApiError().validationError('ipdb_number', 'IPDB number must be provided', ctx.request.body.ipdb_number);
 		}
-		if (!/^\d+$/.test(ctx.body.ipdb_number.toString())) {
-			throw new ApiError().validationError('ipdb_number', 'Must be a whole number', ctx.body.ipdb_number);
+		if (!/^\d+$/.test(ctx.request.body.ipdb_number.toString())) {
+			throw new ApiError().validationError('ipdb_number', 'Must be a whole number', ctx.request.body.ipdb_number);
 		}
 
-		ipdbNumber = parseInt(ctx.body.ipdb_number);
+		ipdbNumber = parseInt(ctx.request.body.ipdb_number);
 		const game = await state.models.Game.findOne({ 'ipdb.number': ipdbNumber }).exec();
 
 		// check if game already exists
@@ -79,8 +79,8 @@ export class GameRequestApi extends Api {
 		}
 
 		let gameRequest = new state.models.GameRequest({
-			title: ctx.body.title,
-			notes: ctx.body.notes,
+			title: ctx.request.body.title,
+			notes: ctx.request.body.notes,
 			ipdb_number: ipdbNumber,
 			ipdb_title: ipdbData.title,
 			is_closed: false,
@@ -122,13 +122,13 @@ export class GameRequestApi extends Api {
 		this.assertFields(ctx, updatableFields);
 
 		const before = pick(gameRequest, updatableFields);
-		if (gameRequest.is_closed === false && ctx.body.is_closed === true) {
-			if (!ctx.body.message) {
-				throw new ApiError().validationError('message', 'Message must be set when closing game request so the user can be notified', ctx.body.message);
+		if (gameRequest.is_closed === false && ctx.request.body.is_closed === true) {
+			if (!ctx.request.body.message) {
+				throw new ApiError().validationError('message', 'Message must be set when closing game request so the user can be notified', ctx.request.body.message);
 			}
 			requestClosed = true;
 		}
-		assign(gameRequest, ctx.body);
+		assign(gameRequest, ctx.request.body);
 		gameRequest = await gameRequest.save();
 
 		await LogEventUtil.log(ctx, 'update_game_request', false, {

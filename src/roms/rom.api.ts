@@ -43,24 +43,24 @@ export class RomApi extends Api {
 	public async create(ctx: Context) {
 		const validFields = ['id', 'version', 'notes', 'languages', '_file'];
 
-		if (!ctx.params.gameId && !ctx.body._ipdb_number) {
+		if (!ctx.params.gameId && !ctx.request.body._ipdb_number) {
 			throw new ApiError('You must provide an IPDB number when not posting to a game resource.').status(422);
 		}
 
 		// validate here because we use it in the query before running rom validations
-		if (ctx.body._ipdb_number) {
+		if (ctx.request.body._ipdb_number) {
 			if (ctx.params.gameId) {
-				throw new ApiError().validationError('_ipdb_number', 'You must not provide an IPDB number when posting to a game resource', ctx.body._ipdb_number);
+				throw new ApiError().validationError('_ipdb_number', 'You must not provide an IPDB number when posting to a game resource', ctx.request.body._ipdb_number);
 			}
-			if (!Number.isInteger(ctx.body._ipdb_number) || ctx.body._ipdb_number < 0) {
-				throw new ApiError().validationError('_ipdb_number', 'Must be a positive integer', ctx.body._ipdb_number);
+			if (!Number.isInteger(ctx.request.body._ipdb_number) || ctx.request.body._ipdb_number < 0) {
+				throw new ApiError().validationError('_ipdb_number', 'Must be a positive integer', ctx.request.body._ipdb_number);
 			}
 		}
 
-		let q = ctx.params.gameId ? { id: ctx.params.gameId } : { 'ipdb.number': ctx.body._ipdb_number };
+		let q = ctx.params.gameId ? { id: ctx.params.gameId } : { 'ipdb.number': ctx.request.body._ipdb_number };
 		let game = await state.models.Game.findOne(q).exec();
 
-		const rom = extend(pick(ctx.body, validFields), {
+		const rom = extend(pick(ctx.request.body, validFields), {
 			_created_by: ctx.state.user._id,
 			created_at: new Date()
 		}) as Rom;
@@ -75,8 +75,8 @@ export class RomApi extends Api {
 			if (ctx.params.gameId) {
 				throw new ApiError('No such game with ID "%s"', ctx.params.gameId).status(404);
 			}
-			game = { ipdb: { number: ctx.body._ipdb_number } } as Game;
-			rom._ipdb_number = ctx.body._ipdb_number;
+			game = { ipdb: { number: ctx.request.body._ipdb_number } } as Game;
+			rom._ipdb_number = ctx.request.body._ipdb_number;
 			gameRef = game;
 		}
 		let newRom = await state.models.Rom.getInstance(rom);

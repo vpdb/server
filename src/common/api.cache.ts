@@ -162,7 +162,7 @@ class ApiCache {
 		const response: CacheResponse = {
 			status: ctx.status,
 			headers: ctx.headers,
-			body: ctx.body
+			body: ctx.response.body
 		};
 
 		// set the cache todo set ttl to user caches

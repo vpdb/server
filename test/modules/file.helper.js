@@ -110,7 +110,8 @@ class FileHelper {
 	}
 
 	async createVpt(user, opts) {
-		return this.createVpts(user, 1, opts);
+		const vpts = await this.createVpts(user, 1, opts);
+		return vpts[0];
 	}
 
 	async createVpts(user, times, opts) {
@@ -120,6 +121,7 @@ class FileHelper {
 		for (let n = 0; n < times; n++) {
 			const res = await this.api.onStorage()
 				.as(user)
+				.markTeardown()
 				.withQuery({ type: 'release' })
 				.withContentType('application/x-visual-pinball-table')
 				.withHeader('Content-Disposition', 'attachment; filename="test-table-' + n + '.vpt"')
@@ -128,6 +130,7 @@ class FileHelper {
 				.then(res => res.expectStatus(201));
 			vpts.push(res.data);
 		}
+		return vpts;
 	}
 
 	async createDirectB2S(user, gameName) {

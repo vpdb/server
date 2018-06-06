@@ -37,6 +37,7 @@ describe('The VPDB API cache', () => {
 			administrator: { roles: ['admin'] }
 		});
 		release = await releaseHelper.createRelease('moderator');
+		await api.as('administrator').del('/v1/cache').then(res => res.expectStatus(204));
 	});
 
 	afterEach(async () => await api.as('administrator').del('/v1/cache').then(res => res.expectStatus(204)));

@@ -130,7 +130,7 @@ export class RatingApi extends Api {
 		await rating.save();
 
 		// invalidate cache
-		await apiCache.invalidate({ user: ctx.state.user }, { resources: [ ref ]});
+		await apiCache.invalidateEntity(ref, entity.id);
 	}
 
 	/**
@@ -159,7 +159,7 @@ export class RatingApi extends Api {
 		await LogEventUtil.log(ctx, 'rate_' + ref, true, this.logPayload(rating, entity, ref, status === 200), this.logRefs(rating, entity, ref));
 
 		// invalidate cache
-		await apiCache.invalidate({ user: ctx.state.user }, { resources: [ ref ]});
+		await apiCache.invalidateEntity(ref, entity.id);
 	}
 
 	/**

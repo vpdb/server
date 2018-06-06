@@ -42,7 +42,7 @@ class GameHelper {
 	 * @return {Promise<Object>}
 	 */
 	async createGame(user, game) {
-		const backglass = await this.fileHelper.createBackglass(user);
+		const backglass = await this.fileHelper.createBackglass(user, { keep: true });
 		const res = await this.api
 			.as(user)
 			.markTeardown()

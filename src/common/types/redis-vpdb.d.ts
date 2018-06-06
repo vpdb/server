@@ -85,6 +85,11 @@ declare module 'redis' {
 		 * Set a key's time to live in seconds.
 		 */
 		expireAsync(key: string, seconds: number): Promise<number>;
+
+		/**
+		 * Execute a Lua script server side.
+		 */
+		evalAsync: OverloadedAsyncCommand<string | number, any>;
 	}
 
 	export interface OverloadedAsyncCommand<T, U> {

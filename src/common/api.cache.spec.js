@@ -29,7 +29,7 @@ const releaseHelper = new ReleaseHelper(api);
 describe('The VPDB API cache', () => {
 
 	let res;
-	let release;
+	let release, otherRelease;
 	before(async () => {
 		await api.setupUsers({
 			member: { roles: ['member'] },
@@ -37,13 +37,14 @@ describe('The VPDB API cache', () => {
 			administrator: { roles: ['admin'] }
 		});
 		release = await releaseHelper.createRelease('moderator');
+		otherRelease = await releaseHelper.createRelease('moderator');
 		await api.as('administrator').del('/v1/cache').then(res => res.expectStatus(204));
 	});
 
 	afterEach(async () => await api.as('administrator').del('/v1/cache').then(res => res.expectStatus(204)));
 	after(async () => await api.teardown());
 
-	describe.only('when listing releases', () => {
+	describe('when listing releases', () => {
 
 		it('should cache the second request', async () => {
 			await api.get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
@@ -55,15 +56,32 @@ describe('The VPDB API cache', () => {
 			await api.as('member').get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
 			await api.as('moderator').get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
 		});
+	});
 
-		it('should invalidate when a release is starred', async () => {
+	describe.only('when starring a release', () => {
+
+		it.only('should invalidate release details and releases', async () => {
+
+			// these must be a hit later
+			await api.get('/v1/releases/' + otherRelease.id).then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.get('/v1/releases/' + otherRelease.id).as('member').then(res => res.expectHeader('x-cache-api', 'miss'));
+
+			// these must be a miss later, so let's cache them
 			await api.get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
 			await api.as('member').get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
-			await api.as('member').get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'hit'));
+			await api.as('member').get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'miss'));
+
+			// star
 			await api.as('member').post('/v1/releases/' + release.id + '/star', {}).then(res => res.expectStatus(201));
+
+			// assert misses
+			await api.get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
 			await api.as('member').get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
-			await api.as('member').get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'hit'));
-			await api.get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'hit'));
+			await api.as('member').get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'miss'));
+
+			// assert hits
+			await api.get('/v1/releases/' + otherRelease.id).then(res => res.expectHeader('x-cache-api', 'hit'));
+			await api.get('/v1/releases/' + otherRelease.id).as('member').then(res => res.expectHeader('x-cache-api', 'hit'));
 		});
 	});
 });

@@ -126,7 +126,7 @@ export class ReleaseApi extends Api {
 		}
 
 		// invalidate cache
-		await apiCache.invalidate({ resources: ['release'] });
+		await apiCache.invalidateRelease(release);
 	}
 
 	/**
@@ -184,7 +184,7 @@ export class ReleaseApi extends Api {
 		this.success(ctx, state.serializers.Release.detailed(ctx, release), 200);
 
 		// invalidate cache
-		await apiCache.invalidate({ resources: ['release'], entities: { release: release.id } });
+		await apiCache.invalidateRelease(release);
 
 		// log event
 		await LogEventUtil.log(ctx, 'update_release', false,
@@ -282,7 +282,7 @@ export class ReleaseApi extends Api {
 		this.success(ctx, state.serializers.Release.detailed(ctx, release).versions.filter(v => v.version === newVersion.version)[0], 201);
 
 		// invalidate cache
-		await apiCache.invalidate({ resources: ['release'], entities: { release: release.id } });
+		await apiCache.invalidateRelease(release);
 
 		// log event
 		await LogEventUtil.log(ctx, 'create_release_version', true, {
@@ -413,7 +413,7 @@ export class ReleaseApi extends Api {
 		this.success(ctx, version, 200);
 
 		// invalidate cache
-		await apiCache.invalidate({ resources: ['release'], entities: { release: release.id } });
+		await apiCache.invalidateRelease(release);
 
 		// log event
 		await LogEventUtil.log(ctx, 'update_release_version', false,

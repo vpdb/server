@@ -143,10 +143,20 @@ class ApiCache {
 
 	/**
 	 * Invalidates all caches.
+	 * @see https://github.com/galanonym/redis-delete-wildcard/blob/master/index.js
 	 * @return {Promise<number>} Number of invalidated caches
 	 */
 	public async invalidateAll(): Promise<number> {
-		return await state.redis.delAsync(this.redisPrefix + '*');
+		const num = await state.redis.evalAsync(
+			"local keysToDelete = redis.call('keys', ARGV[1]) " + // find keys with wildcard
+			"if unpack(keysToDelete) ~= nil then " +              // if there are any keys
+			"return redis.call('del', unpack(keysToDelete)) " +   // delete all
+			"else " +
+			"return 0 " +                                         // if no keys to delete
+			"end ",
+			0,                                                    // no keys names passed, only one argument ARGV[1]
+			this.redisPrefix + '*');
+		return num as number;
 	}
 
 	/**

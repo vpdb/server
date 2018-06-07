@@ -22,14 +22,14 @@ import { pick } from 'lodash';
 import { Metadata } from './metadata';
 import { File } from '../file';
 import { FileVariation } from '../file.variations';
+import { FileDocument } from '../file.document';
 
 require('bluebird').promisifyAll(gm.prototype);
 
 export class ImageMetadata extends Metadata {
 
 	isValid(file: File, variation?: FileVariation): boolean {
-		const mimeType = variation && variation.mimeType ? variation.mimeType : file.getMimeType();
-		return mimeType.split('/')[0] === 'image';
+		return FileDocument.getMimeTypePrimary(file, variation) === 'image';
 	}
 
 	async getMetadata(file: File, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {

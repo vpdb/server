@@ -85,8 +85,14 @@ export interface Game extends FileReferenceDocument, MetricsDocument, PrettyIdDo
 	owner?: string;
 	restrictions?: GameRestrictions;
 
-	// methods
-	isRestricted(what: string): boolean;
+	/**
+	 * Checks whether the game as a restriction on the given model.
+	 *
+	 * @see [[GameDocument.isRestricted]] for implementation
+	 * @param {'release' | 'backglass'} modelName
+	 * @return {boolean} true if restricted, false otherwise.
+	 */
+	isRestricted(modelName: string): boolean;
 }
 
 export interface GameRestrictions {

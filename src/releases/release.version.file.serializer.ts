@@ -52,8 +52,8 @@ export class ReleaseVersionFileSerializer extends Serializer<ReleaseVersionFile>
 					  fileSerializer: (ctx: Context, doc: File, opts: SerializerOptions) => File): ReleaseVersionFile {
 
 		const versionFile = {
-			flavor: (doc.flavor as any).toObject(),
-			counter: (doc.counter as any).toObject(),
+			flavor: doc.flavor,
+			counter: doc.counter,
 			released_at: doc.released_at
 		} as ReleaseVersionFile;
 

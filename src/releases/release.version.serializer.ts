@@ -39,7 +39,7 @@ export class ReleaseVersionSerializer extends Serializer<ReleaseVersion> {
 
 	protected _detailed(ctx: Context, doc: ReleaseVersion, opts: SerializerOptions): ReleaseVersion {
 		const version = pick(doc, ['version', 'released_at', 'changes']) as ReleaseVersion;
-		version.counter = (doc.counter as any).toObject();
+		version.counter = doc.counter;
 		version.files = doc.files.map(versionFile => state.serializers.ReleaseVersionFile.detailed(ctx, versionFile, opts));
 		return version;
 	}

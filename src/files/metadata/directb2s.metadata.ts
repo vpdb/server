@@ -26,11 +26,12 @@ import { File } from '../file';
 import { FileVariation } from '../file.variations';
 import { logger } from '../../common/logger';
 import { ApiError } from '../../common/api.error';
+import { FileDocument } from '../file.document';
 
 export class Directb2sMetadata extends Metadata {
 
 	isValid(file: File, variation?: FileVariation): boolean {
-		return file.getMimeType(variation) === 'application/x-directb2s';
+		return FileDocument.getMimeType(file, variation) === 'application/x-directb2s';
 	}
 
 	// TODO try https://github.com/nikku/saxen

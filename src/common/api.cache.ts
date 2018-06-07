@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { intersection } from 'lodash';
+import { intersection, isObject, upperFirst } from 'lodash';
 import Router, { IRouterOptions } from 'koa-router';
 import pathToRegexp from 'path-to-regexp';
 
@@ -26,6 +26,7 @@ import { logger } from './logger';
 import { Context } from './types/context';
 import { User } from '../users/user';
 import { Release } from '../releases/release';
+import { MetricsModel } from 'mongoose';
 
 /**
  * An in-memory cache using Redis.
@@ -71,19 +72,30 @@ class ApiCache {
 		// retrieve the cached response
 		const key = this.getCacheKey(ctx);
 		const hit = await state.redis.getAsync(key);
+
 		if (hit) {
 			const response = JSON.parse(hit) as CacheResponse;
+			const body = isObject(response.body) ? response.body : JSON.parse(response.body);
 
 			// update counters
 			if (cacheRoute.counters) {
+				const refs: { counter:CacheCounterConfig<any>, key: string, id: string, c: string }[] = [];
 				for (const counter of cacheRoute.counters) {
 					for (const c of counter.counters) {
-						const counters = counter.get(response.body, c);
+						const counters = counter.get(body, c);
 						for (const id of Object.keys(counters)) {
-							// todo use MGET
-							counters[id] = parseInt(await state.redis.getAsync(this.getCounterKey(counter.model, id, c)));
+							refs.push({ key: this.getCounterKey(counter.model, id, c), id, c, counter });
 						}
-						counter.set(response.body, c, counters);
+					}
+					// update db of view counter
+					if (counter.incrementCounter) {
+						await (state.models[upperFirst(counter.model)] as MetricsModel<any>).incrementCounter(counter.incrementCounter.getId(body), counter.incrementCounter.counter);
+					}
+				}
+				const values = await state.redis.mgetAsync.apply(state.redis, refs.map(r => r.key));
+				for (let i = 0; i < values.length; i++) {
+					if (values[i]) {
+						refs[i].counter.set(body, refs[i].c, { [refs[i].id]: parseInt(values[i]) });
 					}
 				}
 			}
@@ -91,7 +103,13 @@ class ApiCache {
 			ctx.status = response.status;
 			ctx.set('X-Cache-Api', 'HIT');
 			// todo add auth headers such as x-token-refresh
-			ctx.response.body = response.body;
+
+			// if request body was a string it was prettified, so let's do that again.
+			if (!isObject(response.body)) {
+				ctx.response.body = JSON.stringify(body, null, '  ');
+			} else {
+				ctx.response.body = body;
+			}
 			return;
 		}
 		ctx.set('X-Cache-Api', 'MISS');
@@ -117,6 +135,23 @@ class ApiCache {
 	public enable<T>(router: Router, path: string, config: CacheInvalidationConfig, counters?:CacheCounterConfig<T>[]) {
 		const opts = (router as any).opts as IRouterOptions;
 		this.cacheRoutes.push({ regex: pathToRegexp(opts.prefix + path), config: config, counters: counters });
+	}
+
+	/**
+	 * Updates a counter cache.
+	 *
+	 * @param {string} entity Entity name, e.g. 'game'.
+	 * @param {string} entityId ID of the entity to update
+	 * @param {string} counterName Name of the counter, e.g. 'view'.
+	 * @param {boolean} decrement If true, don't increment but decrement.
+	 */
+	public async incrementCounter(entity:string, entityId:string, counterName:string, decrement:boolean) {
+		const key = this.getCounterKey(entity, entityId, counterName);
+		if (decrement) {
+			await state.redis.decrAsync(key);
+		} else {
+			await state.redis.incrAsync(key);
+		}
 	}
 
 	public async invalidateRelease(release?: Release) {
@@ -225,6 +260,7 @@ class ApiCache {
 
 		const now = Date.now();
 		const refs:string[] = [];
+		const refPairs:any[] = [];
 		const response: CacheResponse = {
 			status: ctx.status,
 			headers: ctx.headers,
@@ -238,7 +274,8 @@ class ApiCache {
 		if (cacheRoute.config.resources) {
 			for (const resource of cacheRoute.config.resources) {
 				const refKey = this.getResourceKey(resource);
-				await state.redis.saddAsync(refKey, key);
+				refPairs.push(refKey);
+				refPairs.push(this.getResourceKey(resource));
 				refs.push(refKey);
 			}
 		}
@@ -247,7 +284,8 @@ class ApiCache {
 		if (cacheRoute.config.entities) {
 			for (const entity of Object.keys(cacheRoute.config.entities)) {
 				const refKey = this.getEntityKey(entity, ctx.params[cacheRoute.config.entities[entity]]);
-				await state.redis.saddAsync(refKey, key);
+				refPairs.push(refKey);
+				refPairs.push(key);
 				refs.push(refKey);
 			}
 		}
@@ -255,25 +293,27 @@ class ApiCache {
 		// reference user
 		if (ctx.state.user) {
 			const refKey = this.getUserKey(ctx.state.user);
-			await state.redis.saddAsync(refKey, key);
+			refPairs.push(refKey);
+			refPairs.push(key);
 			refs.push(refKey);
 		}
 
 		// save counters
 		let numCounters = 0;
 		if (cacheRoute.counters) {
+			const body = isObject(ctx.response.body) ? ctx.response.body : JSON.parse(ctx.response.body);
 			for (const counter of cacheRoute.counters) {
 				for (const c of counter.counters) {
-					const counters = counter.get(ctx.response.body, c);
+					const counters = counter.get(body, c);
 					for (const id of Object.keys(counters)) {
-						// todo use MSETNX
-						await state.redis.setAsync(this.getCounterKey(counter.model, id, c), counters[id]);
+						refPairs.push(this.getCounterKey(counter.model, id, c));
+						refPairs.push(parseInt(counters[id] as any));
 						numCounters++;
 					}
 				}
 			}
 		}
-
+		await state.redis.msetAsync.apply(state.redis, refPairs);
 		logger.debug('[Cache] No hit, saved as "%s" with references [ %s ] and %s counters in %sms.', key, refs.join(', '), numCounters, Date.now() - now);
 	}
 
@@ -386,6 +426,24 @@ export interface CacheCounterConfig<T> {
 	 * @param {CacheCounterValues} values Updated counter values of all entities in the response body for given counter
 	 */
 	set: (response:T, counter:string, values:CacheCounterValues) => void;
+
+	/**
+	 * If set, increments a counter even if fetched from cache.
+	 */
+	incrementCounter?: {
+
+		/**
+		 * Name of the counter, e.g. "views".
+		 */
+		counter: string;
+
+		/**
+		 * Returns the ID of the entity whose counter to increment.
+		 * @param {T} response Response body coming from cache
+		 * @return {string} ID of the entity
+		 */
+		getId: (response:T) => string;
+	}
 }
 export type CacheCounterValues = { [key:string]: number };
 

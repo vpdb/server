@@ -60,8 +60,8 @@ export class ReleaseSerializer extends Serializer<Release> {
 		// primitive fields
 		const release = pick(doc, fields) as Release;
 
-		release.metrics = (doc.metrics as any).toObject();
-		release.counter = (doc.counter as any).toObject();
+		release.metrics = doc.metrics;
+		release.counter = doc.counter;
 
 		// game
 		if (this._populated(doc, '_game')) {
@@ -141,7 +141,7 @@ export class ReleaseSerializer extends Serializer<Release> {
 		const filesByWeight:{ file: ReleaseVersionFile, weight: number }[] = orderBy(files.map(file => {
 
 			/** @type {{ lighting:string, orientation:string }} */
-			const fileFlavor = (file.flavor as any).toObject ? (file.flavor as any).toObject() : file.flavor;
+			const fileFlavor = file.flavor;
 			let weight = 0;
 			const flavorNames = this.getFlavorNames(opts);
 			let p = flavorNames.length + 1;

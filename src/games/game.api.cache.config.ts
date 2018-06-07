@@ -34,7 +34,8 @@ export const gameDetailsCacheCounters: CacheCounterConfig<Game>[] = [{
 	model: 'game',
 	counters: ['releases', 'views', 'downloads', 'comments', 'stars'],
 	get: (game: Game, counter: GameCounterType) => { return { [game.id]: game.counter[counter] } },
-	set: (game: Game, counter: GameCounterType, values: CacheCounterValues) => game.counter[counter] = values[game.id]
+	set: (game: Game, counter: GameCounterType, values: CacheCounterValues) => game.counter[counter] = values[game.id],
+	incrementCounter: { counter: 'views', getId: (game: Game) => game.id }
 }, {
 	model: 'release',
 	counters: ['downloads', 'comments', 'stars', 'views'],
@@ -59,17 +60,17 @@ export const gameDetailsCacheCounters: CacheCounterConfig<Game>[] = [{
  */
 function getFiles(game:Game):File[] {
 	const files:File[] = [game.backglass, game.logo];
-	if (game.releases) {
+	if (game.releases && game.releases.length > 0) {
 		const [[[releaseFiles]]] = game.releases.map(rls => rls.versions.map(v => v.files.map(f => [f.playfield_image, f.playfield_video, f.file])));
 		files.push(...releaseFiles);
 	}
-	if (game.backglasses) {
+	if (game.backglasses && game.backglasses.length > 0) {
 		const [backglassFiles] = game.backglasses.map(bg => bg.versions.map(v => v.file));
 		if (backglassFiles) {
 			files.push(...backglassFiles);
 		}
 	}
-	if (game.media) {
+	if (game.media && game.media.length > 0) {
 		const mediaFiles = game.media.map(media => media.file);
 		if (mediaFiles) {
 			files.push(...mediaFiles);

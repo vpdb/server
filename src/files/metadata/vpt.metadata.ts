@@ -22,12 +22,13 @@ import { Metadata } from './metadata';
 import { File } from '../file';
 import { FileVariation } from '../file.variations';
 import { visualPinballTable } from '../../common/visualpinball.table';
+import { FileDocument } from '../file.document';
 
 export class VptMetadata extends Metadata {
 
 	isValid(file: File, variation?: FileVariation): boolean {
 		return ['application/x-visual-pinball-table', 'application/x-visual-pinball-table-x']
-			.includes(file.getMimeType(variation));
+			.includes(FileDocument.getMimeType(file, variation));
 	}
 
 	async getMetadata(file: File, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
@@ -38,7 +39,7 @@ export class VptMetadata extends Metadata {
 	}
 
 	serializeDetailed(metadata: { [p: string]: any }): { [p: string]: any } {
-		return metadata;
+		return omit(metadata, 'table_script');
 	}
 
 	serializeVariation(metadata: { [p: string]: any }): { [p: string]: any } {

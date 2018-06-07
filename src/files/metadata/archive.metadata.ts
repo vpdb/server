@@ -21,6 +21,7 @@ import Zip from 'adm-zip'
 import { Metadata } from './metadata';
 import { File } from '../file';
 import { FileVariation } from '../file.variations';
+import { FileDocument } from '../file.document';
 
 const Unrar = require('unrar');
 require('bluebird').promisifyAll(Unrar.prototype);
@@ -28,11 +29,11 @@ require('bluebird').promisifyAll(Unrar.prototype);
 export class ArchiveMetadata extends Metadata {
 
 	isValid(file: File, variation?: FileVariation): boolean {
-		return file.getMimeCategory(variation) === 'archive';
+		return FileDocument.getMimeCategory(file, variation) === 'archive';
 	}
 
 	async getMetadata(file: File, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
-		const mimeType = variation && variation.mimeType ? variation.mimeType : file.getMimeType();
+		const mimeType = variation && variation.mimeType ? variation.mimeType : FileDocument.getMimeType(file);
 		const type = mimeType.split('/')[1];
 		switch (type) {
 			case 'x-rar-compressed':

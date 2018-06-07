@@ -43,7 +43,7 @@ export class BackglassVersionSerializer extends Serializer<BackglassVersion> {
 					   fileSerializer: (ctx: Context, doc: File, opts: SerializerOptions) => File): BackglassVersion {
 
 		const backglassVersion = pick(doc, ['version', 'changes', 'released_at']) as BackglassVersion;
-		backglassVersion.counter = (doc.counter as any).toObject();
+		backglassVersion.counter = doc.counter;
 		if (this._populated(doc, '_file')) {
 			backglassVersion.file = fileSerializer(ctx, doc._file as File, opts);
 		}

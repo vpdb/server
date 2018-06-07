@@ -19,6 +19,7 @@
 
 import Application from 'koa';
 import koaBodyParser from 'koa-bodyparser';
+import koaJson from 'koa-json';
 import { uniq } from 'lodash';
 
 import { EndPoint } from './common/api.endpoint';
@@ -45,6 +46,7 @@ export class Server {
 		this.app.use(koaErrorHandler());
 		this.app.use(koaAuth());
 		this.app.use(koaCors());
+		this.app.use(koaJson({ pretty: false, param: 'pretty' }));
 		this.app.use(apiCache.middleware.bind(apiCache));
 	}
 

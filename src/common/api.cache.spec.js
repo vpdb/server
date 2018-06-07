@@ -19,6 +19,7 @@
 
 'use strict';
 /*global describe, before, after, it*/
+const expect = require('expect.js');
 
 const ApiClient = require('../../test/modules/api.client');
 const ReleaseHelper = require('../../test/modules/release.helper');
@@ -60,9 +61,11 @@ describe('The VPDB API cache', () => {
 
 	describe('when viewing a game', () => {
 
-		it.only('should cache the second request', async () => {
-			await api.get('/v1/games/' + release.game.id).then(res => res.expectHeader('x-cache-api', 'miss'));
-			await api.get('/v1/games/' + release.game.id).then(res => res.expectHeader('x-cache-api', 'hit'));
+		it.only('should cache the second request while updating counter', async () => {
+			res = await api.get('/v1/games/' + release.game.id).then(res => res.expectHeader('x-cache-api', 'miss'));
+			const views = res.data.counter.views;
+			res = await api.get('/v1/games/' + release.game.id).then(res => res.expectHeader('x-cache-api', 'hit'));
+			expect(res.data.counter.views).to.be(views + 1);
 		});
 	});
 

@@ -32,7 +32,7 @@ export class TokenSerializer extends Serializer<Token> {
 	protected _simple(ctx: Context, doc: Token, opts: SerializerOptions): Token {
 		const token = pick(doc, ['id', 'label', 'type', 'provider', 'is_active', 'last_used_at', 'expires_at', 'created_at']) as Token;
 
-		token.scopes = (doc.scopes as any).toObject();
+		token.scopes = doc.scopes;
 
 		// parse name for browser string
 		const browser = new UAParser(doc.label).getResult();

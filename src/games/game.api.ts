@@ -383,7 +383,8 @@ export class GameApi extends Api {
 				.populate({ path: 'versions.files._playfield_image' })
 				.populate({ path: 'versions.files._playfield_video' })
 				.populate({ path: 'versions.files._compatibility' })
-				.exec();
+				.lean()
+				.exec() as Release[];
 			opts.excludedFields = ['game'];
 			result.releases = releases.map(release => state.serializers.Release.detailed(ctx, release, opts));
 

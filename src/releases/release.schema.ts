@@ -18,7 +18,7 @@
  */
 
 
-import { GameReferenceModel, ModeratedDocument, ModeratedModel, PaginateModel, PrettyIdModel, Schema } from 'mongoose';
+import { GameReferenceModel, ModeratedDocument, ModeratedModel, PaginateModel, PrettyIdModel, Schema, MetricsModel } from 'mongoose';
 import { isArray, compact, map, flatten, uniq } from 'lodash';
 import uniqueValidatorPlugin from 'mongoose-unique-validator';
 import paginatePlugin from 'mongoose-paginate';
@@ -88,11 +88,8 @@ export const releaseFields = {
 	_created_by:   { type: Schema.Types.ObjectId, required: true, ref: 'User' }
 };
 
-export interface ReleaseModel extends GameReferenceModel<Release>, PrettyIdModel<Release>, ModeratedModel<Release>, PaginateModel<Release> {
-}
-
+export interface ReleaseModel extends GameReferenceModel<Release>, PrettyIdModel<Release>, ModeratedModel<Release>, PaginateModel<Release>, MetricsModel<Release> { }
 export const releaseSchema = new Schema(releaseFields, { toObject: { virtuals: true, versionKey: false } });
-
 
 //-----------------------------------------------------------------------------
 // PLUGINS

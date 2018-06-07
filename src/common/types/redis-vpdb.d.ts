@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Commands, OverloadedAsyncCommand, OverloadedAsyncKeyCommand, OverloadedCommand } from 'redis';
+import { Callback, Commands, OverloadedAsyncCommand, OverloadedAsyncKeyCommand, OverloadedCommand } from 'redis';
 import { EventEmitter } from 'events';
 
 declare module 'redis' {
@@ -35,6 +35,16 @@ declare module 'redis' {
 		 * Get the value of a key.
 		 */
 		getAsync(key: string): Promise<string>;
+
+		/**
+		 * Set multiple keys to multiple values.
+		 */
+		msetAsync: OverloadedAsyncCommand<string, boolean>;
+
+		/**
+		 * Get the values of all given keys.
+		 */
+		mgetAsync: OverloadedAsyncCommand<string, string[]>;
 
 		/**
 		 * Add the specified members to the set stored at `key`.
@@ -80,6 +90,12 @@ declare module 'redis' {
 		 * Increment the integer value of a key by one.
 		 */
 		incrAsync(key: string): Promise<number>;
+
+		/**
+		 * Decrement the integer value of a key by one.
+		 */
+		decrAsync(key: string): Promise<number>;
+
 
 		/**
 		 * Set a key's time to live in seconds.

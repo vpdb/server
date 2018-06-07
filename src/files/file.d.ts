@@ -45,6 +45,7 @@ export interface File extends MetricsDocument {
 	 * Note that this is to *construct* the file name, and doesn't mean that the
 	 * file actually exists at the given location.
 	 *
+	 * @see [[FileDocument.getPath]] for implementation
 	 * @param {FileVariation} [variation] If set, return given file variation.
 	 * @param {FilePathOptions} [opts] Path options
 	 * @return {string} Absolute path to storage
@@ -54,6 +55,7 @@ export interface File extends MetricsDocument {
 	/**
 	 * Returns the file extension, inclusively the dot.
 	 *
+	 * @see [[FileDocument.getExt]] for implementation
 	 * @param {FileVariation} [variation] File variation
 	 * @return {string} File extension
 	 */
@@ -66,6 +68,7 @@ export interface File extends MetricsDocument {
 	 * Typically a release file is protected during release upload and becomes
 	 * public only after submission.
 	 *
+	 * @see [[FileDocument.getUrl]] for implementation
 	 * @param {FileVariation} [variation] File variation or null for original file
 	 * @return {string}
 	 */
@@ -74,6 +77,7 @@ export interface File extends MetricsDocument {
 	/**
 	 * Returns true if the file is public (as in accessible without being authenticated), false otherwise.
 	 *
+	 * @see [[FileDocument.isPublic]] for implementation
 	 * @param {FileVariation} [variation] File variation or null for original file
 	 * @return {boolean}
 	 */
@@ -82,6 +86,7 @@ export interface File extends MetricsDocument {
 	/**
 	 *  Returns true if the file is free (as in doesn't cost any credit), false otherwise.
 	 *
+	 * @see [[FileDocument.isFree]] for implementation
 	 * @param {FileVariation} [variation] File variation or null for original file
 	 * @return {boolean} True if free, false otherwise.
 	 */
@@ -90,6 +95,7 @@ export interface File extends MetricsDocument {
 	/**
 	 * Returns the MIME type for a given variation (or for the main file if not specified).
 	 *
+	 * @see [[FileDocument.getMimeType]] for implementation
 	 * @param {FileVariation} [variation] File variation or null for original file
 	 * @return {string} MIME type of the file or its variation.
 	 */
@@ -98,6 +104,7 @@ export interface File extends MetricsDocument {
 	/**
 	 * Returns the "primary" type (the part before the `/`) of the mime type, e.g. `image`.
 	 *
+	 * @see [[FileDocument.getMimeTypePrimary]] for implementation
 	 * @param {FileVariation} [variation] File variation or null for original file
 	 * @return {string} Primary part of the MIME type.
 	 */
@@ -106,6 +113,7 @@ export interface File extends MetricsDocument {
 	/**
 	 * Returns the sub type (the part after the `/`) of the mime type, e.g. `x-visual-pinball-table`.
 	 *
+	 * @see [[FileDocument.getMimeSubtype]] for implementation
 	 * @param {FileVariation} [variation] File variation or null for original file
 	 * @return {string} Secondary part of the MIME type.
 	 */
@@ -114,6 +122,7 @@ export interface File extends MetricsDocument {
 	/**
 	 * Returns the file category.
 	 *
+	 * @see [[FileDocument.getMimeCategory]] for implementation
 	 * @param {FileVariation} [variation] File variation or null for original file
 	 * @return {string}
 	 */
@@ -122,6 +131,7 @@ export interface File extends MetricsDocument {
 	/**
 	 * Switches a files from inactive to active and moves it to the public folder if necessary.
 	 *
+	 * @see [[FileDocument.switchToActive]] for implementation
 	 * @return {Promise<File>} Moved file
 	 */
 	switchToActive(): Promise<File>;
@@ -129,6 +139,7 @@ export interface File extends MetricsDocument {
 	/**
 	 * Returns all variations that are stored in the database for this file.
 	 *
+	 * @see [[FileDocument.getExistingVariations]] for implementation
 	 * @returns {FileVariation[]} Existing variations
 	 */
 	getExistingVariations(): FileVariation[];
@@ -136,6 +147,7 @@ export interface File extends MetricsDocument {
 	/**
 	 * Returns all defined variations for this file.
 	 *
+	 * @see [[FileDocument.getVariations]] for implementation
 	 * @returns {FileVariation[]}
 	 */
 	getVariations(): FileVariation[];
@@ -143,6 +155,7 @@ export interface File extends MetricsDocument {
 	/**
 	 * Checks whether a variation for the given file exists.
 	 *
+	 * @see [[FileDocument.getVariation]] for implementation
 	 * @param {string} variationName Name of the variation
 	 * @returns {FileVariation | null} File variation or null if the variation doesn't exist.
 	 */
@@ -155,6 +168,7 @@ export interface File extends MetricsDocument {
 	 * is not generated based on the original file, but rather on another
 	 * variation.
 	 *
+	 * @see [[FileDocument.getVariationDependencies]] for implementation
 	 * @param {FileVariation} variation Variation
 	 * @param {FileVariation[]} [deps] Only used for internal recursive usage, ignore.
 	 * @returns {FileVariation[]} All variations that depend directly or indirectly on the given variation.
@@ -164,6 +178,7 @@ export interface File extends MetricsDocument {
 	/**
 	 * Returns all direct dependencies of a variation.
 	 *
+	 * @see [[FileDocument.getDirectVariationDependencies]] for implementation
 	 * @param {FileVariation} variation Variation
 	 * @returns {FileVariation[]} All variations that depend directly on the given variation.
 	 */
@@ -172,6 +187,7 @@ export interface File extends MetricsDocument {
 	/**
 	 * Returns something useful for logging.
 	 *
+	 * @see [[FileDocument.toShortString]] for implementation
 	 * @param {FileVariation} [variation] File variation or null for original file
 	 * @returns {string}
 	 */
@@ -180,6 +196,7 @@ export interface File extends MetricsDocument {
 	/**
 	 * Returns something even more useful for logging.
 	 *
+	 * @see [[FileDocument.toDetailedString]] for implementation
 	 * @param {FileVariation} [variation] File variation or null for original file
 	 * @returns {string}
 	 */

@@ -55,12 +55,7 @@ export interface Release extends ModeratedDocument, GameReferenceDocument, Prett
 			url: string;
 		};
 	};
-	counter: {
-		downloads: number;
-		comments: number;
-		stars: number;
-		views: number;
-	};
+	counter: { [T in ReleaseCounterType]: number; };
 	metrics: {
 		popularity: number;
 	};
@@ -109,3 +104,5 @@ export interface Release extends ModeratedDocument, GameReferenceDocument, Prett
 	isCreatedBy(user: User): boolean;
 
 }
+
+export type ReleaseCounterType = 'downloads' | 'comments' | 'stars' | 'views';

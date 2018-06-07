@@ -46,7 +46,7 @@ import { Release } from '../releases/release';
 class ApiCache {
 
 	private readonly redisPrefix = 'api-cache:';
-	private readonly cacheRoutes: CacheRoute[] = [];
+	private readonly cacheRoutes: CacheRoute<any>[] = [];
 
 	/**
 	 * The middleware. Stops the chain on cache hit or continues and saves
@@ -73,6 +73,21 @@ class ApiCache {
 		const hit = await state.redis.getAsync(key);
 		if (hit) {
 			const response = JSON.parse(hit) as CacheResponse;
+
+			// update counters
+			if (cacheRoute.counters) {
+				for (const counter of cacheRoute.counters) {
+					for (const c of counter.counters) {
+						const counters = counter.get(response.body, c);
+						for (const id of Object.keys(counters)) {
+							// todo use MGET
+							counters[id] = parseInt(await state.redis.getAsync(this.getCounterKey(counter.model, id, c)));
+						}
+						counter.set(response.body, c, counters);
+					}
+				}
+			}
+
 			ctx.status = response.status;
 			ctx.set('X-Cache-Api', 'HIT');
 			// todo add auth headers such as x-token-refresh
@@ -97,10 +112,11 @@ class ApiCache {
 	 * @param {Router} router Router
 	 * @param {string} path Path of the route (same passed to the router)
 	 * @param {CacheInvalidationTag} config How responses from the route get invalidated.
+	 * @param {CacheCounterConfig} counters
 	 */
-	public enable(router: Router, path: string, config: CacheInvalidationConfig) {
+	public enable<T>(router: Router, path: string, config: CacheInvalidationConfig, counters?:CacheCounterConfig<T>[]) {
 		const opts = (router as any).opts as IRouterOptions;
-		this.cacheRoutes.push({ regex: pathToRegexp(opts.prefix + path), config: config });
+		this.cacheRoutes.push({ regex: pathToRegexp(opts.prefix + path), config: config, counters: counters });
 	}
 
 	public async invalidateRelease(release?: Release) {
@@ -205,8 +221,9 @@ class ApiCache {
 	 * @param {string} key Cache key
 	 * @param {CacheRoute} cacheRoute Route where the miss occurred
 	 */
-	private async setCache(ctx: Context, key: string, cacheRoute: CacheRoute) {
+	private async setCache<T>(ctx: Context, key: string, cacheRoute: CacheRoute<T>) {
 
+		const now = Date.now();
 		const refs:string[] = [];
 		const response: CacheResponse = {
 			status: ctx.status,
@@ -241,7 +258,23 @@ class ApiCache {
 			await state.redis.saddAsync(refKey, key);
 			refs.push(refKey);
 		}
-		logger.debug('[Cache] No hit, saving as "%s" with references [ %s ].', key, refs.join(', '));
+
+		// save counters
+		let numCounters = 0;
+		if (cacheRoute.counters) {
+			for (const counter of cacheRoute.counters) {
+				for (const c of counter.counters) {
+					const counters = counter.get(ctx.response.body, c);
+					for (const id of Object.keys(counters)) {
+						// todo use MSETNX
+						await state.redis.setAsync(this.getCounterKey(counter.model, id, c), counters[id]);
+						numCounters++;
+					}
+				}
+			}
+		}
+
+		logger.debug('[Cache] No hit, saved as "%s" with references [ %s ] and %s counters in %sms.', key, refs.join(', '), numCounters, Date.now() - now);
 	}
 
 	private getCacheKey(ctx: Context): string {
@@ -261,6 +294,10 @@ class ApiCache {
 		return this.redisPrefix + 'user:' + user.id;
 	}
 
+	private getCounterKey(entity:string, entityId:string, counter:string) {
+		return this.redisPrefix + 'counter:' + entity + ':' + counter + ':' + entityId;
+	}
+
 	private normalizeQuery(ctx: Context) {
 		return Object.keys(ctx.query).sort().map(key => key + '=' + ctx.query[key]).join('&');
 	}
@@ -269,9 +306,10 @@ class ApiCache {
 /**
  * Defines how to invalidate cached responses from a given route.
  */
-interface CacheRoute {
+interface CacheRoute<T> {
 	regex: RegExp;
 	config: CacheInvalidationConfig;
+	counters: CacheCounterConfig<T>[];
 }
 
 /**
@@ -315,6 +353,41 @@ export interface CacheInvalidationConfig {
 	 */
 	entities?: { [key: string]: string; };
 }
+
+export interface CacheCounterConfig<T> {
+
+	/**
+	 * Name of the model the counter is linked to.
+	 */
+	model: string;
+
+	/**
+	 * The counters defined for that model, e.g. [ "downloads", "views" ]
+	 */
+	counters: string[];
+
+	/**
+	 * A function that takes the response body and returns key-value pairs with
+	 * entity ID and counter value for the given counter of all model
+	 * occurrences of the given body.
+	 *
+	 * @param {T} response Response body computed by the last middleware
+	 * @param {string} counter Counter name, e.g. "views"
+	 * @returns {CacheCounterValues} Counter values of all entities in the response body for given counter
+	 */
+	get: (response:T, counter:string) => CacheCounterValues;
+
+	/**
+	 * A function that updates the counters of all occurrences of the given
+	 * model for the given counter in a previously cached response body.
+	 *
+	 * @param {T} response Response body coming from cache
+	 * @param {string} counter Counter name, e.g. "views"
+	 * @param {CacheCounterValues} values Updated counter values of all entities in the response body for given counter
+	 */
+	set: (response:T, counter:string, values:CacheCounterValues) => void;
+}
+export type CacheCounterValues = { [key:string]: number };
 
 interface CacheResponse {
 	status: number;

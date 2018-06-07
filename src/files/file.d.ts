@@ -20,8 +20,6 @@
 import { MetricsDocument, Schema } from 'mongoose';
 import { User } from '../users/user';
 import { FileVariation } from './file.variations';
-import { fileSchema } from './file.schema';
-import { fileTypes } from './file.types';
 
 export interface File extends MetricsDocument {
 	id: string;
@@ -33,7 +31,7 @@ export interface File extends MetricsDocument {
 	variations: { [key: string]: any };  // todo type
 	preprocessed: any; // todo wtf is that
 	is_active: boolean;
-	counter: { downloads: number };
+	counter: { [T in FileCounterType]: number; };
 	created_at: Date;
 	_created_by: User | Schema.Types.ObjectId;
 
@@ -187,6 +185,8 @@ export interface File extends MetricsDocument {
 	 */
 	toDetailedString(variation?:FileVariation): string;
 }
+
+export type FileCounterType = 'downloads';
 
 export interface FilePathOptions {
 	/**

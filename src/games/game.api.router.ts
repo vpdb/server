@@ -24,6 +24,8 @@ import { StarApi } from '../stars/star.api';
 import { MediumApi } from '../media/medium.api';
 import { RatingApi } from '../ratings/rating.api';
 import { BackglassApi } from '../backglasses/backglass.api';
+import { apiCache } from '../common/api.cache';
+import { gameDetailsCacheCounters, gameListCacheCounters } from './game.api.cache.counters';
 
 const api = new GameApi();
 const eventsApi = new LogEventApi();
@@ -55,5 +57,10 @@ router.get('/v1/games/:gameId/backglasses', backglassApi.list.bind(backglassApi)
 router.get('/v1/games/:gameId/media', mediumApi.list.bind(mediumApi));
 
 router.get('/v1/games/:id/events', eventsApi.list({ byGame: true }).bind(eventsApi));
-
 router.get('/v1/games/:id/release-name', api.auth(api.releaseName.bind(api), 'releases', 'add', [ Scope.ALL, Scope.CREATE ]));
+
+apiCache.enable(router, '/v1/games', { resources: ['game', 'release', 'user'] }, gameListCacheCounters);
+apiCache.enable(router, '/v1/games/:id', { resources: ['game', 'release', 'user'] }, gameDetailsCacheCounters);
+apiCache.enable(router, '/v1/games/:gameId/backglasses', { resources: ['backglass', 'user'] });
+apiCache.enable(router, '/v1/games/:gameId/media', { resources: ['medium', 'user'] });
+apiCache.enable(router, '/v1/games/:id/events', { resources: ['log_event'] });

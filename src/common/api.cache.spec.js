@@ -41,7 +41,7 @@ describe('The VPDB API cache', () => {
 		await api.as('administrator').del('/v1/cache').then(res => res.expectStatus(204));
 	});
 
-	afterEach(async () => await api.as('administrator').del('/v1/cache').then(res => res.expectStatus(204)));
+//	afterEach(async () => await api.as('administrator').del('/v1/cache').then(res => res.expectStatus(204)));
 	after(async () => await api.teardown());
 
 	describe('when listing releases', () => {
@@ -58,9 +58,17 @@ describe('The VPDB API cache', () => {
 		});
 	});
 
-	describe.only('when starring a release', () => {
+	describe('when viewing a game', () => {
 
-		it.only('should invalidate release details and releases', async () => {
+		it.only('should cache the second request', async () => {
+			await api.get('/v1/games/' + release.game.id).then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.get('/v1/games/' + release.game.id).then(res => res.expectHeader('x-cache-api', 'hit'));
+		});
+	});
+
+	describe('when starring a release', () => {
+
+		it('should invalidate release details and releases', async () => {
 
 			// these must be a hit later
 			await api.get('/v1/releases/' + otherRelease.id).then(res => res.expectHeader('x-cache-api', 'miss'));

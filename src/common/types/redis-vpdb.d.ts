@@ -26,10 +26,10 @@ declare module 'redis' {
 		/**
 		 * Set the string value of a key.
 		 */
-		setAsync(key: string, value: string): Promise<'OK'>;
-		setAsync(key: string, value: string, flag: string): Promise<'OK'>;
-		setAsync(key: string, value: string, mode: string, duration: number): Promise<'OK'>;
-		setAsync(key: string, value: string, mode: string, duration: number, flag: string): Promise<'OK' | undefined>;
+		setAsync(key: string, value: string|number): Promise<'OK'>;
+		setAsync(key: string, value: string|number, flag: string): Promise<'OK'>;
+		setAsync(key: string, value: string|number, mode: string, duration: number): Promise<'OK'>;
+		setAsync(key: string, value: string|number, mode: string, duration: number, flag: string): Promise<'OK' | undefined>;
 
 		/**
 		 * Get the value of a key.

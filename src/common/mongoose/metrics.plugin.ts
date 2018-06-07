@@ -33,6 +33,7 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 		const q: any = {
 			$inc: { ['counter.' + counterName]: incr }
 		};
+		// todo update redis cache
 
 		if (options.hotness) {
 			q.metrics = q.metrics || {};

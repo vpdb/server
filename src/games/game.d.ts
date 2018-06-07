@@ -60,13 +60,7 @@ export interface Game extends FileReferenceDocument, MetricsDocument, PrettyIdDo
 		ranks?: number[];
 		rating?: number
 	};
-	counter?: {
-		releases?: number;
-		views?: number;
-		downloads?: number;
-		comments?: number;
-		stars?: number;
-	};
+	counter?: { [T in GameCounterType]: number; };
 	metrics?: {
 		popularity?: number;
 	};
@@ -104,3 +98,5 @@ export interface GameRestrictions {
 export interface GameRestriction {
 	mpu?: boolean;
 }
+
+export type GameCounterType = 'releases' | 'views' | 'downloads' | 'comments' | 'stars';

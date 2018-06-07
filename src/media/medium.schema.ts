@@ -18,7 +18,7 @@
  */
 
 import { keys } from 'lodash';
-import { PaginateModel, PrettyIdModel, Schema } from 'mongoose';
+import { PaginateModel, PrettyIdModel, Schema, MetricsModel } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
 import paginatePlugin = require('mongoose-paginate');
 
@@ -129,7 +129,7 @@ export const mediumFields = {
 	_created_by: { type: Schema.Types.ObjectId, ref: 'User', required: true }
 };
 
-export interface MediumModel extends PrettyIdModel<Medium>, PaginateModel<Medium> { }
+export interface MediumModel extends PrettyIdModel<Medium>, PaginateModel<Medium>, MetricsModel<Medium> { }
 export const mediumSchema = new Schema(mediumFields, { toObject: { virtuals: true, versionKey: false } });
 
 //-----------------------------------------------------------------------------

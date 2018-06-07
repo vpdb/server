@@ -26,6 +26,7 @@ import { User } from '../../users/user';
 import { acl } from '../acl';
 import { ApiError } from '../api.error';
 import { logger } from '../logger';
+import { LogEventUtil } from '../../log-event/log.event.util';
 
 const modelResourceMap: { [key: string]: string } = {
 	Release: 'releases',
@@ -175,7 +176,6 @@ export function moderationPlugin(schema: Schema) {
 	 * @return {Promise<ModerationData>} Moderation data
 	 */
 	schema.statics.handleModeration = async function (ctx: Context, entity: ModeratedDocument): Promise<ModerationData> {
-		const LogEvent = require('mongoose').model('LogEvent');
 		const actions = ['refuse', 'approve', 'moderate'];
 		if (!ctx.request.body.action) {
 			throw new ApiError('Validations failed.').validationError('action', 'An action must be provided. Valid actions are: [ "' + actions.join('", "') + '" ].');
@@ -203,7 +203,7 @@ export function moderationPlugin(schema: Schema) {
 
 		// event log
 		const referenceName = modelReferenceMap[this.modelName];
-		LogEvent.log(ctx, 'moderate', false, {
+		await LogEventUtil.log(ctx, 'moderate', false, {
 			action: ctx.request.body.action,
 			message: ctx.request.body.message
 		}, { [referenceName]: entity._id });
@@ -228,7 +228,6 @@ export function moderationPlugin(schema: Schema) {
 	 */
 	schema.methods.assertModeratedView = async function (ctx: Context): Promise<ModeratedDocument> {
 
-		const acl = require('../acl');
 		const resource: string = modelResourceMap[this.constructor.modelName];
 		const reference: string = modelReferenceMap[this.constructor.modelName];
 		if (!resource) {
@@ -298,7 +297,7 @@ export function moderationPlugin(schema: Schema) {
 	 */
 	schema.methods.approve = async function (user: User, message: string): Promise<ModerationData> {
 
-		const model = require('mongoose').model(this.constructor.modelName) as ModeratedModel<ModeratedDocument>;
+		const model = state.models[this.constructor.modelName] as ModeratedModel<ModeratedDocument>;
 		let previousModeration = { isApproved: this.moderation.is_approved, isRefused: this.moderation.is_refused };
 		await model.findByIdAndUpdate(this._id, {
 			'moderation.is_approved': true,
@@ -328,7 +327,7 @@ export function moderationPlugin(schema: Schema) {
 	 */
 	schema.methods.refuse = async function (user: User, reason: string): Promise<ModerationData> {
 
-		const model = require('mongoose').model(this.constructor.modelName) as ModeratedModel<ModeratedDocument>;
+		const model = state.models[this.constructor.modelName] as ModeratedModel<ModeratedDocument>;
 		let previousModeration = { isApproved: this.moderation.is_approved, isRefused: this.moderation.is_refused };
 		await model.findByIdAndUpdate(this._id, {
 			'moderation.is_approved': false,
@@ -358,7 +357,7 @@ export function moderationPlugin(schema: Schema) {
 	 */
 	schema.methods.moderate = async function (user: User, message: string): Promise<ModerationData> {
 
-		const model = require('mongoose').model(this.constructor.modelName) as ModeratedModel<ModeratedDocument>;
+		const model = state.models[this.constructor.modelName] as ModeratedModel<ModeratedDocument>;
 		let previousModeration = { isApproved: this.moderation.is_approved, isRefused: this.moderation.is_refused };
 		await model.findByIdAndUpdate(this._id, {
 			'moderation.is_approved': false,

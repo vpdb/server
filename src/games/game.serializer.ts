@@ -32,9 +32,7 @@ export class GameSerializer extends Serializer<Game> {
 	protected _reduced(ctx: Context, doc: Game, opts: SerializerOptions): Game {
 
 		const game = pick(doc, ['id', 'title', 'manufacturer', 'year' ]) as Game;
-		if (doc.ipdb) {
-			game.ipdb = (doc.ipdb as any).toObject();
-		}
+		game.ipdb = doc.ipdb;
 		return game;
 	}
 
@@ -42,8 +40,8 @@ export class GameSerializer extends Serializer<Game> {
 		const game = this._reduced(ctx, doc, opts);
 
 		game.game_type = doc.game_type;
-		game.counter = (doc.counter as any).toObject();
-		game.rating = (doc.rating as any).toObject();
+		game.counter = doc.counter;
+		game.rating = doc.rating;
 
 		// restrictions
 		const restrictions:GameRestrictions = {};

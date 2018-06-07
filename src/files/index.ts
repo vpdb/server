@@ -25,7 +25,7 @@ import { state } from '../state';
 import { EndPoint } from '../common/api.endpoint';
 import { File } from './file';
 import { FileSerializer } from './file.serializer';
-import { fileSchema } from './file.schema';
+import { FileModel, fileSchema } from './file.schema';
 import { router as apiRouter } from './file.api.router';
 import { protectedRouter, publicRouter } from './file.storage.router';
 
@@ -47,7 +47,7 @@ export class FilesApiEndPoint extends EndPoint {
 	}
 
 	async register(app: Application): Promise<void> {
-		state.models.File = mongoose.model<File>('File', this._schema);
+		state.models.File = mongoose.model<File, FileModel>('File', this._schema);
 		state.serializers.File = new FileSerializer();
 	}
 }

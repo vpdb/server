@@ -51,7 +51,7 @@ export class UserSerializer extends Serializer<User> {
 		assign(user, pick(doc, ['location']));
 
 		// counter
-		user.counter = pick((doc.counter as any).toObject(), ['comments', 'stars']);
+		user.counter = pick(doc.counter, ['comments', 'stars']);
 		return user;
 	}
 
@@ -63,8 +63,8 @@ export class UserSerializer extends Serializer<User> {
 		assign(user, pick(doc, ['email', 'email_status', 'is_local', 'is_active', 'created_at']));
 
 		user.roles = doc.roles;
-		user.preferences = doc.preferences.toObject();
-		user.counter = (doc.counter as any).toObject();
+		user.preferences = doc.preferences;
+		user.counter = doc.counter;
 
 		// plan
 		const plan = find(config.vpdb.quota.plans, p => p.id === doc._plan);

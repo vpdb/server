@@ -23,6 +23,7 @@ import { Context } from '../common/types/context';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { File } from './file';
 import { Metadata } from './metadata/metadata';
+import { FileDocument } from './file.document';
 
 export class FileSerializer extends Serializer<File> {
 
@@ -34,15 +35,15 @@ export class FileSerializer extends Serializer<File> {
 		const file = this._reduced(ctx, doc, opts);
 		file.bytes = doc.bytes;
 		file.cost = quota.getCost(doc);
-		file.url = doc.getUrl();
+		file.url = FileDocument.getUrl(doc);
 		file.is_protected = !doc.is_active || file.cost > -1;
-		file.counter = (doc.counter as any).toObject();
+		file.counter = doc.counter;
 
 		// file variations
 		file.variations = {};
-		doc.getVariations().forEach(variation => {
+		FileDocument.getVariations(doc).forEach(variation => {
 			file.variations[variation.name] = doc.variations ? doc.variations[variation.name] || {} : {};
-			file.variations[variation.name].url = doc.getUrl(variation);
+			file.variations[variation.name].url = FileDocument.getUrl(doc, variation);
 			const cost = quota.getCost(doc, variation);
 			if (!file.is_active || cost > -1) {
 				file.variations[variation.name].is_protected = true;

@@ -23,6 +23,7 @@ import { Metadata } from './metadata';
 import { File } from '../file';
 import { FileVariation } from '../file.variations';
 import { config } from '../../common/settings';
+import { FileDocument } from '../file.document';
 
 const ffmpeg = require('bluebird').promisifyAll(Ffmpeg);
 
@@ -36,11 +37,11 @@ export class VideoMetadata extends Metadata {
 	}
 
 	isValid(file: File, variation?: FileVariation): boolean {
-		return file.getMimeCategory(variation) === 'video';
+		return FileDocument.getMimeCategory(file, variation) === 'video';
 	}
 
 	async getMetadata(file: File, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
-		return await ffmpeg.ffprobeAsync(file.getPath(variation));
+		return await ffmpeg.ffprobeAsync(FileDocument.getPath(file, variation));
 	}
 
 	serializeDetailed(metadata: { [p: string]: any }): { [p: string]: any } {

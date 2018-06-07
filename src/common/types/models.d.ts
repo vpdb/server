@@ -19,16 +19,15 @@
 
 import { Document, Model } from 'mongoose';
 import { Build } from '../../builds/build';
-import { File } from '../../files/file';
 import { GameRequest } from '../../game-requests/game.request';
 import { Rating } from '../../ratings/rating';
 import { TableBlock } from '../../releases/release.tableblock';
 import { Tag } from '../../tags/tag';
 import { Token } from '../../tokens/token';
 import { Star } from '../../stars/star';
-import { User } from '../../users/user';
 
 import { CommentModel } from '../../comments/comment.schema';
+import { FileModel } from '../../files/file.schema';
 import { GameModel } from '../../games/game.schema';
 import { BackglassModel } from '../../backglasses/backglass.schema';
 import { LogEventModel } from '../../log-event/log.event.schema';
@@ -38,12 +37,13 @@ import { ReleaseModel } from '../../releases/release.schema';
 import { ReleaseVersionModel } from '../../releases/release.version.schema';
 import { ReleaseVersionFileModel } from '../../releases/release.version.file.schema';
 import { RomModel } from '../../roms/rom.schema';
+import { UserModel } from '../../users/user.schema';
 
 export interface Models {
 	Backglass: BackglassModel;
 	Build: Model<Build>;
 	Comment: CommentModel;
-	File: Model<File>;
+	File: FileModel;
 	Game: GameModel;
 	GameRequest: Model<GameRequest>;
 	LogEvent: LogEventModel;
@@ -58,6 +58,6 @@ export interface Models {
 	Tag: Model<Tag>;
 	Token: Model<Token>;
 	Star: Model<Star>;
-	User: Model<User>;
+	User: UserModel;
 	[key:string]: Model<Document>;
 }

@@ -33,6 +33,7 @@ import { sortableTitlePlugin } from '../common/mongoose/sortable.title.plugin';
 
 import { isInteger, isString } from 'lodash';
 import { Game } from './game';
+import { GameDocument } from './game.document';
 
 const gameTypes = ['ss', 'em', 'pm', 'og', 'na'];
 const maxAspectRatioDifference = 0.2;
@@ -157,7 +158,7 @@ gameSchema.path('_backglass').validate(async function (backglass: File) {
 //-----------------------------------------------------------------------------
 
 gameSchema.methods.isRestricted = function (what: 'release' | 'backglass'):boolean {
-	return this.ipdb.mpu && config.vpdb.restrictions[what].denyMpu.includes(this.ipdb.mpu);
+	return GameDocument.isRestricted(this, what);
 };
 
 

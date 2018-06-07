@@ -18,7 +18,7 @@
  */
 
 
-import { Schema } from 'mongoose';
+import { Schema, MetricsModel } from 'mongoose';
 import { each, find, isArray, isBoolean, isString, isUndefined, keys } from 'lodash';
 import { createHmac } from 'crypto';
 import { isEmail, isLength, matches } from 'validator';
@@ -31,7 +31,6 @@ import { config } from '../common/settings';
 import { metricsPlugin } from '../common/mongoose/metrics.plugin';
 import { flavors } from '../releases/release.flavors';
 import { User } from './user';
-
 
 const shortId = require('shortid32');
 
@@ -111,6 +110,7 @@ config.vpdb.passport.ipboard.forEach(function (ipbConfig) {
 	}
 });
 
+export interface UserModel extends MetricsModel<User> { }
 export const userSchema = new Schema(userFields, { toObject: { virtuals: true, versionKey: false } });
 userSchema.index({ name: 'text', username: 'text', email: 'text' });
 

@@ -27,6 +27,7 @@ import { config } from './settings';
 import { logger } from './logger';
 import { File} from '../files/file';
 import { FileVariation } from '../files/file.variations';
+import { FileDocument } from '../files/file.document';
 
 const quotaModule = require('volos-quota-redis');
 
@@ -176,7 +177,7 @@ export class Quota {
 	/**
 	 * Returns the cost of a given file and variation.
 	 *
-	 * @param {File} file File
+	 * @param {File} file Potentially dehydrated File
 	 * @param {string|object} [variation] Optional variation
 	 * @returns {*}
 	 */
@@ -214,14 +215,14 @@ export class Quota {
 
 		if (isObject(cost)) {
 			if (isUndefined(cost.category)) {
-				logger.warn('[Quota.getCost] No cost defined for %s file (type is undefined).', file.file_type, file.getMimeCategory(variation));
+				logger.warn('[Quota.getCost] No cost defined for %s file (type is undefined).', file.file_type, FileDocument.getMimeCategory(file, variation));
 				return 0;
 			}
 			if (isObject(cost.category)) {
-				const costCategory = cost.category[file.getMimeCategory(variation)];
+				const costCategory = cost.category[FileDocument.getMimeCategory(file, variation)];
 				if (isUndefined(costCategory)) {
 					if (isUndefined(cost.category['*'])) {
-						logger.warn('[Quota.getCost] No cost defined for %s file of type %s and no fallback given, returning 0.', file.file_type, file.getMimeCategory(variation));
+						logger.warn('[Quota.getCost] No cost defined for %s file of type %s and no fallback given, returning 0.', file.file_type, FileDocument.getMimeCategory(file, variation));
 						return 0;
 					}
 					return cost.category['*'];

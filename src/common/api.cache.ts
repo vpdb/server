@@ -34,6 +34,9 @@ import { MetricsModel } from 'mongoose';
  * It's used as a middleware in Koa. Routes must enable caching explicitly.
  * Invalidation is done with tags.
  *
+ * Counters are cached separately. That means viewing, downloading etc doesn't
+ * invalidate the cache. See {@link CacheCounterConfig} for more details.
+ *
  * Procedure when adding a cache to a route:
  *   1. Go through all end points performing a *write* operation.
  *   2. Check if the route is affected by the operation. Besides obvious
@@ -394,6 +397,33 @@ export interface CacheInvalidationConfig {
 	entities?: { [key: string]: string; };
 }
 
+/**
+ * Defines how to handle counters for a given model within a response body.
+ *
+ * Counter caching works like that:
+ *
+ * On miss,
+ *   1. Response body is computed
+ *   2. Using {@link CacheCounterConfig.get}, cache values are retrieved for
+ *      every model's counter, using a config for each model
+ *   3. Every counter gets a Redis key with the current count.
+ *
+ * On hit,
+ *   1. Response body is retrieved from cache
+ *   2. Using {@link CacheCounterConfig.get}, objects that need to be updated
+ *      are retrieved for all counters.
+ *   3. For those counters, current values are read from Redis.
+ *   4. Using {@link CacheCounterConfig.set}, these values are applied to the
+ *      cached response body.
+ *
+ * View counters are a special case because they should get bumped even if a
+ * response gets served from the cache, where the API completely skipped.
+ * That's what {@link CacheCounterConfig.incrementCounter} is for. If set, the
+ * cache middleware will bump the given counter with the provided ID.
+ *
+ * On non-cached bumps, the metrics module will run {@link ApiCache.incrementCounter},
+ * which updates the Redis cache so previously cached responses are up-to-date.
+ */
 export interface CacheCounterConfig<T> {
 
 	/**

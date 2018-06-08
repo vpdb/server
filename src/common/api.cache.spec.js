@@ -35,14 +35,14 @@ describe('The VPDB API cache', () => {
 		await api.setupUsers({
 			member: { roles: ['member'] },
 			moderator: { roles: ['moderator'] },
-			administrator: { roles: ['admin'] }
+			admin: { roles: ['admin'] }
 		});
 		release = await releaseHelper.createRelease('moderator');
 		otherRelease = await releaseHelper.createRelease('moderator');
 		await api.as('administrator').del('/v1/cache').then(res => res.expectStatus(204));
 	});
 
-//	afterEach(async () => await api.as('administrator').del('/v1/cache').then(res => res.expectStatus(204)));
+	afterEach(async () => await api.as('admin').del('/v1/cache').then(res => res.expectStatus(204)));
 	after(async () => await api.teardown());
 
 	describe('when listing releases', () => {

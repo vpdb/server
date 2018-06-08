@@ -19,6 +19,8 @@
 
 import { config } from '../common/settings';
 import { Game } from './game';
+import { File } from '../files/file';
+import { ReleaseDocument } from '../releases/release.document';
 
 /**
  * Contains the Game's instance methods so they can also be accessed
@@ -29,7 +31,42 @@ export class GameDocument {
 	/**
 	 * @see [[Game.isRestricted]]
 	 */
-	public static isRestricted(game:Game, what: 'release' | 'backglass'):boolean {
+	public static isRestricted(game: Game, what: 'release' | 'backglass'): boolean {
 		return game.ipdb.mpu && config.vpdb.restrictions[what].denyMpu.includes(game.ipdb.mpu);
 	}
+
+	/**
+	 * Returns all file object linked to a game.
+	 *
+	 * @param {Game} game
+	 * @returns {File[]} Linked files
+	 */
+	public static getLinkedFiles(game: Game): File[] {
+		const files: File[] = [game.backglass, game.logo];
+		if (game.releases && game.releases.length > 0) {
+			const [releaseFiles] = game.releases.map(rls => ReleaseDocument.getLinkedFiles(rls));
+			if (releaseFiles && releaseFiles.length > 0) {
+				files.push(...releaseFiles);
+			}
+		}
+		if (game.backglasses && game.backglasses.length > 0) {
+			const [backglassFiles] = game.backglasses.map(bg => {
+				if (bg.versions && bg.versions.length > 0) {
+					return bg.versions.map(v => v.file);
+				}
+				return []
+			});
+			if (backglassFiles && backglassFiles.length > 0) {
+				files.push(...backglassFiles);
+			}
+		}
+		if (game.media && game.media.length > 0) {
+			const mediaFiles = game.media.map(media => media.file);
+			if (mediaFiles && mediaFiles.length > 0) {
+				files.push(...mediaFiles);
+			}
+		}
+		return files.filter(f => !!f);
+	}
+
 }

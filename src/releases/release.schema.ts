@@ -38,6 +38,7 @@ import { logger } from '../common/logger';
 import { Release } from './release';
 import { User } from '../users/user';
 import { File } from '../files/file';
+import { ReleaseDocument } from './release.document';
 
 const shortId = require('shortid32');
 
@@ -122,39 +123,17 @@ releaseSchema.path('versions').validate(function () {
 //-----------------------------------------------------------------------------
 // METHODS
 //-----------------------------------------------------------------------------
-
 releaseSchema.methods.moderationChanged = async function (previousModeration: { isApproved: boolean, isRefused: boolean }, moderation: { isApproved: boolean, isRefused: boolean }): Promise<ModeratedDocument> {
-	if (previousModeration.isApproved && !moderation.isApproved) {
-		return await state.models.Game.update({ _id: this._game }, { $inc: { 'counter.releases': -1 } });
-	}
-	if (!previousModeration.isApproved && moderation.isApproved) {
-		return await state.models.Game.update({ _id: this._game }, { $inc: { 'counter.releases': 1 } });
-	}
+	return ReleaseDocument.moderationChanged(this, previousModeration, moderation);
 };
-
-/**
- * Returns all database IDs of all linked files as strings.
- * @returns {string[]}
- */
 releaseSchema.methods.getFileIds = function (): string[] {
-	let files = flatten(map(this.versions, 'files'));
-	let tableFileIds = map(files, '_file').map(file => file ? (file._id ? file._id.toString() : file.toString()) : null);
-	let playfieldImageId = compact(map(files, '_playfield_image')).map(file => file._id ? file._id.toString() : file.toString());
-	let playfieldVideoId = compact(map(files, '_playfield_video')).map(file => file._id ? file._id.toString() : file.toString());
-	return compact(flatten([...tableFileIds, playfieldImageId, playfieldVideoId]));
+	return ReleaseDocument.getFileIds(this);
 };
-
 releaseSchema.methods.getPlayfieldImageIds = function (): string[] {
-	let files = flatten(map(this.versions, 'files'));
-	return compact(map(files, '_playfield_image')).map(file => file._id ? file._id.toString() : file.toString());
+	return ReleaseDocument.getPlayfieldImageIds(this);
 };
-
 releaseSchema.methods.isCreatedBy = function (user: User): boolean {
-	if (!user) {
-		return false;
-	}
-	let userId = user._id || user;
-	return this._created_by.equals(userId);
+	return ReleaseDocument.isCreatedBy(this, user);
 };
 
 //-----------------------------------------------------------------------------

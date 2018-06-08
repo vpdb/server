@@ -23,6 +23,8 @@ import { RatingApi } from '../ratings/rating.api';
 import { StarApi } from '../stars/star.api';
 import { LogEventApi } from '../log-event/log.event.api';
 import { CommentApi } from '../comments/comment.api';
+import { apiCache } from '../common/api.cache';
+import { releaseDetailsCacheCounters, releaseListCacheCounters } from './release.api.cache.config';
 
 const api = new ReleaseApi();
 const ratingApi = new RatingApi();
@@ -57,3 +59,7 @@ router.post('/v1/releases/:id/moderate/comments', api.auth(commentApi.createForR
 router.get('/v1/releases/:id/moderate/comments',  api.auth(commentApi.listForReleaseModeration.bind(commentApi), 'releases', 'add', [ Scope.ALL ]));
 
 router.get('/v1/releases/:id/events', eventApi.list({ byRelease: true }).bind(eventApi));
+
+apiCache.enable(router, '/v1/releases', { resources: [ 'release', 'user' ] }, releaseListCacheCounters);
+apiCache.enable(router, '/v1/releases/:id',  { entities: { release: 'id' } }, releaseDetailsCacheCounters);
+//apiCache.enable(this._router, '/v1/releases/:id/comments', { entities: { release: 'id' } });

@@ -85,21 +85,17 @@ export interface Release extends ModeratedDocument, GameReferenceDocument, Prett
 	};
 
 	/**
-	 * Returns all database IDs of all linked files as strings.
-	 * @returns {string[]}
+	 * @see [[ReleaseDocument.getFileIds]]
 	 */
 	getFileIds(): string[];
 
 	/**
-	 * Returns all playfield image database IDs of the release.
- 	 * @returns {string[]}
+	 * @see [[ReleaseDocument.getPlayfieldImageIds]]
 	 */
 	getPlayfieldImageIds(): string[];
 
 	/**
-	 * Checks whether the release was created by given user.
-	 * @param {User} user User to check
-	 * @returns {boolean} True if release was created by user, false otherwise.
+	 * @see [[ReleaseDocument.isCreatedBy]]
 	 */
 	isCreatedBy(user: User): boolean;
 

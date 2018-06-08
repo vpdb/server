@@ -19,7 +19,8 @@
 import { CacheCounterConfig, CacheCounterValues } from '../common/api.cache';
 import { Game, GameCounterType } from './game';
 import { ReleaseCounterType } from '../releases/release';
-import { File, FileCounterType } from '../files/file';
+import { FileCounterType } from '../files/file';
+import { GameDocument } from './game.document';
 
 export const gameListCacheCounters: CacheCounterConfig<Game[]>[] = [{
 	model: 'game',
@@ -46,36 +47,8 @@ export const gameDetailsCacheCounters: CacheCounterConfig<Game>[] = [{
 }, {
 	model: 'file',
 	counters: ['downloads'],
-	get: (game: Game, counter: FileCounterType) => getFiles(game).reduce((acc:CacheCounterValues, file) => {
+	get: (game: Game, counter: FileCounterType) => GameDocument.getLinkedFiles(game).reduce((acc:CacheCounterValues, file) => {
 		acc[file.id] = file.counter[counter]; return acc }, {}),
 	set: (game: Game, counter: FileCounterType, values: CacheCounterValues) =>
-		getFiles(game).forEach(file => file.counter[counter] = values[file.id])
+		GameDocument.getLinkedFiles(game).forEach(file => file.counter[counter] = values[file.id])
 }];
-
-/**
- * Returns all file object linked to a game.
- *
- * @param {Game} game
- * @returns {File[]}
- */
-function getFiles(game:Game):File[] {
-	const files:File[] = [game.backglass, game.logo];
-	if (game.releases && game.releases.length > 0) {
-		const [[[releaseFiles]]] = game.releases.map(rls => rls.versions.map(v => v.files.map(f => [f.playfield_image, f.playfield_video, f.file])));
-		files.push(...releaseFiles);
-	}
-	if (game.backglasses && game.backglasses.length > 0) {
-		const [backglassFiles] = game.backglasses.map(bg => bg.versions.map(v => v.file));
-		if (backglassFiles) {
-			files.push(...backglassFiles);
-		}
-	}
-	if (game.media && game.media.length > 0) {
-		const mediaFiles = game.media.map(media => media.file);
-		if (mediaFiles) {
-			files.push(...mediaFiles);
-		}
-	}
-	return files.filter(f => !!f);
-}
-

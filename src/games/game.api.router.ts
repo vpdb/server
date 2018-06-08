@@ -25,7 +25,7 @@ import { MediumApi } from '../media/medium.api';
 import { RatingApi } from '../ratings/rating.api';
 import { BackglassApi } from '../backglasses/backglass.api';
 import { apiCache } from '../common/api.cache';
-import { gameDetailsCacheCounters, gameListCacheCounters } from './game.api.cache.counters';
+import { gameDetailsCacheCounters, gameListCacheCounters } from './game.api.cache.config';
 
 const api = new GameApi();
 const eventsApi = new LogEventApi();

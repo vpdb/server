@@ -39,12 +39,10 @@ import { MetricsModel } from 'mongoose';
  *
  * Procedure when adding a cache to a route:
  *   1. Go through all end points performing a *write* operation.
- *   2. Check if the route is affected by the operation. Besides obvious
- *      changes of the entity, check:
- *      - User downloads, votes & rating (does the payload contain counters?)
- *      - Parent entities containing the object (release update invalidates
- *        the release' game)
- *   3. If that's the case, make sure the route's matched when invalidating in
+ *   2. Check if the route is affected by the operation. Also make sure to
+ *      check nested entities, e.g. updating a release invalidates the game
+ *      details as well.
+ *   3. If that's the case, make sure the route's matched when invalidating
  *      the end point.
  */
 class ApiCache {
@@ -262,7 +260,6 @@ class ApiCache {
 	private async setCache<T>(ctx: Context, key: string, cacheRoute: CacheRoute<T>) {
 
 		const now = Date.now();
-		const refs:string[] = [];
 		const refPairs:any[] = [];
 		const response: CacheResponse = {
 			status: ctx.status,
@@ -279,7 +276,6 @@ class ApiCache {
 				const refKey = this.getResourceKey(resource);
 				refPairs.push(refKey);
 				refPairs.push(this.getResourceKey(resource));
-				refs.push(refKey);
 			}
 		}
 
@@ -289,7 +285,6 @@ class ApiCache {
 				const refKey = this.getEntityKey(entity, ctx.params[cacheRoute.config.entities[entity]]);
 				refPairs.push(refKey);
 				refPairs.push(key);
-				refs.push(refKey);
 			}
 		}
 
@@ -298,7 +293,6 @@ class ApiCache {
 			const refKey = this.getUserKey(ctx.state.user);
 			refPairs.push(refKey);
 			refPairs.push(key);
-			refs.push(refKey);
 		}
 
 		// save counters
@@ -317,7 +311,8 @@ class ApiCache {
 			}
 		}
 		await state.redis.msetAsync.apply(state.redis, refPairs);
-		logger.debug('[Cache] No hit, saved as "%s" with references [ %s ] and %s counters in %sms.', key, refs.join(', '), numCounters, Date.now() - now);
+		logger.debug('[Cache] No hit, saved as "%s" with references [ %s ] and %s counters in %sms.',
+			key, refPairs.filter((_, i) => !(i % 2)).filter(key => !key.includes(':counter:')).join(', '), numCounters, Date.now() - now);
 	}
 
 	private getCacheKey(ctx: Context): string {
@@ -415,6 +410,7 @@ export interface CacheInvalidationConfig {
  *   3. For those counters, current values are read from Redis.
  *   4. Using {@link CacheCounterConfig.set}, these values are applied to the
  *      cached response body.
+ *   5. Return updated body.
  *
  * View counters are a special case because they should get bumped even if a
  * response gets served from the cache, where the API completely skipped.
@@ -427,7 +423,7 @@ export interface CacheInvalidationConfig {
 export interface CacheCounterConfig<T> {
 
 	/**
-	 * Name of the model the counter is linked to.
+	 * Name of the model the counter is linked to, e.g. "game".
 	 */
 	model: string;
 

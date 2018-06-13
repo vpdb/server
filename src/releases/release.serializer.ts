@@ -105,12 +105,12 @@ export class ReleaseSerializer extends Serializer<Release> {
 		}
 
 		// star
-		if (opts.starredReleaseIds) {
-			release.starred = includes(opts.starredReleaseIds, doc._id.toString());
-		}
 		if (!isUndefined(opts.starred)) {
 			release.starred = opts.starred;
+		} else if (opts.starredReleaseIds) {
+			release.starred = opts.starredReleaseIds.includes(doc._id.toString());
 		}
+
 		return release;
 	}
 

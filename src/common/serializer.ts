@@ -191,6 +191,11 @@ export abstract class Serializer<T extends Document | ModeratedDocument> {
 export interface SerializerOptions {
 	includedFields?: string[];
 	excludedFields?: string[];
+	/**
+	 * If set, the authenticated user has starred the entity. In this case, add
+	 * a `starred` property to the body. Check against `undefined` in order to
+	 * set to `true` or `false`.
+	 */
 	starred?: boolean | undefined;
 	fileIds?: string[];
 	thumbFlavor?: string;
@@ -199,6 +204,13 @@ export interface SerializerOptions {
 	thumbPerFile?: boolean;
 	full?: boolean;
 	includeProviderId?: string;
+
+	/**
+	 * A list of all starred release IDs of the authenticated user.
+	 * Used when listing releases in order to assign the `starred` flag.
+	 * When used elsewhere, make sure to invalidate the cache on that resource
+	 * after starring.
+	 */
 	starredReleaseIds?: string[];
 	fields?:string[];
 }

@@ -521,8 +521,7 @@ export class ReleaseApi extends Api {
 	public async list(ctx: Context) {
 
 		let pagination = this.pagination(ctx, 12, 60);
-		let stars: string[] = null;
-		let starSet: Set<string> = new Set();
+		let starredReleaseIds: string[] = null;
 		let titleRegex: RegExp = null;
 		let serializerOpts: SerializerOptions = {};
 		let fields = ctx.query && ctx.query.fields ? ctx.query.fields.split(',') : [];
@@ -615,7 +614,7 @@ export class ReleaseApi extends Api {
 				type: 'release',
 				_from: ctx.state.user._id
 			}, '_ref.release').exec();
-			stars = starsResult.map(s => s._ref.release.toString());
+			starredReleaseIds = starsResult.map(s => s._ref.release.toString());
 		}
 
 		// starred filter
@@ -625,9 +624,9 @@ export class ReleaseApi extends Api {
 				throw new ApiError('Must be logged when listing starred releases.').status(401);
 			}
 			if (ctx.query.starred === 'false') {
-				query.push({ _id: { $nin: stars } });
+				query.push({ _id: { $nin: starredReleaseIds } });
 			} else {
-				query.push({ _id: { $in: stars } });
+				query.push({ _id: { $in: starredReleaseIds } });
 			}
 		}
 
@@ -683,10 +682,6 @@ export class ReleaseApi extends Api {
 			}
 		}
 
-		if (stars) {
-			stars.forEach(id => starSet.add(id));
-		}
-
 		const sort = this.sortParams(ctx, { released_at: 1 }, {
 			released_at: '-released_at',
 			popularity: '-metrics.popularity',
@@ -710,8 +705,8 @@ export class ReleaseApi extends Api {
 		});
 
 		let releases = results.docs.map(release => {
-			if (stars) {
-				serializerOpts.starred = starSet.has(release._id.toString());
+			if (starredReleaseIds) {
+				serializerOpts.starred = starredReleaseIds.includes(release._id.toString());
 			}
 			serializerOpts.fileIds = fileIds;
 			release = state.serializers.Release.simple(ctx, release, serializerOpts);

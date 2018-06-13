@@ -26,7 +26,7 @@ import { logger } from './logger';
 import { Context } from './types/context';
 import { User } from '../users/user';
 import { Release } from '../releases/release';
-import { Document, GameReferenceDocument, MetricsModel } from 'mongoose';
+import { MetricsModel } from 'mongoose';
 
 /**
  * An in-memory cache using Redis.
@@ -96,7 +96,7 @@ class ApiCache {
 						await (state.models[upperFirst(counter.model)] as MetricsModel<any>).incrementCounter(counter.incrementCounter.getId(body), counter.incrementCounter.counter);
 					}
 				}
-				const values = await state.redis.mgetAsync.apply(state.redis, refs.map(r => r.key));
+				const values = refs.length > 0 ? (await state.redis.mgetAsync.apply(state.redis, refs.map(r => r.key))) : [];
 				for (let i = 0; i < values.length; i++) {
 					if (values[i]) {
 						refs[i].counter.set(body, refs[i].c, { [refs[i].id]: parseInt(values[i]) });
@@ -158,7 +158,14 @@ class ApiCache {
 		}
 	}
 
-	public async invalidateEntityStarred(user: User, entity: any, resource:string) {
+	/**
+	 * Invalidates caches depending on a star.
+	 *
+	 * @param {User} user User who starred the entity
+	 * @param entity Starred entity
+	 * @param {string} resource Endpoint name of list resource, e.g. "releases" of "/v1/releases". Will be invalidated by path if set.
+	 */
+	public async invalidateStarredEntity(user: User, entity: any, resource:string) {
 		const tags:CacheInvalidationTag[][] = [];
 		if (resource) {
 			tags.push([{ path: `/v1/${resource}` }, { user: user }]);
@@ -217,12 +224,12 @@ class ApiCache {
 		}
 
 		const now = Date.now();
-		const keys:string[][] = [];
 		const allRefs:string[][][] = [];
 		let invalidationKeys = new Set<string>();
 		for (let i = 0; i < tagLists.length; i++) {
 			const tags = tagLists[i];
 			allRefs[i] = [];
+			const keys:string[][] = [];
 			for (const tag of tags) {
 				const refs: string[] = [];
 
@@ -248,12 +255,12 @@ class ApiCache {
 					refs.push(this.getUserKey(tag.user));
 				}
 				allRefs[i].push(refs);
-				logger.wtf('SUNION %s', refs.join(' '));
 				const union = await state.redis.sunionAsync(...refs);
-				if (union.length > 0) {
-					keys.push();
-				}
+				// logger.wtf('SUNION %s -> %s', refs.join(' '), union.join(','));
+				keys.push(union);
 			}
+			// logger.verbose('invalidationKeys = new Set(%s | inter(%s))', Array.from(invalidationKeys).join(','), keys.map(k => '[' + k.join(',') + ']').join(','));
+			// logger.verbose('invalidationKeys = new Set(%s | %s)', Array.from(invalidationKeys).join(','), intersection(...keys).join(','));
 			invalidationKeys = new Set([...invalidationKeys, ...intersection(...keys)]); // redis could do this too using SUNIONSTORE to temp sets and INTER them
 		}
 		logger.info('[Cache.invalidate]: Invalidating caches: (%s).',
@@ -261,7 +268,7 @@ class ApiCache {
 
 		let n = 0;
 		for (const key of invalidationKeys) {
-			logger.wtf('DEL %s', key);
+			// logger.wtf('DEL %s', key);
 			await state.redis.delAsync(key);
 			n++;
 		}
@@ -354,7 +361,9 @@ class ApiCache {
 					}
 				}
 			}
-			refs.push(() => state.redis.msetAsync.apply(state.redis, refPairs));
+			if (refPairs.length > 0) {
+				refs.push(() => state.redis.msetAsync.apply(state.redis, refPairs));
+			}
 		}
 		await Promise.all(refs.map(ref => ref()));
 		logger.debug('[Cache] No hit, saved as "%s" with references [ %s ] and %s counters in %sms.',
@@ -363,7 +372,7 @@ class ApiCache {
 
 	private getCacheKey(ctx: Context): string {
 		const normalizedQuery = this.normalizeQuery(ctx);
-		return this.redisCachePrefix + (ctx.state.user ? ctx.state.user.id : 'anon') + ':' + ctx.request.path + (normalizedQuery ? '?' : '') + normalizedQuery;
+		return this.redisCachePrefix + (ctx.state.user ? ctx.state.user.id + ':' : '') + ctx.request.path + (normalizedQuery ? '?' : '') + normalizedQuery;
 	}
 
 	private getPathKey(path: string): string {

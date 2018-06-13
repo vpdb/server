@@ -42,30 +42,39 @@ describe.only('The VPDB API cache', () => {
 		await api.as('admin').del('/v1/cache').then(res => res.expectStatus(204));
 	});
 
-//	afterEach(async () => await api.as('admin').del('/v1/cache').then(res => res.expectStatus(204)));
+	afterEach(async () => await api.as('admin').del('/v1/cache').then(res => res.expectStatus(204)));
 	after(async () => await api.teardown());
 
-	describe('when listing releases', () => {
+	describe('when accessing a cache-enabled route', () => {
 
-		it('should cache the second request', async () => {
+		it('should cache release list for same user', async () => {
 			await api.get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
 			await api.get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'hit'));
 		});
 
-		it('should not cache the same request for a different user', async () => {
+		it('should not cache release list for different user', async () => {
 			await api.get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
 			await api.as('member').get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
 			await api.as('moderator').get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
 		});
-	});
 
-	describe('when viewing a game', () => {
+		it('should cache release details but update view counter', async () => {
+			res = await api.get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'miss'));
+			const views = res.data.counter.views;
+			res = await api.get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'hit'));
+			expect(res.data.counter.views).to.be(views + 1);
+		});
 
-		it('should cache the second request while updating counter', async () => {
+		it('should cache game details but update view counter', async () => {
 			res = await api.get('/v1/games/' + release.game.id).then(res => res.expectHeader('x-cache-api', 'miss'));
 			const views = res.data.counter.views;
 			res = await api.get('/v1/games/' + release.game.id).then(res => res.expectHeader('x-cache-api', 'hit'));
 			expect(res.data.counter.views).to.be(views + 1);
+		});
+
+		it('should cache game list for same user', async () => {
+			await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'hit'));
 		});
 	});
 
@@ -91,8 +100,37 @@ describe.only('The VPDB API cache', () => {
 			expect(res.data.find(r => r.id === release.id).starred).to.be(true);
 		});
 
-		it.only('should invalidate game details for starring user', async () => {
+		it('should cache release list for other users but update star counter', async () => {
 
+			// first, it's a miss
+			res = await api.get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
+			const numStars = res.data.find(r => r.id === release.id).counter.stars;
+
+			// star
+			await api.as(user).post('/v1/releases/' + release.id + '/star', {}).then(res => res.expectStatus(201));
+
+			// assert hit
+			res = await api.get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'hit'));
+			expect(res.data.find(r => r.id === release.id).counter.stars).to.be(numStars + 1);
+		});
+
+		it('should cache release details for starring user but update star counter', async () => {
+			const url = '/v1/releases/' + release.id;
+
+			// first, it's a miss
+			res = await api.as(user).get(url).then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.as(user).get(url).then(res => res.expectHeader('x-cache-api', 'hit'));
+			const numStars = res.data.counter.stars;
+
+			// star
+			await api.as(user).post('/v1/releases/' + release.id + '/star', {}).then(res => res.expectStatus(201));
+
+			// assert hit
+			res = await api.as(user).get(url).then(res => res.expectHeader('x-cache-api', 'hit'));
+			expect(res.data.counter.stars).to.be(numStars + 1);
+		});
+
+		it('should invalidate game details for starring user', async () => {
 			const url = '/v1/games/' + release.game.id;
 
 			// first, it's a miss
@@ -108,48 +146,37 @@ describe.only('The VPDB API cache', () => {
 			expect(res.data.releases.find(r => r.id === release.id).starred).to.be(true);
 		});
 
-		it('should cache release details for starring user while updating star counter', async () => {
+		it('should cache game details for other users but update star counter', async () => {
+			const url = '/v1/games/' + release.game.id;
 
-			// these must be a miss later
-			//await api.as('member').get('/v1/releases?pretty').then(res => res.expectHeader('x-cache-api', 'miss'));
-			await api.debug().as('member').get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'miss'));
-			// const numStars = res.data.counter.stars;
-			//
-			// // star
-			// await api.as('member').post('/v1/releases/' + release.id + '/star', {}).then(res => res.expectStatus(201));
-			//
-			// // assert hits
-			// await api.as('member').get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'hit'));
-			// res = await api.as('member').get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'hit'));
-			// expect(res.data.counter.stars).to.be(numStars + 1);
-			// res = await api.get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'hit'));
-			// expect(res.data.counter.stars).to.be(numStars + 1);
-		});
-
-		it('should cache game details for starring user while updating star counter', async () => {
-
-
-		});
-
-		it('should cache release details and releases for other users while updating star counter', async () => {
-
-			// these must be a hit later
-			await api.get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'miss'));
-			await api.as('member').get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
-			res = await api.as('member').get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'miss'));
-			const numStars = res.data.counter.stars;
+			// first, it's a miss
+			res = await api.get(url).then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.get(url).then(res => res.expectHeader('x-cache-api', 'hit'));
+			const numStars = res.data.releases.find(r => r.id === release.id).counter.stars;
 
 			// star
-			await api.as('member').post('/v1/releases/' + release.id + '/star', {}).then(res => res.expectStatus(201));
+			await api.as(user).post('/v1/releases/' + release.id + '/star', {}).then(res => res.expectStatus(201));
 
-			// assert hits
-			await api.as('member').get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'hit'));
-			res = await api.as('member').get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'hit'));
-			expect(res.data.counter.stars).to.be(numStars + 1);
-			res = await api.get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'hit'));
-			expect(res.data.counter.stars).to.be(numStars + 1);
-
+			// assert hit
+			res = await api.get(url).then(res => res.expectHeader('x-cache-api', 'hit'));
+			expect(res.data.releases.find(r => r.id === release.id).counter.stars).to.be(numStars + 1);
 		});
+
+		it('should cache game list', async () => {
+			const url = '/v1/games';
+
+			// first, it's a miss
+			await api.as(user).get(url).then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.get(url).then(res => res.expectHeader('x-cache-api', 'miss'));
+
+			// star
+			await api.as(user).post('/v1/releases/' + release.id + '/star', {}).then(res => res.expectStatus(201));
+
+			// assert hit
+			await api.as(user).get(url).then(res => res.expectHeader('x-cache-api', 'hit'));
+			await api.get(url).then(res => res.expectHeader('x-cache-api', 'hit'));
+		});
+
 	});
 
 });

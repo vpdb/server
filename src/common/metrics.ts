@@ -22,7 +22,7 @@ import { logger } from './logger';
 import { Document, Model } from 'mongoose';
 import { Rating } from '../ratings/rating';
 import { config } from './settings';
-
+import { apiCache } from './api.cache';
 
 class Metrics {
 
@@ -57,9 +57,11 @@ class Metrics {
 		if (!_atm) {
 			// nothing set, update and go on.
 			await this.updateGlobalMean(atm);
+
 		} else if (Math.round(_atm * precision) !== Math.round(atm * precision)) {
-			logger.info('[metrics] Global mean of %ss changed from %s to %s, re-calculating bayesian estimages.', ref, Math.round(_atm * precision) / precision, Math.round(atm * precision) / precision);
+			logger.info('[metrics] Global mean of %ss changed from %s to %s, re-calculating bayesian estimates.', ref, Math.round(_atm * precision) / precision, Math.round(atm * precision) / precision);
 			await this.updateAllEntities(ref, atm);
+			await apiCache.invalidateAllEntities(ref);
 		}
 		return result;
 	}
@@ -119,6 +121,10 @@ class Metrics {
 			score: (n / (n + m)) * am + (m / (n + m)) * atm
 		};
 		await entity.update({ rating: metrics });
+
+		// invalidate cache
+		await apiCache.invalidateEntity(ref, entity.id);
+
 		return metrics;
 	}
 

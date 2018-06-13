@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { intersection, isObject, upperFirst } from 'lodash';
+import { intersection, isObject, upperFirst, get } from 'lodash';
 import Router, { IRouterOptions } from 'koa-router';
 import pathToRegexp from 'path-to-regexp';
 
@@ -52,6 +52,13 @@ class ApiCache {
 	private readonly redisCounterPrefix = 'api-cache-counter:';
 
 	private readonly cacheRoutes: CacheRoute<any>[] = [];
+
+	private readonly endpoints: Map<string, string> = new Map([
+		['release', '/v1/releases'],
+		['game', '/v1/games'],
+		['backglass', '/v1/backglasses'],
+		['medium', '/v1/media'],
+	]);
 
 	/**
 	 * The middleware. Stops the chain on cache hit or continues and saves
@@ -88,12 +95,12 @@ class ApiCache {
 					for (const c of counter.counters) {
 						const counters = counter.get(body, c);
 						for (const id of Object.keys(counters)) {
-							refs.push({ key: this.getCounterKey(counter.model, id, c), id, c, counter });
+							refs.push({ key: this.getCounterKey(counter.modelName, id, c), id, c, counter });
 						}
 					}
 					// update db of view counter
 					if (counter.incrementCounter) {
-						await (state.models[upperFirst(counter.model)] as MetricsModel<any>).incrementCounter(counter.incrementCounter.getId(body), counter.incrementCounter.counter);
+						await (state.models[upperFirst(counter.modelName)] as MetricsModel<any>).incrementCounter(counter.incrementCounter.getId(body), counter.incrementCounter.counter);
 					}
 				}
 				const values = refs.length > 0 ? (await state.redis.mgetAsync.apply(state.redis, refs.map(r => r.key))) : [];
@@ -132,9 +139,9 @@ class ApiCache {
 	 * The config defines how caches on that route are tagged for invalidation.
 	 *
 	 * @param {Router} router Router
-	 * @param {string} path Path of the route (same passed to the router)
-	 * @param {CacheInvalidationTag} config How responses from the route get invalidated.
-	 * @param {CacheCounterConfig} counters
+	 * @param {string} path Path of the route (same passed to the router).
+	 * @param {CacheInvalidationTag} config How responses from the route get invalidated. See {@link CacheInvalidationTag}.
+	 * @param {CacheCounterConfig} counters Counter config, see {@link CacheCounterConfig}.
 	 */
 	public enable<T>(router: Router, path: string, config: CacheInvalidationConfig, counters?:CacheCounterConfig<T>[]) {
 		const opts = (router as any).opts as IRouterOptions;
@@ -144,13 +151,13 @@ class ApiCache {
 	/**
 	 * Updates a counter cache.
 	 *
-	 * @param {string} entity Entity name, e.g. 'game'.
+	 * @param {string} modelName Name of the model, e.g. "game"
 	 * @param {string} entityId ID of the entity to update
 	 * @param {string} counterName Name of the counter, e.g. 'view'.
 	 * @param {boolean} decrement If true, don't increment but decrement.
 	 */
-	public async incrementCounter(entity:string, entityId:string, counterName:string, decrement:boolean) {
-		const key = this.getCounterKey(entity, entityId, counterName);
+	public async incrementCounter(modelName: string, entityId: string, counterName: string, decrement: boolean) {
+		const key = this.getCounterKey(modelName, entityId, counterName);
 		if (decrement) {
 			await state.redis.decrAsync(key);
 		} else {
@@ -159,16 +166,30 @@ class ApiCache {
 	}
 
 	/**
+	 * Clears all caches listing the given entity and the entity's details.
+	 *
+	 * @param {string} modelName Name of the model, e.g. "game"
+	 * @param {string} entityId ID of the entity
+	 */
+	public async invalidateEntity(modelName: string, entityId: string) {
+		const tag: CacheInvalidationTag = { entities: { [modelName]: entityId } };
+		if (this.endpoints.has(modelName)) {
+			tag.path = this.endpoints.get(modelName);
+		}
+		await this.invalidate([tag]);
+	}
+
+	/**
 	 * Invalidates caches depending on a star.
 	 *
+	 * @param {string} modelName Name of the model, e.g. "game"
 	 * @param {User} user User who starred the entity
 	 * @param entity Starred entity
-	 * @param {string} resource Endpoint name of list resource, e.g. "releases" of "/v1/releases". Will be invalidated by path if set.
 	 */
-	public async invalidateStarredEntity(user: User, entity: any, resource:string) {
+	public async invalidateStarredEntity(modelName: string, entity: any, user: User) {
 		const tags:CacheInvalidationTag[][] = [];
-		if (resource) {
-			tags.push([{ path: `/v1/${resource}` }, { user: user }]);
+		if (this.endpoints.has(modelName)) {
+			tags.push([{ path: this.endpoints.get(modelName) }, { user: user }]);
 		}
 		if (entity._game && entity._game.id) {
 			tags.push([{ path: '/v1/games/' + entity._game.id }, { user: user }]);
@@ -189,13 +210,20 @@ class ApiCache {
 	}
 
 	/**
-	 * Clears all caches listing the given entity and the entity's details.
+	 * Invalidates all caches containing an entity type.
 	 *
-	 * @param {string} entity Entity name, e.g. 'release', 'game'.
-	 * @param {string} entityId ID of the entity
+	 * @param {string} modelName Name of the model, e.g. "game"
 	 */
-	public async invalidateEntity(entity: string, entityId: string) {
-		await this.invalidate([{ resources: [entity], entities: { [entity]: entityId } }]);
+	public async invalidateAllEntities(modelName: string) {
+
+		// 1. invalidate tagged resources
+		await this.invalidate([{ resources: [modelName] }]);
+
+		// 2. invalidate entities
+		const entityRefs = await state.redis.keysAsync(this.getEntityKey(modelName, '*'));
+		const keys = await state.redis.sunionAsync(entityRefs);
+		logger.verbose('[ApiCache.invalidateAllEntities] Clearing: %s', keys.join(', '));
+		await state.redis.delAsync(keys);
 	}
 
 	/**
@@ -263,7 +291,7 @@ class ApiCache {
 			// logger.verbose('invalidationKeys = new Set(%s | %s)', Array.from(invalidationKeys).join(','), intersection(...keys).join(','));
 			invalidationKeys = new Set([...invalidationKeys, ...intersection(...keys)]); // redis could do this too using SUNIONSTORE to temp sets and INTER them
 		}
-		logger.info('[Cache.invalidate]: Invalidating caches: (%s).',
+		logger.info('[ApiCache.invalidate]: Invalidating caches: (%s).',
 			'(' + allRefs.map(r => '(' + r.map(r => r.join(' || ')).join(') && (') + ')').join(') || (') + ')');
 
 		let n = 0;
@@ -272,7 +300,7 @@ class ApiCache {
 			await state.redis.delAsync(key);
 			n++;
 		}
-		logger.info('[Cache.invalidate]: Cleared %s caches in %sms.', n, Date.now() - now);
+		logger.info('[ApiCache.invalidate]: Cleared %s caches in %sms.', n, Date.now() - now);
 		return n;
 	}
 
@@ -282,16 +310,7 @@ class ApiCache {
 	 * @return {Promise<number>} Number of invalidated caches
 	 */
 	public async invalidateAll(): Promise<number> {
-		const num = await state.redis.evalAsync(
-			"local keysToDelete = redis.call('keys', ARGV[1]) " + // find keys with wildcard
-			"if unpack(keysToDelete) ~= nil then " +              // if there are any keys
-			"return redis.call('del', unpack(keysToDelete)) " +   // delete all
-			"else " +
-			"return 0 " +                                         // if no keys to delete
-			"end ",
-			0,                                                    // no keys names passed, only one argument ARGV[1]
-			this.redisCachePrefix + '*');
-		return num as number;
+		return this.deleteWildcard('api-cache*');
 	}
 
 	/**
@@ -303,6 +322,7 @@ class ApiCache {
 	 */
 	private async setCache<T>(ctx: Context, key: string, cacheRoute: CacheRoute<T>) {
 
+		let body:any;
 		const now = Date.now();
 		const refs: (() => Promise<any>)[] = [];
 		const refKeys: string[] = [];
@@ -339,6 +359,16 @@ class ApiCache {
 			}
 		}
 
+		// reference children
+		if (cacheRoute.config.children) {
+			body = isObject(ctx.response.body) ? ctx.response.body : JSON.parse(ctx.response.body);
+			for (const entity of get(body, cacheRoute.config.children.entityField)) {
+				const refKey = this.getEntityKey(cacheRoute.config.children.modelName, get(entity, cacheRoute.config.children.idField));
+				refs.push(() => state.redis.saddAsync(refKey, key));
+				refKeys.push(refKey);
+			}
+		}
+
 		// reference user
 		if (ctx.state.user) {
 			const refKey = this.getUserKey(ctx.state.user);
@@ -350,12 +380,12 @@ class ApiCache {
 		let numCounters = 0;
 		if (cacheRoute.counters) {
 			const refPairs:any[] = [];
-			const body = isObject(ctx.response.body) ? ctx.response.body : JSON.parse(ctx.response.body);
+			body = body || (isObject(ctx.response.body) ? ctx.response.body : JSON.parse(ctx.response.body));
 			for (const counter of cacheRoute.counters) {
 				for (const c of counter.counters) {
 					const counters = counter.get(body, c);
 					for (const id of Object.keys(counters)) {
-						refPairs.push(this.getCounterKey(counter.model, id, c));
+						refPairs.push(this.getCounterKey(counter.modelName, id, c));
 						refPairs.push(parseInt(counters[id] as any));
 						numCounters++;
 					}
@@ -383,8 +413,8 @@ class ApiCache {
 		return this.redisRefPrefix + 'resource:' + resource;
 	}
 
-	private getEntityKey(entity: string, entityId: string): string {
-		return this.redisRefPrefix + 'entity:' + entity + ':' + entityId;
+	private getEntityKey(modelName: string, entityId: string): string {
+		return this.redisRefPrefix + 'entity:' + modelName + ':' + entityId;
 	}
 
 	private getUserKey(user: User): string {
@@ -397,6 +427,24 @@ class ApiCache {
 
 	private normalizeQuery(ctx: Context) {
 		return Object.keys(ctx.query).sort().map(key => key + '=' + ctx.query[key]).join('&');
+	}
+
+	/**
+	 * Clears
+	 * @see https://github.com/galanonym/redis-delete-wildcard/blob/master/index.js
+	 * @return {Promise<number>} Number of invalidated caches
+	 */
+	private async deleteWildcard(wildcard:string): Promise<number> {
+		const num = await state.redis.evalAsync(
+			"local keysToDelete = redis.call('keys', ARGV[1]) " + // find keys with wildcard
+			"if unpack(keysToDelete) ~= nil then " +              // if there are any keys
+			"return redis.call('del', unpack(keysToDelete)) " +   // delete all
+			"else " +
+			"return 0 " +                                         // if no keys to delete
+			"end ",
+			0,                                                    // no keys names passed, only one argument ARGV[1]
+			wildcard);
+		return num as number;
 	}
 }
 
@@ -439,9 +487,17 @@ export interface CacheInvalidationTag {
 	user?: User;
 }
 
+/**
+ * Defines how to invalidate a given route.
+ */
 export interface CacheInvalidationConfig {
 	/**
 	 * Reference one or multiple resources.
+	 *
+	 * Only routes that contain arbitrary instances of the entity are listed
+	 * here, like lists that can be sorted. For routes returning one specific
+	 * instance, use {@link resources} and for entities *linked* to a
+	 * specific object, use {@link children}.
 	 *
 	 * Multiple resources are needed if a resource is dependent on another
 	 * resource, e.g. the games resource which also includes releases and
@@ -451,10 +507,30 @@ export interface CacheInvalidationConfig {
 
 	/**
 	 * Reference a specific entity.
-	 * The key is the entity's name and the value how it's parsed from the URL
-	 * (`:id` becomes `id`).
+	 * The key is the entity's model name and the value how it's parsed from
+	 * the URL (e.g. `:id` becomes `id`).
 	 */
 	entities?: { [key: string]: string; };
+
+	/**
+	 * References child objects.
+	 */
+	children?: {
+		/**
+		 * Name of the model
+		 */
+		modelName: string;
+
+		/**
+		 * Points to array where the children are
+		 */
+		entityField: string,
+
+		/**
+		 * Points to the child's ID.
+		 */
+		idField: string
+	}
 }
 
 /**
@@ -490,7 +566,7 @@ export interface CacheCounterConfig<T> {
 	/**
 	 * Name of the model the counter is linked to, e.g. "game".
 	 */
-	model: string;
+	modelName: string;
 
 	/**
 	 * The counters defined for that model, e.g. [ "downloads", "views" ]

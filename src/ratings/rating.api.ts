@@ -32,16 +32,44 @@ import { apiCache } from '../common/api.cache';
 
 export class RatingApi extends Api {
 
+	/**
+	 * Adds a new rating for a game.
+	 *
+	 * @see POST /v1/games/:id/rating
+	 * @param {Context} ctx Koa context
+	 */
 	public async createForGame(ctx: Context) {
 		return await this.create(ctx, 'game', this.find(state.models.Game, 'game'));
 	}
 
+	/**
+	 * Retrieves the authenticated user's rating of a game.
+	 *
+	 * @see GET /v1/games/:id/rating
+	 * @param {Context} ctx Koa context
+	 */
 	public async getForGame(ctx: Context) {
 		return await this.view(ctx, this.find(state.models.Game, 'game'), 'title');
 	}
 
+	/**
+	 * Updates an existing rating of a game.
+	 *
+	 * @see PUT /v1/games/:id/rating
+	 * @param {Context} ctx Koa context
+	 */
 	public async updateForGame(ctx: Context) {
 		return await this.update(ctx, 'game', this.find(state.models.Game, 'game'), 'title');
+	}
+
+	/**
+	 * Deletes an existing rating of a game.
+	 *
+	 * @see DELETE /v1/games/:id/rating
+	 * @param {Context} ctx Koa context
+	 */
+	public async deleteForGame(ctx: Context) {
+		return await this.del(ctx, 'game', this.find(state.models.Game, 'game'), 'title');
 	}
 
 	/**
@@ -55,7 +83,7 @@ export class RatingApi extends Api {
 	}
 
 	/**
-	 * Retrieves the rating for a release.
+	 * Retrieves the authenticated user's rating for a release.
 	 *
 	 * @see GET /v1/releases/:id/rating
 	 * @param {Context} ctx Koa context
@@ -72,6 +100,16 @@ export class RatingApi extends Api {
 	 */
 	public async updateForRelease(ctx: Context) {
 		return await this.update(ctx, 'release', this.find(state.models.Release, 'release', '_game'), 'name');
+	}
+
+	/**
+	 * Updates a rating for a release.
+	 *
+	 * @see DELETE /v1/releases/:id/rating
+	 * @param {Context} ctx Koa context
+	 */
+	public async deleteForRelease(ctx: Context) {
+		return await this.del(ctx, 'release', this.find(state.models.Release, 'release', '_game'), 'name');
 	}
 
 	/**
@@ -93,34 +131,34 @@ export class RatingApi extends Api {
 	 * Generic function for creating a rating.
 	 *
 	 * @param {Context} ctx Koa context
-	 * @param {string} ref Reference name
+	 * @param {string} modelName Name of the model, e.g. "game"
 	 * @param {(ctx: Context) => Promise<[Document, Rating]>} find Function that returns entity and rating.
 	 */
-	private async create(ctx: Context, ref: string, find: (ctx: Context) => Promise<[Document, Rating]>) {
+	private async create(ctx: Context, modelName: string, find: (ctx: Context) => Promise<[Document, Rating]>) {
 		const [entity, duplicateRating] = await find(ctx);
 		if (duplicateRating) {
 			throw new ApiError('Cannot vote twice. Use PUT in order to update a vote.').warn().status(400);
 		}
 		const obj = {
 			_from: ctx.state.user._id,
-			_ref: { [ref]: entity._id },
+			_ref: { [modelName]: entity._id },
 			value: ctx.request.body.value,
 			created_at: new Date()
 		};
 		const rating = new state.models.Rating(obj);
 		await rating.save();
-		await this.updateRatedEntity(ctx, ref, entity, rating, 201);
+		await this.updateRatedEntity(ctx, modelName, entity, rating, 201);
 	}
 
 	/**
 	 * Generic function for updating a rating.
 	 *
 	 * @param {Context} ctx Koa context
-	 * @param {string} ref Reference name
+	 * @param {string} modelName Name of the model, e.g. "game"
 	 * @param {(ctx: Context) => Promise<[Document, Rating]>} find Function that returns entity and rating.
 	 * @param {string} titleAttr Attribute of the entity that contains a title
 	 */
-	private async update(ctx: Context, ref: string, find: (ctx: Context) => Promise<[Document, Rating]>, titleAttr: string) {
+	private async update(ctx: Context, modelName: string, find: (ctx: Context) => Promise<[Document, Rating]>, titleAttr: string) {
 		const [entity, rating] = await find(ctx);
 		if (!rating) {
 			throw new ApiError('No rating of <%s> for "%s" found.', ctx.state.user.email, (entity as any)[titleAttr]).status(404);
@@ -129,48 +167,73 @@ export class RatingApi extends Api {
 		rating.modified_at = new Date();
 		await rating.save();
 
-		// invalidate cache
-		await apiCache.invalidateEntity(ref, entity.id);
+		await this.updateRatedEntity(ctx, modelName, entity, rating, 200);
+	}
+
+
+	/**
+	 * Generic function for deleting a rating.
+	 *
+	 * @param {Context} ctx Koa context
+	 * @param {string} modelName Name of the model, e.g. "game"
+	 * @param {(ctx: Context) => Promise<[Document, Rating]>} find Function that returns entity and rating.
+	 * @param {string} titleAttr Attribute of the entity that contains a title
+	 */
+	private async del(ctx: Context, modelName: string, find: (ctx: Context) => Promise<[Document, Rating]>, titleAttr: string) {
+		const [entity, rating] = await find(ctx);
+		if (!rating) {
+			throw new ApiError('No rating of <%s> for "%s" found.', ctx.state.user.email, (entity as any)[titleAttr]).status(404);
+		}
+		rating.value = ctx.request.body.value;
+		rating.modified_at = new Date();
+		await rating.remove();
+
+		await this.updateRatedEntity(ctx, modelName, entity, rating, 204);
 	}
 
 	/**
 	 * Updates an entity with new rating data and returns the result.
 	 *
 	 * @param {Context} ctx Koa context
-	 * @param {string} ref Reference name
+	 * @param {string} modelName Name of the model, e.g. "game"
 	 * @param entity Found entity
 	 * @param {Rating} rating New rating
 	 * @param {number} status Success status, either 200 or 201
 	 * @return {Promise<boolean>}
 	 */
-	private async updateRatedEntity(ctx: Context, ref: string, entity: any, rating: Rating, status: number) {
-		const result = await metrics.onRatingUpdated(ref, entity, rating);
+	private async updateRatedEntity(ctx: Context, modelName: string, entity: any, rating: Rating, status: number) {
+		const result = await metrics.onRatingUpdated(modelName, entity, rating);
 
 		// if not 201, add modified date
 		if (status === 200) {
 			result.modified_at = rating.modified_at;
-			logger.info('[RatingApi.updateRatedEntity] User <%s> updated rating for %s %s to %s.', ctx.state.user, ref, entity.id, rating.value);
+			logger.info('[RatingApi.updateRatedEntity] User <%s> updated rating for %s %s to %s.', ctx.state.user, modelName, entity.id, rating.value);
 		} else {
-			logger.info('[RatingApi.updateRatedEntity] User <%s> added new rating for %s %s with %s.', ctx.state.user, ref, entity.id, rating.value);
+			logger.info('[RatingApi.updateRatedEntity] User <%s> added new rating for %s %s with %s.', ctx.state.user, modelName, entity.id, rating.value);
 		}
 
 		this.success(ctx, result, status);
 
-		await LogEventUtil.log(ctx, 'rate_' + ref, true, this.logPayload(rating, entity, ref, status === 200), this.logRefs(rating, entity, ref));
+		if (rating) {
+			await LogEventUtil.log(ctx, 'rate_' + modelName, true, this.logPayload(rating, entity, modelName, status === 200), this.logRefs(rating, entity, modelName));
+		} else {
+			await LogEventUtil.log(ctx, 'unrate_' + modelName, true, this.logPayload(null, entity, modelName, false), this.logRefs(null, entity, modelName));
+		}
+
 
 		// invalidate cache
-		await apiCache.invalidateEntity(ref, entity.id);
+		await apiCache.invalidateEntity(modelName, entity.id);
 	}
 
 	/**
 	 * Returns entity and rating for a given type.
 	 *
 	 * @param {Model<Document>} model Model that can be rated
-	 * @param {string} ref Reference name
+	 * @param {string} modelName Name of the model, e.g. "game"
 	 * @param {string} [populate] If set, populates additional fields.
 	 * @return {(ctx: Context) => Promise<[Document, Rating]>} Function returning entity and rating
 	 */
-	private find(model: Model<Document>, ref: string, populate?: string) {
+	private find(model: Model<Document>, modelName: string, populate?: string) {
 		return async (ctx: Context): Promise<[Document, Rating]> => {
 			const query = model.findOne({ id: ctx.params.id });
 			if (populate) {
@@ -178,28 +241,35 @@ export class RatingApi extends Api {
 			}
 			const entity = await query.exec();
 			if (!entity) {
-				throw new ApiError('No such %s with ID "%s"', ref, ctx.params.id).status(404);
+				throw new ApiError('No such %s with ID "%s"', modelName, ctx.params.id).status(404);
 			}
 			const q = {
 				_from: ctx.state.user._id,
-				['_ref.' + ref]: entity._id
+				['_ref.' + modelName]: entity._id
 			};
 			const rating = await state.models.Rating.findOne(q);
 			return [entity, rating];
 		};
 	}
 
-	private async logPayload(rating: any, entity: any, type: string, updateOnly: boolean) {
-		const payload: any = { rating: pick(rating.toObject(), ['id', 'value']), updated: updateOnly };
-		payload[type] = entity.toObject();
+	private async logPayload(rating: any, entity: any, modelName: string, updateOnly: boolean) {
+		let payload:any;
+		if (rating) {
+			payload = { rating: pick(rating.toObject(), ['id', 'value']), updated: updateOnly };
+		} else {
+			payload = { deleted: true };
+		}
+		payload[modelName] = entity.toObject();
 		return payload;
 	}
 
-	private async logRefs(rating: any, entity: any, type: string) {
+	private async logRefs(rating: any, entity: any, modelName: string) {
 		const ref: any = {};
-		ref[type] = rating._ref[type]._id || rating._ref[type];
-		if (type === 'release') {
-			ref.game = entity._game._id;
+		if (rating) {
+			ref[modelName] = rating._ref[modelName]._id || rating._ref[modelName];
+			if (modelName === 'release') {
+				ref.game = entity._game._id;
+			}
 		}
 		return ref;
 	}

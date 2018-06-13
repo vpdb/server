@@ -38,11 +38,11 @@ describe.only('The VPDB API cache', () => {
 			admin: { roles: ['admin'] }
 		});
 		release = await releaseHelper.createRelease('moderator');
-		otherRelease = await releaseHelper.createRelease('moderator');
+		//otherRelease = await releaseHelper.createRelease('moderator');
 		await api.as('admin').del('/v1/cache').then(res => res.expectStatus(204));
 	});
 
-	afterEach(async () => await api.as('admin').del('/v1/cache').then(res => res.expectStatus(204)));
+//	afterEach(async () => await api.as('admin').del('/v1/cache').then(res => res.expectStatus(204)));
 	after(async () => await api.teardown());
 
 	describe('when listing releases', () => {
@@ -71,7 +71,67 @@ describe.only('The VPDB API cache', () => {
 
 	describe('when starring a release', () => {
 
-		it('should not invalidate release details and releases', async () => {
+		const user = 'member';
+
+		// remove star
+		afterEach(async () => await api.as(user).del('/v1/releases/' + release.id + '/star').then(res => res.expectStatus(204)));
+
+		it('should invalidate release list for starring user', async () => {
+
+			// first, it's a miss
+			res = await api.as(user).get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.as(user).get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'hit'));
+			expect(res.data.find(r => r.id === release.id).starred).to.be(false);
+
+			// star
+			await api.as(user).post('/v1/releases/' + release.id + '/star', {}).then(res => res.expectStatus(201));
+
+			// miss again, because of `starred` flag in release list
+			res = await api.as(user).get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
+			expect(res.data.find(r => r.id === release.id).starred).to.be(true);
+		});
+
+		it.only('should invalidate game details for starring user', async () => {
+
+			const url = '/v1/games/' + release.game.id;
+
+			// first, it's a miss
+			res = await api.as(user).get(url).then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.as(user).get(url).then(res => res.expectHeader('x-cache-api', 'hit'));
+			expect(res.data.releases.find(r => r.id === release.id).starred).to.be(false);
+
+			// star
+			await api.as(user).post('/v1/releases/' + release.id + '/star', {}).then(res => res.expectStatus(201));
+
+			// miss again, because of `starred` flag in release list
+			res = await api.as(user).get(url).then(res => res.expectHeader('x-cache-api', 'miss'));
+			expect(res.data.releases.find(r => r.id === release.id).starred).to.be(true);
+		});
+
+		it('should cache release details for starring user while updating star counter', async () => {
+
+			// these must be a miss later
+			//await api.as('member').get('/v1/releases?pretty').then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.debug().as('member').get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'miss'));
+			// const numStars = res.data.counter.stars;
+			//
+			// // star
+			// await api.as('member').post('/v1/releases/' + release.id + '/star', {}).then(res => res.expectStatus(201));
+			//
+			// // assert hits
+			// await api.as('member').get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'hit'));
+			// res = await api.as('member').get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'hit'));
+			// expect(res.data.counter.stars).to.be(numStars + 1);
+			// res = await api.get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'hit'));
+			// expect(res.data.counter.stars).to.be(numStars + 1);
+		});
+
+		it('should cache game details for starring user while updating star counter', async () => {
+
+
+		});
+
+		it('should cache release details and releases for other users while updating star counter', async () => {
 
 			// these must be a hit later
 			await api.get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'miss'));
@@ -88,6 +148,8 @@ describe.only('The VPDB API cache', () => {
 			expect(res.data.counter.stars).to.be(numStars + 1);
 			res = await api.get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'hit'));
 			expect(res.data.counter.stars).to.be(numStars + 1);
+
 		});
 	});
+
 });

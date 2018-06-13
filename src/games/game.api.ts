@@ -372,8 +372,8 @@ export class GameApi extends Api {
 				const stars = await state.models.Star.find({
 					type: 'release',
 					_from: ctx.state.user._id
-				}).populate('_ref.release').exec();
-				opts.starredReleaseIds = stars.map(star => (star._ref.release as Release).id.toString());
+				}).exec();
+				opts.starredReleaseIds = stars.map(star => star._ref.release.toString());
 			}
 			const releases = await state.models.Release.find(state.models.Release.approvedQuery(rlsQuery))
 				.populate({ path: '_tags' })

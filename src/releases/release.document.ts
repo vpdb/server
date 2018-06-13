@@ -100,7 +100,7 @@ export class ReleaseDocument {
 		let files: File[] = [];
 		if (isArray(release)) {
 			[ files ] = release.map(ReleaseDocument.getLinkedFiles);
-			return files;
+			return files || [];
 		}
 		if (release.versions && release.versions.length > 0) {
 			[[files]] = release.versions.map(v => {

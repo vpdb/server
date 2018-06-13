@@ -61,6 +61,6 @@ router.get('/v1/games/:id/release-name', api.auth(api.releaseName.bind(api), 're
 
 apiCache.enable(router, '/v1/games', { resources: ['game', 'release', 'user'] }, gameListCacheCounters);
 apiCache.enable(router, '/v1/games/:id', { resources: ['game', 'release', 'user'] }, gameDetailsCacheCounters);
-apiCache.enable(router, '/v1/games/:gameId/backglasses', { resources: ['backglass', 'user'] });
-apiCache.enable(router, '/v1/games/:gameId/media', { resources: ['medium', 'user'] });
-apiCache.enable(router, '/v1/games/:id/events', { resources: ['log_event'] });
+//apiCache.enable(router, '/v1/games/:gameId/backglasses', { resources: ['backglass', 'user'] });
+//apiCache.enable(router, '/v1/games/:gameId/media', { resources: ['medium', 'user'] });
+//apiCache.enable(router, '/v1/games/:id/events', { resources: ['log_event'] });

@@ -24,6 +24,11 @@ declare module 'redis' {
 	interface RedisClient extends Commands<boolean>, EventEmitter {
 
 		/**
+		 * Find all keys matching the given pattern.
+		 */
+		keysAsync(pattern: string): Promise<string[]>;
+
+		/**
 		 * Set the string value of a key.
 		 */
 		setAsync(key: string, value: string|number): Promise<'OK'>;

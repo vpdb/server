@@ -30,16 +30,16 @@ import { apiCache } from '../common/api.cache';
 
 export class StarApi extends Api {
 
-	private readonly models: { [key: string]: { model: string, resource?:string, titleAttr?: string, populate?: string } };
+	private readonly models: { [key: string]: { model: string, titleAttr?: string, populate?: string } };
 
 	constructor() {
 		super();
 		this.models = {
-			release: { model: 'Release', titleAttr: 'name', populate: '_game', resource: 'releases' },
-			game: { model: 'Game', titleAttr: 'title', resource: 'games' },
+			release: { model: 'Release', titleAttr: 'name', populate: '_game' },
+			game: { model: 'Game', titleAttr: 'title' },
 			user: { model: 'User', titleAttr: 'email' },
-			backglass: { model: 'Backglass', resource: 'backglasses' },
-			medium: { model: 'Medium', resource: 'media' }
+			backglass: { model: 'Backglass' },
+			medium: { model: 'Medium' }
 		};
 	}
 
@@ -47,45 +47,45 @@ export class StarApi extends Api {
 	 * Stars an entity.
 	 *
 	 * @see POST /v1/releases/:id/star
-	 * @param {string} name Name of the model
+	 * @param {string} modelName Name of the model, e.g. "game"
 	 * @return {(ctx: Context) => Promise<void>}
 	 */
-	public star(name: StarrableModel) {
-		const model = this.models[name];
+	public star(modelName: StarrableModel) {
+		const model = this.models[modelName];
 		if (!model) {
-			throw new Error('Unknown model "' + name + '".');
+			throw new Error('Unknown model "' + modelName + '".');
 		}
-		return async (ctx: Context) => this._star(ctx, name, this.find(state.models[model.model] as Model<MetricsDocument>, name, model.populate));
+		return async (ctx: Context) => this._star(ctx, modelName, this.find(state.models[model.model] as Model<MetricsDocument>, modelName, model.populate));
 	}
 
 	/**
 	 * Unstars an entity.
 	 *
 	 * @see DELETE /v1/releases/:id/star
-	 * @param {string} name Name of the model
+	 * @param {string} modelName Name of the model, e.g. "game"
 	 * @return {(ctx: Context) => Promise<void>}
 	 */
-	public unstar(name: StarrableModel) {
-		const model = this.models[name];
+	public unstar(modelName: StarrableModel) {
+		const model = this.models[modelName];
 		if (!model) {
-			throw new Error('Unknown model "' + name + '".');
+			throw new Error('Unknown model "' + modelName + '".');
 		}
-		return async (ctx: Context) => this._unstar(ctx, name, this.find(state.models[model.model] as Model<MetricsDocument>, name, model.populate));
+		return async (ctx: Context) => this._unstar(ctx, modelName, this.find(state.models[model.model] as Model<MetricsDocument>, modelName, model.populate));
 	}
 
 	/**
 	 * Checks if an entity is starred.
 	 *
 	 * @see GET /v1/releases/:id/star
-	 * @param {string} name Name of the model
+	 * @param {string} modelName Name of the model, e.g. "game"
 	 * @return {(ctx: Context) => Promise<void>}
 	 */
-	public get(name: StarrableModel) {
-		const model = this.models[name];
+	public get(modelName: StarrableModel) {
+		const model = this.models[modelName];
 		if (!model) {
-			throw new Error('Unknown model "' + name + '".');
+			throw new Error('Unknown model "' + modelName + '".');
 		}
-		return async (ctx: Context) => this._view(ctx, this.find(state.models[model.model] as Model<MetricsDocument>, name), model.titleAttr || 'id');
+		return async (ctx: Context) => this._view(ctx, this.find(state.models[model.model] as Model<MetricsDocument>, modelName), model.titleAttr || 'id');
 	}
 
 	/**
@@ -110,10 +110,10 @@ export class StarApi extends Api {
 	 * Generic function for starring something.
 	 *
 	 * @param {Context} ctx Koa context
-	 * @param {string} type Reference name
+	 * @param {string} modelName Name of the model, e.g. "game"
 	 * @param {(ctx: Context) => Promise<[MetricsDocument, Star]>} find Find function
 	 */
-	private async _star(ctx: Context, type: string, find: (ctx: Context) => Promise<[MetricsDocument, Star]>) {
+	private async _star(ctx: Context, modelName: string, find: (ctx: Context) => Promise<[MetricsDocument, Star]>) {
 
 		const [entity, duplicateStar] = await find(ctx);
 		if (duplicateStar) {
@@ -121,18 +121,18 @@ export class StarApi extends Api {
 		}
 		const obj = {
 			_from: ctx.state.user._id,
-			_ref: { [type]: entity._id },
-			type: type,
+			_ref: { [modelName]: entity._id },
+			type: modelName,
 			created_at: new Date()
 		};
 		const star = new state.models.Star(obj);
 		await star.save();
 		await entity.incrementCounter('stars');
 
-		await LogEventUtil.log(ctx, 'star_' + type, true, this.logPayload(entity, type), this.logRefs(star, entity, type));
+		await LogEventUtil.log(ctx, 'star_' + modelName, true, this.logPayload(entity, modelName), this.logRefs(star, entity, modelName));
 
 		// invalidate cache for user
-		await apiCache.invalidateStarredEntity(ctx.state.user, entity, this.models[type].resource);
+		await apiCache.invalidateStarredEntity(modelName, entity, ctx.state.user);
 
 		//pusher.star(type, entity, req.user);
 		return this.success(ctx, { created_at: obj.created_at, total_stars: entity.counter.stars + 1 }, 201);
@@ -142,20 +142,20 @@ export class StarApi extends Api {
 	 * Generic function for unstarring something.
 	 *
 	 * @param {Context} ctx Koa context
-	 * @param {string} type Reference name
+	 * @param {string} modelName Name of the model, e.g. "game"
 	 * @param {(ctx: Context) => Promise<[MetricsDocument, Star]>} find Find function
 	 */
-	private async _unstar(ctx: Context, type: string, find: (ctx: Context) => Promise<[MetricsDocument, Star]>) {
+	private async _unstar(ctx: Context, modelName: string, find: (ctx: Context) => Promise<[MetricsDocument, Star]>) {
 		const [entity, star] = await find(ctx);
 		if (!star) {
 			throw new ApiError('Not starred. You need to star something before you can unstar it.').warn().status(400);
 		}
 		await star.remove();
 		await entity.incrementCounter('stars', true);
-		await LogEventUtil.log(ctx, 'unstar_' + type, true, this.logPayload(entity, type), this.logRefs(star, entity, type));
+		await LogEventUtil.log(ctx, 'unstar_' + modelName, true, this.logPayload(entity, modelName), this.logRefs(star, entity, modelName));
 
 		// invalidate cache for user
-		await apiCache.invalidateStarredEntity(ctx.state.user, entity, this.models[type].resource);
+		await apiCache.invalidateStarredEntity(modelName, entity, ctx.state.user);
 
 		//pusher.unstar(type, entity, req.user);
 		return this.success(ctx, null, 204);
@@ -165,11 +165,11 @@ export class StarApi extends Api {
 	 * Returns entity and star for a given type.
 	 *
 	 * @param {Model} model Entity model
-	 * @param {string} type Reference name
+	 * @param {string} modelName Name of the model, e.g. "game"
 	 * @param {string} [populate] Entity population
 	 * @return {(ctx: Context) => Promise<[MetricsDocument, Star]>} Function returning Entity and star
 	 */
-	private find(model: Model<MetricsDocument>, type: string, populate?: string) {
+	private find(model: Model<MetricsDocument>, modelName: string, populate?: string) {
 		return async (ctx: Context): Promise<[MetricsDocument, Star]> => {
 			const query = model.findOne({ id: ctx.params.id });
 			if (populate) {
@@ -177,12 +177,12 @@ export class StarApi extends Api {
 			}
 			const entity = await query.exec();
 			if (!entity) {
-				throw new ApiError('No such %s with ID "%s"', type, ctx.params.id).status(404);
+				throw new ApiError('No such %s with ID "%s"', modelName, ctx.params.id).status(404);
 			}
 			const q = {
-				['_ref.' + type]: entity._id,
+				['_ref.' + modelName]: entity._id,
 				_from: ctx.state.user._id,
-				type: type
+				type: modelName
 			};
 			const star = await state.models.Star.findOne(q);
 			return [entity, star];

@@ -23,7 +23,7 @@ import { FileCounterType } from '../files/file';
 import { GameDocument } from './game.document';
 
 export const gameListCacheCounters: CacheCounterConfig<Game[]>[] = [{
-	model: 'game',
+	modelName: 'game',
 	counters: ['releases', 'views', 'downloads', 'comments', 'stars'],
 	get: (games: Game[], counter: GameCounterType) => games.reduce((acc:CacheCounterValues, game) => {
 		acc[game.id] = game.counter[counter]; return acc }, {}),
@@ -32,20 +32,20 @@ export const gameListCacheCounters: CacheCounterConfig<Game[]>[] = [{
 }];
 
 export const gameDetailsCacheCounters: CacheCounterConfig<Game>[] = [{
-	model: 'game',
+	modelName: 'game',
 	counters: ['releases', 'views', 'downloads', 'comments', 'stars'],
 	get: (game: Game, counter: GameCounterType) => { return { [game.id]: game.counter[counter] } },
 	set: (game: Game, counter: GameCounterType, values: CacheCounterValues) => game.counter[counter] = values[game.id],
 	incrementCounter: { counter: 'views', getId: (game: Game) => game.id }
 }, {
-	model: 'release',
+	modelName: 'release',
 	counters: ['downloads', 'comments', 'stars', 'views'],
 	get: (game: Game, counter: ReleaseCounterType) => game.releases.reduce((acc:CacheCounterValues, rls) => {
 		acc[rls.id] = rls.counter[counter]; return acc }, {} ),
 	set: (game: Game, counter: ReleaseCounterType, values: CacheCounterValues) => Object.keys(values).forEach(
 		id => game.releases.filter(rls => rls.id === id).forEach(rls => rls.counter[counter] = values[id]))
 }, {
-	model: 'file',
+	modelName: 'file',
 	counters: ['downloads'],
 	get: (game: Game, counter: FileCounterType) => GameDocument.getLinkedFiles(game).reduce((acc:CacheCounterValues, file) => {
 		acc[file.id] = file.counter[counter]; return acc }, {}),

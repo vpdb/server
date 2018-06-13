@@ -38,7 +38,7 @@ describe.only('The VPDB API cache', () => {
 			admin: { roles: ['admin'] }
 		});
 		release = await releaseHelper.createRelease('moderator');
-		//otherRelease = await releaseHelper.createRelease('moderator');
+		otherRelease = await releaseHelper.createRelease('moderator');
 		await api.as('admin').del('/v1/cache').then(res => res.expectStatus(204));
 	});
 
@@ -179,4 +179,30 @@ describe.only('The VPDB API cache', () => {
 
 	});
 
+	describe('when rating a release', () => {
+
+		const user = 'member';
+
+		// remove rating
+		//afterEach(async () => await api.as(user).del('/v1/releases/' + release.id + '/star').then(res => res.expectStatus(204)));
+
+		it('should invalidate', async () => {
+
+			// cache future misses
+			await api.get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'miss'));
+
+			// cache future hits
+			await api.get('/v1/releases/' + otherRelease.id).then(res => res.expectHeader('x-cache-api', 'miss'));
+
+			// rate
+			await api.as(user).post('/v1/releases/' + release.id + '/rating', { value: 5 }).then(res => res.expectStatus(201));
+
+			// assert
+			await api.get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.get('/v1/releases/' + otherRelease.id).then(res => res.expectHeader('x-cache-api', 'hit'));
+
+		});
+	});
 });

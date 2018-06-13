@@ -49,6 +49,7 @@ router.post('/v1/releases/:id/comments', api.auth(commentApi.createForRelease.bi
 router.post('/v1/releases/:id/rating', api.auth(ratingApi.createForRelease.bind(ratingApi), 'releases', 'rate', [Scope.ALL, Scope.COMMUNITY]));
 router.put('/v1/releases/:id/rating',  api.auth(ratingApi.updateForRelease.bind(ratingApi), 'releases', 'rate', [Scope.ALL, Scope.COMMUNITY]));
 router.get('/v1/releases/:id/rating',  api.auth(ratingApi.getForRelease.bind(ratingApi), 'releases', 'rate', [Scope.ALL, Scope.COMMUNITY]));
+router.delete('/v1/releases/:id/rating',  api.auth(ratingApi.deleteForRelease.bind(ratingApi), 'releases', 'rate', [Scope.ALL, Scope.COMMUNITY]));
 
 router.post('/v1/releases/:id/star',   api.auth(starApi.star('release').bind(starApi), 'releases', 'star', [Scope.ALL, Scope.COMMUNITY]));
 router.delete('/v1/releases/:id/star', api.auth(starApi.unstar('release').bind(starApi), 'releases', 'star', [Scope.ALL, Scope.COMMUNITY]));
@@ -61,5 +62,5 @@ router.get('/v1/releases/:id/moderate/comments',  api.auth(commentApi.listForRel
 router.get('/v1/releases/:id/events', eventApi.list({ byRelease: true }).bind(eventApi));
 
 apiCache.enable(router, '/v1/releases', { resources: [ 'release', 'user' ] }, releaseListCacheCounters);
-apiCache.enable(router, '/v1/releases/:id',  { entities: { release: 'id' } }, releaseDetailsCacheCounters);
+apiCache.enable(router, '/v1/releases/:id',  { resources: [ 'user' ], entities: { release: 'id' } }, releaseDetailsCacheCounters);
 //apiCache.enable(this._router, '/v1/releases/:id/comments', { entities: { release: 'id' } });

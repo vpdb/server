@@ -46,6 +46,7 @@ router.delete('/v1/games/:id', api.auth(api.del.bind(api), 'games', 'delete', [ 
 router.post('/v1/games/:id/rating', api.auth(ratingApi.createForGame.bind(ratingApi), 'games', 'rate', [ Scope.ALL, Scope.COMMUNITY ]));
 router.put('/v1/games/:id/rating',  api.auth(ratingApi.updateForGame.bind(ratingApi), 'games', 'rate', [ Scope.ALL, Scope.COMMUNITY ]));
 router.get('/v1/games/:id/rating',  api.auth(ratingApi.getForGame.bind(ratingApi), 'games', 'rate', [ Scope.ALL, Scope.COMMUNITY ]));
+router.delete('/v1/games/:id/rating',  api.auth(ratingApi.deleteForGame.bind(ratingApi), 'games', 'rate', [ Scope.ALL, Scope.COMMUNITY ]));
 
 router.post('/v1/games/:id/star',   api.auth(starsApi.star('game').bind(starsApi), 'games', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
 router.delete('/v1/games/:id/star', api.auth(starsApi.unstar('game').bind(starsApi), 'games', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
@@ -60,7 +61,7 @@ router.get('/v1/games/:id/events', eventsApi.list({ byGame: true }).bind(eventsA
 router.get('/v1/games/:id/release-name', api.auth(api.releaseName.bind(api), 'releases', 'add', [ Scope.ALL, Scope.CREATE ]));
 
 apiCache.enable(router, '/v1/games', { resources: ['game', 'release', 'user'] }, gameListCacheCounters);
-apiCache.enable(router, '/v1/games/:id', { resources: ['game', 'release', 'user'] }, gameDetailsCacheCounters);
+apiCache.enable(router, '/v1/games/:id', { entities: { game: 'id' }, children: { modelName: 'release', entityField: 'releases', idField: 'id' } }, gameDetailsCacheCounters);
 //apiCache.enable(router, '/v1/games/:gameId/backglasses', { resources: ['backglass', 'user'] });
 //apiCache.enable(router, '/v1/games/:gameId/media', { resources: ['medium', 'user'] });
 //apiCache.enable(router, '/v1/games/:id/events', { resources: ['log_event'] });

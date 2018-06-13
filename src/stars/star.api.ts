@@ -132,7 +132,7 @@ export class StarApi extends Api {
 		await LogEventUtil.log(ctx, 'star_' + type, true, this.logPayload(entity, type), this.logRefs(star, entity, type));
 
 		// invalidate cache for user
-		await apiCache.invalidateEntityStarred(ctx.state.user, entity, this.models[type].resource);
+		await apiCache.invalidateStarredEntity(ctx.state.user, entity, this.models[type].resource);
 
 		//pusher.star(type, entity, req.user);
 		return this.success(ctx, { created_at: obj.created_at, total_stars: entity.counter.stars + 1 }, 201);
@@ -155,7 +155,7 @@ export class StarApi extends Api {
 		await LogEventUtil.log(ctx, 'unstar_' + type, true, this.logPayload(entity, type), this.logRefs(star, entity, type));
 
 		// invalidate cache for user
-		await apiCache.invalidateEntityStarred(ctx.state.user, entity, this.models[type].resource);
+		await apiCache.invalidateStarredEntity(ctx.state.user, entity, this.models[type].resource);
 
 		//pusher.unstar(type, entity, req.user);
 		return this.success(ctx, null, 204);

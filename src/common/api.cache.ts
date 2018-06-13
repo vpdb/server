@@ -26,7 +26,7 @@ import { logger } from './logger';
 import { Context } from './types/context';
 import { User } from '../users/user';
 import { Release } from '../releases/release';
-import { MetricsModel } from 'mongoose';
+import { Document, GameReferenceDocument, MetricsModel } from 'mongoose';
 
 /**
  * An in-memory cache using Redis.
@@ -47,7 +47,10 @@ import { MetricsModel } from 'mongoose';
  */
 class ApiCache {
 
-	private readonly redisPrefix = 'api-cache:';
+	private readonly redisCachePrefix = 'api-cache:';
+	private readonly redisRefPrefix = 'api-cache-ref:';
+	private readonly redisCounterPrefix = 'api-cache-counter:';
+
 	private readonly cacheRoutes: CacheRoute<any>[] = [];
 
 	/**
@@ -135,7 +138,7 @@ class ApiCache {
 	 */
 	public enable<T>(router: Router, path: string, config: CacheInvalidationConfig, counters?:CacheCounterConfig<T>[]) {
 		const opts = (router as any).opts as IRouterOptions;
-		this.cacheRoutes.push({ regex: pathToRegexp(opts.prefix + path), config: config, counters: counters });
+		this.cacheRoutes.push({ path: path, regex: pathToRegexp(opts.prefix + path), config: config, counters: counters });
 	}
 
 	/**
@@ -153,6 +156,17 @@ class ApiCache {
 		} else {
 			await state.redis.incrAsync(key);
 		}
+	}
+
+	public async invalidateEntityStarred(user: User, entity: any, resource:string) {
+		const tags:CacheInvalidationTag[][] = [];
+		if (resource) {
+			tags.push([{ path: `/v1/${resource}` }, { user: user }]);
+		}
+		if (entity._game && entity._game.id) {
+			tags.push([{ path: '/v1/games/' + entity._game.id }, { user: user }]);
+		}
+		await this.invalidate(...tags);
 	}
 
 	public async invalidateRelease(release?: Release) {
@@ -184,10 +198,23 @@ class ApiCache {
 	 * `CacheInvalidationTag` is an operator in a logical `and`, while its attributes
 	 * compose an `or` condition.
 	 *
+	 * Examples:
+	 *
+	 * - `invalidate([{ user: foo, path: '/v1/bar' }])` invalidates all caches
+	 *    for user foo and all caches for path `/v1/bar`.
+	 * - `invalidate([{ user: foo }, { path: '/v1/games' }], [{ path: '/v1/bar' }])`
+	 *    invalidates all `/v1/games` caches for user foo as well as all `/v1/bar`
+	 *    caches for everyone.
+	 *
 	 * @param {CacheInvalidationTag[][]} tagLists
 	 * @return {Promise<number>}
 	 */
 	private async invalidate(...tagLists: CacheInvalidationTag[][]): Promise<number> {
+
+		if (!tagLists || tagLists.length === 0) {
+			logger.debug('[Cache.invalidate]: Nothing to invalidate.');
+			return;
+		}
 
 		const now = Date.now();
 		const keys:string[][] = [];
@@ -198,6 +225,11 @@ class ApiCache {
 			allRefs[i] = [];
 			for (const tag of tags) {
 				const refs: string[] = [];
+
+				// path
+				if (tag.path) {
+					refs.push(this.getPathKey(tag.path));
+				}
 
 				// resources
 				if (tag.resources) {
@@ -216,7 +248,11 @@ class ApiCache {
 					refs.push(this.getUserKey(tag.user));
 				}
 				allRefs[i].push(refs);
-				keys.push(await state.redis.sunionAsync(...refs));
+				logger.wtf('SUNION %s', refs.join(' '));
+				const union = await state.redis.sunionAsync(...refs);
+				if (union.length > 0) {
+					keys.push();
+				}
 			}
 			invalidationKeys = new Set([...invalidationKeys, ...intersection(...keys)]); // redis could do this too using SUNIONSTORE to temp sets and INTER them
 		}
@@ -225,6 +261,7 @@ class ApiCache {
 
 		let n = 0;
 		for (const key of invalidationKeys) {
+			logger.wtf('DEL %s', key);
 			await state.redis.delAsync(key);
 			n++;
 		}
@@ -246,7 +283,7 @@ class ApiCache {
 			"return 0 " +                                         // if no keys to delete
 			"end ",
 			0,                                                    // no keys names passed, only one argument ARGV[1]
-			this.redisPrefix + '*');
+			this.redisCachePrefix + '*');
 		return num as number;
 	}
 
@@ -260,7 +297,8 @@ class ApiCache {
 	private async setCache<T>(ctx: Context, key: string, cacheRoute: CacheRoute<T>) {
 
 		const now = Date.now();
-		const refPairs:any[] = [];
+		const refs: (() => Promise<any>)[] = [];
+		const refKeys: string[] = [];
 		const response: CacheResponse = {
 			status: ctx.status,
 			headers: ctx.headers,
@@ -270,12 +308,18 @@ class ApiCache {
 		// set the cache todo set ttl to user caches
 		await state.redis.setAsync(key, JSON.stringify(response));
 
+		// reference path
+		const toPath = pathToRegexp.compile(cacheRoute.path);
+		const refKey = this.getPathKey(toPath(ctx.params));
+		refs.push(() => state.redis.saddAsync(refKey, key));
+		refKeys.push(refKey);
+
 		// reference resources
 		if (cacheRoute.config.resources) {
 			for (const resource of cacheRoute.config.resources) {
 				const refKey = this.getResourceKey(resource);
-				refPairs.push(refKey);
-				refPairs.push(this.getResourceKey(resource));
+				refs.push(() => state.redis.saddAsync(refKey, key));
+				refKeys.push(refKey);
 			}
 		}
 
@@ -283,21 +327,22 @@ class ApiCache {
 		if (cacheRoute.config.entities) {
 			for (const entity of Object.keys(cacheRoute.config.entities)) {
 				const refKey = this.getEntityKey(entity, ctx.params[cacheRoute.config.entities[entity]]);
-				refPairs.push(refKey);
-				refPairs.push(key);
+				refs.push(() => state.redis.saddAsync(refKey, key));
+				refKeys.push(refKey);
 			}
 		}
 
 		// reference user
 		if (ctx.state.user) {
 			const refKey = this.getUserKey(ctx.state.user);
-			refPairs.push(refKey);
-			refPairs.push(key);
+			refs.push(() => state.redis.saddAsync(refKey, key));
+			refKeys.push(refKey);
 		}
 
 		// save counters
 		let numCounters = 0;
 		if (cacheRoute.counters) {
+			const refPairs:any[] = [];
 			const body = isObject(ctx.response.body) ? ctx.response.body : JSON.parse(ctx.response.body);
 			for (const counter of cacheRoute.counters) {
 				for (const c of counter.counters) {
@@ -309,31 +354,36 @@ class ApiCache {
 					}
 				}
 			}
+			refs.push(() => state.redis.msetAsync.apply(state.redis, refPairs));
 		}
-		await state.redis.msetAsync.apply(state.redis, refPairs);
+		await Promise.all(refs.map(ref => ref()));
 		logger.debug('[Cache] No hit, saved as "%s" with references [ %s ] and %s counters in %sms.',
-			key, refPairs.filter((_, i) => !(i % 2)).filter(key => !key.includes(':counter:')).join(', '), numCounters, Date.now() - now);
+			key, refKeys.join(', '), numCounters, Date.now() - now);
 	}
 
 	private getCacheKey(ctx: Context): string {
 		const normalizedQuery = this.normalizeQuery(ctx);
-		return this.redisPrefix + (ctx.state.user ? ctx.state.user.id : 'anon') + ':' + ctx.request.path + (normalizedQuery ? '?' : '') + normalizedQuery;
+		return this.redisCachePrefix + (ctx.state.user ? ctx.state.user.id : 'anon') + ':' + ctx.request.path + (normalizedQuery ? '?' : '') + normalizedQuery;
+	}
+
+	private getPathKey(path: string): string {
+		return this.redisRefPrefix + 'path:' + path;
 	}
 
 	private getResourceKey(resource: string): string {
-		return this.redisPrefix + 'resource:' + resource;
+		return this.redisRefPrefix + 'resource:' + resource;
 	}
 
 	private getEntityKey(entity: string, entityId: string): string {
-		return this.redisPrefix + 'entity:' + entity + ':' + entityId;
+		return this.redisRefPrefix + 'entity:' + entity + ':' + entityId;
 	}
 
 	private getUserKey(user: User): string {
-		return this.redisPrefix + 'user:' + user.id;
+		return this.redisRefPrefix + 'user:' + user.id;
 	}
 
 	private getCounterKey(entity:string, entityId:string, counter:string) {
-		return this.redisPrefix + 'counter:' + entity + ':' + counter + ':' + entityId;
+		return this.redisCounterPrefix + entity + ':' + counter + ':' + entityId;
 	}
 
 	private normalizeQuery(ctx: Context) {
@@ -346,6 +396,7 @@ class ApiCache {
  */
 interface CacheRoute<T> {
 	regex: RegExp;
+	path: string;
 	config: CacheInvalidationConfig;
 	counters: CacheCounterConfig<T>[];
 }
@@ -361,6 +412,11 @@ export interface CacheInvalidationTag {
 	 * All caches tagged with any of the provided resources will be invalidated.
 	 */
 	resources?: string[],
+	/**
+	 * Invalidates a specific path defined by {@link ApiCache.enable}.
+	 * Placeholders are replaced with values.
+	 */
+	path?: string;
 	/**
 	 * Invalidate a specific entity.
 	 * The key is the entity's name and the value its parsed ID.

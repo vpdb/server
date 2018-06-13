@@ -27,7 +27,7 @@ const ReleaseHelper = require('../../test/modules/release.helper');
 const api = new ApiClient();
 const releaseHelper = new ReleaseHelper(api);
 
-describe('The VPDB API cache', () => {
+describe.only('The VPDB API cache', () => {
 
 	let res;
 	let release, otherRelease;
@@ -61,7 +61,7 @@ describe('The VPDB API cache', () => {
 
 	describe('when viewing a game', () => {
 
-		it.only('should cache the second request while updating counter', async () => {
+		it('should cache the second request while updating counter', async () => {
 			res = await api.get('/v1/games/' + release.game.id).then(res => res.expectHeader('x-cache-api', 'miss'));
 			const views = res.data.counter.views;
 			res = await api.get('/v1/games/' + release.game.id).then(res => res.expectHeader('x-cache-api', 'hit'));
@@ -71,28 +71,23 @@ describe('The VPDB API cache', () => {
 
 	describe('when starring a release', () => {
 
-		it('should invalidate release details and releases', async () => {
+		it('should not invalidate release details and releases', async () => {
 
 			// these must be a hit later
-			await api.get('/v1/releases/' + otherRelease.id).then(res => res.expectHeader('x-cache-api', 'miss'));
-			await api.get('/v1/releases/' + otherRelease.id).as('member').then(res => res.expectHeader('x-cache-api', 'miss'));
-
-			// these must be a miss later, so let's cache them
-			await api.get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'miss'));
 			await api.as('member').get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
-			await api.as('member').get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'miss'));
+			res = await api.as('member').get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'miss'));
+			const numStars = res.data.counter.stars;
 
 			// star
 			await api.as('member').post('/v1/releases/' + release.id + '/star', {}).then(res => res.expectStatus(201));
 
-			// assert misses
-			await api.get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
-			await api.as('member').get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
-			await api.as('member').get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'miss'));
-
 			// assert hits
-			await api.get('/v1/releases/' + otherRelease.id).then(res => res.expectHeader('x-cache-api', 'hit'));
-			await api.get('/v1/releases/' + otherRelease.id).as('member').then(res => res.expectHeader('x-cache-api', 'hit'));
+			await api.as('member').get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'hit'));
+			res = await api.as('member').get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'hit'));
+			expect(res.data.counter.stars).to.be(numStars + 1);
+			res = await api.get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'hit'));
+			expect(res.data.counter.stars).to.be(numStars + 1);
 		});
 	});
 });

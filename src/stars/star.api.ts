@@ -26,7 +26,6 @@ import { Context } from '../common/types/context';
 import { ApiError } from '../common/api.error';
 import { LogEventUtil } from '../log-event/log.event.util';
 import { Star } from './star';
-import { apiCache } from '../common/api.cache';
 
 export class StarApi extends Api {
 
@@ -129,9 +128,6 @@ export class StarApi extends Api {
 		await star.save();
 		await entity.incrementCounter('stars');
 
-		// invalidate cache
-		await apiCache.invalidateEntity(type, entity.id);
-
 		await LogEventUtil.log(ctx, 'star_' + type, true, this.logPayload(entity, type), this.logRefs(star, entity, type));
 		//pusher.star(type, entity, req.user);
 		return this.success(ctx, { created_at: obj.created_at, total_stars: entity.counter.stars + 1 }, 201);
@@ -153,8 +149,6 @@ export class StarApi extends Api {
 		await entity.incrementCounter('stars', true);
 		await LogEventUtil.log(ctx, 'unstar_' + type, true, this.logPayload(entity, type), this.logRefs(star, entity, type));
 
-		// invalidate cache
-		await apiCache.invalidateEntity(type, entity.id);
 		//pusher.unstar(type, entity, req.user);
 	}
 

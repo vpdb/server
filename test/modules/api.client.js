@@ -716,8 +716,16 @@ class ApiClient {
 		return assign({
 			username: username,
 			password: randomstring.generate(10),
-			email: faker.internet.email(faker.name.firstName(), faker.name.lastName(), faker.internet.domainName()).replace('_', '.')
+			email: this.generateEmail()
 		}, attrs || {});
+	}
+
+	/**
+	 * Generates a valid email address.
+	 * @return {string}
+	 */
+	generateEmail() {
+		return faker.internet.email(faker.name.firstName(), faker.name.lastName(), faker.internet.domainName()).replace('_', '.');
 	}
 
 	/**

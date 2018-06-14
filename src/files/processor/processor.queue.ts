@@ -198,7 +198,7 @@ class ProcessorQueue {
 
 			// remove waiting jobs
 			const waitingJobs = await queue.getWaiting();
-			const waitingJobsForFile = waitingJobs.filter(job => (job.data as JobData).fileId === file.id);
+			const waitingJobsForFile = waitingJobs.filter(job => job && (job.data as JobData).fileId === file.id);
 			if (waitingJobsForFile.length) {
 				logger.info('[ProcessorQueue.deleteProcessingFile] Removing %s jobs from queue %s',
 					waitingJobsForFile.length, (queue as any).name);
@@ -212,7 +212,7 @@ class ProcessorQueue {
 
 			// announce to active jobs
 			const activeJobs = await queue.getActive();
-			const activeJobsForFile = activeJobs.filter(job => (job.data as JobData).fileId === file.id);
+			const activeJobsForFile = activeJobs.filter(job => job && (job.data as JobData).fileId === file.id);
 			if (activeJobsForFile.length) {
 				logger.info('[ProcessorQueue.deleteProcessingFile] Cleaning up after %s active job(s) from queue %s.',
 					activeJobsForFile.length, (queue as any).name);

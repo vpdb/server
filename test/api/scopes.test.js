@@ -81,23 +81,8 @@ describe('The scopes of the VPDB API', function() {
 		it('should allow access to backglass deletion', done => {
 			request.del('/api/v1/backglasses/1234').with(tokenAll).end(hlp.status(404, done));
 		});
-		it('should allow access to backglass star', done => {
-			request.post('/api/v1/backglasses/1234/star').send({}).with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to backglass unstar', done => {
-			request.del('/api/v1/backglasses/1234/star').with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to backglass star retrieval', done => {
-			request.get('/api/v1/backglasses/1234/star').with(tokenAll).end(hlp.status(404, done));
-		});
 		it('should allow access to backglass moderation', done => {
 			request.post('/api/v1/backglasses/1234/moderate').send({}).with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to backglass unstar', done => {
-			request.del('/api/v1/backglasses/1234/star').with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to backglass star retrieval', done => {
-			request.get('/api/v1/backglasses/1234/star').with(tokenAll).end(hlp.status(404, done));
 		});
 
 		it('should allow access to build creation', done => {
@@ -142,26 +127,6 @@ describe('The scopes of the VPDB API', function() {
 			request.del('/api/v1/games/1234').with(tokenAll).end(hlp.status(404, done));
 		});
 
-		it('should allow access to game rating creation', done => {
-			request.post('/api/v1/games/1234/rating').send({}).with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to game rating update', done => {
-			request.put('/api/v1/games/1234/rating').send({}).with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to game rating retrieval', done => {
-			request.get('/api/v1/games/1234/rating').with(tokenAll).end(hlp.status(404, done));
-		});
-
-		it('should allow access to game star creation', done => {
-			request.post('/api/v1/games/1234/star').send({}).with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to game star deletion', done => {
-			request.del('/api/v1/games/1234/star').with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to game star retrieval', done => {
-			request.get('/api/v1/games/1234/star').with(tokenAll).end(hlp.status(404, done));
-		});
-
 		it('should allow access to game backglass creation through game', done => {
 			request.post('/api/v1/games/1234/backglasses').send({}).with(tokenAll).end(hlp.status(404, done));
 		});
@@ -174,16 +139,6 @@ describe('The scopes of the VPDB API', function() {
 		});
 		it('should allow access to media deletion', done => {
 			request.del('/api/v1/media/1234').with(tokenAll).end(hlp.status(404, done));
-		});
-
-		it('should allow access to media star creation', done => {
-			request.post('/api/v1/media/1234/star').send({}).with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to media star deletion', done => {
-			request.del('/api/v1/media/1234/star').with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to media star retrieval', done => {
-			request.get('/api/v1/media/1234/star').with(tokenAll).end(hlp.status(404, done));
 		});
 
 		it('should allow access to ipdb info retrieval', done => {
@@ -220,26 +175,6 @@ describe('The scopes of the VPDB API', function() {
 
 		it('should allow access to release comment creation', done => {
 			request.post('/api/v1/releases/1234/comments').send({}).with(tokenAll).end(hlp.status(404, done));
-		});
-
-		it('should allow access to release rating creation', done => {
-			request.post('/api/v1/releases/1234/rating').send({}).with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to release rating update', done => {
-			request.put('/api/v1/releases/1234/rating').send({}).with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to release rating retrieval', done => {
-			request.get('/api/v1/releases/1234/rating').with(tokenAll).end(hlp.status(404, done));
-		});
-
-		it('should allow access to release star creation', done => {
-			request.post('/api/v1/releases/1234/star').send({}).with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to release star deletion', done => {
-			request.del('/api/v1/releases/1234/star').with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to release star retrieval', done => {
-			request.get('/api/v1/releases/1234/star').with(tokenAll).end(hlp.status(404, done));
 		});
 
 		it('should allow access to release moderation creation', done => {
@@ -328,24 +263,6 @@ describe('The scopes of the VPDB API', function() {
 		it('should deny access to backglass deletion', done => {
 			request.del('/api/v1/backglasses/1234').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
 		});
-		it('should deny access to backglass star', done => {
-			request.post('/api/v1/backglasses/1234/star').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to backglass unstar', done => {
-			request.del('/api/v1/backglasses/1234/star').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to backglass star retrieval', done => {
-			request.get('/api/v1/backglasses/1234/star').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to backglass moderation', done => {
-			request.post('/api/v1/backglasses/1234/moderate').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to backglass unstar', done => {
-			request.del('/api/v1/backglasses/1234/star').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to backglass star retrieval', done => {
-			request.get('/api/v1/backglasses/1234/star').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
 
 		it('should deny access to build creation', done => {
 			request.post('/api/v1/builds').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
@@ -389,26 +306,6 @@ describe('The scopes of the VPDB API', function() {
 			request.del('/api/v1/games/1234').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
 		});
 
-		it('should deny access to game rating creation', done => {
-			request.post('/api/v1/games/1234/rating').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to game rating update', done => {
-			request.put('/api/v1/games/1234/rating').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to game rating retrieval', done => {
-			request.get('/api/v1/games/1234/rating').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-
-		it('should deny access to game star creation', done => {
-			request.post('/api/v1/games/1234/star').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to game star deletion', done => {
-			request.del('/api/v1/games/1234/star').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to game star retrieval', done => {
-			request.get('/api/v1/games/1234/star').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-
 		it('should deny access to game backglass creation through game', done => {
 			request.post('/api/v1/games/1234/backglasses').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
 		});
@@ -421,16 +318,6 @@ describe('The scopes of the VPDB API', function() {
 		});
 		it('should deny access to media deletion', done => {
 			request.del('/api/v1/media/1234').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-
-		it('should deny access to media star creation', done => {
-			request.post('/api/v1/media/1234/star').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to media star deletion', done => {
-			request.del('/api/v1/media/1234/star').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to media star retrieval', done => {
-			request.get('/api/v1/media/1234/star').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
 		});
 
 		it('should deny access to ipdb info retrieval', done => {
@@ -467,26 +354,6 @@ describe('The scopes of the VPDB API', function() {
 
 		it('should deny access to release comment creation', done => {
 			request.post('/api/v1/releases/1234/comments').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-
-		it('should deny access to release rating creation', done => {
-			request.post('/api/v1/releases/1234/rating').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to release rating update', done => {
-			request.put('/api/v1/releases/1234/rating').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to release rating retrieval', done => {
-			request.get('/api/v1/releases/1234/rating').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-
-		it('should deny access to release star creation', done => {
-			request.post('/api/v1/releases/1234/star').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to release star deletion', done => {
-			request.del('/api/v1/releases/1234/star').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to release star retrieval', done => {
-			request.get('/api/v1/releases/1234/star').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
 		});
 
 		it('should deny access to release moderation creation', done => {
@@ -575,23 +442,8 @@ describe('The scopes of the VPDB API', function() {
 		it('should deny access to backglass deletion', done => {
 			request.del('/api/v1/backglasses/1234').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
 		});
-		it('should allow access to backglass star', done => {
-			request.post('/api/v1/backglasses/1234/star').send({}).with(tokenCommunity).end(hlp.status(404, done));
-		});
-		it('should allow access to backglass unstar', done => {
-			request.del('/api/v1/backglasses/1234/star').with(tokenCommunity).end(hlp.status(404, done));
-		});
-		it('should allow access to backglass star retrieval', done => {
-			request.get('/api/v1/backglasses/1234/star').with(tokenCommunity).end(hlp.status(404, done));
-		});
 		it('should deny access to backglass moderation', done => {
 			request.post('/api/v1/backglasses/1234/moderate').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should allow access to backglass unstar', done => {
-			request.del('/api/v1/backglasses/1234/star').with(tokenCommunity).end(hlp.status(404, done));
-		});
-		it('should allow access to backglass star retrieval', done => {
-			request.get('/api/v1/backglasses/1234/star').with(tokenCommunity).end(hlp.status(404, done));
 		});
 
 		it('should deny access to build creation', done => {
@@ -634,26 +486,6 @@ describe('The scopes of the VPDB API', function() {
 			request.del('/api/v1/games/1234').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
 		});
 
-		it('should allow access to game rating creation', done => {
-			request.post('/api/v1/games/1234/rating').send({}).with(tokenCommunity).end(hlp.status(404, done));
-		});
-		it('should allow access to game rating update', done => {
-			request.put('/api/v1/games/1234/rating').send({}).with(tokenCommunity).end(hlp.status(404, done));
-		});
-		it('should allow access to game rating retrieval', done => {
-			request.get('/api/v1/games/1234/rating').with(tokenCommunity).end(hlp.status(404, done));
-		});
-
-		it('should allow access to game star creation', done => {
-			request.post('/api/v1/games/1234/star').send({}).with(tokenCommunity).end(hlp.status(404, done));
-		});
-		it('should allow access to game star deletion', done => {
-			request.del('/api/v1/games/1234/star').with(tokenCommunity).end(hlp.status(404, done));
-		});
-		it('should allow access to game star retrieval', done => {
-			request.get('/api/v1/games/1234/star').with(tokenCommunity).end(hlp.status(404, done));
-		});
-
 		it('should deny access to game backglass creation through game', done => {
 			request.post('/api/v1/games/1234/backglasses').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
 		});
@@ -666,16 +498,6 @@ describe('The scopes of the VPDB API', function() {
 		});
 		it('should deny access to media deletion', done => {
 			request.del('/api/v1/media/1234').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-
-		it('should allow access to media star creation', done => {
-			request.post('/api/v1/media/1234/star').send({}).with(tokenCommunity).end(hlp.status(404, done));
-		});
-		it('should allow access to media star deletion', done => {
-			request.del('/api/v1/media/1234/star').with(tokenCommunity).end(hlp.status(404, done));
-		});
-		it('should allow access to media star retrieval', done => {
-			request.get('/api/v1/media/1234/star').with(tokenCommunity).end(hlp.status(404, done));
 		});
 
 		it('should deny access to ipdb info retrieval', done => {
@@ -712,26 +534,6 @@ describe('The scopes of the VPDB API', function() {
 
 		it('should allow access to release comment creation', done => {
 			request.post('/api/v1/releases/1234/comments').send({}).with(tokenCommunity).end(hlp.status(404, done));
-		});
-
-		it('should allow access to release rating creation', done => {
-			request.post('/api/v1/releases/1234/rating').send({}).with(tokenCommunity).end(hlp.status(404, done));
-		});
-		it('should allow access to release rating update', done => {
-			request.put('/api/v1/releases/1234/rating').send({}).with(tokenCommunity).end(hlp.status(404, done));
-		});
-		it('should allow access to release rating retrieval', done => {
-			request.get('/api/v1/releases/1234/rating').with(tokenCommunity).end(hlp.status(404, done));
-		});
-
-		it('should allow access to release star creation', done => {
-			request.post('/api/v1/releases/1234/star').send({}).with(tokenCommunity).end(hlp.status(404, done));
-		});
-		it('should allow access to release star deletion', done => {
-			request.del('/api/v1/releases/1234/star').with(tokenCommunity).end(hlp.status(404, done));
-		});
-		it('should allow access to release star retrieval', done => {
-			request.get('/api/v1/releases/1234/star').with(tokenCommunity).end(hlp.status(404, done));
 		});
 
 		it('should deny access to release moderation creation', done => {

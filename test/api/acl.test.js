@@ -111,18 +111,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/games/mb/roms').end(hlp.status(404, done));
 		});
 
-		it('should deny access to game rating creation', function(done) {
-			request.post('/api/v1/games/mb/rating').send({ value: 1 }).end(hlp.status(401, done));
-		});
-
-		it('should deny access to game rating modification', function(done) {
-			request.put('/api/v1/games/mb/rating').send({ value: 1 }).end(hlp.status(401, done));
-		});
-
-		it('should deny access to game rating retrieval', function(done) {
-			request.get('/api/v1/games/mb/rating').end(hlp.status(401, done));
-		});
-
 		it('should deny access to rom deletion', function(done) {
 			request.del('/api/v1/roms/1234').end(hlp.status(401, done));
 		});
@@ -183,18 +171,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/api/v1/releases/123456/comments').send({}).end(hlp.status(401, done));
 		});
 
-		it('should deny access to release rating creation', function(done) {
-			request.post('/api/v1/releases/123/rating').send({ value: 1 }).end(hlp.status(401, done));
-		});
-
-		it('should deny access to release rating modification', function(done) {
-			request.put('/api/v1/releases/123/rating').send({ value: 1 }).end(hlp.status(401, done));
-		});
-
-		it('should deny access to release rating retrieval', function(done) {
-			request.get('/api/v1/releases/123/rating').end(hlp.status(401, done));
-		});
-
 		it('should deny access to release version creation', function(done) {
 			request.post('/api/v1/releases/123/versions').send({}).end(hlp.status(401, done));
 		});
@@ -207,36 +183,12 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/api/v1/releases/123/versions/1.2/files/1234/validate').send({}).end(hlp.status(401, done));
 		});
 
-		it('should deny access to release starring', function(done) {
-			request.post('/api/v1/releases/123/star').send({ value: 1 }).end(hlp.status(401, done));
-		});
-
-		it('should deny access to release unstarring', function(done) {
-			request.del('/api/v1/releases/123/star').end(hlp.status(401, done));
-		});
-
-		it('should deny access to release star retrieval', function(done) {
-			request.get('/api/v1/releases/123/star').end(hlp.status(401, done));
-		});
-
 		it('should deny access to release moderation comment retrieval', function(done) {
 			request.post('/api/v1/releases/123/moderate/comments').send({}).end(hlp.status(401, done));
 		});
 
 		it('should deny access to release moderation comment retrieval', function(done) {
 			request.get('/api/v1/releases/123/moderate/comments').end(hlp.status(401, done));
-		});
-
-		it('should deny access to user starring', function(done) {
-			request.post('/api/v1/users/123/star').send({ value: 1 }).end(hlp.status(401, done));
-		});
-
-		it('should deny access to user unstarring', function(done) {
-			request.del('/api/v1/users/123/star').end(hlp.status(401, done));
-		});
-
-		it('should deny access to user star retrieval', function(done) {
-			request.get('/api/v1/users/123/star').end(hlp.status(401, done));
 		});
 
 		it('should deny access to registration mail', function(done) {
@@ -420,18 +372,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/games/mb/roms').as('member').end(hlp.status(404, done));
 		});
 
-		it('should allow access to game rating creation', function(done) {
-			request.post('/api/v1/games/mb/rating').as('member').send({ value: 1 }).end(hlp.status(404, done));
-		});
-
-		it('should allow access to game rating modification', function(done) {
-			request.put('/api/v1/games/mb/rating').as('member').send({ value: 1 }).end(hlp.status(404, done));
-		});
-
-		it('should allow access to game rating retrieval', function(done) {
-			request.get('/api/v1/games/mb/rating').as('member').end(hlp.status(404, done));
-		});
-
 		it('should deny access to rom deletion', function(done) {
 			request.del('/api/v1/roms/1234').as('member').end(hlp.status(403, done));
 		});
@@ -488,18 +428,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/api/v1/releases/123456/comments').as('member').send({}).end(hlp.status(404, done));
 		});
 
-		it('should allow access to release rating creation', function(done) {
-			request.post('/api/v1/releases/123456/rating').as('member').send({ value: 1 }).end(hlp.status(404, done));
-		});
-
-		it('should allow access to release rating modification', function(done) {
-			request.put('/api/v1/releases/123456/rating').as('member').send({ value: 1 }).end(hlp.status(404, done));
-		});
-
-		it('should allow access to release rating retrieval', function(done) {
-			request.get('/api/v1/releases/123456/rating').as('member').end(hlp.status(404, done));
-		});
-
 		it('should deny access to release version creation', function(done) {
 			request.post('/api/v1/releases/123/versions').as('member').send({}).end(hlp.status(404, done));
 		});
@@ -512,18 +440,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/api/v1/releases/123/versions/1.2/files/1234/validate').as('member').send({}).end(hlp.status(403, done));
 		});
 
-		it('should deny access to release starring', function(done) {
-			request.post('/api/v1/releases/123/star').as('member').send({}).end(hlp.status(404, done));
-		});
-
-		it('should deny access to release unstarring', function(done) {
-			request.del('/api/v1/releases/123/star').as('member').end(hlp.status(404, done));
-		});
-
-		it('should deny access to release star retrieval', function(done) {
-			request.get('/api/v1/releases/123/star').as('member').end(hlp.status(404, done));
-		});
-
 		it('should deny access to release moderation', function(done) {
 			request.post('/api/v1/releases/1234/moderate').as('member').send({}).end(hlp.status(403, done));
 		});
@@ -534,18 +450,6 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to release moderation comment listing', function(done) {
 			request.get('/api/v1/releases/123/moderate/comments').as('member').end(hlp.status(404, done));
-		});
-
-		it('should deny access to user starring', function(done) {
-			request.post('/api/v1/users/123/star').as('member').send({}).end(hlp.status(404, done));
-		});
-
-		it('should deny access to user unstarring', function(done) {
-			request.del('/api/v1/users/123/star').as('member').end(hlp.status(404, done));
-		});
-
-		it('should deny access to release star retrieval', function(done) {
-			request.get('/api/v1/users/123/star').as('member').end(hlp.status(404, done));
 		});
 
 		it('should allow to list starred events', function(done) {

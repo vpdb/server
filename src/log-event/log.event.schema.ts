@@ -26,7 +26,7 @@ const events = [
 	'create_comment',
 	'star_game', 'star_release', 'star_user',
 	'unstar_game', 'unstar_release', 'unstar_user',
-	'rate_game', 'rate_release',
+	'rate_game', 'unrate_game', 'rate_release', 'unrate_release',
 	'upload_rom',
 	'create_build', 'update_build', 'delete_build',
 	'create_game', 'update_game', 'delete_game',

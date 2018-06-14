@@ -337,16 +337,13 @@ export class UserApi extends Api {
 			user[field] = updatedUser[field];
 		});
 
-		// 4. validate
-		await user.validate();
-
-		// 5. save
+		// 4. save
 		await user.save();
 
-		await LogUserUtil.successDiff(ctx, updatedUser, 'update', pick(user.toObject(), updatableFields), updatedUser, ctx.state.user);
+		await LogUserUtil.successDiff(ctx, ctx.state.user, 'update', pick(user.toObject(), updatableFields), updatedUser, ctx.state.user);
 		logger.info('[UserApi.update] Success!');
 
-		// 6. update ACLs if roles changed
+		// 5. update ACLs if roles changed
 		if (removedRoles.length > 0) {
 			logger.info('[UserApi.update] Updating ACLs: Removing roles [%s] from user <%s>.', removedRoles.join(' '), user.email);
 			await acl.removeUserRoles(user.id, removedRoles);
@@ -356,7 +353,7 @@ export class UserApi extends Api {
 			await acl.addUserRoles(user.id, addedRoles);
 		}
 
-		// 7. if changer is not changed user, mark user as dirty
+		// 6. if changer is not changed user, mark user as dirty
 		if (!ctx.state.user._id.equals(user._id)) {
 			logger.info('[UserApi.update] Marking user <%s> as dirty.', user.email);
 			await state.redis.setAsync('dirty_user_' + user.id, String(new Date().getTime()));

@@ -29,7 +29,7 @@ const hlp = require('../../test/modules/helper');
 
 superagentTest(request);
 
-describe.only('The VPDB `Rating` API', function() {
+describe('The VPDB `Rating` API', function() {
 
 	describe('when rating a game', function() {
 

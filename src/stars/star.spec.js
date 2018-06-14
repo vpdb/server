@@ -1,6 +1,6 @@
 /*
- * VPDB - Visual Pinball Database
- * Copyright (C) 2016 freezy <freezy@xbmc.org>
+ * VPDB - Virtual Pinball Database
+ * Copyright (C) 2018 freezy <freezy@vpdb.io>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,19 +19,15 @@
 
 "use strict"; /* global describe, before, after, it */
 
-var _ = require('lodash');
-var fs = require('fs');
-var path = require('path');
-var async = require('async');
-var request = require('superagent');
-var expect = require('expect.js');
+const request = require('superagent');
+const expect = require('expect.js');
 
-var superagentTest = require('../modules/superagent-test');
-var hlp = require('../modules/helper');
+const superagentTest = require('../../test/modules/superagent-test');
+const hlp = require('../../test/modules/helper');
 
 superagentTest(request);
 
-describe('The VPDB `Star` API', function() {
+describe.only('The VPDB `Star` API', function() {
 
 	describe('when starring a release', function() {
 
@@ -229,7 +225,7 @@ describe('The VPDB `Star` API', function() {
 		});
 
 		it('should succeed when providing correct data', function(done) {
-			var user = hlp.getUser('ratedMember1');
+			const user = hlp.getUser('ratedMember1');
 			request.post('/api/v1/users/' + user.id + '/star')
 				.send({})
 				.as('member')
@@ -248,7 +244,7 @@ describe('The VPDB `Star` API', function() {
 		});
 
 		it('should be able to retrieve starred status', function(done) {
-			var user = hlp.getUser('ratedMember2');
+			const user = hlp.getUser('ratedMember2');
 			request.get('/api/v1/users/' + user.id + '/star')
 				.as('member')
 				.saveResponse({ path: 'users/view-star'})
@@ -269,7 +265,7 @@ describe('The VPDB `Star` API', function() {
 		});
 
 		it('should be able to unstar a user', function(done) {
-			var user = hlp.getUser('ratedMember3');
+			const user = hlp.getUser('ratedMember3');
 			// star
 			request.post('/api/v1/users/' + user.id + '/star').send({}).as('member').end(function(err, res) {
 				hlp.expectStatus(err, res, 201);

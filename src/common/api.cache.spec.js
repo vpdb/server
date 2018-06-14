@@ -27,7 +27,7 @@ const ReleaseHelper = require('../../test/modules/release.helper');
 const api = new ApiClient();
 const releaseHelper = new ReleaseHelper(api);
 
-describe('The VPDB API cache', () => {
+describe.only('The VPDB API cache', () => {
 
 	let res;
 	let release, otherRelease;
@@ -176,6 +176,96 @@ describe('The VPDB API cache', () => {
 			await api.as(user).get(url).then(res => res.expectHeader('x-cache-api', 'hit'));
 			await api.get(url).then(res => res.expectHeader('x-cache-api', 'hit'));
 		});
+
+	});
+
+	describe('when starring a game', () => {
+
+		const user = 'member';
+
+		// remove star
+		afterEach(async () => await api.as(user).del('/v1/games/' + release.game.id + '/star').then(res => res.expectStatus(204)));
+
+
+		it.skip('should cache game list but update star counter', async () => {
+
+			// first, it's a miss
+			res = await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.as(user).get('/v1/games').then(res => res.expectHeader('x-cache-api', 'miss'));
+			const numStars = res.data.find(g => g.id === release.game.id).counter.stars;
+
+			// star
+			await api.as(user).post('/v1/games/' + release.game.id + '/star', {}).then(res => res.expectStatus(201));
+
+			// assert hit
+			res = await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'hit'));
+			expect(res.data.find(g => g.id === release.game.id).counter.stars).to.be(numStars + 1);
+			res = await api.as(user).debug().get('/v1/games').then(res => res.expectHeader('x-cache-api', 'hit'));
+			expect(res.data.find(g => g.id === release.game.id).counter.stars).to.be(numStars + 1);
+		});
+
+		// it('should cache release details for starring user but update star counter', async () => {
+		// 	const url = '/v1/releases/' + release.id;
+		//
+		// 	// first, it's a miss
+		// 	res = await api.as(user).get(url).then(res => res.expectHeader('x-cache-api', 'miss'));
+		// 	await api.as(user).get(url).then(res => res.expectHeader('x-cache-api', 'hit'));
+		// 	const numStars = res.data.counter.stars;
+		//
+		// 	// star
+		// 	await api.as(user).post('/v1/releases/' + release.id + '/star', {}).then(res => res.expectStatus(201));
+		//
+		// 	// assert hit
+		// 	res = await api.as(user).get(url).then(res => res.expectHeader('x-cache-api', 'hit'));
+		// 	expect(res.data.counter.stars).to.be(numStars + 1);
+		// });
+		//
+		// it('should invalidate game details for starring user', async () => {
+		// 	const url = '/v1/games/' + release.game.id;
+		//
+		// 	// first, it's a miss
+		// 	res = await api.as(user).get(url).then(res => res.expectHeader('x-cache-api', 'miss'));
+		// 	await api.as(user).get(url).then(res => res.expectHeader('x-cache-api', 'hit'));
+		// 	expect(res.data.releases.find(r => r.id === release.id).starred).to.be(false);
+		//
+		// 	// star
+		// 	await api.as(user).post('/v1/releases/' + release.id + '/star', {}).then(res => res.expectStatus(201));
+		//
+		// 	// miss again, because of `starred` flag in release list
+		// 	res = await api.as(user).get(url).then(res => res.expectHeader('x-cache-api', 'miss'));
+		// 	expect(res.data.releases.find(r => r.id === release.id).starred).to.be(true);
+		// });
+		//
+		// it('should cache game details for other users but update star counter', async () => {
+		// 	const url = '/v1/games/' + release.game.id;
+		//
+		// 	// first, it's a miss
+		// 	res = await api.get(url).then(res => res.expectHeader('x-cache-api', 'miss'));
+		// 	await api.get(url).then(res => res.expectHeader('x-cache-api', 'hit'));
+		// 	const numStars = res.data.releases.find(r => r.id === release.id).counter.stars;
+		//
+		// 	// star
+		// 	await api.as(user).post('/v1/releases/' + release.id + '/star', {}).then(res => res.expectStatus(201));
+		//
+		// 	// assert hit
+		// 	res = await api.get(url).then(res => res.expectHeader('x-cache-api', 'hit'));
+		// 	expect(res.data.releases.find(r => r.id === release.id).counter.stars).to.be(numStars + 1);
+		// });
+		//
+		// it('should cache game list', async () => {
+		// 	const url = '/v1/games';
+		//
+		// 	// first, it's a miss
+		// 	await api.as(user).get(url).then(res => res.expectHeader('x-cache-api', 'miss'));
+		// 	await api.get(url).then(res => res.expectHeader('x-cache-api', 'miss'));
+		//
+		// 	// star
+		// 	await api.as(user).post('/v1/releases/' + release.id + '/star', {}).then(res => res.expectStatus(201));
+		//
+		// 	// assert hit
+		// 	await api.as(user).get(url).then(res => res.expectHeader('x-cache-api', 'hit'));
+		// 	await api.get(url).then(res => res.expectHeader('x-cache-api', 'hit'));
+		// });
 
 	});
 

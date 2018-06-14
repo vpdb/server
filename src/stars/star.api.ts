@@ -52,6 +52,7 @@ export class StarApi extends Api {
 	 */
 	public star(modelName: StarrableModel) {
 		const model = this.models[modelName];
+		/* istanbul ignore next */
 		if (!model) {
 			throw new Error('Unknown model "' + modelName + '".');
 		}
@@ -67,6 +68,7 @@ export class StarApi extends Api {
 	 */
 	public unstar(modelName: StarrableModel) {
 		const model = this.models[modelName];
+		/* istanbul ignore next */
 		if (!model) {
 			throw new Error('Unknown model "' + modelName + '".');
 		}
@@ -82,6 +84,7 @@ export class StarApi extends Api {
 	 */
 	public get(modelName: StarrableModel) {
 		const model = this.models[modelName];
+		/* istanbul ignore next */
 		if (!model) {
 			throw new Error('Unknown model "' + modelName + '".');
 		}
@@ -197,7 +200,7 @@ export class StarApi extends Api {
 
 	private logRefs(star:any, entity:any, type:string) {
 		const ref: any = {};
-		ref[type] = star._ref[type]._id || star._ref[type];
+		ref[type] = star._ref[type]._id;
 		if (type === 'release') {
 			ref.game = entity._game._id;
 		}

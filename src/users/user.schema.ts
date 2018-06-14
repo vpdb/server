@@ -41,7 +41,7 @@ export const userFields:any = {
 	id: { type: String, required: true, unique: true, 'default': shortId.generate },
 	name: { type: String, index: true, required: 'Name must be provided.' }, // display name, equals username when locally registering.
 	username: { type: String, index: true, unique: true, sparse: true },     // login name when logging locally, empty if oauth
-	email: { type: String, index: true, unique: true, lowercase: true, required: 'Email must be provided.' },
+	email: { type: String, index: true, unique: true, required: 'Email must be provided.' },
 	email_status: {
 		code: { type: String, 'enum': ['confirmed', 'pending_registration', 'pending_update'], required: true },
 		token: { type: String },

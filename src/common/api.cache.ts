@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { intersection, isObject, upperFirst, get } from 'lodash';
+import { get, intersection, isObject } from 'lodash';
 import Router, { IRouterOptions } from 'koa-router';
 import pathToRegexp from 'path-to-regexp';
 
@@ -26,7 +26,7 @@ import { logger } from './logger';
 import { Context } from './types/context';
 import { User } from '../users/user';
 import { Release } from '../releases/release';
-import { MetricsModel, MetricsDocument } from 'mongoose';
+import { MetricsDocument, MetricsModel } from 'mongoose';
 
 /**
  * An in-memory cache using Redis.
@@ -59,6 +59,21 @@ class ApiCache {
 		['backglass', '/v1/backglasses'],
 		['medium', '/v1/media'],
 	]);
+
+	/**
+	 * Enables caching for the given route.
+	 *
+	 * The config defines how caches on that route are tagged for invalidation.
+	 *
+	 * @param {Router} router Router
+	 * @param {string} path Path of the route (same passed to the router).
+	 * @param {CacheInvalidationTag} config How responses from the route get invalidated. See {@link CacheInvalidationTag}.
+	 * @param {CacheCounterConfig} counters Counter config, see {@link CacheCounterConfig}.
+	 */
+	public enable<T>(router: Router, path: string, config: CacheInvalidationConfig, counters?:CacheCounterConfig<T>[]) {
+		const opts = (router as any).opts as IRouterOptions;
+		this.cacheRoutes.push({ path: path, regex: pathToRegexp(opts.prefix + path), config: config, counters: counters });
+	}
 
 	/**
 	 * The middleware. Stops the chain on cache hit or continues and saves
@@ -130,101 +145,6 @@ class ApiCache {
 		// only cache successful responses
 		if (ctx.status >= 200 && ctx.status < 300) {
 			await this.setCache(ctx, key, cacheRoute);
-		}
-	}
-
-	/**
-	 * Enables caching for the given route.
-	 *
-	 * The config defines how caches on that route are tagged for invalidation.
-	 *
-	 * @param {Router} router Router
-	 * @param {string} path Path of the route (same passed to the router).
-	 * @param {CacheInvalidationTag} config How responses from the route get invalidated. See {@link CacheInvalidationTag}.
-	 * @param {CacheCounterConfig} counters Counter config, see {@link CacheCounterConfig}.
-	 */
-	public enable<T>(router: Router, path: string, config: CacheInvalidationConfig, counters?:CacheCounterConfig<T>[]) {
-		const opts = (router as any).opts as IRouterOptions;
-		this.cacheRoutes.push({ path: path, regex: pathToRegexp(opts.prefix + path), config: config, counters: counters });
-	}
-
-	/**
-	 * Updates a counter cache.
-	 *
-	 * @param {string} modelName Name of the model, e.g. "game"
-	 * @param {string} entityId ID of the entity to update
-	 * @param {string} counterName Name of the counter, e.g. 'view'.
-	 * @param {boolean} decrement If true, don't increment but decrement.
-	 */
-	public async incrementCounter(modelName: string, entityId: string, counterName: string, decrement: boolean) {
-		const key = this.getCounterKey(modelName, entityId, counterName);
-		if (decrement) {
-			await state.redis.decrAsync(key);
-		} else {
-			await state.redis.incrAsync(key);
-		}
-	}
-
-	/**
-	 * Clears all caches listing the given entity and the entity's details.
-	 *
-	 * @param {string} modelName Name of the model, e.g. "game"
-	 * @param {string} entityId ID of the entity
-	 */
-	public async invalidateEntity(modelName: string, entityId: string) {
-		const tag: CacheInvalidationTag = { entities: { [modelName]: entityId } };
-		if (this.endpoints.has(modelName)) {
-			tag.path = this.endpoints.get(modelName);
-		}
-		await this.invalidate([tag]);
-	}
-
-	/**
-	 * Invalidates caches depending on a star.
-	 *
-	 * @param {string} modelName Name of the model, e.g. "game"
-	 * @param {User} user User who starred the entity
-	 * @param entity Starred entity
-	 */
-	public async invalidateStarredEntity(modelName: string, entity: any, user: User) {
-		const tags:CacheInvalidationTag[][] = [];
-		if (this.endpoints.has(modelName)) {
-			tags.push([{ path: this.endpoints.get(modelName) }, { user: user }]);
-		}
-		if (entity._game && entity._game.id) {
-			tags.push([{ path: '/v1/games/' + entity._game.id }, { user: user }]);
-		}
-		await this.invalidate(...tags);
-	}
-
-	public async invalidateRelease(release?: Release) {
-		if (release) {
-			await this.invalidateEntity('release', release.id);
-		} else {
-			await this.invalidate([{ resources: ['release'] }]);
-		}
-	}
-
-	public async invalidateReleaseComment(release: Release) {
-		await this.invalidate([{ entities: { releaseComment: release.id } }]);
-	}
-
-	/**
-	 * Invalidates all caches containing an entity type.
-	 *
-	 * @param {string} modelName Name of the model, e.g. "game"
-	 */
-	public async invalidateAllEntities(modelName: string) {
-
-		// 1. invalidate tagged resources
-		await this.invalidate([{ resources: [modelName] }]);
-
-		// 2. invalidate entities
-		const entityRefs = await state.redis.keysAsync(this.getEntityKey(modelName, '*'));
-		if (entityRefs.length > 0) {
-			const keys = await state.redis.sunionAsync(entityRefs);
-			logger.verbose('[ApiCache.invalidateAllEntities] Clearing: %s', keys.join(', '));
-			await state.redis.delAsync(keys);
 		}
 	}
 
@@ -400,6 +320,90 @@ class ApiCache {
 		await Promise.all(refs.map(ref => ref()));
 		logger.debug('[Cache] No hit, saved as "%s" with references [ %s ] and %s counters in %sms.',
 			key, refKeys.join(', '), numCounters, Date.now() - now);
+	}
+
+	/**
+	 * Updates a counter cache.
+	 *
+	 * @param {string} modelName Name of the model, e.g. "game"
+	 * @param {string} entityId ID of the entity to update
+	 * @param {string} counterName Name of the counter, e.g. 'view'.
+	 * @param {boolean} decrement If true, don't increment but decrement.
+	 */
+	public async incrementCounter(modelName: string, entityId: string, counterName: string, decrement: boolean) {
+		const key = this.getCounterKey(modelName, entityId, counterName);
+		if (decrement) {
+			await state.redis.decrAsync(key);
+		} else {
+			await state.redis.incrAsync(key);
+		}
+	}
+
+	/**
+	 * Clears all caches listing the given entity and the entity's details.
+	 *
+	 * @param {string} modelName Name of the model, e.g. "game"
+	 * @param {string} entityId ID of the entity
+	 */
+	public async invalidateEntity(modelName: string, entityId: string) {
+		const tag: CacheInvalidationTag = { entities: { [modelName]: entityId } };
+		if (this.endpoints.has(modelName)) {
+			tag.path = this.endpoints.get(modelName);
+		}
+		await this.invalidate([tag]);
+	}
+
+	/**
+	 * Invalidates caches depending on a star.
+	 *
+	 * @param {string} modelName Name of the model, e.g. "game"
+	 * @param {User} user User who starred the entity
+	 * @param entity Starred entity
+	 */
+	public async invalidateStarredEntity(modelName: string, entity: any, user: User) {
+		const tags:CacheInvalidationTag[][] = [];
+
+		/** list endpoints that include the user's starred status in the payload */
+		const modelsListingStar = ['release'];
+
+		if (modelsListingStar.includes(modelName) && this.endpoints.has(modelName)) {
+			tags.push([{ path: this.endpoints.get(modelName) }, { user: user }]);
+		}
+		if (entity._game && entity._game.id) {
+			tags.push([{ path: '/v1/games/' + entity._game.id }, { user: user }]);
+		}
+		await this.invalidate(...tags);
+	}
+
+	public async invalidateRelease(release?: Release) {
+		if (release) {
+			await this.invalidateEntity('release', release.id);
+		} else {
+			await this.invalidate([{ resources: ['release'] }]);
+		}
+	}
+
+	public async invalidateReleaseComment(release: Release) {
+		await this.invalidate([{ entities: { releaseComment: release.id } }]);
+	}
+
+	/**
+	 * Invalidates all caches containing an entity type.
+	 *
+	 * @param {string} modelName Name of the model, e.g. "game"
+	 */
+	public async invalidateAllEntities(modelName: string) {
+
+		// 1. invalidate tagged resources
+		await this.invalidate([{ resources: [modelName] }]);
+
+		// 2. invalidate entities
+		const entityRefs = await state.redis.keysAsync(this.getEntityKey(modelName, '*'));
+		if (entityRefs.length > 0) {
+			const keys = await state.redis.sunionAsync(entityRefs);
+			logger.verbose('[ApiCache.invalidateAllEntities] Clearing: %s', keys.join(', '));
+			await state.redis.delAsync(keys);
+		}
 	}
 
 	private getCacheKey(ctx: Context): string {

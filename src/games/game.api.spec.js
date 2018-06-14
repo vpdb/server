@@ -20,8 +20,6 @@
 "use strict"; /* global describe, before, after, it */
 
 const _ = require('lodash');
-const fs = require('fs');
-const path = require('path');
 const async = require('async');
 const request = require('superagent');
 const expect = require('expect.js');
@@ -175,7 +173,34 @@ describe('The VPDB `game` API', function() {
 			], done);
 		});
 
-		it('should fail if the referenced file type for backglass is not backglass.');
+		it('should fail if the referenced file type for backglass is not backglass.', function(done) {
+			let romId;
+			async.series([
+
+				// 1. upload game
+				next => {
+					hlp.file.createRom('moderator', request, rom => {
+						romId = rom.id;
+						next();
+					});
+				},
+
+				// 2. try to use rom as backglass
+				next => {
+					request
+						.post('/api/v1/games')
+						.as('moderator')
+						.send(hlp.game.getGame({ _backglass: romId }))
+						.end(function(err, res) {
+							hlp.expectStatus(err, res, 422);
+							expect(res.body.errors).to.have.length(1);
+							expect(res.body.errors[0].field).to.be('_backglass');
+							expect(res.body.errors[0].message).to.contain('file of type "backglass"');
+							next();
+						});
+				}
+			], done);
+		});
 	});
 
 	describe('when updating an existing game', function() {

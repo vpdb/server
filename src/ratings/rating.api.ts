@@ -184,11 +184,8 @@ export class RatingApi extends Api {
 		if (!rating) {
 			throw new ApiError('No rating of <%s> for "%s" found.', ctx.state.user.email, (entity as any)[titleAttr]).status(404);
 		}
-		rating.value = ctx.request.body.value;
-		rating.modified_at = new Date();
 		await rating.remove();
-
-		await this.updateRatedEntity(ctx, modelName, entity, rating, 204);
+		await this.updateRatedEntity(ctx, modelName, entity, null, 204);
 	}
 
 	/**
@@ -208,8 +205,10 @@ export class RatingApi extends Api {
 		if (status === 200) {
 			result.modified_at = rating.modified_at;
 			logger.info('[RatingApi.updateRatedEntity] User <%s> updated rating for %s %s to %s.', ctx.state.user, modelName, entity.id, rating.value);
-		} else {
+		} else if (rating) {
 			logger.info('[RatingApi.updateRatedEntity] User <%s> added new rating for %s %s with %s.', ctx.state.user, modelName, entity.id, rating.value);
+		} else {
+			logger.info('[RatingApi.updateRatedEntity] User <%s> removed rating for %s %s.', ctx.state.user, modelName, entity.id);
 		}
 
 		this.success(ctx, result, status);
@@ -219,7 +218,6 @@ export class RatingApi extends Api {
 		} else {
 			await LogEventUtil.log(ctx, 'unrate_' + modelName, true, this.logPayload(null, entity, modelName, false), this.logRefs(null, entity, modelName));
 		}
-
 
 		// invalidate cache
 		await apiCache.invalidateEntity(modelName, entity.id);
@@ -266,7 +264,7 @@ export class RatingApi extends Api {
 	private async logRefs(rating: any, entity: any, modelName: string) {
 		const ref: any = {};
 		if (rating) {
-			ref[modelName] = rating._ref[modelName]._id || rating._ref[modelName];
+			ref[modelName] = rating._ref[modelName]._id;
 			if (modelName === 'release') {
 				ref.game = entity._game._id;
 			}

@@ -302,6 +302,16 @@ describe('The VPDB `Star` API', function() {
 			hlp.cleanup(request, done);
 		});
 
+		it('should fail if the game is not starred', function(done) {
+			hlp.game.createGame('moderator', request, function(game) {
+				// unstar
+				request.del('/api/v1/games/' + game.id + '/star')
+					.send({})
+					.as('member')
+					.end(hlp.status(400, 'need to star something', done));
+			});
+		});
+
 		it('should succeed and updated counter accordingly', function(done) {
 			hlp.game.createGame('moderator', request, function(game) {
 

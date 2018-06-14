@@ -43,11 +43,6 @@ class Metrics {
 
 		const atm = await this.getGlobalMean(modelName);
 		const summary = await this.updateEntityMetrics(modelName, entity, atm);
-		const result = {
-			value: rating.value,
-			created_at: rating.created_at,
-			[modelName]: summary
-		};
 		const _atm = parseInt(await state.redis.getAsync(this.redisAtmKey));
 		const precision = 100;
 		if (!_atm) {
@@ -59,7 +54,11 @@ class Metrics {
 			await this.updateAllEntities(modelName, atm);
 			await apiCache.invalidateAllEntities(modelName);
 		}
-		return result;
+		return {
+			value: rating ? rating.value : 0,
+			created_at: rating ? rating.created_at : undefined,
+			[modelName]: summary
+		};
 	}
 
 	/**

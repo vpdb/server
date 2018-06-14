@@ -18,6 +18,7 @@
  */
 
 import { isString } from 'lodash';
+import { isLength } from 'validator';
 import { GameReferenceModel, PaginateModel, PrettyIdModel, Schema } from 'mongoose';
 import paginatePlugin = require('mongoose-paginate');
 import uniqueValidator from 'mongoose-unique-validator';
@@ -68,5 +69,5 @@ romSchema.plugin(paginatePlugin);
 // VALIDATIONS
 //-----------------------------------------------------------------------------
 romSchema.path('id').validate((id:any) => {
-	return isString(id) && validator.isLength(id ? id.trim() : '', 2);
+	return isString(id) && isLength(id ? id.trim() : '', 2);
 }, 'ID must contain at least 2 characters.');

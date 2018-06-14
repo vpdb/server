@@ -54,13 +54,17 @@ export abstract class Api {
 
 		return async (ctx: Context) => {
 
-			// if this resource is a service resource, we don't need a user.
+			// if this resource is a service resource, only check if scope is correct and no permissions are needed.
 			if (scopes && scope.isValid([Scope.SERVICE], scopes) && !resource && !permission && ctx.state.tokenType === 'application') {
 				return await handler(ctx);
 			}
 
 			// if authentication failed, abort.
 			if (ctx.state.authError) {
+				// check scopes first, because otherwise we might hit a invalid header error for service resource
+				if (ctx.state.tokenScopes && !scope.isValid(scopes, ctx.state.tokenScopes)) {
+					throw new ApiError('Your token has an invalid scope: [ "%s" ]. Required: [ "%s" ]', (ctx.state.tokenScopes || []).join('", "'), (scopes || []).join('", "')).status(401).log();
+				}
 				throw ctx.state.authError;
 			}
 

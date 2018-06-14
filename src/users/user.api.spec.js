@@ -392,7 +392,7 @@ describe('The VPDB `user` API', () => {
 
 		it('should merge an existing user with a previously unconfirmed email', async () => {
 
-			const dupeEmail = faker.internet.email().toLowerCase();
+			const dupeEmail = api.generateEmail();
 
 			// 1. register locally with email1 -> account1
 			const localUser = await api.createUser();
@@ -504,7 +504,7 @@ describe('The VPDB `user` API', () => {
 	describe.skip('when authenticating locally', () => {
 
 		it('should merge an existing user with a previously unconfirmed email', async () => {
-			const email = faker.internet.email().toLowerCase();
+			const email = api.generateEmail();
 
 			// 1. register locally with email1 -> account1
 			const user1 = await api.createUser();

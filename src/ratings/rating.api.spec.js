@@ -252,6 +252,43 @@ describe('The VPDB `Rating` API', function() {
 		});
 	});
 
+	describe('when deleting a game vote', function() {
+
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: [ 'member' ] },
+				moderator: { roles: [ 'moderator' ] }
+			}, done);
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should fail when no previous vote has been cast', function(done) {
+			hlp.game.createGame('moderator', request, function(game) {
+				request.del('/api/v1/games/' + game.id + '/rating').as('member').end(hlp.status(404, done));
+			});
+		});
+
+		it('should succeed when there is a vote', function(done) {
+			hlp.game.createGame('moderator', request, function(game) {
+				request.post('/api/v1/games/' + game.id + '/rating')
+					.send({ value: 9 })
+					.as('member')
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 201);
+						request.del('/api/v1/games/' + game.id + '/rating')
+							.as('member')
+							.end(function(err, res) {
+								hlp.expectStatus(err, res, 204);
+								request.get('/api/v1/games/' + game.id + '/rating').as('member').end(hlp.status(404, done));
+							});
+					});
+			});
+		});
+	});
+
 	describe('when rating a release', function() {
 
 		before(function(done) {
@@ -362,6 +399,43 @@ describe('The VPDB `Rating` API', function() {
 									expect(res.body.rating.votes).to.be(1);
 									done();
 								});
+							});
+					});
+			});
+		});
+	});
+
+	describe('when deleting a release vote', function() {
+
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: [ 'member' ] },
+				moderator: { roles: [ 'moderator' ] }
+			}, done);
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should fail when no previous vote has been cast', function(done) {
+			hlp.release.createRelease('moderator', request, function(release) {
+				request.del('/api/v1/releases/' + release.id + '/rating').as('member').end(hlp.status(404, done));
+			});
+		});
+
+		it('should succeed when there is a vote', function(done) {
+			hlp.release.createRelease('moderator', request, function(release) {
+				request.post('/api/v1/releases/' + release.id + '/rating')
+					.send({ value: 9 })
+					.as('member')
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 201);
+						request.del('/api/v1/releases/' + release.id + '/rating')
+							.as('member')
+							.end(function(err, res) {
+								hlp.expectStatus(err, res, 204);
+								request.get('/api/v1/releases/' + release.id + '/rating').as('member').end(hlp.status(404, done));
 							});
 					});
 			});

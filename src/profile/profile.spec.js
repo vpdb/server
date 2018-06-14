@@ -96,7 +96,7 @@ describe('The VPDB `profile` API', () => {
 			const user = await api.createUser();
 			const name = faker.name.firstName() + ' ' + faker.name.lastName();
 			const location = faker.address.city();
-			const email = faker.internet.email().toLowerCase();
+			const email = api.generateEmail();
 			const newPass = randomString.generate(10);
 			await api.as(user)
 				.save('user/update-profile')
@@ -278,7 +278,7 @@ describe('The VPDB `profile` API', () => {
 
 		it('should fail when providing a valid email but email is unconfirmed', async () => {
 			const user = await api.createUser();
-			const email = faker.internet.email().toLowerCase();
+			const email = api.generateEmail();
 			await api.as(user)
 				.patch('/v1/profile', { email: email })
 				.then(res => res.expectStatus(200));
@@ -293,7 +293,7 @@ describe('The VPDB `profile` API', () => {
 
 		it('should succeed when providing a valid email and email is confirmed', async () => {
 			const user = await api.createUser();
-			const email = faker.internet.email().toLowerCase();
+			const email = api.generateEmail();
 			res = await api.as(user)
 				.patch('/v1/profile', { email: email, returnEmailToken: true })
 				.then(res => res.expectStatus(200));
@@ -328,7 +328,7 @@ describe('The VPDB `profile` API', () => {
 		it('should succeed when providing an email that already exists but is still pending', async () => {
 			const user1 = await api.createUser();
 			const user2 = await api.createUser();
-			const email = faker.internet.email().toLowerCase();
+			const email = api.generateEmail();
 
 			// change but don't confirm for user 1
 			await api.as(user1)
@@ -344,8 +344,8 @@ describe('The VPDB `profile` API', () => {
 		it('should directly set the email status to confirmed if the email has already been confirmed in the past', async () => {
 			const user = await api.createUser();
 			const oldMail = user.email;
-			const email1 = faker.internet.email().toLowerCase();
-			const email2 = faker.internet.email().toLowerCase();
+			const email1 = api.generateEmail();
+			const email2 = api.generateEmail();
 
 			// set email 1
 			res = await api.as(user)
@@ -381,7 +381,7 @@ describe('The VPDB `profile` API', () => {
 
 			it('should set back the email to confirmed when the submitted email is the same as the original one', async () => {
 				const oldEmail = api.getUser('member').email;
-				const newEmail = faker.internet.email().toLowerCase();
+				const newEmail = api.generateEmail();
 
 				// set to new email
 				await api.as('member')
@@ -398,7 +398,7 @@ describe('The VPDB `profile` API', () => {
 
 			it('should ignore the email when the submitted email is the same as the pending one', async () => {
 				const user = await api.createUser();
-				const newEmail = faker.internet.email().toLowerCase();
+				const newEmail = api.generateEmail();
 				// set to new email
 				res = await api.as(user)
 					.patch('/v1/profile', { email: newEmail })
@@ -418,8 +418,8 @@ describe('The VPDB `profile` API', () => {
 
 			it('should fail when the submitted email is neither the current nor the pending one', async () => {
 				const user = await api.createUser();
-				const newEmail1 = faker.internet.email().toLowerCase();
-				const newEmail2 = faker.internet.email().toLowerCase();
+				const newEmail1 = api.generateEmail();
+				const newEmail2 = api.generateEmail();
 				await api.as(user)
 					.patch('/v1/profile', { email: newEmail1 })
 					.then(res => res.expectStatus(200));

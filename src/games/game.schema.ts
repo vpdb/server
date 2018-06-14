@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { PaginateModel, PrettyIdModel, Schema } from 'mongoose';
+import { Document, PaginateModel, PrettyIdModel, Schema } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
 import validator from 'validator';
 import paginatePlugin = require('mongoose-paginate');
@@ -139,18 +139,25 @@ gameSchema.path('game_type').validate(async function () {
 	return true;
 });
 
-gameSchema.path('_backglass').validate(async function (backglass: File) {
+gameSchema.path('_backglass').validate(async function (this: Document, backglass: File) {
 	if (!backglass) {
 		return true;
 	}
 	backglass = await state.models.File.findOne({ _id: backglass._id || backglass }).exec();
 	if (backglass) {
-		const ar = Math.round(backglass.metadata.size.width / backglass.metadata.size.height * 1000) / 1000;
-		const arDiff = Math.abs(ar / 1.25 - 1);
-		return arDiff < maxAspectRatioDifference;
+		if (backglass.file_type !== 'backglass') {
+			this.invalidate('_backglass', 'Must be linked to a file of type "backglass", "' + backglass.file_type + '" given.', backglass.id);
+
+		} else {
+			const ar = Math.round(backglass.metadata.size.width / backglass.metadata.size.height * 1000) / 1000;
+			const arDiff = Math.abs(ar / 1.25 - 1);
+			if (arDiff > maxAspectRatioDifference) {
+				this.invalidate('_backglass', 'Aspect ratio of backglass must be smaller than 1:1.5 and greater than 1:1.05.', backglass.id);
+			}
+		}
 	}
 	return true;
-}, 'Aspect ratio of backglass must be smaller than 1:1.5 and greater than 1:1.05.');
+});
 
 
 //-----------------------------------------------------------------------------

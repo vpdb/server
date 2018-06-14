@@ -179,12 +179,12 @@ describe.only('The VPDB API cache', () => {
 
 	});
 
-	describe('when rating a release', () => {
+	describe.only('when rating a release', () => {
 
 		const user = 'member';
 
 		// remove rating
-		//afterEach(async () => await api.as(user).del('/v1/releases/' + release.id + '/star').then(res => res.expectStatus(204)));
+		afterEach(async () => await api.as(user).del('/v1/releases/' + release.id + '/rating').then(res => res.expectStatus(204)));
 
 		it('should invalidate', async () => {
 

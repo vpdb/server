@@ -297,7 +297,7 @@ export function moderationPlugin(schema: Schema) {
 	 */
 	schema.methods.approve = async function (user: User, message: string): Promise<ModerationData> {
 
-		const model = state.models[this.constructor.modelName] as ModeratedModel<ModeratedDocument>;
+		const model = state.getModel<ModeratedModel<ModeratedDocument>>(this.constructor.modelName);
 		let previousModeration = { isApproved: this.moderation.is_approved, isRefused: this.moderation.is_refused };
 		await model.findByIdAndUpdate(this._id, {
 			'moderation.is_approved': true,
@@ -327,7 +327,7 @@ export function moderationPlugin(schema: Schema) {
 	 */
 	schema.methods.refuse = async function (user: User, reason: string): Promise<ModerationData> {
 
-		const model = state.models[this.constructor.modelName] as ModeratedModel<ModeratedDocument>;
+		const model = state.getModel<ModeratedModel<ModeratedDocument>>(this.constructor.modelName);
 		let previousModeration = { isApproved: this.moderation.is_approved, isRefused: this.moderation.is_refused };
 		await model.findByIdAndUpdate(this._id, {
 			'moderation.is_approved': false,
@@ -357,7 +357,7 @@ export function moderationPlugin(schema: Schema) {
 	 */
 	schema.methods.moderate = async function (user: User, message: string): Promise<ModerationData> {
 
-		const model = state.models[this.constructor.modelName] as ModeratedModel<ModeratedDocument>;
+		const model = state.getModel<ModeratedModel<ModeratedDocument>>(this.constructor.modelName);
 		let previousModeration = { isApproved: this.moderation.is_approved, isRefused: this.moderation.is_refused };
 		await model.findByIdAndUpdate(this._id, {
 			'moderation.is_approved': false,

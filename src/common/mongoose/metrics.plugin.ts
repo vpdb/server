@@ -73,7 +73,7 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 		await apiCache.incrementCounter(this.modelName.toLowerCase(), entityId, counterName, decrement);
 
 		// update db
-		await state.models[this.modelName].findOneAndUpdate({ id: entityId }, { $inc: { ['counter.' + counterName]: incr } }).exec();
+		await state.getModel(this.modelName).findOneAndUpdate({ id: entityId }, { $inc: { ['counter.' + counterName]: incr } }).exec();
 	};
 }
 

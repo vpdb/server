@@ -26,7 +26,7 @@ import { logger } from './logger';
 import { Context } from './types/context';
 import { User } from '../users/user';
 import { Release } from '../releases/release';
-import { MetricsModel } from 'mongoose';
+import { MetricsModel, MetricsDocument } from 'mongoose';
 
 /**
  * An in-memory cache using Redis.
@@ -100,7 +100,7 @@ class ApiCache {
 					}
 					// update db of view counter
 					if (counter.incrementCounter) {
-						await (state.models[upperFirst(counter.modelName)] as MetricsModel<any>).incrementCounter(counter.incrementCounter.getId(body), counter.incrementCounter.counter);
+						await state.getModel<MetricsModel<MetricsDocument>>(counter.modelName).incrementCounter(counter.incrementCounter.getId(body), counter.incrementCounter.counter);
 					}
 				}
 				const values = refs.length > 0 ? (await state.redis.mgetAsync.apply(state.redis, refs.map(r => r.key))) : [];
@@ -436,12 +436,12 @@ class ApiCache {
 	 */
 	private async deleteWildcard(wildcard:string): Promise<number> {
 		const num = await state.redis.evalAsync(
-			"local keysToDelete = redis.call('keys', ARGV[1]) " + // find keys with wildcard
-			"if unpack(keysToDelete) ~= nil then " +              // if there are any keys
-			"return redis.call('del', unpack(keysToDelete)) " +   // delete all
-			"else " +
-			"return 0 " +                                         // if no keys to delete
-			"end ",
+			'local keysToDelete = redis.call(\'keys\', ARGV[1]) ' + // find keys with wildcard
+			'if unpack(keysToDelete) ~= nil then ' +              // if there are any keys
+			'return redis.call(\'del\', unpack(keysToDelete)) ' +   // delete all
+			'else ' +
+			'return 0 ' +                                         // if no keys to delete
+			'end ',
 			0,                                                    // no keys names passed, only one argument ARGV[1]
 			wildcard);
 		return num as number;

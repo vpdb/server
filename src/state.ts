@@ -17,7 +17,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { Model, Document, Schema } from 'mongoose';
 import { RedisClient } from 'redis';
+import { upperFirst } from 'lodash';
 
 import { Models } from './common/types/models';
 import { Serializers } from './common/types/serializers';
@@ -26,6 +28,7 @@ import { config } from './common/settings';
 
 import Redis = require('redis');
 import Bluebird = require('bluebird');
+
 
 Bluebird.promisifyAll((Redis as any).RedisClient.prototype);
 Bluebird.promisifyAll((Redis as any).Multi.prototype);
@@ -60,6 +63,16 @@ class State {
 		(this.serializers as any) = {};
 		this.redis = this.setupRedis();
 	}
+
+	/**
+	 * Returns a model by model name.
+	 * @param {string} modelName Name of the model, case insensitive.
+	 * @returns {Model<Document>}
+	 */
+	public getModel<M extends Model<Document> = Model<Document>>(modelName: string): M {
+		return this.models[upperFirst(modelName)] as M;
+	}
+
 
 	private setupRedis(): RedisClient {
 		const redis = Redis.createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });

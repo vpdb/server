@@ -55,7 +55,7 @@ export class StarApi extends Api {
 		if (!model) {
 			throw new Error('Unknown model "' + modelName + '".');
 		}
-		return async (ctx: Context) => this._star(ctx, modelName, this.find(state.models[model.model] as Model<MetricsDocument>, modelName, model.populate));
+		return async (ctx: Context) => this._star(ctx, modelName, this.find(state.getModel<Model<MetricsDocument>>(model.model), modelName, model.populate));
 	}
 
 	/**
@@ -70,7 +70,7 @@ export class StarApi extends Api {
 		if (!model) {
 			throw new Error('Unknown model "' + modelName + '".');
 		}
-		return async (ctx: Context) => this._unstar(ctx, modelName, this.find(state.models[model.model] as Model<MetricsDocument>, modelName, model.populate));
+		return async (ctx: Context) => this._unstar(ctx, modelName, this.find(state.getModel<Model<MetricsDocument>>(model.model), modelName, model.populate));
 	}
 
 	/**
@@ -85,7 +85,7 @@ export class StarApi extends Api {
 		if (!model) {
 			throw new Error('Unknown model "' + modelName + '".');
 		}
-		return async (ctx: Context) => this._view(ctx, this.find(state.models[model.model] as Model<MetricsDocument>, modelName), model.titleAttr || 'id');
+		return async (ctx: Context) => this._view(ctx, this.find(state.getModel<Model<MetricsDocument>>(model.model), modelName), model.titleAttr || 'id');
 	}
 
 	/**

@@ -27,7 +27,7 @@ const ReleaseHelper = require('../../test/modules/release.helper');
 const api = new ApiClient();
 const releaseHelper = new ReleaseHelper(api);
 
-describe.only('The VPDB API cache', () => {
+describe('The VPDB API cache', () => {
 
 	let res;
 	let release, otherRelease;
@@ -179,14 +179,14 @@ describe.only('The VPDB API cache', () => {
 
 	});
 
-	describe.only('when rating a release', () => {
+	describe('when rating a release', () => {
 
 		const user = 'member';
 
 		// remove rating
 		afterEach(async () => await api.as(user).del('/v1/releases/' + release.id + '/rating').then(res => res.expectStatus(204)));
 
-		it('should invalidate', async () => {
+		it('should invalidate release list and details of rated release', async () => {
 
 			// cache future misses
 			await api.get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));

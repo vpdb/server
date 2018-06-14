@@ -221,9 +221,11 @@ class ApiCache {
 
 		// 2. invalidate entities
 		const entityRefs = await state.redis.keysAsync(this.getEntityKey(modelName, '*'));
-		const keys = await state.redis.sunionAsync(entityRefs);
-		logger.verbose('[ApiCache.invalidateAllEntities] Clearing: %s', keys.join(', '));
-		await state.redis.delAsync(keys);
+		if (entityRefs.length > 0) {
+			const keys = await state.redis.sunionAsync(entityRefs);
+			logger.verbose('[ApiCache.invalidateAllEntities] Clearing: %s', keys.join(', '));
+			await state.redis.delAsync(keys);
+		}
 	}
 
 	/**

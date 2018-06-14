@@ -138,7 +138,7 @@ class Metrics {
 	private async updateAllEntities(modelName: string, atm: number) {
 
 		await this.updateGlobalMean(atm);
-		const model = state.getModel<Document>(modelName);
+		const model = state.getModel(modelName);
 
 		/* istanbul ignore if */
 		if (!model) {

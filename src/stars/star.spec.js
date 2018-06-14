@@ -27,7 +27,7 @@ const hlp = require('../../test/modules/helper');
 
 superagentTest(request);
 
-describe.only('The VPDB `Star` API', function() {
+describe('The VPDB `Star` API', function() {
 
 	describe('when starring a release', function() {
 

@@ -293,7 +293,7 @@ class ApiCache {
 			// logger.verbose('invalidationKeys = new Set(%s | %s)', Array.from(invalidationKeys).join(','), intersection(...keys).join(','));
 			invalidationKeys = new Set([...invalidationKeys, ...intersection(...keys)]); // redis could do this too using SUNIONSTORE to temp sets and INTER them
 		}
-		logger.info('[ApiCache.invalidate]: Invalidating caches: (%s).',
+		logger.debug('[ApiCache.invalidate]: Invalidating caches: (%s).',
 			'(' + allRefs.map(r => '(' + r.map(r => r.join(' || ')).join(') && (') + ')').join(') || (') + ')');
 
 		let n = 0;
@@ -302,7 +302,7 @@ class ApiCache {
 			await state.redis.delAsync(key);
 			n++;
 		}
-		logger.info('[ApiCache.invalidate]: Cleared %s caches in %sms.', n, Date.now() - now);
+		logger.debug('[ApiCache.invalidate]: Cleared %s caches in %sms.', n, Date.now() - now);
 		return n;
 	}
 

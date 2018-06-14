@@ -27,10 +27,6 @@ import { apiCache } from './api.cache';
 class Metrics {
 
 	private readonly redisAtmKey = 'metrics:atm';
-	private readonly entities: { [key: string]: Model<Document> } = {
-		game: state.models.Game,
-		release: state.models.Release
-	};
 
 	/**
 	 * Updates the rating with the average, count and score.
@@ -38,19 +34,19 @@ class Metrics {
 	 * If needed, runs through other ratings as well, if global arithmetic mean
 	 * changed.
 	 *
-	 * @param {string} ref Reference to model
+	 * @param {string} modelName Reference to model, e.g. "release"
 	 * @param {object} entity Object that received the vote
 	 * @param {object} rating Rating object
 	 * @reuturn {Promise.<{}>} Result
 	 */
-	public async onRatingUpdated(ref: string, entity: Document, rating: Rating) {
+	public async onRatingUpdated(modelName: string, entity: Document, rating: Rating) {
 
-		const atm = await this.getGlobalMean(ref);
-		const summary = await this.updateEntityMetrics(ref, entity, atm);
+		const atm = await this.getGlobalMean(modelName);
+		const summary = await this.updateEntityMetrics(modelName, entity, atm);
 		const result = {
 			value: rating.value,
 			created_at: rating.created_at,
-			[ref]: summary
+			[modelName]: summary
 		};
 		const _atm = parseInt(await state.redis.getAsync(this.redisAtmKey));
 		const precision = 100;
@@ -59,9 +55,9 @@ class Metrics {
 			await this.updateGlobalMean(atm);
 
 		} else if (Math.round(_atm * precision) !== Math.round(atm * precision)) {
-			logger.info('[metrics] Global mean of %ss changed from %s to %s, re-calculating bayesian estimates.', ref, Math.round(_atm * precision) / precision, Math.round(atm * precision) / precision);
-			await this.updateAllEntities(ref, atm);
-			await apiCache.invalidateAllEntities(ref);
+			logger.info('[Metrics.onRatingUpdated] Global mean of %ss changed from %s to %s, re-calculating bayesian estimates.', modelName, Math.round(_atm * precision) / precision, Math.round(atm * precision) / precision);
+			await this.updateAllEntities(modelName, atm);
+			await apiCache.invalidateAllEntities(modelName);
 		}
 		return result;
 	}
@@ -70,12 +66,12 @@ class Metrics {
 	 * Re-calculates metrics for a given entity.
 	 *
 	 * @private
-	 * @param {string} ref Reference to model
+	 * @param {string} modelName Reference to model
 	 * @param {object} entity Object that received the vote
 	 * @param {number} atm Arithmetic total mean
 	 * @return Promise<{ average: number, votes: number, score: number }>
 	 */
-	private async updateEntityMetrics(ref: string, entity: Document, atm: number): Promise<{ average: number, votes: number, score: number }> {
+	private async updateEntityMetrics(modelName: string, entity: Document, atm: number): Promise<{ average: number, votes: number, score: number }> {
 
 		/*
 		 * Bayesian estimate:
@@ -91,91 +87,90 @@ class Metrics {
 		let am, n;
 
 		// get arithmetic local mean
-		let q = { ['_ref.' + ref]: entity._id };
+		let q = { ['_ref.' + modelName]: entity._id };
 		let metrics;
 
-		// Mongoose API FTW!!
-		const results = await new Promise<any[]>((resolve, reject) => {
-			let data: any[] = [];
-			return state.models.Rating.aggregate([{ $match: q }, {
-				$group: {
-					_id: null,
-					sum: { $sum: '$value' },
-					count: { $sum: 1 }
-				}
-			}])
-				.cursor({})
-				.exec()
-				.on('data', (doc: any) => data.push(doc))
-				.on('end', () => resolve(data))
-				.on('error', reject);
-		});
+		const results = await this.aggregate(q);
 
-		const result: any = results[0];
-		n = result.count;
-		am = result.sum / n;
+		if (results.length === 1) {
+			const result: any = results[0];
+			n = result.count;
+			am = result.sum / n;
+			metrics = {
+				average: Math.round(am * 1000) / 1000,
+				votes: n,
+				score: (n / (n + m)) * am + (m / (n + m)) * atm
+			};
+		} else {
+			metrics = { average: 0, votes: 0, score: 0 };
+		}
 
-		metrics = {
-			average: Math.round(am * 1000) / 1000,
-			votes: n,
-			score: (n / (n + m)) * am + (m / (n + m)) * atm
-		};
 		await entity.update({ rating: metrics });
 
 		// invalidate cache
-		await apiCache.invalidateEntity(ref, entity.id);
+		await apiCache.invalidateEntity(modelName, entity.id);
 
 		return metrics;
 	}
 
-	private async getGlobalMean(ref: string): Promise<number> {
+	private async getGlobalMean(modelName: string): Promise<number> {
 
 		/* istanbul ignore if: don't calculate if we use a hard-coded mean anyway. */
 		if (config.vpdb.metrics.bayesianEstimate.globalMean !== null) {
 			return Promise.resolve(config.vpdb.metrics.bayesianEstimate.globalMean);
 		}
-		let q: any = { ['_ref.' + ref]: { '$ne': null } };
+		let q: any = { ['_ref.' + modelName]: { '$ne': null } };
 
-		// Mongoose API FTW!!
-		const results = await new Promise<any[]>((resolve, reject) => {
-			let data: any[] = [];
-			return state.models.Rating.aggregate([{ $match: q }, {
-				$group: {
-					_id: null,
-					sum: { $sum: '$value' },
-					count: { $sum: 1 }
-				}
-			}])
-				.cursor({})
-				.exec()
-				.on('data', (doc: any) => data.push(doc))
-				.on('end', () => resolve(data))
-				.on('error', reject);
-		});
-		return results[0].sum / results[0].count;
+		const results = await this.aggregate(q);
+		if (results.length === 1) {
+			return results[0].sum / results[0].count;
+		} else {
+			logger.warn('[Metrics.getGlobalMean] No entities found for %s, returning 0.', modelName);
+			return 0;
+		}
+
 	}
 
 	private async updateGlobalMean(atm: any) {
 		return state.redis.setAsync(this.redisAtmKey, atm);
 	};
 
-	private async updateAllEntities(ref: string, atm: number) {
+	private async updateAllEntities(modelName: string, atm: number) {
 
 		await this.updateGlobalMean(atm);
-		const model: Model<Document> = this.entities[ref];
+		const model = state.getModel<Document>(modelName);
 
 		/* istanbul ignore if */
 		if (!model) {
-			throw new Error('Model "' + ref + '" does not support ratings.');
+			throw new Error('Model "' + modelName + '" does not support ratings.');
 		}
 
 		// update all entities that have at least one rating
 		const entities = await model.find({ 'rating.votes': { '$gt': 0 } }).exec();
-		logger.info('[metrics] Updating metrics for %d %ss...', entities.length, ref);
+		logger.info('[Metrics.updateAllEntities] Updating metrics for %d %ss...', entities.length, modelName);
 
 		for (const entity of entities) {
-			await this.updateEntityMetrics(ref, entity, atm);
+			await this.updateEntityMetrics(modelName, entity, atm);
 		}
+	}
+
+	private async aggregate(q:any) {
+		// Mongoose API FTW!!
+		return new Promise<any[]>((resolve, reject) => {
+			let data: any[] = [];
+			return state.models.Rating.aggregate([{ $match: q }, {
+				$group: {
+					_id: null,
+					sum: { $sum: '$value' },
+					count: { $sum: 1 }
+				}
+			}])
+				.cursor({})
+				.exec()
+				.on('data', (doc: any) => data.push(doc))
+				.on('end', () => resolve(data))
+				.on('error', reject);
+		});
 	}
 }
 

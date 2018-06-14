@@ -1,6 +1,6 @@
 /*
- * VPDB - Visual Pinball Database
- * Copyright (C) 2016 freezy <freezy@xbmc.org>
+ * VPDB - Virtual Pinball Database
+ * Copyright (C) 2018 freezy <freezy@vpdb.io>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,23 +19,21 @@
 
 "use strict"; /* global describe, before, after, it */
 
-var _ = require('lodash');
-var fs = require('fs');
-var path = require('path');
-var async = require('async');
-var request = require('superagent');
-var expect = require('expect.js');
+const _ = require('lodash');
+const async = require('async');
+const request = require('superagent');
+const expect = require('expect.js');
 
-var superagentTest = require('../modules/superagent-test');
-var hlp = require('../modules/helper');
+const superagentTest = require('../../test/modules/superagent-test');
+const hlp = require('../../test/modules/helper');
 
 superagentTest(request);
 
-describe('The VPDB `Rating` API', function() {
+describe.only('The VPDB `Rating` API', function() {
 
 	describe('when rating a game', function() {
 
-		var game;
+		let game;
 
 		before(function(done) {
 			hlp.setupUsers(request, {
@@ -104,7 +102,7 @@ describe('The VPDB `Rating` API', function() {
 
 		it('should succeed when providing a correct rating', function(done) {
 			hlp.game.createGame('moderator', request, function(game) {
-				var rating = 7;
+				const rating = 7;
 				request.post('/api/v1/games/' + game.id + '/rating')
 					.send({ value: rating })
 					.as('member')
@@ -129,8 +127,8 @@ describe('The VPDB `Rating` API', function() {
 
 		it('should calculate the average correctly', function(done) {
 			hlp.game.createGame('moderator', request, function(game) {
-				var ratings = [ 1, 3, 4, 10 ];
-				var avg = [ 1, 2, 2.667, 4.5 ];
+				const ratings = [1, 3, 4, 10];
+				const avg = [1, 2, 2.667, 4.5];
 				async.timesSeries(ratings.length, function(i, next) {
 					request.post('/api/v1/games/' + game.id + '/rating')
 						.send({ value: ratings[i] })
@@ -171,7 +169,7 @@ describe('The VPDB `Rating` API', function() {
 
 		it('should be able to retrieve the vote', function(done) {
 			hlp.game.createGame('moderator', request, function(game) {
-				var rating = 8;
+				const rating = 8;
 				request.post('/api/v1/games/' + game.id + '/rating')
 					.send({ value: rating })
 					.as('member')
@@ -271,7 +269,7 @@ describe('The VPDB `Rating` API', function() {
 		it('should succeed when providing a correct rating', function(done) {
 
 			hlp.release.createRelease('contributor', request, function(release) {
-				var rating = 5;
+				const rating = 5;
 				request.post('/api/v1/releases/' + release.id + '/rating')
 					.send({ value: rating })
 					.as('member')
@@ -310,7 +308,7 @@ describe('The VPDB `Rating` API', function() {
 
 		it('should be able to retrieve the vote', function(done) {
 			hlp.release.createRelease('moderator', request, function(release) {
-				var rating = 2;
+				const rating = 2;
 				request.post('/api/v1/releases/' + release.id + '/rating')
 					.send({ value: rating })
 					.as('member')
@@ -388,14 +386,14 @@ describe('The VPDB `Rating` API', function() {
 		});
 
 		it('should calculate the rating score correctly', function(done) {
-			var votes = [
+			const votes = [
 				{ 5: 1 },
 				{ 1: 1 },
 				{ 5: 5 },
 				{ 2: 2, 3: 1, 4: 2 },
 				{ 3: 1 }
 			];
-			var scores = [
+			const scores = [
 				4.076923077,
 				3.076923077,
 				4.538461538,
@@ -404,7 +402,7 @@ describe('The VPDB `Rating` API', function() {
 			];
 			hlp.game.createGames('moderator', request, 5, function(games) {
 
-				var addVote = function(gameId, rating, user) {
+				const addVote = function(gameId, rating, user) {
 					return function(next) {
 						request.post('/api/v1/games/' + gameId + '/rating')
 							.send({ value: rating })
@@ -415,22 +413,22 @@ describe('The VPDB `Rating` API', function() {
 							});
 					};
 				};
-				var voteReq = [];
+				const voteReq = [];
 
 				// create votes
 				_.each(votes, function(gameVotes, n) {
-					var game = games[n];
-					var member = 1;
+					const game = games[n];
+					let member = 1;
 					_.each(gameVotes, function(numVotes, rating) {
-						for (var i = 0; i < numVotes; i++) {
+						for (let i = 0; i < numVotes; i++) {
 							voteReq.push(addVote(game.id, rating, 'member' + member));
 							member++;
 						}
 					});
 				});
 
-				var precision = 1000000000;
-				var testScore = function(gameId, score) {
+				const precision = 1000000000;
+				const testScore = function(gameId, score) {
 					return function(next) {
 						request.get('/api/v1/games/' + gameId)
 							.end(function(err, res) {
@@ -443,7 +441,7 @@ describe('The VPDB `Rating` API', function() {
 
 				// test scores
 				async.series(voteReq, function() {
-					var scoreTest = [];
+					const scoreTest = [];
 					_.each(games, function(game, n) {
 						scoreTest.push(testScore(game.id, scores[n]));
 					});

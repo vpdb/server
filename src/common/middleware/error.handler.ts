@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { keys, values } from 'lodash';
+import { assign, keys, values } from 'lodash';
 import chalk from 'chalk';
 
 import { Context } from '../types/context';
@@ -42,24 +42,24 @@ export function koaErrorHandler() {
 			if (err.isApiError) {
 				(err as ApiError).respond(ctx);
 
-			// validation error from mongoose
+				// validation error from mongoose
 			} else if (err.name === 'ValidationError') {
-				new ApiError('Validation failed.').validationErrors(values(err.errors) as ApiValidationError[]).warn().respond(ctx);
+				new ApiError('Validation failed.').validationErrors(getValidationErrors(err)).warn().respond(ctx);
 
-			// unexpected errors
+				// unexpected errors
 			} else {
 				ctx.response.status = 500;
 				ctx.response.body = { error: 'Internal server error. Sorry about that, we will get a mail about this and fix it ASAP.' };
 			}
 
 			// log
-			let sendError:boolean;
+			let sendError: boolean;
 			if (err.isApiError) {
 				(err as ApiError).print('\n\n' + chalk.magenta(requestLog(ctx)));
 				sendError = (err as ApiError).sendError();
 
 			} else if (err.name === 'ValidationError') {
-				new ApiError('Validation failed.').validationErrors(values(err.errors) as ApiValidationError[]).warn().print('\n\n' + chalk.magenta(requestLog(ctx)));
+				new ApiError('Validation failed.').validationErrors(getValidationErrors(err)).warn().print('\n\n' + chalk.magenta(requestLog(ctx)));
 				sendError = false;
 
 			} else {
@@ -74,7 +74,11 @@ export function koaErrorHandler() {
 	}
 }
 
-function requestLog(ctx:Context) {
+function getValidationErrors(err: any): ApiValidationError[] {
+	return keys(err.errors).map(path => assign(err.errors[path], { path: path }));
+}
+
+function requestLog(ctx: Context) {
 	let err = ctx.request.method + ' ' + ctx.request.path + '\n\n';
 	err += keys(ctx.request.header).map(name => name + ': ' + ctx.request.get(name)).join('\n');
 	if (ctx.request.rawBody) {
@@ -83,7 +87,6 @@ function requestLog(ctx:Context) {
 	return err;
 }
 
-
-function reportError(err:Error) {
+function reportError(err: Error) {
 	// TODO: send to raygun
 }

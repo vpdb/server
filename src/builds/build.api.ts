@@ -18,6 +18,7 @@
  */
 
 import { assign, cloneDeep, pick } from 'lodash';
+import { Schema } from 'mongoose';
 
 import { state } from '../state';
 import { Api } from '../common/api';
@@ -82,10 +83,11 @@ export class BuildApi extends Api {
 			build.created_at = new Date();
 		}
 		if (!build._created_by) {
-			build._created_by = ctx.state.user._id;
+			build._created_by = ctx.state.user._id.toString();
 		}
 
-		const newBuild = await build.save();
+		await build.save();
+		const newBuild = await state.models.Build.findById(build._id).populate('_created_by').exec();
 
 		logger.info('[BuildApi.create] Build "%s" successfully updated.', newBuild.id);
 		this.success(ctx, state.serializers.Build.detailed(ctx, newBuild), 200);
@@ -142,16 +144,6 @@ export class BuildApi extends Api {
 	 */
 	public async del(ctx: Context) {
 
-		const canGloballyDeleteBuilds = await acl.isAllowed(ctx.state.user.id, 'builds', 'delete');
-		let canDeleteOwn: boolean;
-		if (!canGloballyDeleteBuilds) {
-			canDeleteOwn = await acl.isAllowed(ctx.state.user.id, 'builds', 'delete-own');
-		} else {
-			canDeleteOwn = true;
-		}
-		if (!canDeleteOwn) {
-			throw new ApiError('You cannot delete builds.').status(401).log();
-		}
 		const build = await state.models.Build.findOne({ id: ctx.params.id }).exec();
 
 		// build must exist
@@ -160,7 +152,8 @@ export class BuildApi extends Api {
 		}
 
 		// only allow deleting own builds
-		if (!canGloballyDeleteBuilds && (!build._created_by || !build._created_by.equals(ctx.state.user._id))) {
+		const canGloballyDeleteBuilds = await acl.isAllowed(ctx.state.user.id, 'builds', 'delete');
+		if (!canGloballyDeleteBuilds && (!build._created_by || !(build._created_by as Schema.Types.ObjectId).equals(ctx.state.user._id))) {
 			throw new ApiError('Permission denied, must be owner.').status(403).log();
 		}
 
@@ -171,7 +164,7 @@ export class BuildApi extends Api {
 		}
 		await build.remove();
 
-		logger.info('[api|build:delete] Build "%s" (%s) successfully deleted.', build.label, build.id);
+		logger.info('[BuildApi.delete] Build "%s" (%s) successfully deleted.', build.label, build.id);
 		this.success(ctx, null, 204);
 
 		// log event

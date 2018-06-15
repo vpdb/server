@@ -8,7 +8,7 @@ const hlp = require('../../test/modules/helper');
 
 superagentTest(request);
 
-describe.only('The scopes of the `Star` API', function() {
+describe('The scopes of the `Star` API', function() {
 
 	let tokenAll, tokenLogin, tokenCommunity, tokenService;
 	before(function() {

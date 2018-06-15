@@ -210,7 +210,7 @@ export class BackglassApi extends Api {
 		// validate moderation field
 		if (fields.includes('moderation')) {
 			if (!ctx.state.user) {
-				new ApiError('You must be logged in order to fetch moderation fields.').status(403);
+				throw new ApiError('You must be logged in order to fetch moderation fields.').status(403);
 			}
 			const isModerator = await acl.isAllowed(ctx.state.user.id, 'backglasses', 'moderate');
 			if (!isModerator) {
@@ -319,13 +319,12 @@ export class BackglassApi extends Api {
 		if (isArray(moderation.history)) {
 			moderation.history.sort((m1, m2) => m2.created_at.getTime() - m1.created_at.getTime());
 			const lastEvent = moderation.history[0];
-			const errHandler = (err: Error) => logger.error('[moderation|backglass] Error sending moderation mail: %s', err.message);
 			switch (lastEvent.event) {
 				case 'approved':
-					await mailer.backglassApproved(backglass._created_by as User, backglass, lastEvent.message).catch(errHandler);
+					await mailer.backglassApproved(backglass._created_by as User, backglass, lastEvent.message);
 					break;
 				case 'refused':
-					await mailer.backglassRefused(backglass._created_by as User, backglass, lastEvent.message).catch(errHandler);
+					await mailer.backglassRefused(backglass._created_by as User, backglass, lastEvent.message);
 					break;
 			}
 		}

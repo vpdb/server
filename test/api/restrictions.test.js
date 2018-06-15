@@ -33,7 +33,7 @@ superagentTest(request);
 
 describe('The VPDB restriction feature', function() {
 
-	describe('when dealing with restriced releases', function() {
+	describe('when dealing with restricted releases', function() {
 
 		var restrictedGame, legalGame;
 		var restrictedRelease, legalRelease;

@@ -35,9 +35,11 @@ import { User } from '../users/user';
 import { Backglass } from './backglass';
 
 export class BackglassApi extends Api {
+
 	/**
 	 * Creates a new backglass.
 	 *
+	 * @see POST /v1/backglasses
 	 * @param {Context} ctx Koa context
 	 */
 	public async create(ctx: Context) {
@@ -113,6 +115,7 @@ export class BackglassApi extends Api {
 	/**
 	 * Updates a backglass.
 	 *
+	 * @see PATCH /v1/backglasses/:id
 	 * @param {Context} ctx Koa context
 	 */
 	public async update(ctx: Context) {
@@ -174,11 +177,7 @@ export class BackglassApi extends Api {
 	/**
 	 * Lists all backglasses.
 	 *
-	 * This is only on two routes:
-	 *
-	 *        /backglasses
-	 *        /games/{game_id}/backglasses
-	 *
+	 * @see GET /v1/backglasses
 	 * @param {Context} ctx Koa context
 	 */
 	public async list(ctx: Context) {
@@ -219,7 +218,7 @@ export class BackglassApi extends Api {
 			}
 			serializerOpts.includedFields = ['moderation'];
 		}
-		query = state.models.Backglass.handleGameQuery(ctx, await state.models.Backglass.handleModerationQuery(ctx, query));
+		query = await state.models.Backglass.handleGameQuery(ctx, await state.models.Backglass.handleModerationQuery(ctx, query));
 
 		logger.info('[BackglassApi.list] query: %s', inspect(query, { depth: null }));
 
@@ -236,6 +235,7 @@ export class BackglassApi extends Api {
 	/**
 	 * Returns details about a backglass.
 	 *
+	 * @see GET /v1/backglasses/:id
 	 * @param {Context} ctx Koa context
 	 */
 	public async view(ctx: Context) {
@@ -268,6 +268,7 @@ export class BackglassApi extends Api {
 	/**
 	 * Deletes a backglass.
 	 *
+	 * @see DELETE /v1/backglasses/:id
 	 * @param {Context} ctx Koa context
 	 */
 	public async del(ctx: Context) {
@@ -303,6 +304,7 @@ export class BackglassApi extends Api {
 	/**
 	 * Moderates a backglass.
 	 *
+	 * @see POST /v1/backglasses/:id/moderate
 	 * @param {Context} ctx Koa context
 	 */
 	public async moderate(ctx: Context) {

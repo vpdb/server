@@ -27,7 +27,7 @@ const hlp = require('../../test/modules/helper');
 
 superagentTest(request);
 
-describe.only('The VPDB backglass moderation feature', function() {
+describe('The VPDB backglass moderation feature', function() {
 
 	describe('when listing backglasses', function() {
 

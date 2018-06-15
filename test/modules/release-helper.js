@@ -27,7 +27,7 @@ exports.createReleaseForGame = function(user, request, game, opts, done) {
 							files: [ {
 								_file: vptfile.id,
 								_playfield_image: playfield.id,
-								_compatibility: [ '9.9.0' ],
+								_compatibility: [ opts.buildId ? opts.buildId : '9.9.0' ],
 								flavor: { orientation: 'fs', lighting: 'night' } }
 							],
 							version: '1.0.0'

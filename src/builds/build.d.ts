@@ -18,19 +18,23 @@
  */
 
 import { Document, Schema } from 'mongoose';
+import { User } from '../users/user';
 
 export interface Build extends Document {
-	id: string,
-	platform: 'vp',
-	label: string,
-	major_version: string,
-	download_url: string,
-	support_url: string,
-	description: string,
-	built_at: Date,
-	type: 'release' | 'nightly' | 'experimental',
-	is_range: boolean,
-	is_active: boolean,
-	created_at: Date,
-	_created_by: Schema.Types.ObjectId
+	id: string;
+	platform: 'vp';
+	label: string;
+	major_version: string;
+	download_url: string;
+	support_url: string;
+	description: string;
+	built_at: Date;
+	type: 'release' | 'nightly' | 'experimental';
+	is_range: boolean;
+	is_active: boolean;
+	created_at: Date;
+	_created_by: Schema.Types.ObjectId | User;
+
+	// serialized
+	created_by: User;
 }

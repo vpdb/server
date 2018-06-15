@@ -1,14 +1,29 @@
+/*
+ * VPDB - Virtual Pinball Database
+ * Copyright (C) 2018 freezy <freezy@vpdb.io>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 "use strict"; /* global describe, before, after, it */
 
-var _ = require('lodash');
-var fs = require('fs');
-var path = require('path');
-var async = require('async');
-var request = require('superagent');
-var expect = require('expect.js');
+const request = require('superagent');
+const expect = require('expect.js');
 
-var superagentTest = require('../modules/superagent-test');
-var hlp = require('../modules/helper');
+const superagentTest = require('../../test/modules/superagent-test');
+const hlp = require('../../test/modules/helper');
 
 superagentTest(request);
 
@@ -214,6 +229,22 @@ describe('The VPDB `Build` API', function() {
 					done();
 				});
 		});
+
+		it('succeed for pre-populated build', function(done) {
+			const label = 'Yet another updated build label';
+
+			request
+				.patch('/api/v1/builds/10.0.0')
+				.as('moderator')
+				.send({
+					label: label,
+				})
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body.created_by.id).to.be(hlp.users['moderator'].id);
+					done();
+				});
+		});
 	});
 
 	describe('when retrieving details for a build', function() {
@@ -259,6 +290,16 @@ describe('The VPDB `Build` API', function() {
 
 	describe('when listing all builds', function() {
 
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: [ 'member' ] }
+			}, done);
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
 		it('should list the initially added builds', function(done) {
 			request
 				.get('/api/v1/builds')
@@ -268,6 +309,47 @@ describe('The VPDB `Build` API', function() {
 					expect(res.body).to.be.an('array');
 					expect(res.body).to.not.be.empty();
 					done();
+				});
+		});
+
+		it('should list the unused self-added builds', function(done) {
+			request
+				.post('/api/v1/builds')
+				.as('member')
+				.send({ label: 'unused', type: 'release', platform: 'vp', major_version: '1' })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					hlp.doomBuild('member', res.body.id);
+					request
+						.get('/api/v1/builds')
+						.as('member')
+						.end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							expect(res.body).to.be.an('array');
+							expect(res.body).to.not.be.empty();
+							expect(res.body.find(b => b.label === 'unused')).to.not.be.empty();
+							done();
+						});
+				});
+		});
+
+		it('should list the unused self-added builds', function(done) {
+			request
+				.post('/api/v1/builds')
+				.as('member')
+				.send({ label: 'another-unused', type: 'release', platform: 'vp', major_version: '1' })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					hlp.doomBuild('member', res.body.id);
+					request
+						.get('/api/v1/builds')
+						.end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							expect(res.body).to.be.an('array');
+							expect(res.body).to.not.be.empty();
+							expect(res.body.find(b => b.label === 'another-unused')).to.be(undefined);
+							done();
+						});
 				});
 		});
 	});
@@ -303,6 +385,13 @@ describe('The VPDB `Build` API', function() {
 				});
 		});
 
+		it('should fail for non-existent build', function(done) {
+			request
+				.del('/api/v1/builds/sabbelnich')
+				.as('member')
+				.end(hlp.status(404, 'no such build', done));
+		});
+
 		it('should fail as member and not owner', function(done) {
 			request
 				.post('/api/v1/builds')
@@ -329,6 +418,7 @@ describe('The VPDB `Build` API', function() {
 				.send({ label: 'delete-test-3', type: 'release', platform: 'vp', major_version: '1' })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
+					hlp.doomBuild('member', res.body.id);
 					request
 						.del('/api/v1/builds/' + res.body.id)
 						.as('contributor')
@@ -348,6 +438,24 @@ describe('The VPDB `Build` API', function() {
 						.del('/api/v1/builds/' + res.body.id)
 						.as('moderator')
 						.end(hlp.status(204, done));
+				});
+
+		});
+
+		it('should fail when build is linked to a release', function(done) {
+			request
+				.post('/api/v1/builds')
+				.as('member')
+				.send({ label: 'delete-test-5', type: 'release', platform: 'vp', major_version: '1' })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					hlp.doomBuild('member', res.body.id);
+					hlp.release.createRelease('member', request, { buildId: res.body.id }, () => {
+						request
+							.del('/api/v1/builds/' + res.body.id)
+							.as('member')
+							.end(hlp.status(400, 'Cannot delete referenced build', done));
+					});
 				});
 
 		});

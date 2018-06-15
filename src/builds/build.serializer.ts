@@ -21,6 +21,8 @@ import { pick, assign } from 'lodash';
 import { Build } from './build';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { Context } from '../common/types/context';
+import { state } from '../state';
+import { User } from '../users/user';
 
 export class BuildSerializer extends Serializer<Build> {
 
@@ -35,6 +37,9 @@ export class BuildSerializer extends Serializer<Build> {
 	protected _detailed(ctx: Context, doc: Build, opts: SerializerOptions): Build {
 		const build = this._simple(ctx, doc, opts);
 		assign(build, pick(doc, ['support_url', 'description', 'is_active']));
+		if (this._populated(doc, '_created_by')) {
+			build.created_by = state.serializers.User.reduced(ctx, doc._created_by as User, opts);
+		}
 		return build;
 	}
 }

@@ -12,11 +12,6 @@ describe('The ACLs of the `Star` API', function() {
 
 	before(function(done) {
 		hlp.setupUsers(request, {
-			root: { roles: [ 'root' ]},
-			admin: { roles: [ 'admin' ]},
-			admin2: { roles: [ 'admin' ]},
-			moderator: { roles: [ 'moderator' ]},
-			contributor: { roles: [ 'contributor' ]},
 			member: { roles: [ 'member' ], _plan: 'subscribed'}
 		}, done);
 	});

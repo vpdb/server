@@ -235,22 +235,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.del('/api/v1/tokens/1234').end(hlp.status(401, done));
 		});
 
-		it('should deny access to creating backglasses', function(done) {
-			request.post('/api/v1/backglasses').send({}).end(hlp.status(401, done));
-		});
-
-		it('should deny access to creating backglasses under games', function(done) {
-			request.post('/api/v1/games/1234/backglasses').send({}).end(hlp.status(401, done));
-		});
-
-		it('should deny access to deleting backglasses', function(done) {
-			request.del('/api/v1/backglasses/1234').end(hlp.status(401, done));
-		});
-
-		it('should deny access to updating backglasses', function(done) {
-			request.patch('/api/v1/backglasses/1234').send({}).end(hlp.status(401, done));
-		});
-
 		it('should deny access to creating media', function(done) {
 			request.post('/api/v1/media').send({}).end(hlp.status(401, done));
 		});
@@ -484,26 +468,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.del('/api/v1/tokens/1234').as('member').end(hlp.status(404, done));
 		});
 
-		it('should allow access to creating backglasses', function(done) {
-			request.post('/api/v1/backglasses').as('member').send({}).end(hlp.status(422, done));
-		});
-
-		it('should allow access to updating backglasses', function(done) {
-			request.patch('/api/v1/backglasses/1234').as('member').send({}).end(hlp.status(404, done));
-		});
-
-		it('should deny access to backglass moderation', function(done) {
-			request.post('/api/v1/backglasses/1234/moderate').as('member').send({}).end(hlp.status(403, done));
-		});
-
-		it('should allow access to creating backglasses under games', function(done) {
-			request.post('/api/v1/games/1234/backglasses').as('member').send({}).end(hlp.status(404, done));
-		});
-
-		it('should allow access to deleting backglasses', function(done) {
-			request.del('/api/v1/backglasses/1234').as('member').end(hlp.status(404, done));
-		});
-
 		it('should allow access to creating media', function(done) {
 			request.post('/api/v1/media').as('member').send({}).end(hlp.status(422, done));
 		});
@@ -669,10 +633,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/api/v1/releases/1234/moderate').as('contributor').send({}).end(hlp.status(403, done));
 		});
 
-		it('should deny access to backglass moderation', function(done) {
-			request.post('/api/v1/backglasses/1234/moderate').as('contributor').send({}).end(hlp.status(403, done));
-		});
-
 		it('should allow access to rom creation', function(done) {
 			request.post('/api/v1/games/mb/roms').as('contributor').send({}).end(hlp.status(404, done));
 		});
@@ -828,10 +788,6 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to release moderation', function(done) {
 			request.post('/api/v1/releases/1234/moderate').as('moderator').send({}).end(hlp.status(404, done));
-		});
-
-		it('should allow access to backglass moderation', function(done) {
-			request.post('/api/v1/backglasses/1234/moderate').as('moderator').send({}).end(hlp.status(404, done));
 		});
 
 		it('should allow access to rom creation', function(done) {

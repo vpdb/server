@@ -68,22 +68,6 @@ describe('The scopes of the `Star` API', function() {
 
 	describe('using an "all" token', function() {
 
-		it('should allow access to backglass star', done => {
-			request.post('/api/v1/backglasses/1234/star').send({}).with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to backglass unstar', done => {
-			request.del('/api/v1/backglasses/1234/star').with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to backglass star retrieval', done => {
-			request.get('/api/v1/backglasses/1234/star').with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to backglass unstar', done => {
-			request.del('/api/v1/backglasses/1234/star').with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to backglass star retrieval', done => {
-			request.get('/api/v1/backglasses/1234/star').with(tokenAll).end(hlp.status(404, done));
-		});
-
 		it('should allow access to game star creation', done => {
 			request.post('/api/v1/games/1234/star').send({}).with(tokenAll).end(hlp.status(404, done));
 		});
@@ -118,25 +102,6 @@ describe('The scopes of the `Star` API', function() {
 
 	describe('using a login token', function() {
 
-		it('should deny access to backglass star', done => {
-			request.post('/api/v1/backglasses/1234/star').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to backglass unstar', done => {
-			request.del('/api/v1/backglasses/1234/star').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to backglass star retrieval', done => {
-			request.get('/api/v1/backglasses/1234/star').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to backglass moderation', done => {
-			request.post('/api/v1/backglasses/1234/moderate').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to backglass unstar', done => {
-			request.del('/api/v1/backglasses/1234/star').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to backglass star retrieval', done => {
-			request.get('/api/v1/backglasses/1234/star').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-
 		it('should deny access to game star creation', done => {
 			request.post('/api/v1/games/1234/star').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
 		});
@@ -170,22 +135,6 @@ describe('The scopes of the `Star` API', function() {
 
 	describe('using a community token', function() {
 
-		it('should allow access to backglass star', done => {
-			request.post('/api/v1/backglasses/1234/star').send({}).with(tokenCommunity).end(hlp.status(404, done));
-		});
-		it('should allow access to backglass unstar', done => {
-			request.del('/api/v1/backglasses/1234/star').with(tokenCommunity).end(hlp.status(404, done));
-		});
-		it('should allow access to backglass star retrieval', done => {
-			request.get('/api/v1/backglasses/1234/star').with(tokenCommunity).end(hlp.status(404, done));
-		});
-		it('should allow access to backglass unstar', done => {
-			request.del('/api/v1/backglasses/1234/star').with(tokenCommunity).end(hlp.status(404, done));
-		});
-		it('should allow access to backglass star retrieval', done => {
-			request.get('/api/v1/backglasses/1234/star').with(tokenCommunity).end(hlp.status(404, done));
-		});
-
 		it('should allow access to game star creation', done => {
 			request.post('/api/v1/games/1234/star').send({}).with(tokenCommunity).end(hlp.status(404, done));
 		});
@@ -218,25 +167,6 @@ describe('The scopes of the `Star` API', function() {
 	});
 
 	describe('using a service token', function() {
-
-		it('should deny access to backglass star', done => {
-			request.post('/api/v1/backglasses/1234/star').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to backglass unstar', done => {
-			request.del('/api/v1/backglasses/1234/star').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to backglass star retrieval', done => {
-			request.get('/api/v1/backglasses/1234/star').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to backglass moderation', done => {
-			request.post('/api/v1/backglasses/1234/moderate').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to backglass unstar', done => {
-			request.del('/api/v1/backglasses/1234/star').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to backglass star retrieval', done => {
-			request.get('/api/v1/backglasses/1234/star').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
 
 		it('should deny access to game star creation', done => {
 			request.post('/api/v1/games/1234/star').send({}).with(tokenService).end(hlp.status(401, 'invalid scope', done));

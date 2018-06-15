@@ -342,6 +342,19 @@ describe.only('The VPDB `Backglass` API', function() {
 				});
 		});
 
+		it('should fail as author when editing authors', function(done) {
+			const user = 'author';
+			request.patch('/api/v1/backglasses/' + backglass.id)
+				.as(user)
+				.send({
+					authors: [{
+						_user: hlp.users.author.id,
+						roles: ['creator']
+					}]
+				})
+				.end(hlp.status(403, 'only the original uploader can edit authors', done));
+		});
+
 		it('should succeed as moderator', function(done) {
 			const user = 'moderator';
 			request.patch('/api/v1/backglasses/' + backglass.id)
@@ -438,6 +451,12 @@ describe.only('The VPDB `Backglass` API', function() {
 			hlp.cleanup(request, done);
 		});
 
+		it('should fail when the game does not exist', function(done) {
+			request.get('/api/v1/games/doesntexist/backglasses').end(hlp.status(404, 'no such game', () => {
+				request.get('/api/v1/backglasses?game_id=doesntexist').end(hlp.status(404, 'no such game', done));
+			}));
+		});
+
 		it('should list backglass under game', function(done) {
 
 			const user = 'contributor';
@@ -466,7 +485,14 @@ describe.only('The VPDB `Backglass` API', function() {
 							expect(res.body).to.be.an('array');
 							expect(res.body).to.have.length(1);
 							expect(res.body[0].id).to.be(backglass.id);
-							done();
+
+							request.get('/api/v1/backglasses?game_id=' + game.id).end(function(err, res) {
+								hlp.expectStatus(err, res, 200);
+								expect(res.body).to.be.an('array');
+								expect(res.body).to.have.length(1);
+								expect(res.body[0].id).to.be(backglass.id);
+								done();
+							});
 						});
 					});
 			});
@@ -501,6 +527,39 @@ describe.only('The VPDB `Backglass` API', function() {
 							done();
 						});
 					});
+			});
+		});
+
+		it('should fail listing backglass details for non-existent backglass', function(done) {
+			request.get('/api/v1/backglasses/non-existent').end(hlp.status(404, done));
+		});
+
+		it('should fail listing backglass details for restricted backglass', function(done) {
+
+			hlp.game.createGame('moderator', request, { ipdb: { mpu: 9999, number: 8888 } }, function(game) {
+				hlp.file.createDirectB2S('contributor', request, function(b2s) {
+					request
+						.post('/api/v1/backglasses')
+						.as('contributor')
+						.send({
+							_game: game.id,
+							authors: [ {
+								_user: hlp.users['contributor'].id,
+								roles: [ 'creator' ]
+							} ],
+							versions: [ {
+								version: '1.0',
+								_file: b2s.id
+							} ]
+						})
+						.end(function(err, res) {
+							const backglass = res.body;
+							hlp.expectStatus(err, res, 201);
+							hlp.doomBackglass('contributor', res.body.id);
+
+							request.get('/api/v1/backglasses/' + backglass.id).end(hlp.status(404, done));
+						});
+				});
 			});
 		});
 

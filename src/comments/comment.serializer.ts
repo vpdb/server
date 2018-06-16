@@ -37,9 +37,9 @@ export class CommentSerializer extends Serializer<Comment> {
 		if (this._populated(doc, '_from')) {
 			comment.from = state.serializers.User.reduced(ctx, doc._from as User, opts);
 		}
-		if (this._populated(doc, '_ref.release')) {
-			comment.release = state.serializers.Release.reduced(ctx, doc._ref.release as Release, opts);
-		}
+		// if (this._populated(doc, '_ref.release')) {
+		// 	comment.release = state.serializers.Release.reduced(ctx, doc._ref.release as Release, opts);
+		// }
 		return comment;
 	}
 

@@ -23,8 +23,6 @@ const _ = require('lodash');
 const expect = require('expect.js');
 
 const shortId = require('shortid32');
-const faker = require('faker');
-
 shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 
 const ApiClient = require('../../test/modules/api.client');

@@ -135,22 +135,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.del('/api/v1/tags/mytag').saveResponse({ path: 'tags/del'}).end(hlp.status(401, done));
 		});
 
-		it('should allow to list builds', function(done) {
-			request.get('/api/v1/builds').end(hlp.status(200, done));
-		});
-
-		it('should deny access to create builds', function(done) {
-			request.post('/api/v1/builds').send({}).end(hlp.status(401, done));
-		});
-
-		it('should deny access to delete builds', function(done) {
-			request.del('/api/v1/builds/mybuild').saveResponse({ path: 'builds/del'}).end(hlp.status(401, done));
-		});
-
-		it('should deny access to update builds', function(done) {
-			request.patch('/api/v1/builds/mybuild').send({}).end(hlp.status(401, done));
-		});
-
 		it('should allow to list releases', function(done) {
 			request.get('/api/v1/releases').end(hlp.status(200, done));
 		});
@@ -380,22 +364,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.del('/api/v1/tags/mytag').as('member').end(hlp.status(404, done));
 		});
 
-		it('should allow to list builds', function(done) {
-			request.get('/api/v1/builds').as('member').end(hlp.status(200, done));
-		});
-
-		it('should allow to create builds', function(done) {
-			request.post('/api/v1/builds').as('member').send({}).end(hlp.status(422, done));
-		});
-
-		it('should allow access to builds deletion', function(done) {
-			request.del('/api/v1/builds/mybuild').as('member').end(hlp.status(404, done));
-		});
-
-		it('should deny access to update builds', function(done) {
-			request.patch('/api/v1/builds/mybuild').as('member').send({}).end(hlp.status(403, done));
-		});
-
 		it('should allow to list releases', function(done) {
 			request.get('/api/v1/releases').as('member').end(hlp.status(200, done));
 		});
@@ -585,22 +553,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.del('/api/v1/tags/hd').as('contributor').end(hlp.status(403, done));
 		});
 
-		it('should allow to list builds', function(done) {
-			request.get('/api/v1/builds').as('contributor').end(hlp.status(200, done));
-		});
-
-		it('should allow to create builds', function(done) {
-			request.post('/api/v1/builds').as('contributor').send({}).end(hlp.status(422, done));
-		});
-
-		it('should deny to delete a build', function(done) {
-			request.del('/api/v1/builds/10.0.0').as('contributor').end(hlp.status(403, done));
-		});
-
-		it('should deny access to update builds', function(done) {
-			request.patch('/api/v1/builds/mybuild').as('contributor').send({}).end(hlp.status(403, done));
-		});
-
 		it('should allow to create releases', function(done) {
 			request.post('/api/v1/releases').as('contributor').send({}).end(hlp.status(422, done));
 		});
@@ -736,22 +688,6 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow to delete a tag', function(done) {
 			request.del('/api/v1/tags/123456').as('moderator').end(hlp.status(404, done));
-		});
-
-		it('should allow to list builds', function(done) {
-			request.get('/api/v1/builds').as('moderator').end(hlp.status(200, done));
-		});
-
-		it('should allow to create builds', function(done) {
-			request.post('/api/v1/builds').as('moderator').send({}).end(hlp.status(422, done));
-		});
-
-		it('should allow to delete a build', function(done) {
-			request.del('/api/v1/builds/123456').as('moderator').end(hlp.status(404, done));
-		});
-
-		it('should allow access to update builds', function(done) {
-			request.patch('/api/v1/builds/mybuild').as('moderator').send({}).end(hlp.status(404, done));
 		});
 
 		it('should allow to create releases', function(done) {
@@ -903,14 +839,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/api/v1/tags').send({}).as('admin').end(hlp.status(422, done));
 		});
 
-		it('should allow to list builds', function(done) {
-			request.get('/api/v1/builds').as('admin').end(hlp.status(200, done));
-		});
-
-		it('should allow to create builds', function(done) {
-			request.post('/api/v1/builds').as('admin').send({}).end(hlp.status(422, done));
-		});
-
 		it('should allow to create releases', function(done) {
 			request.post('/api/v1/releases').as('admin').send({}).end(hlp.status(422, done));
 		});
@@ -1026,14 +954,6 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow to create tags', function(done) {
 			request.post('/api/v1/tags').send({}).as('root').end(hlp.status(422, done));
-		});
-
-		it('should allow to list builds', function(done) {
-			request.get('/api/v1/builds').as('root').end(hlp.status(200, done));
-		});
-
-		it('should allow to create builds', function(done) {
-			request.post('/api/v1/builds').as('root').send({}).end(hlp.status(422, done));
 		});
 
 		it('should allow to create releases', function(done) {

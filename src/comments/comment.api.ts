@@ -70,7 +70,7 @@ export class CommentApi extends Api {
 			{ comment: state.serializers.Comment.simple(ctx, comment) },
 			{ game: release._game._id, release: release._id }));
 
-		await Promise.all(updates);
+		await Promise.all(updates.map(u => u()));
 
 		comment = await state.models.Comment.findById(comment._id).populate('_from').exec();
 

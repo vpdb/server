@@ -27,7 +27,7 @@ const hlp = require('../../test/modules/helper');
 
 superagentTest(request);
 
-describe('The scopes of the `Build` API', function() {
+describe('The scopes of the `Comment` API', function() {
 
 	let tokenAll, tokenLogin, tokenCommunity, tokenService;
 	before(function() {
@@ -87,56 +87,60 @@ describe('The scopes of the `Build` API', function() {
 
 	describe('using an "all" token', function() {
 
-		it('should allow access to build creation', done => {
-			request.post('/api/v1/builds').send({}).with(tokenAll).end(hlp.status(422, done));
+		it('should allow access to release comment creation', done => {
+			request.post('/api/v1/releases/1234/comments').send({}).with(tokenAll).end(hlp.status(404, done));
 		});
-		it('should allow access to build update', done => {
-			request.patch('/api/v1/builds/1234').send({}).with(tokenAll).end(hlp.status(404, done));
+
+		it('should allow access to release moderation creation', done => {
+			request.post('/api/v1/releases/1234/moderate').send({}).with(tokenAll).end(hlp.status(404, done));
 		});
-		it('should allow access to build deletion', done => {
-			request.del('/api/v1/builds/1234').with(tokenAll).end(hlp.status(404, done));
+		it('should allow access to release moderation comment creation', done => {
+			request.post('/api/v1/releases/1234/moderate/comments').send({}).with(tokenAll).end(hlp.status(404, done));
+		});
+		it('should allow access to release moderation comment retrieval', done => {
+			request.get('/api/v1/releases/1234/moderate/comments').with(tokenAll).end(hlp.status(404, done));
 		});
 
 	});
 
 	describe('using a login token', function() {
 
-		it('should deny access to build creation', done => {
-			request.post('/api/v1/builds').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
+		it('should deny access to release comment creation', done => {
+			request.post('/api/v1/releases/1234/comments').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
 		});
-		it('should deny access to build update', done => {
-			request.patch('/api/v1/builds/1234').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
+		it('should deny access to release moderation comment creation', done => {
+			request.post('/api/v1/releases/1234/moderate/comments').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
 		});
-		it('should deny access to build deletion', done => {
-			request.del('/api/v1/builds/1234').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
+		it('should deny access to release moderation comment retrieval', done => {
+			request.get('/api/v1/releases/1234/moderate/comments').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
 		});
 
 	});
 
 	describe('using a community token', function() {
 
-		it('should deny access to build creation', done => {
-			request.post('/api/v1/builds').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
+		it('should allow access to release comment creation', done => {
+			request.post('/api/v1/releases/1234/comments').send({}).with(tokenCommunity).end(hlp.status(404, done));
 		});
-		it('should deny access to build update', done => {
-			request.patch('/api/v1/builds/1234').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
+		it('should deny access to release moderation comment creation', done => {
+			request.post('/api/v1/releases/1234/moderate/comments').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
 		});
-		it('should deny access to build deletion', done => {
-			request.del('/api/v1/builds/1234').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
+		it('should deny access to release moderation comment retrieval', done => {
+			request.get('/api/v1/releases/1234/moderate/comments').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
 		});
 
 	});
 
 	describe('using a service token', function() {
 
-		it('should deny access to build creation', done => {
-			request.post('/api/v1/builds').send({}).with(tokenService).end(hlp.status(401, 'invalid scope', done));
+		it('should deny access to release comment creation', done => {
+			request.post('/api/v1/releases/1234/comments').send({}).with(tokenService).end(hlp.status(401, 'invalid scope', done));
 		});
-		it('should deny access to build update', done => {
-			request.patch('/api/v1/builds/1234').send({}).with(tokenService).end(hlp.status(401, 'invalid scope', done));
+		it('should deny access to release moderation comment creation', done => {
+			request.post('/api/v1/releases/1234/moderate/comments').send({}).with(tokenService).end(hlp.status(401, 'invalid scope', done));
 		});
-		it('should deny access to build deletion', done => {
-			request.del('/api/v1/builds/1234').with(tokenService).end(hlp.status(401, 'invalid scope', done));
+		it('should deny access to release moderation comment retrieval', done => {
+			request.get('/api/v1/releases/1234/moderate/comments').with(tokenService).end(hlp.status(401, 'invalid scope', done));
 		});
 
 	});

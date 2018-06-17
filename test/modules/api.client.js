@@ -393,7 +393,7 @@ class ApiClient {
 	 * @returns {ApiClient}
 	 */
 	debug() {
-		this._actions.push(res => console.log(res._logResponse()));
+		this._actions.push(res => console.warn(res._logResponse()));
 		return this;
 	}
 

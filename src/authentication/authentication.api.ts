@@ -46,14 +46,14 @@ export class AuthenticationApi extends Api {
 		const backoffNumDelay = config.vpdb.loginBackoff.keep;
 		const backoffDelay = config.vpdb.loginBackoff.delay;
 		const backoffNumKey = 'auth_delay_num:' + ipAddress;
-		const backoffDelayKey = 'auth_delay_time:' + ipAddress;
+		const backoffLockKey = 'auth_delay_time:' + ipAddress;
 
 		let how: 'password' | 'token';
 		let authenticatedUser: User;
 		try {
 
 			// check if there's a back-off delay
-			const ttl = await state.redis.ttlAsync(backoffDelayKey);
+			const ttl = await state.redis.ttlAsync(backoffLockKey);
 			if (ttl > 0) {
 				throw new ApiError('Too many failed login attempts from %s, blocking for another %s seconds.', ipAddress, ttl)
 					.display('Too many failed login attempts from this IP, try again in %s seconds.', ttl)
@@ -77,19 +77,45 @@ export class AuthenticationApi extends Api {
 			// here we're authenticated (but not yet authorized)
 			await this.authenticateUser(ctx, authenticatedUser, how);
 
+			// if logged and no "keep" is set, expire lock
+			if (!backoffNumDelay) {
+				await state.redis.delAsync(backoffNumKey);
+			}
+
 		} catch (err) {
+			// increase number of consecutively failed attempts
 			const num: number = await state.redis.incrAsync(backoffNumKey);
+
+			// check how log to wait
 			let wait = backoffDelay[Math.min(num, backoffDelay.length) - 1];
 			logger.info('[AuthenticationApi.authenticate] Increasing back-off time to %s for try number %d.', wait, num);
+
+			// if there's a wait, set the lock and expire it to wait time
 			if (wait > 0) {
-				await state.redis.setAsync(backoffDelayKey, '1');
-				await state.redis.expireAsync(backoffDelayKey, wait);
+				await state.redis.setAsync(backoffLockKey, '1');
+				await state.redis.expireAsync(backoffLockKey, wait);
 			}
-			if (num === 1) {
+			// if this is the first failure and "keep" is set, start the count-down (usually 24h)
+			if (num === 1 && backoffNumDelay) {
 				await state.redis.expireAsync(backoffNumKey, backoffNumDelay);
 			}
 			throw err;
 		}
+	}
+
+	/**
+	 * Mock-authenticates via OAuth (only enabled when testing).
+	 *
+	 * @see POST /v1/authenticate/mock
+	 * @param {Context} ctx Koa context
+	 */
+	public async mockOAuth(ctx: Context) {
+		const strategy = ctx.request.body.provider as string;
+		const profile = ctx.request.body.profile as OAuthProfile;
+		const user = await this.verifyCallbackOAuth(ctx, strategy, null, profile);
+		logger.info('[AuthenticationApi.mockOAuth] Successfully authenticated with user <%s>.', user.email);
+
+		return await this.authenticateUser(ctx, user, 'oauth');
 	}
 
 	/**
@@ -110,6 +136,7 @@ export class AuthenticationApi extends Api {
 
 		await LogUserUtil.success(ctx, authenticatedUser, 'authenticate', { provider: 'local', how: how });
 		logger.info('[AuthenticationApi.authenticate] User <%s> successfully authenticated using %s.', authenticatedUser.email, how);
+		/* istanbul ignore if */
 		if (config.vpdb.services.sqreen.enabled) {
 			require('sqreen').auth_track(true, { email: authenticatedUser.email });
 		}
@@ -120,6 +147,7 @@ export class AuthenticationApi extends Api {
 			user: assign(state.serializers.User.detailed(ctx, authenticatedUser), acls)
 		};
 
+		/* istanbul ignore if */
 		if (config.vpdb.services.sqreen.enabled) {
 			require('sqreen').auth_track(true, { email: authenticatedUser.email });
 		}
@@ -146,6 +174,7 @@ export class AuthenticationApi extends Api {
 		// log if there was a user
 		if (localUser) {
 			await LogUserUtil.failure(ctx, localUser, 'authenticate', { provider: 'local' }, null, 'Invalid password.');
+			/* istanbul ignore if */
 			if (config.vpdb.services.sqreen.enabled) {
 				require('sqreen').auth_track(false, { username: ctx.request.body.username });
 			}
@@ -189,6 +218,7 @@ export class AuthenticationApi extends Api {
 		}
 		// fail if invalid type
 		if (token.type !== 'personal') {
+			/* istanbul ignore if */
 			if (config.vpdb.services.sqreen.enabled) {
 				require('sqreen').auth_track(false, { email: (token._created_by as User).email });
 			}
@@ -196,6 +226,7 @@ export class AuthenticationApi extends Api {
 		}
 		// fail if not login token
 		if (!scope.isIdentical(token.scopes, ['login'])) {
+			/* istanbul ignore if */
 			if (config.vpdb.services.sqreen.enabled) {
 				require('sqreen').auth_track(false, { email: (token._created_by as User).email });
 			}
@@ -203,6 +234,7 @@ export class AuthenticationApi extends Api {
 		}
 		// fail if token expired
 		if (token.expires_at.getTime() < new Date().getTime()) {
+			/* istanbul ignore if */
 			if (config.vpdb.services.sqreen.enabled) {
 				require('sqreen').auth_track(false, { email: (token._created_by as User).email });
 			}
@@ -210,6 +242,7 @@ export class AuthenticationApi extends Api {
 		}
 		// fail if token inactive
 		if (!token.is_active) {
+			/* istanbul ignore if */
 			if (config.vpdb.services.sqreen.enabled) {
 				require('sqreen').auth_track(false, { email: (token._created_by as User).email });
 			}
@@ -229,6 +262,7 @@ export class AuthenticationApi extends Api {
 	 */
 	private async assertUserIsActive(ctx: Context, user: User): Promise<void> {
 		if (!user.is_active) {
+			/* istanbul ignore if */
 			if (config.vpdb.services.sqreen.enabled) {
 				require('sqreen').auth_track(false, { email: user.email });
 			}
@@ -269,7 +303,7 @@ export class AuthenticationApi extends Api {
 	 * @param profile Profile retrieved from the provider
 	 * @return {Promise<User>} Authenticated user
 	 */
-	public async verifyCallbackOAuth(ctx: Context, strategy: string, providerName: string | null, profile: OAuthProfile): Promise<User> {
+	protected async verifyCallbackOAuth(ctx: Context, strategy: string, providerName: string | null, profile: OAuthProfile): Promise<User> {
 		const provider = providerName || strategy;
 		const logTag = providerName ? strategy + ':' + providerName : strategy;
 
@@ -438,6 +472,7 @@ export class AuthenticationApi extends Api {
 	 */
 	private async updateOAuthUser(ctx: Context, user: User, provider: string, profile: OAuthProfile, emails: string[]): Promise<User> {
 
+		/* istanbul ignore if */
 		if (config.vpdb.services.sqreen.enabled) {
 			require('sqreen').auth_track(true, { email: user.email });
 		}
@@ -497,7 +532,7 @@ export class AuthenticationApi extends Api {
 		} else {
 			name = profile.displayName || profile.username;
 		}
-		name = exports.removeDiacritics(name).replace(/[^0-9a-z ]+/gi, '');
+		name = UserUtil.removeDiacritics(name).replace(/[^0-9a-z ]+/gi, '');
 
 		// check if username doesn't conflict
 		let newUser: User;
@@ -533,6 +568,7 @@ export class AuthenticationApi extends Api {
 
 		newUser = await UserUtil.createUser(ctx, newUser, false);
 
+		/* istanbul ignore if */
 		if (config.vpdb.services.sqreen.enabled) {
 			require('sqreen').signup_track({ email: newUser.email });
 		}

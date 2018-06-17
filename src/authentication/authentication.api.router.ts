@@ -32,9 +32,9 @@ const githubAuth = new GitHubStrategy(settings.apiUri('/auth/github'));
 router.post('/v1/authenticate', api.authenticate.bind(api));
 
 // // mock route for simulating oauth2 callbacks
-// if (process.env.NODE_ENV === 'test') {
-// 	router.post(settings.apiPath('/authenticate/mock'), api.anon(api.user.authenticateOAuth2Mock));
-// }
+if (process.env.NODE_ENV === 'test') {
+	router.post('/v1/authenticate/mock', api.mockOAuth.bind(api));
+}
 
 // oauth init
 if (config.vpdb.passport.github.enabled) {
@@ -55,6 +55,3 @@ if (config.vpdb.passport.google.enabled) {
 // 		router.get('/v1/redirect/' + ipbConfig.id, passport.authenticate(ipbConfig.id, { session: false }));
 // 	}
 // });
-
-// oauth callback
-//router.get('/v1/authenticate/:strategy', api.anon(api.authenticateOAuth2.bind(api)));

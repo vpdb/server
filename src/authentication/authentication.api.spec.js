@@ -1,3 +1,22 @@
+/*
+ * VPDB - Virtual Pinball Database
+ * Copyright (C) 2018 freezy <freezy@vpdb.io>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 "use strict"; /*global describe, before, after, beforeEach, afterEach, it*/
 
 const _ = require('lodash');
@@ -5,7 +24,7 @@ const expect = require('expect.js');
 const jwt = require('jwt-simple');
 const config = require('../../config/settings.test');
 
-const ApiClient = require('../modules/api.client');
+const ApiClient = require('../../test/modules/api.client');
 const api = new ApiClient();
 
 describe('The authentication engine of the VPDB API', () => {
@@ -49,6 +68,23 @@ describe('The authentication engine of the VPDB API', () => {
 		it('should fail if credentials are correct but user is disabled', async () => {
 			await api.post('/v1/authenticate', { username: api.getUser('disabled').name, password: api.getUser('disabled').password })
 				.then(res => res.expectError(403, 'Inactive account'));
+		});
+
+		it('should block the IP after the nth attempt', async () => {
+
+			// succeed first to clear previous counter
+			await api
+				.post('/v1/authenticate', { username: api.getUser('member').name, password: api.getUser('member').password })
+				.then(res => res.expectStatus(200));
+
+			// fail 5x
+			for (let i = 0; i < 10; i++) {
+				await api.post('/v1/authenticate', { username: 'xxx', password: 'xxx' }).then(res => res.expectError(401));
+			}
+			res = await api.post('/v1/authenticate', { username: 'xxx', password: 'xxx' }).then(res => res.expectStatus(429));
+			expect(res.data.wait).to.be(1);
+
+			await new Promise(resolve => setTimeout(resolve, 1000));
 		});
 
 		it('should succeed if credentials are correct', async () => {
@@ -268,10 +304,10 @@ describe('The authentication engine of the VPDB API', () => {
 
 			let data = await api.createOAuthUser('ipbtest');
 			ipsUser = data.user;
-			ipsProfile = ipsUser.providers.find(p => p.provider === 'ipbtest');
+			ipsProfile = ipsUser.providers.ipbtest;
 			data = await api.createOAuthUser('github');
 			githubUser = data.user;
-			githubProfile = githubUser.providers.find(p => p.provider === 'github');
+			githubProfile = githubUser.providers.github;
 
 			let res = await api.as('admin').markTeardown().post('/v1/tokens', {
 				label: 'Auth test token',
@@ -341,11 +377,11 @@ describe('The authentication engine of the VPDB API', () => {
 		});
 
 		it('should be able to create an oauth user', async () => {
-			await api.markRootTeardown()
+			res = await api.markRootTeardown()
 				.withToken(appToken)
 				.put('/v1/users', { provider_id: 1234, email: 'oauth@vpdb.io', username: 'oauthtest' })
 				.then(res => res.expectStatus(201));
-			expect(res.data.providers.map(p => p.provider)).to.contain('ipbtest');
+			expect(res.data.providers.ipbtest).to.be.ok();
 		});
 	});
 

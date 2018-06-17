@@ -128,11 +128,6 @@ export interface UserProviders {
 		created_at: Date;
 		modified_at: Date;
 		profile?: object;
-
-		/**
-		 * Returned in API
-		 */
-		provider?: string;
 	}
 }
 

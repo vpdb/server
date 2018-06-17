@@ -30,7 +30,7 @@ const api = new ApiClient();
 const releaseHelper = new ReleaseHelper(api);
 const gameHelper = new GameHelper(api);
 
-describe.only('The VPDB `Comment` API', () => {
+describe('The VPDB `Comment` API', () => {
 
 	let res;
 	let release, restrictedRelease;

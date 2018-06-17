@@ -151,10 +151,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.del('/api/v1/releases/123456').saveResponse({ path: 'releases/del' }).end(hlp.status(401, done));
 		});
 
-		it('should deny access to release commenting', function(done) {
-			request.post('/api/v1/releases/123456/comments').send({}).end(hlp.status(401, done));
-		});
-
 		it('should deny access to release version creation', function(done) {
 			request.post('/api/v1/releases/123/versions').send({}).end(hlp.status(401, done));
 		});
@@ -165,14 +161,6 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should deny access to release file validation', function(done) {
 			request.post('/api/v1/releases/123/versions/1.2/files/1234/validate').send({}).end(hlp.status(401, done));
-		});
-
-		it('should deny access to release moderation comment retrieval', function(done) {
-			request.post('/api/v1/releases/123/moderate/comments').send({}).end(hlp.status(401, done));
-		});
-
-		it('should deny access to release moderation comment retrieval', function(done) {
-			request.get('/api/v1/releases/123/moderate/comments').end(hlp.status(401, done));
 		});
 
 		it('should deny access to registration mail', function(done) {
@@ -376,10 +364,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.del('/api/v1/releases/123456').as('member').end(hlp.status(404, done));
 		});
 
-		it('should allow access to release commenting', function(done) {
-			request.post('/api/v1/releases/123456/comments').as('member').send({}).end(hlp.status(404, done));
-		});
-
 		it('should deny access to release version creation', function(done) {
 			request.post('/api/v1/releases/123/versions').as('member').send({}).end(hlp.status(404, done));
 		});
@@ -394,14 +378,6 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should deny access to release moderation', function(done) {
 			request.post('/api/v1/releases/1234/moderate').as('member').send({}).end(hlp.status(403, done));
-		});
-
-		it('should allow access to release moderation comment retrieval', function(done) {
-			request.post('/api/v1/releases/123/moderate/comments').as('member').send({}).end(hlp.status(404, done));
-		});
-
-		it('should allow access to release moderation comment listing', function(done) {
-			request.get('/api/v1/releases/123/moderate/comments').as('member').end(hlp.status(404, done));
 		});
 
 		it('should allow to list starred events', function(done) {

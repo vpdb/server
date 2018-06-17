@@ -33,6 +33,8 @@ describe('The ACLs of the `Build` API', function() {
 			member: { roles: [ 'member' ], _plan: 'subscribed'},
 			contributor: { roles: [ 'contributor' ]},
 			moderator: { roles: [ 'moderator' ]},
+			admin: { roles: [ 'admin' ]},
+			root: { roles: [ 'root' ]},
 		}, done);
 	});
 

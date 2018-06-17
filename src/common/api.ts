@@ -199,6 +199,14 @@ export abstract class Api {
 	}
 
 	/**
+	 * Returns the IP address of the current request.
+	 * @param {Context} ctx
+	 */
+	protected getIpAddress(ctx: Context): string {
+		return ctx.ip || ctx.request.get('x-forwarded-for') || '0.0.0.0';
+	}
+
+	/**
 	 * Computes the Mongoose order parameters based on the HTTP request.
 	 *
 	 * @param {Context} ctx Koa context

@@ -1,17 +1,17 @@
 /*
  * VPDB - Virtual Pinball Database
  * Copyright (C) 2018 freezy <freezy@vpdb.io>
- *  
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- *  
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *  
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -42,7 +42,7 @@ export class AuthenticationApi extends Api {
 	 * @returns {Promise<boolean>}
 	 */
 	public async authenticate(ctx: Context) {
-		const ipAddress = ctx.ip || ctx.request.get('x-forwarded-for') || '0.0.0.0';
+		const ipAddress = this.getIpAddress(ctx);
 		const backoffNumDelay = config.vpdb.loginBackoff.keep;
 		const backoffDelay = config.vpdb.loginBackoff.delay;
 		const backoffNumKey = 'auth_delay_num:' + ipAddress;

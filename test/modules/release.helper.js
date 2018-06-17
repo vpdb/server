@@ -32,7 +32,17 @@ class ReleaseHelper {
 		this.gameHelper = new GameHelper(api);
 	}
 
+	/**
+	 * Creates a release under a given game.
+	 *
+	 * @param user Uploader
+	 * @param game Game to link to
+	 * @param opts Configuration object
+	 * @param {string} opts.author User name of the author
+	 * @returns {Promise<Object>} Created release
+	 */
 	async createReleaseForGame(user, game, opts) {
+		opts = opts || {};
 		const vptFile = await this.fileHelper.createVpt(user, { keep: true });
 		const playfield = await this.fileHelper.createPlayfield(user, 'fs', null, { keep: true });
 		const res = await this.api
@@ -51,13 +61,20 @@ class ReleaseHelper {
 					}],
 					version: '1.0.0'
 				}],
-				authors: [{ _user: this.api.getUser(user).id, roles: ['Table Creator'] }]
+				authors: [{ _user: this.api.getUser(opts.author || user).id, roles: ['Table Creator'] }]
 			}).then(res => res.expectStatus(201));
 		const release = res.data;
 		release.game = game;
 		return release;
 	}
 
+	/**
+	 * Creates a new release and its parent game.
+	 * @param user Uploader
+	 * @param opts Configuration object
+	 * @param {string} opts.author User name of the author
+	 * @returns {Promise<Object>} Created release
+	 */
 	async createRelease(user, opts) {
 		const game = await this.gameHelper.createGame('moderator');
 		return this.createReleaseForGame(user, game, opts);

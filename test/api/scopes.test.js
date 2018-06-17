@@ -163,20 +163,6 @@ describe('The scopes of the VPDB API', function() {
 			request.post('/api/v1/releases/1234/versions/1.0/files/1234/validate').send({}).with(tokenAll).end(hlp.status(404, done));
 		});
 
-		it('should allow access to release comment creation', done => {
-			request.post('/api/v1/releases/1234/comments').send({}).with(tokenAll).end(hlp.status(404, done));
-		});
-
-		it('should allow access to release moderation creation', done => {
-			request.post('/api/v1/releases/1234/moderate').send({}).with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to release moderation comment creation', done => {
-			request.post('/api/v1/releases/1234/moderate/comments').send({}).with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to release moderation comment retrieval', done => {
-			request.get('/api/v1/releases/1234/moderate/comments').with(tokenAll).end(hlp.status(404, done));
-		});
-
 		it('should allow access to rom creation', done => {
 			request.post('/api/v1/roms').send({}).with(tokenAll).end(hlp.status(422, done));
 		});
@@ -332,18 +318,8 @@ describe('The scopes of the VPDB API', function() {
 			request.post('/api/v1/releases/1234/versions/1.0/files/1234/validate').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
 		});
 
-		it('should deny access to release comment creation', done => {
-			request.post('/api/v1/releases/1234/comments').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-
 		it('should deny access to release moderation creation', done => {
 			request.post('/api/v1/releases/1234/moderate').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to release moderation comment creation', done => {
-			request.post('/api/v1/releases/1234/moderate/comments').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to release moderation comment retrieval', done => {
-			request.get('/api/v1/releases/1234/moderate/comments').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
 		});
 
 		it('should deny access to rom creation', done => {
@@ -503,18 +479,8 @@ describe('The scopes of the VPDB API', function() {
 			request.post('/api/v1/releases/1234/versions/1.0/files/1234/validate').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
 		});
 
-		it('should allow access to release comment creation', done => {
-			request.post('/api/v1/releases/1234/comments').send({}).with(tokenCommunity).end(hlp.status(404, done));
-		});
-
 		it('should deny access to release moderation creation', done => {
 			request.post('/api/v1/releases/1234/moderate').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to release moderation comment creation', done => {
-			request.post('/api/v1/releases/1234/moderate/comments').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to release moderation comment retrieval', done => {
-			request.get('/api/v1/releases/1234/moderate/comments').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
 		});
 
 		it('should deny access to rom creation', done => {

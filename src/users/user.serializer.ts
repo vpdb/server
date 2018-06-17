@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { assign, pick, find, uniq, mapValues, pickBy, isEmpty } from 'lodash';
+import { assign, pick, find, uniq, mapValues, pickBy, isEmpty, keys } from 'lodash';
 import { createHash } from 'crypto';
 import { config } from '../common/settings';
 import { Context } from '../common/types/context';

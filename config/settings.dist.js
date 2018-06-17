@@ -116,7 +116,7 @@ module.exports = {
 		loginBackoff: {
 
 			/**
-			 * How long the IP adress is blocked. Index in array is number of
+			 * How long the IP address is blocked. Index in array is number of
 			 * seconds to wait for the nth time. If n > array length, the last
 			 * delay is applied.
 			 */
@@ -126,6 +126,8 @@ module.exports = {
 			 * Keep counter during this time in seconds. That means that once
 			 * the user fails to login, the counter will continue to increase
 			 * during that time even if a successful login occurs.
+			 *
+			 * If set to 0, it will only block until the next successful login.
 			 */
 			keep: 3600 * 24
 		},

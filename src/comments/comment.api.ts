@@ -55,7 +55,7 @@ export class CommentApi extends Api {
 			_from: ctx.state.user._id,
 			_ref: { release: release },
 			message: ctx.request.body.message,
-			ip: ctx.ip || ctx.request.get('x-forwarded-for') || '0.0.0.0',
+			ip: this.getIpAddress(ctx),
 			created_at: new Date()
 		});
 		await comment.save();
@@ -104,7 +104,7 @@ export class CommentApi extends Api {
 
 		// must be owner or author of release or moderator
 		const authorIds = release.authors.map(a => a._user.toString());
-		const creatorId = release._created_by.toString();
+		const creatorId = release._created_by._id.toString();
 		let isAllowed: boolean;
 		if ([creatorId, ...authorIds].includes(ctx.state.user._id.toString())) {
 			isAllowed = true;
@@ -119,7 +119,7 @@ export class CommentApi extends Api {
 			_from: ctx.state.user._id,
 			_ref: { release_moderation: release },
 			message: ctx.request.body.message,
-			ip: ctx.ip || ctx.request.get('x-forwarded-for') || '0.0.0.0',
+			ip: this.getIpAddress(ctx),
 			created_at: new Date()
 		});
 		await comment.save();

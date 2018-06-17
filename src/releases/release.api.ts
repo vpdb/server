@@ -868,7 +868,7 @@ export class ReleaseApi extends Api {
 				_from: ctx.state.user._id,
 				_ref: { release_moderation: release },
 				message: lastEvent.message,
-				ip: ctx.request.get('x-forwarded-for') || ctx.ip || '0.0.0.0',
+				ip: this.getIpAddress(ctx),
 				created_at: new Date()
 			});
 			await comment.save();

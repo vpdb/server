@@ -96,6 +96,7 @@ export class AuthenticationApi extends Api {
 				await state.redis.expireAsync(backoffLockKey, wait);
 			}
 			// if this is the first failure and "keep" is set, start the count-down (usually 24h)
+			/* istanbul ignore if: Tests break if we keep the backoff delay. */
 			if (num === 1 && backoffNumDelay) {
 				await state.redis.expireAsync(backoffNumKey, backoffNumDelay);
 			}

@@ -17,6 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+/* istanbul ignore file */
 import { OAuth2Client } from 'google-auth-library';
 
 import { config } from '../../common/settings';

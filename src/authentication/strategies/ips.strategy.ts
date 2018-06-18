@@ -17,6 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+/* istanbul ignore file */
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { parse, stringify } from 'querystring'
 import randomString from 'randomstring';
@@ -75,12 +76,6 @@ export class IpsStrategy extends Strategy {
 	}
 
 	protected async getProfile(ctx: Context): Promise<any> {
-		if (!ctx.query.code) {
-			throw new ApiError('Must set `code` URL parameter in order to authenticate.').status(400);
-		}
-		if (!ctx.query.state) {
-			throw new ApiError('Must set `state` URL parameter in order to authenticate.').status(400);
-		}
 		const code = ctx.query.code;
 		const state = ctx.query.state;
 		let path: string;

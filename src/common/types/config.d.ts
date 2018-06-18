@@ -423,46 +423,7 @@ export interface VpdbConfig {
 			 *
 			 * You can also add multiple entries if you like to offer authentication from multiple boards.
 			 */
-			ipboard: {
-
-				/**
-				 * Set false to disable.
-				 */
-				enabled: boolean,
-
-				/**
-				 * Must contain only letters or numbers (no spaces or special chars).
-				 */
-				id: string,
-
-				/**
-				 * Label of the button
-				 */
-				name: string,
-
-				/**
-				 * Index file of the forum.
-				 */
-				baseURL: string,
-
-				/**
-				 * The client ID of the generated application.
-				 * @important
-				 */
-				clientID: string,
-
-				/**
-				 * The client secret of the generated application.
-				 * @important
-				 */
-				clientSecret: string,
-
-				/**
-				 * Version of the IPS board. Either `3` or `4`.
-				 */
-				version: 3 | 4 | 4.3
-
-			}[]
+			ipboard: VpdbIpsConfig[]
 		},
 
 		/**
@@ -527,6 +488,45 @@ export interface VpdbConfig {
 			id: string
 		}
 	}
+}
+
+export interface VpdbIpsConfig {
+	/**
+	 * Set false to disable.
+	 */
+	enabled: boolean,
+
+	/**
+	 * Must contain only letters or numbers (no spaces or special chars).
+	 */
+	id: string,
+
+	/**
+	 * Label of the button
+	 */
+	name: string,
+
+	/**
+	 * Index file of the forum.
+	 */
+	baseURL: string,
+
+	/**
+	 * The client ID of the generated application.
+	 * @important
+	 */
+	clientID: string,
+
+	/**
+	 * The client secret of the generated application.
+	 * @important
+	 */
+	clientSecret: string,
+
+	/**
+	 * Version of the IPS board. Either `3` or `4`.
+	 */
+	version: 3 | 4 | 4.3
 }
 
 export interface VpdbHost {

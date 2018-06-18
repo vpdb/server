@@ -17,14 +17,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import Axios, { AxiosInstance } from 'axios';
-import randomstring from 'randomstring';
+import Axios, { AxiosInstance, AxiosResponse } from 'axios';
+import { parse, stringify } from 'querystring'
+import randomString from 'randomstring';
 
 import { config } from '../../common/settings';
 import { Context } from '../../common/types/context';
-import { Strategy } from './strategy';
-import { stringify } from 'querystring';
+import { ApiError } from '../../common/api.error';
 import { OAuthProfile } from '../authentication.api';
+import { Strategy } from './strategy';
+import { logger } from '../../common/logger';
 
 /**
  * GitHub authentication strategy.
@@ -43,10 +45,11 @@ export class GitHubStrategy extends Strategy {
 	constructor(redirectUri: string) {
 		super();
 		this.redirectUri = redirectUri;
+		logger.info('[GitHubStrategy] Instantiated with redirection URL %s', redirectUri);
 	}
 
 	protected getAuthUrl(): string {
-		const state = randomstring.generate(16);
+		const state = randomString.generate(16);
 		return 'https://github.com/login/oauth/authorize?' + stringify({
 			client_id: config.vpdb.passport.github.clientID,
 			redirect_uri: this.redirectUri,
@@ -56,19 +59,39 @@ export class GitHubStrategy extends Strategy {
 	}
 
 	protected async getProfile(ctx: Context): Promise<any> {
+		if (!ctx.query.code) {
+			throw new ApiError('Must set `code` URL parameter in order to authenticate.').status(400);
+		}
+		if (!ctx.query.state) {
+			throw new ApiError('Must set `state` URL parameter in order to authenticate.').status(400);
+		}
 		const code = ctx.query.code;
 		const state = ctx.query.state;
+
+		// get access token
 		let res = await this.client.post('/login/oauth/access_token', {
 			client_id: config.vpdb.passport.github.clientID,
 			client_secret: config.vpdb.passport.github.clientSecret,
 			code: code,
 			redirect_uri: this.redirectUri,
 			state: state
-		});
-		const token = res.data.access_token;
-		const type = res.data.token_type;
+		}) as AxiosResponse;
 
-		// get profile
+		// handle errors
+		if (res.status === 404) {
+			throw new ApiError('Invalid client ID or secret when retrieving access token from GitHub.');
+		}
+		const body = res.headers['content-type'].includes('form-urlencoded') ? parse(res.data) : res.data;
+		if (body.error) {
+			throw new ApiError('Error authenticating with GitHub: %s', body.error_description || body.error);
+		}
+		if (!body.access_token || !body.token_type) {
+			throw new ApiError('Error retrieving access token from GitHub.');
+		}
+
+		// looking good, get profile.
+		const token = body.access_token;
+		const type = body.token_type;
 		res = await this.apiClient.get('/user', { headers: { 'Authorization': `${type} ${token}` } });
 		const profile = res.data;
 

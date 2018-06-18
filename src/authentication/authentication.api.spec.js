@@ -271,7 +271,7 @@ describe('The authentication engine of the VPDB API', () => {
 				.then(res => res.expectError(401, 'has expired'));
 		});
 
-		it('should fail if the token is a login token', async () => {
+		it('should fail when trying to login', async () => {
 			res = await api.as('subscribed')
 				.markTeardown()
 				.post('/v1/tokens', { label: 'Valid token', password: api.getUser('subscribed').password, scopes: [ 'login' ] })
@@ -280,6 +280,17 @@ describe('The authentication engine of the VPDB API', () => {
 			await api.withToken(res.data.token)
 				.get('/v1/user')
 				.then(res => res.expectError(401, 'invalid scope: [ "login" ]'));
+		});
+
+		it('should fail if the token is a login token', async () => {
+			res = await api.as('subscribed')
+				.markTeardown()
+				.post('/v1/tokens', { label: 'Valid token', password: api.getUser('subscribed').password, scopes: [ 'all' ] })
+				.then(res => res.expectStatus(201));
+
+			await api
+				.post('/v1/authenticate', { token: res.data.token })
+				.then(res => res.expectError(401, 'must exclusively be "login"'));
 		});
 
 		it('should succeed if the token is valid', async () => {

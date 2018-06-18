@@ -1,24 +1,27 @@
 /*
  * VPDB - Virtual Pinball Database
  * Copyright (C) 2018 freezy <freezy@vpdb.io>
- *  
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- *  
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *  
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+
+/* istanbul ignore file */
 import { AuthenticationApi, OAuthProfile } from '../authentication.api';
 import { Context } from '../../common/types/context';
 import { logger } from '../../common/logger';
+import { ApiError } from '../../common/api.error';
 
 export abstract class Strategy extends AuthenticationApi {
 
@@ -49,6 +52,9 @@ export abstract class Strategy extends AuthenticationApi {
 	 * @param {Context} ctx Koa context coming from redirection, i.e. it should contain the access code or an error in the query.
 	 */
 	public async authenticateOAuth(ctx: Context): Promise<boolean> {
+		if (!ctx.query.code) {
+			throw new ApiError('Must set `code` URL parameter in order to authenticate.').status(400);
+		}
 		const profile = await this.getProfile(ctx);
 		const user = await this.verifyCallbackOAuth(ctx, this.name, this.providerName, this.normalizeProfile(profile));
 		logger.info('[Strategy.authenticate] Successfully authenticated with user <%s>.', user.email);

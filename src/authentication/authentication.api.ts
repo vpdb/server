@@ -360,7 +360,7 @@ export class AuthenticationApi extends Api {
 			throw new ApiError('Profile at %s is already linked to ID %s', provider, ctx.state.user.providers[provider].id).status(400);
 		}
 
-		const emails = profile.emails.filter((e: { value: string }) => !!e).map((e: { value: string }) => e.value);
+		const emails = profile.emails.filter((e: { value: string }) => e && e.value).map((e: { value: string }) => e.value);
 		if (emails.length === 0) {
 			throw new ApiError('Emails must contain at least one value.').status(400);
 		}
@@ -507,6 +507,7 @@ export class AuthenticationApi extends Api {
 		user.emails = uniq([user.email, ...user.emails, ...emails]);
 
 		// optional data
+		/* istanbul ignore next: Don't give a crap */
 		if (!user.thumb && profile.photos && profile.photos.length > 0) {
 			user.thumb = profile.photos[0].value;
 		}

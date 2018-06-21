@@ -317,140 +317,48 @@ describe('The VPDB `user` API', () => {
 
 	describe.skip('when authenticating with OAuth', () => {
 
-		it('should merge multiple accounts when matched', async () => {
+	});
 
-			const localProfiles = [0, 1, 2].map(() => api.generateUser({ skipEmailConfirmation: true }));
-
-			// register three different emails
-			for (let localProfile of localProfiles) {
-				res = await api
-					.post('/v1/users', localProfile)
-					.then(res => res.expectStatus(201));
-				_.assign(localProfile, res.data);
-			}
-
-			// login with provider1/id1, who has registered email1/email2/email3 -> 3 accounts
-			const oauthProfile = api.generateOAuthUser('github', { emails: localProfiles.map(p => p.email) });
-			res = await api.post('/v1/authenticate/mock', oauthProfile)
-				.then(res => res.expectStatus(409));
-
-			expect(res.data.data.users).to.be.an('array');
-			expect(res.data.data.users).to.have.length(3);
-
-			// try again, this time indicate which user to merge to
-			res = await api.markTeardown('user.id', '/v1/users')
-				.withQuery({ merged_user_id: localProfiles[0].id })
-				.post('/v1/authenticate/mock', oauthProfile)
-				.then(res => res.expectStatus(200));
-
-			expect(res.data.user.id).to.be(localProfiles[0].id);
-			expect(res.data.user.emails).to.contain(localProfiles[1].email);
-			expect(res.data.user.emails).to.contain(localProfiles[2].email);
-
-			// make sure the other ones are gone
-			await api.asRoot().get('/v1/users/' + localProfiles[1].id).then(res => res.expectError(404));
-			await api.asRoot().get('/v1/users/' + localProfiles[2].id).then(res => res.expectError(404));
-		});
-
-		it('should merge when the oauth email changes to an existing address', async () => {
-
-			const oauthProfile = api.generateOAuthUser('github');
-
-			// 1. login with provider1/id1, email2 -> account1
-			res = await api
-				.post('/v1/authenticate/mock', oauthProfile)
-				.then(res => res.expectStatus(200));
-			const oauthUser = res.data.user;
-
-			// 2. register locally with email2 -> account2
-			const localUser = await api.createUser();
-
-			// 3. change email1 at provider1/id1 to email2
-			oauthProfile.profile.emails = [ { value: localUser.email } ];
-
-			// 4. login with provider1/id1, email2 -> 2 accounts, one match by id1, one by email2
-			res = await api.post('/v1/authenticate/mock', oauthProfile)
-				.then(res => res.expectStatus(409));
-
-			expect(res.data.data.users).to.be.an('array');
-			expect(res.data.data.users).to.have.length(2);
-			expect(res.data.data.users.map(u => u.id)).to.contain(localUser.id);
-			expect(res.data.data.users.map(u => u.id)).to.contain(oauthUser.id);
-
-			// try again with merge user id (merge oauth user into local user)
-			res = await api.withQuery({ merged_user_id: localUser.id })
-				.post('/v1/authenticate/mock', oauthProfile)
-				.then(res => res.expectStatus(200));
-
-			expect(res.data.user.id).to.be(localUser.id);
-
-			// make sure the other ones is gone
-			await api.asRoot().get('/v1/users/' + oauthUser.id).then(res => res.expectError(404));
-		});
+	describe.skip('when confirming the email address', () => {
 
 		it('should merge an existing user with a previously unconfirmed email', async () => {
-
-			const dupeEmail = api.generateEmail();
+			const email = api.generateEmail();
 
 			// 1. register locally with email1 -> account1
-			const localUser = await api.createUser();
+			const user1 = await api.createUser();
 
-			// 2. change email1 to *unconfirmed* email2
-			res = await api.as(localUser)
-				.patch('/v1/user', { email: dupeEmail })
-				.then(res => res.expectStatus(200));
-			const emailToken = res.data.email_status.token;
+			// 2. register locally with email2 -> account2
+			const user2 = await api.createUser({}, { teardown: false });
 
-			// 3. login at provider1/id1 with email2 -> account2
-			const oauthUser = await api.createOAuthUser('github', { emails: [ dupeEmail ] }, null, { teardown: false });
-			expect(oauthUser.user.id).not.to.be(localUser.id);
+			// 3. change email1 to *unconfirmed* email3
+			res = await api.as(user1).patch('/v1/user', { email: email }).then(res => res.expectStatus(200));
+			const token1 = res.data.email_status.token;
 
-			// confirm email2 from mail => auto-merge
-			res = await api.get('/v1/user/confirm/' + emailToken).then(res => res.expectStatus(200));
+			// 4. change email2 to *unconfirmed* email3
+			res = await api.as(user2).patch('/v1/user', { email: email }).then(res => res.expectStatus(200));
+			const token2 = res.data.email_status.token;
+
+			// 5. confirm email3 at account1 -> still 2 accounts
+			res = await api.get('/v1/user/confirm/' + token1).then(res => res.expectStatus(200));
+			await api.asRoot().get('/v1/users/' + user2.id).then(res => res.expectStatus(200));
+
+			// 6. confirm email3 at account2 -> conflict
+			res = await api.get('/v1/user/confirm/' + token2).then(res => res.expectStatus(409));
+			expect(res.data.data.users).to.be.an('array');
+			expect(res.data.data.users).to.have.length(2);
+			expect(res.data.data.users.map(u => u.id)).to.contain(user1.id);
+			expect(res.data.data.users.map(u => u.id)).to.contain(user2.id);
+
+			// try again, merge to account1
+			res = await api.withQuery({ merged_user_id: user1.id })
+				.get('/v1/user/confirm/' + token2).then(res => res.expectStatus(200));
 			expect(res.data.merged_users).to.be(1);
+
+			// make sure user2 is gone
+			await api.asRoot().get('/v1/users/' + user2.id).then(res => res.expectStatus(404));
 		});
 
-		it('should merge a new user with a unconfirmed email', async () => {
-
-			// register locally with *unconfirmed* email1 -> account1
-			res = await api.post('/v1/users', api.generateUser({ returnEmailToken: true }))
-				.then(res => res.expectStatus(201));
-			const localUser = res.data;
-
-			// login at provider1/id1 with email1 -> account2
-			const oauth = await api.createOAuthUser('github', { emails: [ localUser.email ] });
-
-			expect(oauth.user.id).not.to.be(localUser.id);
-
-			// confirm email1 from mail => was auto-merged at login
-			await api.get('/v1/user/confirm/' + localUser.email_token).then(res => res.expectError(404));
-		});
-
-		it('should update provider ID when changed between logins for same email', async () => {
-
-			const oauthProfile = api.generateOAuthUser('github');
-
-			// login with provider1/id1, email1 -> account1
-			res = await api.markTeardown('user.id', '/v1/users')
-				.post('/v1/authenticate/mock', oauthProfile)
-				.then(res => res.expectStatus(200));
-
-			const user = res.data.user;
-
-			// at provider, create a second account with same email
-			oauthProfile.profile.id += '0';
-
-			// login with provider1/id2, email1 -> different provider id
-			res = await api
-				.post('/v1/authenticate/mock', oauthProfile)
-				.then(res => res.expectStatus(200));
-
-			// => update provider id
-			expect(res.data.user.id).to.be(user.id);
-			expect(res.data.user.providers.find(p => p.provider === 'github').id).to.be(oauthProfile.profile.id);
-		});
-
-		it('should merge an existing user at confirmation when user was authenticated with OAuth during confirmation', async () => {
+		it('should merge an existing user when user was authenticated with OAuth during confirmation', async () => {
 
 			// 1. register locally with email1, change to *unconfirmed* email2 -> account1
 			const user1 = await api.createUser({}, { teardown: false });
@@ -496,109 +404,7 @@ describe('The VPDB `user` API', () => {
 			expect(res.data.user.emails).to.contain(user1b.email);
 			expect(res.data.user.emails).to.contain(user2b.email);
 			await api.asRoot().get('/v1/users/' + user1.id).then(res => res.expectStatus(404));
-		})
-	});
-
-	describe.skip('when authenticating locally', () => {
-
-		it('should merge an existing user with a previously unconfirmed email', async () => {
-			const email = api.generateEmail();
-
-			// 1. register locally with email1 -> account1
-			const user1 = await api.createUser();
-
-			// 2. register locally with email2 -> account2
-			const user2 = await api.createUser({}, { teardown: false });
-
-			// 3. change email1 to *unconfirmed* email3
-			res = await api.as(user1).patch('/v1/user', { email: email }).then(res => res.expectStatus(200));
-			const token1 = res.data.email_status.token;
-
-			// 4. change email2 to *unconfirmed* email3
-			res = await api.as(user2).patch('/v1/user', { email: email }).then(res => res.expectStatus(200));
-			const token2 = res.data.email_status.token;
-
-			// 5. confirm email3 at account1 -> still 2 accounts
-			res = await api.get('/v1/user/confirm/' + token1).then(res => res.expectStatus(200));
-			await api.asRoot().get('/v1/users/' + user2.id).then(res => res.expectStatus(200));
-
-			// 6. confirm email3 at account2 -> conflict
-			res = await api.get('/v1/user/confirm/' + token2).then(res => res.expectStatus(409));
-			expect(res.data.data.users).to.be.an('array');
-			expect(res.data.data.users).to.have.length(2);
-			expect(res.data.data.users.map(u => u.id)).to.contain(user1.id);
-			expect(res.data.data.users.map(u => u.id)).to.contain(user2.id);
-
-			// try again, merge to account1
-			res = await api.withQuery({ merged_user_id: user1.id })
-				.get('/v1/user/confirm/' + token2).then(res => res.expectStatus(200));
-			expect(res.data.merged_users).to.be(1);
-
-			// make sure user2 is gone
-			await api.asRoot().get('/v1/users/' + user2.id).then(res => res.expectStatus(404));
 		});
 	});
 
-	describe.skip('when linking another account', () => {
-
-		it('should fail when logged with the same provider but different id', async () => {
-			// 1. login with provider1/id1, email1 -> account1
-			const oauthUser1 = await api.createOAuthUser('github');
-			// 2. link to provider1/id2 -> different provider id
-			const oauthProfile2 = api.generateOAuthUser('github');
-			await api
-				.as(oauthUser1)
-				.post('/v1/authenticate/mock', oauthProfile2)
-				.then(res => res.expectError(400, 'is already linked to id'));
-		});
-
-		it('should auto-merge a local account when linking and account', async () => {
-			// 1. register locally with email1 -> account1
-			const user1 = await api.createUser();
-			// 2. register locally with email2 -> account2
-			const user2 = await api.createUser({}, { teardown: false });
-			// 3. login with account2, link provider1/id1, email1 -> two accounts (one by match, one with currently logged).
-			const oauthUser = api.generateOAuthUser('github', { emails: [ user2.email ] });
-			res = await api
-				.as(user1)
-				.post('/v1/authenticate/mock', oauthUser)
-				.then(res => res.expectStatus(200));
-			expect(res.data.user.id).to.be(user1.id);
-			expect(res.data.user.providers.find(p => p.provider === 'github').id).to.be(oauthUser.profile.id);
-			// make sure user2 is gone
-			await api.asRoot().get('/v1/users/' + user2.id).then(res => res.expectStatus(404));
-		});
-
-		it('should auto-merge a local account when linking and account', async () => {
-			// 1. login with provider1/id1, email1 -> account1
-			const oauth = await api.createOAuthUser('ipbtest', {}, null, { teardown: false });
-			// 2. register locally with email2 -> account2
-			const localUser = await api.createUser();
-			// 3. login with account2, link provider1/id1, email1 -> two accounts (one by match, one with currently logged).
-			const linkedOAuth = api.generateOAuthUser('github', { emails: [ oauth.user.email ] });
-			res = await api
-				.as(localUser)
-				.post('/v1/authenticate/mock', linkedOAuth)
-				.then(res => res.expectStatus(200));
-			expect(res.data.user.id).to.be(localUser.id);
-			expect(res.data.user.providers.find(p => p.provider === 'github').id).to.be(linkedOAuth.profile.id);
-			expect(res.data.user.providers.find(p => p.provider === 'ipbtest').id).to.be(oauth.user.providers.find(p => p.provider === 'ipbtest').id);
-			// make sure user2 is gone
-			await api.asRoot().get('/v1/users/' + oauth.id).then(res => res.expectStatus(404));
-		});
-
-		it('should succeed without conflicted data', async() => {
-			// 1. create local user
-			const localUser = await api.createUser();
-			expect(localUser.github).to.not.be.ok();
-			// 2. link oauth account
-			const oauthProfile = api.generateOAuthUser('github');
-			res = await api
-				.as(localUser)
-				.post('/v1/authenticate/mock', oauthProfile)
-				.then(res => res.expectStatus(200));
-			expect(res.data.user.id).to.be(localUser.id);
-			expect(res.data.user.providers.find(p => p.provider === 'github')).to.be.ok();
-		});
-	});
 });

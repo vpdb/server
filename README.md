@@ -46,6 +46,7 @@ For more detailed instructions, check out the [Installation Guide](INSTALL.md).
 - Processors
 - Table Blocks
 - Realtime
+- Caching
 
 ### Tests
 

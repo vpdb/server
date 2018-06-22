@@ -28,6 +28,7 @@ import { Release } from '../releases/release';
 
 export class CommentSerializer extends Serializer<Comment> {
 
+	/* istanbul ignore next */
 	protected _reduced(ctx: Context, doc: Comment, opts: SerializerOptions): Comment {
 		return this._simple(ctx, doc, opts);
 	}
@@ -43,6 +44,7 @@ export class CommentSerializer extends Serializer<Comment> {
 		return comment;
 	}
 
+	/* istanbul ignore next */
 	protected _detailed(ctx: Context, doc: Comment, opts: SerializerOptions): Comment {
 		return this._simple(ctx, doc, opts);
 	}

@@ -6,6 +6,7 @@
         <option name="SMART_TABS" value="true" />
       </value>
     </option>
+    <option name="LINE_SEPARATOR" value="&#10;" />
     <AndroidXmlCodeStyleSettings>
       <option name="USE_CUSTOM_SETTINGS" value="true" />
     </AndroidXmlCodeStyleSettings>

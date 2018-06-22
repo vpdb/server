@@ -71,7 +71,7 @@ class ReleaseHelper {
 	/**
 	 * Creates a new release and its parent game.
 	 * @param user Uploader
-	 * @param opts Configuration object
+	 * @param [opts] Configuration object
 	 * @param {string} opts.author User name of the author
 	 * @returns {Promise<Object>} Created release
 	 */

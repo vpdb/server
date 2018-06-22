@@ -36,6 +36,7 @@ class Ipdb {
 	async details(ipdbNo: number, opts:{ offline?:boolean }) {
 
 		opts = opts || {};
+		/* istanbul ignore if: we test online! */
 		if (opts.offline) {
 			return this.localDetails(ipdbNo);
 		}
@@ -47,6 +48,7 @@ class Ipdb {
 			return this.parseDetails(response.data);
 
 		} catch (err) {
+			/* istanbul ignore next: that would be a failed test */
 			if (err.response) {
 				logger.error('[ipdb] Wrong response code, got %s instead of 200. Body: %s', err.response.status, err.response.data);
 				return this.localDetails(ipdbNo, new ApiError('Wrong response data from IPDB.').log());
@@ -71,6 +73,7 @@ class Ipdb {
 		return ids;
 	}
 
+	/* istanbul ignore next */
 	private localDetails(ipdbNo: number | string, err: Error = null) {
 		const ipdb = require('../../data/ipdb.json');
 		const match = ipdb.find((i: { ipdb: { number: number } }) => i.ipdb.number === parseInt(ipdbNo as string));

@@ -75,6 +75,8 @@ export class Quota {
 	public async getCurrent(user: User): Promise<UserQuota> {
 
 		let plan = user.planConfig;
+
+		/* istanbul ignore if: That's a configuration error. */
 		if (!plan) {
 			throw new ApiError('Unable to find plan "%s" for user.', user._plan);
 		}
@@ -117,18 +119,15 @@ export class Quota {
 			files = [files];
 		}
 
-		// deny access to anon (wouldn't be here if there were only free files)
-		if (!ctx.state.user) {
-			return false;
-		}
-
 		const plan = ctx.state.user.planConfig;
+		/* istanbul ignore if: That would be configuration error. */
 		if (!plan) {
 			throw new ApiError('No quota defined for plan "%s"', ctx.state.user._plan);
 		}
 
 		// allow unlimited plans
 		if (plan.unlimited === true) {
+			this.setHeader(ctx, 0, 0, 0, true);
 			return true;
 		}
 
@@ -146,14 +145,27 @@ export class Quota {
 			allow: plan.credits
 		});
 
-		ctx.response.set({
-			'X-RateLimit-Limit': String(result.allowed),
-			'X-RateLimit-Remaining': String(result.allowed - result.used),
-			'X-RateLimit-Reset': result.expiryTime
-		});
+		this.setHeader(ctx, result.allowed, result.allowed - result.used, result.expiryTime, false);
 		return result.isAllowed;
 	}
 
+	/**
+	 * Sets the rate-limit header.
+	 *
+	 * @param {Context} ctx Koa context
+	 * @param {number} limit The daily quota
+	 * @param {number} remaining How much remains
+	 * @param {number} reset When it's reset
+	 * @param {boolean} unlimited True if no rate check applied
+	 */
+	public setHeader(ctx: Context, limit:number, remaining:number, reset:number, unlimited:boolean = false) {
+		ctx.response.set({
+			'X-RateLimit-Limit': String(limit),
+			'X-RateLimit-Remaining': String(remaining),
+			'X-RateLimit-Reset': String(reset),
+			'X-RateLimit-Unlimited': String(unlimited),
+		});
+	}
 
 	/**
 	 * Sums up the const of a given list of files.

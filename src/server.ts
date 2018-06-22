@@ -24,10 +24,10 @@ import { uniq } from 'lodash';
 
 import { EndPoint } from './common/api.endpoint';
 import { config, settings } from './common/settings'
-import { koaLogger } from './common/middleware/logger';
-import { koaAuth } from './common/middleware/auth';
-import { koaErrorHandler } from './common/middleware/error.handler';
-import { koa404Handler } from './common/middleware/notfound.handler';
+import { koaLogger } from './common/middleware/logger.middleware';
+import { koaAuth } from './common/middleware/authentication.middleware';
+import { koaErrorHandler } from './common/middleware/error.handler.middleware';
+import { koa404Handler } from './common/middleware/notfound.handler.middleware';
 import { logger } from './common/logger';
 import { apiCache } from './common/api.cache';
 

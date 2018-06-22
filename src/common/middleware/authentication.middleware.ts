@@ -25,7 +25,6 @@ import { ApiError } from '../api.error';
 import { decode as jwtDecode } from 'jwt-simple';
 import { Scope } from '../scope';
 import { AuthenticationUtil, Jwt } from '../../authentication/authentication.util';
-import { Token } from '../../tokens/token';
 
 /**
  * Middleware that populates the authentication state. It sets:
@@ -75,7 +74,6 @@ export function koaAuth() {
 				// otherwise, re-throw (this is an unexpected one)
 				throw err;
 			}
-
 		}
 
 		// continue with next middleware

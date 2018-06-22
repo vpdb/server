@@ -57,6 +57,7 @@ export function koaAuth() {
 				await authenticateWithJwt(ctx, token);  // otherwise, assume it's a JWT.
 
 			// log to sqreen
+			/* istanbul ignore if */
 			if (config.vpdb.services.sqreen.enabled) {
 				require('sqreen').identify(ctx.req, { email: user.email });
 			}
@@ -71,7 +72,8 @@ export function koaAuth() {
 				ctx.state.authError = err;
 
 			} else {
-				// otherwise, re-throw (this is an unexpected one)
+				// otherwise, re-throw (this is unexpected)
+				/* istanbul ignore next */
 				throw err;
 			}
 		}

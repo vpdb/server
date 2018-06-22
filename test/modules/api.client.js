@@ -494,6 +494,19 @@ class ApiClient {
 	}
 
 	/**
+	 * Gets the response headers from a resource from the VPDB backend.
+	 * @param {string} path Absolute path
+	 * @returns {Promise<ApiClientResult>}
+	 */
+	async headAbsolute(path) {
+		this._config.baseURL = this._baseUrl;
+		return await this._request({
+			url: path,
+			method: 'head',
+		});
+	}
+
+	/**
 	 * Deletes are previously entities marked as tear down.
 	 * @return {Promise<void>}
 	 */
@@ -642,7 +655,7 @@ class ApiClient {
 	 * @returns {Promise<string>} The created token
 	 */
 	async retrieveStorageToken(user, path) {
-		return await this.as(user)
+		return this.as(user)
 			.on('storage')
 			.post('/v1/authenticate', { paths: path })
 			.then(res => {

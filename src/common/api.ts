@@ -331,8 +331,10 @@ export abstract class Api {
 	 * @return API router
 	 */
 	public apiRouter() {
+		/* istanbul ignore else: test server uses a prefix */
 		if (config.vpdb.api.pathname) {
 			return new Router({ prefix: config.vpdb.api.pathname });
+
 		} else {
 			return new Router();
 		}
@@ -344,8 +346,10 @@ export abstract class Api {
 	 */
 	public storageRouter(useProtected: boolean) {
 		const storageConfig = useProtected ? config.vpdb.storage.protected.api : config.vpdb.storage.public.api;
+		/* istanbul ignore else: test server uses a prefix */
 		if (storageConfig.pathname) {
 			return new Router({ prefix: storageConfig.pathname });
+
 		} else {
 			return new Router();
 		}

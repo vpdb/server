@@ -68,7 +68,7 @@ export abstract class Api {
 				throw ctx.state.authError;
 			}
 
-			// just to be sure (auth middleware loaded?)...
+			/* istanbul ignore if: just to be sure (auth middleware loaded?)... */
 			if (!ctx.state.user) {
 				throw new ApiError('Something went wrong, authenticated but no user.');
 			}
@@ -203,7 +203,7 @@ export abstract class Api {
 	 * @param {Context} ctx
 	 */
 	protected getIpAddress(ctx: Context): string {
-		return ctx.ip || ctx.request.get('x-forwarded-for') || '0.0.0.0';
+		return ctx.request.get('x-forwarded-for') || ctx.ip || '0.0.0.0';
 	}
 
 	/**

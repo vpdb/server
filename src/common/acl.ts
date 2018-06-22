@@ -104,6 +104,8 @@ export async function init(): Promise<void> {
 	logger.info('[acl.init] Added permissions to roles.');
 	const users = await state.models.User.find({}).lean().exec();
 	logger.info('[acl.init] Applying ACLs to %d users...', users.length);
+
+	/* istanbul ignore next: No initial users when testing */
 	for (let user of users) {
 		await acl.addUserRoles(user.id, user.roles);
 	}

@@ -26,14 +26,14 @@ const storage = new FileStorage();
 export const protectedRouter = api.storageRouter(true);
 export const publicRouter = api.storageRouter(false);
 
-protectedRouter.post('/v1/files',                   api.auth(api.upload.bind(api), 'files', 'upload', [ Scope.ALL ]));
-protectedRouter.head('/files/:id.:ext',            storage.head.bind(storage));
-protectedRouter.head('/files/:variation/:id.:ext', storage.head.bind(storage));
-protectedRouter.get('/files/:id.:ext',             storage.get.bind(storage));  // permission/quota handling is inside.
-protectedRouter.get('/files/:variation/:id.:ext',  storage.get.bind(storage));
+protectedRouter.post('/v1/files',                  api.auth(api.upload.bind(api), 'files', 'upload', [ Scope.ALL ]));
+protectedRouter.head('/files/:id.:ext',            storage.auth(storage.head.bind(storage), 'files', 'download', [ Scope.ALL ]));
+protectedRouter.head('/files/:variation/:id.:ext', storage.auth(storage.head.bind(storage), 'files', 'download', [ Scope.ALL ]));
+protectedRouter.get('/files/:id.:ext',             storage.auth(storage.get.bind(storage), 'files', 'download', [ Scope.ALL ]));
+protectedRouter.get('/files/:variation/:id.:ext',  storage.auth(storage.get.bind(storage), 'files', 'download', [ Scope.ALL ]));
 
 // this is usually handled by nginx directly, but might be used as fallback when there's no file before processors finish.
 publicRouter.head('/files/:id.:ext',            storage.head.bind(storage));
 publicRouter.head('/files/:variation/:id.:ext', storage.head.bind(storage));
-publicRouter.get('/files/:id.:ext',             storage.get.bind(storage));  // permission/quota handling is inside.
+publicRouter.get('/files/:id.:ext',             storage.get.bind(storage));
 publicRouter.get('/files/:variation/:id.:ext',  storage.get.bind(storage));

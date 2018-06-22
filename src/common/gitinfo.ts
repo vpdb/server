@@ -44,9 +44,11 @@ class GitInfo {
 					};
 					logger.info('[git] Successfully read git config from %s.', repoRoot);
 				} catch (err) {
+					/* istanbul ignore next: we assume node-git is working */
 					logger.warn('[git] Unable to retrieve git info from %s (%s)', repoRoot, err.message);
 				}
 			} catch (err) {
+				/* istanbul ignore next: we assume node-git is working */
 				logger.warn('[GitInfo] Error loading library.');
 			}
 		})();

@@ -68,6 +68,7 @@ export async function init(): Promise<void> {
 			roles: 'backglass-contributor',
 			allows: [{ resources: 'backglasses', permissions: ['auto-approve'] }]
 		}, {
+			// TODO: split further up so we can deactivate post permissions, download permission etc separately.
 			roles: 'member',
 			allows: [
 				{ resources: 'backglasses',   permissions: ['add', 'delete-own', 'update-own', 'star'] },

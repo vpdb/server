@@ -25,7 +25,6 @@ import { Api } from '../common/api';
 import { Context } from '../common/types/context';
 import { quota } from '../common/quota';
 import { ApiError } from '../common/api.error';
-import { acl } from '../common/acl';
 import { logger } from '../common/logger';
 import { File } from './file';
 import { processorQueue } from './processor/processor.queue';
@@ -79,7 +78,7 @@ export class FileStorage extends Api {
 	 * Retrieves a storage item and does all checks but the quota check.
 	 *
 	 * @param {Context} ctx Koa context
-	 * @returns {Promise<[File , boolean]>} File and true if public
+	 * @returns {Promise<[File, boolean]>} File and true if public
 	 */
 	private async find(ctx: Context): Promise<[File, boolean]> {
 
@@ -91,15 +90,6 @@ export class FileStorage extends Api {
 
 		const variation = file.getVariation(ctx.params.variation);
 		const isPublic = file.isPublic(variation);
-
-		// file is not public - user must be logged in.
-		if (!isPublic && !ctx.state.user) {
-			if (ctx.state.authError) {
-				throw new ApiError('You must provide valid credentials for non-public files.').log(ctx.state.authError).status(401);
-			} else {
-				throw new ApiError('You must provide valid credentials for non-public files.').status(401);
-			}
-		}
 
 		// if inactive and user is not logged or not the owner, refuse.
 		if (!file.is_active) {
@@ -119,13 +109,6 @@ export class FileStorage extends Api {
 		// we also serve it if it's free and the user is logged
 		if (file.isFree(variation) && ctx.state.user) {
 			return [file, isPublic];
-		}
-
-		// so here we determined the file isn't free, so we need to check ACLs.
-		const granted = await acl.isAllowed(ctx.state.user.id, 'files', 'download');
-
-		if (!granted) {
-			throw new ApiError('Your ACLs do not allow downloading of any files.').status(403);
 		}
 
 		// if the user is the owner, serve directly (owned files don't count as credits)
@@ -182,6 +165,8 @@ export class FileStorage extends Api {
 
 		// only return the header if request was HEAD
 		if (headOnly) {
+			const q = await quota.getCurrent(ctx.state.user);
+			quota.setHeader(ctx, q.limit, q.remaining, q.reset, q.unlimited);
 			return this.success(ctx, null, 200, {
 				headers: {
 					'Content-Type': file.getMimeType(variation),

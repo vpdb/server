@@ -51,10 +51,9 @@ export class FileStorage extends Api {
 		}
 
 		// check the quota
-		const granted = await quota.isAllowed(ctx, file);
-		if (!granted) {
-			throw new ApiError('No more quota left.').status(403).warn();
-		}
+		await quota.assert(ctx, file);
+
+		// we're here, so serve!
 		return this.serve(ctx, file, ctx.params.variation);
 
 	}
@@ -166,7 +165,7 @@ export class FileStorage extends Api {
 		// only return the header if request was HEAD
 		if (headOnly) {
 			const q = await quota.getCurrent(ctx.state.user);
-			quota.setHeader(ctx, q.limit, q.remaining, q.reset, q.unlimited);
+			quota.setHeader(ctx, q);
 			return this.success(ctx, null, 200, {
 				headers: {
 					'Content-Type': file.getMimeType(variation),

@@ -21,8 +21,13 @@ import ACL = require('acl');
 
 import { state } from '../state';
 import { logger } from './logger';
+import Redis = require('redis');
+import { config } from './settings';
 
-export const acl = new ACL(new ACL.redisBackend(state.redis, 'acl'));
+// instantiate
+const redis = Redis.createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
+redis.select(config.vpdb.redis.db);
+export const acl = new ACL(new ACL.redisBackend(redis, 'acl'));
 
 /**
  * Initializes the ACLs.

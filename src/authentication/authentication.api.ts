@@ -53,7 +53,7 @@ export class AuthenticationApi extends Api {
 		try {
 
 			// check if there's a back-off delay
-			const ttl = await state.redis.ttlAsync(backoffLockKey);
+			const ttl = await state.redis.ttl(backoffLockKey);
 			if (ttl > 0) {
 				throw new ApiError('Too many failed login attempts from %s, blocking for another %s seconds.', ipAddress, ttl)
 					.display('Too many failed login attempts from this IP, try again in %s seconds.', ttl)
@@ -79,12 +79,12 @@ export class AuthenticationApi extends Api {
 
 			// if logged and no "keep" is set, expire lock
 			if (!backoffNumDelay) {
-				await state.redis.delAsync(backoffNumKey);
+				await state.redis.del(backoffNumKey);
 			}
 
 		} catch (err) {
 			// increase number of consecutively failed attempts
-			const num: number = await state.redis.incrAsync(backoffNumKey);
+			const num: number = await state.redis.incr(backoffNumKey);
 
 			// check how log to wait
 			let wait = backoffDelay[Math.min(num, backoffDelay.length) - 1];
@@ -92,13 +92,13 @@ export class AuthenticationApi extends Api {
 
 			// if there's a wait, set the lock and expire it to wait time
 			if (wait > 0) {
-				await state.redis.setAsync(backoffLockKey, '1');
-				await state.redis.expireAsync(backoffLockKey, wait);
+				await state.redis.set(backoffLockKey, '1');
+				await state.redis.expire(backoffLockKey, wait);
 			}
 			// if this is the first failure and "keep" is set, start the count-down (usually 24h)
 			/* istanbul ignore if: Tests break if we keep the backoff delay. */
 			if (num === 1 && backoffNumDelay) {
-				await state.redis.expireAsync(backoffNumKey, backoffNumDelay);
+				await state.redis.expire(backoffNumKey, backoffNumDelay);
 			}
 			throw err;
 		}

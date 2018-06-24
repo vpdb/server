@@ -371,7 +371,7 @@ export class ReleaseStorage extends Api {
 			await quota.assert(ctx, requestedFiles);
 
 		} else {
-			const q = await quota.getCurrent(ctx.state.user);
+			const q = await quota.get(ctx.state.user);
 			if (!q.unlimited && quota.getTotalCost(requestedFiles) > q.remaining) {
 				throw new ApiError('Not enough quota left.').status(403);
 			}

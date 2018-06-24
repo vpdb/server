@@ -54,8 +54,7 @@ export class FileStorage extends Api {
 		await quota.assert(ctx, file);
 
 		// we're here, so serve!
-		return this.serve(ctx, file, ctx.params.variation);
-
+		return await this.serve(ctx, file, ctx.params.variation);
 	}
 
 	/**
@@ -164,7 +163,7 @@ export class FileStorage extends Api {
 
 		// only return the header if request was HEAD
 		if (headOnly) {
-			const q = await quota.getCurrent(ctx.state.user);
+			const q = await quota.get(ctx.state.user);
 			quota.setHeader(ctx, q);
 			return this.success(ctx, null, 200, {
 				headers: {
@@ -207,7 +206,6 @@ export class FileStorage extends Api {
 					logger.error('[FileStorage.serve] Error while streaming %s from storage: %s', file.toShortString(variation), err);
 					reject(err);
 				});
-
 		});
 
 		logger.verbose('[FileStorage.serve] File %s successfully served to <%s> in %sms.', file.toShortString(variation), ctx.state.user ? ctx.state.user.email : 'anonymous', Date.now() - now);

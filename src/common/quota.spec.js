@@ -28,7 +28,7 @@ const ReleaseHelper = require('../../test/modules/release.helper');
 const api = new ApiClient();
 const releaseHelper = new ReleaseHelper(api);
 
-describe.only('The quota engine of VPDB', () => {
+describe('The quota engine of VPDB', () => {
 
 	let res, release, chargedUrl, unchargedUrl;
 	before(async () => {
@@ -122,7 +122,6 @@ describe.only('The quota engine of VPDB', () => {
 			const remaining = res.data.quota.remaining;
 			res = await api
 				.as('ratetest1')
-				.debug()
 				.headAbsolute(ApiClient.urlPath(chargedUrl))
 				.then(res => res.expectStatus(200));
 			expect(res.headers['x-ratelimit-limit']).to.be(String(limit));
@@ -147,7 +146,7 @@ describe.only('The quota engine of VPDB', () => {
 
 			expect(limit - remaining).to.equal(1);
 
-			res = await api.as('member').debug().get('/v1/profile').then(res => res.expectStatus(200));
+			res = await api.as('ratetest1').get('/v1/profile').then(res => res.expectStatus(200));
 			expect(limit).to.be(res.data.quota.limit);
 			expect(remaining).to.be(res.data.quota.remaining);
 		});

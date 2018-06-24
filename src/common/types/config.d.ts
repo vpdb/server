@@ -586,25 +586,20 @@ export interface VpdbQuotaConfig {
 	 *
 	 * [1] https://github.com/vpdb/backend/blob/master/src/modules/filetypes.js
 	 */
-	costs: { [key: string]: 0 | -1 | VpdbPlanCost }
+	costs: { [key: string]: number | VpdbPlanCost }
 }
 
 export interface VpdbPlanCost {
-	category?: 0 | -1 | VpdbPlanTypeCost;
-	variation?: 0 | -1 | VpdbPlanVariationCost;
+	category?: number | VpdbPlanCategoryCost;
+	variation?: number;
 }
 
-export interface VpdbPlanVariationCost {
-	[key: string]: 0 | -1 | {
-		type: 0 | -1 | VpdbPlanTypeCost;
-	}
-}
-
-export interface VpdbPlanTypeCost {
+export interface VpdbPlanCategoryCost {
 	video: number;
 	image: number;
 	table: number;
 	'*': number;
+	[key: string]: number;
 }
 
 

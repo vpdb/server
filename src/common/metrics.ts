@@ -43,7 +43,7 @@ class Metrics {
 
 		const atm = await this.getGlobalMean(modelName);
 		const summary = await this.updateEntityMetrics(modelName, entity, atm);
-		const _atm = parseInt(await state.redis.getAsync(this.redisAtmKey));
+		const _atm = parseInt(await state.redis.get(this.redisAtmKey));
 		const precision = 100;
 		if (!_atm) {
 			// nothing set, update and go on.
@@ -131,7 +131,7 @@ class Metrics {
 	}
 
 	private async updateGlobalMean(atm: any) {
-		return state.redis.setAsync(this.redisAtmKey, atm);
+		return state.redis.set(this.redisAtmKey, atm);
 	};
 
 	private async updateAllEntities(modelName: string, atm: number) {

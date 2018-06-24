@@ -77,11 +77,11 @@ export abstract class Api {
 			await this.authorizeUser(ctx, ctx.state.user, resource, permission, scopes, planAttrs);
 
 			// now we're authorized, set dirty header if necessary
-			const result = await state.redis.getAsync('dirty_user_' + ctx.state.user.id);
+			const result = await state.redis.get('dirty_user_' + ctx.state.user.id);
 			if (result) {
 				logger.info('[Api.auth] User <%s> is dirty, telling him in header.', ctx.state.user.email);
 				ctx.set('X-User-Dirty', result);
-				await state.redis.delAsync('dirty_user_' + ctx.state.user.id);
+				await state.redis.del('dirty_user_' + ctx.state.user.id);
 			}
 			ctx.set('X-User-Dirty', '0');
 

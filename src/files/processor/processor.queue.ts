@@ -193,7 +193,7 @@ class ProcessorQueue {
 	public async deleteProcessingFile(file: File): Promise<void> {
 		const redisLock = 'queue:delete:' + file.id;
 		const promises: (() => Bluebird<any> | Promise<any>)[] = [];
-		await state.redis.setAsync(redisLock, '1');
+		await state.redis.set(redisLock, '1');
 		for (let queue of processorManager.getQueues(file)) {
 
 			// remove waiting jobs
@@ -221,7 +221,7 @@ class ProcessorQueue {
 		}
 		// noinspection JSIgnoredPromiseFromCall: do this in the background
 		Promise.all(promises.map(fn => fn()))
-			.then(() => state.redis.delAsync(redisLock))
+			.then(() => state.redis.del(redisLock))
 			.then(async () => {
 				const originalPath = file.getPath(null, { tmpSuffix: '_original' });
 				if (await existsAsync(originalPath)) {
@@ -267,7 +267,7 @@ class ProcessorQueue {
 				const variation = file.getVariation(job.data.destVariation);
 				const destPath = file.getPath(variation, { forceProtected: true });
 				if (changes.has(destPath)) {
-					await state.redis.setAsync('queue:rename:' + destPath, changes.get(destPath));
+					await state.redis.set('queue:rename:' + destPath, changes.get(destPath));
 					changes.delete(destPath);
 					numActiveJobs++;
 				}

@@ -17,21 +17,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Model, Document, Schema } from 'mongoose';
-import { RedisClient } from 'redis';
+import { Model, Document } from 'mongoose';
 import { upperFirst } from 'lodash';
+import IORedis from 'ioredis';
 
 import { Models } from './common/types/models';
 import { Serializers } from './common/types/serializers';
-import { logger } from './common/logger';
 import { config } from './common/settings';
 
-import Redis = require('redis');
-import Bluebird = require('bluebird');
-
-
-Bluebird.promisifyAll((Redis as any).RedisClient.prototype);
-Bluebird.promisifyAll((Redis as any).Multi.prototype);
 
 /**
  * A global state module that is accessible from anywhere.
@@ -55,7 +48,7 @@ class State {
 	/**
 	 * Promisified Redis client
 	 */
-	redis: RedisClient;
+	redis: IORedis.Redis;
 
 
 	constructor() {
@@ -74,12 +67,13 @@ class State {
 	}
 
 
-	private setupRedis(): RedisClient {
-		const redis = Redis.createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
-		redis.select(config.vpdb.redis.db);
-		// todo better error handling (use raygun)
-		redis.on('error', err => logger.error(err.message));
-		return redis;
+	private setupRedis(): IORedis.Redis {
+		return new IORedis({
+			port: config.vpdb.redis.port,
+			host: config.vpdb.redis.host,
+			family: 4,           // 4 (IPv4) or 6 (IPv6)
+			db: config.vpdb.redis.db
+		});
 	}
 }
 

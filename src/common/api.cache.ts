@@ -97,7 +97,7 @@ class ApiCache {
 
 		// retrieve the cached response
 		const key = this.getCacheKey(ctx);
-		const hit = await state.redis.getAsync(key);
+		const hit = await state.redis.get(key);
 
 		if (hit) {
 			const response = JSON.parse(hit) as CacheResponse;
@@ -118,7 +118,7 @@ class ApiCache {
 						await state.getModel<MetricsModel<MetricsDocument>>(counter.modelName).incrementCounter(counter.incrementCounter.getId(body), counter.incrementCounter.counter);
 					}
 				}
-				const values = refs.length > 0 ? (await state.redis.mgetAsync.apply(state.redis, refs.map(r => r.key))) : [];
+				const values = refs.length > 0 ? (await state.redis.mget.apply(state.redis, refs.map(r => r.key))) : [];
 				for (let i = 0; i < values.length; i++) {
 					if (values[i]) {
 						refs[i].counter.set(body, refs[i].c, { [refs[i].id]: parseInt(values[i]) });
@@ -205,7 +205,7 @@ class ApiCache {
 					refs.push(this.getUserKey(tag.user));
 				}
 				allRefs[i].push(refs);
-				const union = await state.redis.sunionAsync(...refs);
+				const union = await state.redis.sunion(...refs);
 				// logger.wtf('SUNION %s -> %s', refs.join(' '), union.join(','));
 				keys.push(union);
 			}
@@ -219,7 +219,7 @@ class ApiCache {
 		let n = 0;
 		for (const key of invalidationKeys) {
 			// logger.wtf('DEL %s', key);
-			await state.redis.delAsync(key);
+			await state.redis.del(key);
 			n++;
 		}
 		logger.debug('[ApiCache.invalidate]: Cleared %s caches in %sms.', n, Date.now() - now);
@@ -255,19 +255,19 @@ class ApiCache {
 		};
 
 		// set the cache todo set ttl to user caches
-		await state.redis.setAsync(key, JSON.stringify(response));
+		await state.redis.set(key, JSON.stringify(response));
 
 		// reference path
 		const toPath = pathToRegexp.compile(cacheRoute.path);
 		const refKey = this.getPathKey(toPath(ctx.params));
-		refs.push(() => state.redis.saddAsync(refKey, key));
+		refs.push(() => state.redis.sadd(refKey, key));
 		refKeys.push(refKey);
 
 		// reference resources
 		if (cacheRoute.config.resources) {
 			for (const resource of cacheRoute.config.resources) {
 				const refKey = this.getResourceKey(resource);
-				refs.push(() => state.redis.saddAsync(refKey, key));
+				refs.push(() => state.redis.sadd(refKey, key));
 				refKeys.push(refKey);
 			}
 		}
@@ -276,7 +276,7 @@ class ApiCache {
 		if (cacheRoute.config.entities) {
 			for (const entity of Object.keys(cacheRoute.config.entities)) {
 				const refKey = this.getEntityKey(entity, ctx.params[cacheRoute.config.entities[entity]]);
-				refs.push(() => state.redis.saddAsync(refKey, key));
+				refs.push(() => state.redis.sadd(refKey, key));
 				refKeys.push(refKey);
 			}
 		}
@@ -286,7 +286,7 @@ class ApiCache {
 			body = isObject(ctx.response.body) ? ctx.response.body : JSON.parse(ctx.response.body);
 			for (const entity of get(body, cacheRoute.config.children.entityField)) {
 				const refKey = this.getEntityKey(cacheRoute.config.children.modelName, get(entity, cacheRoute.config.children.idField));
-				refs.push(() => state.redis.saddAsync(refKey, key));
+				refs.push(() => state.redis.sadd(refKey, key));
 				refKeys.push(refKey);
 			}
 		}
@@ -294,7 +294,7 @@ class ApiCache {
 		// reference user
 		if (ctx.state.user) {
 			const refKey = this.getUserKey(ctx.state.user);
-			refs.push(() => state.redis.saddAsync(refKey, key));
+			refs.push(() => state.redis.sadd(refKey, key));
 			refKeys.push(refKey);
 		}
 
@@ -314,7 +314,7 @@ class ApiCache {
 				}
 			}
 			if (refPairs.length > 0) {
-				refs.push(() => state.redis.msetAsync.apply(state.redis, refPairs));
+				refs.push(() => state.redis.mset.apply(state.redis, refPairs));
 			}
 		}
 		await Promise.all(refs.map(ref => ref()));
@@ -333,9 +333,9 @@ class ApiCache {
 	public async incrementCounter(modelName: string, entityId: string, counterName: string, decrement: boolean) {
 		const key = this.getCounterKey(modelName, entityId, counterName);
 		if (decrement) {
-			await state.redis.decrAsync(key);
+			await state.redis.decr(key);
 		} else {
-			await state.redis.incrAsync(key);
+			await state.redis.incr(key);
 		}
 	}
 
@@ -398,11 +398,11 @@ class ApiCache {
 		await this.invalidate([{ resources: [modelName] }]);
 
 		// 2. invalidate entities
-		const entityRefs = await state.redis.keysAsync(this.getEntityKey(modelName, '*'));
+		const entityRefs = await state.redis.keys(this.getEntityKey(modelName, '*'));
 		if (entityRefs.length > 0) {
-			const keys = await state.redis.sunionAsync(entityRefs);
+			const keys = await state.redis.sunion(...entityRefs);
 			logger.verbose('[ApiCache.invalidateAllEntities] Clearing: %s', keys.join(', '));
-			await state.redis.delAsync(keys);
+			await state.redis.del(keys);
 		}
 	}
 
@@ -441,7 +441,7 @@ class ApiCache {
 	 * @return {Promise<number>} Number of invalidated caches
 	 */
 	private async deleteWildcard(wildcard:string): Promise<number> {
-		const num = await state.redis.evalAsync(
+		const num = await state.redis.eval(
 			'local keysToDelete = redis.call(\'keys\', ARGV[1]) ' + // find keys with wildcard
 			'if unpack(keysToDelete) ~= nil then ' +              // if there are any keys
 			'return redis.call(\'del\', unpack(keysToDelete)) ' +   // delete all

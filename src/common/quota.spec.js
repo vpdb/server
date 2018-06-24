@@ -52,14 +52,14 @@ describe.only('The quota engine of VPDB', () => {
 		it('should show the correct rate', async () => {
 			res = await api.as('member').get('/v1/profile').then(res => res.expectStatus(200));
 			expect(res.data.quota.unlimited).to.be(false);
-			expect(res.data.quota.period).to.be('day');
+			expect(res.data.quota.period).to.be(86400);
 			expect(res.data.quota.limit).to.be(3);
 			expect(res.data.quota.remaining).to.be(3);
-			expect(res.data.quota.reset).to.be(86400000);
+			expect(res.data.quota.reset).to.be(86400);
 
 			res = await api.as('unlimited').get('/v1/profile').then(res => res.expectStatus(200));
 			expect(res.data.quota.unlimited).to.be(true);
-			expect(res.data.quota.period).to.be('never');
+			expect(res.data.quota.period).to.be(0);
 			expect(res.data.quota.limit).to.be(0);
 			expect(res.data.quota.remaining).to.be(0);
 			expect(res.data.quota.reset).to.be(0);
@@ -140,6 +140,7 @@ describe.only('The quota engine of VPDB', () => {
 			expect(res.headers['x-ratelimit-limit']).to.be.ok();
 			expect(res.headers['x-ratelimit-remaining']).to.be.ok();
 			expect(res.headers['x-ratelimit-reset']).to.be.ok();
+			expect(res.headers['x-ratelimit-unlimited']).to.be.ok();
 
 			const limit = parseInt(res.headers['x-ratelimit-limit']);
 			const remaining = parseInt(res.headers['x-ratelimit-remaining']);

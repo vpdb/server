@@ -17,8 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import Bluebird = require('bluebird');
-import { isArray, isObject, isUndefined } from 'lodash';
+import { isArray, isObject, isUndefined, sum } from 'lodash';
 import { VpdbQuotaConfig } from './types/config';
 import { User } from '../users/user';
 import { Context } from 'context';
@@ -28,42 +27,76 @@ import { logger } from './logger';
 import { File} from '../files/file';
 import { FileVariation } from '../files/file.variations';
 import { FileDocument } from '../files/file.document';
-
-const quotaModule = require('volos-quota-redis');
+import { state } from '../state';
 
 export class Quota {
 
+	private readonly namespace = 'quota';
 	private readonly config: VpdbQuotaConfig = config.vpdb.quota;
-	private readonly quota: { [key: string]: any } = {};
+	//private readonly rateLimiter: { [key: string]: any } = {};
+	private readonly durations:Map<string, number> = new Map();
 
 	/**
 	 * Initializes quota plans
 	 */
 	constructor() {
 		logger.info('[Quota] Initializing quotas...');
-		let duration;
+
+		this.durations.set('minute', 60000);
+		this.durations.set('hour', this.durations.get('minute') * 60);
+		this.durations.set('day', this.durations.get('hour') * 24);
+		this.durations.set('week', this.durations.get('day') * 7);
+		this.durations.set('month', this.durations.get('day') * 31);
 
 		// we create a quota module for each duration
-		this.config.plans.forEach(plan => {
-			if (plan.unlimited === true) {
-				logger.info('[Quota] Skipping unlimited plan "%s".', plan.id);
-				return;
-			}
-			duration = plan.per;
-			if (!this.quota[duration]) {
-				logger.info('[Quota] Setting up quota per %s for plan %s...', duration, plan.id);
-				this.quota[duration] = quotaModule.create({
-					timeUnit: duration,
-					interval: 1,
-					host: config.vpdb.redis.host,
-					port: config.vpdb.redis.port,
-					db: config.vpdb.redis.db
-				});
-				Bluebird.promisifyAll(this.quota[duration]);
-			} else {
-				logger.info('[Quota] Not setting up plan %s because volos needs setups per duration and we already set up per %s.', plan.id, duration);
-			}
-		});
+		// this.config.plans.forEach(plan => {
+		// 	if (plan.unlimited === true) {
+		// 		logger.info('[Quota] Skipping unlimited plan "%s".', plan.id);
+		// 		return;
+		// 	}
+		// 	logger.info('[Quota] Setting up quota per %s for plan %s...', plan.per, plan.id);
+		// 	this.rateLimiter[plan.id] = new RateLimiter({
+		// 		db: state.redis,
+		// 		max: plan.credits,
+		// 		duration: this.durations.get(plan.per),
+		// 		namespace: this.namespace
+		// 	});
+		// });
+	}
+
+	private async apply(user:User, weight:number):Promise<UserQuota> {
+		let plan = user.planConfig;
+		/* istanbul ignore if: That's a configuration error. */
+		if (!plan) {
+			throw new ApiError('Unable to find plan "%s" for user.', user._plan);
+		}
+
+		const period = this.durations.get(plan.per);
+		const key = `${this.namespace}:${user.id}`;
+		const now = Date.now();
+		const member = JSON.stringify({ t: now, w: weight });
+
+		const res = await state.redis
+			.multi()
+			.zadd(key, String(now), member)  // add current
+			.zrange(key, 0, -1)        // get all
+			.exec();
+
+		const all = res[1][1];
+		let oldest:number;
+		if (all.length === 1) {
+			await state.redis.pexpire(key, period);
+			oldest = now;
+		} else {
+			oldest = JSON.parse(all[0]).t;
+		}
+		const count = sum(all.map((m:string) => JSON.parse(m).w));
+		return {
+			limit: plan.credits,
+			period: period,
+			remaining: count < plan.credits ? plan.credits - count : 0,
+			reset: Math.ceil((oldest + period) / 1000)
+		};
 	}
 
 	/**
@@ -73,9 +106,7 @@ export class Quota {
 	 * @return {Promise<UserQuota>} Remaining quota
 	 */
 	public async getCurrent(user: User): Promise<UserQuota> {
-
 		let plan = user.planConfig;
-
 		/* istanbul ignore if: That's a configuration error. */
 		if (!plan) {
 			throw new ApiError('Unable to find plan "%s" for user.', user._plan);
@@ -83,25 +114,31 @@ export class Quota {
 
 		// unlimited?
 		if (plan.unlimited === true) {
-			return { unlimited: true, limit: 0, period: 'never', remaining: 0, reset: 0 };
+			return { unlimited: true, limit: 0, period: 0, remaining: 0, reset: 0 };
 		}
-		// TODO fix when fixed: https://github.com/apigee-127/volos/issues/33
-		await this.quota[plan.per].applyAsync({
-			identifier: user.id,
-			weight: -2,
-			allow: plan.credits
-		});
-		const result = await this.quota[plan.per].applyAsync({
-			identifier: user.id,
-			weight: 2,
-			allow: plan.credits
-		});
+
+		const period = this.durations.get(plan.per);
+		const key = `${this.namespace}:${user.id}`;
+		const now = Date.now();
+
+		const range = await state.redis.zrange(key, 0, now);
+		let remaining, reset;
+		if (range.length === 0) {
+			remaining = plan.credits;
+			reset = period / 1000;
+		} else {
+			const count = sum(range.map((m:string) => JSON.parse(m).weight));
+			const oldest = JSON.parse(range[0]).t;
+			remaining = count < plan.credits ? plan.credits - count : 0;
+			reset = Math.ceil((oldest + period) / 1000);
+		}
+
 		return {
 			unlimited: false,
-			period: plan.per,
-			limit: result.allowed,
-			remaining: result.allowed - result.used,
-			reset: result.expiryTime
+			limit: plan.credits,
+			period: period / 1000,
+			remaining: remaining,
+			reset: reset
 		};
 	}
 
@@ -111,9 +148,9 @@ export class Quota {
 	 *
 	 * @param {Context} ctx Koa context
 	 * @param {File[]} files File(s) to check for
-	 * @return {Promise<boolean>} True if allowed, false otherwise.
+	 * @throws ApiError If not enough quota is left
 	 */
-	public async isAllowed(ctx: Context, files: File | File[]): Promise<boolean> {
+	public async assert(ctx: Context, files: File | File[]): Promise<void> {
 
 		if (!isArray(files)) {
 			files = [files];
@@ -127,43 +164,39 @@ export class Quota {
 
 		// allow unlimited plans
 		if (plan.unlimited === true) {
-			this.setHeader(ctx, 0, 0, 0, true);
-			return true;
+			this.setHeader(ctx, { limit: 0, remaining: 0, reset: 0, period: 0, unlimited: true });
+			return;
 		}
-
 		const sum = this.getTotalCost(files);
 
 		// don't even check quota if weight is 0
 		if (sum === 0) {
-			return true;
+			return;
 		}
 
-		// https://github.com/apigee-127/volos/tree/master/quota/common#quotaapplyoptions-callback
-		const result = await this.quota[plan.per].applyAsync({
-			identifier: ctx.state.user.id,
-			weight: sum,
-			allow: plan.credits
-		});
+		let quota = await this.getCurrent(ctx.state.user);
+		if (quota.remaining < sum) {
+			this.setHeader(ctx, quota);
+			throw new ApiError('Not enough quota left, requested %s of %s available. Try again in %sms.',
+				sum, quota.remaining, quota.reset).status(403);
+		}
 
-		this.setHeader(ctx, result.allowed, result.allowed - result.used, result.expiryTime, false);
-		return result.isAllowed;
+		quota = await this.apply(ctx.state.user, sum);
+		this.setHeader(ctx, quota);
 	}
 
 	/**
 	 * Sets the rate-limit header.
 	 *
 	 * @param {Context} ctx Koa context
-	 * @param {number} limit The daily quota
-	 * @param {number} remaining How much remains
-	 * @param {number} reset When it's reset
-	 * @param {boolean} unlimited True if no rate check applied
+	 * @param {UserQuota} quota Current user quota
 	 */
-	public setHeader(ctx: Context, limit:number, remaining:number, reset:number, unlimited:boolean = false) {
+	public setHeader(ctx: Context, quota:UserQuota) {
 		ctx.response.set({
-			'X-RateLimit-Limit': String(limit),
-			'X-RateLimit-Remaining': String(remaining),
-			'X-RateLimit-Reset': String(reset),
-			'X-RateLimit-Unlimited': String(unlimited),
+			'X-RateLimit-Limit': String(quota.limit),
+			'X-RateLimit-Remaining': String(quota.remaining),
+			'X-RateLimit-Reset': String(quota.reset),
+			'X-RateLimit-Unlimited': String(!!quota.unlimited),
 		});
 	}
 
@@ -248,10 +281,25 @@ export class Quota {
 }
 
 export interface UserQuota {
-	unlimited: boolean;
-	period: string;
+	/**
+	 * True if no quota is applied, false otherwise.
+	 */
+	unlimited?: boolean;
+	/**
+	 * Current duration, in seconds
+	 */
+	period: number;
+	/**
+	 * Number of total credits during a period
+	 */
 	limit: number;
+	/**
+	 * Remaining credits of the current period
+	 */
 	remaining: number;
+	/**
+	 * How long until period ends, in seconds.
+	 */
 	reset: number
 }
 

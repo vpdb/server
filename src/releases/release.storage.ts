@@ -367,20 +367,19 @@ export class ReleaseStorage extends Api {
 		}
 
 		// check the quota
-		let granted: boolean;
 		if (!dryRun) {
-			granted = await quota.isAllowed(ctx, requestedFiles);
-		} else {
-			granted = await quota.getCurrent(ctx.state.user).then(q => q.unlimited || quota.getTotalCost(requestedFiles) <= q.remaining);
-		}
+			await quota.assert(ctx, requestedFiles);
 
-		if (!granted) {
-			throw new ApiError('Not enough quota left.').status(403);
+		} else {
+			const q = await quota.getCurrent(ctx.state.user);
+			if (!q.unlimited && quota.getTotalCost(requestedFiles) > q.remaining) {
+				throw new ApiError('Not enough quota left.').status(403);
+			}
 		}
 
 		// update counters
 		if (!dryRun) {
-			await Promise.all(counters);
+			await Promise.all(counters.map(p => p()));
 		}
 
 		return [release, requestedFiles];

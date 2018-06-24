@@ -270,7 +270,7 @@ export class ProcessorWorker {
 	 * @return {Promise<boolean>} True if the file was deleted, false otherwise.
 	 */
 	private static async isFileDeleted(file:File):Promise<boolean> {
-		return !!(await state.redis.getAsync('queue:delete:' + file.id));
+		return !!(await state.redis.get('queue:delete:' + file.id));
 	}
 
 	/**
@@ -282,7 +282,7 @@ export class ProcessorWorker {
 	 * @return {Promise<string | null>} Path to new destination or null if no rename
 	 */
 	private static async isFileRenamed(path:string, what:string):Promise<string|null> {
-		const newPath = await state.redis.getAsync('queue:rename:' + path);
+		const newPath = await state.redis.get('queue:rename:' + path);
 		if (newPath) {
 			logger.info('[ProcessorWorker.%s] Activation rename from %s to %s', what, FileUtil.log(path), FileUtil.log(newPath));
 			return newPath;

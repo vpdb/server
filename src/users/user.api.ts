@@ -356,8 +356,8 @@ export class UserApi extends Api {
 		// 6. if changer is not changed user, mark user as dirty
 		if (!ctx.state.user._id.equals(user._id)) {
 			logger.info('[UserApi.update] Marking user <%s> as dirty.', user.email);
-			await state.redis.setAsync('dirty_user_' + user.id, String(new Date().getTime()));
-			await state.redis.expireAsync('dirty_user_' + user.id, 10000);
+			await state.redis.set('dirty_user_' + user.id, String(new Date().getTime()));
+			await state.redis.expire('dirty_user_' + user.id, 10000);
 		}
 		return this.success(ctx, state.serializers.User.detailed(ctx, user), 200);
 	}

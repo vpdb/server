@@ -33,38 +33,27 @@ export class Quota {
 
 	private readonly namespace = 'quota';
 	private readonly config: VpdbQuotaConfig = config.vpdb.quota;
-	//private readonly rateLimiter: { [key: string]: any } = {};
 	private readonly durations:Map<string, number> = new Map();
 
 	/**
 	 * Initializes quota plans
 	 */
 	constructor() {
-		logger.info('[Quota] Initializing quotas...');
-
 		this.durations.set('minute', 60000);
 		this.durations.set('hour', this.durations.get('minute') * 60);
 		this.durations.set('day', this.durations.get('hour') * 24);
 		this.durations.set('week', this.durations.get('day') * 7);
 		this.durations.set('month', this.durations.get('day') * 31);
-
-		// we create a quota module for each duration
-		// this.config.plans.forEach(plan => {
-		// 	if (plan.unlimited === true) {
-		// 		logger.info('[Quota] Skipping unlimited plan "%s".', plan.id);
-		// 		return;
-		// 	}
-		// 	logger.info('[Quota] Setting up quota per %s for plan %s...', plan.per, plan.id);
-		// 	this.rateLimiter[plan.id] = new RateLimiter({
-		// 		db: state.redis,
-		// 		max: plan.credits,
-		// 		duration: this.durations.get(plan.per),
-		// 		namespace: this.namespace
-		// 	});
-		// });
 	}
 
-	private async apply(user:User, weight:number):Promise<UserQuota> {
+	/**
+	 * Consumes a quota and returns the user's updated quota config.
+	 *
+	 * @param {User} user User to consume quota for
+	 * @param {number} weight How much to consume
+	 * @return {Promise<UserQuota>} Updated quota after consumption
+	 */
+	private async consume(user:User, weight:number):Promise<UserQuota> {
 		let plan = user.planConfig;
 		/* istanbul ignore if: That's a configuration error. */
 		if (!plan) {
@@ -79,21 +68,23 @@ export class Quota {
 		const res = await state.redis
 			.multi()
 			.zadd(key, String(now), member)  // add current
-			.zrange(key, 0, -1)        // get all
+			.zrange(key, 0, -1)   // get all
 			.exec();
 
 		const all = res[1][1];
+		const count = sum(all.map((m:string) => JSON.parse(m).w));
 		let oldest:number;
 		if (all.length === 1) {
 			await state.redis.pexpire(key, period);
 			oldest = now;
+			logger.info('[Quota.consume] New period starting with %s remaining credits after consuming %s.', plan.credits - count, weight);
 		} else {
 			oldest = JSON.parse(all[0]).t;
+			logger.info('[Quota.consume] Existing period updated with %s remaining credits after consuming %s.', plan.credits - count, weight);
 		}
-		const count = sum(all.map((m:string) => JSON.parse(m).w));
 		return {
 			limit: plan.credits,
-			period: period,
+			period: period / 1000,
 			remaining: count < plan.credits ? plan.credits - count : 0,
 			reset: Math.ceil((oldest + period) / 1000)
 		};
@@ -105,7 +96,7 @@ export class Quota {
 	 * @param {User} user User
 	 * @return {Promise<UserQuota>} Remaining quota
 	 */
-	public async getCurrent(user: User): Promise<UserQuota> {
+	public async get(user: User): Promise<UserQuota> {
 		let plan = user.planConfig;
 		/* istanbul ignore if: That's a configuration error. */
 		if (!plan) {
@@ -126,11 +117,13 @@ export class Quota {
 		if (range.length === 0) {
 			remaining = plan.credits;
 			reset = period / 1000;
+			logger.info('[Quota.get] No active period, full credits apply.');
 		} else {
-			const count = sum(range.map((m:string) => JSON.parse(m).weight));
+			const count = sum(range.map((m:string) => JSON.parse(m).w));
 			const oldest = JSON.parse(range[0]).t;
 			remaining = count < plan.credits ? plan.credits - count : 0;
 			reset = Math.ceil((oldest + period) / 1000);
+			logger.info('[Quota.get] Active period started %ss ago, %s credits remaining.', (now - oldest) / 1000, remaining);
 		}
 
 		return {
@@ -174,14 +167,14 @@ export class Quota {
 			return;
 		}
 
-		let quota = await this.getCurrent(ctx.state.user);
+		let quota = await this.get(ctx.state.user);
 		if (quota.remaining < sum) {
 			this.setHeader(ctx, quota);
-			throw new ApiError('Not enough quota left, requested %s of %s available. Try again in %sms.',
+			throw new ApiError('No more quota left, requested %s of %s available. Try again in %ss.',
 				sum, quota.remaining, quota.reset).status(403);
 		}
 
-		quota = await this.apply(ctx.state.user, sum);
+		quota = await this.consume(ctx.state.user, sum);
 		this.setHeader(ctx, quota);
 	}
 

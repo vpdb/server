@@ -45,7 +45,7 @@ export class ProfileApi extends Api {
 	public async view(ctx: Context) {
 
 		const acls = await this.getACLs(ctx.state.user);
-		const q = await quota.getCurrent(ctx.state.user);
+		const q = await quota.get(ctx.state.user);
 		return this.success(ctx, assign(state.serializers.User.detailed(ctx, ctx.state.user), acls, { quota: q }), 200);
 	}
 

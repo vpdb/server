@@ -26,10 +26,11 @@ import { EndPoint } from './common/api.endpoint';
 import { config, settings } from './common/settings'
 import { koaLogger } from './common/middleware/logger.middleware';
 import { koaAuth } from './common/middleware/authentication.middleware';
-import { koaErrorHandler } from './common/middleware/error.handler.middleware';
+import { handleParseError, koaErrorHandler } from './common/middleware/error.handler.middleware';
 import { koa404Handler } from './common/middleware/notfound.handler.middleware';
 import { logger } from './common/logger';
 import { apiCache } from './common/api.cache';
+import { koaRestHandler } from './common/middleware/rest.middleware';
 
 const koaResponseTime = require('koa-response-time');
 const koaCors = require('@koa/cors');
@@ -41,9 +42,10 @@ export class Server {
 	constructor() {
 		this.app = new Application();
 		this.app.use(koaLogger());
-		this.app.use(koaBodyParser());
 		this.app.use(koaResponseTime());
+		this.app.use(koaBodyParser({ onerror: handleParseError }));
 		this.app.use(koaErrorHandler());
+		this.app.use(koaRestHandler());
 		this.app.use(koaAuth());
 		this.app.use(koaCors());
 		this.app.use(koaJson({ pretty: false, param: 'pretty' }));

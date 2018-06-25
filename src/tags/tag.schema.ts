@@ -51,7 +51,7 @@ tagSchema.path('name').validate((name:any) =>  {
 }, 'Name must contain at least two characters.');
 
 tagSchema.path('name').validate(async (name:any) =>  {
-	const tag = state.models.Tag.findOne({ name: name }).exec();
+	const tag = await state.models.Tag.findOne({ name: name }).exec();
 	return !tag;
 }, 'The {PATH} "{VALUE}" is already taken.');
 

@@ -23,6 +23,7 @@ import chalk from 'chalk';
 import { Context } from '../types/context';
 import { logger } from '../logger';
 import { ApiError, ApiValidationError } from '../api.error';
+import { Error } from 'tslint/lib/error';
 
 /**
  * Gracefully handles errors.
@@ -42,11 +43,11 @@ export function koaErrorHandler() {
 			if (err.isApiError) {
 				(err as ApiError).respond(ctx);
 
-				// validation error from mongoose
+			// validation error from mongoose
 			} else if (err.name === 'ValidationError') {
 				new ApiError('Validation failed.').validationErrors(getValidationErrors(err)).warn().respond(ctx);
 
-				// unexpected errors
+			// unexpected errors
 			} else {
 				ctx.response.status = 500;
 				ctx.response.body = { error: 'Internal server error. Sorry about that, we will get a mail about this and fix it ASAP.' };
@@ -72,6 +73,10 @@ export function koaErrorHandler() {
 			}
 		}
 	}
+}
+
+export function handleParseError(err: Error, ctx: Context) {
+	ctx.throw('Parsing error: ' + err.message, 400);
 }
 
 function getValidationErrors(err: any): ApiValidationError[] {

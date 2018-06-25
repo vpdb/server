@@ -76,30 +76,22 @@ export class TagApi extends Api {
 	 */
 	public async del(ctx: Context) {
 
-		let canDelete: boolean;
-		const canGloballyDelete = await acl.isAllowed(ctx.state.user.id, 'tags', 'delete');
-		if (!canGloballyDelete) {
-			canDelete = await acl.isAllowed(ctx.state.user.id, 'tags', 'delete-own');
-		} else {
-			canDelete = true;
-		}
-		if (!canDelete) {
-			throw new ApiError('You cannot delete tags.').status(401).log();
-		}
 		const tag = await state.models.Tag.findById(ctx.params.id).exec();
 		// tag must exist
 		if (!tag) {
 			throw new ApiError('No such tag with ID "%s".', ctx.params.id).status(404);
 		}
 
-		// only allow deleting own tags
-		if (!canGloballyDelete && (!tag._created_by || !(tag._created_by as Types.ObjectId).equals(ctx.state.user._id))) {
+		// only allow deleting unowned tags if ACL given
+		const canGloballyDeleteTags = await acl.isAllowed(ctx.state.user.id, 'tags', 'delete');
+		if (!canGloballyDeleteTags && (!tag._created_by || !(tag._created_by as Types.ObjectId).equals(ctx.state.user._id))) {
 			throw new ApiError('Permission denied, must be owner.').status(403).log();
 		}
+
 		// todo check if there are references
 		await tag.remove();
 
-		logger.info('[api|tag:delete] Tag "%s" (%s) successfully deleted.', tag.name, tag._id);
+		logger.info('[TagApi.del] Tag "%s" (%s) successfully deleted.', tag.name, tag._id);
 		return this.success(ctx, null, 204);
 	}
 }

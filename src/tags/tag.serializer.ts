@@ -39,6 +39,7 @@ export class TagSerializer extends Serializer<Tag> {
 		return tag;
 	}
 
+	/* istanbul ignore next */
 	protected _detailed(ctx: Context, doc: Tag, opts: SerializerOptions): Tag {
 		return this._simple(ctx, doc, opts);
 	}

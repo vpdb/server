@@ -62,6 +62,19 @@ class ApiClientResult {
 	}
 
 	/**
+	 * Asserts that the returned body contains a given string
+	 * @param string
+	 * @return {ApiClientResult}
+	 */
+	expectBody(string) {
+		if (!this.response.data.toLowerCase().includes(string.toLowerCase())) {
+			console.log(this._logResponse());
+			throw new Error('Expected body to contain "' + string + '" but received "' + this.response.data + '".');
+		}
+		return this;
+	}
+
+	/**
 	 * Expects that the returned error message contains a given string.
 	 * Note that the check is case-insensitive.
 	 * @param {number} status Status code

@@ -19,7 +19,7 @@
 
 import { cloneDeep, difference, extend, intersection, isArray, isUndefined, keys, pick } from 'lodash';
 import { inspect } from 'util';
-import { Schema } from 'mongoose';
+import { Types } from 'mongoose';
 
 import { state } from '../state';
 import { Context } from '../common/types/context';
@@ -283,7 +283,7 @@ export class BackglassApi extends Api {
 			throw new ApiError('No such backglass with ID "%s".', ctx.params.id).status(404);
 		}
 		// only allow deleting own roms
-		if (!canDelete && !(backglass._created_by as Schema.Types.ObjectId).equals(ctx.state.user._id)) {
+		if (!canDelete && !(backglass._created_by as Types.ObjectId).equals(ctx.state.user._id)) {
 			throw new ApiError('Permission denied, must be owner.').status(403);
 		}
 		// remove from db

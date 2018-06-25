@@ -17,13 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { FileReferenceDocument, GameReferenceDocument, PrettyIdDocument, Schema } from 'mongoose';
+import { FileReferenceDocument, GameReferenceDocument, PrettyIdDocument, Types } from 'mongoose';
 import { File } from '../files/file';
 import { User } from '../users/user';
 
 export interface Rom extends GameReferenceDocument, PrettyIdDocument, FileReferenceDocument {
 	id: string;
-	_file: File | Schema.Types.ObjectId;
+	_file: File | Types.ObjectId;
 	_ipdb_number: number;
 	rom_files: {
 		filename: string;
@@ -35,7 +35,7 @@ export interface Rom extends GameReferenceDocument, PrettyIdDocument, FileRefere
 	languages: string[];
 	notes: string;
 	created_at: Date;
-	_created_by: User | Schema.Types.ObjectId;
+	_created_by: User | Types.ObjectId;
 
 	// serialized
 	file: File;

@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { FileReferenceDocument, MetricsDocument, PrettyIdDocument, Schema } from 'mongoose';
+import { FileReferenceDocument, MetricsDocument, PrettyIdDocument, Types } from 'mongoose';
 
 import { User } from '../users/user';
 import { Game } from '../games/game';
@@ -28,10 +28,10 @@ export interface Medium extends PrettyIdDocument, FileReferenceDocument, Metrics
 
 	// from model
 	id: string;
-	_file: File | Schema.Types.ObjectId;
+	_file: File | Types.ObjectId;
 	_ref: {
-		game?: Game | Schema.Types.ObjectId;
-		release?: Release | Schema.Types.ObjectId;
+		game?: Game | Types.ObjectId;
+		release?: Release | Types.ObjectId;
 	},
 	category: string;
 	description: string;
@@ -40,7 +40,7 @@ export interface Medium extends PrettyIdDocument, FileReferenceDocument, Metrics
 		stars: number;
 	},
 	created_at: Date;
-	_created_by: User | Schema.Types.ObjectId;
+	_created_by: User | Types.ObjectId;
 
 	// serialized
 	file?: File;

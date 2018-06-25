@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Schema } from 'mongoose';
+import { Schema, Types } from 'mongoose';
 import { assign, pick } from 'lodash';
 
 import { state } from '../state';
@@ -186,7 +186,7 @@ export class GameRequestApi extends Api {
 		}
 
 		// only allow deleting own game requests
-		if (!canDelete && !(gameRequest._created_by as Schema.Types.ObjectId).equals(ctx.state.user._id)) {
+		if (!canDelete && !(gameRequest._created_by as Types.ObjectId).equals(ctx.state.user._id)) {
 			throw new ApiError('Permission denied, must be owner.').status(403);
 		}
 		// remove from db

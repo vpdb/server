@@ -23,7 +23,7 @@ import {
 	MetricsDocument,
 	ModeratedDocument,
 	PrettyIdDocument,
-	Schema
+	Types
 } from 'mongoose';
 import { User } from '../users/user';
 import { BackglassVersion } from './backglass.version';
@@ -39,7 +39,7 @@ export interface Backglass extends ModeratedDocument, GameReferenceDocument, Pre
 		stars: number;
 	};
 	created_at: Date;
-	_created_by: User | Schema.Types.ObjectId;
+	_created_by: User | Types.ObjectId;
 
 	// serialized
 	created_by: User;

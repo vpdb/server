@@ -29,7 +29,7 @@ import { Game } from '../games/game';
 import { logger } from '../common/logger';
 import { LogEventUtil } from '../log-event/log.event.util';
 import { acl } from '../common/acl';
-import { Schema } from 'mongoose';
+import { Schema, Types } from 'mongoose';
 
 export class RomApi extends Api {
 
@@ -218,7 +218,7 @@ export class RomApi extends Api {
 		}
 
 		// only allow deleting own roms
-		if (!canDelete && !(rom._created_by as Schema.Types.ObjectId).equals(ctx.state.user._id)) {
+		if (!canDelete && !(rom._created_by as Types.ObjectId).equals(ctx.state.user._id)) {
 			throw new ApiError('Permission denied, must be owner.').status(403);
 		}
 

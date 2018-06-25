@@ -17,14 +17,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { Types } from 'mongoose';
 import { extend } from 'lodash';
+
 import { Api } from '../common/api';
 import { Context } from '../common/types/context';
 import { state } from '../state';
 import { logger } from '../common/logger';
 import { ApiError } from '../common/api.error';
 import { acl } from '../common/acl';
-import { Schema } from 'mongoose';
 
 export class MediumApi extends Api {
 
@@ -86,7 +87,7 @@ export class MediumApi extends Api {
 		}
 
 		// only allow deleting own roms
-		if (!canDelete && !(medium._created_by as Schema.Types.ObjectId).equals(ctx.state.user._id)) {
+		if (!canDelete && !(medium._created_by as Types.ObjectId).equals(ctx.state.user._id)) {
 			throw new ApiError('Permission denied, must be owner.').status(403);
 		}
 		// remove from db

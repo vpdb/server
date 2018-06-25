@@ -475,19 +475,6 @@ export interface VpdbConfig {
 		 */
 		path: string;
 	}
-
-	/**
-	 * Web application-specific options.
-	 */
-	webapp: {
-		/**
-		 * Google Analytics
-		 */
-		ga: {
-			enabled: boolean,
-			id: string
-		}
-	}
 }
 
 export interface VpdbIpsConfig {
@@ -601,33 +588,3 @@ export interface VpdbPlanCategoryCost {
 	'*': number;
 	[key: string]: number;
 }
-
-
-
-// export test = {
-// costs: {
-// 	'backglass': {
-// 		category: { video: 1, image: 0 },
-// 		variation: -1
-// 	},
-// 	'logo': {
-// 		category: 0,
-// 		variation: -1 },                             // original logo: free, any variation: public
-// 	'playfield-fs': {
-// 		category: { video: 1, image: 0 },
-// 		variation: -1
-// 	},
-// 	'playfield-ws': {
-// 		category: { video: 1, image: 0 },
-// 		variation: {
-// 			medium: {
-// 				type: { image: 1 }
-// 			},
-// 			'*': -1
-// 		}
-// 	},
-// 	'release': {
-// 		category: { table: 1, '*': 0 }
-// 	},                      // any type or variation: 1 credit
-// 	'rom': 0
-// }}

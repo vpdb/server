@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document, Schema } from 'mongoose';
+import { Document, Types } from 'mongoose';
 import { File } from '../files/file';
 import { Release } from './release';
 import { Game } from '../games/game';
@@ -29,7 +29,7 @@ export interface TableBlock extends Document {
 	bytes: number,
 	type: 'image' | 'sound' | 'gameitem' | 'collection',
 	meta: any,
-	_files?: File[] | Schema.Types.ObjectId[]
+	_files?: File[] | Types.ObjectId[]
 }
 
 export interface TableBlockMatchResult extends TableBlockBase {

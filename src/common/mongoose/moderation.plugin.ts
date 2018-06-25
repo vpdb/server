@@ -408,7 +408,7 @@ declare module 'mongoose' {
 	export interface ModeratedDocument extends Document {
 
 		moderation: ModerationData;
-		_created_by: User | Schema.Types.ObjectId;
+		_created_by: User | Types.ObjectId;
 		created_by?: User;
 
 		/**
@@ -475,7 +475,7 @@ declare module 'mongoose' {
 			event: 'approved' | 'refused' | 'pending';
 			message?: string;
 			created_at: Date;
-			_created_by?: User | Schema.Types.ObjectId;
+			_created_by?: User | Types.ObjectId;
 			created_by?: User;
 		}[]
 	}

@@ -17,26 +17,25 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { FileReferenceDocument, PrettyIdDocument, Schema } from 'mongoose';
+import { FileReferenceDocument, PrettyIdDocument, Schema, Types } from 'mongoose';
 import { File } from '../files/file';
 import { User } from '../users/user';
 import { Build } from '../builds/build';
-import { releaseVersionSchema } from './release.version.schema';
 
 export interface ReleaseVersionFile extends FileReferenceDocument, PrettyIdDocument {
 	// model
-	_file: File | Schema.Types.ObjectId;
+	_file: File | Types.ObjectId;
 	flavor: ReleaseFileFlavor;
 	validation: {
 		status: string; // todo type
 		message: string;
 		validated_at: Date;
-		_validated_by?: User | Schema.Types.ObjectId;
+		_validated_by?: User | Types.ObjectId;
 		validated_by?: User;
 	};
-	_compatibility: Build[] | Schema.Types.ObjectId[];
-	_playfield_image?: File | Schema.Types.ObjectId;
-	_playfield_video?: File | Schema.Types.ObjectId;
+	_compatibility: Build[] | Types.ObjectId[];
+	_playfield_image?: File | Types.ObjectId;
+	_playfield_video?: File | Types.ObjectId;
 	released_at: Date | string;
 	counter: {
 		downloads: number;

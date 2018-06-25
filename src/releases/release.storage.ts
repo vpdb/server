@@ -18,8 +18,9 @@
  */
 
 import { createReadStream } from 'fs';
-import { extname, basename } from 'path';
-import { isUndefined, isArray, intersection, sortBy } from 'lodash';
+import { basename, extname } from 'path';
+import { intersection, isArray, isUndefined, sortBy } from 'lodash';
+import { Types } from 'mongoose';
 import unzip from 'unzip';
 import archiver, { Archiver } from 'archiver';
 
@@ -36,7 +37,6 @@ import { ReleaseVersionFile } from './release.version.file';
 import { ApiError } from '../common/api.error';
 import { quota } from '../common/quota';
 import { state } from '../state';
-import { Schema } from 'mongoose';
 import { fileTypes } from '../files/file.types';
 
 const Unrar = require('unrar');
@@ -354,7 +354,7 @@ export class ReleaseStorage extends Api {
 			if (!backglass) {
 				throw new ApiError('Could not find backglass with id %s.', body.backglass).status(422);
 			}
-			if (!(backglass._game as Schema.Types.ObjectId).equals(release._game._id)) {
+			if (!(backglass._game as Types.ObjectId).equals(release._game._id)) {
 				throw new ApiError('Backglass is not the same game as release.', body.backglass).status(422);
 			}
 			let file = sortBy(backglass.versions, v => -v.released_at)[0]._file;

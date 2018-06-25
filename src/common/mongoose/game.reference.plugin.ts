@@ -216,7 +216,7 @@ declare module 'mongoose' {
 		/**
 		 * Game reference or populated object
 		 */
-		_game?: Game | Schema.Types.ObjectId;
+		_game?: Game | Types.ObjectId;
 
 		/**
 		 * Serialized game
@@ -231,7 +231,7 @@ declare module 'mongoose' {
 		 */
 		isRestricted(): boolean;
 
-		_created_by?: User | Schema.Types.ObjectId;
+		_created_by?: User | Types.ObjectId;
 		authors?: ContentAuthor[];
 	}
 

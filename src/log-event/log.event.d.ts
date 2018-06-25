@@ -16,7 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-import { Document, Schema } from 'mongoose';
+import { Document, Types } from 'mongoose';
 import { User } from '../users/user';
 import { Game } from '../games/game';
 import { Release } from '../releases/release';
@@ -25,14 +25,14 @@ import { GameRequest } from '../game-requests/game.request';
 import { Build } from '../builds/build';
 
 export interface LogEvent extends Document {
-	_actor: User | Schema.Types.ObjectId;
+	_actor: User | Types.ObjectId;
 	_ref: {
-		game?: Game | Schema.Types.ObjectId;
-		release?: Release | Schema.Types.ObjectId;
-		backglass?: Backglass | Schema.Types.ObjectId;
-		user?: User | Schema.Types.ObjectId;
-		game_request?: GameRequest | Schema.Types.ObjectId;
-		build?: Build | Schema.Types.ObjectId;
+		game?: Game | Types.ObjectId;
+		release?: Release | Types.ObjectId;
+		backglass?: Backglass | Types.ObjectId;
+		user?: User | Types.ObjectId;
+		game_request?: GameRequest | Types.ObjectId;
+		build?: Build | Types.ObjectId;
 	},
 	event: string;
 	payload: any;

@@ -21,7 +21,7 @@ import gm from 'gm';
 import { exists } from 'fs';
 import { inspect, promisify } from 'util';
 import { assign, cloneDeep, defaults, difference, extend, intersection, isArray, isUndefined, keys, orderBy, pick } from 'lodash';
-import { Schema } from 'mongoose';
+import { Types } from 'mongoose';
 
 import { state } from '../state';
 import { Api } from '../common/api';
@@ -811,7 +811,7 @@ export class ReleaseApi extends Api {
 		}
 
 		// only allow deleting own files (for now)
-		if (!(release._created_by as Schema.Types.ObjectId).equals(ctx.state.user._id)) {
+		if (!(release._created_by as Types.ObjectId).equals(ctx.state.user._id)) {
 			throw new ApiError('Permission denied, must be owner.').status(403);
 		}
 

@@ -27,7 +27,7 @@ import { File } from '../file';
 import { FileVariation, ImageFileVariation } from '../file.variations';
 import { visualPinballTable } from '../../common/visualpinball.table';
 import { state } from '../../state';
-import { Schema } from 'mongoose';
+import { Types } from 'mongoose';
 import { TableBlock } from '../../releases/release.tableblock';
 
 export class VptBlockindexProcessor implements OptimizationProcessor<ImageFileVariation> {
@@ -63,7 +63,7 @@ export class VptBlockindexProcessor implements OptimizationProcessor<ImageFileVa
 
 		// update available blocks
 		for (let block of dbBlocks) {
-			(block._files as Schema.Types.ObjectId[]).push(file._id);
+			(block._files as Types.ObjectId[]).push(file._id);
 			block._files = uniqWith(block._files, VptBlockindexProcessor.objectIdCompare);
 			await block.save();
 		}

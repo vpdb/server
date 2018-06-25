@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { FileReferenceDocument, MetricsDocument, PrettyIdDocument, Schema } from 'mongoose';
+import { FileReferenceDocument, MetricsDocument, PrettyIdDocument, Schema, Types } from 'mongoose';
 import { Mpu } from '../common/ipdb';
 import { File } from '../files/file';
 import { User } from '../users/user';
@@ -32,8 +32,8 @@ export interface Game extends FileReferenceDocument, MetricsDocument, PrettyIdDo
 	year: number;
 	manufacturer: string;
 	game_type: 'ss' | 'em' | 'pm' | 'og' | 'na';
-	_backglass?: File | Schema.Types.ObjectId;
-	_logo?: File | Schema.Types.ObjectId;
+	_backglass?: File | Types.ObjectId;
+	_logo?: File | Types.ObjectId;
 	short?: string[];
 	description?: string;
 	instructions?: string;
@@ -71,7 +71,7 @@ export interface Game extends FileReferenceDocument, MetricsDocument, PrettyIdDo
 	};
 	modified_at?: Date;
 	created_at?: Date;
-	_created_by?: User | Schema.Types.ObjectId;
+	_created_by?: User | Types.ObjectId;
 
 	// serialized
 	backglass?: File;

@@ -18,7 +18,7 @@
  */
 
 import { assign, cloneDeep, pick } from 'lodash';
-import { Schema } from 'mongoose';
+import { Schema, Types } from 'mongoose';
 
 import { state } from '../state';
 import { Api } from '../common/api';
@@ -153,7 +153,7 @@ export class BuildApi extends Api {
 
 		// only allow deleting own builds
 		const canGloballyDeleteBuilds = await acl.isAllowed(ctx.state.user.id, 'builds', 'delete');
-		if (!canGloballyDeleteBuilds && (!build._created_by || !(build._created_by as Schema.Types.ObjectId).equals(ctx.state.user._id))) {
+		if (!canGloballyDeleteBuilds && (!build._created_by || !(build._created_by as Types.ObjectId).equals(ctx.state.user._id))) {
 			throw new ApiError('Permission denied, must be owner.').status(403).log();
 		}
 

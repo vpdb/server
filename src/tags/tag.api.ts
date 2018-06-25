@@ -18,7 +18,7 @@
  */
 
 import { extend } from 'lodash';
-import { Schema } from 'mongoose';
+import { Types } from 'mongoose';
 
 import { state } from '../state';
 import { Api } from '../common/api';
@@ -93,7 +93,7 @@ export class TagApi extends Api {
 		}
 
 		// only allow deleting own tags
-		if (!canGloballyDelete && (!tag._created_by || !(tag._created_by as Schema.Types.ObjectId).equals(ctx.state.user._id))) {
+		if (!canGloballyDelete && (!tag._created_by || !(tag._created_by as Types.ObjectId).equals(ctx.state.user._id))) {
 			throw new ApiError('Permission denied, must be owner.').status(403).log();
 		}
 		// todo check if there are references

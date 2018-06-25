@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { MetricsDocument, Schema } from 'mongoose';
+import { MetricsDocument, Types } from 'mongoose';
 import { User } from '../users/user';
 import { FileVariation } from './file.variations';
 
@@ -33,7 +33,7 @@ export interface File extends MetricsDocument {
 	is_active: boolean;
 	counter: { [T in FileCounterType]: number; };
 	created_at: Date;
-	_created_by: User | Schema.Types.ObjectId;
+	_created_by: User | Types.ObjectId;
 
 	cost?: number;
 	url?: string;

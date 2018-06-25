@@ -16,7 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-import { Schema, PrettyIdModel } from 'mongoose';
+import { Schema, PrettyIdModel, Types } from 'mongoose';
 import { compact, filter, flatten, isArray, isEqual, keys, map, uniq } from 'lodash';
 
 import { fileReferencePlugin } from '../common/mongoose/file.reference.plugin';
@@ -160,7 +160,7 @@ async function validateFile(release: Release, tableFile: ReleaseVersionFile, ind
 	if (!isArray(tableFile._compatibility) || !tableFile._compatibility.length) {
 		// TODO check if exists.
 		release.invalidate('files.' + index + '._compatibility', 'At least one build must be provided.', tableFile._compatibility);
-	} else if (tableFile._compatibility.length !== uniq((tableFile._compatibility as Schema.Types.ObjectId[]).map(c => c.toString())).length) {
+	} else if (tableFile._compatibility.length !== uniq((tableFile._compatibility as Types.ObjectId[]).map(c => c.toString())).length) {
 		release.invalidate('files.' + index + '._compatibility', 'Cannot link a build multiple times.', tableFile._compatibility);
 	}
 

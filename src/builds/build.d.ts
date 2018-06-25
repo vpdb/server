@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document, Schema } from 'mongoose';
+import { Document, Types } from 'mongoose';
 import { User } from '../users/user';
 
 export interface Build extends Document {
@@ -33,7 +33,7 @@ export interface Build extends Document {
 	is_range: boolean;
 	is_active: boolean;
 	created_at: Date;
-	_created_by: Schema.Types.ObjectId | User;
+	_created_by: Types.ObjectId | User;
 
 	// serialized
 	created_by: User;

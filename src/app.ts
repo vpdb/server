@@ -20,7 +20,7 @@
 import mongoose from 'mongoose';
 
 import { server } from './server';
-import { config } from './common/settings';
+import { config, settings } from './common/settings';
 import { init as initAcls } from './common/acl';
 import { logger } from './common/logger';
 import { EndPoint } from './common/api.endpoint';
@@ -55,6 +55,11 @@ shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 (async () => {
 	try {
 		logger.info('[app] Starting up...');
+
+		// validate settings
+		if (!settings.validate()) {
+			throw new Error('Settings validation failed.');
+		}
 
 		const endPoints: EndPoint[] = [
 			new AuthenticationEndPoint(),

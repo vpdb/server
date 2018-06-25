@@ -22,8 +22,7 @@ import { isAbsolute, resolve } from 'path';
 import { isArray, isFunction, isObject, isUndefined, keys } from 'lodash';
 import { VpdbConfig } from './types/config';
 import { logger } from './logger';
-
-const validators = require('./settings.validator');
+import { setttingValidations } from './settings.validator';
 
 export class Settings {
 
@@ -53,7 +52,7 @@ export class Settings {
 	 */
 	validate() {
 		logger.info('[Settings.validate] Validating settings at %s', this.filePath);
-		return this._validate(validators, this.current, '');
+		return this._validate(setttingValidations, this.current, '');
 	}
 
 	/**
@@ -77,7 +76,7 @@ export class Settings {
 					logger.error('[Settings.validate] %s [KO]: Setting is missing.', p);
 					success = false;
 				} else {
-					validationError = validation[s](setting[s], setting, settings);
+					validationError = validation[s](setting[s], setting, this.current);
 					if (!validationError) {
 						logger.info('[Settings.validate] %s [OK]', p);
 					} else {
@@ -116,7 +115,7 @@ export class Settings {
 					success = false;
 
 				} else if (!this._validate(validation[s], setting[s], path + '.' + s)) {
-					//logger.error('[settings] %s failed', path);
+					//logger.error('[Settings.validate] %s failed', path);
 					success = false;
 				}
 			}

@@ -21,7 +21,6 @@ import { includes } from 'lodash';
 import { MetricsModel, Schema } from 'mongoose';
 
 import { state } from '../state';
-import { storage } from '../common/storage';
 import { metricsPlugin } from '../common/mongoose/metrics.plugin';
 import { mimeTypeNames } from './file.mimetypes';
 import { File, FilePathOptions } from './file';
@@ -29,6 +28,7 @@ import { fileTypes } from './file.types';
 import { FileVariation } from './file.variations';
 import { processorQueue } from './processor/processor.queue';
 import { FileDocument } from './file.document';
+import { FileUtil } from './file.util';
 
 const shortId = require('shortid32');
 
@@ -166,7 +166,7 @@ fileSchema.post('remove', async function (obj: File) {
 	await processorQueue.deleteProcessingFile(obj);
 
 	// remove physical file
-	await storage.remove(obj);
+	await FileUtil.remove(obj);
 
 	// remove table blocks
 	await state.models.TableBlock.update(

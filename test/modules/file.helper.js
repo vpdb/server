@@ -28,6 +28,8 @@ const rar = resolve(__dirname, '../../data/test/files/dmd.rar');
 const zip = resolve(__dirname, '../../data/test/files/dmd.zip');
 const vpt = resolve(__dirname, '../../data/test/files/empty.vpt');
 const vpt2 = resolve(__dirname, '../../data/test/files/table.vpt');
+const mp4 = resolve(__dirname, '../../data/test/files/afm.f4v');
+const avi = resolve(__dirname, '../../data/test/files/afm.avi');
 
 class FileHelper {
 
@@ -89,8 +91,8 @@ class FileHelper {
 	/**
 	 * Uploads a backglass image.
 	 *
-	 * @param user Uploader
-	 * @param opts Options
+	 * @param {user|string} user Uploader
+	 * @param {object} [opts] Options
 	 * @param {boolean} [opts.keep=false] If true, don't teardown.
 	 * @return Promise<File> Uploaded file
 	 */
@@ -141,6 +143,48 @@ class FileHelper {
 			.then(res => res.expectStatus(201));
 		return res.data;
 	}
+
+	async createTextfile(user) {
+		const res = await this.api.onStorage()
+			.as(user)
+			.markTeardown()
+			.withQuery({ type: 'release' })
+			.withContentType('text/plain')
+			.withHeader('Content-Disposition', 'attachment; filename="README.txt"')
+			.post('/v1/files', 'You are looking at a text file generated during a test.')
+			.then(res => res.expectStatus(201));
+		return res.data;
+	}
+
+	async createMp4(user) {
+		const data = readFileSync(mp4);
+		const res = await this.api.onStorage()
+			.as(user)
+			.markTeardown()
+			.withQuery({ type: 'playfield-fs' })
+			.withContentType('video/mp4')
+			.withHeader('Content-Disposition', 'attachment; filename="playfield.mp4"')
+			.withHeader('Content-Length', data.length)
+			.post('/v1/files', data)
+			.then(res => res.expectStatus(201));
+		return res.data;
+	}
+
+	async createAvi(user) {
+		const data = readFileSync(avi);
+		const res = await this.api.onStorage()
+			.as(user)
+			.markTeardown()
+			.withQuery({ type: 'playfield-fs' })
+			.withContentType('video/avi')
+			.withHeader('Content-Disposition', 'attachment; filename="playfield.avi"')
+			.withHeader('Content-Length', data.length)
+			.post('/v1/files', data)
+			.then(res => res.expectStatus(201));
+		return res.data;
+	}
+
+
 
 	/**
 	 * Uploads a VPT file.

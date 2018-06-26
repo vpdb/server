@@ -72,7 +72,7 @@ export class GameApi extends Api {
 	 */
 	public async create(ctx: Context) {
 
-		const game = await state.models.Game.getInstance(assign(ctx.request.body, {
+		let game = await state.models.Game.getInstance(assign(ctx.request.body, {
 			_created_by: ctx.state.user._id,
 			created_at: new Date()
 		})) as Game;

@@ -237,7 +237,7 @@ class ProcessorQueue {
 	 * Moves files to the public directory.
 	 *
 	 * Active jobs get flagged through Redis resulting in the worker moving
-	 * he file to the public location after processing.
+	 * the file to the public location after processing.
 	 *
 	 * Since variation creation is based on a copy of the source, we can safely
 	 * move the source of the original (or variation source) even if there are

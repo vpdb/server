@@ -176,7 +176,7 @@ class ApiClient {
 	 * The user must have been created with either {@link setupUsers} or
 	 * {@link createUser}.
 	 *
-	 * @param {string|{token:string}} user User reference or user with populated `token`.
+	 * @param {object|string|{token:string}} user User reference or user with populated `token`.
 	 * @return {ApiClient}
 	 */
 	as(user) {

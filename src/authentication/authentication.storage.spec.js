@@ -40,14 +40,14 @@ describe('The authentication engine of the VPDB storage API', () => {
 
 		it('should fail when not authenticated', async () => {
 			await api
-				.on('storage')
+				.onStorage()
 				.post('/v1/authenticate')
 				.then(res => res.expectStatus(401));
 		});
 
 		it('should fail when providing no path', async () => {
 			await api
-				.on('storage')
+				.onStorage()
 				.as('member')
 				.post('/v1/authenticate')
 				.then(res => res.expectValidationError('paths', 'must provide the paths'));
@@ -55,7 +55,7 @@ describe('The authentication engine of the VPDB storage API', () => {
 
 		it('should succeed when providing one path', async () => {
 			res = await api
-				.on('storage')
+				.onStorage()
 				.as('member')
 				.post('/v1/authenticate', { paths: '/' })
 				.then(res => res.expectStatus(200));
@@ -64,7 +64,8 @@ describe('The authentication engine of the VPDB storage API', () => {
 
 		it('should succeed when providing multiple path', async () => {
 			res = await api
-				.on('storage')
+				.onStorage()
+				.save('auth/storage')
 				.as('member')
 				.post('/v1/authenticate', { paths: ['/foo', '/bar'] })
 				.then(res => res.expectStatus(200));
@@ -74,7 +75,7 @@ describe('The authentication engine of the VPDB storage API', () => {
 
 		it('should succeed when providing a complete url', async () => {
 			res = await api
-				.on('storage')
+				.onStorage()
 				.as('member')
 				.post('/v1/authenticate', { paths: ['/bar', 'http://foo/bar'] })
 				.then(res => res.expectStatus(200));

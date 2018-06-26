@@ -67,7 +67,7 @@ export class VideoScreenshotProcessor implements CreationProcessor<VideoFileVari
 					logger.debug('[VideoScreenshotProcessor] Processing: %s% at %skbps', progress.percent, progress.currentKbps);
 				})
 				.on('end', () => {
-					logger.debug('[VideoScreenshotProcessor] Transcoding succeeded after %dms, written to %s', new Date().getTime() - started, dest);
+					logger.debug('[VideoScreenshotProcessor] Transcoding succeeded after %dms, written to %s', Date.now() - started, dest);
 					resolve(dest);
 				})
 				.save(dest);

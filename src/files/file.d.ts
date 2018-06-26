@@ -131,7 +131,7 @@ export interface File extends MetricsDocument {
 	/**
 	 * Switches a files from inactive to active and moves it to the public folder if necessary.
 	 *
-	 * @see [[FileDocument.switchToActive]] for implementation
+	 * This is the only method implemented directly in the schema.
 	 * @return {Promise<File>} Moved file
 	 */
 	switchToActive(): Promise<File>;

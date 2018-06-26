@@ -18,15 +18,13 @@
  */
 
 import { Scope } from '../common/scope';
-import { FileApi } from './file.api';
 import { FileStorage } from './file.storage';
 
-const api = new FileApi();
 const storage = new FileStorage();
-export const protectedRouter = api.storageRouter(true);
-export const publicRouter = api.storageRouter(false);
+export const protectedRouter = storage.storageRouter(true);
+export const publicRouter = storage.storageRouter(false);
 
-protectedRouter.post('/v1/files',                  api.auth(api.upload.bind(api), 'files', 'upload', [ Scope.ALL ]));
+protectedRouter.post('/v1/files',                  storage.auth(storage.upload.bind(storage), 'files', 'upload', [ Scope.ALL ]));
 protectedRouter.head('/files/:id.:ext',            storage.auth(storage.head.bind(storage), 'files', 'download', [ Scope.ALL ]));
 protectedRouter.head('/files/:variation/:id.:ext', storage.auth(storage.head.bind(storage), 'files', 'download', [ Scope.ALL ]));
 protectedRouter.get('/files/:id.:ext',             storage.auth(storage.get.bind(storage), 'files', 'download', [ Scope.ALL ]));

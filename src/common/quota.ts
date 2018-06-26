@@ -221,6 +221,14 @@ export class Quota {
 	 */
 	getCost(file: File, variation: FileVariation = null): number {
 
+		// if already set, return directly.
+		if (!variation && !isUndefined(file.cost)) {
+			return file.cost;
+		}
+		if (variation && file.variations && file.variations[variation.name] && !isUndefined(file.variations[variation.name].cost)) {
+			return file.variations[variation.name].cost;
+		}
+
 		/* istanbul ignore if: Should not happen if configured correctly */
 		if (!file.file_type) {
 			logger.error(require('util').inspect(file));
@@ -231,6 +239,7 @@ export class Quota {
 		// undefined file_types are free
 		if (isUndefined(cost)) {
 			logger.warn('[Quota.getCost] Undefined cost for file_type "%s".', file.file_type);
+			file.cost = 0;
 			return 0;
 		}
 
@@ -240,44 +249,56 @@ export class Quota {
 
 		// if a variation is demanded and cost contains variation def, ignore the rest.
 		if (variation) {
+			let variationCost:number;
 			// EVERY VARIATION costs n credits. Example: { costs: { backglass: { variation: -1 } } }
 			if (costObj) {
 				if (!isUndefined(costObj.variation)) {
-					return costObj.variation;
+					variationCost = costObj.variation;
 				} else {
 					logger.warn('[Quota.getCost] No cost defined for %s file of variation %s and no fallback given, returning 0.', file.file_type, variation.name);
-					return 0;
+					variationCost = 0;
 				}
 			} else {
 				logger.warn('[Quota.getCost] No cost defined for %s file of any variation returning default cost %s.', file.file_type, cost);
-				return cost as number;
+				variationCost = cost as number;
 			}
+			// save this for next time
+			if (file.variations && file.variations[variation.name]) {
+				file.variations[variation.name].cost = costObj.variation;
+			}
+			return variationCost;
 		}
 
 		// EVERY file (incl variation) costs n credits. Example: { costs: { rom: 0 } }
 		if (!costObj) {
-			return cost as number;
+			file.cost = cost as number;
+			return file.cost;
 		}
 		// ORIGINAL file costs n credits. Example: { costs: { logo: { category: 0 } } }
 		if (!costCategoryObj) {
 			if (!isUndefined(costObj.category)) {
-				return costObj.category as number;
+				file.cost = costObj.category as number;
+				return file.cost;
 
 			} else {
 				// warn if nothing is set, i.e the 'category' prop isn't defined but the original cost is still an object
 				logger.warn('[Quota.getCost] No cost defined for %s file (type is undefined).', file.file_type, FileDocument.getMimeCategory(file, variation));
+				file.cost = 0;
 				return 0;
 			}
 		}
 		// ORIGINAL file for a given mime type costs n credits. Example: { costs: { release: { category: { table: 1, '*': 0 } } } }
 		const costCategory = costCategoryObj[FileDocument.getMimeCategory(file, variation)];
 		if (!isUndefined(costCategory)) {
+			file.cost = costCategory;
 			return costCategory;
 		}
 		if (!isUndefined(costCategoryObj['*'])) {
+			file.cost = costCategoryObj['*'];
 			return costCategoryObj['*'];
 		}
 		logger.warn('[Quota.getCost] No cost defined for %s file of type %s and no fallback given, returning 0.', file.file_type, FileDocument.getMimeCategory(file, variation));
+		file.cost = 0;
 		return 0;
 	}
 }

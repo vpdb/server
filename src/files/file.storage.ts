@@ -19,6 +19,7 @@
 
 import { createReadStream, stat, Stats } from 'fs';
 import { promisify } from 'util';
+import Busboy from 'busboy';
 
 import { state } from '../state';
 import { Api } from '../common/api';
@@ -26,12 +27,49 @@ import { Context } from '../common/types/context';
 import { quota } from '../common/quota';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
-import { File } from './file';
 import { processorQueue } from './processor/processor.queue';
+import { File } from './file';
+import { FileUtil } from './file.util';
+import { mimeTypeNames } from './file.mimetypes';
 
 const statAsync = promisify(stat);
 
+/**
+ * This deals with uploading and downloading files.
+ *
+ * When run on a separate server, this should be the only active API.
+ */
 export class FileStorage extends Api {
+
+	/**
+	 * End-point for uploading files. Data can be sent either as entire body or
+	 * as multipart, although only one file is allowed in a multipart body.
+	 *
+	 * @see POST /v1/files
+	 * @param {Application.Context} ctx Koa context
+	 */
+	public async upload(ctx: Context) {
+
+		// fail if no content type
+		if (!ctx.get('content-type')) {
+			throw new ApiError('Header "Content-Type" must be provided.').status(422);
+		}
+
+		// fail if no file type
+		if (!ctx.query.type) {
+			throw new ApiError('Query parameter "type" must be provided.').status(422);
+		}
+
+		// stream either directly from req or use a multipart parser
+		let file: File;
+		if (/multipart\/form-data/i.test(ctx.get('content-type'))) {
+			file = await this.handleMultipartUpload(ctx);
+		} else {
+			file = await this.handleRawUpload(ctx);
+		}
+		return this.success(ctx, state.serializers.File.detailed(ctx, file), 201);
+	}
+
 
 	/**
 	 * Downloads a single file.
@@ -70,6 +108,97 @@ export class FileStorage extends Api {
 
 		const [file] = await this.find(ctx);
 		return this.serve(ctx, file, ctx.params.variation, true);
+	}
+
+	/**
+	 * Handles uploaded data posted as-is with a content type
+	 *
+	 * @param {Context} ctx Koa context
+	 * @return {Promise<File>}
+	 */
+	private async handleRawUpload(ctx: Context): Promise<File> {
+
+		if (!ctx.get('content-disposition')) {
+			throw new ApiError('Header "Content-Disposition" must be provided.').status(422);
+		}
+		if (!/filename=([^;]+)/i.test(ctx.get('content-disposition'))) {
+			throw new ApiError('Header "Content-Disposition" must contain file name.').status(422);
+		}
+		const validMimeTypes = [...mimeTypeNames, 'multipart/form-data' ];
+		if (!validMimeTypes.includes(ctx.get('content-type'))) {
+			throw new ApiError('Invalid "Content-Type" header "%s". Valid content types are: [ %s ]. You can also post multi-part binary data using "multipart/form-data".',
+				ctx.get('content-type'), mimeTypeNames.join(', ')).status(422);
+		}
+		const filename = ctx.get('content-disposition').match(/filename=([^;]+)/i)[1].replace(/(^"|^'|"$|'$)/g, '');
+		logger.info('[FileApi.handleRawUpload] Starting file upload of "%s"...', filename);
+		const fileData = {
+			name: filename,
+			bytes: ctx.get('content-length') || 0,
+			variations: {},
+			created_at: new Date(),
+			mime_type: ctx.get('content-type'),
+			file_type: ctx.query.type,
+			_created_by: ctx.state.user._id
+		};
+
+		return FileUtil.create(fileData as File, ctx.req);
+	}
+
+	/**
+	 * Handles uploaded data posted as multipart.
+	 * @param {Application.Context} ctx Koa context
+	 * @returns {Promise<File>}
+	 */
+	private async handleMultipartUpload(ctx: Context): Promise<File> {
+
+		if (!ctx.query.content_type) {
+			throw new ApiError('Mime type must be provided as query parameter "content_type" when using multipart.').status(422);
+		}
+
+		if (!mimeTypeNames.includes(ctx.query.content_type)) {
+			throw new ApiError('Invalid "Content-Type" parameter "%s". Valid content types are: [ %s ].', ctx.query.content_type).status(422);
+		}
+
+		let err:ApiError;
+		const busboy = new Busboy({ headers: ctx.request.headers });
+		const parseResult = new Promise<File>((resolve, reject) => {
+			let numFiles = 0;
+			busboy.on('file', (fieldname, stream, filename) => {
+				numFiles++;
+				if (numFiles > 1) {
+					err = new ApiError('Multipart requests must only contain one file.').code('too_many_files').status(422);
+					stream.resume();
+					return;
+				}
+				logger.info('[FileApi.handleMultipartUpload] Starting file (multipart) upload of "%s"', filename);
+				const fileData = {
+					name: filename,
+					bytes: 0,
+					variations: {},
+					created_at: new Date(),
+					mime_type: ctx.query.content_type,
+					file_type: ctx.query.type,
+					_created_by: ctx.state.user._id
+				};
+				FileUtil.create(fileData as File, stream)
+					.then(file => resolve(file))
+					.catch(reject);
+			});
+		});
+
+		const parseMultipart = new Promise((resolve, reject) => {
+			busboy.on('finish', resolve);
+			busboy.on('error', reject);
+			ctx.req.pipe(busboy);
+		});
+
+		const results = await Promise.all([parseResult, parseMultipart]);
+		if (err) {
+			logger.warn('[FileApi.handleMultipartUpload] Removing %s', results[0].toShortString());
+			await results[0].remove();
+			throw err;
+		}
+		return results[0];
 	}
 
 	/**
@@ -142,11 +271,15 @@ export class FileStorage extends Api {
 		let stats: Stats;
 		try {
 			stats = await statAsync(path);
+			// variation creation has already begun but not finished
 			if (stats.size === 0) {
+				logger.info('[FileStorage.serve] Waiting for %s to finish', file.toShortString());
 				await processorQueue.waitForVariationCreation(file, variation);
 				stats = await statAsync(path);
 			}
 		} catch (err) {
+			// statAsync failed, no file at all yet.
+			logger.info('[FileStorage.serve] Waiting for %s to start (and finish)', file.toShortString());
 			await processorQueue.waitForVariationCreation(file, variation);
 			stats = await statAsync(path);
 		}
@@ -174,15 +307,11 @@ export class FileStorage extends Api {
 			});
 		}
 
+		logger.info('[FileStorage.serve] Started serving %s.', file.toShortString());
 		await new Promise((resolve, reject) => {
 			// create read stream
 			let readStream;
-			// if (file.isLocked()) {
-			// 	logger.warn('[FileStorage.serve] File is being processed, loading file into memory in order to free up file handle rapidly (%s).', file.getPath());
-			// 	readStream = new BufferStream(fs.readFileSync(filePath));
-			// } else {
 			readStream = createReadStream(path);
-			//}
 
 			// configure stream
 			readStream.on('error', err => {

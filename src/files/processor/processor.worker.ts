@@ -111,7 +111,7 @@ export class ProcessorWorker {
 				await FileUtil.mkdirp(dirname(finalPath));
 			}
 			await renameAsync(destPath, finalPath);
-			logger.debug('[ProcessorWorker.processJob] [%s | #%s] done: %s at %s', data.processor, job.id, file.toDetailedString(variation), FileUtil.log(finalPath));
+			logger.debug('[ProcessorWorker.create] [%s | #%s] done: %s at %s', data.processor, job.id, file.toDetailedString(variation), FileUtil.log(finalPath));
 
 			// continue with dependents (and fresh data)
 			file = await state.models.File.findOne({ id: data.fileId }).exec();
@@ -229,38 +229,38 @@ export class ProcessorWorker {
 	 * now they are available.
 	 *
 	 * @param {File} file File
-	 * @param {FileVariation} variation Created variation
+	 * @param {FileVariation} createdVariation Created variation
 	 */
-	private static async continueCreation(file:File, variation:FileVariation) {
+	private static async continueCreation(file:File, createdVariation:FileVariation) {
 
 		// send direct references to creation queue (with a copy)
-		const directlyDependentVariations = file.getDirectVariationDependencies(variation);
-		for (let dependentVariation of directlyDependentVariations) {
-			const processor = processorManager.getValidCreationProcessor(file, variation, dependentVariation);
+		const dependentVariations = file.getDirectVariationDependencies(createdVariation);
+		for (let dependentVariation of dependentVariations) {
+			const processor = processorManager.getValidCreationProcessor(file, createdVariation, dependentVariation);
 			if (processor) {
-				const srcPath = file.getPath(variation, { tmpSuffix: '_' + dependentVariation.name + '.source' });
-				const destPath = file.getPath(variation, { tmpSuffix: '_' + processor.name + '.processing' });
-				await FileUtil.cp(file.getPath(variation), srcPath);
-				await processorManager.queueFile('creation', processor, file, srcPath, destPath, variation, dependentVariation);
+				const srcPath = file.getPath(createdVariation, { tmpSuffix: '_' + dependentVariation.name + '.source' });
+				const destPath = file.getPath(dependentVariation, { tmpSuffix: '_' + processor.name + '.processing' });
+				await FileUtil.cp(file.getPath(createdVariation), srcPath);
+				await processorManager.queueCreation(processor, file, srcPath, destPath, createdVariation, dependentVariation);
 			} else {
 				logger.error('[ProcessorWorker.continueCreation] Cannot find a processor for %s which is dependent on %s.',
-					file.toShortString(dependentVariation), file.toShortString(variation));
+					file.toShortString(dependentVariation), file.toShortString(createdVariation));
 			}
 		}
-		if (directlyDependentVariations.length) {
+		if (dependentVariations.length) {
 			logger.debug('[ProcessorWorker.continueCreation] Found [ %s ] as direct references for %s, passed them to creation processors.',
-				directlyDependentVariations.map(v => v.name).join(', '), file.toShortString(variation));
+				dependentVariations.map(v => v.name).join(', '), file.toShortString(createdVariation));
 		}
 
 		// send variation to optimization queue.
 		let n = 0;
-		for (let processor of processorManager.getValidOptimizationProcessors(file, variation)) {
+		for (let processor of processorManager.getValidOptimizationProcessors(file, createdVariation)) {
 			n++;
-			const destPath = file.getPath(null, { tmpSuffix: '_' + processor.name + '.processing' });
-			await processorManager.queueFile('optimization', processor, file, file.getPath(variation), destPath, variation);
+			const destPath = file.getPath(createdVariation, { tmpSuffix: '_' + processor.name + '.processing' });
+			await processorManager.queueOptimization(processor, file, file.getPath(createdVariation), destPath, createdVariation);
 		}
 		logger.debug('[ProcessorWorker.continueCreation] Passed %s to optimization %s processor(s).',
-			file.toShortString(variation), n);
+			file.toShortString(createdVariation), n);
 	}
 
 	/**

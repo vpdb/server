@@ -30,6 +30,7 @@ shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 const ApiClient = require('../../test/modules/api.client');
 const FileHelper = require('../../test/modules/file.helper');
 const GameHelper = require('../../test/modules/game.helper');
+const ReleaseHelper = require('../../test/modules/release.helper');
 
 const api = new ApiClient();
 const fileHelper = new FileHelper(api);
@@ -44,7 +45,7 @@ describe('The VPDB `file` storage API', () => {
 	before(async () => {
 		await api.setupUsers({
 			member: { roles: [ 'member' ]},
-			moderator: { roles: [ 'moderator' ]},
+			moderator: { roles: [ 'moderator' ], _plan: 'subscribed'},
 			contributor: { roles: [ 'contributor' ]},
 			anothermember: { roles: [ 'member' ]}
 		});
@@ -246,29 +247,25 @@ describe('The VPDB `file` storage API', () => {
 			await Promise.all(reqs.map(r => r()));
 		});
 
-		// it('should block a video variation with a different MIME type until processing is finished', async () => {
-		// 	hlp.file.createAvi('moderator', request, function(video) {
-		// 		request.get(hlp.urlPath(video.variations['small-rotated'].url)).as('moderator').end(function(err, res) {
-		// 			hlp.expectStatus(err, res, 200);
-		// 			hlp.doomFile('moderator', video.id);
-		// 			expect(res.headers['content-length']).to.be.greaterThan(0);
-		// 			done();
-		// 		});
-		// 	});
-		// });
-		//
-		// it('should block HEAD of a video variation with a different MIME type until processing is finished', async () => {
-		// 	hlp.file.createAvi('moderator', request, function(video) {
-		// 		request.head(hlp.urlPath(video.variations['small-rotated'].url)).as('moderator').end(function(err, res) {
-		// 			hlp.expectStatus(err, res, 200);
-		// 			hlp.doomFile('moderator', video.id);
-		// 			expect(res.headers['content-length']).to.be('0');
-		// 			expect(res.text).to.not.be.ok();
-		// 			done();
-		// 		});
-		// 	});
-		// });
+		it('should block a video variation with a different MIME type until processing is finished', async () => {
+			const video = await fileHelper.createAvi('moderator');
+			res = await api
+				.as('moderator')
+				.getAbsolute(video.variations['small-rotated'].url)
+				.then(res => res.expectStatus(200));
+			expect(res.headers['content-length']).to.be.greaterThan(0);
+			expect(res.data.length).to.be.greaterThan(0);
+		});
 
+		it('should block HEAD of a video variation with a different MIME type until processing is finished', async () => {
+			const video = await fileHelper.createAvi('moderator');
+			res = await api
+				.as('moderator')
+				.headAbsolute(video.variations['small-rotated'].url)
+				.then(res => res.expectStatus(200));
+			expect(res.headers['content-length']).to.be('0');
+			expect(res.data.length).to.be(0);
+		});
 	});
 
 	describe('when downloading an active file', () => {
@@ -285,6 +282,16 @@ describe('The VPDB `file` storage API', () => {
 
 		it('should succeed downloading the file as a logged user', async () => {
 			res = await api.onStorage().as('anothermember').getAbsolute(activeFile.url).then(res => res.expectStatus(200));
+			expect(res.data.length).to.be.greaterThan(100);
+		});
+
+		it('should succeed downloading using a storage token', async () => {
+			const token = await api.retrieveStorageToken('contributor', activeFile.url);
+			res = await api
+				.onStorage()
+				.withQuery({ token: token })
+				.getAbsolute(activeFile.url)
+				.then(res => res.expectStatus(200));
 			expect(res.data.length).to.be.greaterThan(100);
 		});
 

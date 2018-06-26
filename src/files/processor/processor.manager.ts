@@ -124,9 +124,13 @@ class ProcessorManager {
 				processors.push(processor);
 			}
 		}
+		/* istanbul ignore if: Configuration error */
 		if (processors.length === 0) {
+			logger.warn('[ProcessorManager.getValidCreationProcessor] No creation processor found for %s to %s.',
+				file.toDetailedString(srcVariation), file.toDetailedString(destVariation));
 			return null;
 		}
+		/* istanbul ignore if: Configuration error */
 		if (processors.length > 1) {
 			throw new ApiError('Configuration error, found %s creation processors for %s to %s: %s',
 				processors.length, file.toDetailedString(srcVariation), file.toDetailedString(destVariation), processors.map(p => p.name).join(', '));
@@ -208,38 +212,61 @@ class ProcessorManager {
 	}
 
 	/**
-	 * Adds a file to the corresponding queue for processing.
+	 * Adds a file to the creation queue for processing.
 	 *
-	 * @param {ProcessorQueueType} type Which queue type to add
 	 * @param {Processor<any>} processor Processor to use
 	 * @param {string} srcPath Path to source file
 	 * @param {string} destPath Path to destination file
 	 * @param {File} file File to process
-	 * @param {FileVariation} srcVariation Source variation (or null for optimizing original)
-	 * @param {FileVariation} destVariation Destination variation (or null for optimization)
+	 * @param {FileVariation} srcVariation Source variation
+	 * @param {FileVariation} destVariation Destination variation
 	 * @returns {Promise<Job>} Added Bull job
 	 */
-	public async queueFile(type: ProcessorQueueType, processor: Processor<any>, file: File, srcPath: string, destPath: string, srcVariation?: FileVariation, destVariation?: FileVariation): Promise<Job> {
-		const queue = this.queues.get(type).get(file.getMimeCategory(srcVariation));
+	public async queueCreation(processor: Processor<any>, file: File, srcPath: string, destPath: string, srcVariation: FileVariation, destVariation: FileVariation): Promise<Job> {
+		const queue = this.queues.get('creation').get(file.getMimeCategory(destVariation));
 		const job = await queue.add({
 			fileId: file.id,
 			processor: processor.name,
 			srcPath: srcPath,
 			destPath: destPath,
 			srcVariation: srcVariation ? srcVariation.name : undefined,
-			destVariation: destVariation ? destVariation.name : undefined
+			destVariation: destVariation.name
 		} as JobData, {
-			priority: processor.getOrder(destVariation || srcVariation),
+			priority: processor.getOrder(destVariation),
 			// removeOnComplete: true,
 			// removeOnFail: true
 		} as JobOptions);
-		if (destVariation) {
-			logger.debug('[ProcessorManager.createJob] Added %s based on %s to %s queue with processor %s (%s).',
-				file.toDetailedString(destVariation), file.toDetailedString(srcVariation), type, processor.name, job.id);
-		} else {
-			logger.debug('[ProcessorManager.createJob] Added %s to %s queue with processor %s (%s).',
-				file.toDetailedString(srcVariation), type, processor.name, job.id);
-		}
+		logger.debug('[ProcessorManager.queueCreation] Added %s based on %s to creation queue with processor %s (%s).',
+			file.toDetailedString(destVariation), file.toDetailedString(srcVariation), processor.name, job.id);
+		return job;
+	}
+
+	/**
+	 * Adds a file to the optimization queue for processing.
+	 *
+	 * @param {Processor<any>} processor Processor to use
+	 * @param {string} srcPath Path to source file
+	 * @param {string} destPath Path to destination file
+	 * @param {File} file File to process
+	 * @param {FileVariation} variation Variation to optimize
+	 * @returns {Promise<Job>} Added Bull job
+	 */
+	public async queueOptimization(processor: Processor<any>, file: File, srcPath: string, destPath: string, variation?: FileVariation): Promise<Job> {
+		const queue = this.queues.get('optimization').get(file.getMimeCategory(variation));
+		const job = await queue.add({
+			fileId: file.id,
+			processor: processor.name,
+			srcPath: srcPath,
+			destPath: destPath,
+			srcVariation: variation ? variation.name : undefined,
+			destVariation: variation ? variation.name : undefined
+		} as JobData, {
+			priority: processor.getOrder(variation),
+			// removeOnComplete: true,
+			// removeOnFail: true
+		} as JobOptions);
+		logger.debug('[ProcessorManager.queueOptimization] Added %s to optimization queue with processor %s (%s).',
+			file.toDetailedString(variation), processor.name, job.id);
 		return job;
 	}
 }

@@ -96,7 +96,7 @@ class ProcessorQueue {
 				const tmpSrcPath = file.getPath(null, { tmpSuffix: '_' + variation.name + '.source' });
 				const destPath = file.getPath(variation, { tmpSuffix: '_' + processor.name + '.processing' });
 				await FileUtil.cp(srcPath, tmpSrcPath);
-				await processorManager.queueFile('creation', processor, file, tmpSrcPath, destPath, null, variation);
+				await processorManager.queueCreation(processor, file, tmpSrcPath, destPath, null, variation);
 				n++;
 			}
 		}
@@ -104,7 +104,7 @@ class ProcessorQueue {
 		// add original to optimization queue
 		for (let processor of processorManager.getValidOptimizationProcessors(file)) {
 			const destPath = file.getPath(null, { tmpSuffix: '_' + processor.name + '.processing' });
-			await processorManager.queueFile('optimization', processor, file, srcPath, destPath);
+			await processorManager.queueOptimization(processor, file, srcPath, destPath);
 			n++;
 		}
 
@@ -124,6 +124,7 @@ class ProcessorQueue {
 
 		// fail fast if no jobs running
 		const hasJob = await this.hasRemainingCreationJob(file, variation);
+		/* istanbul ignore if: Configuration error, this means either wrong queue or non-existent variation, which should have been caught earlier. */
 		if (!hasJob) {
 			throw new ApiError('There is currently no creation job for %s running.', file.toShortString(variation));
 		}
@@ -353,21 +354,21 @@ class ProcessorQueue {
 	/**
 	 * Compares two fileIds and variation names and returns true if they match.
 	 * @param jobData Job data to compare
-	 * @param {string} fileId2
-	 * @param {string} variation2
+	 * @param {string} fileId
+	 * @param {string} variation
 	 * @return {boolean}
 	 */
-	private static isSame(jobData: JobData, fileId2: string, variation2: string): boolean {
+	private static isSame(jobData: JobData, fileId: string, variation: string): boolean {
 		// if file ID doesn't match, ignore.
-		if (jobData.fileId !== fileId2) {
+		if (jobData.fileId !== fileId) {
 			return false;
 		}
 		// if variation given and no match, ignore.
-		if (jobData.destVariation && jobData.destVariation !== variation2) {
+		if (jobData.destVariation && jobData.destVariation !== variation) {
 			return false;
 		}
 		// if no variation given and variation, ignore
-		if (!jobData.destVariation && variation2) {
+		if (!jobData.destVariation && variation) {
 			return false;
 		}
 		return true;

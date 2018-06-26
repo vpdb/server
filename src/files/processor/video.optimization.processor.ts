@@ -40,7 +40,7 @@ export class VideoOptimizationProcessor implements OptimizationProcessor<VideoFi
 	}
 
 	canProcess(file: File, variation?: VideoFileVariation): boolean {
-		return file.getMimeCategory(variation) === 'video';
+		return !variation && file.getMimeCategory() === 'video';
 	}
 
 	getOrder(variation?: VideoFileVariation): number {

@@ -33,24 +33,21 @@ export class FileSerializer extends Serializer<File> {
 
 	protected _simple(ctx: Context, doc: File, opts: SerializerOptions):File {
 		const file = this._reduced(ctx, doc, opts);
+		const cost = quota.getCost(doc);
 		file.bytes = doc.bytes;
-		file.cost = quota.getCost(doc);
+		file.cost = cost > 0 ? cost : undefined;
 		file.url = FileDocument.getUrl(doc);
-		file.is_protected = !doc.is_active || file.cost > -1;
+		file.is_protected = FileDocument.isPublic(doc) ? undefined : true;
 		file.counter = doc.counter;
 
 		// file variations
 		file.variations = {};
 		FileDocument.getVariations(doc).forEach(variation => {
+			const cost = quota.getCost(doc, variation);
 			file.variations[variation.name] = doc.variations ? doc.variations[variation.name] || {} : {};
 			file.variations[variation.name].url = FileDocument.getUrl(doc, variation);
-			const cost = quota.getCost(doc, variation);
-			if (!file.is_active || cost > -1) {
-				file.variations[variation.name].is_protected = true;
-			}
-			if (cost > 0) {
-				file.variations[variation.name].cost = cost;
-			}
+			file.variations[variation.name].is_protected = FileDocument.isPublic(doc, variation) ? undefined : true;
+			file.variations[variation.name].cost = cost > 0 ? cost : undefined;
 		});
 
 		return file;

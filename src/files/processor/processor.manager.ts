@@ -36,6 +36,7 @@ import { ImageVariationProcessor } from './image.variation.processor';
 import { VideoOptimizationProcessor } from './video.optimization.processor';
 import { VptBlockindexProcessor } from './vpt.blockindex.processor';
 import { VideoScreenshotProcessor } from './video.screenshot.processor';
+import { VideoThumbProcessor } from './video.thumb.processor';
 
 export const processorTypes: ProcessorQueueType[] = ['creation', 'optimization'];
 
@@ -98,6 +99,7 @@ class ProcessorManager {
 			new Directb2sThumbProcessor(),
 			new ImageVariationProcessor(),
 			new VideoScreenshotProcessor(),
+			new VideoThumbProcessor(),
 			new VptBlockindexProcessor()
 		];
 		this.optimizationProcessors = [

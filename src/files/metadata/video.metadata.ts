@@ -41,7 +41,7 @@ export class VideoMetadata extends Metadata {
 	}
 
 	async getMetadata(file: File, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
-		return await ffmpeg.ffprobeAsync(FileDocument.getPath(file, variation));
+		return await ffmpeg.ffprobeAsync(path);
 	}
 
 	serializeDetailed(metadata: { [p: string]: any }): { [p: string]: any } {

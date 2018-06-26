@@ -164,6 +164,43 @@ export class FileUtil {
 		});
 	}
 
+	/**
+	 * Removes a file and all its variations from storage. On error, a warning
+	 * is printed but nothing else done.
+	 *
+	 * @param file File to remove.
+	 */
+	public static async remove(file: File): Promise<void> {
+		// original
+		await FileUtil.removeFile(file.getPath(null, { tmpSuffix: '_original' }), file.toShortString());
+
+		// processed
+		await FileUtil.removeFile(file.getPath(), file.toShortString());
+
+		// variations
+		for (let variation of file.getExistingVariations()) {
+			await this.removeFile(file.getPath(variation), file.toShortString(variation));
+		}
+	}
+
+	/**
+	 * Physically removes a file and prints a warning when failed.
+	 *
+	 * @param {string} path Path to file
+	 * @param {string} what What to print
+	 */
+	private static async removeFile(path: string, what: string): Promise<void> {
+		if (await existsAsync(path)) {
+			logger.verbose('[Storage.remove] Removing %s at %s..', what, path);
+			try {
+				await unlinkAsync(path);
+			} catch (err) {
+				/* istanbul ignore next */
+				logger.warn('[Storage.remove] Could not remove %s: %s', what, err.message);
+			}
+		}
+	}
+
 	public static log(path: string): string {
 		return path
 			.replace(/storage(-test)?-protected/, chalk.gray('priv'))

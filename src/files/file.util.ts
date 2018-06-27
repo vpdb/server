@@ -72,7 +72,6 @@ export class FileUtil {
 		logger.info('[FileUtil.create] Saved %s bytes of %s to %s', file.bytes, file.toDetailedString(), path);
 
 		try {
-
 			logger.info('[FileUtil.create] Retrieving metadata for %s', file.toDetailedString());
 			const metadata = await Metadata.readFrom(file, path);
 			if (metadata) {

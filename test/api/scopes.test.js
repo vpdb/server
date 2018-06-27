@@ -85,28 +85,6 @@ describe('The scopes of the VPDB API', function() {
 			request.post('/api/v1/backglasses/1234/moderate').send({}).with(tokenAll).end(hlp.status(404, done));
 		});
 
-
-		it('should allow access to file deletion', done => {
-			request.del('/api/v1/files/1234').with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to file blockmatch', done => {
-			request.get('/api/v1/files/1234/blockmatch').with(tokenAll).end(hlp.status(404, done));
-		});
-
-
-		it('should allow access to game request retrieval', done => {
-			request.get('/api/v1/game_requests').with(tokenAll).end(hlp.status(200, done));
-		});
-		it('should allow access to game request creation', done => {
-			request.post('/api/v1/game_requests').send({}).with(tokenAll).end(hlp.status(422, done));
-		});
-		it('should allow access to game request update', done => {
-			request.patch('/api/v1/game_requests/1234').send({}).with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to game request deletion', done => {
-			request.del('/api/v1/game_requests/1234').with(tokenAll).end(hlp.status(404, done));
-		});
-
 		it('should allow access to game creation', done => {
 			request.post('/api/v1/games').send({}).with(tokenAll).end(hlp.status(422, done));
 		});
@@ -161,23 +139,6 @@ describe('The scopes of the VPDB API', function() {
 		});
 		it('should allow access to release file validation', done => {
 			request.post('/api/v1/releases/1234/versions/1.0/files/1234/validate').send({}).with(tokenAll).end(hlp.status(404, done));
-		});
-
-		it('should allow access to rom creation', done => {
-			request.post('/api/v1/roms').send({}).with(tokenAll).end(hlp.status(422, done));
-		});
-		it('should allow access to rom deletion', done => {
-			request.del('/api/v1/roms/1234').with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to rom creation through game', done => {
-			request.post('/api/v1/games/1234/roms').send({}).with(tokenAll).end(hlp.status(404, done));
-		});
-
-		it('should allow access to tag creation', done => {
-			request.post('/api/v1/tags').send({}).with(tokenAll).end(hlp.status(422, done));
-		});
-		it('should allow access to tag deletion', done => {
-			request.del('/api/v1/tags/1234').with(tokenAll).end(hlp.status(404, done));
 		});
 
 		it('should allow access to token creation', done => {
@@ -240,28 +201,6 @@ describe('The scopes of the VPDB API', function() {
 			request.del('/api/v1/backglasses/1234').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
 		});
 
-
-		it('should deny access to file deletion', done => {
-			request.del('/api/v1/files/1234').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to file blockmatch', done => {
-			request.get('/api/v1/files/1234/blockmatch').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-
-
-		it('should deny access to game request retrieval', done => {
-			request.get('/api/v1/game_requests').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to game request creation', done => {
-			request.post('/api/v1/game_requests').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to game request update', done => {
-			request.patch('/api/v1/game_requests/1234').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to game request deletion', done => {
-			request.del('/api/v1/game_requests/1234').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-
 		it('should deny access to game creation', done => {
 			request.post('/api/v1/games').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
 		});
@@ -320,23 +259,6 @@ describe('The scopes of the VPDB API', function() {
 
 		it('should deny access to release moderation creation', done => {
 			request.post('/api/v1/releases/1234/moderate').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-
-		it('should deny access to rom creation', done => {
-			request.post('/api/v1/roms').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to rom deletion', done => {
-			request.del('/api/v1/roms/1234').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to rom creation through game', done => {
-			request.post('/api/v1/games/1234/roms').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-
-		it('should deny access to tag creation', done => {
-			request.post('/api/v1/tags').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to tag deletion', done => {
-			request.del('/api/v1/tags/1234').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
 		});
 
 		it('should deny access to token creation', done => {
@@ -402,27 +324,6 @@ describe('The scopes of the VPDB API', function() {
 			request.post('/api/v1/backglasses/1234/moderate').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
 		});
 
-
-		it('should deny access to file deletion', done => {
-			request.del('/api/v1/files/1234').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to file blockmatch', done => {
-			request.get('/api/v1/files/1234/blockmatch').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-
-		it('should deny access to game request retrieval', done => {
-			request.get('/api/v1/game_requests').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should allow access to game request creation', done => {
-			request.post('/api/v1/game_requests').send({}).with(tokenCommunity).end(hlp.status(422, done));
-		});
-		it('should allow access to game request update', done => {
-			request.patch('/api/v1/game_requests/1234').send({}).with(tokenCommunity).end(hlp.status(404, done));
-		});
-		it('should allow access to game request deletion', done => {
-			request.del('/api/v1/game_requests/1234').with(tokenCommunity).end(hlp.status(404, done));
-		});
-
 		it('should deny access to game creation', done => {
 			request.post('/api/v1/games').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
 		});
@@ -481,23 +382,6 @@ describe('The scopes of the VPDB API', function() {
 
 		it('should deny access to release moderation creation', done => {
 			request.post('/api/v1/releases/1234/moderate').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-
-		it('should deny access to rom creation', done => {
-			request.post('/api/v1/roms').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to rom deletion', done => {
-			request.del('/api/v1/roms/1234').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to rom creation through game', done => {
-			request.post('/api/v1/games/1234/roms').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-
-		it('should deny access to tag creation', done => {
-			request.post('/api/v1/tags').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to tag deletion', done => {
-			request.del('/api/v1/tags/1234').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
 		});
 
 		it('should deny access to token creation', done => {

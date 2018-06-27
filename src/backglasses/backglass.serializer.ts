@@ -29,7 +29,6 @@ import { User } from '../users/user';
 
 export class BackglassSerializer extends Serializer<Backglass> {
 
-
 	protected _reduced(ctx: Context, doc: Backglass, opts: SerializerOptions): Backglass {
 		return this._serialize(ctx, doc, opts, state.serializers.BackglassVersion.reduced.bind(state.serializers.BackglassVersion));
 	}

@@ -94,7 +94,7 @@ describe('The VPDB `profile` API', () => {
 
 		it('should succeed when updating all attributes', async () => {
 			const user = await api.createUser();
-			const name = faker.name.firstName() + ' ' + faker.name.lastName();
+			const name = faker.name.firstName().replace(/[^\sa-z0-9]+/gi, '') + ' ' + faker.name.lastName().replace(/[^\sa-z0-9]+/gi, '');
 			const location = faker.address.city();
 			const email = api.generateEmail();
 			const newPass = randomString.generate(10);

@@ -230,8 +230,8 @@ class ProcessorQueue {
 					await unlinkAsync(originalPath);
 				}
 			}).catch(err => {
-			logger.warn('[ProcessorQueue.deleteProcessingFile] Error while processing finishing up removal: %s', err.message);
-		});
+				logger.warn('[ProcessorQueue.deleteProcessingFile] Error while processing finishing up removal: %s', err.message);
+			});
 	}
 
 	/**

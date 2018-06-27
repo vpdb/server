@@ -162,11 +162,11 @@ fileSchema.methods.getDirectVariationDependencies = function (this: File, variat
 //-----------------------------------------------------------------------------
 fileSchema.post('remove', async function (obj: File) {
 
-	// remove eventually processing files
-	await processorQueue.deleteProcessingFile(obj);
-
 	// remove physical file
 	await FileUtil.remove(obj);
+
+	// remove eventually processing files
+	await processorQueue.deleteProcessingFile(obj);
 
 	// remove table blocks
 	await state.models.TableBlock.update(

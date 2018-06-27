@@ -38,7 +38,7 @@ module.exports = {
 			],
 			defaultPlan: 'free',
 			costs: {
-				'backglass': { category: { video: 1, image: 0 }, variation: -1 },
+				'backglass': { category: { video: 1, image: 0, directb2s: 1 }, variation: -1 },
 				'logo': { category: 0, variation: -1 },
 				'playfield-fs': { category: { video: 1, image: 0 }, variation: -1 },
 				'playfield-ws': { category: { video: 1, image: 0 }, variation: -1 },

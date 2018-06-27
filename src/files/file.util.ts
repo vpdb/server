@@ -105,8 +105,8 @@ export class FileUtil {
 		await FileUtil.cp(path, file.getPath());
 
 		// start processing
+		logger.info('[FileUtil.create] Adding file %s to processor queue', file.toShortString());
 		await processorQueue.processFile(file, path);
-		logger.info('[FileUtil.create] File %s added to processor queue.', file.toShortString());
 
 		return file;
 	}
@@ -191,12 +191,12 @@ export class FileUtil {
 	 */
 	private static async removeFile(path: string, what: string): Promise<void> {
 		if (await existsAsync(path)) {
-			logger.verbose('[Storage.remove] Removing %s at %s..', what, path);
+			logger.verbose('[FileUtil.removeFile] Removing %s at %s..', what, path);
 			try {
 				await unlinkAsync(path);
 			} catch (err) {
 				/* istanbul ignore next */
-				logger.warn('[Storage.remove] Could not remove %s: %s', what, err.message);
+				logger.warn('[FileUtil.removeFile] Could not remove %s: %s', what, err.message);
 			}
 		}
 	}

@@ -184,8 +184,6 @@ class FileHelper {
 		return res.data;
 	}
 
-
-
 	/**
 	 * Uploads a VPT file.
 	 *
@@ -228,8 +226,10 @@ class FileHelper {
 		return vpts;
 	}
 
-	async createDirectB2S(user, gameName) {
-		gameName = gameName || 'aavenger';
+	async createDirectB2S(user, opts) {
+		opts = opts || {}
+		const gameName = opts.gameName || 'aavenger';
+		const teardown = opts.keep ? false : undefined;
 		const image = await gm(1280, 1024, pleasejs.make_color()).toBufferAsync('PNG');
 		const data = `<B2SBackglassData Version="1.2">
 			  <ProjectGUID Value="41664711-BFB7-4911-ABE1-31542BFD0014" />
@@ -269,7 +269,7 @@ class FileHelper {
 			</B2SBackglassData>`;
 		const res = await this.api.onStorage()
 			.as(user)
-			.markTeardown()
+			.markTeardown(teardown)
 			.withQuery({ type: 'backglass' })
 			.withContentType('application/x-directb2s')
 			.withHeader('Content-Disposition', 'attachment; filename="test.directb2s"')

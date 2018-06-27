@@ -79,6 +79,36 @@ class ReleaseHelper {
 		const game = await this.gameHelper.createGame('moderator');
 		return this.createReleaseForGame(user, game, opts);
 	}
+
+	/**
+	 * Creates a DirectB2s backglass release.
+	 *
+	 * @param user Uploader
+	 * @param [opts] Configuration object
+	 * @param {string} opts.author User name of the author
+	 * @returns {Promise<Object>} Created DirectB2S
+	 */
+	async createDirectB2S(user, opts) {
+		opts = opts || {};
+		const game = await this.gameHelper.createGame('moderator');
+		const bgFile = await this.fileHelper.createDirectB2S(user, { keep: true });
+		const res = await this.api
+			.as(user)
+			.markTeardown()
+			.post('/v1/backglasses', {
+				_game: game.id,
+				description: faker.company.catchPhrase(),
+				authors: [{ _user: this.api.getUser(opts.author || user).id, roles: ['Table Creator'] }],
+				versions: [{
+					version: '1.0',
+					changes: faker.company.catchPhrase(),
+					_file: bgFile.id
+				}]
+			}).then(res => res.expectStatus(201));
+		const bg = res.data;
+		bg.game = game;
+		return bg;
+	}
 }
 
 module.exports = ReleaseHelper;

@@ -19,14 +19,12 @@
 
 "use strict"; /* global describe, before, after, it */
 
-var _ = require('lodash');
-var fs = require('fs');
-var async = require('async');
-var request = require('superagent');
-var expect = require('expect.js');
+const _ = require('lodash');
+const request = require('superagent');
+const expect = require('expect.js');
 
-var superagentTest = require('../modules/superagent-test');
-var hlp = require('../modules/helper');
+const superagentTest = require('../../test/modules/superagent-test');
+const hlp = require('../../test/modules/helper');
 
 superagentTest(request);
 
@@ -409,7 +407,7 @@ describe('The VPDB `Game Request` API', function() {
 
 	describe('when deleting a game request', function() {
 
-		var game;
+		let game;
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },

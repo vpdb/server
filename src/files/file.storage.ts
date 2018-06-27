@@ -115,7 +115,7 @@ export class FileStorage extends Api {
 
 	/**
 	 * Handles uploaded data posted as-is with a content type
-	 *
+	 * Correct file type is already asserted.
 	 * @param {Context} ctx Koa context
 	 * @return {Promise<File>}
 	 */
@@ -126,14 +126,19 @@ export class FileStorage extends Api {
 			throw new ApiError('Invalid "Content-Type" header. Valid headers for type "%s" are: [ %s ].', ctx.query.type, fileTypes.getMimeTypes(ctx.query.type).join(', ')).status(422);
 		}
 
+		// fail if no Content-Disposition header
 		if (!ctx.get('content-disposition')) {
 			throw new ApiError('Header "Content-Disposition" must be provided.').status(422);
 		}
+
+		// fail if invalid Content-Disposition header
 		if (!/filename=([^;]+)/i.test(ctx.get('content-disposition'))) {
 			throw new ApiError('Header "Content-Disposition" must contain file name.').status(422);
 		}
 		const filename = ctx.get('content-disposition').match(/filename=([^;]+)/i)[1].replace(/(^"|^'|"$|'$)/g, '');
-		logger.info('[FileApi.handleRawUpload] Starting file upload of "%s"...', filename);
+
+		// create file
+		logger.info('[FileStorage.handleRawUpload] Starting file upload of "%s"...', filename);
 		const fileData = {
 			name: filename,
 			bytes: ctx.get('content-length') || 0,
@@ -149,11 +154,13 @@ export class FileStorage extends Api {
 
 	/**
 	 * Handles uploaded data posted as multipart.
+	 * Correct file type is already asserted.
 	 * @param {Application.Context} ctx Koa context
 	 * @returns {Promise<File>}
 	 */
 	private async handleMultipartUpload(ctx: Context): Promise<File> {
 
+		// fail if no content type
 		if (!ctx.query.content_type) {
 			throw new ApiError('Mime type must be provided as query parameter "content_type" when using multipart.').status(422);
 		}
@@ -174,7 +181,7 @@ export class FileStorage extends Api {
 					stream.resume();
 					return;
 				}
-				logger.info('[FileApi.handleMultipartUpload] Starting file (multipart) upload of "%s"', filename);
+				logger.info('[FileStorage.handleMultipartUpload] Starting file (multipart) upload of "%s"', filename);
 				const fileData = {
 					name: filename,
 					bytes: 0,
@@ -214,7 +221,6 @@ export class FileStorage extends Api {
 	private async find(ctx: Context): Promise<[File, boolean]> {
 
 		const file = await state.models.File.findOne({ id: ctx.params.id }).exec();
-
 		if (!file) {
 			throw new ApiError('No such file with ID "%s".', ctx.params.id).status(404);
 		}
@@ -228,7 +234,7 @@ export class FileStorage extends Api {
 				file.getVariations().map(f => f.name).join(', ')).status(404);
 		}
 
-		// conditions for public: cost = -1 and is active.
+		// conditions for public: cost == -1 && is_active.
 		if (isPublic) {
 			return [file, true];
 		}
@@ -252,6 +258,8 @@ export class FileStorage extends Api {
 		if (file._created_by._id.equals(ctx.state.user._id)) {
 			return [file, true];
 		}
+
+		// otherwise, it's not free.
 		return [file, false];
 	}
 

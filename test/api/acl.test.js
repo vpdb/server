@@ -79,18 +79,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/storage/v1/files').end(hlp.status(401, done));
 		});
 
-		it('should deny access to file deletion', function(done) {
-			request.del('/api/v1/files/123456789').end(hlp.status(401, done));
-		});
-
-		it('should allow access to file details', function(done) {
-			request.get('/api/v1/files/123456789').end(hlp.status(404, 'No such file', done));
-		});
-
-		it('should deny access to file block matches', function(done) {
-			request.get('/api/v1/files/123456789/blockmatch').end(hlp.status(401, done));
-		});
-
 		it('should allow check for existing games', function(done) {
 			request.head('/api/v1/games/mb').end(hlp.status(404, done));
 		});
@@ -103,36 +91,8 @@ describe('The ACLs of the VPDB API', function() {
 			request.del('/api/v1/games/mb').end(hlp.status(401, done));
 		});
 
-		it('should deny access to rom creation', function(done) {
-			request.post('/api/v1/games/mb/roms').send({}).end(hlp.status(401, done));
-		});
-
-		it('should allow access to rom listing', function(done) {
-			request.get('/api/v1/games/mb/roms').end(hlp.status(404, done));
-		});
-
-		it('should deny access to rom deletion', function(done) {
-			request.del('/api/v1/roms/1234').end(hlp.status(401, done));
-		});
-
-		it('should allow access to rom listing', function(done) {
-			request.get('/api/v1/roms').end(hlp.status(200, done));
-		});
-
 		it('should allow access to ping', function(done) {
 			request.get('/api/v1/ping').end(hlp.status(200, done));
-		});
-
-		it('should allow to list tags', function(done) {
-			request.get('/api/v1/tags').end(hlp.status(200, done));
-		});
-
-		it('should deny access to create tags', function(done) {
-			request.post('/api/v1/tags').send({}).end(hlp.status(401, done));
-		});
-
-		it('should deny access to delete tags', function(done) {
-			request.del('/api/v1/tags/mytag').saveResponse({ path: 'tags/del'}).end(hlp.status(401, done));
 		});
 
 		it('should allow to list releases', function(done) {
@@ -214,23 +174,6 @@ describe('The ACLs of the VPDB API', function() {
 		it('should deny access to release name creation', function(done) {
 			request.get('/api/v1/games/test/release-name').send({}).end(hlp.status(401, done));
 		});
-
-		it('should deny access to game request creation', function(done) {
-			request.post('/api/v1/game_requests').send({}).end(hlp.status(401, done));
-		});
-
-		it('should deny access to game request list', function(done) {
-			request.get('/api/v1/game_requests').end(hlp.status(401, done));
-		});
-
-		it('should deny access to deleting game requests', function(done) {
-			request.del('/api/v1/game_requests/1234').end(hlp.status(401, done));
-		});
-
-		it('should deny access to updating game requests', function(done) {
-			request.patch('/api/v1/game_requests/1234').send({}).end(hlp.status(401, done));
-		});
-
 	});
 
 	describe('for logged clients (role member)', function() {
@@ -296,18 +239,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/storage/v1/files').as('member').end(hlp.status(422, done));
 		});
 
-		it('should allow access to file deletion', function(done) {
-			request.del('/api/v1/files/123456789').as('member').end(hlp.status(404, done));
-		});
-
-		it('should allow access to file details', function(done) {
-			request.get('/api/v1/files/123456789').as('member').end(hlp.status(404, done));
-		});
-
-		it('should deny access to file block matches', function(done) {
-			request.get('/api/v1/files/123456789/blockmatch').as('member').end(hlp.status(403, done));
-		});
-
 		it('should allow check for existing games', function(done) {
 			request.head('/api/v1/games/mb').as('member').end(hlp.status(404, done));
 		});
@@ -320,36 +251,8 @@ describe('The ACLs of the VPDB API', function() {
 			request.del('/api/v1/games/mb').as('member').end(hlp.status(403, done));
 		});
 
-		it('should deny access to rom creation', function(done) {
-			request.post('/api/v1/games/mb/roms').as('member').send({}).end(hlp.status(403, done));
-		});
-
-		it('should allow access to rom listing', function(done) {
-			request.get('/api/v1/games/mb/roms').as('member').end(hlp.status(404, done));
-		});
-
-		it('should deny access to rom deletion', function(done) {
-			request.del('/api/v1/roms/1234').as('member').end(hlp.status(403, done));
-		});
-
-		it('should allow access to rom listing', function(done) {
-			request.get('/api/v1/roms').as('member').end(hlp.status(200, done));
-		});
-
 		it('should allow access to ping', function(done) {
 			request.get('/api/v1/ping').as('member').end(hlp.status(200, done));
-		});
-
-		it('should allow to list tags', function(done) {
-			request.get('/api/v1/tags').as('member').end(hlp.status(200, done));
-		});
-
-		it('should allow to create tags', function(done) {
-			request.post('/api/v1/tags').send({}).as('member').end(hlp.status(422, done));
-		});
-
-		it('should allow access to tag deletion', function(done) {
-			request.del('/api/v1/tags/mytag').as('member').end(hlp.status(404, done));
 		});
 
 		it('should allow to list releases', function(done) {
@@ -420,22 +323,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/api/v1/games/test/release-name').as('member').send({}).end(hlp.status(404, done));
 		});
 
-		it('should allow access to game request creation', function(done) {
-			request.post('/api/v1/game_requests').as('member').send({}).end(hlp.status(422, done));
-		});
-
-		it('should deny access to game request list', function(done) {
-			request.get('/api/v1/game_requests').as('member').end(hlp.status(403, done));
-		});
-
-		it('should allow access to deleting game requests', function(done) {
-			request.del('/api/v1/game_requests/1234').as('member').end(hlp.status(404, done));
-		});
-
-		it('should deny access to updating game requests', function(done) {
-			request.patch('/api/v1/game_requests/1234').as('member').send({}).end(hlp.status(403, done));
-		});
-
 	});
 
 	describe('for members with the `contributor` role', function() {
@@ -497,10 +384,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/storage/v1/files').as('contributor').send({}).end(hlp.status(422, done));
 		});
 
-		it('should deny access to file block matches', function(done) {
-			request.get('/api/v1/files/123456789/blockmatch').as('contributor').end(hlp.status(403, done));
-		});
-
 		it('should allow check for existing games', function(done) {
 			request.head('/api/v1/games/mb').as('contributor').end(hlp.status(404, done));
 		});
@@ -515,18 +398,6 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to ping', function(done) {
 			request.get('/api/v1/ping').as('contributor').end(hlp.status(200, done));
-		});
-
-		it('should allow to list tags', function(done) {
-			request.get('/api/v1/tags').as('contributor').end(hlp.status(200, done));
-		});
-
-		it('should allow to create tags', function(done) {
-			request.post('/api/v1/tags').send({}).as('contributor').end(hlp.status(422, done));
-		});
-
-		it('should deny to delete a tag', function(done) {
-			request.del('/api/v1/tags/hd').as('contributor').end(hlp.status(403, done));
 		});
 
 		it('should allow to create releases', function(done) {
@@ -559,18 +430,6 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should deny access to release moderation', function(done) {
 			request.post('/api/v1/releases/1234/moderate').as('contributor').send({}).end(hlp.status(403, done));
-		});
-
-		it('should allow access to rom creation', function(done) {
-			request.post('/api/v1/games/mb/roms').as('contributor').send({}).end(hlp.status(404, done));
-		});
-
-		it('should deny access to game request list', function(done) {
-			request.get('/api/v1/game_requests').as('contributor').end(hlp.status(403, done));
-		});
-
-		it('should deny access to updating game requests', function(done) {
-			request.patch('/api/v1/game_requests/1234').as('contributor').send({}).end(hlp.status(403, done));
 		});
 
 	});
@@ -634,10 +493,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/storage/v1/files').as('moderator').send({}).end(hlp.status(422, done));
 		});
 
-		it('should allow access to file block matches', function(done) {
-			request.get('/api/v1/files/123456789/blockmatch').as('moderator').end(hlp.status(404, done));
-		});
-
 		it('should allow check for existing games', function(done) {
 			request.head('/api/v1/games/mb').as('moderator').end(hlp.status(404, done));
 		});
@@ -652,18 +507,6 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to ping', function(done) {
 			request.get('/api/v1/ping').as('moderator').end(hlp.status(200, done));
-		});
-
-		it('should allow to list tags', function(done) {
-			request.get('/api/v1/tags').as('moderator').end(hlp.status(200, done));
-		});
-
-		it('should allow to create tags', function(done) {
-			request.post('/api/v1/tags').send({}).as('moderator').end(hlp.status(422, done));
-		});
-
-		it('should allow to delete a tag', function(done) {
-			request.del('/api/v1/tags/123456').as('moderator').end(hlp.status(404, done));
 		});
 
 		it('should allow to create releases', function(done) {
@@ -694,26 +537,9 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/user/events').as('moderator').end(hlp.status(200, done));
 		});
 
-		it('should allow access to rom moderation', function(done) {
-			request.post('/api/v1/roms/1234/moderate').as('moderator').send({}).end(hlp.status(404, done));
-		});
-
 		it('should allow access to release moderation', function(done) {
 			request.post('/api/v1/releases/1234/moderate').as('moderator').send({}).end(hlp.status(404, done));
 		});
-
-		it('should allow access to rom creation', function(done) {
-			request.post('/api/v1/games/mb/roms').as('moderator').send({}).end(hlp.status(404, done));
-		});
-
-		it('should allow access to game request list', function(done) {
-			request.get('/api/v1/game_requests').as('moderator').end(hlp.status(200, done));
-		});
-
-		it('should allow access to updating game requests', function(done) {
-			request.patch('/api/v1/game_requests/1234').as('moderator').send({}).end(hlp.status(404, done));
-		});
-
 	});
 
 	describe('for administrators', function() {
@@ -787,10 +613,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/storage/v1/files').as('admin').send({}).end(hlp.status(422, done));
 		});
 
-		it('should deny access to file block matches', function(done) {
-			request.get('/api/v1/files/123456789/blockmatch').as('admin').end(hlp.status(403, done));
-		});
-
 		it('should allow check for existing games', function(done) {
 			request.head('/api/v1/games/mb').as('admin').end(hlp.status(404, done));
 		});
@@ -805,14 +627,6 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to ping', function(done) {
 			request.get('/api/v1/ping').as('admin').end(hlp.status(200, done));
-		});
-
-		it('should allow to list tags', function(done) {
-			request.get('/api/v1/tags').as('admin').end(hlp.status(200, done));
-		});
-
-		it('should allow to create tags', function(done) {
-			request.post('/api/v1/tags').send({}).as('admin').end(hlp.status(422, done));
 		});
 
 		it('should allow to create releases', function(done) {
@@ -833,10 +647,6 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to events by current user', function(done) {
 			request.get('/api/v1/user/events').as('admin').end(hlp.status(200, done));
-		});
-
-		it('should deny access to game request list', function(done) {
-			request.get('/api/v1/game_requests').as('admin').end(hlp.status(403, done));
 		});
 
 	});
@@ -904,10 +714,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/storage/v1/files').as('root').send({}).end(hlp.status(422, done));
 		});
 
-		it('should allow access to file block matches', function(done) {
-			request.get('/api/v1/files/123456789/blockmatch').as('root').end(hlp.status(404, done));
-		});
-
 		it('should allow check for existing games', function(done) {
 			request.head('/api/v1/games/mb').as('root').end(hlp.status(404, done));
 		});
@@ -922,14 +728,6 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to ping', function(done) {
 			request.get('/api/v1/ping').as('root').end(hlp.status(200, done));
-		});
-
-		it('should allow to list tags', function(done) {
-			request.get('/api/v1/tags').as('root').end(hlp.status(200, done));
-		});
-
-		it('should allow to create tags', function(done) {
-			request.post('/api/v1/tags').send({}).as('root').end(hlp.status(422, done));
 		});
 
 		it('should allow to create releases', function(done) {
@@ -950,10 +748,6 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to events by current user', function(done) {
 			request.get('/api/v1/user/events').as('root').end(hlp.status(200, done));
-		});
-
-		it('should allow access to game request list', function(done) {
-			request.get('/api/v1/game_requests').as('root').end(hlp.status(200, done));
 		});
 
 	});

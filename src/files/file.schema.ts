@@ -149,9 +149,6 @@ fileSchema.methods.getVariations = function (this: File): FileVariation[] {
 fileSchema.methods.getVariation = function (this: File, variationName: string): FileVariation | null {
 	return FileDocument.getVariation(this, variationName);
 };
-fileSchema.methods.getVariationDependencies = function (this: File, variation: FileVariation, deps: FileVariation[] = []): FileVariation[] {
-	return FileDocument.getVariationDependencies(this, variation, deps);
-};
 fileSchema.methods.getDirectVariationDependencies = function (this: File, variation: FileVariation): FileVariation[] {
 	return FileDocument.getDirectVariationDependencies(this, variation);
 };

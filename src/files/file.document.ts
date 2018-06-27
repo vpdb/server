@@ -220,26 +220,6 @@ export class FileDocument {
 	}
 
 	/**
-	 * Returns all direct and indirect dependencies of a variation.
-	 *
-	 * A dependency is the `source` attribute that indicates that the variation
-	 * is not generated based on the original file, but rather on another
-	 * variation.
-	 *
-	 * @param {File} file Potentially dehydrated file
-	 * @param {FileVariation} variation Variation
-	 * @param {FileVariation[]} [deps] Only used for internal recursive usage, ignore.
-	 * @returns {FileVariation[]} All variations that depend directly or indirectly on the given variation.
-	 */
-	public static getVariationDependencies(file: File, variation: FileVariation, deps: FileVariation[] = []): FileVariation[] {
-		deps = deps || [];
-		for (let dep of FileDocument.getVariations(file).filter(v => v.source === variation.name)) {
-			deps = FileDocument.getVariationDependencies(file, dep, [...deps, dep]);
-		}
-		return deps;
-	}
-
-	/**
 	 * Returns all direct dependencies of a variation.
 	 *
 	 * @param {File} file Potentially dehydrated file

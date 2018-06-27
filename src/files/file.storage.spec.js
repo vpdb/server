@@ -61,6 +61,25 @@ describe('The VPDB `file` storage API', () => {
 
 	describe('when uploading a file using a multipart request', () => {
 
+		it('should fail when no "type" query parameter is provided', async () => {
+			const member = api.getUser('member');
+			await api.onStorage()
+				.as(member)
+				.withAttachment('image', pngPath)
+				.post('/v1/files')
+				.then(res => res.expectError(422, 'Query parameter "type" must be provided'));
+		});
+
+		it('should fail an invalid "type" query parameter is provided', async () => {
+			const member = api.getUser('member');
+			await api.onStorage()
+				.as(member)
+				.withQuery({ type: 'foobar' })
+				.withAttachment('image', pngPath)
+				.post('/v1/files')
+				.then(res => res.expectError(422, 'Unknown "type" parameter'));
+		});
+
 		it('should fail when no content type is provided in the header', async () => {
 			const member = api.getUser('member');
 			await api.onStorage()
@@ -71,24 +90,34 @@ describe('The VPDB `file` storage API', () => {
 				.then(res => res.expectError(422, '"Content-Type" must be provided'));
 		});
 
-		it('should fail when no file type is provided', async () => {
+		it('should fail when providing no mime type as query parameter', async () => {
 			const member = api.getUser('member');
-			await api.onStorage()
+			res = await api.onStorage()
 				.as(member)
 				.withQuery({ type: 'release' })
 				.withAttachment('image', pngPath)
 				.post('/v1/files')
-				.then(res => res.expectError(422, 'mime type must be provided as query parameter'));
+				.then(res => res.expectError(422, 'Mime type must be provided as query parameter'));
 		});
 
-		it('should fail when an invalid content type is provided in the query', async () => {
+		it('should fail when providing a bogus mime type', async () => {
 			const member = api.getUser('member');
 			res = await api.onStorage()
 				.as(member)
+				.withQuery({ type: 'release', content_type: 'suck/it' })
 				.withAttachment('image', pngPath)
-				.withQuery({ type: 'backglass', content_type: 'animal/bear' })
 				.post('/v1/files')
-				.then(res => res.expectError(422, 'Invalid "Content-Type"'));
+				.then(res => res.expectError(422, 'Invalid "Content-Type" parameter'));
+		});
+
+		it('should fail when providing an invalid mime type in header', async () => {
+			const member = api.getUser('member');
+			res = await api.onStorage()
+				.as(member)
+				.withQuery({ type: 'release', content_type: 'image/jpeg' })
+				.withAttachment('image', pngPath)
+				.post('/v1/files')
+				.then(res => res.expectError(422, 'Invalid "Content-Type" parameter'));
 		});
 
 		it('should fail when posting more than one file', async () => {
@@ -133,12 +162,61 @@ describe('The VPDB `file` storage API', () => {
 
 	describe('when uploading a file as raw data', () => {
 
+		it('should fail when no "type" query parameter is provided', async () => {
+			const member = api.getUser('member');
+			await api.onStorage()
+				.as(member)
+				.post('/v1/files', 'xxx')
+				.then(res => res.expectError(422, 'Query parameter "type" must be provided'));
+		});
+
+		it('should fail an invalid "type" query parameter is provided', async () => {
+			const member = api.getUser('member');
+			await api.onStorage()
+				.as(member)
+				.withQuery({ type: 'foobar' })
+				.post('/v1/files', 'xxx')
+				.then(res => res.expectError(422, 'Unknown "type" parameter'));
+		});
+
+		it('should fail when providing no mime type in header', async () => {
+			const member = api.getUser('member');
+			res = await api.onStorage()
+				.as(member)
+				.withQuery({ type: 'release' })
+				.withHeader('Content-Type', '')
+				.post('/v1/files', 'xxx')
+				.then(res => res.expectError(422, 'Header "Content-Type" must be provided'));
+		});
+
+		it('should fail when providing a bogus mime type in header', async () => {
+			const member = api.getUser('member');
+			res = await api.onStorage()
+				.as(member)
+				.withQuery({ type: 'release' })
+				.withHeader('Content-Type', 'suck/it')
+				.post('/v1/files', 'xxx')
+				.then(res => res.expectError(422, 'Invalid "Content-Type" header'));
+		});
+
+		it('should fail when providing an invalid mime type in header', async () => {
+			const member = api.getUser('member');
+			res = await api.onStorage()
+				.as(member)
+				.withQuery({ type: 'release' })
+				.withHeader('Content-Type', 'image/jpeg')
+				.post('/v1/files', 'xxx')
+				.then(res => res.expectError(422, 'Invalid "Content-Type" header'));
+		});
+
 		it('should fail when no "Content-Disposition" header is provided', async () => {
 			const member = api.getUser('member');
 			await api.onStorage()
 				.as(member)
 				.withQuery({ type: 'backglass' })
-				.post('/v1/files', 'xxx');
+				.withHeader('Content-Type', 'image/jpeg')
+				.post('/v1/files', 'xxx')
+				.then(res => res.expectError(422, 'Header "Content-Disposition" must be provided'));
 
 		});
 
@@ -146,30 +224,11 @@ describe('The VPDB `file` storage API', () => {
 			const member = api.getUser('member');
 			await api.onStorage()
 				.as(member)
-				.withHeader('Content-Disposition', 'zurg!!')
 				.withQuery({ type: 'backglass' })
+				.withHeader('Content-Type', 'image/jpeg')
+				.withHeader('Content-Disposition', 'zurg!!')
 				.post('/v1/files', 'xxx')
-				.then(res => res.expectError(422, 'Content-Disposition'));
-		});
-
-		it('should fail when no "type" query parameter is provided', async () => {
-			const member = api.getUser('member');
-			await api.onStorage()
-				.as(member)
-				.withHeader('Content-Disposition', 'attachment; filename="foo.bar"')
-				.post('/v1/files', 'xxx')
-				.then(res => res.expectError(422, 'type'));
-		});
-
-		it('should fail when providing wrong mime type in header', async () => {
-			const member = api.getUser('member');
-			res = await api.onStorage()
-				.as(member)
-				.withHeader('Content-Disposition', 'attachment; filename="foo.bar"')
-				.withHeader('Content-Type', 'suck/it')
-				.withQuery({ type: 'release' })
-				.post('/v1/files', 'xxx')
-				.then(res => res.expectError(422, 'Invalid "Content-Type" header'));
+				.then(res => res.expectError(422, 'Header "Content-Disposition" must contain file name'));
 		});
 
 		it('should return an object with the same parameters as provided in the headers', async () => {

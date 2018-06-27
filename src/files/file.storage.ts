@@ -30,7 +30,7 @@ import { logger } from '../common/logger';
 import { processorQueue } from './processor/processor.queue';
 import { File } from './file';
 import { FileUtil } from './file.util';
-import { mimeTypeNames } from './file.mimetypes';
+import { fileTypes } from './file.types';
 
 const statAsync = promisify(stat);
 
@@ -50,14 +50,17 @@ export class FileStorage extends Api {
 	 */
 	public async upload(ctx: Context) {
 
-		// fail if no content type
-		if (!ctx.get('content-type')) {
-			throw new ApiError('Header "Content-Type" must be provided.').status(422);
-		}
-
 		// fail if no file type
 		if (!ctx.query.type) {
 			throw new ApiError('Query parameter "type" must be provided.').status(422);
+		}
+		// fail if unknown file type
+		if (!fileTypes.names.includes(ctx.query.type)) {
+			throw new ApiError('Unknown "type" parameter. Known values are: [ %s ].', fileTypes.names.join(', ')).status(422);
+		}
+		// fail if no content type
+		if (!ctx.get('content-type')) {
+			throw new ApiError('Header "Content-Type" must be provided.').status(422);
 		}
 
 		// stream either directly from req or use a multipart parser
@@ -118,16 +121,16 @@ export class FileStorage extends Api {
 	 */
 	private async handleRawUpload(ctx: Context): Promise<File> {
 
+		// fail if wrong content type
+		if (!fileTypes.getMimeTypes(ctx.query.type).includes(ctx.get('content-type'))) {
+			throw new ApiError('Invalid "Content-Type" header. Valid headers for type "%s" are: [ %s ].', ctx.query.type, fileTypes.getMimeTypes(ctx.query.type).join(', ')).status(422);
+		}
+
 		if (!ctx.get('content-disposition')) {
 			throw new ApiError('Header "Content-Disposition" must be provided.').status(422);
 		}
 		if (!/filename=([^;]+)/i.test(ctx.get('content-disposition'))) {
 			throw new ApiError('Header "Content-Disposition" must contain file name.').status(422);
-		}
-		const validMimeTypes = [...mimeTypeNames, 'multipart/form-data' ];
-		if (!validMimeTypes.includes(ctx.get('content-type'))) {
-			throw new ApiError('Invalid "Content-Type" header "%s". Valid content types are: [ %s ]. You can also post multi-part binary data using "multipart/form-data".',
-				ctx.get('content-type'), mimeTypeNames.join(', ')).status(422);
 		}
 		const filename = ctx.get('content-disposition').match(/filename=([^;]+)/i)[1].replace(/(^"|^'|"$|'$)/g, '');
 		logger.info('[FileApi.handleRawUpload] Starting file upload of "%s"...', filename);
@@ -155,8 +158,9 @@ export class FileStorage extends Api {
 			throw new ApiError('Mime type must be provided as query parameter "content_type" when using multipart.').status(422);
 		}
 
-		if (!mimeTypeNames.includes(ctx.query.content_type)) {
-			throw new ApiError('Invalid "Content-Type" parameter "%s". Valid content types are: [ %s ].', ctx.query.content_type).status(422);
+		// fail if wrong content type
+		if (!fileTypes.getMimeTypes(ctx.query.type).includes(ctx.query.content_type)) {
+			throw new ApiError('Invalid "Content-Type" parameter. Valid parameter for type "%s" are: [ %s ].', ctx.query.type, fileTypes.getMimeTypes(ctx.query.type).join(', ')).status(422);
 		}
 
 		let err:ApiError;

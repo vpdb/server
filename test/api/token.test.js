@@ -672,8 +672,5 @@ describe('The VPDB `Token` API', function() {
 						});
 				});
 		});
-
-
 	});
-
 });

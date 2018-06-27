@@ -163,7 +163,17 @@ describe('The quota engine of VPDB', () => {
 			expect(res.headers['x-ratelimit-unlimited']).to.be('true');
 		});
 
-		it('should not decrement the quota if an owned file is downloaded');
+		it('should not decrement the quota if an owned file is downloaded', async () => {
+			res = await api.as('moderator').get('/v1/profile').then(res => res.expectStatus(200));
+			const profile = res.data;
+			res = await api
+				.as('moderator')
+				.getAbsolute(ApiClient.urlPath(chargedUrl))
+				.then(res => res.expectStatus(200));
+			res = await api.as('moderator').get('/v1/profile').then(res => res.expectStatus(200));
+
+			expect(res.data.quota.remaining).to.be(profile.quota.remaining);
+		});
 
 	});
 

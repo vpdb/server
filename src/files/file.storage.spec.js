@@ -35,6 +35,7 @@ const ReleaseHelper = require('../../test/modules/release.helper');
 const api = new ApiClient();
 const fileHelper = new FileHelper(api);
 const gameHelper = new GameHelper(api);
+const releaseHelper = new ReleaseHelper(api);
 
 const pngPath = resolve(__dirname, '../../data/test/files/backglass.png');
 
@@ -45,13 +46,18 @@ describe('The VPDB `file` storage API', () => {
 	before(async () => {
 		await api.setupUsers({
 			member: { roles: [ 'member' ]},
-			moderator: { roles: [ 'moderator' ], _plan: 'subscribed'},
+			moderator: { roles: [ 'moderator' ] },
 			contributor: { roles: [ 'contributor' ]},
-			anothermember: { roles: [ 'member' ]}
+			anothermember: { roles: [ 'member' ] },
+			unlimited: { roles: [ 'member' ], _plan: 'subscribed' }
 		});
 	});
 
 	after(async () => await api.teardown());
+
+	it('should fail for a non-existent file', async () => {
+		await api.onStorage().get('/public/files/foobar.jpg').then(res => res.expectError(404, 'no such file'));
+	});
 
 	describe('when uploading a file using a multipart request', () => {
 
@@ -197,21 +203,31 @@ describe('The VPDB `file` storage API', () => {
 			inactiveFile = await fileHelper.createBackglass('member');
 		});
 
-		it('should fail downloading the file as anonymous', async () => {
-			await api.onStorage().getAbsolute(inactiveFile.url).then(res => res.expectError(401, 'Unauthorized'));
+		it('should fail downloading through the public URL as anonymous', async () => {
+			await api.onStorage().get('/public/files/' + inactiveFile.id + '.jpg').then(res => res.expectError(401, 'Must be logged'));
 		});
 
 		it('should fail downloading the file as a different user', async () => {
 			await api.onStorage().as('anothermember').getAbsolute(inactiveFile.url).then(res => res.expectError(403, 'must own inactive files'));
 		});
 
+		it('should fail downloading the file through the public URL as a different user', async () => {
+			await api.onStorage().as('anothermember').get('/public/files/' + inactiveFile.id + '.jpg').then(res => res.expectError(403, 'must own inactive files'));
+		});
+
 		it('should succeed downloading the file as the uploader', async () => {
 			await api.onStorage().as('member').getAbsolute(inactiveFile.url).then(res => res.expectStatus(200));
 		});
 
-		it('should block until the variation is finished processing', async () => {
+		it('should block until the variation started and finished processing', async () => {
 			const backglass = await fileHelper.createBackglass('member');
 			res = await api.onStorage().as('member').getAbsolute(backglass.variations['small-2x'].url).then(res => res.expectStatus(200));
+			expect(res.headers['content-length']).to.be.greaterThan(0);
+		});
+
+		it('should block until the variation finished processing', async () => {
+			const backglass = await fileHelper.createBackglass('member');
+			res = await api.onStorage().as('member').getAbsolute(backglass.variations['full'].url).then(res => res.expectStatus(200));
 			expect(res.headers['content-length']).to.be.greaterThan(0);
 		});
 
@@ -272,12 +288,30 @@ describe('The VPDB `file` storage API', () => {
 
 		let activeFile;
 		before(async () => {
-			const game = await gameHelper.createGame('moderator');
-			activeFile = (await api.get('/v1/files/' + game.backglass.id).then(res => res.expectStatus(200))).data;
+			const bg = await releaseHelper.createDirectB2S('moderator');
+			activeFile = (await api.get('/v1/files/' + bg.versions[0].file.id).then(res => res.expectStatus(200))).data;
 		});
 
 		it('should fail downloading the file as anonymous', async () => {
 			await api.onStorage().getAbsolute(activeFile.url).then(res => res.expectError(401, 'Unauthorized'));
+		});
+
+		it('should fail downloading through the public URL as anonymous', async () => {
+			await api.onStorage().get('/public/files/' + activeFile.id + '.jpg').then(res => res.expectError(401, 'Must be logged'));
+		});
+
+		it('should fail for a non-existing variation', async () => {
+			await api.onStorage().get('/public/files/asdf/' + activeFile.id + '.jpg').then(res => res.expectError(404, 'No such variation'));
+		});
+
+		it('should succeed downloading the file as the owner', async () => {
+			res = await api.onStorage().as('moderator').getAbsolute(activeFile.url).then(res => res.expectStatus(200));
+			expect(res.data.length).to.be.greaterThan(100);
+		});
+
+		it('should succeed downloading a variation as anonymous', async () => {
+			res = await api.onStorage().getAbsolute(activeFile.variations.full.url).then(res => res.expectStatus(200));
+			expect(res.data.length).to.be.greaterThan(100);
 		});
 
 		it('should succeed downloading the file as a logged user', async () => {
@@ -299,6 +333,12 @@ describe('The VPDB `file` storage API', () => {
 			const game = await gameHelper.createGame('moderator');
 			res = await api.onStorage().as('member').getAbsolute(game.backglass.variations['small-2x'].url).then(res => res.expectStatus(200));
 			expect(res.headers['content-length']).to.be.greaterThan(0);
+		});
+
+		it('should add the content-disposition header when asked to', async () => {
+			res = await api.onStorage().as('unlimited').withQuery({ save_as: 1 }).getAbsolute(activeFile.url).then(res => res.expectStatus(200));
+			expect(res.headers['content-length']).to.be.greaterThan(0);
+			expect(res.headers['content-disposition']).to.contain('attachment');
 		});
 
 	});

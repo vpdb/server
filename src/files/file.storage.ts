@@ -205,7 +205,7 @@ export class FileStorage extends Api {
 	 * Retrieves a storage item and does all checks but the quota check.
 	 *
 	 * @param {Context} ctx Koa context
-	 * @returns {Promise<[File, boolean]>} File and true if public
+	 * @returns {Promise<[File, boolean]>} File and true if free
 	 */
 	private async find(ctx: Context): Promise<[File, boolean]> {
 
@@ -218,28 +218,34 @@ export class FileStorage extends Api {
 		const variation = file.getVariation(ctx.params.variation);
 		const isPublic = file.isPublic(variation);
 
-		// if inactive and user is not logged or not the owner, refuse.
-		if (!file.is_active) {
-			if (!ctx.state.user) {
-				throw new ApiError('You must provide credentials for inactive files.').log(ctx.state.authError).status(401);
-			}
-			if (!file._created_by._id.equals(ctx.state.user._id)) {
-				throw new ApiError('You must own inactive files in order to access them.').status(403);
-			}
+		// validate variation
+		if (ctx.params.variation && !variation) {
+			throw new ApiError('No such variation. Valid variations for this file: [ %s ].',
+				file.getVariations().map(f => f.name).join(', ')).status(404);
 		}
 
-		// at this point, we can serve the file if it's free
+		// conditions for public: cost = -1 and is active.
 		if (isPublic) {
-			return [file, isPublic];
+			return [file, true];
 		}
 
-		// we also serve it if it's free and the user is logged
+		// from here on, user must be logged
+		if (!ctx.state.user) {
+			throw new ApiError('Must be logged when accessing non-public files').status(401);
+		}
+
+		// if inactive and not the owner, refuse.
+		if (!file.is_active && !file._created_by._id.equals(ctx.state.user._id)) {
+			throw new ApiError('You must own inactive files in order to access them.').status(403);
+		}
+
+		// now, if it's free, serve it for free
 		if (file.isFree(variation) && ctx.state.user) {
-			return [file, isPublic];
+			return [file, true];
 		}
 
-		// if the user is the owner, serve directly (owned files don't count as credits)
-		if ((file._created_by as any).equals(ctx.state.user._id)) {
+		// if the user is the owner, serve it for free too.
+		if (file._created_by._id.equals(ctx.state.user._id)) {
 			return [file, true];
 		}
 		return [file, false];
@@ -260,18 +266,14 @@ export class FileStorage extends Api {
 
 		const now = Date.now();
 
-		// validate variation
 		const variation = file.getVariation(variationName);
-		if (variationName && !variation) {
-			throw new ApiError('No such variation. Valid variations for this file: [ %s ].',
-				file.getVariations().map(f => f.name).join(', ')).status(404);
-		}
 		const path = file.getPath(variation);
 
 		let stats: Stats;
 		try {
 			stats = await statAsync(path);
 			// variation creation has already begun but not finished
+			/* istanbul ignore if: this is really hard to test because it's a race condition */
 			if (stats.size === 0) {
 				logger.info('[FileStorage.serve] Waiting for %s to finish', file.toShortString());
 				await processorQueue.waitForVariationCreation(file, variation);
@@ -314,7 +316,7 @@ export class FileStorage extends Api {
 			readStream = createReadStream(path);
 
 			// configure stream
-			readStream.on('error', err => {
+			readStream.on('error', /* istanbul ignore next */ err => {
 				logger.error('[FileStorage.serve] Error before streaming %s from storage: %s', file.toShortString(variation), err);
 				reject(err);
 			});
@@ -331,7 +333,7 @@ export class FileStorage extends Api {
 			// start streaming
 			ctx.status = 200;
 			readStream.pipe(ctx.res)
-				.on('error', (err: Error) => {
+				.on('error', /* istanbul ignore next */  (err: Error) => {
 					logger.error('[FileStorage.serve] Error while streaming %s from storage: %s', file.toShortString(variation), err);
 					reject(err);
 				});

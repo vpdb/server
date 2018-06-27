@@ -20,7 +20,7 @@
 import { assign, keys, values } from 'lodash';
 import chalk from 'chalk';
 
-import { Context } from '../types/context';
+import { Context } from '../typings/context';
 import { logger } from '../logger';
 import { ApiError, ApiValidationError } from '../api.error';
 import { Error } from 'tslint/lib/error';

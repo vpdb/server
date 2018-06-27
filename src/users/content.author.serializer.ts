@@ -18,7 +18,7 @@
  */
 
 import { state } from '../state';
-import { Context } from '../common/types/context';
+import { Context } from '../common/typings/context';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { ContentAuthor } from './content.author';
 import { User } from './user';

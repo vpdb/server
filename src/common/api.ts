@@ -19,7 +19,7 @@
 
 import { parse as parseUrl, format as formatUrl } from 'url';
 import { difference, isObject, keys, pick, extend, values, map, intersection } from 'lodash';
-import { Context } from './types/context';
+import { Context } from './typings/context';
 import { logger } from './logger';
 import { config, settings } from './settings';
 import { ApiError, ApiValidationError } from './api.error';

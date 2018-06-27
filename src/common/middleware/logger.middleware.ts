@@ -20,7 +20,7 @@
 import bytes = require('bytes');
 import chalk, { Chalk, ColorSupport } from 'chalk';
 
-import { Context } from '../types/context';
+import { Context } from '../typings/context';
 import { logger } from '../logger';
 
 const Counter = require('passthrough-counter');

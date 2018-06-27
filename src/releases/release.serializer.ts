@@ -21,9 +21,9 @@ import { assign, flatten, orderBy, compact, uniq, intersection, pick, includes, 
 import { Document } from 'mongoose';
 
 import { state } from '../state';
-import { Context } from '../common/types/context';
+import { Context } from '../common/typings/context';
 import { Serializer, SerializerOptions } from '../common/serializer';
-import { Thumb } from '../common/types/serializers';
+import { Thumb } from '../common/typings/serializers';
 import { Release } from './release';
 import { ReleaseVersion } from './release.version';
 import { ReleaseFileFlavor, ReleaseVersionFile } from './release.version.file';

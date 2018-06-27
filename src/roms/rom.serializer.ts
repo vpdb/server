@@ -19,7 +19,7 @@
 
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { Rom } from './rom';
-import { Context } from '../common/types/context';
+import { Context } from '../common/typings/context';
 import { pick } from 'lodash';
 import { state } from '../state';
 import { File } from '../files/file';

@@ -23,7 +23,7 @@ import pathToRegexp from 'path-to-regexp';
 
 import { state } from '../state';
 import { logger } from './logger';
-import { Context } from './types/context';
+import { Context } from './typings/context';
 import { User } from '../users/user';
 import { Release } from '../releases/release';
 import { MetricsDocument, MetricsModel } from 'mongoose';

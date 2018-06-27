@@ -21,10 +21,10 @@ import { Document, ModeratedDocument, Types } from 'mongoose';
 import { get, isArray, defaultsDeep, assign, pick } from 'lodash';
 
 import { state } from '../state';
-import { Context } from './types/context';
+import { Context } from './typings/context';
 import { File } from '../files/file';
 import { ReleaseVersionFile } from '../releases/release.version.file';
-import { Thumb } from './types/serializers';
+import { Thumb } from './typings/serializers';
 
 export abstract class Serializer<T extends Document | ModeratedDocument> {
 

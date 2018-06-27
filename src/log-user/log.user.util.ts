@@ -22,7 +22,7 @@ import { isEmpty, reduce, isEqual } from 'lodash';
 import { state } from '../state';
 import { logger } from '../common/logger';
 import { slackbot } from '../common/slackbot';
-import { Context } from '../common/types/context';
+import { Context } from '../common/typings/context';
 import { User } from '../users/user';
 
 export class LogUserUtil {

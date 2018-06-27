@@ -21,7 +21,7 @@ import randomstring from 'randomstring';
 import { assign, keys, sum, uniq, values } from 'lodash';
 
 import { state } from '../state';
-import { Context } from '../common/types/context';
+import { Context } from '../common/typings/context';
 import { acl } from '../common/acl';
 import { logger } from '../common/logger';
 import { config } from '../common/settings';

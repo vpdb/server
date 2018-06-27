@@ -19,7 +19,7 @@
 
 import { assign, pick } from 'lodash';
 import { quota } from '../common/quota';
-import { Context } from '../common/types/context';
+import { Context } from '../common/typings/context';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { File } from './file';
 import { Metadata } from './metadata/metadata';

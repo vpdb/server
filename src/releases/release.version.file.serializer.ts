@@ -20,7 +20,7 @@
 import { state } from '../state';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { ReleaseVersionFile } from './release.version.file';
-import { Context } from '../common/types/context';
+import { Context } from '../common/typings/context';
 import { Build } from '../builds/build';
 import { File } from '../files/file';
 import { User } from '../users/user';

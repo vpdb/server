@@ -21,7 +21,7 @@ import { pick } from 'lodash';
 
 import { state } from '../state';
 import { Api } from '../common/api';
-import { Context } from '../common/types/context';
+import { Context } from '../common/typings/context';
 import { config } from '../common/settings';
 
 export class LogUserApi extends Api {

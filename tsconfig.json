@@ -10,8 +10,8 @@
 		"outDir": "build",
 		"paths": {
 			"*": [
-				"node_modules/*",
-				"src/common/types/*"
+				"typings/*",
+				"node_modules/@types"
 			]
 		}
 	},

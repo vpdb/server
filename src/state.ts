@@ -21,8 +21,8 @@ import { Model, Document } from 'mongoose';
 import { upperFirst } from 'lodash';
 import IORedis from 'ioredis';
 
-import { Models } from './common/types/models';
-import { Serializers } from './common/types/serializers';
+import { Models } from './common/typings/models';
+import { Serializers } from './common/typings/serializers';
 import { config } from './common/settings';
 
 

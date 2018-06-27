@@ -20,7 +20,7 @@
 import { existsSync } from 'fs';
 import { isAbsolute, resolve } from 'path';
 import { isArray, isFunction, isObject, isUndefined, keys } from 'lodash';
-import { VpdbConfig } from './types/config';
+import { VpdbConfig } from './typings/config';
 import { logger } from './logger';
 import { setttingValidations } from './settings.validator';
 

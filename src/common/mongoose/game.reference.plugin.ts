@@ -21,7 +21,7 @@ import { Document, GameReferenceDocument, GameReferenceOptions, Model, ModelProp
 import { assign, isArray, isEmpty, isObject, map } from 'lodash';
 
 import { state } from '../../state';
-import { Context } from '../types/context';
+import { Context } from '../typings/context';
 import { config } from '../settings';
 import { Game } from '../../games/game';
 import { User } from '../../users/user';

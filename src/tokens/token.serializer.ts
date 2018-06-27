@@ -19,7 +19,7 @@
 
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { Token } from './token';
-import { Context } from '../common/types/context';
+import { Context } from '../common/typings/context';
 import { pick } from 'lodash';
 import UAParser from 'ua-parser-js';
 

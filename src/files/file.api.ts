@@ -19,7 +19,7 @@
 
 import { state } from '../state';
 import { Api } from '../common/api';
-import { Context } from '../common/types/context';
+import { Context } from '../common/typings/context';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
 import { FileStorage } from './file.storage';

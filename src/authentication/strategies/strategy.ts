@@ -19,7 +19,7 @@
 
 /* istanbul ignore file */
 import { AuthenticationApi, OAuthProfile } from '../authentication.api';
-import { Context } from '../../common/types/context';
+import { Context } from '../../common/typings/context';
 import { logger } from '../../common/logger';
 import { ApiError } from '../../common/api.error';
 

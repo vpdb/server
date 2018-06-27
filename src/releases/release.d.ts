@@ -22,7 +22,7 @@ import { User } from '../users/user';
 import { ReleaseVersion } from './release.version';
 import { ContentAuthor } from '../users/content.author';
 import { Tag } from '../tags/tag';
-import { Thumb } from '../common/types/serializers';
+import { Thumb } from '../common/typings/serializers';
 import { ReleaseFileFlavor } from './release.version.file';
 
 export interface Release extends ModeratedDocument, GameReferenceDocument, PrettyIdDocument, MetricsDocument, FileReferenceDocument {

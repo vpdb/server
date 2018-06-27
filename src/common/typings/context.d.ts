@@ -17,18 +17,43 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-declare module "@koa/cors" {
-	import * as Koa from 'koa';
-	namespace cors {
-		interface Options {
-			origin?: string | ((ctx: Koa.Context) => boolean | string);
-			exposeHeaders?: string[];
-			maxAge?: number;
-			credentials?: boolean;
-			allowMethods?: string[];
-			allowHeaders?: string[];
-		}
+import { Context as KoaContext } from 'koa';
+import { User } from '../../users/user';
+import { Token } from '../../tokens/token';
+import { ApiError } from '../api.error';
+
+export interface Context extends KoaContext {
+
+	state: {
+		/**
+		 * The currently logged user or null if not authenticated.
+		 */
+		user: User;
+
+		/**
+		 * If logged with an app token, this is it
+		 */
+		appToken: Token;
+
+		/**
+		 * The type of the token used for authentication.
+		 * One of: [ `jwt-refreshed`, `jwt`, `application` ]
+		 */
+		tokenType: string;
+
+		/**
+		 * Scopes of the token
+		 */
+		tokenScopes: string[];
+
+		/**
+		 * If app token, the name of the auth provider, e.g. "github", "google".
+		 */
+		tokenProvider: string;
+
+		/**
+		 * Set when authentication failed.
+		 */
+		authError: ApiError;
 	}
-	function cors(options?: cors.Options): Koa.Middleware;
-	export = cors;
 }

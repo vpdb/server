@@ -23,10 +23,10 @@ import { parse, stringify } from 'querystring'
 import randomString from 'randomstring';
 
 import { logger } from '../../common/logger';
-import { Context } from '../../common/types/context';
+import { Context } from '../../common/typings/context';
 import { ApiError } from '../../common/api.error';
 import { OAuthProfile } from '../authentication.api';
-import { VpdbIpsConfig } from '../../common/types/config';
+import { VpdbIpsConfig } from '../../common/typings/config';
 import { Strategy } from './strategy';
 
 /**

@@ -23,7 +23,7 @@ import { state } from '../state';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { Game, GameRestrictions } from './game';
 import { File } from '../files/file';
-import { Context } from '../common/types/context';
+import { Context } from '../common/typings/context';
 import { config } from '../common/settings';
 import { ipdb } from '../common/ipdb';
 

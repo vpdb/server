@@ -18,7 +18,7 @@
  */
 
 import { Document, MetricsDocument } from 'mongoose';
-import { VpdbQuotaConfigPlan } from '../common/types/config';
+import { VpdbQuotaConfigPlan } from '../common/typings/config';
 
 /**
  * The user model as it comes from the database.

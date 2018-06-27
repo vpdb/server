@@ -25,7 +25,7 @@ import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
 import { acl } from '../common/acl';
 import { logger } from '../common/logger';
-import { Context } from '../common/types/context';
+import { Context } from '../common/typings/context';
 import { ipdb } from '../common/ipdb';
 import { mailer } from '../common/mailer';
 import { LogEventUtil } from '../log-event/log.event.util';

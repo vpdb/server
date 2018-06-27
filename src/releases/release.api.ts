@@ -26,7 +26,7 @@ import { Types } from 'mongoose';
 import { state } from '../state';
 import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
-import { Context } from '../common/types/context';
+import { Context } from '../common/typings/context';
 import { acl } from '../common/acl';
 import { logger } from '../common/logger';
 import { SerializerOptions } from '../common/serializer';

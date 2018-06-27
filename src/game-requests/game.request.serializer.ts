@@ -22,7 +22,7 @@ import { pick } from 'lodash';
 import { state } from '../state';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { GameRequest } from './game.request';
-import { Context } from '../common/types/context';
+import { Context } from '../common/typings/context';
 import { Game } from '../games/game';
 import { User } from '../users/user';
 

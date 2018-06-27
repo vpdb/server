@@ -20,7 +20,7 @@
 import { pick } from 'lodash';
 
 import { state } from '../state';
-import { Context } from '../common/types/context';
+import { Context } from '../common/typings/context';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { Comment } from './comment';
 import { User } from '../users/user';

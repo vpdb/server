@@ -20,7 +20,7 @@
 import { reduce, pick, isEqual, isObject, keys } from 'lodash';
 
 import { state } from '../state';
-import { Context } from '../common/types/context';
+import { Context } from '../common/typings/context';
 import { slackbot } from '../common/slackbot';
 
 export class LogEventUtil {

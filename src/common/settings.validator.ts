@@ -22,7 +22,7 @@ import { existsSync, lstatSync } from 'fs';
 import { isLength, isEmail } from 'validator';
 import { isArray, isNumber, isBoolean, isObject, isString, keys } from 'lodash';
 import { dirname } from 'path';
-import { VpdbConfig } from './types/config';
+import { VpdbConfig } from './typings/config';
 import { fileTypes } from '../files/file.types';
 
 export const setttingValidations = {

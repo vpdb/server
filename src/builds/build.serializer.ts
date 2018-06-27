@@ -20,7 +20,7 @@
 import { pick, assign } from 'lodash';
 import { Build } from './build';
 import { Serializer, SerializerOptions } from '../common/serializer';
-import { Context } from '../common/types/context';
+import { Context } from '../common/typings/context';
 import { state } from '../state';
 import { User } from '../users/user';
 

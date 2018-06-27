@@ -18,9 +18,8 @@
  */
 
 import { isArray, isObject, isUndefined, sum } from 'lodash';
-import { VpdbPlanCategoryCost, VpdbPlanCost, VpdbQuotaConfig } from './types/config';
+import { VpdbPlanCategoryCost, VpdbPlanCost, VpdbQuotaConfig } from './typings/config';
 import { User } from '../users/user';
-import { Context } from 'context';
 import { ApiError } from './api.error';
 import { config } from './settings';
 import { logger } from './logger';
@@ -28,6 +27,7 @@ import { File } from '../files/file';
 import { FileVariation } from '../files/file.variations';
 import { FileDocument } from '../files/file.document';
 import { state } from '../state';
+import { Context } from './typings/context';
 
 export class Quota {
 

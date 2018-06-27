@@ -140,7 +140,7 @@
 		"nyc": "^12.0.2",
 		"pleasejs": "^0.4.2",
 		"superagent": "^3.8.3",
-		"ts-node": "^6.1.0",
+		"ts-node": "^7.0.0",
 		"tslint": "^5.10.0",
 		"typescript": "^2.9.2"
 	},

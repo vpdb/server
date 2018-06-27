@@ -22,7 +22,7 @@ import { extend } from 'lodash';
 import { Api } from '../common/api';
 import { logger } from '../common/logger';
 import { config } from '../common/settings';
-import { Context } from '../common/types/context';
+import { Context } from '../common/typings/context';
 import { gitInfo } from '../common/gitinfo';
 import { ipdb } from '../common/ipdb';
 import { roles } from '../common/acl';

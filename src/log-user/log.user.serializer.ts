@@ -21,7 +21,7 @@ import { pick } from 'lodash';
 
 import { state } from '../state';
 import { Serializer, SerializerOptions } from '../common/serializer';
-import { Context } from '../common/types/context';
+import { Context } from '../common/typings/context';
 import { LogUser } from './log.user';
 import { User } from '../users/user';
 

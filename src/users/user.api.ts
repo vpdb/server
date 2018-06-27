@@ -20,7 +20,7 @@
 import { assignIn, pick, assign, isString, isNumber, isObject, uniq, escapeRegExp, difference, includes } from 'lodash';
 
 import { state } from '../state';
-import { Context } from '../common/types/context';
+import { Context } from '../common/typings/context';
 import { Api } from '../common/api';
 import { ApiError, ApiValidationError } from '../common/api.error';
 import { mailer } from '../common/mailer';

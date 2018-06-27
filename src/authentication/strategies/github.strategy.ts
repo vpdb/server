@@ -23,7 +23,7 @@ import { parse, stringify } from 'querystring'
 import randomString from 'randomstring';
 
 import { config } from '../../common/settings';
-import { Context } from '../../common/types/context';
+import { Context } from '../../common/typings/context';
 import { ApiError } from '../../common/api.error';
 import { OAuthProfile } from '../authentication.api';
 import { Strategy } from './strategy';

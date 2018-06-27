@@ -20,7 +20,7 @@
 import { isArray, keys } from 'lodash';
 import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
-import { Context } from '../common/types/context';
+import { Context } from '../common/typings/context';
 import { logger } from '../common/logger';
 import { AuthenticationUtil } from './authentication.util';
 

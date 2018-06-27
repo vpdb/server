@@ -19,7 +19,7 @@
 
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { Medium } from './medium';
-import { Context } from '../common/types/context';
+import { Context } from '../common/typings/context';
 import { pick } from 'lodash';
 import { File } from '../files/file';
 import { state } from '../state';

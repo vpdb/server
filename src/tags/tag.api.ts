@@ -23,7 +23,7 @@ import { Types } from 'mongoose';
 import { state } from '../state';
 import { Api } from '../common/api';
 import { acl } from '../common/acl';
-import { Context } from '../common/types/context';
+import { Context } from '../common/typings/context';
 import { logger } from '../common/logger';
 import { ApiError } from '../common/api.error';
 

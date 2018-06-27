@@ -21,7 +21,7 @@ import { isArray, pick } from 'lodash';
 import { ModerationData } from 'mongoose';
 
 import { state } from '../../state';
-import { Context } from '../types/context';
+import { Context } from '../typings/context';
 import { User } from '../../users/user';
 import { Serializer, SerializerOptions } from '../serializer';
 

@@ -25,7 +25,7 @@ import unzip from 'unzip';
 import archiver, { Archiver } from 'archiver';
 
 import { Api } from '../common/api';
-import { Context } from '../common/types/context';
+import { Context } from '../common/typings/context';
 import { User, UserPreferences } from '../users/user';
 import { Release } from './release';
 import { logger } from '../common/logger';

@@ -20,7 +20,7 @@
 import { assign, pick, find, uniq, mapValues, pickBy, isEmpty, keys } from 'lodash';
 import { createHash } from 'crypto';
 import { config } from '../common/settings';
-import { Context } from '../common/types/context';
+import { Context } from '../common/typings/context';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { realtime } from '../common/realtime';
 import { User } from './user';

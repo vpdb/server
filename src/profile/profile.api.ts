@@ -23,7 +23,7 @@ import randomstring from 'randomstring';
 import { state } from '../state';
 import { Api } from '../common/api';
 import { acl } from '../common/acl';
-import { Context } from '../common/types/context';
+import { Context } from '../common/typings/context';
 import { quota } from '../common/quota';
 import { logger } from '../common/logger';
 import { LogUserUtil } from '../log-user/log.user.util';

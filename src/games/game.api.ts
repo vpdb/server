@@ -38,7 +38,7 @@ import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
 import { acl } from '../common/acl';
 import { config } from '../common/settings';
-import { Context } from '../common/types/context';
+import { Context } from '../common/typings/context';
 import { logger } from '../common/logger';
 import { SerializerOptions } from '../common/serializer';
 import { mailer } from '../common/mailer';

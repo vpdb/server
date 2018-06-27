@@ -21,7 +21,7 @@
 import { OAuth2Client } from 'google-auth-library';
 
 import { config } from '../../common/settings';
-import { Context } from '../../common/types/context';
+import { Context } from '../../common/typings/context';
 import { Strategy } from './strategy';
 import { OAuthProfile } from '../authentication.api';
 import { logger } from '../../common/logger';

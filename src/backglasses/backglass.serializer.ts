@@ -22,7 +22,7 @@ import { pick } from 'lodash';
 import { state } from '../state';
 import { Backglass } from './backglass';
 import { Serializer, SerializerOptions } from '../common/serializer';
-import { Context } from '../common/types/context';
+import { Context } from '../common/typings/context';
 import { BackglassVersion } from './backglass.version';
 import { Game } from '../games/game';
 import { User } from '../users/user';

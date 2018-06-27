@@ -21,7 +21,7 @@ import { Types } from 'mongoose';
 import { extend } from 'lodash';
 
 import { Api } from '../common/api';
-import { Context } from '../common/types/context';
+import { Context } from '../common/typings/context';
 import { state } from '../state';
 import { logger } from '../common/logger';
 import { ApiError } from '../common/api.error';

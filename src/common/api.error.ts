@@ -23,7 +23,7 @@ import { compact, isArray, isObject, isEmpty } from 'lodash';
 import { format as sprintf } from 'util';
 
 import { logger } from './logger';
-import { Context } from './types/context';
+import { Context } from './typings/context';
 
 export class ApiError extends Error {
 

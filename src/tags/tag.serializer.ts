@@ -20,7 +20,7 @@
 import { state } from '../state';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { Tag } from './tag';
-import { Context } from '../common/types/context';
+import { Context } from '../common/typings/context';
 import { pick } from 'lodash';
 import { User } from '../users/user';
 

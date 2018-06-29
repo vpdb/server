@@ -163,7 +163,8 @@
 		],
 		"exclude": [
 			"src/**/*.spec.js",
-			"**/*.d.ts"
+			"**/*.d.ts",
+			"src/files/processor/processor.ts"
 		],
 		"reporter": [
 			"lcov",

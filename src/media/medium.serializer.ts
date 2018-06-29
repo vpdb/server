@@ -29,6 +29,7 @@ import { Release } from '../releases/release';
 
 export class MediumSerializer extends Serializer<Medium> {
 
+	/* istanbul ignore next */
 	protected _reduced(ctx: Context, doc: Medium, opts: SerializerOptions): Medium {
 		return this._simple(ctx, doc, opts);
 	}
@@ -50,6 +51,7 @@ export class MediumSerializer extends Serializer<Medium> {
 		return medium;
 	}
 
+	/* istanbul ignore next */
 	protected _detailed(ctx: Context, doc: Medium, opts: SerializerOptions): Medium {
 		return this._simple(ctx, doc, opts);
 	}

@@ -31,6 +31,7 @@ export class VideoMetadata extends Metadata {
 
 	constructor() {
 		super();
+		/* istanbul ignore if */
 		if (config.ffmpeg && config.ffmpeg.path) {
 			ffmpeg.setFfmpegPath(config.ffmpeg.path);
 		}

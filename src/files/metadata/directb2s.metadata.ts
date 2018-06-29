@@ -67,6 +67,7 @@ export class Directb2sMetadata extends Metadata {
 		return pick(metadata, 'name', 'version', 'author', 'gamename');
 	}
 
+	/* istanbul ignore next */
 	serializeVariation(metadata: { [p: string]: any }): { [p: string]: any } {
 		return undefined;
 	}

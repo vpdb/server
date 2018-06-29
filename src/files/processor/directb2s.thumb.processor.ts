@@ -112,7 +112,7 @@ export class Directb2sThumbProcessor implements CreationProcessor<BackglassVaria
 							.pipe(writeStream)
 							.on('error', this.error(reject, 'Error writing encoded stream.'));
 
-					}).catch((err:Error) => {
+					}).catch(/* istanbul ignore next */ (err:Error) => {
 						reject(new ApiError('Error getting size from image.').log(err));
 					});
 				}
@@ -130,6 +130,7 @@ export class Directb2sThumbProcessor implements CreationProcessor<BackglassVaria
 	}
 
 	private error(reject: (err: Error) => void, message: string) {
+		/* istanbul ignore next */
 		return (err: Error) => {
 			reject(new ApiError(message).log(err));
 		}

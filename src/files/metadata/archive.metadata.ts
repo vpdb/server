@@ -49,6 +49,7 @@ export class ArchiveMetadata extends Metadata {
 		return metadata;
 	}
 
+	/* istanbul ignore next */
 	serializeVariation(metadata: { [p: string]: any }): { [p: string]: any } {
 		return metadata;
 	}

@@ -27,87 +27,9 @@ import { prettyIdPlugin } from '../common/mongoose/pretty.id.plugin';
 import { fileReferencePlugin } from '../common/mongoose/file.reference.plugin';
 import { metricsPlugin } from '../common/mongoose/metrics.plugin';
 import { Medium } from './medium';
+import { mediumCategories } from './medium.category';
 
 const shortId = require('shortid32');
-
-// NOTE: All categories without "fileType" fail validation. Add fileType when supported.
-export const mediumCategories: { [key: string]: MediumCategory } = {
-	flyer_image: {
-		folder: 'Flyer Images',
-		children: ['Back', 'Front', 'Inside1', 'Inside2', 'Inside3', 'Inside4', 'Inside5', 'Inside6'],
-		mimeCategory: 'image',
-		reference: 'game'
-	},
-	gameplay_video: {
-		folder: 'Gameplay Videos',
-		mimeCategory: 'video',
-		reference: 'game'
-	},
-	instruction_card: {
-		folder: 'Instruction Cards',
-		mimeCategory: 'image',
-		reference: 'game'
-	},
-	backglass_image: {
-		folder: 'Backglass Images',
-		fileType: 'backglass',
-		mimeCategory: 'image',
-		reference: 'game'
-	},
-	backglass_video: {
-		folder: 'Backglass Videos',
-		fileType: 'backglass',
-		mimeCategory: 'video',
-		reference: 'game'
-	},
-	dmd_image: {
-		folder: 'DMD Images',
-		mimeCategory: 'image',
-		reference: 'game'
-	},
-	dmd_video: {
-		folder: 'DMD Videos',
-		mimeCategory: 'video',
-		reference: 'game'
-	},
-	real_dmd_image: {
-		folder: 'Real DMD Images',
-		mimeCategory: 'image',
-		reference: 'game'
-	},
-	real_dmd_video: {
-		folder: 'Real DMD Videos',
-		mimeCategory: 'video',
-		reference: 'game'
-	},
-	table_audio: {
-		folder: 'Table Audio',
-		mimeCategory: 'audio',
-		reference: 'game'
-	},
-	playfield_image: {
-		variations: {
-			fs: { folder: 'Table Images', fileType: 'playfield-fs' },
-			ws: { folder: 'Table Images Desktop', fileType: 'playfield-ws' }
-		},
-		mimeCategory: 'image',
-		reference: 'release'
-	},
-	playfield_video: {
-		variations: {
-			fs: { folder: 'Table Videos' },
-			ws: { folder: 'Table Videos Desktop' }
-		},
-		mimeCategory: 'video',
-		reference: 'release'
-	},
-	wheel_image: {
-		folder: 'Wheel Images',
-		fileType: 'logo',
-		mimeCategory: 'image',
-		reference: 'game'
-	}
-};
 
 //-----------------------------------------------------------------------------
 // SCHEMA
@@ -144,7 +66,7 @@ mediumSchema.plugin(metricsPlugin);
 //-----------------------------------------------------------------------------
 // VALIDATIONS
 //-----------------------------------------------------------------------------
-mediumSchema.path('category').validate(() => {
+mediumSchema.path('category').validate(function() {
 	let [categoryName, childName] = this.category.split('/');
 	let category = mediumCategories[categoryName];
 
@@ -175,6 +97,7 @@ mediumSchema.path('category').validate(() => {
 
 		} else if (!category.variations[childName].fileType) {
 			// invalidate if no fileType is set
+			/* istanbul ignore next: there are no supported categories with unsupported sub categories */
 			this.invalidate('category', 'Sorry, ' + category.variations[childName].folder + ' are not supported yet.');
 		}
 
@@ -191,7 +114,7 @@ mediumSchema.path('category').validate(() => {
 	}
 });
 
-mediumSchema.path('_file').validate(async (value: any) => {
+mediumSchema.path('_file').validate(async function(value: any) {
 	const file = await state.models.File.findById(value).exec();
 	let [categoryName, childName] = this.category.split('/');
 	let category = mediumCategories[categoryName];
@@ -216,12 +139,3 @@ mediumSchema.path('_file').validate(async (value: any) => {
 	}
 	return true;
 });
-
-interface MediumCategory {
-	folder?: string;
-	fileType?: string;
-	children?: string[];
-	variations?: { [key: string]: { folder: string, fileType?: string } };
-	mimeCategory: string;
-	reference: string;
-}

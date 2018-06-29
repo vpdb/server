@@ -138,21 +138,21 @@ async function authenticateWithAppToken(ctx: Context, token: { value: string, fr
 	const vpdbUserIdHeader = 'x-vpdb-user-id';
 	const providerUserIdHeader = 'x-user-id';
 
-	// application access tokens aren't allowed in the url
+	// application tokens aren't allowed in the url
 	if (token.fromUrl) {
-		throw new ApiError('App tokens must be provided in the header.').status(401);
+		throw new ApiError('Application tokens must be provided in the header.').status(401);
 	}
 
 	const appToken = await state.models.Token.findOne({ token: token.value }).populate('_created_by').exec();
 
 	// fail if not found
 	if (!appToken) {
-		throw new ApiError('Invalid app token.').status(401);
+		throw new ApiError('Invalid application token.').status(401);
 	}
 
 	// fail if incorrect plan
 	if (appToken.type === 'personal' && !(appToken._created_by as User).planConfig.enableAppTokens) {
-		throw new ApiError('Your current plan "%s" does not allow the use of app tokens. Upgrade or contact an admin.', (appToken._created_by as User).planConfig.id).status(401);
+		throw new ApiError('Your current plan "%s" does not allow the use of personal tokens. Upgrade or contact an admin.', (appToken._created_by as User).planConfig.id).status(401);
 	}
 
 	// fail if expired
@@ -172,8 +172,8 @@ async function authenticateWithAppToken(ctx: Context, token: { value: string, fr
 
 	let user: User;
 
-	// additional checks for application (provider) token
-	if (appToken.type === 'application') {
+	// additional checks for provider token
+	if (appToken.type === 'provider') {
 
 		ctx.state.tokenProvider = appToken.provider;
 

@@ -41,7 +41,7 @@ export class TokenApi extends Api {
 
 		// check if the plan allows application token creation
 		if (scope.has(ctx.request.body.scopes, Scope.ALL) && !ctx.state.user.planConfig.enableAppTokens) {
-			throw new ApiError('Your current plan "%s" does not allow the creation of application "all" access tokens. Upgrade or contact an admin.', ctx.state.user.planConfig.id).status(401);
+			throw new ApiError('Your current plan "%s" does not allow the creation of application tokens. Upgrade or contact an admin.', ctx.state.user.planConfig.id).status(401);
 		}
 
 		// tokenType == "jwt" means the token comes from a "fresh" login (not a
@@ -75,10 +75,10 @@ export class TokenApi extends Api {
 			}
 		}
 
-		// for application tokens, check additional permissions.
+		// for provider tokens, check additional permissions.
 		let newToken: Token;
-		if (ctx.request.body.type === 'application') {
-			const granted = await acl.isAllowed(ctx.state.user.id, 'tokens', 'application-token');
+		if (ctx.request.body.type === 'provider') {
+			const granted = await acl.isAllowed(ctx.state.user.id, 'tokens', 'provider-token');
 			if (!granted) {
 				throw new ApiError('Permission denied.').status(401);
 			}
@@ -129,8 +129,8 @@ export class TokenApi extends Api {
 				is_active: appToken.is_active,
 			} as Token;
 
-			// additional props for application token
-			if (appToken.type === 'application') {
+			// additional props for provider token
+			if (appToken.type === 'provider') {
 				tokenInfo.provider = appToken.provider;
 			} else {
 				tokenInfo.for_user = (appToken._created_by as User).id;
@@ -164,7 +164,7 @@ export class TokenApi extends Api {
 	public async list(ctx:Context) {
 
 		const query = { _created_by: ctx.state.user._id, type: 'personal' };
-		const allowedTypes = [ 'personal', 'application' ];
+		const allowedTypes = [ 'personal', 'provider' ];
 
 		// filter by type?
 		if (ctx.query.type && includes(allowedTypes, ctx.query.type)) {

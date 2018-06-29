@@ -201,12 +201,12 @@ describe('The authentication engine of the VPDB API', () => {
 			let res = await api.as('admin').markTeardown().post('/v1/tokens', {
 				label: 'Auth test token',
 				password: api.getUser('admin').password,
-				provider: 'ipbtest', type: 'application',
+				provider: 'ipbtest', type: 'provider',
 				scopes: [ 'community', 'service' ]
 			}).then(res => res.expectStatus(201));
 			await api
 				.post('/v1/authenticate', { token: res.data.token })
-				.then(res => res.expectError(401, 'cannot use token of type "application"'));
+				.then(res => res.expectError(401, 'cannot use token of type "provider"'));
 		});
 
 		it('should fail if the user does not exist', async () => {

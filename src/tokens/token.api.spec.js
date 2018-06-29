@@ -1,6 +1,6 @@
 /*
- * VPDB - Visual Pinball Database
- * Copyright (C) 2016 freezy <freezy@xbmc.org>
+ * VPDB - Virtual Pinball Database
+ * Copyright (C) 2018 freezy <freezy@vpdb.io>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,12 +22,12 @@
 const request = require('superagent');
 const expect = require('expect.js');
 
-const superagentTest = require('../modules/superagent-test');
-const hlp = require('../modules/helper');
+const superagentTest = require('../../test/modules/superagent-test');
+const hlp = require('../../test/modules/helper');
 
 superagentTest(request);
 
-describe('The VPDB `Token` API', function() {
+describe.skip('The VPDB `Token` API', function() {
 
 	describe('when creating a new personal token with scope "all"', function() {
 
@@ -312,7 +312,7 @@ describe('The VPDB `Token` API', function() {
 		});
 	});
 
-	describe('when creating a new application token', () => {
+	describe('when creating a new provider token', () => {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				admin: { roles: ['admin'], _plan: 'subscribed' },

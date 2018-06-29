@@ -213,10 +213,7 @@ export class FileDocument {
 	 * @returns {FileVariation | null} File variation or null if the variation doesn't exist.
 	 */
 	public static getVariation(file: File, variationName: string): FileVariation | null {
-		if (!variationName) {
-			return null;
-		}
-		return fileTypes.getVariations(file.file_type, file.mime_type).find(v => v.name === variationName);
+		return fileTypes.getVariation(file.file_type, file.mime_type, variationName);
 	}
 
 	/**

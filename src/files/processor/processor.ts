@@ -17,7 +17,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-/* istanbul ignore file */
 import { File } from '../file';
 import { FileVariation } from '../file.variations';
 

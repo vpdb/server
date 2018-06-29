@@ -76,21 +76,6 @@ fileSchema.plugin(metricsPlugin);
 
 
 //-----------------------------------------------------------------------------
-// VALIDATIONS
-//-----------------------------------------------------------------------------
-
-fileSchema.path('mime_type').validate(function (mimeType: string) {
-	// will be validated by enum
-	if (!this.file_type || !fileTypes.exists(this.file_type)) {
-		return true;
-	}
-	if (!includes(fileTypes.getMimeTypes(this.file_type), mimeType)) {
-		this.invalidate('mime_type', 'Invalid MIME type "' + mimeType + '" for file type "' + this.file_type + '". Valid MIME types are: ["' + fileTypes.getMimeTypes(this.file_type).join('", "') + '"].');
-	}
-});
-
-
-//-----------------------------------------------------------------------------
 // METHODS
 //-----------------------------------------------------------------------------
 

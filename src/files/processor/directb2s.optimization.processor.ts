@@ -80,6 +80,8 @@ export class Directb2sOptimizationProcessor implements OptimizationProcessor<Bac
 					let source = new Readable();
 					let started = false;
 					let quanter = new PngQuant([192, '--ordered']);
+
+					/* istanbul ignore next */
 					let handleError = (err: Error) => {
 						logger.error('[Directb2sOptimizationProcessor] %s', err.message);
 						if (!started) {
@@ -144,6 +146,7 @@ export class Directb2sOptimizationProcessor implements OptimizationProcessor<Bac
 				}
 			});
 
+			/* istanbul ignore next */
 			parser.on('opencdata', () => {
 				emptyElement = false;
 				write(closePrevious);
@@ -151,15 +154,18 @@ export class Directb2sOptimizationProcessor implements OptimizationProcessor<Bac
 				closePrevious = '';
 			});
 
+			/* istanbul ignore next */
 			parser.on('cdata', text => {
 				write(text);
 			});
 
+			/* istanbul ignore next */
 			parser.on('closecdata', () => {
 				write(']]>');
 				emptyElement = false;
 			});
 
+			/* istanbul ignore next */
 			parser.on('comment', comment => {
 				emptyElement = false;
 				write(closePrevious);
@@ -167,6 +173,7 @@ export class Directb2sOptimizationProcessor implements OptimizationProcessor<Bac
 				closePrevious = '';
 			});
 
+			/* istanbul ignore next */
 			parser.on('processinginstruction', instr => {
 				emptyElement = false;
 				write(closePrevious);
@@ -174,6 +181,7 @@ export class Directb2sOptimizationProcessor implements OptimizationProcessor<Bac
 				closePrevious = '';
 			});
 
+			/* istanbul ignore next */
 			parser.on('error', err => {
 				reject(new ApiError('Error parsing direct2b file at %s', file.toShortString(variation)).log(err));
 			});
@@ -183,8 +191,10 @@ export class Directb2sOptimizationProcessor implements OptimizationProcessor<Bac
 	}
 
 	private escape(string: string) {
-		let pattern;
-		if (string === null || string === undefined) return;
+		/* istanbul ignore if */
+		if (string === null || string === undefined) {
+			return;
+		}
 		const map: { [key: string]: string } = {
 			'>': '&gt;',
 			'<': '&lt;',
@@ -194,8 +204,7 @@ export class Directb2sOptimizationProcessor implements OptimizationProcessor<Bac
 			'\r': '&#xD;',
 			'\n': '&#xA;'
 		};
-		pattern = '([&"<>\'\n\r])';
+		const pattern = '([&"<>\'\n\r])';
 		return string.replace(new RegExp(pattern, 'g'), (str, item) => map[item]);
 	}
-
 }

@@ -24,7 +24,7 @@ export interface Token extends Document {
 	id: string,
 	token: string,
 	label: string,
-	type: 'personal' | 'application' | 'jwt-refreshed' | 'jwt',
+	type: 'personal' | 'provider' | 'jwt-refreshed' | 'jwt',
 	scopes: string[],
 	provider: string,
 	is_active: boolean,

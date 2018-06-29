@@ -39,7 +39,7 @@ export async function init(): Promise<void> {
 		{
 			roles: 'admin',
 			allows: [
-				{ resources: 'tokens', permissions: ['application-token'] },
+				{ resources: 'tokens', permissions: ['provider-token'] },
 				{ resources: 'roles',  permissions: ['list'] },
 				{ resources: 'users',  permissions: ['update', 'list', 'full-details', 'send-confirmation'] },
 				{ resources: 'cache',  permissions: ['delete'] }

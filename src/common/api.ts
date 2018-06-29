@@ -55,7 +55,7 @@ export abstract class Api {
 		return async (ctx: Context) => {
 
 			// if this resource is a service resource, only check if scope is correct and no permissions are needed.
-			if (scopes && scope.isValid([Scope.SERVICE], scopes) && !resource && !permission && ctx.state.tokenType === 'application') {
+			if (scopes && scope.isValid([Scope.SERVICE], scopes) && !resource && !permission && ctx.state.tokenType === 'provider') {
 				return await handler(ctx);
 			}
 

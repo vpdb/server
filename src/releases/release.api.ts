@@ -599,7 +599,7 @@ export class ReleaseApi extends Api {
 
 		// filter by provider user id
 		if (ctx.query.provider_user) {
-			if (ctx.state.tokenType !== 'application') {
+			if (ctx.state.tokenType !== 'provider') {
 				throw new ApiError('Must be authenticated with provider token in order to filter by provider user ID.').status(400);
 			}
 			const user = await state.models.User.findOne({ ['providers.' + ctx.state.tokenProvider + '.id']: String(ctx.query.provider_user) });

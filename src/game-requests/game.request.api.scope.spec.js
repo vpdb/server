@@ -70,7 +70,7 @@ describe('The scopes of the `Game Request` API', function() {
 				return request
 					.post('/api/v1/tokens')
 					.as('root')
-					.send({ label: 'service-token', password: hlp.getUser('root').password, provider: 'github', type: 'application', scopes: [ 'service' ] })
+					.send({ label: 'service-token', password: hlp.getUser('root').password, provider: 'github', type: 'provider', scopes: [ 'service' ] })
 					.promise();
 
 			}).then(res => {

@@ -105,9 +105,9 @@ export class UserApi extends Api {
 
 		let name, provider, isNew;
 
-		// make sure there's an app token
-		if (!ctx.state.appToken) {
-			throw new ApiError('Resource only available with application token.').status(400);
+		// make sure there's a provider token
+		if (!ctx.state.appToken || ctx.state.tokenType !== 'provider') {
+			throw new ApiError('Resource only available with provider token.').status(400);
 		}
 		provider = ctx.state.appToken.provider;
 

@@ -28,7 +28,7 @@ import { config } from '../common/settings';
 
 const shortId = require('shortid32');
 
-const validTypes = ['personal', 'application'];
+const validTypes = ['personal', 'provider'];
 
 //-----------------------------------------------------------------------------
 // SCHEMA
@@ -39,7 +39,7 @@ export const tokenFields = {
 	label: { type: String, required: 'A label must be provided' },
 	type: { type: String, 'enum': validTypes, required: true },
 	scopes: { type: [String] },
-	provider: { type: String }, // must be set for application tokens
+	provider: { type: String }, // must be set for provider tokens
 	is_active: { type: Boolean, required: true, 'default': true },
 	last_used_at: { type: Date },
 	expires_at: { type: Date, required: true },
@@ -70,9 +70,9 @@ tokenSchema.path('scopes').validate(function (scopes: string[]) {
 });
 
 tokenSchema.path('type').validate(function (type: string) {
-	if (type === 'application') {
+	if (type === 'provider') {
 		if (!this.provider) {
-			this.invalidate('provider', 'Provider is required for application tokens.');
+			this.invalidate('provider', 'Provider is required for provider tokens.');
 		}
 		const providers: string[] = [];
 		if (config.vpdb.passport.google.enabled) {

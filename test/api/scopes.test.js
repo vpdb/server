@@ -102,13 +102,6 @@ describe('The scopes of the VPDB API', function() {
 			request.get('/api/v1/games/1234/release-name').with(tokenAll).end(hlp.status(404, done));
 		});
 
-		it('should allow access to media creation', done => {
-			request.post('/api/v1/media').send({}).with(tokenAll).end(hlp.status(422, done));
-		});
-		it('should allow access to media deletion', done => {
-			request.del('/api/v1/media/1234').with(tokenAll).end(hlp.status(404, done));
-		});
-
 		it('should allow access to ipdb info retrieval', done => {
 			request.get('/api/v1/ipdb/1234?dryrun=1').with(tokenAll).end(hlp.status(200, done));
 		});
@@ -216,13 +209,6 @@ describe('The scopes of the VPDB API', function() {
 		});
 		it('should deny access to game release name generation', done => {
 			request.get('/api/v1/games/1234/release-name').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-
-		it('should deny access to media creation', done => {
-			request.post('/api/v1/media').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to media deletion', done => {
-			request.del('/api/v1/media/1234').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
 		});
 
 		it('should deny access to ipdb info retrieval', done => {
@@ -339,13 +325,6 @@ describe('The scopes of the VPDB API', function() {
 		});
 		it('should deny access to game release name generation', done => {
 			request.get('/api/v1/games/1234/release-name').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-
-		it('should deny access to media creation', done => {
-			request.post('/api/v1/media').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to media deletion', done => {
-			request.del('/api/v1/media/1234').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
 		});
 
 		it('should deny access to ipdb info retrieval', done => {

@@ -35,7 +35,7 @@ router.put('/v1/users/:id', api.auth(api.update.bind(api), 'users', 'update', [ 
 router.del('/v1/users/:id', api.auth(api.del.bind(api), 'users', 'delete', [ Scope.ALL ]));
 
 router.post('/v1/users/:id/star',   api.auth(starApi.star('user').bind(starApi), 'users', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
-router.delete('/v1/users/:id/star', api.auth(starApi.unstar('user').bind(starApi), 'users', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
+router.del('/v1/users/:id/star', api.auth(starApi.unstar('user').bind(starApi), 'users', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
 router.get('/v1/users/:id/star',    api.auth(starApi.get('user').bind(starApi), 'users', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
 
 router.get('/v1/users/:id/events',            eventApi.list({ byActor: true }).bind(eventApi));

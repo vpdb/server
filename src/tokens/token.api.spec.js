@@ -27,7 +27,7 @@ const hlp = require('../../test/modules/helper');
 
 superagentTest(request);
 
-describe.skip('The VPDB `Token` API', function() {
+describe('The VPDB `Token` API', function() {
 
 	describe('when creating a new personal token with scope "all"', function() {
 

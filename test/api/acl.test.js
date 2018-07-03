@@ -151,23 +151,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/user/events').end(hlp.status(401, done));
 		});
 
-		it('should deny access to listing tokens', function(done) {
-			request.get('/api/v1/tokens').end(hlp.status(401, done));
-		});
-
-		it('should deny access to creating tokens', function(done) {
-			request.post('/api/v1/tokens').send({}).end(hlp.status(401, done));
-		});
-
-		it('should deny access to updating tokens', function(done) {
-			request.patch('/api/v1/tokens/1234').send({}).end(hlp.status(401, done));
-		});
-
-		it('should deny access to deleting tokens', function(done) {
-			request.del('/api/v1/tokens/1234').end(hlp.status(401, done));
-		});
-
-
 		it('should deny access to release name creation', function(done) {
 			request.get('/api/v1/games/test/release-name').send({}).end(hlp.status(401, done));
 		});
@@ -294,22 +277,6 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to events by current user', function(done) {
 			request.get('/api/v1/user/events').as('member').end(hlp.status(200, done));
-		});
-
-		it('should allow access to listing tokens', function(done) {
-			request.get('/api/v1/tokens').as('member').end(hlp.status(200, done));
-		});
-
-		it('should allow access to creating tokens', function(done) {
-			request.post('/api/v1/tokens').as('member').send({ password: hlp.getUser('member').password, scopes: [ 'all' ] }).end(hlp.status(201, done));
-		});
-
-		it('should allow access to updating tokens', function(done) {
-			request.patch('/api/v1/tokens/1234').as('member').send({}).end(hlp.status(404, done));
-		});
-
-		it('should allow access to deleting tokens', function(done) {
-			request.del('/api/v1/tokens/1234').as('member').end(hlp.status(404, done));
 		});
 
 		it('should allow access to release name creation', function(done) {

@@ -1,16 +1,14 @@
 "use strict"; /* global describe, before, after, it */
 
-var _ = require('lodash');
-var gm = require('gm');
-var fs = require('fs');
-var path = require('path');
-var async = require('async');
-var request = require('superagent');
-var expect = require('expect.js');
-var pleasejs = require('pleasejs');
+const _ = require('lodash');
+const gm = require('gm');
+const async = require('async');
+const request = require('superagent');
+const expect = require('expect.js');
+const pleasejs = require('pleasejs');
 
-var superagentTest = require('../modules/superagent-test');
-var hlp = require('../modules/helper');
+const superagentTest = require('../modules/superagent-test');
+const hlp = require('../modules/helper');
 
 superagentTest(request);
 
@@ -156,7 +154,7 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should fail validations when providing a different file type as playfield image', function(done) {
-			var user = 'member';
+			const user = 'member';
 			hlp.file.createVpt(user, request, function(vptfile) {
 				gm(1080, 1920, pleasejs.make_color()).toBuffer('PNG', function(err, data) {
 					if (err) {
@@ -171,7 +169,7 @@ describe('The VPDB `release` API', function() {
 						.send(data)
 						.as(user)
 						.end(function(err, res) {
-							var playfieldId = res.body.id;
+							const playfieldId = res.body.id;
 							expect(err).to.not.be.ok();
 							expect(res.status).to.be(201);
 							hlp.doomFile(user, playfieldId);
@@ -196,7 +194,7 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should fail validations when providing a playfield image with the wrong aspect ratio', function(done) {
-			var user = 'member';
+			const user = 'member';
 			hlp.file.createVpt(user, request, function(vptfile) {
 				hlp.file.createBackglass(user, request, function(backglass) {
 					hlp.doomFile(user, backglass.id);
@@ -220,7 +218,7 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should fail when providing the same build twice', function(done) {
-			var user = 'member';
+			const user = 'member';
 			hlp.game.createGame('moderator', request, function(game) {
 				hlp.file.createVpt(user, request, function(vptfile) {
 					hlp.file.createPlayfield(user, request, 'fs', function(playfield) {
@@ -257,7 +255,7 @@ describe('The VPDB `release` API', function() {
 		it('should fail validations when providing a non-existent playfield video');
 
 		it('should succeed when providing minimal data', function(done) {
-			var user = 'member';
+			const user = 'member';
 			hlp.game.createGame('moderator', request, function(game) {
 				hlp.file.createVpt(user, request, function(vptfile) {
 					hlp.file.createPlayfield(user, request, 'fs', function(playfield) {
@@ -292,7 +290,7 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should succeed when providing full data', function(done) {
-			var user = 'member';
+			const user = 'member';
 			hlp.game.createGame('moderator', request, function(game) {
 				hlp.file.createVpts(user, request, 2, function(vptfiles) {
 					hlp.file.createPlayfields(user, request, 'fs', 2, function(playfieldImages) {
@@ -347,9 +345,9 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should correctly inherit release date if set', function(done) {
-			var user = 'member';
-			var date1 = '2015-01-01T00:00:00.000Z';
-			var date2 = '2015-08-01T00:00:00.000Z';
+			const user = 'member';
+			const date1 = '2015-01-01T00:00:00.000Z';
+			const date2 = '2015-08-01T00:00:00.000Z';
 
 			hlp.game.createGame('moderator', request, function(game) {
 				hlp.file.createVpts(user, request, 2, function(vptfiles) {
@@ -399,7 +397,7 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should succeed when rotating a ws playfield to a fs file', function(done) {
-			var user = 'member';
+			const user = 'member';
 			hlp.game.createGame('moderator', request, function(game) {
 				hlp.file.createVpt(user, request, function(vptfile) {
 					hlp.file.createPlayfield(user, request, 'fs', 'playfield', function(playfield) {
@@ -438,7 +436,7 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should fail when rotating playfield not belonging to the release', function(done) {
-			var user = 'member';
+			const user = 'member';
 			hlp.game.createGame('moderator', request, function(game) {
 				hlp.file.createVpt(user, request, function(vptfile) {
 					hlp.file.createPlayfield(user, request, 'fs', 'playfield', function(playfield) {
@@ -535,9 +533,9 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should succeed when updating text fields', function(done) {
-			var newName = 'My edited name';
-			var newDescription = 'My edited description';
-			var newAcknowledgements = 'My edited acknowledgements';
+			const newName = 'My edited name';
+			const newDescription = 'My edited description';
+			const newAcknowledgements = 'My edited acknowledgements';
 			hlp.release.createRelease('member', request, function(release) {
 				request
 					.patch('/api/v1/releases/' + release.id)
@@ -554,14 +552,14 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should succeed when updating all fields', function(done) {
-			var newName = 'Updated name';
-			var newDescription = 'Updated description';
-			var newAcknowledgements = 'Updated acknowledgements';
-			var links = [
+			const newName = 'Updated name';
+			const newDescription = 'Updated description';
+			const newAcknowledgements = 'Updated acknowledgements';
+			const links = [
 				{ label: 'first link', url: 'https://vpdb.io/somelink' },
 				{ label: 'second link', url: 'https://vpdb.io/someotherlink' }
 			];
-			var newTags = [ 'hd', 'dof' ];
+			const newTags = ['hd', 'dof'];
 			hlp.release.createRelease('member', request, function(release) {
 				request
 					.patch('/api/v1/releases/' + release.id)
@@ -591,9 +589,9 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should succeed updating as non-creator but author', function(done) {
-			var newName = 'My edited name';
-			var newDescription = 'My edited description';
-			var newAcknowledgements = 'My edited acknowledgements';
+			const newName = 'My edited name';
+			const newDescription = 'My edited description';
+			const newAcknowledgements = 'My edited acknowledgements';
 			hlp.release.createRelease('member', request, function(release) {
 				let originalAuthors = release.authors.map(a => { return { _user: a.user.id, roles: a.roles };});
 				request
@@ -618,9 +616,9 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should succeed updating as non-creator but moderator', function(done) {
-			var newName = 'My edited name';
-			var newDescription = 'My edited description';
-			var newAcknowledgements = 'My edited acknowledgements';
+			const newName = 'My edited name';
+			const newDescription = 'My edited description';
+			const newAcknowledgements = 'My edited acknowledgements';
 			hlp.release.createRelease('member', request, function(release) {
 				request
 					.patch('/api/v1/releases/' + release.id)
@@ -637,7 +635,7 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should fail for a non-existing tag', function(done) {
-			var newTags = [ 'hd', 'i-dont-exist' ];
+			const newTags = ['hd', 'i-dont-exist'];
 			hlp.release.createRelease('member', request, function(release) {
 				request
 					.patch('/api/v1/releases/' + release.id)
@@ -651,7 +649,7 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should succeed when updating tags', function(done) {
-			var newTags = [ 'hd', 'dof' ];
+			const newTags = ['hd', 'dof'];
 			hlp.release.createRelease('member', request, function(release) {
 				request
 					.patch('/api/v1/releases/' + release.id)
@@ -668,7 +666,7 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should succeed when updating links', function(done) {
-			var links = [
+			const links = [
 				{ label: 'first link', url: 'https://vpdb.io/somelink' },
 				{ label: 'second link', url: 'https://vpdb.io/someotherlink' }
 			];
@@ -746,7 +744,7 @@ describe('The VPDB `release` API', function() {
 
 		it('should fail validations when providing valid file reference with invalid meta data', function(done) {
 
-			var user = 'member';
+			const user = 'member';
 			hlp.release.createRelease(user, request, function(release) {
 				hlp.file.createVpt('member', request, function(vptfile) {
 					hlp.doomFile(user, vptfile.id);
@@ -780,7 +778,7 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should fail when adding an existing version', function(done) {
-			var user = 'member';
+			const user = 'member';
 			hlp.release.createRelease(user, request, function(release) {
 				request
 					.post('/api/v1/releases/' + release.id + '/versions')
@@ -803,7 +801,7 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should succeed when providing valid data', function(done) {
-			var user = 'member';
+			const user = 'member';
 			hlp.release.createRelease(user, request, function(release) {
 				hlp.file.createVpt(user, request, function(vptfile) {
 					hlp.file.createPlayfield(user, request, 'fs', function (playfield) {
@@ -822,8 +820,8 @@ describe('The VPDB `release` API', function() {
 								} ]
 							}).end(function(err, res) {
 								hlp.expectStatus(err, res, 201);
-								var version = res.body;
-								expect(version).to.be.ok();
+							const version = res.body;
+							expect(version).to.be.ok();
 								expect(version.changes).to.be('*Second release.*');
 								done();
 							});
@@ -833,7 +831,7 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should succeed when logged as non-creator but author', function(done) {
-			var user = 'member';
+			const user = 'member';
 			hlp.release.createRelease(user, request, function(release) {
 				let originalAuthors = release.authors.map(a => { return { _user: a.user.id, roles: a.roles };});
 				request
@@ -858,8 +856,8 @@ describe('The VPDB `release` API', function() {
 										} ]
 									}).end(function(err, res) {
 										hlp.expectStatus(err, res, 201);
-										var version = res.body;
-										expect(version).to.be.ok();
+									const version = res.body;
+									expect(version).to.be.ok();
 										expect(version.changes).to.be('*Second release.*');
 										done();
 									});
@@ -871,7 +869,7 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should succeed when logged as non-creator but moderator', function(done) {
-			var user = 'member';
+			const user = 'member';
 			hlp.release.createRelease(user, request, function(release) {
 				hlp.file.createVpt(user, request, function(vptfile) {
 					hlp.file.createPlayfield(user, request, 'fs', function (playfield) {
@@ -889,8 +887,8 @@ describe('The VPDB `release` API', function() {
 								} ]
 							}).end(function(err, res) {
 								hlp.expectStatus(err, res, 201);
-								var version = res.body;
-								expect(version).to.be.ok();
+							const version = res.body;
+							expect(version).to.be.ok();
 								expect(version.changes).to.be('*Second release.*');
 								done();
 							});
@@ -926,12 +924,12 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should fail for duplicate compat/flavor', function(done) {
-			var user = 'member';
+			const user = 'member';
 			hlp.release.createRelease(user, request, function(release) {
-				var versionFile = release.versions[0].files[0];
+				const versionFile = release.versions[0].files[0];
 				hlp.file.createVpt(user, request, function(vptfile) {
 					hlp.file.createPlayfield(user, request, 'fs', function(playfield) {
-						var data = {
+						const data = {
 							files: [{
 								_file: vptfile.id,
 								_playfield_image: playfield.id,
@@ -954,8 +952,8 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should succeed when providing valid data', function(done) {
-			var user = 'member';
-			var newChanges = 'New changes.';
+			const user = 'member';
+			const newChanges = 'New changes.';
 			hlp.release.createRelease(user, request, function(release) {
 				hlp.file.createVpt(user, request, function(vptfile) {
 					hlp.file.createPlayfield(user, request, 'fs', function(playfield) {
@@ -982,7 +980,7 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should fail when data is missing', function(done) {
-			var user = 'member';
+			const user = 'member';
 			hlp.release.createRelease(user, request, function(release) {
 				hlp.file.createVpt(user, request, function(vptfile) {
 					request
@@ -1008,7 +1006,7 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should succeed when rotating an existing playfield image', function(done) {
-			var user = 'member';
+			const user = 'member';
 			hlp.release.createRelease(user, request, function(release) {
 				let playfieldImage = release.versions[0].files[0].playfield_image;
 				request
@@ -1031,7 +1029,7 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should fail when rotating not a playfield image', function(done) {
-			var user = 'member';
+			const user = 'member';
 			hlp.release.createRelease(user, request, function(release) {
 				request
 					.patch('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
@@ -1061,8 +1059,8 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should succeed when logged as non-creator but author', function(done) {
-			var user = 'member';
-			var newChanges = 'New changes.';
+			const user = 'member';
+			const newChanges = 'New changes.';
 			hlp.release.createRelease(user, request, function(release) {
 				let originalAuthors = release.authors.map(a => { return { _user: a.user.id, roles: a.roles };});
 				request
@@ -1077,7 +1075,7 @@ describe('The VPDB `release` API', function() {
 							.send({ changes: newChanges})
 							.end(function(err, res) {
 								hlp.expectStatus(err, res, 200);
-								var version = res.body;
+								const version = res.body;
 								expect(version).to.be.ok();
 								expect(version.changes).to.be(newChanges);
 								done();
@@ -1087,8 +1085,8 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should succeed when logged as non-creator but moderator', function(done) {
-			var user = 'member';
-			var newChanges = 'New changes.';
+			const user = 'member';
+			const newChanges = 'New changes.';
 			hlp.release.createRelease(user, request, function(release) {
 				request
 					.patch('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
@@ -1096,7 +1094,7 @@ describe('The VPDB `release` API', function() {
 					.send({ changes: newChanges})
 					.end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
-						var version = res.body;
+						const version = res.body;
 						expect(version).to.be.ok();
 						expect(version.changes).to.be(newChanges);
 						done();
@@ -1108,7 +1106,7 @@ describe('The VPDB `release` API', function() {
 
 	describe('when validating a file of a release', function() {
 
-		var release;
+		let release;
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: ['member'] },
@@ -1290,9 +1288,9 @@ describe('The VPDB `release` API', function() {
 		it('should update all the necessary download counters.', function(done) {
 
 			hlp.release.createRelease('contributor', request, function(release) {
-				var url = '/storage/v1/releases/' + release.id;
-				var body = {
-					files: [ release.versions[0].files[0].file.id ],
+				const url = '/storage/v1/releases/' + release.id;
+				const body = {
+					files: [release.versions[0].files[0].file.id],
 					media: {
 						playfield_image: false,
 						playfield_video: false
@@ -1303,7 +1301,7 @@ describe('The VPDB `release` API', function() {
 					request.get(hlp.urlPath(url)).query({ token: token, body: JSON.stringify(body) }).end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
 
-						var tests = [];
+						const tests = [];
 
 						// game downloads
 						tests.push(function(next) {
@@ -1345,7 +1343,7 @@ describe('The VPDB `release` API', function() {
 	describe('when listing releases', function() {
 
 		var numReleases = 4;
-		var releases;
+		let releases;
 
 		before(function(done) {
 			hlp.setupUsers(request, {
@@ -1394,9 +1392,9 @@ describe('The VPDB `release` API', function() {
 
 					hlp.expectStatus(err, res, 200);
 
-					var rls1 = _.find(res.body, { id: releases[0].id });
-					var rls2 = _.find(res.body, { id: releases[1].id });
-					var rls3 = _.find(res.body, { id: releases[2].id });
+					const rls1 = _.find(res.body, { id: releases[0].id });
+					const rls2 = _.find(res.body, { id: releases[1].id });
+					const rls3 = _.find(res.body, { id: releases[2].id });
 
 					expect(rls1.thumb.image.url).to.be(releases[0].versions[0].files[0].playfield_image.url);
 					expect(rls2.thumb.image.url).to.be(releases[1].versions[0].files[1].playfield_image.url);
@@ -1413,9 +1411,9 @@ describe('The VPDB `release` API', function() {
 
 					hlp.expectStatus(err, res, 200);
 
-					var rls1 = _.find(res.body, { id: releases[0].id });
-					var rls2 = _.find(res.body, { id: releases[1].id });
-					var rls3 = _.find(res.body, { id: releases[2].id });
+					const rls1 = _.find(res.body, { id: releases[0].id });
+					const rls2 = _.find(res.body, { id: releases[1].id });
+					const rls3 = _.find(res.body, { id: releases[2].id });
 
 					expect(rls1.thumb.image.url).to.be(releases[0].versions[0].files[0].playfield_image.variations.medium.url);
 					expect(rls2.thumb.image.url).to.be(releases[1].versions[0].files[1].playfield_image.variations.medium.url);
@@ -1432,9 +1430,9 @@ describe('The VPDB `release` API', function() {
 
 					hlp.expectStatus(err, res, 200);
 
-					var rls1 = _.find(res.body, { id: releases[0].id });
-					var rls2 = _.find(res.body, { id: releases[1].id });
-					var rls3 = _.find(res.body, { id: releases[2].id });
+					const rls1 = _.find(res.body, { id: releases[0].id });
+					const rls2 = _.find(res.body, { id: releases[1].id });
+					const rls3 = _.find(res.body, { id: releases[2].id });
 
 					expect(rls1.thumb.image.url).to.be(releases[0].versions[0].files[0].playfield_image.url);
 					expect(rls2.thumb.image.url).to.be(releases[1].versions[0].files[0].playfield_image.url);
@@ -1451,7 +1449,7 @@ describe('The VPDB `release` API', function() {
 
 					hlp.expectStatus(err, res, 200);
 
-					var rls4 = _.find(res.body, { id: releases[3].id });
+					const rls4 = _.find(res.body, { id: releases[3].id });
 					expect(rls4.thumb.image.url).to.be(releases[3].versions[1].files[0].playfield_image.url);
 
 					done();
@@ -1466,7 +1464,7 @@ describe('The VPDB `release` API', function() {
 
 					hlp.expectStatus(err, res, 200);
 
-					for (var i = 0; i < numReleases; i++) {
+					for (let i = 0; i < numReleases; i++) {
 						expect(res.body[i].thumb.image.url).to.contain('/square/');
 					}
 					done();
@@ -1504,7 +1502,7 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should list only releases for given IDs', function(done) {
-			var ids = [ releases[0].id, releases[1].id ];
+			const ids = [releases[0].id, releases[1].id];
 			request.get('/api/v1/releases?ids=' + ids.join(',')).end(function(err, res) {
 				hlp.expectStatus(err, res, 200);
 				expect(res.body).to.have.length(ids.length);
@@ -1516,15 +1514,17 @@ describe('The VPDB `release` API', function() {
 
 		it('should list only tagged releases', function(done) {
 
-			var tags = [ 'dof' ];
+			const tags = ['dof'];
 
 			request.get('/api/v1/releases?tags=' + tags.join(',')).end(function(err, res) {
 				hlp.expectStatus(err, res, 200);
 
-				var tagFilter = tags.map(function(tag) { return { id: tag }; });
-				var taggedReleases = _.filter(releases, { tags: tagFilter });
+				const tagFilter = tags.map(function(tag) {
+					return { id: tag };
+				});
+				const taggedReleases = _.filter(releases, { tags: tagFilter });
 				expect(res.body).to.have.length(taggedReleases.length);
-				for (var i = 0; i < taggedReleases.length; i++) {
+				for (let i = 0; i < taggedReleases.length; i++) {
 					expect(_.find(res.body, { id: taggedReleases[i].id })).to.be.ok();
 				}
 				done();
@@ -1533,15 +1533,17 @@ describe('The VPDB `release` API', function() {
 
 		it('should list only tagged releases for multiple tags', function(done) {
 
-			var tags = [ 'dof', 'wip' ];
+			const tags = ['dof', 'wip'];
 
 			request.get('/api/v1/releases?tags=' + tags.join(',')).end(function(err, res) {
 				hlp.expectStatus(err, res, 200);
 
-				var tagFilter = tags.map(function(tag) { return { id: tag }; });
-				var taggedReleases = _.filter(releases, { tags: tagFilter });
+				const tagFilter = tags.map(function(tag) {
+					return { id: tag };
+				});
+				const taggedReleases = _.filter(releases, { tags: tagFilter });
 				expect(res.body).to.have.length(taggedReleases.length);
-				for (var i = 0; i < taggedReleases.length; i++) {
+				for (let i = 0; i < taggedReleases.length; i++) {
 					expect(_.find(res.body, { id: taggedReleases[i].id })).to.be.ok();
 				}
 				done();
@@ -1592,7 +1594,7 @@ describe('The VPDB `release` API', function() {
 
 		it('should list only releases for a given build', function(done) {
 
-			var builds = [ '10.x' ];
+			const builds = ['10.x'];
 			request.get('/api/v1/releases?builds=' + builds.join(',')).end(function(err, res) {
 				hlp.expectStatus(err, res, 200);
 
@@ -1610,7 +1612,7 @@ describe('The VPDB `release` API', function() {
 
 		it('should list only releases for multiple builds', function(done) {
 
-			var builds = [ '10.x', 'physmod5' ];
+			const builds = ['10.x', 'physmod5'];
 			request.get('/api/v1/releases?builds=' + builds.join(',')).end(function(err, res) {
 				hlp.expectStatus(err, res, 200);
 
@@ -1629,7 +1631,7 @@ describe('The VPDB `release` API', function() {
 		it('should contain a thumb field per file if requested', function(done) {
 			request.get('/api/v1/releases?thumb_format=square&thumb_per_file=true').end(function(err, res) {
 				hlp.expectStatus(err, res, 200);
-				for (var i = 0; i < res.body.length; i++) {
+				for (let i = 0; i < res.body.length; i++) {
 					expect(res.body[i].versions[0].files[0].thumb).to.be.an('object');
 					expect(res.body[i].versions[0].files[0].thumb.url).to.contain('/square/');
 				}

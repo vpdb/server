@@ -234,7 +234,7 @@ export class AuthenticationApi extends Api {
 			throw new ApiError('Token to exchange for JWT must exclusively be "login" ([ "' + token.scopes.join('", "') + '" ] given).').status(401);
 		}
 		// fail if token expired
-		if (token.expires_at.getTime() < new Date().getTime()) {
+		if (token.expires_at.getTime() < Date.now()) {
 			/* istanbul ignore if */
 			if (config.vpdb.services.sqreen.enabled) {
 				require('sqreen').auth_track(false, { email: (token._created_by as User).email });

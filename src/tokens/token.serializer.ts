@@ -25,6 +25,7 @@ import UAParser from 'ua-parser-js';
 
 export class TokenSerializer extends Serializer<Token> {
 
+	/* istanbul ignore next */
 	protected _reduced(ctx: Context, doc: Token, opts: SerializerOptions): Token {
 		return this._simple(ctx, doc, opts);
 	}

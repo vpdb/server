@@ -316,7 +316,6 @@ describe('The authentication engine of the VPDB API', () => {
 			await api.withToken(res.data.token)
 				.get('/v1/user')
 				.then(res => res.expectStatus(200));
-
 		});
 	});
 
@@ -412,20 +411,6 @@ describe('The authentication engine of the VPDB API', () => {
 
 	describe('when authorization is provided in the URL', () => {
 
-		it('should able to get an access token if the auth token is valid', async () => {
-			const path = '/api/v1/user';
-			res = await api.as('member')
-				.on('storage')
-				.post('/v1/authenticate', { paths: path })
-				.then(res => res.expectStatus(200));
-			expect(res.data).to.be.an('object');
-			expect(res.data).to.have.key(path);
-
-			await api.withQuery({ token: res.data[path] })
-				.get('/v1/user')
-				.then(res => res.expectStatus(200));
-		});
-
 		it('should fail if the token is not path-restricted', async () => {
 			await api.withQuery({ token: api.getToken('member') })
 				.get('/v1/user')
@@ -453,6 +438,20 @@ describe('The authentication engine of the VPDB API', () => {
 			await api.withQuery({ token: 'abcd.123.xyz' })
 				.get('/v1/user')
 				.then(res => res.expectError(401, 'Bad JSON Web Token'));
+		});
+
+		it('should fail if the token is a storage token', async () => {
+			const path = '/api/v1/user';
+			res = await api.as('member')
+				.on('storage')
+				.post('/v1/authenticate', { paths: path })
+				.then(res => res.expectStatus(200));
+			expect(res.data).to.be.an('object');
+			expect(res.data).to.have.key(path);
+
+			await api.withQuery({ token: res.data[path] })
+				.get('/v1/user')
+				.then(res => res.expectError(401, 'invalid scope'));
 		});
 
 		it('should fail if the token is an application access token', async () => {

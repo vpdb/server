@@ -24,7 +24,6 @@ import { Context } from '../common/typings/context';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { Comment } from './comment';
 import { User } from '../users/user';
-import { Release } from '../releases/release';
 
 export class CommentSerializer extends Serializer<Comment> {
 

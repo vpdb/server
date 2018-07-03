@@ -160,7 +160,7 @@ export class TokenApi extends Api {
 			}
 			tokenInfo = {
 				type: decoded.irt ? 'jwt-refreshed' : 'jwt',
-				scopes: ['all'],
+				scopes: decoded.scp,
 				expires_at: new Date(decoded.exp),
 				is_active: true, // JTWs cannot be revoked, so they are always active
 				for_user: decoded.iss,
@@ -174,7 +174,7 @@ export class TokenApi extends Api {
 	}
 
 	/**
-	 * Lists all tokens for the logged user.
+	 * Lists all tokens for the logged user, or provider tokens if permission.
 	 *
 	 * @see GET /v1/tokens
 	 * @param {Context} ctx Koa context
@@ -185,7 +185,21 @@ export class TokenApi extends Api {
 		const allowedTypes = [ 'personal', 'provider' ];
 
 		// filter by type?
-		if (ctx.query.type && includes(allowedTypes, ctx.query.type)) {
+		if (ctx.query.type) {
+
+			// validate type
+			if (!allowedTypes.includes(ctx.query.type)) {
+				throw new ApiError('Invalid type "%s". Valid types are: [ "%s" ].', ctx.query.type, allowedTypes.join('", "')).status(400);
+			}
+
+			// anyone with provider access can list all provider tokens
+			if (ctx.query.type === 'provider') {
+				const canListProviderTokens = await acl.isAllowed(ctx.state.user.id, 'tokens', 'provider-token');
+				if (!canListProviderTokens) {
+					throw new ApiError('No permission to list provider tokens.').status(403);
+				}
+				delete query._created_by;
+			}
 			query.type = ctx.query.type;
 		}
 		let tokens = await state.models.Token.find(query).exec();
@@ -198,7 +212,7 @@ export class TokenApi extends Api {
 	/**
 	 * Updates a token.
 	 *
-	 * @see /v1/tokens/:id
+	 * @see PATCH /v1/tokens/:id
 	 * @param {Context} ctx Koa context
 	 */
 	public async update(ctx: Context) {

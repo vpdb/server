@@ -25,10 +25,10 @@ export const protectedRouter = storage.storageRouter(true);
 export const publicRouter = storage.storageRouter(false);
 
 protectedRouter.post('/v1/files',                  storage.auth(storage.upload.bind(storage), 'files', 'upload', [ Scope.ALL ]));
-protectedRouter.head('/files/:id.:ext',            storage.auth(storage.head.bind(storage), 'files', 'download', [ Scope.ALL ]));
-protectedRouter.head('/files/:variation/:id.:ext', storage.auth(storage.head.bind(storage), 'files', 'download', [ Scope.ALL ]));
-protectedRouter.get('/files/:id.:ext',             storage.auth(storage.get.bind(storage), 'files', 'download', [ Scope.ALL ]));
-protectedRouter.get('/files/:variation/:id.:ext',  storage.auth(storage.get.bind(storage), 'files', 'download', [ Scope.ALL ]));
+protectedRouter.head('/files/:id.:ext',            storage.auth(storage.head.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
+protectedRouter.head('/files/:variation/:id.:ext', storage.auth(storage.head.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
+protectedRouter.get('/files/:id.:ext',             storage.auth(storage.get.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
+protectedRouter.get('/files/:variation/:id.:ext',  storage.auth(storage.get.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
 
 // this is usually handled by nginx directly, but might be used as fallback when there's no file before processors finish.
 publicRouter.head('/files/:id.:ext',            storage.head.bind(storage));

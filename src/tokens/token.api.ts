@@ -34,6 +34,12 @@ const jwt = require('jwt-simple');
 
 export class TokenApi extends Api {
 
+	/**
+	 * Creates a new token.
+	 *
+	 * @see POST /v1/tokens
+	 * @param {Context} ctx Koa context
+	 */
 	public async create(ctx: Context) {
 
 		// default type is "personal".
@@ -105,6 +111,12 @@ export class TokenApi extends Api {
 		return this.success(ctx, state.serializers.Token.detailed(ctx, newToken), 201);
 	}
 
+	/**
+	 * Checks if a token is valid and returns its meta data.
+	 *
+	 * @see GET /v1/tokens/:id
+	 * @param {Context} ctx Koa context
+	 */
 	public async view(ctx: Context) {
 
 		const token = ctx.params.id;
@@ -161,6 +173,12 @@ export class TokenApi extends Api {
 		return this.success(ctx, tokenInfo, 200);
 	}
 
+	/**
+	 * Lists all tokens for the logged user.
+	 *
+	 * @see GET /v1/tokens
+	 * @param {Context} ctx Koa context
+	 */
 	public async list(ctx:Context) {
 
 		const query = { _created_by: ctx.state.user._id, type: 'personal' };
@@ -170,22 +188,40 @@ export class TokenApi extends Api {
 		if (ctx.query.type && includes(allowedTypes, ctx.query.type)) {
 			query.type = ctx.query.type;
 		}
-		let tokens = await state.models.Token.find().exec();
+		let tokens = await state.models.Token.find(query).exec();
 
 		// reduce
 		tokens = tokens.map(token => state.serializers.Token.simple(ctx, token));
 		return this.success(ctx, tokens);
 	}
 
+	/**
+	 * Updates a token.
+	 *
+	 * @see /v1/tokens/:id
+	 * @param {Context} ctx Koa context
+	 */
 	public async update(ctx: Context) {
-		const updatableFields = ['label', 'is_active', 'expires_at', 'scopes']; // TODO enable expires_at only in debug, not in prod
+		const updatableFields = ['label', 'is_active', 'scopes'];
+		if (process.env.NODE_ENV === 'test') {
+			updatableFields.push('expires_at')
+		}
 		const token = await state.models.Token.findOne({ id: ctx.params.id, _created_by: ctx.state.user._id }).exec();
+		if (!token) {
+			throw new ApiError('No token found with ID "%s".', ctx.params.id).status(404);
+		}
 		extend(token, pick(ctx.request.body, updatableFields));
 		await token.save();
 		logger.info('[TokenApi.update] Token "%s" successfully updated.', token.label);
 		return this.success(ctx, state.serializers.Token.simple(ctx, token), 200);
 	}
 
+	/**
+	 * Deletes a token.
+	 *
+	 * @see DELETE /v1/tokens/:id
+	 * @param {Context} ctx Koa context
+	 */
 	public async del(ctx: Context) {
 		const token = await state.models.Token.findOne({ id: ctx.params.id, _created_by: ctx.state.user._id }).exec();
 		if (!token) {

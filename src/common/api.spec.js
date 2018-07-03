@@ -47,8 +47,6 @@ describe('The VPDB API', () => {
 			.then(res => res.expectStatus(200));
 		expect(res.data.app_name).to.be.ok();
 		expect(res.data.app_version).to.be.ok();
-		expect(res.data.app_date).to.be.ok();
-		expect(res.data.app_sha).to.be.ok();
 	});
 
 	it('should list all plans', async () => {

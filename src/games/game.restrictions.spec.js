@@ -19,15 +19,13 @@
 
 "use strict"; /* global describe, before, after, it */
 
-var _ = require('lodash');
-var fs = require('fs');
-var async = require('async');
-var faker = require('faker');
-var request = require('superagent');
-var expect = require('expect.js');
+const _ = require('lodash');
+const faker = require('faker');
+const request = require('superagent');
+const expect = require('expect.js');
 
-var superagentTest = require('../modules/superagent-test');
-var hlp = require('../modules/helper');
+const superagentTest = require('../../test/modules/superagent-test');
+const hlp = require('../../test/modules/helper');
 
 superagentTest(request);
 
@@ -35,8 +33,8 @@ describe('The VPDB restriction feature', function() {
 
 	describe('when dealing with restricted releases', function() {
 
-		var restrictedGame, legalGame;
-		var restrictedRelease, legalRelease;
+		let restrictedGame, legalGame;
+		let restrictedRelease, legalRelease;
 
 		before(function(done) {
 			hlp.setupUsers(request, {
@@ -159,7 +157,7 @@ describe('The VPDB restriction feature', function() {
 		});
 
 		it('should fail posting comments to a restricted release', function(done) {
-			var msg = faker.company.catchPhrase();
+			const msg = faker.company.catchPhrase();
 			request.post('/api/v1/releases/' + restrictedRelease.id + '/comments')
 				.as('moderator')
 				.send({ message: msg })
@@ -202,8 +200,8 @@ describe('The VPDB restriction feature', function() {
 
 	describe('when dealing with restriced backglasses', function() {
 
-		var restrictedGame, legalGame;
-		var restrictedBackglass, legalBackglass;
+		let restrictedGame, legalGame;
+		let restrictedBackglass, legalBackglass;
 
 		before(function(done) {
 			hlp.setupUsers(request, {
@@ -359,8 +357,8 @@ describe('The VPDB restriction feature', function() {
 
 	describe('when dealing with restriced ROMs', function() {
 
-		var restrictedGame, legalGame;
-		var restrictedRom, legalRom;
+		let restrictedGame, legalGame;
+		let restrictedRom, legalRom;
 
 		before(function(done) {
 			hlp.setupUsers(request, {

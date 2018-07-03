@@ -79,18 +79,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/storage/v1/files').end(hlp.status(401, done));
 		});
 
-		it('should allow check for existing games', function(done) {
-			request.head('/api/v1/games/mb').end(hlp.status(404, done));
-		});
-
-		it('should deny access to game creation', function(done) {
-			request.post('/api/v1/games').send({}).end(hlp.status(401, done));
-		});
-
-		it('should deny access to game deletion', function(done) {
-			request.del('/api/v1/games/mb').end(hlp.status(401, done));
-		});
-
 		it('should allow access to ping', function(done) {
 			request.get('/api/v1/ping').end(hlp.status(200, done));
 		});
@@ -219,18 +207,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/storage/v1/files').as('member').end(hlp.status(422, done));
 		});
 
-		it('should allow check for existing games', function(done) {
-			request.head('/api/v1/games/mb').as('member').end(hlp.status(404, done));
-		});
-
-		it('should deny access to game creation', function(done) {
-			request.post('/api/v1/games').send({}).as('member').end(hlp.status(403, done));
-		});
-
-		it('should deny access to game deletion', function(done) {
-			request.del('/api/v1/games/mb').as('member').end(hlp.status(403, done));
-		});
-
 		it('should allow access to ping', function(done) {
 			request.get('/api/v1/ping').as('member').end(hlp.status(200, done));
 		});
@@ -344,18 +320,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/storage/v1/files').as('contributor').send({}).end(hlp.status(422, done));
 		});
 
-		it('should allow check for existing games', function(done) {
-			request.head('/api/v1/games/mb').as('contributor').end(hlp.status(404, done));
-		});
-
-		it('should allow to create games', function(done) {
-			request.post('/api/v1/games').send({}).as('contributor').end(hlp.status(422, done));
-		});
-
-		it('should deny to deleting a game', function(done) {
-			request.del('/api/v1/games/mb').as('contributor').end(hlp.status(403, done));
-		});
-
 		it('should allow access to ping', function(done) {
 			request.get('/api/v1/ping').as('contributor').end(hlp.status(200, done));
 		});
@@ -451,18 +415,6 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to file upload', function(done) {
 			request.post('/storage/v1/files').as('moderator').send({}).end(hlp.status(422, done));
-		});
-
-		it('should allow check for existing games', function(done) {
-			request.head('/api/v1/games/mb').as('moderator').end(hlp.status(404, done));
-		});
-
-		it('should allow to create games', function(done) {
-			request.post('/api/v1/games').send({}).as('moderator').end(hlp.status(422, done));
-		});
-
-		it('should allow deleting a game', function(done) {
-			request.del('/api/v1/games/mb').as('moderator').end(hlp.status(404, done));
 		});
 
 		it('should allow access to ping', function(done) {
@@ -573,18 +525,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/storage/v1/files').as('admin').send({}).end(hlp.status(422, done));
 		});
 
-		it('should allow check for existing games', function(done) {
-			request.head('/api/v1/games/mb').as('admin').end(hlp.status(404, done));
-		});
-
-		it('should deny to create games', function(done) {
-			request.post('/api/v1/games').send({}).as('admin').end(hlp.status(403, done));
-		});
-
-		it('should deny access to game deletion', function(done) {
-			request.del('/api/v1/games/mb').as('admin').end(hlp.status(403, done));
-		});
-
 		it('should allow access to ping', function(done) {
 			request.get('/api/v1/ping').as('admin').end(hlp.status(200, done));
 		});
@@ -672,18 +612,6 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to file upload', function(done) {
 			request.post('/storage/v1/files').as('root').send({}).end(hlp.status(422, done));
-		});
-
-		it('should allow check for existing games', function(done) {
-			request.head('/api/v1/games/mb').as('root').end(hlp.status(404, done));
-		});
-
-		it('should allow to create games', function(done) {
-			request.post('/api/v1/games').send({}).as('root').end(hlp.status(422, done));
-		});
-
-		it('should allow to delete a game', function(done) {
-			request.del('/api/v1/games/mb').as('root').end(hlp.status(404, done));
 		});
 
 		it('should allow access to ping', function(done) {

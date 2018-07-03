@@ -72,23 +72,6 @@ describe('The scopes of the VPDB API', function() {
 			request.post('/api/v1/authenticate').send({}).with(tokenAll).end(hlp.status(400, 'token with "login" scope', done));
 		});
 
-		it('should allow access to game creation', done => {
-			request.post('/api/v1/games').send({}).with(tokenAll).end(hlp.status(422, done));
-		});
-		it('should allow access to game update', done => {
-			request.patch('/api/v1/games/1234').send({}).with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to game deletion', done => {
-			request.del('/api/v1/games/1234').with(tokenAll).end(hlp.status(404, done));
-		});
-
-		it('should allow access to game backglass creation through game', done => {
-			request.post('/api/v1/games/1234/backglasses').send({}).with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to game release name generation', done => {
-			request.get('/api/v1/games/1234/release-name').with(tokenAll).end(hlp.status(404, done));
-		});
-
 		it('should allow access to ipdb info retrieval', done => {
 			request.get('/api/v1/ipdb/1234?dryrun=1').with(tokenAll).end(hlp.status(200, done));
 		});
@@ -156,23 +139,6 @@ describe('The scopes of the VPDB API', function() {
 
 		it('should deny access to authentication', done => {
 			request.post('/api/v1/authenticate').send({}).with(tokenLogin).end(hlp.status(400, 'token with "login" scope', done));
-		});
-
-		it('should deny access to game creation', done => {
-			request.post('/api/v1/games').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to game update', done => {
-			request.patch('/api/v1/games/1234').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to game deletion', done => {
-			request.del('/api/v1/games/1234').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-
-		it('should deny access to game backglass creation through game', done => {
-			request.post('/api/v1/games/1234/backglasses').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to game release name generation', done => {
-			request.get('/api/v1/games/1234/release-name').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
 		});
 
 		it('should deny access to ipdb info retrieval', done => {
@@ -246,23 +212,6 @@ describe('The scopes of the VPDB API', function() {
 
 		it('should deny access to authentication', done => {
 			request.post('/api/v1/authenticate').send({}).with(tokenCommunity).end(hlp.status(400, 'token with "login" scope', done));
-		});
-
-		it('should deny access to game creation', done => {
-			request.post('/api/v1/games').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to game update', done => {
-			request.patch('/api/v1/games/1234').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to game deletion', done => {
-			request.del('/api/v1/games/1234').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-
-		it('should deny access to game backglass creation through game', done => {
-			request.post('/api/v1/games/1234/backglasses').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to game release name generation', done => {
-			request.get('/api/v1/games/1234/release-name').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
 		});
 
 		it('should deny access to ipdb info retrieval', done => {

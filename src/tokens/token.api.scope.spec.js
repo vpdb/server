@@ -27,7 +27,7 @@ const hlp = require('../../test/modules/helper');
 
 superagentTest(request);
 
-describe('The scopes of the `Build` API', function() {
+describe('The scopes of the `Token` API', function() {
 
 	let tokenAll, tokenLogin, tokenCommunity, tokenService;
 	before(function() {

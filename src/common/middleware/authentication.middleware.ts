@@ -156,8 +156,8 @@ async function authenticateWithAppToken(ctx: Context, token: { value: string, fr
 	}
 
 	// fail if expired
-	if (appToken.expires_at.getTime() < new Date().getTime()) {
-		throw new ApiError('Token has expired.').status(401);
+	if (appToken.expires_at.getTime() < Date.now()) {
+		throw new ApiError('Application token has expired.').status(401);
 	}
 
 	// fail if inactive

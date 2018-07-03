@@ -65,8 +65,7 @@ export enum Scope {
 	CREATE = 'create',
 
 	/**
-	 * Used for obtaining storage tokens.
-	 * TODO implement and test
+	 * Download access.
 	 * @type {string}
 	 */
 	STORAGE = 'storage',

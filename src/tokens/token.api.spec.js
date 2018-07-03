@@ -19,6 +19,7 @@
 
 "use strict"; /* global describe, before, after, it */
 
+const _ = require('lodash');
 const request = require('superagent');
 const expect = require('expect.js');
 
@@ -59,6 +60,42 @@ describe('The VPDB `Token` API', function() {
 				.as('subscribed')
 				.send({ label: 'Test Application', password: 'xxx', type: 'personal', scopes: [ 'all' ] })
 				.end(hlp.status(401, 'wrong password', done));
+		});
+
+		it('should fail when logged via oauth and no password is provided', function(done) {
+			request
+				.post('/api/v1/authenticate/mock')
+				.send({
+					provider: 'github',
+					profile: {
+						provider: 'github',
+						id: 666,
+						displayName: 'some name',
+						username: 'usahnaym',
+						profileUrl: 'https://github.com/usah',
+						emails: [ { value: 'usah@vpdb.io' } ]
+					}
+				})
+				.end((err, res) => {
+					hlp.expectStatus(err, res, 200);
+					const token = res.body.token;
+					const user = res.body.user;
+					user._plan = 'subscribed';
+					hlp.doomUser(user.id);
+					request
+						.put('/api/v1/users/' + res.body.user.id)
+						.as('admin')
+						.send(_.pick(user, [ 'name', 'email', 'username', 'is_active', 'roles', '_plan' ]))
+						.end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							request
+								.post('/api/v1/tokens')
+								.with(token)
+								.send({ label: 'My Application', password: hlp.getUser('subscribed').password, type: 'personal', scopes: [ 'all' ] })
+								.end(hlp.status(400, 'set a password under your profile', done));
+						});
+				});
+
 		});
 
 		it('should fail if an invalid type is provided', function(done) {
@@ -117,7 +154,7 @@ describe('The VPDB `Token` API', function() {
 				});
 		});
 
-		it('shoud fail when subscription plan is missing access token permissions', function(done) {
+		it('should fail when subscription plan is missing access token permissions', function(done) {
 			request
 				.post('/api/v1/tokens')
 				.as('free')
@@ -452,6 +489,29 @@ describe('The VPDB `Token` API', function() {
 				});
 		});
 
+		it('should return data for valid storage token', done => {
+			const path = '/foo/bar';
+			request
+				.post('/storage/v1/authenticate')
+				.as('admin')
+				.send({ paths: [ path ]})
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body[path]).to.be.ok();
+					request
+						.get('/api/v1/tokens/' + res.body[path])
+						.end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							expect(res.body.type).to.be('jwt');
+							expect(res.body.scopes).to.eql(['storage']);
+							expect(res.body.is_active).to.be(true);
+							expect(res.body.for_user).to.be(hlp.getUser('admin').id);
+							expect(res.body.for_path).to.be(path);
+							done();
+						});
+				});
+		});
+
 		it('should return data for valid JWT', done => {
 			request
 				.get('/api/v1/tokens/' + hlp.getUser('admin').token)
@@ -473,7 +533,9 @@ describe('The VPDB `Token` API', function() {
 				member: { roles: ['member'] },
 				member1: { roles: ['member'], _plan: 'subscribed' },
 				member2: { roles: ['member'], _plan: 'subscribed' },
-				member3: { roles: ['member'], _plan: 'subscribed' }
+				member3: { roles: ['member'], _plan: 'subscribed' },
+				admin1: { roles: ['admin'], _plan: 'subscribed' },
+				admin2: { roles: ['admin'], _plan: 'subscribed' }
 			}, done);
 		});
 
@@ -481,8 +543,24 @@ describe('The VPDB `Token` API', function() {
 			hlp.cleanup(request, done);
 		});
 
+		it('should fail when invalid type is provided', done => {
+			request
+				.get('/api/v1/tokens')
+				.as('member1')
+				.query({ type: 'foobar' })
+				.end(hlp.status(400, 'invalid type', done));
+		});
+
+		it('should fail when requesting provider tokens without permission', done => {
+			request
+				.get('/api/v1/tokens')
+				.as('member1')
+				.query({ type: 'provider' })
+				.end(hlp.status(403, 'No permission to list provider tokens', done));
+		});
+
 		it('should return the created token', function(done) {
-			const label = 'My Application';
+			const label = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36';
 			request
 				.post('/api/v1/tokens')
 				.as('member1')
@@ -501,13 +579,17 @@ describe('The VPDB `Token` API', function() {
 							const token = res.body[0];
 							expect(token.token).to.not.be.ok();
 							expect(token.label).to.be(label);
+							expect(token.browser.browser.name).to.be('Chrome');
+							expect(token.browser.browser.major).to.be('67');
+							expect(token.browser.os.name).to.be('Windows');
+							expect(token.browser.os.version).to.be('10');
 							expect(token.is_active).to.be(true);
 							done();
 						});
 				});
 		});
 
-		it('should only return owned token', function(done) {
+		it('should only return owned personal tokens', function(done) {
 			request
 				.post('/api/v1/tokens')
 				.as('member2')
@@ -534,6 +616,33 @@ describe('The VPDB `Token` API', function() {
 				});
 		});
 
+		it('should return all provider tokens', function(done) {
+			request
+				.post('/api/v1/tokens')
+				.as('admin1')
+				.send({ label: 'Test Application 1', password: hlp.getUser('admin1').password, provider: 'github', type: 'provider', scopes: [ 'community'] })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					request
+						.post('/api/v1/tokens')
+						.as('admin2')
+						.send({ label: 'Test Application 2', password: hlp.getUser('admin2').password, provider: 'ipbtest', type: 'provider', scopes: [ 'community'] })
+						.end(function(err, res) {
+							hlp.expectStatus(err, res, 201);
+							request
+								.get('/api/v1/tokens')
+								.query({ type: 'provider' })
+								.as('admin2')
+								.end(function(err, res) {
+									hlp.expectStatus(err, res, 200);
+									expect(res.body).to.be.an('array');
+									expect(res.body).to.have.length(2);
+									done();
+								});
+						});
+				});
+		});
+
 		it('should deny access if plan configuration forbids it', function(done) {
 			request.get('/api/v1/tokens').as('member').end(hlp.status(403, done));
 		});
@@ -550,6 +659,14 @@ describe('The VPDB `Token` API', function() {
 
 		after(function(done) {
 			hlp.cleanup(request, done);
+		});
+
+		it('should fail for an invalid token', function(done) {
+			request
+				.patch('/api/v1/tokens/foobar')
+				.as('subscribed')
+				.send({ label: '1', expires_at: 'foo' })
+				.end(hlp.status(404, done));
 		});
 
 		it('should fail for invalid data', function(done) {

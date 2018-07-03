@@ -257,7 +257,7 @@ async function authenticateWithJwt(ctx: Context, token: { value: string, fromUrl
 		ctx.set('X-Token-Refresh', AuthenticationUtil.generateApiToken(user, new Date(), true));
 	}
 
-	ctx.state.tokenScopes = [Scope.ALL];
+	ctx.state.tokenScopes = decoded.scp;
 	ctx.state.tokenType = decoded.irt ? 'jwt-refreshed' : 'jwt';
 	return user;
 }

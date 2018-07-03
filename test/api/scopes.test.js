@@ -134,19 +134,6 @@ describe('The scopes of the VPDB API', function() {
 			request.post('/api/v1/releases/1234/versions/1.0/files/1234/validate').send({}).with(tokenAll).end(hlp.status(404, done));
 		});
 
-		it('should allow access to token creation', done => {
-			request.post('/api/v1/tokens').send({ password: hlp.getUser('root').password }).with(tokenAll).end(hlp.status(422, done));
-		});
-		it('should allow access to token retrieval', done => {
-			request.get('/api/v1/tokens').with(tokenAll).end(hlp.status(200, done));
-		});
-		it('should allow access to token deletion', done => {
-			request.del('/api/v1/tokens/1234').with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to token update', done => {
-			request.patch('/api/v1/tokens/1234').send({}).with(tokenAll).end(hlp.status(404, done));
-		});
-
 		it('should allow access to user profile', done => {
 			request.get('/api/v1/user').with(tokenAll).end(hlp.status(200, done));
 		});
@@ -245,19 +232,6 @@ describe('The scopes of the VPDB API', function() {
 
 		it('should deny access to release moderation creation', done => {
 			request.post('/api/v1/releases/1234/moderate').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-
-		it('should deny access to token creation', done => {
-			request.post('/api/v1/tokens').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to token retrieval', done => {
-			request.get('/api/v1/tokens').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to token deletion', done => {
-			request.del('/api/v1/tokens/1234').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to token update', done => {
-			request.patch('/api/v1/tokens/1234').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
 		});
 
 		it('should deny access to user profile', done => {
@@ -361,19 +335,6 @@ describe('The scopes of the VPDB API', function() {
 
 		it('should deny access to release moderation creation', done => {
 			request.post('/api/v1/releases/1234/moderate').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-
-		it('should deny access to token creation', done => {
-			request.post('/api/v1/tokens').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to token retrieval', done => {
-			request.get('/api/v1/tokens').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to token deletion', done => {
-			request.del('/api/v1/tokens/1234').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to token update', done => {
-			request.patch('/api/v1/tokens/1234').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
 		});
 
 		it('should allow access to user profile', done => {

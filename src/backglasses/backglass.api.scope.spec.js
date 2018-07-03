@@ -87,6 +87,19 @@ describe('The scopes of the `Backglass` API', function() {
 
 	describe('using an "all" token', function() {
 
+		it('should allow access to backglass creation', done => {
+			request.post('/api/v1/backglasses').send({}).with(tokenAll).end(hlp.status(422, done));
+		});
+		it('should allow access to backglass update', done => {
+			request.patch('/api/v1/backglasses/1234').send({}).with(tokenAll).end(hlp.status(404, done));
+		});
+		it('should allow access to backglass deletion', done => {
+			request.del('/api/v1/backglasses/1234').with(tokenAll).end(hlp.status(404, done));
+		});
+		it('should allow access to backglass moderation', done => {
+			request.post('/api/v1/backglasses/1234/moderate').send({}).with(tokenAll).end(hlp.status(404, done));
+		});
+
 		it('should allow access to backglass star', done => {
 			request.post('/api/v1/backglasses/1234/star').send({}).with(tokenAll).end(hlp.status(404, done));
 		});
@@ -106,6 +119,16 @@ describe('The scopes of the `Backglass` API', function() {
 	});
 
 	describe('using a login token', function() {
+
+		it('should deny access to backglass creation', done => {
+			request.post('/api/v1/backglasses').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
+		});
+		it('should deny access to backglass update', done => {
+			request.patch('/api/v1/backglasses/1234').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
+		});
+		it('should deny access to backglass deletion', done => {
+			request.del('/api/v1/backglasses/1234').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
+		});
 
 		it('should deny access to backglass star', done => {
 			request.post('/api/v1/backglasses/1234/star').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
@@ -130,6 +153,19 @@ describe('The scopes of the `Backglass` API', function() {
 
 	describe('using a community token', function() {
 
+		it('should deny access to backglass creation', done => {
+			request.post('/api/v1/backglasses').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
+		});
+		it('should deny access to backglass update', done => {
+			request.patch('/api/v1/backglasses/1234').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
+		});
+		it('should deny access to backglass deletion', done => {
+			request.del('/api/v1/backglasses/1234').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
+		});
+		it('should deny access to backglass moderation', done => {
+			request.post('/api/v1/backglasses/1234/moderate').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
+		});
+
 		it('should allow access to backglass star', done => {
 			request.post('/api/v1/backglasses/1234/star').send({}).with(tokenCommunity).end(hlp.status(404, done));
 		});
@@ -149,6 +185,19 @@ describe('The scopes of the `Backglass` API', function() {
 	});
 
 	describe('using a service token', function() {
+
+		it('should deny access to backglass creation', done => {
+			request.post('/api/v1/backglasses').send({}).with(tokenService).end(hlp.status(401, 'invalid scope', done));
+		});
+		it('should deny access to backglass update', done => {
+			request.patch('/api/v1/backglasses/1234').send({}).with(tokenService).end(hlp.status(401, 'invalid scope', done));
+		});
+		it('should deny access to backglass deletion', done => {
+			request.del('/api/v1/backglasses/1234').with(tokenService).end(hlp.status(401, 'invalid scope', done));
+		});
+		it('should deny access to backglass moderation', done => {
+			request.post('/api/v1/backglasses/1234/moderate').send({}).with(tokenService).end(hlp.status(401, 'invalid scope', done));
+		});
 
 		it('should deny access to backglass star', done => {
 			request.post('/api/v1/backglasses/1234/star').send({}).with(tokenService).end(hlp.status(401, 'invalid scope', done));

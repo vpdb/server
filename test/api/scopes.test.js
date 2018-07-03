@@ -72,19 +72,6 @@ describe('The scopes of the VPDB API', function() {
 			request.post('/api/v1/authenticate').send({}).with(tokenAll).end(hlp.status(400, 'token with "login" scope', done));
 		});
 
-		it('should allow access to backglass creation', done => {
-			request.post('/api/v1/backglasses').send({}).with(tokenAll).end(hlp.status(422, done));
-		});
-		it('should allow access to backglass update', done => {
-			request.patch('/api/v1/backglasses/1234').send({}).with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to backglass deletion', done => {
-			request.del('/api/v1/backglasses/1234').with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to backglass moderation', done => {
-			request.post('/api/v1/backglasses/1234/moderate').send({}).with(tokenAll).end(hlp.status(404, done));
-		});
-
 		it('should allow access to game creation', done => {
 			request.post('/api/v1/games').send({}).with(tokenAll).end(hlp.status(422, done));
 		});
@@ -169,16 +156,6 @@ describe('The scopes of the VPDB API', function() {
 
 		it('should deny access to authentication', done => {
 			request.post('/api/v1/authenticate').send({}).with(tokenLogin).end(hlp.status(400, 'token with "login" scope', done));
-		});
-
-		it('should deny access to backglass creation', done => {
-			request.post('/api/v1/backglasses').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to backglass update', done => {
-			request.patch('/api/v1/backglasses/1234').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to backglass deletion', done => {
-			request.del('/api/v1/backglasses/1234').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
 		});
 
 		it('should deny access to game creation', done => {
@@ -269,19 +246,6 @@ describe('The scopes of the VPDB API', function() {
 
 		it('should deny access to authentication', done => {
 			request.post('/api/v1/authenticate').send({}).with(tokenCommunity).end(hlp.status(400, 'token with "login" scope', done));
-		});
-
-		it('should deny access to backglass creation', done => {
-			request.post('/api/v1/backglasses').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to backglass update', done => {
-			request.patch('/api/v1/backglasses/1234').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to backglass deletion', done => {
-			request.del('/api/v1/backglasses/1234').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to backglass moderation', done => {
-			request.post('/api/v1/backglasses/1234/moderate').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
 		});
 
 		it('should deny access to game creation', done => {

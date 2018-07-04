@@ -28,7 +28,7 @@ const hlp = require('../../test/modules/helper');
 
 superagentTest(request);
 
-describe('The VPDB `Release Version` API', function() {
+describe.skip('The VPDB `Release Version` API', function() {
 
 	describe('when adding a new version to an existing release', function() {
 

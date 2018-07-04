@@ -31,7 +31,7 @@ const hlp = require('../../test/modules/helper');
 
 superagentTest(request);
 
-describe.only('The VPDB `Release` API', function() {
+describe('The VPDB `Release` API', function() {
 
 	describe('when creating a new release', function() {
 
@@ -822,11 +822,34 @@ describe.only('The VPDB `Release` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
-				moderator: { roles: [ 'moderator', 'contributor' ] }
+				providerUser: { roles: [ 'contributor' ] },
+				moderator: { roles: [ 'moderator', 'contributor' ] },
+				admin: { roles: [ 'admin' ] }
 			}, function() {
-				hlp.release.createReleases('moderator', request, numReleases, function(r) {
+				hlp.release.createReleases('moderator', request, numReleases - 1, function(r) {
 					releases = r;
-					done(null, r);
+					request
+						.post('/api/v1/authenticate/mock')
+						.send({
+							provider: 'github',
+							profile: {
+								provider: 'github',
+								id: '11234',
+								displayName: 'Motörhead Dude-23',
+								username: 'motorhead',
+								profileUrl: 'https://github.com/mockuser',
+								emails: [
+									{ value: hlp.getUser('providerUser').email }
+								],
+								_raw: '(not mocked)', _json: { not: 'mocked ' }
+							}
+						}).end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							hlp.release.createRelease4('providerUser', request, function(r) {
+								releases.push(r);
+								done();
+							});
+						});
 				});
 			});
 		});
@@ -855,6 +878,33 @@ describe.only('The VPDB `Release` API', function() {
 						expect(release.authors[0].user.username).to.be.ok();
 						expect(release.authors[0]._user).to.not.be.ok();
 					});
+					done();
+				});
+		});
+
+		it('should fail when listing moderation fields as anonymous', function(done) {
+			request
+				.get('/api/v1/releases')
+				.query({ fields: 'moderation' })
+				.end(hlp.status(403, 'must be logged in order to fetch moderation fields', done));
+		});
+
+		it('should fail when listing moderation fields as non-moderator', function(done) {
+			request
+				.get('/api/v1/releases')
+				.as('member')
+				.query({ fields: 'moderation' })
+				.end(hlp.status(403, 'must be moderator in order to fetch moderation fields', done));
+		});
+
+		it('should list moderation fields as moderator', function(done) {
+			request
+				.get('/api/v1/releases')
+				.as('moderator')
+				.query({ fields: 'moderation' })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body[0].moderation).to.be.ok();
 					done();
 				});
 		});
@@ -1115,6 +1165,34 @@ describe.only('The VPDB `Release` API', function() {
 
 		it('should refuse thumb field per file if no format is given', function(done) {
 			request.get('/api/v1/releases?thumb_per_file=true').end(hlp.status(400, 'must specify "thumb_format"', done));
+		});
+
+		it('should fail when filtering by provider without provider token', function(done) {
+			request
+				.get('/api/v1/releases')
+				.query({ provider_user: '1234' })
+				.end(hlp.status(400, 'Must be authenticated with provider token', done));
+		});
+
+		it('should succeed filtering by user provider id', function(done) {
+			request
+				.post('/api/v1/tokens')
+				.as('admin')
+				.send({ label: 'Test Application', password: hlp.getUser('admin').password, provider: 'github', type: 'provider', scopes: [ 'community'] })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					const token = res.body.token;
+					request
+						.get('/api/v1/releases')
+						.with(token)
+						.query({ provider_user: '11234' })
+						.end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							expect(res.body.length).to.be(1);
+							expect(res.body[0].id).to.be(releases[3].id);
+							done();
+						});
+				});
 		});
 
 		it('should only list releases with table files of a given size');

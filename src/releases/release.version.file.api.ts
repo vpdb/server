@@ -86,7 +86,13 @@ export class ReleaseVersionFileApi extends Api {
 			_validated_by: ctx.state.user._id
 		};
 
-		await releaseToUpdate.save();
+		try {
+			await releaseToUpdate.save();
+
+		} catch (err) {
+			err.trimFields = /^versions\.\d+\.files\.\d+\.validation\./;
+			throw err;
+		}
 
 		logger.info('[ReleaseApi.validateFile] Updated file validation status.');
 
@@ -108,6 +114,6 @@ export class ReleaseVersionFileApi extends Api {
 			{ release: release._id, game: release._game._id }
 		);
 
-		await mailer.releaseValidated(release._created_by as User, ctx.state.user, release._game as Game, release, file);
+		await mailer.releaseValidated(release._created_by as User, ctx.state.user, release._game as Game, release, state.serializers.ReleaseVersionFile.detailed(ctx, file));
 	}
 }

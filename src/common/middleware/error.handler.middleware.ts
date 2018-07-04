@@ -80,7 +80,15 @@ export function handleParseError(err: Error, ctx: Context) {
 }
 
 function getValidationErrors(err: any): ApiValidationError[] {
-	return keys(err.errors).map(path => assign(err.errors[path], { path: path }));
+	return keys(err.errors).map(path => {
+		let p;
+		if (err.trimFields) {
+			p = path.replace(err.trimFields, '');
+		} else {
+			p = path;
+		}
+		return assign(err.errors[path], { path: p });
+	});
 }
 
 function requestLog(ctx: Context) {

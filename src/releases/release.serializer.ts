@@ -32,6 +32,7 @@ import { Game } from '../games/game';
 import { Tag } from '../tags/tag';
 import { User } from '../users/user';
 import { flavors } from './release.flavors';
+import { FileDocument } from '../files/file.document';
 
 export class ReleaseSerializer extends Serializer<Release> {
 
@@ -130,15 +131,22 @@ export class ReleaseSerializer extends Serializer<Release> {
 		opts.thumbFormat = opts.thumbFormat || 'original';
 
 		const flavorDefaults = flavors.defaultThumb();
-		// flavorParams: { lighting:string, orientation:string }
-		const flavorParams: { [key:string]:string } = (opts.thumbFlavor || '').split(',').map(f => f.split(':')).reduce((a, v) => assign(a, { [v[0]]: v[1] }), {});
+		let flavorParams: { [key:string]:string } = {}; // e.g. { lighting:string, orientation:string }
+		if (opts.thumbFlavor) {
+			flavorParams  = opts.thumbFlavor
+				.split(',')
+				.map(f => f.split(':'))
+				.reduce((a, v) => assign(a, { [v[0]]: v[1] }), {});
+		}
 
 		// get all table files
-		const files = flatten(versions.map(v => v.files)).filter(file => file.flavor);
+		const releaseVersionTableFiles = flatten(versions.map(v => v.files))
+			.filter(file => FileDocument.getMimeCategory(file._file as File) === 'table');
+
 		// console.log('flavorParams: %j, flavorDefaults: %j', flavorParams, flavorDefaults);
 
 		// assign weights to each file depending on parameters
-		const filesByWeight:{ file: ReleaseVersionFile, weight: number }[] = orderBy(files.map(file => {
+		const filesByWeight:{ file: ReleaseVersionFile, weight: number }[] = orderBy(releaseVersionTableFiles.map(file => {
 
 			/** @type {{ lighting:string, orientation:string }} */
 			const fileFlavor = file.flavor;

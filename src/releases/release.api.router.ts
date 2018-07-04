@@ -25,8 +25,12 @@ import { LogEventApi } from '../log-event/log.event.api';
 import { CommentApi } from '../comments/comment.api';
 import { apiCache } from '../common/api.cache';
 import { releaseDetailsCacheCounters, releaseListCacheCounters } from './release.api.cache.config';
+import { ReleaseVersionApi } from './release.version.api';
+import { ReleaseVersionFileApi } from './release.version.file.api';
 
 const api = new ReleaseApi();
+const versionApi = new ReleaseVersionApi();
+const versionFileApi = new ReleaseVersionFileApi();
 const ratingApi = new RatingApi();
 const starApi = new StarApi();
 const eventApi = new LogEventApi();
@@ -39,9 +43,9 @@ router.patch('/v1/releases/:id',  api.auth(api.update.bind(api), 'releases', 'up
 router.post('/v1/releases',       api.auth(api.create.bind(api), 'releases', 'add', [Scope.ALL, Scope.CREATE]));
 router.delete('/v1/releases/:id', api.auth(api.del.bind(api), 'releases', 'delete-own', [Scope.ALL, Scope.CREATE]));
 
-router.post('/v1/releases/:id/versions',                               api.auth(api.addVersion.bind(api), 'releases', 'add', [Scope.ALL, Scope.CREATE]));
-router.patch('/v1/releases/:id/versions/:version',                     api.auth(api.updateVersion.bind(api), 'releases', 'update-own', [Scope.ALL, Scope.CREATE]));
-router.post('/v1/releases/:id/versions/:version/files/:file/validate', api.auth(api.validateFile.bind(api), 'releases', 'validate', [Scope.ALL, Scope.CREATE]));
+router.post('/v1/releases/:id/versions',                               versionApi.auth(versionApi.addVersion.bind(api), 'releases', 'add', [Scope.ALL, Scope.CREATE]));
+router.patch('/v1/releases/:id/versions/:version',                     versionApi.auth(versionApi.updateVersion.bind(api), 'releases', 'update-own', [Scope.ALL, Scope.CREATE]));
+router.post('/v1/releases/:id/versions/:version/files/:file/validate', versionFileApi.auth(versionFileApi.validateFile.bind(api), 'releases', 'validate', [Scope.ALL, Scope.CREATE]));
 
 router.get('/v1/releases/:id/comments', commentApi.listForRelease.bind(commentApi));
 router.post('/v1/releases/:id/comments', api.auth(commentApi.createForRelease.bind(commentApi), 'comments', 'add', [ Scope.ALL, Scope.COMMUNITY ]));

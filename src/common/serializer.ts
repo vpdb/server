@@ -126,7 +126,7 @@ export abstract class Serializer<T extends Document | ModeratedDocument> {
 			includedFields: [],
 			excludedFields: [],
 			starred: undefined,
-			fileIds: [],
+			fileIds: null,
 			thumbFlavor: null,
 			thumbFormat: null,
 			fullThumbData: false,

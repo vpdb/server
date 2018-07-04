@@ -71,7 +71,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		}));
 
 		release = newRelease;
-		await this.preprocess(ctx, newRelease.getFileIds());
+		await this.preProcess(ctx, newRelease.getFileIds());
 		await release.validate();
 
 		logger.info('[ReleaseApi.create] Validations passed.');
@@ -79,7 +79,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		release.released_at = release.versions[0].released_at as Date;
 		await release.save();
 
-		await this.postprocess(release.getPlayfieldImageIds());
+		await this.postProcess(release.getPlayfieldImageIds());
 
 		logger.info('[ReleaseApi.create] Release "%s" created.', release.name);
 		await release.activateFiles();
@@ -228,8 +228,8 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		const query = await state.models.Release.handleGameQuery(ctx, await state.models.Release.handleModerationQuery(ctx, []));
 
 		// filter by tag
-		if (ctx.query.resources) {
-			let t = ctx.query.resources.split(',');
+		if (ctx.query.tags) {
+			let t = ctx.query.tags.split(',');
 			// all tags must be matched
 			for (let i = 0; i < t.length; i++) {
 				query.push({ _tags: { $in: [t[i]] } });
@@ -321,7 +321,6 @@ export class ReleaseApi extends ReleaseAbstractApi {
 
 		// file size filter
 		let fileSize = parseInt(ctx.query.filesize, 10);
-		let fileIds: string[];
 		if (fileSize) {
 			let threshold = parseInt(ctx.query.threshold, 10);
 			let q: any = { file_type: 'release' };
@@ -332,7 +331,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 			}
 			const files = await state.models.File.find(q).exec();
 			if (files && files.length > 0) {
-				fileIds = files.map(f => f.id);
+				serializerOpts.fileIds = files.map(f => f.id);
 				query.push({ 'versions.files._file': { $in: files.map(f => f._id) } });
 			} else {
 				query.push({ _id: null }); // no result
@@ -379,7 +378,6 @@ export class ReleaseApi extends ReleaseAbstractApi {
 			if (starredReleaseIds) {
 				serializerOpts.starred = starredReleaseIds.includes(release._id.toString());
 			}
-			serializerOpts.fileIds = fileIds;
 			release = state.serializers.Release.simple(ctx, release, serializerOpts);
 
 			// if flavor specified, filter returned files to match filter

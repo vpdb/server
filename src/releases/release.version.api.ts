@@ -79,7 +79,7 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 		logger.info('[ReleaseApi.addVersion] body: %s', inspect(versionObj, { depth: null }));
 		const newVersion = await state.models.ReleaseVersion.getInstance(versionObj);
 
-		await this.preprocess(ctx, newVersion.getFileIds());
+		await this.preProcess(ctx, newVersion.getFileIds());
 
 		logger.info('[ReleaseApi.addVersion] model: %s', inspect(newVersion, { depth: null }));
 		let validationErr: any;
@@ -111,7 +111,7 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 		logger.info('[ReleaseApi.addVersion] Validations passed, adding new version to release.');
 		release = await release.save();
 
-		await this.postprocess(newVersion.getPlayfieldImageIds());
+		await this.postProcess(newVersion.getPlayfieldImageIds());
 
 		logger.info('[ReleaseApi.create] Added version "%s" to release "%s".', newVersion.version, release.name);
 		// set media to active
@@ -216,14 +216,14 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 			}
 		}
 
-		await this.preprocess(ctx, versionToUpdate.getFileIds().concat(version.getFileIds(newFiles)));
+		await this.preProcess(ctx, versionToUpdate.getFileIds().concat(version.getFileIds(newFiles)));
 
 		// assign fields and validate
 		Object.assign(versionToUpdate, pick(ctx.request.body, updatableFields));
 		try {
 			await releaseToUpdate.validate();
 		} catch (err) {
-			await this.rollbackPreprocess(ctx);
+			await this.rollbackPreProcess(ctx);
 			throw err;
 		}
 
@@ -234,7 +234,7 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 		releaseToUpdate.modified_at = now;
 		release = await releaseToUpdate.save();
 
-		await this.postprocess(versionToUpdate.getPlayfieldImageIds());
+		await this.postProcess(versionToUpdate.getPlayfieldImageIds());
 
 		if (newFiles.length > 0) {
 			logger.info('[ReleaseApi.updateVersion] Added new file(s) to version "%s" of release "%s".', version.version, release.name);

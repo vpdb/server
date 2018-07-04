@@ -64,7 +64,7 @@ export abstract class ReleaseAbstractApi extends Api {
 	 * @param {string[]} allowedFileIds Database IDs of file IDs of the current release that are allowed to be preprocessed.
 	 * @returns {Promise}
 	 */
-	protected async preprocess(ctx: Context, allowedFileIds: string[]): Promise<void> {
+	protected async preProcess(ctx: Context, allowedFileIds: string[]): Promise<void> {
 
 		if (ctx.query.rotate) {
 
@@ -96,14 +96,17 @@ export abstract class ReleaseAbstractApi extends Api {
 					file.preprocessed.unvalidatedRotation = (file.preprocessed.rotation + rotation.angle + 360) % 360;
 
 					logger.info('[ReleaseApi.preprocess] Rotating file "%s" %s° (was %s° before, plus %s°).', file.getPath(), file.preprocessed.unvalidatedRotation, file.preprocessed.rotation, rotation.angle);
-					await (gm(src).rotate('black', -file.preprocessed.unvalidatedRotation) as any).writeAsync(file.getPath());
+
+					const img = gm(src);
+					img.rotate('black', -file.preprocessed.unvalidatedRotation);
+					await (img as any).writeAsync(file.getPath());
 				}
 
 				// update metadata
 				const metadata = await Metadata.readFrom(file, file.getPath());
 				await state.models.File.findByIdAndUpdate(file._id, {
 					metadata: metadata,
-					file_type: file.file_type,
+					file_type: 'playfield-' + (metadata.size.width > metadata.size.height ? 'ws' : 'fs'),
 					preprocessed: file.preprocessed
 				}).exec();
 			}
@@ -116,7 +119,7 @@ export abstract class ReleaseAbstractApi extends Api {
 	 *
 	 * @param {Context} ctx Koa context
 	 */
-	protected async rollbackPreprocess(ctx: Context): Promise<void> {
+	protected async rollbackPreProcess(ctx: Context): Promise<void> {
 
 		if (ctx.query.rotate) {
 
@@ -156,7 +159,7 @@ export abstract class ReleaseAbstractApi extends Api {
 	 * @param {string[]} fileIds Database IDs of the files to re-process.
 	 * @returns {Promise}
 	 */
-	protected async postprocess(fileIds: string[]) {
+	protected async postProcess(fileIds: string[]) {
 		logger.info('[ReleaseApi.postprocess] Post-processing files [ %s ]', fileIds.join(', '));
 		for (const id of fileIds) {
 			const file = await state.models.File.findById(id).exec();

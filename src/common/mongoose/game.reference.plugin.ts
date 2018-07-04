@@ -74,7 +74,7 @@ export function gameReferencePlugin(schema: Schema, options: GameReferenceOption
 			return Promise.resolve(query);
 		}
 
-		const isModerator = ctx.state.user ? await acl.isAllowed(ctx.state.user.id, resource, 'view-restriced') : false;
+		const isModerator = ctx.state.user ? (await acl.isAllowed(ctx.state.user.id, resource, 'view-restriced')) : false;
 
 		// if moderator, don't filter.
 		if (isModerator) {

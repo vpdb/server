@@ -365,7 +365,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 			'versions.files._compatibility', 'authors._user'];
 
 		const searchQuery = this.searchQuery(query);
-		logger.info('[ReleaseApi.list] query: %s, sort: %j', inspect(searchQuery, { depth: null }), inspect(sort));
+		logger.info('[ReleaseApi.list] query: %j, sort: %j', searchQuery, sort);
 
 		const results = await state.models.Release.paginate(searchQuery, {
 			page: pagination.page,

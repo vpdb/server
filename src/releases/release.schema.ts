@@ -148,7 +148,7 @@ releaseSchema.pre('remove', async function (this: Release) {
 	let fileIds: string[] = [];
 	this.versions.forEach(version => {
 		version.files.forEach(file => {
-			fileIds.push((file._file as File)._id || file._file);
+			fileIds.push(file._file._id);
 		});
 	});
 	logger.info('[Release.remove] Removing all table blocks for file IDs [ %s ]', fileIds.map(fid => fid.toString()).join(', '));

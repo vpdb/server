@@ -55,9 +55,9 @@ export class ReleaseDocument {
 	 */
 	public static getFileIds(release: Release): string[] {
 		let files = flatten(map(release.versions, 'files'));
-		let tableFileIds = map(files, '_file').map(file => file ? (file._id ? file._id.toString() : file.toString()) : null);
-		let playfieldImageId = compact(map(files, '_playfield_image')).map(file => file._id ? file._id.toString() : file.toString());
-		let playfieldVideoId = compact(map(files, '_playfield_video')).map(file => file._id ? file._id.toString() : file.toString());
+		let tableFileIds = map(files, '_file').map(file => file ? file._id.toString() : null);
+		let playfieldImageId = compact(map(files, '_playfield_image')).map(file => file._id.toString());
+		let playfieldVideoId = compact(map(files, '_playfield_video')).map(file => file._id.toString());
 		return compact(flatten([...tableFileIds, playfieldImageId, playfieldVideoId]));
 	}
 
@@ -69,7 +69,7 @@ export class ReleaseDocument {
 	 */
 	public static getPlayfieldImageIds(release: Release): string[] {
 		let files = flatten(map(release.versions, 'files'));
-		return compact(map(files, '_playfield_image')).map(file => file._id ? file._id.toString() : file.toString());
+		return compact(map(files, '_playfield_image')).map(file => file._id.toString());
 	}
 
 	/**

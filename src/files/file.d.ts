@@ -29,7 +29,10 @@ export interface File extends MetricsDocument {
 	file_type: string; // todo add enum
 	metadata: any;
 	variations: { [key: string]: any };  // todo type
-	preprocessed: any; // todo wtf is that
+	preprocessed: { // currently rotation settings of playfield images
+		rotation?: number,
+		unvalidatedRotation?: number
+	};
 	is_active: boolean;
 	counter: { [T in FileCounterType]: number; };
 	created_at: Date;

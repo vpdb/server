@@ -66,7 +66,7 @@ export class ReleaseVersionSerializer extends Serializer<ReleaseVersion> {
 						versions[i].files[j] = null;
 					}
 
-					// otherwise, make sure we include only the latest flavor combination.
+				// otherwise, make sure we include only the latest flavor combination.
 				} else {
 
 					// if non-table file, skip

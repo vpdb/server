@@ -52,11 +52,11 @@ export class ReleaseVersionFileApi extends Api {
 		if (!version) {
 			throw new ApiError('No such version "%s" for release "%s".', ctx.params.version, ctx.params.id).status(404);
 		}
-		let file = version.files.find(f => (f._file as File).id === ctx.params.file);
-		if (!file) {
+		let versionFile = version.files.find(f => (f._file as File).id === ctx.params.file);
+		if (!versionFile) {
 			throw new ApiError('No file with ID "%s" for version "%s" of release "%s".', ctx.params.file, ctx.params.version, ctx.params.id).status(404);
 		}
-		const fileId = file._id;
+		const versionFileId = versionFile._id;
 
 		// validations
 		let validationErrors = [];
@@ -78,7 +78,7 @@ export class ReleaseVersionFileApi extends Api {
 		const releaseToUpdate = await state.models.Release.findOne({ id: ctx.params.id }).exec();
 
 		const versionToUpdate = releaseToUpdate.versions.find(v => v.version === ctx.params.version);
-		const fileToUpdate = versionToUpdate.files.find(f => f._id.equals(fileId));
+		const fileToUpdate = versionToUpdate.files.find(f => f._id.equals(versionFileId));
 
 		fileToUpdate.validation = {
 			status: ctx.request.body.status,
@@ -108,17 +108,17 @@ export class ReleaseVersionFileApi extends Api {
 			.exec();
 
 		version = release.versions.find(v => v.version === ctx.params.version);
-		file = version.files.find(f => (f._file as File).id === ctx.params.file);
+		versionFile = version.files.find(f => (f._file as File).id === ctx.params.file);
 
 
-		this.success(ctx, state.serializers.ReleaseVersionFile.detailed(ctx, file).validation, 200);
+		this.success(ctx, state.serializers.ReleaseVersionFile.detailed(ctx, versionFile).validation, 200);
 
 		// log event
 		await LogEventUtil.log(ctx, 'validate_release', false,
-			{ validation: file.validation },
+			{ validation: versionFile.validation },
 			{ release: release._id, game: release._game._id }
 		);
 
-		await mailer.releaseValidated(release._created_by as User, ctx.state.user, release._game as Game, release, state.serializers.ReleaseVersionFile.detailed(ctx, file));
+		await mailer.releaseValidated(release._created_by as User, ctx.state.user, release._game as Game, release, state.serializers.ReleaseVersionFile.detailed(ctx, versionFile));
 	}
 }

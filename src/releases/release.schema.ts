@@ -37,7 +37,6 @@ import { state } from '../state';
 import { logger } from '../common/logger';
 import { Release } from './release';
 import { User } from '../users/user';
-import { File } from '../files/file';
 import { ReleaseDocument } from './release.document';
 
 const shortId = require('shortid32');

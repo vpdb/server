@@ -82,8 +82,8 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 		await this.preProcess(ctx, newVersion.getFileIds());
 
 		logger.info('[ReleaseApi.addVersion] model: %s', inspect(newVersion, { depth: null }));
-		let validationErr: any;
 
+		let validationErr: any;
 		try {
 			await newVersion.validate();
 		} catch (err) {
@@ -91,15 +91,19 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 		} finally {
 			// validate existing version here
 			if (release.versions.filter(v => v.version === newVersion.version).length > 0) {
-				validationErr = validationErr || {};
-				validationErr.errors = [{
-					path: 'version',
-					message: 'Provided version already exists and you cannot add a version twice. Try updating the version instead of adding a new one.',
-					value: newVersion.version
-				}];
+				if (validationErr) {
+					validationErr.errors.version = {
+						path: 'version',
+						message: 'Provided version already exists and you cannot add a version twice. Try updating the version instead of adding a new one.',
+						value: newVersion.version
+					};
+				} else {
+					throw new ApiError().validationError('version', 'Provided version already exists and you cannot add a version twice. Try updating the version instead of adding a new one.', newVersion.version);
+				}
+
 			}
 			if (validationErr) {
-				throw new ApiError('Validations failed. See below for details.').validationErrors(validationErr.errors).warn().status(422);
+				throw validationErr;
 			}
 		}
 
@@ -224,6 +228,7 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 			await releaseToUpdate.validate();
 		} catch (err) {
 			await this.rollbackPreProcess(ctx);
+			err.trimFields = /^versions\.\d+\./;
 			throw err;
 		}
 

@@ -9,10 +9,7 @@
 		"baseUrl": ".",
 		"outDir": "build",
 		"paths": {
-			"*": [
-				"typings/*",
-				"node_modules/@types"
-			]
+			"*": [ "typings/*" ]
 		}
 	},
 	"include": [

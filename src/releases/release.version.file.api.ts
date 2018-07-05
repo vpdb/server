@@ -27,6 +27,7 @@ import { LogEventUtil } from '../log-event/log.event.util';
 import { Game } from '../games/game';
 import { User } from '../users/user';
 import { File } from '../files/file';
+import { apiCache } from '../common/api.cache';
 
 export class ReleaseVersionFileApi extends Api {
 
@@ -94,6 +95,9 @@ export class ReleaseVersionFileApi extends Api {
 			throw err;
 		}
 
+		// invalidate cache
+		await apiCache.invalidateRelease(releaseToUpdate);
+
 		logger.info('[ReleaseApi.validateFile] Updated file validation status.');
 
 		release = await state.models.Release.findOne({ id: ctx.params.id })
@@ -105,6 +109,7 @@ export class ReleaseVersionFileApi extends Api {
 
 		version = release.versions.find(v => v.version === ctx.params.version);
 		file = version.files.find(f => (f._file as File).id === ctx.params.file);
+
 
 		this.success(ctx, state.serializers.ReleaseVersionFile.detailed(ctx, file).validation, 200);
 

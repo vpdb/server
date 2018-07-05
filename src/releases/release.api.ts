@@ -487,6 +487,9 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		// remove from db
 		await release.remove();
 
+		// invalidate cache
+		await apiCache.invalidateRelease();
+
 		logger.info('[ReleaseApi.delete] Release "%s" (%s) successfully deleted.', release.name, release.id);
 
 		// log event

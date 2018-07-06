@@ -21,7 +21,6 @@
 
 const _ = require('lodash');
 const gm = require('gm');
-const async = require('async');
 const request = require('superagent');
 const expect = require('expect.js');
 const pleasejs = require('pleasejs');
@@ -816,7 +815,7 @@ describe('The VPDB `Release` API', function() {
 
 	describe('when listing releases', function() {
 
-		var numReleases = 4;
+		const numReleases = 4;
 		let releases;
 
 		before(function(done) {
@@ -1122,12 +1121,12 @@ describe('The VPDB `Release` API', function() {
 			request.get('/api/v1/releases?builds=' + builds.join(',')).end(function(err, res) {
 				hlp.expectStatus(err, res, 200);
 
-				var filteredReleases = [];
+				let filteredReleases = [];
 				_.each(builds, function(build) {
 					filteredReleases = filteredReleases.concat(_.filter(releases, { versions: [{ files: [{ compatibility: [{ id: build }] }]}]}));
 				});
 				expect(res.body).to.have.length(filteredReleases.length);
-				for (var i = 0; i < filteredReleases.length; i++) {
+				for (let i = 0; i < filteredReleases.length; i++) {
 					expect(_.find(res.body, { id: filteredReleases[i].id })).to.be.ok();
 				}
 				done();
@@ -1140,12 +1139,12 @@ describe('The VPDB `Release` API', function() {
 			request.get('/api/v1/releases?builds=' + builds.join(',')).end(function(err, res) {
 				hlp.expectStatus(err, res, 200);
 
-				var filteredReleases = [];
+				let filteredReleases = [];
 				_.each(builds, function(build) {
 					filteredReleases = filteredReleases.concat(_.filter(releases, { versions: [{ files: [{ compatibility: [{ id: build }] }]}]}));
 				});
 				expect(res.body).to.have.length(filteredReleases.length);
-				for (var i = 0; i < filteredReleases.length; i++) {
+				for (let i = 0; i < filteredReleases.length; i++) {
 					expect(_.find(res.body, { id: filteredReleases[i].id })).to.be.ok();
 				}
 				done();

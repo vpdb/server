@@ -1,6 +1,6 @@
 /*
- * VPDB - Visual Pinball Database
- * Copyright (C) 2016 freezy <freezy@xbmc.org>
+ * VPDB - Virtual Pinball Database
+ * Copyright (C) 2018 freezy <freezy@vpdb.io>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,12 +19,11 @@
 
 "use strict"; /*global describe, before, after, it*/
 
-var fs = require('fs');
-var request = require('superagent');
-var expect = require('expect.js');
+const request = require('superagent');
+const expect = require('expect.js');
 
-var superagentTest = require('../modules/superagent-test');
-var hlp = require('../modules/helper');
+const superagentTest = require('../../test/modules/superagent-test');
+const hlp = require('../../test/modules/helper');
 
 superagentTest(request);
 
@@ -89,9 +88,9 @@ describe('The VPDB `blockmatch` API', function() {
 
 	describe('when trying to match a file from the same release', function() {
 
-		var release;
-		var version = '2.0';
-		var file;
+		let release;
+		const version = '2.0';
+		let file;
 
 		before(function(done) {
 			hlp.setupUsers(request, {

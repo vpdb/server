@@ -156,7 +156,6 @@ describe('The VPDB `Release Version File` API', function() {
 								hlp.expectStatus(err, res, 200);
 								expect(res.body.length).to.be(0);
 								request.get('/api/v1/releases').query({ validation: 'none' }).end(function(err, res) {
-									hlp.dump(res);
 									hlp.expectStatus(err, res, 200);
 									expect(res.body.length).to.be(0);
 									done();

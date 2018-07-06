@@ -99,13 +99,13 @@ class ProcessorManager {
 			new Directb2sThumbProcessor(),
 			new ImageVariationProcessor(),
 			new VideoScreenshotProcessor(),
-			new VideoThumbProcessor(),
-			new VptBlockindexProcessor()
+			new VideoThumbProcessor()
 		];
 		this.optimizationProcessors = [
 			new Directb2sOptimizationProcessor(),
 			new ImageOptimizationProcessor(),
-			new VideoOptimizationProcessor()
+			new VideoOptimizationProcessor(),
+			new VptBlockindexProcessor()
 		];
 	}
 

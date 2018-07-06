@@ -55,6 +55,7 @@ export class FileBlockmatchApi extends Api {
 		const release = await state.models.Release.findOne({ 'versions.files._file': file._id }).populate(rlsFields.join(' ')).exec();
 
 		// fail if not found
+		/* istanbul ignore if */
 		if (!release) {
 			throw new ApiError('Release reference missing.', ctx.params.id).status(400);
 		}
@@ -77,7 +78,7 @@ export class FileBlockmatchApi extends Api {
 			});
 		});
 		// FIXME just fetch files, calc percentage, filter, THEN fetch releases for performance boost.
-		const matchedReleases = await state.models.Release.find({ 'versions.files._file': { $in: Array.from(matches.keys()) } }).populate(rlsFields).exec();
+		const matchedReleases = await state.models.Release.find({ 'versions.files._file': { $in: Array.from(matches.keys()) } }).populate(rlsFields.join(' ')).exec();
 
 		// map <file._id>: <release>
 		let releases = new Map<string, Release>();
@@ -92,7 +93,7 @@ export class FileBlockmatchApi extends Api {
 		result.matches = [];
 		for (let [key, matchedBlocks] of matches) {
 			const matchedBytes = sumBy(matchedBlocks, b => b.bytes);
-			let match = this.populateBlockmatch<TableBlockMatch>(ctx, releases.get(key), key, {
+			const match = this.populateBlockmatch<TableBlockMatch>(ctx, releases.get(key), key, {
 				matchedCount: matchedBlocks.length,
 				matchedBytes: matchedBytes,
 				countPercentage: matchedBlocks.length / blocks.length * 100,
@@ -119,7 +120,7 @@ export class FileBlockmatchApi extends Api {
 	 */
 	private populateBlockmatch<T extends TableBlockBase>(ctx: Context, release: Release, fileId: string, base: T = {} as T): T {
 		if (!release) {
-			return;
+			return base;
 		}
 		let rls = state.serializers.Release.simple(ctx, release);
 		base.release = pick(rls, ['id', 'name', 'created_at', 'authors']) as Release;

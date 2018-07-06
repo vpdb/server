@@ -1,6 +1,6 @@
 /*
- * VPDB - Visual Pinball Database
- * Copyright (C) 2016 freezy <freezy@xbmc.org>
+ * VPDB - Virtual Pinball Database
+ * Copyright (C) 2018 freezy <freezy@vpdb.io>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,15 +19,12 @@
 
 "use strict"; /* global describe, before, after, it */
 
-var _ = require('lodash');
-var fs = require('fs');
-var async = require('async');
-var request = require('superagent');
-var expect = require('expect.js');
-var faker = require('faker');
+const request = require('superagent');
+const expect = require('expect.js');
+const faker = require('faker');
 
-var superagentTest = require('../modules/superagent-test');
-var hlp = require('../modules/helper');
+const superagentTest = require('../../../test/modules/superagent-test');
+const hlp = require('../../../test/modules/helper');
 
 superagentTest(request);
 
@@ -35,7 +32,7 @@ describe('The VPDB moderation feature', function() {
 
 	describe('when accepting a moderated backglass', function() {
 
-		var game, backglass;
+		let game, backglass;
 
 		before(function(done) {
 			hlp.setupUsers(request, {
@@ -118,7 +115,7 @@ describe('The VPDB moderation feature', function() {
 
 	describe('when commenting a moderated release', function() {
 
-		var release;
+		let release;
 
 		before(function(done) {
 			hlp.setupUsers(request, {
@@ -146,7 +143,7 @@ describe('The VPDB moderation feature', function() {
 		});
 
 		it('should succeed when posting as owner', function(done) {
-			var msg = faker.company.catchPhrase();
+			const msg = faker.company.catchPhrase();
 			request
 				.post('/api/v1/releases/' + release.id + '/moderate/comments')
 				.as('member')
@@ -168,7 +165,7 @@ describe('The VPDB moderation feature', function() {
 		});
 
 		it('should succeed when posting as moderator', function(done) {
-			var msg = faker.company.catchPhrase();
+			const msg = faker.company.catchPhrase();
 			request
 				.post('/api/v1/releases/' + release.id + '/moderate/comments')
 				.as('moderator')
@@ -185,7 +182,7 @@ describe('The VPDB moderation feature', function() {
 
 	describe('when listing moderation comments of a release', function() {
 
-		var release;
+		let release;
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },

@@ -17,26 +17,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-///<reference path="processor.ts"/>
-
-
+import { Types } from 'mongoose';
 import { differenceWith, uniqWith } from 'lodash';
 
-import { OptimizationProcessor } from './processor';
-import { File } from '../file';
-import { FileVariation, ImageFileVariation } from '../file.variations';
-import { visualPinballTable } from '../../common/visualpinball.table';
 import { state } from '../../state';
-import { Types } from 'mongoose';
+import { File } from '../file';
+import { visualPinballTable } from '../../common/visualpinball.table';
 import { TableBlock } from '../../releases/release.tableblock';
+import { FileVariation, ImageFileVariation } from '../file.variations';
+import { OptimizationProcessor } from './processor';
+import { logger } from '../../common/logger';
 
 export class VptBlockindexProcessor implements OptimizationProcessor<ImageFileVariation> {
 
 	name: string = 'vpt.blockindex';
 
 	canProcess(file: File, variation?: FileVariation): boolean {
-		return ['application/x-visual-pinball-table', 'application/x-visual-pinball-table-x']
-			.includes(file.getMimeType(variation));
+		return file.getMimeCategory() === 'table';
 	}
 
 	getOrder(variation?: FileVariation): number {
@@ -55,18 +52,23 @@ export class VptBlockindexProcessor implements OptimizationProcessor<ImageFileVa
 
 		// diff and insert new blocks into db
 		const newBlocks = differenceWith(fileBlocks, dbBlocks, VptBlockindexProcessor.blockCompare);
+		let numAdded = 0;
 		for (let block of newBlocks) {
 			let newBlock = new state.models.TableBlock(block);
 			newBlock._files = [file._id];
 			await newBlock.save();
+			numAdded++;
 		}
 
 		// update available blocks
+		let numUpdated = 0;
 		for (let block of dbBlocks) {
 			(block._files as Types.ObjectId[]).push(file._id);
 			block._files = uniqWith(block._files, VptBlockindexProcessor.objectIdCompare);
 			await block.save();
+			numUpdated++;
 		}
+		logger.info('[VptBlockindexProcessor.process]: Added %s and updated %s table blocks.', numAdded, numUpdated);
 		return null;
 	}
 

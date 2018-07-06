@@ -26,6 +26,7 @@ import { EndPoint } from '../common/api.endpoint';
 import { logEventSchema } from './log.event.schema';
 import { LogEvent } from './log.event';
 import { LogEventSerializer } from './log.event.serializer';
+import { router } from './log.event.api.router';
 
 export class LogEventEndPoint extends EndPoint {
 
@@ -36,6 +37,7 @@ export class LogEventEndPoint extends EndPoint {
 
 	constructor() {
 		super();
+		this._router = router;
 		this._schema = logEventSchema;
 	}
 

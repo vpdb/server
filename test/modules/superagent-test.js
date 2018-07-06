@@ -92,7 +92,11 @@ module.exports = function(superagent, options) {
 			});
 			dump += '\r\n';
 			if (this.res.body || this.res.text) {
-				dump += stringify(this.res.body || JSON.parse(this.res.text), { space: 3 });
+				try {
+					dump += stringify(this.res.body || JSON.parse(this.res.text), { space: 3 });
+				} catch (err) {
+					dump += this.res.body || this.res.text;
+				}
 			}
 
 			fs.writeFileSync(dest, dump);

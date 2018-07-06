@@ -34,12 +34,12 @@ export class LogEventApi extends Api {
 	/**
 	 * Lists all events related to a user.
 	 *
+	 * @see GET /v1/events
 	 * @see GET /v1/releases/:id/events
 	 * @see GET /v1/profile/events
 	 */
-	list(opts: ListLogEventOpts) {
+	list(opts: ListLogEventOpts = {}) {
 
-		opts = opts || {};
 		return async (ctx: Context): Promise<boolean> => {
 
 			const query: any = [{ is_public: true }];

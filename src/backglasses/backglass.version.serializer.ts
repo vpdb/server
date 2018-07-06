@@ -35,6 +35,7 @@ export class BackglassVersionSerializer extends Serializer<BackglassVersion> {
 		return this._serialize(ctx, doc, opts, state.serializers.File.simple.bind(state.serializers.File));
 	}
 
+	/* istanbul ignore next */
 	protected _detailed(ctx: Context, doc: BackglassVersion, opts: SerializerOptions): BackglassVersion {
 		return this._simple(ctx, doc, opts);
 	}

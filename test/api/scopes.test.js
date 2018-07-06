@@ -96,23 +96,6 @@ describe('The scopes of the VPDB API', function() {
 		it('should allow access to user event retrieval', done => {
 			request.get('/api/v1/user/events').with(tokenAll).end(hlp.status(200, done));
 		});
-
-		it('should allow access to user list', done => {
-			request.get('/api/v1/users').with(tokenAll).end(hlp.status(200, done));
-		});
-		it('should deny access to user creation through provider', done => {
-			request.put('/api/v1/users').with(tokenAll).send({}).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should allow access to user details', done => {
-			request.get('/api/v1/users/1234').with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to user update', done => {
-			request.put('/api/v1/users/1234').send({}).with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to user deletion', done => {
-			request.del('/api/v1/users/1234').with(tokenAll).end(hlp.status(403, done));
-		});
-
 	});
 
 	describe('using a login token', function() {
@@ -148,22 +131,6 @@ describe('The scopes of the VPDB API', function() {
 		});
 		it('should deny access to user event retrieval', done => {
 			request.get('/api/v1/user/events').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-
-		it('should deny access to user list', done => {
-			request.get('/api/v1/users').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to user creation through provider', done => {
-			request.put('/api/v1/users').with(tokenLogin).send({}).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to user details', done => {
-			request.get('/api/v1/users/1234').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to user update', done => {
-			request.put('/api/v1/users/1234').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to user deletion', done => {
-			request.del('/api/v1/users/1234').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
 		});
 
 	});
@@ -203,29 +170,11 @@ describe('The scopes of the VPDB API', function() {
 			request.get('/api/v1/user/events').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
 		});
 
-		it('should deny access to user list', done => {
-			request.get('/api/v1/users').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to user creation through provider', done => {
-			request.put('/api/v1/users').with(tokenCommunity).send({}).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to user details', done => {
-			request.get('/api/v1/users/1234').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to user update', done => {
-			request.put('/api/v1/users/1234').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to user deletion', done => {
-			request.del('/api/v1/users/1234').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-
 	});
 
 
 	describe('using a service token', function() {
 
-		it('should allow access to user creation through provider', done => {
-			request.put('/api/v1/users').with(tokenService).send({}).end(hlp.status(422, done));
-		});
+
 	});
 });

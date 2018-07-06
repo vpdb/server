@@ -59,30 +59,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/ping').end(hlp.status(200, done));
 		});
 
-		it('should allow to list events', function(done) {
-			request.get('/api/v1/events').end(hlp.status(200, done));
-		});
-
-		it('should deny to list starred events', function(done) {
-			request.get('/api/v1/events?starred').end(hlp.status(401, done));
-		});
-
-		it('should allow to list per game', function(done) {
-			request.get('/api/v1/games/1234/events').end(hlp.status(404, done));
-		});
-
-		it('should allow to list per release', function(done) {
-			request.get('/api/v1/releases/1234/events').end(hlp.status(404, done));
-		});
-
-		it('should deny access to events by user', function(done) {
-			request.get('/api/v1/users/1234/events').end(hlp.status(401, done));
-		});
-
-		it('should deny access to events by current user', function(done) {
-			request.get('/api/v1/user/events').end(hlp.status(401, done));
-		});
-
 		it('should deny access to release name creation', function(done) {
 			request.get('/api/v1/games/test/release-name').send({}).end(hlp.status(401, done));
 		});
@@ -114,18 +90,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/ping').as('member').end(hlp.status(200, done));
 		});
 
-		it('should allow to list starred events', function(done) {
-			request.get('/api/v1/events?starred').as('member').end(hlp.status(200, done));
-		});
-
-		it('should deny access to events by user', function(done) {
-			request.get('/api/v1/users/1234/events').as('member').end(hlp.status(401, done));
-		});
-
-		it('should allow access to events by current user', function(done) {
-			request.get('/api/v1/user/events').as('member').end(hlp.status(200, done));
-		});
-
 		it('should allow access to release name creation', function(done) {
 			request.post('/api/v1/games/test/release-name').as('member').send({}).end(hlp.status(404, done));
 		});
@@ -152,18 +116,6 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to ping', function(done) {
 			request.get('/api/v1/ping').as('contributor').end(hlp.status(200, done));
-		});
-
-		it('should allow to list starred events', function(done) {
-			request.get('/api/v1/events?starred').as('contributor').end(hlp.status(200, done));
-		});
-
-		it('should deny access to events by user', function(done) {
-			request.get('/api/v1/users/1234/events').as('contributor').end(hlp.status(401, done));
-		});
-
-		it('should allow access to events by current user', function(done) {
-			request.get('/api/v1/user/events').as('contributor').end(hlp.status(200, done));
 		});
 
 		it('should deny access to release moderation', function(done) {
@@ -194,18 +146,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/ping').as('moderator').end(hlp.status(200, done));
 		});
 
-		it('should allow to list starred events', function(done) {
-			request.get('/api/v1/events?starred').as('moderator').end(hlp.status(200, done));
-		});
-
-		it('should deny access to events by user', function(done) {
-			request.get('/api/v1/users/1234/events').as('moderator').end(hlp.status(401, done));
-		});
-
-		it('should allow access to events by current user', function(done) {
-			request.get('/api/v1/user/events').as('moderator').end(hlp.status(200, done));
-		});
-
 		it('should allow access to release moderation', function(done) {
 			request.post('/api/v1/releases/1234/moderate').as('moderator').send({}).end(hlp.status(404, done));
 		});
@@ -233,14 +173,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/ping').as('admin').end(hlp.status(200, done));
 		});
 
-		it('should allow to list starred events', function(done) {
-			request.get('/api/v1/events?starred').as('admin').end(hlp.status(200, done));
-		});
-
-		it('should allow access to events by current user', function(done) {
-			request.get('/api/v1/user/events').as('admin').end(hlp.status(200, done));
-		});
-
 	});
 
 	describe('for the root user', function() {
@@ -265,17 +197,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/ping').as('root').end(hlp.status(200, done));
 		});
 
-		it('should allow to list starred events', function(done) {
-			request.get('/api/v1/events?starred').as('root').end(hlp.status(200, done));
-		});
-
-		it('should allow access to events by user', function(done) {
-			request.get('/api/v1/users/1234/events').as('root').end(hlp.status(404, done));
-		});
-
-		it('should allow access to events by current user', function(done) {
-			request.get('/api/v1/user/events').as('root').end(hlp.status(200, done));
-		});
 
 	});
 

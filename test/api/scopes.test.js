@@ -84,26 +84,6 @@ describe('The scopes of the VPDB API', function() {
 			request.post('/api/v1/messages/authenticate').send({}).with(tokenAll).end(hlp.status(404, done));
 		});
 
-		it('should allow access to release creation', done => {
-			request.post('/api/v1/releases').send({}).with(tokenAll).end(hlp.status(422, done));
-		});
-		it('should allow access to release update', done => {
-			request.patch('/api/v1/releases/1234').send({}).with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to release deletion', done => {
-			request.del('/api/v1/releases/1234').with(tokenAll).end(hlp.status(404, done));
-		});
-
-		it('should allow access to release version creation', done => {
-			request.post('/api/v1/releases/1234/versions').send({}).with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to release version update', done => {
-			request.patch('/api/v1/releases/1234/versions/1.0').send({}).with(tokenAll).end(hlp.status(404, done));
-		});
-		it('should allow access to release file validation', done => {
-			request.post('/api/v1/releases/1234/versions/1.0/files/1234/validate').send({}).with(tokenAll).end(hlp.status(404, done));
-		});
-
 		it('should allow access to user profile', done => {
 			request.get('/api/v1/user').with(tokenAll).end(hlp.status(200, done));
 		});
@@ -151,26 +131,6 @@ describe('The scopes of the VPDB API', function() {
 
 		it('should deny access to real-time subscription', done => {
 			request.post('/api/v1/messages/authenticate').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-
-		it('should deny access to release creation', done => {
-			request.post('/api/v1/releases').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to release update', done => {
-			request.patch('/api/v1/releases/1234').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to release deletion', done => {
-			request.del('/api/v1/releases/1234').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-
-		it('should deny access to release version creation', done => {
-			request.post('/api/v1/releases/1234/versions').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to release version update', done => {
-			request.patch('/api/v1/releases/1234/versions/1.0').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to release file validation', done => {
-			request.post('/api/v1/releases/1234/versions/1.0/files/1234/validate').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
 		});
 
 		it('should deny access to release moderation creation', done => {
@@ -224,26 +184,6 @@ describe('The scopes of the VPDB API', function() {
 
 		it('should deny access to real-time subscription', done => {
 			request.post('/api/v1/messages/authenticate').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-
-		it('should deny access to release creation', done => {
-			request.post('/api/v1/releases').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to release update', done => {
-			request.patch('/api/v1/releases/1234').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to release deletion', done => {
-			request.del('/api/v1/releases/1234').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-
-		it('should deny access to release version creation', done => {
-			request.post('/api/v1/releases/1234/versions').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to release version update', done => {
-			request.patch('/api/v1/releases/1234/versions/1.0').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
-		});
-		it('should deny access to release file validation', done => {
-			request.post('/api/v1/releases/1234/versions/1.0/files/1234/validate').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
 		});
 
 		it('should deny access to release moderation creation', done => {

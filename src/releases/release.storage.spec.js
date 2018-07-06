@@ -19,12 +19,9 @@
 
 "use strict"; /* global describe, before, after, it */
 
-const _ = require('lodash');
-const gm = require('gm');
 const async = require('async');
 const request = require('superagent');
 const expect = require('expect.js');
-const pleasejs = require('pleasejs');
 
 const superagentTest = require('../../test/modules/superagent-test');
 const hlp = require('../../test/modules/helper');

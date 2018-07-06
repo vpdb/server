@@ -19,11 +19,11 @@
 
 import { ModeratedDocument, GameReferenceDocument, PrettyIdDocument, MetricsDocument, FileReferenceDocument, Types } from 'mongoose';
 import { User } from '../users/user';
-import { ReleaseVersion } from './release.version';
+import { ReleaseVersion } from './version/release.version';
 import { ContentAuthor } from '../users/content.author';
 import { Tag } from '../tags/tag';
 import { Thumb } from '../common/typings/serializers';
-import { ReleaseFileFlavor } from './release.version.file';
+import { ReleaseFileFlavor } from './version/file/release.version.file';
 
 export interface Release extends ModeratedDocument, GameReferenceDocument, PrettyIdDocument, MetricsDocument, FileReferenceDocument {
 

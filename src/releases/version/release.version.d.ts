@@ -18,7 +18,7 @@
  */
 
 import { FileReferenceDocument, PrettyIdDocument } from 'mongoose';
-import { ReleaseVersionFile } from './release.version.file';
+import { ReleaseVersionFile } from './file/release.version.file';
 
 export interface ReleaseVersion extends FileReferenceDocument, PrettyIdDocument {
 	version: string,

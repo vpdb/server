@@ -25,8 +25,8 @@ import { ApiError } from '../common/api.error';
 import { TableBlock, TableBlockBase, TableBlockMatch, TableBlockMatchResult } from '../releases/release.tableblock';
 import { File } from './file';
 import { Release } from '../releases/release';
-import { ReleaseVersion } from '../releases/release.version';
-import { ReleaseVersionFile } from '../releases/release.version.file';
+import { ReleaseVersion } from '../releases/version/release.version';
+import { ReleaseVersionFile } from '../releases/version/file/release.version.file';
 import { Build } from '../builds/build';
 
 export class FileBlockmatchApi extends Api {

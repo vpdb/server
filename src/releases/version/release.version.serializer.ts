@@ -19,11 +19,11 @@
 
 import { compact, includes, isArray, pick } from 'lodash';
 
-import { state } from '../state';
-import { Serializer, SerializerOptions } from '../common/serializer';
-import { Context } from '../common/typings/context';
+import { state } from '../../state';
+import { Serializer, SerializerOptions } from '../../common/serializer';
+import { Context } from '../../common/typings/context';
 import { ReleaseVersion } from './release.version';
-import { flavors } from './release.flavors';
+import { flavors } from '../release.flavors';
 
 export class ReleaseVersionSerializer extends Serializer<ReleaseVersion> {
 

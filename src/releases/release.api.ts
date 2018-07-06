@@ -32,8 +32,8 @@ import { apiCache } from '../common/api.cache';
 import { LogEventUtil } from '../log-event/log.event.util';
 import { Game } from '../games/game';
 import { User } from '../users/user';
-import { ReleaseVersion } from './release.version';
-import { ReleaseVersionFile } from './release.version.file';
+import { ReleaseVersion } from './version/release.version';
+import { ReleaseVersionFile } from './version/file/release.version.file';
 import { flavors } from './release.flavors';
 import { ReleaseAbstractApi } from './release.abstract.api';
 

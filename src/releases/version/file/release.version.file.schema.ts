@@ -20,9 +20,9 @@
 import { keys } from 'lodash';
 import { PrettyIdModel, PrettyIdOptions, Schema } from 'mongoose';
 
-import { flavors } from './release.flavors';
-import { fileReferencePlugin } from '../common/mongoose/file.reference.plugin';
-import { prettyIdPlugin } from '../common/mongoose/pretty.id.plugin';
+import { flavors } from '../../release.flavors';
+import { fileReferencePlugin } from '../../../common/mongoose/file.reference.plugin';
+import { prettyIdPlugin } from '../../../common/mongoose/pretty.id.plugin';
 import { ReleaseVersionFile } from './release.version.file';
 
 const validationStatusValues = ['verified', 'playable', 'broken'];

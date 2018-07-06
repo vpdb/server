@@ -83,34 +83,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/ping').end(hlp.status(200, done));
 		});
 
-		it('should allow to list releases', function(done) {
-			request.get('/api/v1/releases').end(hlp.status(200, done));
-		});
-
-		it('should allow access to release details', function(done) {
-			request.get('/api/v1/releases/123456').end(hlp.status(404, done));
-		});
-
-		it('should deny access to create releases', function(done) {
-			request.post('/api/v1/releases').send({}).end(hlp.status(401, done));
-		});
-
-		it('should deny access to release deletion', function(done) {
-			request.del('/api/v1/releases/123456').saveResponse({ path: 'releases/del' }).end(hlp.status(401, done));
-		});
-
-		it('should deny access to release version creation', function(done) {
-			request.post('/api/v1/releases/123/versions').send({}).end(hlp.status(401, done));
-		});
-
-		it('should deny access to release file creation', function(done) {
-			request.patch('/api/v1/releases/123/versions/1.2').send({}).end(hlp.status(401, done));
-		});
-
-		it('should deny access to release file validation', function(done) {
-			request.post('/api/v1/releases/123/versions/1.2/files/1234/validate').send({}).end(hlp.status(401, done));
-		});
-
 		it('should deny access to registration mail', function(done) {
 			request.post('/api/v1/users/123/send-confirmation').send({}).end(hlp.status(401, done));
 		});
@@ -211,34 +183,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/ping').as('member').end(hlp.status(200, done));
 		});
 
-		it('should allow to list releases', function(done) {
-			request.get('/api/v1/releases').as('member').end(hlp.status(200, done));
-		});
-
-		it('should allow to create releases', function(done) {
-			request.post('/api/v1/releases').as('member').send({}).end(hlp.status(422, done));
-		});
-
-		it('should allow to delete releases', function(done) {
-			request.del('/api/v1/releases/123456').as('member').end(hlp.status(404, done));
-		});
-
-		it('should deny access to release version creation', function(done) {
-			request.post('/api/v1/releases/123/versions').as('member').send({}).end(hlp.status(404, done));
-		});
-
-		it('should deny access to release file creation', function(done) {
-			request.patch('/api/v1/releases/123/versions/1.0').as('member').send({}).end(hlp.status(404, done));
-		});
-
-		it('should deny access to release file validation', function(done) {
-			request.post('/api/v1/releases/123/versions/1.2/files/1234/validate').as('member').send({}).end(hlp.status(403, done));
-		});
-
-		it('should deny access to release moderation', function(done) {
-			request.post('/api/v1/releases/1234/moderate').as('member').send({}).end(hlp.status(403, done));
-		});
-
 		it('should allow to list starred events', function(done) {
 			request.get('/api/v1/events?starred').as('member').end(hlp.status(200, done));
 		});
@@ -324,18 +268,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/ping').as('contributor').end(hlp.status(200, done));
 		});
 
-		it('should allow to create releases', function(done) {
-			request.post('/api/v1/releases').as('contributor').send({}).end(hlp.status(422, done));
-		});
-
-		it('should allow to delete releases', function(done) {
-			request.del('/api/v1/releases/123456').as('contributor').end(hlp.status(404, done));
-		});
-
-		it('should deny access to release file validation', function(done) {
-			request.post('/api/v1/releases/123/versions/1.2/files/1234/validate').as('contributor').send({}).end(hlp.status(403, done));
-		});
-
 		it('should allow to list starred events', function(done) {
 			request.get('/api/v1/events?starred').as('contributor').end(hlp.status(200, done));
 		});
@@ -419,18 +351,6 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to ping', function(done) {
 			request.get('/api/v1/ping').as('moderator').end(hlp.status(200, done));
-		});
-
-		it('should allow to create releases', function(done) {
-			request.post('/api/v1/releases').as('moderator').send({}).end(hlp.status(422, done));
-		});
-
-		it('should allow to delete releases', function(done) {
-			request.del('/api/v1/releases/123456').as('moderator').end(hlp.status(404, done));
-		});
-
-		it('should allow access to release file validation', function(done) {
-			request.post('/api/v1/releases/123/versions/1.2/files/1234/validate').as('moderator').send({}).end(hlp.status(404, done));
 		});
 
 		it('should allow to list starred events', function(done) {
@@ -529,14 +449,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/ping').as('admin').end(hlp.status(200, done));
 		});
 
-		it('should allow to create releases', function(done) {
-			request.post('/api/v1/releases').as('admin').send({}).end(hlp.status(422, done));
-		});
-
-		it('should allow to delete releases', function(done) {
-			request.del('/api/v1/releases/123456').as('admin').end(hlp.status(404, done));
-		});
-
 		it('should allow to list starred events', function(done) {
 			request.get('/api/v1/events?starred').as('admin').end(hlp.status(200, done));
 		});
@@ -616,14 +528,6 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to ping', function(done) {
 			request.get('/api/v1/ping').as('root').end(hlp.status(200, done));
-		});
-
-		it('should allow to create releases', function(done) {
-			request.post('/api/v1/releases').as('root').send({}).end(hlp.status(422, done));
-		});
-
-		it('should allow to delete releases', function(done) {
-			request.del('/api/v1/releases/123456').as('root').end(hlp.status(404, done));
 		});
 
 		it('should allow to list starred events', function(done) {

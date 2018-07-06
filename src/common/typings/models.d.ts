@@ -34,8 +34,8 @@ import { LogEventModel } from '../../log-event/log.event.schema';
 import { LogUserModel } from '../../log-user/log.user.schema';
 import { MediumModel } from '../../media/medium.schema';
 import { ReleaseModel } from '../../releases/release.schema';
-import { ReleaseVersionModel } from '../../releases/release.version.schema';
-import { ReleaseVersionFileModel } from '../../releases/release.version.file.schema';
+import { ReleaseVersionModel } from '../../releases/version/release.version.schema';
+import { ReleaseVersionFileModel } from '../../releases/version/file/release.version.file.schema';
 import { RomModel } from '../../roms/rom.schema';
 import { UserModel } from '../../users/user.schema';
 

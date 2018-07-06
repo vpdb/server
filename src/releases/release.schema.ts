@@ -24,7 +24,7 @@ import uniqueValidatorPlugin from 'mongoose-unique-validator';
 import paginatePlugin from 'mongoose-paginate';
 
 import { authorSchema } from '../users/content.author.schema';
-import { releaseVersionSchema } from './release.version.schema';
+import { releaseVersionSchema } from './version/release.version.schema';
 import { gameReferencePlugin } from '../common/mongoose/game.reference.plugin';
 import { fileReferencePlugin } from '../common/mongoose/file.reference.plugin';
 import { prettyIdPlugin } from '../common/mongoose/pretty.id.plugin';

@@ -21,8 +21,8 @@ import { Document, Types } from 'mongoose';
 import { File } from '../files/file';
 import { Release } from './release';
 import { Game } from '../games/game';
-import { ReleaseVersion } from './release.version';
-import { ReleaseVersionFile } from './release.version.file';
+import { ReleaseVersion } from './version/release.version';
+import { ReleaseVersionFile } from './version/file/release.version.file';
 
 export interface TableBlock extends Document {
 	hash: Buffer,

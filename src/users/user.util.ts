@@ -28,7 +28,7 @@ import { config } from '../common/settings';
 import { mailer } from '../common/mailer';
 import { ApiError } from '../common/api.error';
 import { Release } from '../releases/release';
-import { ReleaseVersionFile } from '../releases/release.version.file';
+import { ReleaseVersionFile } from '../releases/version/file/release.version.file';
 import { Backglass } from '../backglasses/backglass';
 import { Rating } from '../ratings/rating';
 import { Star } from '../stars/star';

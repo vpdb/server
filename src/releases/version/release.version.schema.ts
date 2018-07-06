@@ -19,12 +19,12 @@
 import { PrettyIdModel, Schema, Types } from 'mongoose';
 import { filter, isArray, isEqual, keys, map, uniq } from 'lodash';
 
-import { fileReferencePlugin } from '../common/mongoose/file.reference.plugin';
-import { prettyIdPlugin } from '../common/mongoose/pretty.id.plugin';
-import { releaseVersionFileFields, releaseVersionFileSchema } from './release.version.file.schema';
-import { ReleaseFileFlavor, ReleaseVersionFile } from './release.version.file';
-import { state } from '../state';
-import { Release } from './release';
+import { fileReferencePlugin } from '../../common/mongoose/file.reference.plugin';
+import { prettyIdPlugin } from '../../common/mongoose/pretty.id.plugin';
+import { releaseVersionFileFields, releaseVersionFileSchema } from './file/release.version.file.schema';
+import { ReleaseFileFlavor, ReleaseVersionFile } from './file/release.version.file';
+import { state } from '../../state';
+import { Release } from '../release';
 import { ReleaseVersion } from './release.version';
 import { ReleaseVersionDocument } from './release.version.document';
 

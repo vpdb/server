@@ -20,20 +20,20 @@
 import { inspect } from 'util';
 import { cloneDeep, defaults, orderBy, pick } from 'lodash';
 
-import { state } from '../state';
-import { ApiError } from '../common/api.error';
-import { Context } from '../common/typings/context';
-import { acl } from '../common/acl';
-import { logger } from '../common/logger';
-import { mailer } from '../common/mailer';
-import { LogEventUtil } from '../log-event/log.event.util';
-import { Game } from '../games/game';
-import { User } from '../users/user';
-import { File } from '../files/file';
-import { ReleaseVersionFile } from './release.version.file';
+import { state } from '../../state';
+import { ApiError } from '../../common/api.error';
+import { Context } from '../../common/typings/context';
+import { acl } from '../../common/acl';
+import { logger } from '../../common/logger';
+import { mailer } from '../../common/mailer';
+import { LogEventUtil } from '../../log-event/log.event.util';
+import { Game } from '../../games/game';
+import { User } from '../../users/user';
+import { File } from '../../files/file';
+import { ReleaseVersionFile } from './file/release.version.file';
 import { ReleaseVersion } from './release.version';
-import { apiCache } from '../common/api.cache';
-import { ReleaseAbstractApi } from './release.abstract.api';
+import { apiCache } from '../../common/api.cache';
+import { ReleaseAbstractApi } from '../release.abstract.api';
 
 export class ReleaseVersionApi extends ReleaseAbstractApi {
 

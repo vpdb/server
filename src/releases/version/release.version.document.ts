@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { File } from '../files/file';
-import { ReleaseVersionFile } from './release.version.file';
+import { File } from '../../files/file';
+import { ReleaseVersionFile } from './file/release.version.file';
 import { ReleaseVersion } from './release.version';
 
 export class ReleaseVersionDocument {

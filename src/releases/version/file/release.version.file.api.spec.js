@@ -22,8 +22,8 @@
 const request = require('superagent');
 const expect = require('expect.js');
 
-const superagentTest = require('../../test/modules/superagent-test');
-const hlp = require('../../test/modules/helper');
+const superagentTest = require('../../../../test/modules/superagent-test');
+const hlp = require('../../../../test/modules/helper');
 
 superagentTest(request);
 

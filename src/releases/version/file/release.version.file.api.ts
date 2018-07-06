@@ -17,17 +17,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { state } from '../state';
-import { Api } from '../common/api';
-import { ApiError } from '../common/api.error';
-import { Context } from '../common/typings/context';
-import { logger } from '../common/logger';
-import { mailer } from '../common/mailer';
-import { LogEventUtil } from '../log-event/log.event.util';
-import { Game } from '../games/game';
-import { User } from '../users/user';
-import { File } from '../files/file';
-import { apiCache } from '../common/api.cache';
+import { state } from '../../../state';
+import { Api } from '../../../common/api';
+import { ApiError } from '../../../common/api.error';
+import { Context } from '../../../common/typings/context';
+import { logger } from '../../../common/logger';
+import { mailer } from '../../../common/mailer';
+import { LogEventUtil } from '../../../log-event/log.event.util';
+import { Game } from '../../../games/game';
+import { User } from '../../../users/user';
+import { File } from '../../../files/file';
+import { apiCache } from '../../../common/api.cache';
 
 export class ReleaseVersionFileApi extends Api {
 

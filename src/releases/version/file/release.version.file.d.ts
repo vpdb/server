@@ -18,9 +18,9 @@
  */
 
 import { FileReferenceDocument, PrettyIdDocument, Schema, Types } from 'mongoose';
-import { File } from '../files/file';
-import { User } from '../users/user';
-import { Build } from '../builds/build';
+import { File } from '../../../files/file';
+import { User } from '../../../users/user';
+import { Build } from '../../../builds/build';
 
 export interface ReleaseVersionFile extends FileReferenceDocument, PrettyIdDocument {
 	// model

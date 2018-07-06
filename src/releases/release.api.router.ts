@@ -25,8 +25,8 @@ import { LogEventApi } from '../log-event/log.event.api';
 import { CommentApi } from '../comments/comment.api';
 import { apiCache } from '../common/api.cache';
 import { releaseDetailsCacheCounters, releaseListCacheCounters } from './release.api.cache.config';
-import { ReleaseVersionApi } from './release.version.api';
-import { ReleaseVersionFileApi } from './release.version.file.api';
+import { ReleaseVersionApi } from './version/release.version.api';
+import { ReleaseVersionFileApi } from './version/file/release.version.file.api';
 
 const api = new ReleaseApi();
 const versionApi = new ReleaseVersionApi();

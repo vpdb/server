@@ -28,14 +28,14 @@ import { TableBlock } from './release.tableblock';
 import { tableBlockSchema } from './release.tableblock.schema';
 import { Release } from './release';
 import { ReleaseModel, releaseSchema } from './release.schema';
-import { ReleaseVersionModel, releaseVersionSchema } from './release.version.schema';
-import { ReleaseVersionFileModel, releaseVersionFileSchema } from './release.version.file.schema';
-import { ReleaseVersion } from './release.version';
-import { ReleaseVersionFile } from './release.version.file';
+import { ReleaseVersionModel, releaseVersionSchema } from './version/release.version.schema';
+import { ReleaseVersionFileModel, releaseVersionFileSchema } from './version/file/release.version.file.schema';
+import { ReleaseVersion } from './version/release.version';
+import { ReleaseVersionFile } from './version/file/release.version.file';
 import { router as apiRouter } from './release.api.router';
 import { router as storageRouter } from './release.storage.router';
-import { ReleaseVersionSerializer } from './release.version.serializer';
-import { ReleaseVersionFileSerializer } from './release.version.file.serializer';
+import { ReleaseVersionSerializer } from './version/release.version.serializer';
+import { ReleaseVersionFileSerializer } from './version/file/release.version.file.serializer';
 
 export class ReleaseEndPoint extends EndPoint {
 

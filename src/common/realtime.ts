@@ -23,7 +23,7 @@ import { state } from '../state';
 import { config } from './settings';
 import { Game } from '../games/game';
 import { Release } from '../releases/release';
-import { ReleaseVersion } from '../releases/release.version';
+import { ReleaseVersion } from '../releases/version/release.version';
 import { logger } from './logger';
 import { User } from '../users/user';
 

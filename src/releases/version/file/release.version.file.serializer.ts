@@ -17,13 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { state } from '../state';
-import { Serializer, SerializerOptions } from '../common/serializer';
+import { state } from '../../../state';
+import { Serializer, SerializerOptions } from '../../../common/serializer';
 import { ReleaseVersionFile } from './release.version.file';
-import { Context } from '../common/typings/context';
-import { Build } from '../builds/build';
-import { File } from '../files/file';
-import { User } from '../users/user';
+import { Context } from '../../../common/typings/context';
+import { Build } from '../../../builds/build';
+import { File } from '../../../files/file';
+import { User } from '../../../users/user';
 
 export class ReleaseVersionFileSerializer extends Serializer<ReleaseVersionFile> {
 

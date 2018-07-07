@@ -17,40 +17,40 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import Zip from 'adm-zip'
-import { Metadata } from './metadata';
+import Zip from 'adm-zip';
 import { File } from '../file';
-import { FileVariation } from '../file.variations';
 import { FileDocument } from '../file.document';
+import { FileVariation } from '../file.variations';
+import { Metadata } from './metadata';
 
 const Unrar = require('unrar');
 require('bluebird').promisifyAll(Unrar.prototype);
 
 export class ArchiveMetadata extends Metadata {
 
-	isValid(file: File, variation?: FileVariation): boolean {
+	public isValid(file: File, variation?: FileVariation): boolean {
 		return FileDocument.getMimeCategory(file, variation) === 'archive';
 	}
 
-	async getMetadata(file: File, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
+	public async getMetadata(file: File, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
 		const mimeType = variation && variation.mimeType ? variation.mimeType : FileDocument.getMimeType(file);
 		const type = mimeType.split('/')[1];
 		switch (type) {
 			case 'x-rar-compressed':
 			case 'rar':
-				return await this.getRarMetadata(path);
+				return this.getRarMetadata(path);
 
 			case 'zip':
 				return this.getZipMetadata(path);
 		}
 	}
 
-	serializeDetailed(metadata: { [p: string]: any }): { [p: string]: any } {
+	public serializeDetailed(metadata: { [p: string]: any }): { [p: string]: any } {
 		return metadata;
 	}
 
 	/* istanbul ignore next */
-	serializeVariation(metadata: { [p: string]: any }): { [p: string]: any } {
+	public serializeVariation(metadata: { [p: string]: any }): { [p: string]: any } {
 		return metadata;
 	}
 
@@ -75,9 +75,9 @@ export class ArchiveMetadata extends Metadata {
 					bytes: parseInt(entry.size),
 					bytes_compressed: parseInt(entry.packedSize),
 					crc: parseInt(entry.crc32, 16),
-					modified_at: new Date(entry.mtime.replace(/,\d+$/, ''))
+					modified_at: new Date(entry.mtime.replace(/,\d+$/, '')),
 				};
-			})
+			}),
 		};
 	}
 
@@ -102,9 +102,9 @@ export class ArchiveMetadata extends Metadata {
 						bytes: entry.header.size,
 						bytes_compressed: entry.header.compressedSize,
 						crc: entry.header.crc,
-						modified_at: new Date(entry.header.time)
+						modified_at: new Date(entry.header.time),
 					};
-				})
+				}),
 			};
 		} catch (err) {
 			throw new Error(err);

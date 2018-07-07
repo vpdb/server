@@ -23,77 +23,77 @@ export const mediumCategories: { [key: string]: MediumCategory } = {
 		folder: 'Flyer Images',
 		children: ['Back', 'Front', 'Inside1', 'Inside2', 'Inside3', 'Inside4', 'Inside5', 'Inside6'],
 		mimeCategory: 'image',
-		reference: 'game'
+		reference: 'game',
 	},
 	gameplay_video: {
 		folder: 'Gameplay Videos',
 		mimeCategory: 'video',
-		reference: 'game'
+		reference: 'game',
 	},
 	instruction_card: {
 		folder: 'Instruction Cards',
 		mimeCategory: 'image',
-		reference: 'game'
+		reference: 'game',
 	},
 	backglass_image: {
 		folder: 'Backglass Images',
 		fileType: 'backglass',
 		mimeCategory: 'image',
-		reference: 'game'
+		reference: 'game',
 	},
 	backglass_video: {
 		folder: 'Backglass Videos',
 		fileType: 'backglass',
 		mimeCategory: 'video',
-		reference: 'game'
+		reference: 'game',
 	},
 	dmd_image: {
 		folder: 'DMD Images',
 		mimeCategory: 'image',
-		reference: 'game'
+		reference: 'game',
 	},
 	dmd_video: {
 		folder: 'DMD Videos',
 		mimeCategory: 'video',
-		reference: 'game'
+		reference: 'game',
 	},
 	real_dmd_image: {
 		folder: 'Real DMD Images',
 		mimeCategory: 'image',
-		reference: 'game'
+		reference: 'game',
 	},
 	real_dmd_video: {
 		folder: 'Real DMD Videos',
 		mimeCategory: 'video',
-		reference: 'game'
+		reference: 'game',
 	},
 	table_audio: {
 		folder: 'Table Audio',
 		mimeCategory: 'audio',
-		reference: 'game'
+		reference: 'game',
 	},
 	playfield_image: {
 		variations: {
 			fs: { folder: 'Table Images', fileType: 'playfield-fs' },
-			ws: { folder: 'Table Images Desktop', fileType: 'playfield-ws' }
+			ws: { folder: 'Table Images Desktop', fileType: 'playfield-ws' },
 		},
 		mimeCategory: 'image',
-		reference: 'release'
+		reference: 'release',
 	},
 	playfield_video: {
 		variations: {
 			fs: { folder: 'Table Videos' },
-			ws: { folder: 'Table Videos Desktop' }
+			ws: { folder: 'Table Videos Desktop' },
 		},
 		mimeCategory: 'video',
-		reference: 'release'
+		reference: 'release',
 	},
 	wheel_image: {
 		folder: 'Wheel Images',
 		fileType: 'logo',
 		mimeCategory: 'image',
-		reference: 'game'
-	}
+		reference: 'game',
+	},
 };
 
 export interface MediumCategory {

@@ -17,20 +17,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import Busboy from 'busboy';
 import { createReadStream, stat, Stats } from 'fs';
 import { promisify } from 'util';
-import Busboy from 'busboy';
 
-import { state } from '../state';
 import { Api } from '../common/api';
-import { Context } from '../common/typings/context';
-import { quota } from '../common/quota';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
-import { processorQueue } from './processor/processor.queue';
+import { quota } from '../common/quota';
+import { Context } from '../common/typings/context';
+import { state } from '../state';
 import { File } from './file';
-import { FileUtil } from './file.util';
 import { fileTypes } from './file.types';
+import { FileUtil } from './file.util';
+import { processorQueue } from './processor/processor.queue';
 
 const statAsync = promisify(stat);
 
@@ -73,7 +73,6 @@ export class FileStorage extends Api {
 		return this.success(ctx, state.serializers.File.detailed(ctx, file), 201);
 	}
 
-
 	/**
 	 * Downloads a single file.
 	 *
@@ -95,7 +94,7 @@ export class FileStorage extends Api {
 		await quota.assert(ctx, file);
 
 		// we're here, so serve!
-		return await this.serve(ctx, file, ctx.params.variation);
+		return this.serve(ctx, file, ctx.params.variation);
 	}
 
 	/**
@@ -146,7 +145,7 @@ export class FileStorage extends Api {
 			created_at: new Date(),
 			mime_type: ctx.get('content-type'),
 			file_type: ctx.query.type,
-			_created_by: ctx.state.user._id
+			_created_by: ctx.state.user._id,
 		};
 
 		return FileUtil.create(fileData as File, ctx.req);
@@ -170,7 +169,7 @@ export class FileStorage extends Api {
 			throw new ApiError('Invalid "Content-Type" parameter. Valid parameter for type "%s" are: [ %s ].', ctx.query.type, fileTypes.getMimeTypes(ctx.query.type).join(', ')).status(422);
 		}
 
-		let err:ApiError;
+		let err: ApiError;
 		const busboy = new Busboy({ headers: ctx.request.headers });
 		const parseResult = new Promise<File>((resolve, reject) => {
 			let numFiles = 0;
@@ -189,7 +188,7 @@ export class FileStorage extends Api {
 					created_at: new Date(),
 					mime_type: ctx.query.content_type,
 					file_type: ctx.query.type,
-					_created_by: ctx.state.user._id
+					_created_by: ctx.state.user._id,
 				};
 				FileUtil.create(fileData as File, stream)
 					.then(file => resolve(file))
@@ -263,7 +262,6 @@ export class FileStorage extends Api {
 		return [file, false];
 	}
 
-
 	/**
 	 * Serves a file to the user.
 	 *
@@ -316,8 +314,8 @@ export class FileStorage extends Api {
 				headers: {
 					'Content-Type': file.getMimeType(variation),
 					'Content-Length': 0,
-					'Last-Modified': modified.toISOString().replace(/T/, ' ').replace(/\..+/, '')
-				}
+					'Last-Modified': modified.toISOString().replace(/T/, ' ').replace(/\..+/, ''),
+				},
 			});
 		}
 

@@ -18,9 +18,9 @@
  */
 
 import { Scope } from '../common/scope';
-import { UserApi } from './user.api';
-import { StarApi } from '../stars/star.api';
 import { LogEventApi } from '../log-event/log.event.api';
+import { StarApi } from '../stars/star.api';
+import { UserApi } from './user.api';
 
 const api = new UserApi();
 const starApi = new StarApi();

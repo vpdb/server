@@ -17,13 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { ModeratedDocument, GameReferenceDocument, PrettyIdDocument, MetricsDocument, FileReferenceDocument, Types } from 'mongoose';
-import { User } from '../users/user';
-import { ReleaseVersion } from './version/release.version';
-import { ContentAuthor } from '../users/content.author';
-import { Tag } from '../tags/tag';
+import { FileReferenceDocument, GameReferenceDocument, MetricsDocument, ModeratedDocument, PrettyIdDocument, Types } from 'mongoose';
 import { Thumb } from '../common/typings/serializers';
+import { Tag } from '../tags/tag';
+import { ContentAuthor } from '../users/content.author';
+import { User } from '../users/user';
 import { ReleaseFileFlavor } from './version/file/release.version.file';
+import { ReleaseVersion } from './version/release.version';
 
 export interface Release extends ModeratedDocument, GameReferenceDocument, PrettyIdDocument, MetricsDocument, FileReferenceDocument {
 
@@ -36,10 +36,10 @@ export interface Release extends ModeratedDocument, GameReferenceDocument, Prett
 	versions: ReleaseVersion[];
 	authors: ContentAuthor[];
 	_tags: Tag[] | Types.ObjectId;
-	links: {
+	links: Array<{
 		label: string;
 		url: string
-	}[];
+	}>;
 	acknowledgements: string;
 	original_version: {
 		_ref: Release | Types.ObjectId;
@@ -74,7 +74,7 @@ export interface Release extends ModeratedDocument, GameReferenceDocument, Prett
 	ipdb: {
 		number: number,
 		mfg?: number,
-		rating?: number
+		rating?: number,
 	};
 
 	/**

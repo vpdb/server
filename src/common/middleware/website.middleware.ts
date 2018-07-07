@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { resolve } from 'path';
 import send from 'koa-send';
+import { resolve } from 'path';
 
 import { settings } from '../settings';
 import { Context } from '../typings/context';
@@ -29,7 +29,7 @@ import { Context } from '../typings/context';
  * @return {(ctx: Context, next: () => Promise<any>) => Promise<void>}
  */
 export function koaWebsiteHandler(root: string, opts?: any) {
-	opts = Object.assign({}, opts);
+	opts = {...opts};
 	opts.root = resolve(root);
 	if (opts.index !== false) {
 		opts.index = opts.index || 'index.html';
@@ -53,8 +53,8 @@ export function koaWebsiteHandler(root: string, opts?: any) {
 				}
 
 			} catch (e) {
-				throw err
+				throw err;
 			}
 		}
-	}
+	};
 }

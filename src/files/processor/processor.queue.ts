@@ -17,19 +17,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import Bluebird from 'bluebird';
+import Bull, { Job, Queue } from 'bull';
 import { exists, rename, stat, unlink } from 'fs';
 import { promisify } from 'util';
-import Bull, { Job, Queue } from 'bull';
-import Bluebird from 'bluebird';
 
-import { state } from '../../state';
+import { dirname } from 'path';
 import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
+import { state } from '../../state';
 import { File } from '../file';
+import { FileUtil } from '../file.util';
 import { FileVariation } from '../file.variations';
 import { processorManager } from './processor.manager';
-import { FileUtil } from '../file.util';
-import { dirname } from "path";
 
 const renameAsync = promisify(rename);
 const existsAsync = promisify(exists);
@@ -90,7 +90,7 @@ class ProcessorQueue {
 		let n = 0;
 
 		// add variations creation queue
-		for (let variation of file.getVariations().filter(v => !v.source)) {
+		for (const variation of file.getVariations().filter(v => !v.source)) {
 			const processor = processorManager.getValidCreationProcessor(file, null, variation);
 			if (processor) {
 				const tmpSrcPath = file.getPath(null, { tmpSuffix: '_' + variation.name + '.source' });
@@ -102,7 +102,7 @@ class ProcessorQueue {
 		}
 
 		// add original to optimization queue
-		for (let processor of processorManager.getValidOptimizationProcessors(file)) {
+		for (const processor of processorManager.getValidOptimizationProcessors(file)) {
 			const destPath = file.getPath(null, { tmpSuffix: '_' + processor.name + '.processing' });
 			await processorManager.queueOptimization(processor, file, srcPath, destPath);
 			n++;
@@ -171,14 +171,14 @@ class ProcessorQueue {
 						return;
 					}
 					// unregister listener
-					for (let queue of queues) {
+					for (const queue of queues) {
 						(queue as any).off('completed', completeListener);
 					}
 					logger.debug('[ProcessorQueue.waitForAnyCompletion] All jobs done.');
 					resolve(result);
 				})();
 			};
-			for (let queue of queues) {
+			for (const queue of queues) {
 				queue.on('completed', completeListener);
 			}
 		});
@@ -193,9 +193,9 @@ class ProcessorQueue {
 	 */
 	public async deleteProcessingFile(file: File): Promise<void> {
 		const redisLock = 'queue:delete:' + file.id;
-		const promises: (() => Bluebird<any> | Promise<any>)[] = [];
+		const promises: Array<() => Bluebird<any> | Promise<any>> = [];
 		await state.redis.set(redisLock, '1');
-		for (let queue of processorManager.getQueues(file)) {
+		for (const queue of processorManager.getQueues(file)) {
 
 			// remove waiting jobs
 			const waitingJobs = await queue.getWaiting();
@@ -247,7 +247,7 @@ class ProcessorQueue {
 	 * @param {File} file File with is_active set to true
 	 * @returns {Promise<void>}
 	 */
-	public async activateFile(file:File): Promise<void> {
+	public async activateFile(file: File): Promise<void> {
 
 		const now = Date.now();
 
@@ -262,9 +262,9 @@ class ProcessorQueue {
 
 		// announce new destPath to active jobs
 		let numActiveJobs = 0;
-		for (let queue of processorManager.getQueues(file)) {
+		for (const queue of processorManager.getQueues(file)) {
 			const jobs = (await queue.getActive()).filter(job => job.data.fileId === file.id);
-			for (let job of jobs) {
+			for (const job of jobs) {
 				const variation = file.getVariation(job.data.destVariation);
 				const destPath = file.getPath(variation, { forceProtected: true });
 				if (changes.has(destPath)) {
@@ -276,7 +276,7 @@ class ProcessorQueue {
 		}
 
 		// rename remaining files
-		for (let srcPath of changes.keys()) {
+		for (const srcPath of changes.keys()) {
 			if (await existsAsync(srcPath)) {
 				logger.info('[ProcessorQueue.activateFile] Rename %s to %s', FileUtil.log(srcPath), FileUtil.log(changes.get(srcPath)));
 				if (!(await existsAsync(dirname(changes.get(srcPath))))) {
@@ -295,7 +295,7 @@ class ProcessorQueue {
 	 * @returns {Promise<any>} Resolves with the job's result.
 	 */
 	private async waitForJobCompletion(queue: Queue, job: Job): Promise<any> {
-		return await new Promise<void>(resolve => {
+		return new Promise<void>(resolve => {
 			logger.debug('[ProcessorQueue.waitForJobCompletion] Waiting for job %s on queue %s to be completed.', job.id, (queue as any).name);
 
 			function completeListener(j: Job, result: any) {
@@ -343,7 +343,7 @@ class ProcessorQueue {
 	 */
 	private async countRemaining(queues: Queue[], filter: (job: Job) => boolean) {
 		let numbJobs = 0;
-		for (let q of queues) {
+		for (const q of queues) {
 			const jobs = await (q as any).getJobs(['waiting', 'active']) as Job[];
 			const remainingJobs = jobs.filter(filter);
 			numbJobs += remainingJobs.length;

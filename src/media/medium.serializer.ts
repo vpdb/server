@@ -17,15 +17,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Serializer, SerializerOptions } from '../common/serializer';
-import { Medium } from './medium';
-import { Context } from '../common/typings/context';
 import { pick } from 'lodash';
+import { Serializer, SerializerOptions } from '../common/serializer';
+import { Context } from '../common/typings/context';
 import { File } from '../files/file';
-import { state } from '../state';
 import { Game } from '../games/game';
-import { User } from '../users/user';
 import { Release } from '../releases/release';
+import { state } from '../state';
+import { User } from '../users/user';
+import { Medium } from './medium';
 
 export class MediumSerializer extends Serializer<Medium> {
 

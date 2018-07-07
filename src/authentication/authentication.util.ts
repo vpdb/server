@@ -17,10 +17,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { parse } from 'url';
 import { encode as jwtEncode } from 'jwt-simple';
-import { User } from '../users/user';
+import { parse } from 'url';
 import { config } from '../common/settings';
+import { User } from '../users/user';
 
 export class AuthenticationUtil {
 
@@ -32,13 +32,13 @@ export class AuthenticationUtil {
 	 * @param {boolean} isRefreshToken If set, mark the token as refresh token (can't be used for creating login tokens)
 	 * @returns {string} JSON Web Token for the API
 	 */
-	static generateApiToken(user: User, now: Date, isRefreshToken: boolean) {
+	public static generateApiToken(user: User, now: Date, isRefreshToken: boolean) {
 		return jwtEncode({
 			iss: user.id,
 			iat: now,
 			exp: new Date(now.getTime() + config.vpdb.apiTokenLifetime),
 			irt: isRefreshToken,
-			scp: [ 'all' ]
+			scp: [ 'all' ],
 		}, config.vpdb.secret);
 	}
 
@@ -53,7 +53,7 @@ export class AuthenticationUtil {
 	 * @param {string} path Path the token will be valid for
 	 * @returns {string} JSON Web Token for a storage item
 	 */
-	static generateStorageToken(user: User, now: Date, path: string): string {
+	public static generateStorageToken(user: User, now: Date, path: string): string {
 		if (!path.startsWith('/')) {
 			path = AuthenticationUtil.urlPath(path);
 		}
@@ -61,8 +61,8 @@ export class AuthenticationUtil {
 			iss: user.id,
 			iat: now,
 			exp: new Date(now.getTime() + config.vpdb.storageTokenLifetime),
-			path: path,
-			scp: [ 'storage' ]
+			path,
+			scp: [ 'storage' ],
 		}, config.vpdb.secret);
 	}
 
@@ -72,13 +72,12 @@ export class AuthenticationUtil {
 	 * @returns {string} Normalized URL
 	 */
 	private static urlPath(url: string): string {
-		let u = parse(url);
-		let q = u.search || '';
-		let h = u.hash || '';
+		const u = parse(url);
+		const q = u.search || '';
+		const h = u.hash || '';
 		return u.pathname + q + h;
 	}
 }
-
 
 export interface Jwt {
 	/**

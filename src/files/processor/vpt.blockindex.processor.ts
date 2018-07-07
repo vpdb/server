@@ -17,31 +17,30 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Types } from 'mongoose';
 import { differenceWith, uniqWith } from 'lodash';
+import { Types } from 'mongoose';
 
-import { state } from '../../state';
-import { File } from '../file';
+import { logger } from '../../common/logger';
 import { visualPinballTable } from '../../common/visualpinball.table';
 import { TableBlock } from '../../releases/release.tableblock';
+import { state } from '../../state';
+import { File } from '../file';
 import { FileVariation, ImageFileVariation } from '../file.variations';
 import { OptimizationProcessor } from './processor';
-import { logger } from '../../common/logger';
 
 export class VptBlockindexProcessor implements OptimizationProcessor<ImageFileVariation> {
 
-	name: string = 'vpt.blockindex';
+	public name: string = 'vpt.blockindex';
 
-	canProcess(file: File, variation?: FileVariation): boolean {
+	public canProcess(file: File, variation?: FileVariation): boolean {
 		return file.getMimeCategory() === 'table';
 	}
 
-	getOrder(variation?: FileVariation): number {
+	public getOrder(variation?: FileVariation): number {
 		return 700 + (variation && variation.priority ? variation.priority : 0);
 	}
 
-
-	async process(file: File, src: string, dest: string, variation?: ImageFileVariation): Promise<string> {
+	public async process(file: File, src: string, dest: string, variation?: ImageFileVariation): Promise<string> {
 
 		// retrieve unique blocks from file
 		let fileBlocks = await visualPinballTable.analyzeFile(src);
@@ -53,8 +52,8 @@ export class VptBlockindexProcessor implements OptimizationProcessor<ImageFileVa
 		// diff and insert new blocks into db
 		const newBlocks = differenceWith(fileBlocks, dbBlocks, VptBlockindexProcessor.blockCompare);
 		let numAdded = 0;
-		for (let block of newBlocks) {
-			let newBlock = new state.models.TableBlock(block);
+		for (const block of newBlocks) {
+			const newBlock = new state.models.TableBlock(block);
 			newBlock._files = [file._id];
 			await newBlock.save();
 			numAdded++;
@@ -62,7 +61,7 @@ export class VptBlockindexProcessor implements OptimizationProcessor<ImageFileVa
 
 		// update available blocks
 		let numUpdated = 0;
-		for (let block of dbBlocks) {
+		for (const block of dbBlocks) {
 			(block._files as Types.ObjectId[]).push(file._id);
 			block._files = uniqWith(block._files, VptBlockindexProcessor.objectIdCompare);
 			await block.save();
@@ -78,11 +77,11 @@ export class VptBlockindexProcessor implements OptimizationProcessor<ImageFileVa
 	 * @param {{ hash: Buffer }} b2
 	 * @returns {boolean} True if hashes are equal, false otherwise.
 	 */
-	static blockCompare(b1: TableBlock, b2: TableBlock) {
+	public static blockCompare(b1: TableBlock, b2: TableBlock) {
 		return b1.hash.equals(b2.hash);
 	}
 
-	static objectIdCompare(id1: any, id2: any) {
+	public static objectIdCompare(id1: any, id2: any) {
 		return (id1.toString ? id1.toString() : id1) === (id2.toString ? id2.toString() : id2);
 	}
 }

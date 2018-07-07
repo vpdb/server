@@ -17,17 +17,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { inspect } from 'util';
 import { compact, isUndefined, map } from 'lodash';
+import { inspect } from 'util';
 
-import { state } from '../state';
-import { Api } from '../common/api';
-import { Context } from '../common/typings/context';
-import { ApiError } from '../common/api.error';
 import { acl } from '../common/acl';
+import { Api } from '../common/api';
+import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
-import { LogEvent } from './log.event';
+import { Context } from '../common/typings/context';
 import { Game } from '../games/game';
+import { state } from '../state';
+import { LogEvent } from './log.event';
 
 export class LogEventApi extends Api {
 
@@ -38,7 +38,7 @@ export class LogEventApi extends Api {
 	 * @see GET /v1/releases/:id/events
 	 * @see GET /v1/profile/events
 	 */
-	list(opts: ListLogEventOpts = {}) {
+	public list(opts: ListLogEventOpts = {}) {
 
 		return async (ctx: Context): Promise<boolean> => {
 
@@ -95,7 +95,6 @@ export class LogEventApi extends Api {
 				query.push({ '_ref.release': release._id });
 			}
 
-
 			// starred events
 			if (!isUndefined(ctx.query.starred)) {
 				if (!ctx.state.user) {
@@ -104,10 +103,10 @@ export class LogEventApi extends Api {
 
 				const stars = await state.models.Star.find({ _from: ctx.state.user._id }).exec();
 
-				let releaseIds = compact(map(map(stars, '_ref'), 'release'));
-				let gameIds = compact(map(map(stars, '_ref'), 'game'));
+				const releaseIds = compact(map(map(stars, '_ref'), 'release'));
+				const gameIds = compact(map(map(stars, '_ref'), 'game'));
 
-				let or = [];
+				const or = [];
 				if (releaseIds.length > 0) {
 					or.push({ '_ref.release': { $in: releaseIds } });
 				}
@@ -140,11 +139,11 @@ export class LogEventApi extends Api {
 				if (!user) {
 					throw new ApiError('No such user with id %s.', ctx.params.id).status(404);
 				}
-				query.push({ '_actor': user._id });
+				query.push({ _actor: user._id });
 			}
 			logger.info('[LogEventApi.list] Events query: %s', inspect(query, { depth: null }));
 
-			let docs:LogEvent[] = [];
+			let docs: LogEvent[] = [];
 			let count = 0;
 
 			// don't bother querying if a previous selection came up empty
@@ -154,7 +153,7 @@ export class LogEventApi extends Api {
 					page: pagination.page,
 					limit: pagination.perPage,
 					sort: { logged_at: -1 },
-					populate: ['_actor']
+					populate: ['_actor'],
 
 				});
 				docs = result.docs;
@@ -163,8 +162,8 @@ export class LogEventApi extends Api {
 
 			const logs = docs.map(log => fullDetails ? state.serializers.LogEvent.detailed(ctx, log) : state.serializers.LogEvent.simple(ctx, log));
 			return this.success(ctx, logs, 200, this.paginationOpts(pagination, count));
-		}
-	};
+		};
+	}
 }
 
 export interface ListLogEventOpts {

@@ -18,8 +18,8 @@
  */
 
 import { MetricsDocument, MetricsOptions, ModelProperties, Schema } from 'mongoose';
-import { apiCache } from '../api.cache';
 import { state } from '../../state';
+import { apiCache } from '../api.cache';
 
 export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 
@@ -30,10 +30,10 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 	 * @param {boolean} [decrement] If set to true, decrement instead counter instead of increment.
 	 * @returns {Promise}
 	 */
-	schema.methods.incrementCounter = async function (counterName: string, decrement: boolean = false): Promise<T> {
+	schema.methods.incrementCounter = async function(counterName: string, decrement: boolean = false): Promise<T> {
 		const incr = decrement ? -1 : 1;
 		const q: any = {
-			$inc: { ['counter.' + counterName]: incr }
+			$inc: { ['counter.' + counterName]: incr },
 		};
 
 		if (options.hotness) {
@@ -55,7 +55,7 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 		await apiCache.incrementCounter(this.constructor.modelName.toLowerCase(), this.id, counterName, decrement);
 
 		// update db
-		return await this.update(q);
+		return this.update(q);
 	};
 
 	/**
@@ -66,7 +66,7 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 	 * @param {string} counterName Name of the counter, e.g. "views"
 	 * @param {boolean} decrement If set, decrement instead of increment.
 	 */
-	schema.statics.incrementCounter = async function (this: ModelProperties, entityId: string, counterName: string, decrement: boolean = false): Promise<void> {
+	schema.statics.incrementCounter = async function(this: ModelProperties, entityId: string, counterName: string, decrement: boolean = false): Promise<void> {
 		const incr = decrement ? -1 : 1;
 
 		// update cache
@@ -93,7 +93,7 @@ declare module 'mongoose' {
 		/**
 		 * The counter object
 		 */
-		counter?: { [key: string]: number }
+		counter?: { [key: string]: number };
 	}
 
 	// statics
@@ -112,7 +112,7 @@ declare module 'mongoose' {
 	// plugin options
 	export interface MetricsOptions {
 		hotness?: {
-			[key: string]: { [key: string]: number }
-		}
+			[key: string]: { [key: string]: number },
+		};
 	}
 }

@@ -20,15 +20,15 @@
 import { includes } from 'lodash';
 import { MetricsModel, Schema } from 'mongoose';
 
-import { state } from '../state';
 import { metricsPlugin } from '../common/mongoose/metrics.plugin';
-import { mimeTypeNames } from './file.mimetypes';
+import { state } from '../state';
 import { File, FilePathOptions } from './file';
+import { FileDocument } from './file.document';
+import { mimeTypeNames } from './file.mimetypes';
 import { fileTypes } from './file.types';
+import { FileUtil } from './file.util';
 import { FileVariation } from './file.variations';
 import { processorQueue } from './processor/processor.queue';
-import { FileDocument } from './file.document';
-import { FileUtil } from './file.util';
 
 const shortId = require('shortid32');
 
@@ -36,44 +36,42 @@ const shortId = require('shortid32');
 // SCHEMA
 //-----------------------------------------------------------------------------
 export const fileFields = {
-	id: { type: String, required: true, unique: true, 'default': shortId.generate },
+	id: { type: String, required: true, unique: true, default: shortId.generate },
 	name: { type: String, required: 'Filename must be provided.' },
 	bytes: { type: Number, required: true },
 	mime_type: {
 		type: String,
 		required: true,
-		'enum': {
+		enum: {
 			values: mimeTypeNames,
-			message: 'Invalid MIME type. Valid MIME types are: ["' + mimeTypeNames.join('", "') + '"].'
-		}
+			message: 'Invalid MIME type. Valid MIME types are: ["' + mimeTypeNames.join('", "') + '"].',
+		},
 	},
 	file_type: {
 		type: String,
 		required: true,
-		'enum': {
+		enum: {
 			values: fileTypes.names,
-			message: 'Invalid file type. Valid file types are: ["' + fileTypes.names.join('", "') + '"].'
-		}
+			message: 'Invalid file type. Valid file types are: ["' + fileTypes.names.join('", "') + '"].',
+		},
 	},
 	metadata: { type: Schema.Types.Mixed },
 	variations: { type: Schema.Types.Mixed },
 	preprocessed: { type: Schema.Types.Mixed },
-	is_active: { type: Boolean, required: true, 'default': false },
-	counter: { downloads: { type: Number, 'default': 0 } },
+	is_active: { type: Boolean, required: true, default: false },
+	counter: { downloads: { type: Number, default: 0 } },
 	created_at: { type: Date, required: true },
-	_created_by: { type: Schema.Types.ObjectId, required: true, ref: 'User' }
+	_created_by: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
 };
 
 export interface FileModel extends MetricsModel<File> {}
 export const fileSchema = new Schema(fileFields, { toObject: { virtuals: true, versionKey: false } });
-
 
 //-----------------------------------------------------------------------------
 // PLUGINS
 //-----------------------------------------------------------------------------
 
 fileSchema.plugin(metricsPlugin);
-
 
 //-----------------------------------------------------------------------------
 // METHODS
@@ -85,64 +83,63 @@ fileSchema.plugin(metricsPlugin);
  *
  * @return {Promise<File>} Moved file
  */
-fileSchema.methods.switchToActive = async function (this: File): Promise<File> {
+fileSchema.methods.switchToActive = async function(this: File): Promise<File> {
 	this.is_active = true;
 	await this.save();
 	await processorQueue.activateFile(this);
 	return this;
 };
 
-fileSchema.methods.getPath = function (this: File, variation: FileVariation = null, opts: FilePathOptions = {}): string {
+fileSchema.methods.getPath = function(this: File, variation: FileVariation = null, opts: FilePathOptions = {}): string {
 	return FileDocument.getPath(this, variation, opts);
 };
-fileSchema.methods.getExt = function (this: File, variation: FileVariation = null): string {
+fileSchema.methods.getExt = function(this: File, variation: FileVariation = null): string {
 	return FileDocument.getExt(this, variation);
 };
-fileSchema.methods.getUrl = function (this: File, variation: FileVariation = null): string {
+fileSchema.methods.getUrl = function(this: File, variation: FileVariation = null): string {
 	return FileDocument.getUrl(this, variation);
 };
-fileSchema.methods.isPublic = function (this: File, variation: FileVariation = null): boolean {
+fileSchema.methods.isPublic = function(this: File, variation: FileVariation = null): boolean {
 	return FileDocument.isPublic(this, variation);
 };
-fileSchema.methods.isFree = function (this: File, variation: FileVariation = null): boolean {
+fileSchema.methods.isFree = function(this: File, variation: FileVariation = null): boolean {
 	return FileDocument.isFree(this, variation);
 };
-fileSchema.methods.getMimeType = function (this: File, variation?: FileVariation): string {
+fileSchema.methods.getMimeType = function(this: File, variation?: FileVariation): string {
 	return FileDocument.getMimeType(this, variation);
 };
-fileSchema.methods.getMimeTypePrimary = function (this: File, variation: FileVariation = null): string {
+fileSchema.methods.getMimeTypePrimary = function(this: File, variation: FileVariation = null): string {
 	return FileDocument.getMimeTypePrimary(this, variation);
 };
-fileSchema.methods.getMimeSubtype = function (this: File, variation: FileVariation = null): string {
+fileSchema.methods.getMimeSubtype = function(this: File, variation: FileVariation = null): string {
 	return FileDocument.getMimeSubtype(this, variation);
 };
-fileSchema.methods.getMimeCategory = function (this: File, variation: FileVariation = null): string {
+fileSchema.methods.getMimeCategory = function(this: File, variation: FileVariation = null): string {
 	return FileDocument.getMimeCategory(this, variation);
 };
-fileSchema.methods.toShortString = function (this: File, variation: FileVariation = null): string {
+fileSchema.methods.toShortString = function(this: File, variation: FileVariation = null): string {
 	return FileDocument.toShortString(this, variation);
 };
-fileSchema.methods.toDetailedString = function (this: File, variation?: FileVariation): string {
+fileSchema.methods.toDetailedString = function(this: File, variation?: FileVariation): string {
 	return FileDocument.toDetailedString(this, variation);
 };
-fileSchema.methods.getExistingVariations = function (this: File): FileVariation[] {
+fileSchema.methods.getExistingVariations = function(this: File): FileVariation[] {
 	return FileDocument.getExistingVariations(this);
 };
-fileSchema.methods.getVariations = function (this: File): FileVariation[] {
+fileSchema.methods.getVariations = function(this: File): FileVariation[] {
 	return FileDocument.getVariations(this);
 };
-fileSchema.methods.getVariation = function (this: File, variationName: string): FileVariation | null {
+fileSchema.methods.getVariation = function(this: File, variationName: string): FileVariation | null {
 	return FileDocument.getVariation(this, variationName);
 };
-fileSchema.methods.getDirectVariationDependencies = function (this: File, variation: FileVariation): FileVariation[] {
+fileSchema.methods.getDirectVariationDependencies = function(this: File, variation: FileVariation): FileVariation[] {
 	return FileDocument.getDirectVariationDependencies(this, variation);
 };
-
 
 //-----------------------------------------------------------------------------
 // TRIGGERS
 //-----------------------------------------------------------------------------
-fileSchema.post('remove', async function (obj: File) {
+fileSchema.post('remove', async function(obj: File) {
 
 	// remove physical file
 	await FileUtil.remove(obj);
@@ -154,7 +151,7 @@ fileSchema.post('remove', async function (obj: File) {
 	await state.models.TableBlock.update(
 		{ _files: obj._id },
 		{ $pull: { _files: obj._id } },
-		{ multi: true }
+		{ multi: true },
 	);
 	await state.models.TableBlock.remove({ _files: { $size: 0 } });
 });

@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document, Schema } from 'mongoose';
 import { extend, get, isArray, keys } from 'lodash';
+import { Document, Schema } from 'mongoose';
 
 /**
  * Returns all paths of a given schema.
@@ -107,7 +107,7 @@ export function explodePaths(obj: Object, singleRefs: { [key: string]: string },
 function appendNext(obj: Object, parts: string[], refModelName: string, level: number = 0, path: string = '') {
 	level = level || 0;
 	let paths: { [key: string]: string } = {};
-	let objPath = parts[level];
+	const objPath = parts[level];
 	if (!objPath) {
 		return {};
 	}

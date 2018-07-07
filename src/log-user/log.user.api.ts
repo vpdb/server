@@ -19,10 +19,10 @@
 
 import { pick } from 'lodash';
 
-import { state } from '../state';
 import { Api } from '../common/api';
-import { Context } from '../common/typings/context';
 import { config } from '../common/settings';
+import { Context } from '../common/typings/context';
+import { state } from '../state';
 
 export class LogUserApi extends Api {
 
@@ -41,7 +41,7 @@ export class LogUserApi extends Api {
 		if (ctx.query.event) {
 			const events: string[] = ctx.query.event.split(',');
 			const d = events.map(event => {
-				return { event: event }
+				return { event };
 			});
 			if (d.length === 1) {
 				query.push(d[0]);
@@ -55,7 +55,7 @@ export class LogUserApi extends Api {
 		const providerInfo: { [key: string]: { name: string, icon: string } } = {
 			google: { name: 'Google', icon: 'google-g' },
 			github: { name: 'GitHub', icon: 'github' },
-			local: { name: 'Local Account', icon: 'vpdb' }
+			local: { name: 'Local Account', icon: 'vpdb' },
 		};
 		config.vpdb.passport.ipboard.forEach(ipb => {
 			providerInfo[ipb.id] = pick(ipb, ['name', 'icon']) as { name: string, icon: string };

@@ -47,55 +47,55 @@ export class ReleaseFlavors {
 				name: 'Portrait',
 				hint: 'Cabinet',
 				description: 'Rotated portrait, usually 270°. Also known as "FS" (fullscreen).',
-				filenameTag: 'FS'
+				filenameTag: 'FS',
 			},
 			ws: {
 				name: 'Desktop',
 				hint: 'Landscape',
 				description: 'Typical landscape monitor orientation, also known as "DT" (desktop).',
-				filenameTag: 'DT'
+				filenameTag: 'DT',
 			},
 			any: {
 				name: 'Universal',
 				hint: 'Any orientation',
 				description: 'Tables built with VP10+ that are fully 3D and can be rendered at any orientation.',
-				filenameTag: ''
-			}
+				filenameTag: '',
+			},
 		},
 		lighting: {
 			day: {
 				name: 'Day',
 				hint: 'Illuminated Playfield',
 				description: 'Ambient light is high, resulting in a low contrast between playfield and lamps.',
-				filenameTag: ''
+				filenameTag: '',
 			},
 			night: {
 				name: 'Night',
 				hint: 'Dark Playfield',
 				description: 'Ambient light is low, resulting in a high contrast between playfield and lamps.',
-				filenameTag: 'Nightmod'
+				filenameTag: 'Nightmod',
 			},
 			any: {
 				name: 'Universal',
 				hint: 'Customizable',
 				description: 'Tables built with VP10+ where lighting can be adjusted with the slider.',
-				filenameTag: ''
-			}
-		}
+				filenameTag: '',
+			},
+		},
 	};
 
-	flavorTypes(): string[] {
+	public flavorTypes(): string[] {
 		return Object.keys(this.values);
 	}
 
-	flavorValues(flavorType: string): { [key: string]: ReleaseFlavor } {
+	public flavorValues(flavorType: string): { [key: string]: ReleaseFlavor } {
 		return this.values[flavorType];
 	}
 
-	defaultFileTags() {
+	public defaultFileTags() {
 		return mapValues(this.values, flavorType => {
 			// flavorType = { fs: { name: 'Portrait', ..., filenameTag: 'FS' }}
-			return mapValues(flavorType, (flavorItem:ReleaseFlavor) => {
+			return mapValues(flavorType, (flavorItem: ReleaseFlavor) => {
 				// flavorItem = { name: 'Portrait', ..., filenameTag: 'FS' }
 				return flavorItem.filenameTag;
 			});
@@ -108,13 +108,13 @@ export class ReleaseFlavors {
 	 * @param {{ lighting:string, orientation:string }} [opts] Options
 	 * @returns {{ lighting:string, orientation:string }} Default thumb
 	 */
-	defaultThumb(opts?:{ lighting?:string, orientation?:string }):{ lighting:string, orientation:string, [key:string]:string } {
+	public defaultThumb(opts?: { lighting?: string, orientation?: string }): { lighting: string, orientation: string, [key: string]: string } {
 		opts = opts || {};
 		return {
 			lighting: opts.lighting || 'day',
 			orientation: opts.orientation || 'fs',
-		}
-	};
+		};
+	}
 }
 
 export interface ReleaseFlavor {

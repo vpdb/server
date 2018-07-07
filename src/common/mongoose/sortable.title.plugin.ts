@@ -24,7 +24,7 @@ export function sortableTitlePlugin(schema: Schema, opts: SortableTitleOptions =
 	opts.src = opts.src || 'title';
 	opts.dest = opts.dest || 'title_sortable';
 
-	schema.pre('save', function (this: any, next: Function) {
+	schema.pre('save', function(this: any, next: Function) {
 		if (this[opts.src]) {
 			this[opts.dest] = this[opts.src].replace(/^((the|a|an)\s+)(.+)$/i, '$3, $2');
 		}

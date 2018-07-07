@@ -17,9 +17,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import validator from 'validator';
 import { isString } from 'lodash';
 import { Schema } from 'mongoose';
+import validator from 'validator';
 import { state } from '../state';
 
 //-----------------------------------------------------------------------------
@@ -31,7 +31,7 @@ export const tagFields = {
 	description: { type: String, required: 'Description must be provided.' },
 	is_active: { type: Boolean, required: true, default: false },
 	created_at: { type: Date, required: true },
-	_created_by: { type: Schema.Types.ObjectId, ref: 'User', required: true }
+	_created_by: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 };
 export const tagSchema = new Schema(tagFields, { toObject: { virtuals: true, versionKey: false } });
 
@@ -46,15 +46,15 @@ tagSchema.virtual('id')
 //-----------------------------------------------------------------------------
 // VALIDATIONS
 //-----------------------------------------------------------------------------
-tagSchema.path('name').validate((name:any) =>  {
+tagSchema.path('name').validate((name: any) =>  {
 	return isString(name) && validator.isLength(name ? name.trim() : '', 2);
 }, 'Name must contain at least two characters.');
 
-tagSchema.path('name').validate(async (name:any) =>  {
-	const tag = await state.models.Tag.findOne({ name: name }).exec();
+tagSchema.path('name').validate(async (name: any) =>  {
+	const tag = await state.models.Tag.findOne({ name }).exec();
 	return !tag;
 }, 'The {PATH} "{VALUE}" is already taken.');
 
-tagSchema.path('description').validate((description:any) =>  {
+tagSchema.path('description').validate((description: any) =>  {
 	return isString(description) && validator.isLength(description ? description.trim() : description, 5);
 }, 'Name must contain at least 5 characters.');

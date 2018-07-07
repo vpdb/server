@@ -18,27 +18,27 @@
  */
 
 import { createReadStream } from 'fs';
-import { createStream } from 'sax';
 import { pick } from 'lodash';
+import { createStream } from 'sax';
 
-import { Metadata } from './metadata';
-import { File } from '../file';
-import { FileVariation } from '../file.variations';
-import { logger } from '../../common/logger';
 import { ApiError } from '../../common/api.error';
+import { logger } from '../../common/logger';
+import { File } from '../file';
 import { FileDocument } from '../file.document';
+import { FileVariation } from '../file.variations';
+import { Metadata } from './metadata';
 
 export class Directb2sMetadata extends Metadata {
 
-	isValid(file: File, variation?: FileVariation): boolean {
+	public isValid(file: File, variation?: FileVariation): boolean {
 		return FileDocument.getMimeType(file, variation) === 'application/x-directb2s';
 	}
 
 	// TODO try https://github.com/nikku/saxen
-	async getMetadata(file: File, path: string): Promise<{ [p: string]: any }> {
+	public async getMetadata(file: File, path: string): Promise<{ [p: string]: any }> {
 		const now = Date.now();
 		return new Promise((resolve, reject) => {
-			const metadata:any = {};
+			const metadata: any = {};
 			const saxStream = createStream(true, {});
 			saxStream.on('error', this.error(reject, 'Error parsing Directb2s metadata.'));
 			saxStream.on('opentag', node => {
@@ -63,18 +63,18 @@ export class Directb2sMetadata extends Metadata {
 		});
 	}
 
-	serializeDetailed(metadata: { [p: string]: any }): { [p: string]: any } {
+	public serializeDetailed(metadata: { [p: string]: any }): { [p: string]: any } {
 		return pick(metadata, 'name', 'version', 'author', 'gamename');
 	}
 
 	/* istanbul ignore next */
-	serializeVariation(metadata: { [p: string]: any }): { [p: string]: any } {
+	public serializeVariation(metadata: { [p: string]: any }): { [p: string]: any } {
 		return undefined;
 	}
 
 	private error(reject: (err: Error) => void, message: string) {
 		return (err: Error) => {
 			reject(new ApiError(message).log(err));
-		}
+		};
 	}
 }

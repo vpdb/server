@@ -17,22 +17,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { assign, flatten, orderBy, compact, uniq, intersection, pick, includes, isArray, isUndefined } from 'lodash';
+import { assign, compact, flatten, includes, intersection, isArray, isUndefined, orderBy, pick, uniq } from 'lodash';
 import { Document } from 'mongoose';
 
-import { state } from '../state';
-import { Context } from '../common/typings/context';
 import { Serializer, SerializerOptions } from '../common/serializer';
+import { Context } from '../common/typings/context';
 import { Thumb } from '../common/typings/serializers';
-import { Release } from './release';
-import { ReleaseVersion } from './version/release.version';
-import { ReleaseFileFlavor, ReleaseVersionFile } from './version/file/release.version.file';
 import { File } from '../files/file';
+import { FileDocument } from '../files/file.document';
 import { Game } from '../games/game';
+import { state } from '../state';
 import { Tag } from '../tags/tag';
 import { User } from '../users/user';
+import { Release } from './release';
 import { flavors } from './release.flavors';
-import { FileDocument } from '../files/file.document';
+import { ReleaseFileFlavor, ReleaseVersionFile } from './version/file/release.version.file';
+import { ReleaseVersion } from './version/release.version';
 
 export class ReleaseSerializer extends Serializer<Release> {
 
@@ -50,9 +50,9 @@ export class ReleaseSerializer extends Serializer<Release> {
 	}
 
 	private serializeRelease(ctx: Context, doc: Release, opts: SerializerOptions,
-							 versionSerializer: (ctx: Context, doc: ReleaseVersion, opts: SerializerOptions) => ReleaseVersion,
-							 stripVersions: boolean,
-							 additionalFields: string[] = []): Release {
+							                   versionSerializer: (ctx: Context, doc: ReleaseVersion, opts: SerializerOptions) => ReleaseVersion,
+							                   stripVersions: boolean,
+							                   additionalFields: string[] = []): Release {
 
 		const requestedFields = intersection(['description'], (ctx.query.include_fields || '').split(','));
 		additionalFields = additionalFields || [];
@@ -126,12 +126,12 @@ export class ReleaseSerializer extends Serializer<Release> {
 	 * @param {SerializerOptions} opts thumbFlavor: "orientation:fs,lighting:day", thumbFormat: variation name or "original"
 	 * @return {{image: Thumb, flavor: ReleaseFileFlavor}}
 	 */
-	public findThumb(ctx: Context, versions: ReleaseVersion[], opts: SerializerOptions) : { image: Thumb, flavor: ReleaseFileFlavor } {
+	public findThumb(ctx: Context, versions: ReleaseVersion[], opts: SerializerOptions): { image: Thumb, flavor: ReleaseFileFlavor } {
 
 		opts.thumbFormat = opts.thumbFormat || 'original';
 
 		const flavorDefaults = flavors.defaultThumb();
-		let flavorParams: { [key:string]:string } = {}; // e.g. { lighting:string, orientation:string }
+		let flavorParams: { [key: string]: string } = {}; // e.g. { lighting:string, orientation:string }
 		if (opts.thumbFlavor) {
 			flavorParams  = opts.thumbFlavor
 				.split(',')
@@ -146,7 +146,7 @@ export class ReleaseSerializer extends Serializer<Release> {
 		// console.log('flavorParams: %j, flavorDefaults: %j', flavorParams, flavorDefaults);
 
 		// assign weights to each file depending on parameters
-		const filesByWeight:{ file: ReleaseVersionFile, weight: number }[] = orderBy(releaseVersionTableFiles.map(file => {
+		const filesByWeight: Array<{ file: ReleaseVersionFile, weight: number }> = orderBy(releaseVersionTableFiles.map(file => {
 
 			/** @type {{ lighting:string, orientation:string }} */
 			const fileFlavor = file.flavor;
@@ -168,8 +168,8 @@ export class ReleaseSerializer extends Serializer<Release> {
 
 			// console.log('%s / %j => %d', opts.thumbFlavor, fileFlavor, weight);
 			return {
-				file: file,
-				weight: weight
+				file,
+				weight,
 			};
 
 		}), ['weight'], ['desc']);
@@ -180,15 +180,14 @@ export class ReleaseSerializer extends Serializer<Release> {
 		if (thumb === null) {
 			return {
 				image: this.getDefaultThumb(ctx, bestMatch, opts),
-				flavor: bestMatch.flavor
+				flavor: bestMatch.flavor,
 			};
 		}
 		return thumb ? {
 			image: thumb,
-			flavor: bestMatch.flavor
+			flavor: bestMatch.flavor,
 		} : undefined;
 	}
-
 
 	/**
 	 * Returns the default thumb of a file.
@@ -198,9 +197,9 @@ export class ReleaseSerializer extends Serializer<Release> {
 	 * @param {SerializerOptions} opts
 	 * @return {Thumb}
 	 */
-	private getDefaultThumb(ctx:Context, versionFileDoc:ReleaseVersionFile, opts:SerializerOptions): Thumb {
+	private getDefaultThumb(ctx: Context, versionFileDoc: ReleaseVersionFile, opts: SerializerOptions): Thumb {
 
-		let playfieldImage = this._populated(versionFileDoc, '_playfield_image')
+		const playfieldImage = this._populated(versionFileDoc, '_playfield_image')
 			? state.serializers.File.detailed(ctx, versionFileDoc._playfield_image as File, opts)
 			: null;
 		if (!playfieldImage || !playfieldImage.metadata) {
@@ -209,7 +208,7 @@ export class ReleaseSerializer extends Serializer<Release> {
 		const thumb = {
 			url: playfieldImage.url,
 			width: playfieldImage.metadata.size.width,
-			height: playfieldImage.metadata.size.height
+			height: playfieldImage.metadata.size.height,
 		} as Thumb;
 		if (opts.fullThumbData) {
 			thumb.mime_type = playfieldImage.mime_type;
@@ -224,7 +223,7 @@ export class ReleaseSerializer extends Serializer<Release> {
 	 * @param opts Options
 	 * @returns string[]
 	 */
-	private getFlavorNames(opts: SerializerOptions):string[] {
+	private getFlavorNames(opts: SerializerOptions): string[] {
 		const names = (opts.thumbFlavor || '')
 			.split(',')
 			.map((f: string) => f.split(':')[0]);

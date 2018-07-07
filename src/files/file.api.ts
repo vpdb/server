@@ -17,11 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { state } from '../state';
 import { Api } from '../common/api';
-import { Context } from '../common/typings/context';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
+import { Context } from '../common/typings/context';
+import { state } from '../state';
 import { FileStorage } from './file.storage';
 
 /**
@@ -70,7 +70,7 @@ export class FileApi extends Api {
 		}
 
 		// fail if inactive and not owner
-		let isOwner = ctx.state.user && file._created_by._id.equals(ctx.state.user._id);
+		const isOwner = ctx.state.user && file._created_by._id.equals(ctx.state.user._id);
 		if (!file.is_active && (!ctx.state.user || !isOwner)) {
 			throw new ApiError('File "%s" is inactive.', ctx.params.id).status(ctx.state.user ? 403 : 401);
 		}

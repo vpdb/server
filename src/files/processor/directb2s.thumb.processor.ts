@@ -17,13 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Readable } from 'stream';
 import { createWriteStream } from 'fs';
 import gm, { State } from 'gm';
+import { Readable } from 'stream';
 
+import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
 import { XmlParser } from '../../common/xml.parser';
-import { ApiError } from '../../common/api.error';
 import { File } from '../file';
 import { mimeTypes } from '../file.mimetypes';
 import { BackglassVariation, FileVariation } from '../file.variations';
@@ -35,23 +35,23 @@ require('bluebird').promisifyAll(gm.prototype);
 
 export class Directb2sThumbProcessor implements CreationProcessor<BackglassVariation> {
 
-	name: string = 'directb2s.thumb';
+	public name: string = 'directb2s.thumb';
 
-	canProcess(file: File, srcVariation: FileVariation, destVariation: FileVariation): boolean {
+	public canProcess(file: File, srcVariation: FileVariation, destVariation: FileVariation): boolean {
 		return file.getMimeType(srcVariation) === 'application/x-directb2s' && file.getMimeCategory(destVariation) === 'image';
 	}
 
-	getOrder(variation?: FileVariation): number {
+	public getOrder(variation?: FileVariation): number {
 		return 200 + (variation && variation.priority ? variation.priority : 0);
 	}
 
-	async process(file: File, src: string, dest: string, variation?: BackglassVariation): Promise<string> {
+	public async process(file: File, src: string, dest: string, variation?: BackglassVariation): Promise<string> {
 		const now = Date.now();
 		logger.debug('[Directb2sThumbProcessor] Starting processing %s at %s.', file.toShortString(variation), dest);
 		return new Promise<string>((resolve, reject) => {
 
 			logger.debug('[Directb2sThumbProcessor] Reading DirectB2S Backglass from %s', src);
-			let parser = new XmlParser(src);
+			const parser = new XmlParser(src);
 			let currentTag: string;
 			let backglassFound = false;
 			parser.on('opentagstart', tag => {
@@ -62,21 +62,21 @@ export class Directb2sThumbProcessor implements CreationProcessor<BackglassVaria
 					backglassFound = true;
 					logger.debug('[Directb2sThumbProcessor] Found backglass image, pausing XML parser...');
 					parser.pause();
-					let source = new Readable();
+					const source = new Readable();
 					source._read = () => {
 						source.push(attr.value);
 						source.push(null);
 					};
 
-					let imgStream = source
+					const imgStream = source
 						.on('error', this.error(reject, 'Error reading encoded stream.'))
 						.pipe(base64.decode())
 						.on('error', this.error(reject, 'Error reading decoded stream.'));
 
 					// setup gm
-					let img: State = gm(imgStream);
+					const img: State = gm(imgStream);
 
-					(img as any).sizeAsync({ bufferStream: true }).then((size:any) => {
+					(img as any).sizeAsync({ bufferStream: true }).then((size: any) => {
 
 						img.quality(variation.quality || 70);
 						img.interlace('Line');
@@ -99,10 +99,10 @@ export class Directb2sThumbProcessor implements CreationProcessor<BackglassVaria
 							img.modulate(variation.modulate, 0, 0);
 						}
 
-						let writeStream = createWriteStream(dest);
+						const writeStream = createWriteStream(dest);
 
 						// setup success handler
-						writeStream.on('finish', function () {
+						writeStream.on('finish', function() {
 							logger.info('[Directb2sThumbProcessor] Saved extracted backglass to "%s" (%sms).', dest, Date.now() - now);
 							parser.resume();
 						});
@@ -112,7 +112,7 @@ export class Directb2sThumbProcessor implements CreationProcessor<BackglassVaria
 							.pipe(writeStream)
 							.on('error', this.error(reject, 'Error writing encoded stream.'));
 
-					}).catch(/* istanbul ignore next */ (err:Error) => {
+					}).catch(/* istanbul ignore next */ (err: Error) => {
 						reject(new ApiError('Error getting size from image.').log(err));
 					});
 				}
@@ -133,7 +133,7 @@ export class Directb2sThumbProcessor implements CreationProcessor<BackglassVaria
 		/* istanbul ignore next */
 		return (err: Error) => {
 			reject(new ApiError(message).log(err));
-		}
+		};
 	}
 
 }

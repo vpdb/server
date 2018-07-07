@@ -17,11 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { PaginateModel, Schema } from 'mongoose';
-import { Comment } from './comment';
 import { isString } from 'lodash';
-import validator from 'validator';
+import { PaginateModel, Schema } from 'mongoose';
 import paginatePlugin = require('mongoose-paginate');
+import validator from 'validator';
+import { Comment } from './comment';
 
 const shortId = require('shortid32');
 
@@ -29,15 +29,15 @@ const shortId = require('shortid32');
 // SCHEMA
 //-----------------------------------------------------------------------------
 export const commentFields = {
-	id: { type: String, required: true, unique: true, 'default': shortId.generate },
+	id: { type: String, required: true, unique: true, default: shortId.generate },
 	_from: { type: Schema.Types.ObjectId, required: true, ref: 'User', index: true },
 	_ref: {
 		release: { type: Schema.Types.ObjectId, ref: 'Release', index: true, sparse: true },
-		release_moderation: { type: Schema.Types.ObjectId, ref: 'Release', index: true, sparse: true }
+		release_moderation: { type: Schema.Types.ObjectId, ref: 'Release', index: true, sparse: true },
 	},
 	message: { type: String, required: 'You must provide a message when commenting.' },
 	ip: { type: String, required: true },
-	created_at: { type: Date, required: true }
+	created_at: { type: Date, required: true },
 };
 
 export interface CommentModel extends PaginateModel<Comment> {}
@@ -48,10 +48,9 @@ export const commentSchema = new Schema(commentFields, { toObject: { virtuals: t
 //-----------------------------------------------------------------------------
 commentSchema.plugin(paginatePlugin);
 
-
 //-----------------------------------------------------------------------------
 // VALIDATIONS
 //-----------------------------------------------------------------------------
-commentSchema.path('message').validate((msg:any) => {
+commentSchema.path('message').validate((msg: any) => {
 	return isString(msg) && validator.isLength(msg, 3, 5000);
 }, 'Message must be at least 3 chars and no longer than 5k characters.');

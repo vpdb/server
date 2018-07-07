@@ -17,18 +17,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { promisify } from 'util';
-import { dirname, resolve, sep } from 'path';
 import { createReadStream, createWriteStream, exists, mkdir, stat, unlink } from 'fs';
+import { dirname, resolve, sep } from 'path';
 import * as Stream from 'stream';
+import { promisify } from 'util';
 
-import { state } from '../state';
-import { File } from './file';
+import chalk from 'chalk';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
+import { state } from '../state';
+import { File } from './file';
 import { Metadata } from './metadata/metadata';
 import { processorQueue } from './processor/processor.queue';
-import chalk from 'chalk';
 
 const statAsync = promisify(stat);
 const existsAsync = promisify(exists);
@@ -76,7 +76,7 @@ export class FileUtil {
 			const metadata = await Metadata.readFrom(file, path);
 			if (metadata) {
 				file.metadata = metadata;
-				await state.models.File.findByIdAndUpdate(file._id, { metadata: metadata }).exec();
+				await state.models.File.findByIdAndUpdate(file._id, { metadata }).exec();
 			} else {
 				logger.warn('[FileUtil.create] No metadata reader matched for %s, cannot validate integrity!', file.toDetailedString());
 			}
@@ -132,7 +132,7 @@ export class FileUtil {
 			switch (err.code) {
 				case 'ENOENT':
 					await FileUtil.mkdirp(dirname(path), opts);
-					return await FileUtil.mkdirp(path, opts);
+					return FileUtil.mkdirp(path, opts);
 
 				default:
 					const stat = await statAsync(path);
@@ -152,7 +152,7 @@ export class FileUtil {
 	public static async cp(source: string, target: string): Promise<void> {
 		const rd = createReadStream(source);
 		const wr = createWriteStream(target);
-		return new Promise<void>(function (resolve, reject) {
+		return new Promise<void>(function(resolve, reject) {
 			rd.on('error', reject);
 			wr.on('error', reject);
 			wr.on('finish', resolve);
@@ -178,7 +178,7 @@ export class FileUtil {
 		await FileUtil.removeFile(file.getPath(), file.toShortString());
 
 		// variations
-		for (let variation of file.getExistingVariations()) {
+		for (const variation of file.getExistingVariations()) {
 			await this.removeFile(file.getPath(variation), file.toShortString(variation));
 		}
 	}

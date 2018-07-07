@@ -26,100 +26,100 @@ export const mimeTypes: { [key: string]: MimeType } = {
 	'image/jpeg': {
 		name: 'JPEG image',
 		ext: 'jpg',
-		category: 'image'
+		category: 'image',
 	},
 	'image/png': {
 		name: 'PNG image',
 		ext: 'png',
-		category: 'image'
+		category: 'image',
 	},
 	'application/zip': {
 		name: 'ZIP-compressed file',
 		ext: 'zip',
-		category: 'archive'
+		category: 'archive',
 	},
 	'application/rar': {
 		name: 'RAR-compressed file',
 		ext: 'rar',
-		category: 'archive'
+		category: 'archive',
 	},
 	'application/x-directb2s': {
 		name: 'Direct B2S Backglass',
 		ext: 'directb2s',
-		category: 'directb2s'
+		category: 'directb2s',
 	},
 	'application/x-rar-compressed': {
 		name: 'RAR-compressed file',
 		ext: 'rar',
-		category: 'archive'
+		category: 'archive',
 	},
 	'application/x-zip-compressed': {
 		name: 'ZIP-compressed file',
 		ext: 'zip',
-		category: 'archive'
+		category: 'archive',
 	},
 	'application/x-shockwave-flash': {
 		name: 'Flash Animation',
 		ext: 'swf',
-		category: 'image'
+		category: 'image',
 	},
 	'application/x-visual-pinball-table': {
 		name: 'Visual Pinball Table v9.x',
 		ext: 'vpt',
-		category: 'table'
+		category: 'table',
 	},
 	'application/x-visual-pinball-table-x': {
 		name: 'Visual Pinball Table v10.x',
 		ext: 'vpx',
-		category: 'table'
+		category: 'table',
 	},
 	'application/vbscript': {
 		name: 'Visual Basic Script',
 		ext: 'vbs',
-		category: 'script'
+		category: 'script',
 	},
 	'audio/mpeg': {
 		name: 'MP3',
 		ext: 'mp3',
-		category: 'audio'
+		category: 'audio',
 	},
 	'audio/mp3': {
 		name: 'MP3',
 		ext: 'mp3',
-		category: 'audio'
+		category: 'audio',
 	},
 	'video/avi': {
 		name: 'AVI video',
 		ext: 'avi',
-		category: 'video'
+		category: 'video',
 	},
 	'video/mp4': {
 		name: 'MP4 video',
 		ext: 'mp4',
-		category: 'video'
+		category: 'video',
 	},
 	'video/x-flv': {
 		name: 'Flash video',
 		ext: 'flv',
-		category: 'video'
+		category: 'video',
 	},
 	'video/x-f4v': {
 		name: 'Flash video as MP4',
 		ext: 'f4v',
-		category: 'video'
+		category: 'video',
 	},
 	'text/plain': {
 		name: 'Plain text',
 		ext: 'txt',
-		category: 'text'
-	}
+		category: 'text',
+	},
 };
 
 export const mimeTypeNames = keys(mimeTypes);
 export const mimeTypeCategories = uniq(values(mimeTypes).map(m => m.category));
 
 export interface MimeType {
-	name: string,
-	ext: string,
+	name: string;
+	ext: string;
 	category: 'image' | 'text' | 'video' | 'audio' | 'script' | 'archive' | 'directb2s' | 'table';
 }

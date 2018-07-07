@@ -29,8 +29,8 @@ export const backglassVersionFields = {
 	_file:  { type: Schema.Types.ObjectId, required: 'You must provide a file reference.', ref: 'File' },
 	released_at: { type: Date, required: true },
 	counter: {
-		downloads: { type: Number, 'default': 0 }
-	}
+		downloads: { type: Number, default: 0 },
+	},
 };
 
 export const backglassVersionSchema = new Schema(backglassVersionFields, { toObject: { virtuals: true, versionKey: false } });

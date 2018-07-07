@@ -17,16 +17,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Scope } from '../common/scope';
-import { ReleaseApi } from './release.api';
-import { RatingApi } from '../ratings/rating.api';
-import { StarApi } from '../stars/star.api';
-import { LogEventApi } from '../log-event/log.event.api';
 import { CommentApi } from '../comments/comment.api';
 import { apiCache } from '../common/api.cache';
+import { Scope } from '../common/scope';
+import { LogEventApi } from '../log-event/log.event.api';
+import { RatingApi } from '../ratings/rating.api';
+import { StarApi } from '../stars/star.api';
+import { ReleaseApi } from './release.api';
 import { releaseDetailsCacheCounters, releaseListCacheCounters } from './release.api.cache.config';
-import { ReleaseVersionApi } from './version/release.version.api';
 import { ReleaseVersionFileApi } from './version/file/release.version.file.api';
+import { ReleaseVersionApi } from './version/release.version.api';
 
 const api = new ReleaseApi();
 const versionApi = new ReleaseVersionApi();

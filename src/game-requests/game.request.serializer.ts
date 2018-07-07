@@ -19,12 +19,12 @@
 
 import { pick } from 'lodash';
 
-import { state } from '../state';
 import { Serializer, SerializerOptions } from '../common/serializer';
-import { GameRequest } from './game.request';
 import { Context } from '../common/typings/context';
 import { Game } from '../games/game';
+import { state } from '../state';
 import { User } from '../users/user';
+import { GameRequest } from './game.request';
 
 export class GameRequestSerializer extends Serializer<GameRequest> {
 

@@ -17,17 +17,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { parse as parseUrl, format as formatUrl } from 'url';
-import { difference, isObject, keys, pick, extend, values, map, intersection } from 'lodash';
-import { Context } from './typings/context';
-import { logger } from './logger';
-import { config, settings } from './settings';
-import { ApiError, ApiValidationError } from './api.error';
 import Router from 'koa-router';
-import { User } from '../users/user';
-import { scope, Scope } from './scope';
-import { acl } from './acl';
+import { difference, extend, intersection, isObject, keys, map, pick, values } from 'lodash';
+import { format as formatUrl, parse as parseUrl } from 'url';
 import { state } from '../state';
+import { User } from '../users/user';
+import { acl } from './acl';
+import { ApiError, ApiValidationError } from './api.error';
+import { logger } from './logger';
+import { scope, Scope } from './scope';
+import { config, settings } from './settings';
+import { Context } from './typings/context';
 
 export abstract class Api {
 
@@ -56,7 +56,7 @@ export abstract class Api {
 
 			// if this resource is a service resource, only check if scope is correct and no permissions are needed.
 			if (scopes && scope.isValid([Scope.SERVICE], scopes) && !resource && !permission && ctx.state.tokenType === 'provider') {
-				return await handler(ctx);
+				return handler(ctx);
 			}
 
 			// if authentication failed, abort.
@@ -85,7 +85,6 @@ export abstract class Api {
 			}
 			ctx.set('X-User-Dirty', '0');
 
-
 			// continue with request
 			await handler(ctx);
 		};
@@ -111,8 +110,8 @@ export abstract class Api {
 
 		// check plan config if provided
 		if (isObject(planAttrs)) {
-			for (let key of keys(planAttrs)) {
-				let val = planAttrs[key];
+			for (const key of keys(planAttrs)) {
+				const val = planAttrs[key];
 				if (user.planConfig[key] !== val) {
 					throw new ApiError('User <%s> with plan "%s" tried to access `%s` but was denied access due to missing plan configuration (%s is %s instead of %s).',
 						user.email, user._plan, ctx.url, key, val, user.planConfig[key]).display('Access denied').status(403).log();
@@ -145,7 +144,7 @@ export abstract class Api {
 			const currentUrl = parseUrl(settings.apiHost() + ctx.request.url, true);
 			delete currentUrl.search;
 			const paginatedUrl = (page: number, perPage: number): string => {
-				currentUrl.query = extend(currentUrl.query, { page: page, per_page: perPage });
+				currentUrl.query = extend(currentUrl.query, { page, per_page: perPage });
 				return formatUrl(currentUrl);
 			};
 
@@ -239,8 +238,7 @@ export abstract class Api {
 			return defaultSort;
 		}
 		return sortBy;
-	};
-
+	}
 
 	/**
 	 * Returns the pagination object.
@@ -250,12 +248,12 @@ export abstract class Api {
 	 * @param [maxPerPage=50] Maximal number of items returned if not indicated - default 50.
 	 * @return {{defaultPerPage: number, maxPerPage: number, page: Number, perPage: Number}}
 	 */
-	pagination(ctx: Context, defaultPerPage: number = 20, maxPerPage: number = 50): PaginationOpts {
+	public pagination(ctx: Context, defaultPerPage: number = 20, maxPerPage: number = 50): PaginationOpts {
 		return {
-			defaultPerPage: defaultPerPage,
-			maxPerPage: maxPerPage,
+			defaultPerPage,
+			maxPerPage,
 			page: Math.max(ctx.query.page, 1) || 1,
-			perPage: Math.max(0, Math.min(ctx.query.per_page, maxPerPage)) || defaultPerPage
+			perPage: Math.max(0, Math.min(ctx.query.per_page, maxPerPage)) || defaultPerPage,
 		};
 	}
 
@@ -265,8 +263,8 @@ export abstract class Api {
 	 * @param count Total hits
 	 * @returns Updated options
 	 */
-	paginationOpts(pagination: PaginationOpts, count: number): { pagination: PaginationOpts } {
-		return { pagination: extend(pagination, { count: count }) };
+	public paginationOpts(pagination: PaginationOpts, count: number): { pagination: PaginationOpts } {
+		return { pagination: extend(pagination, { count }) };
 	}
 
 	/**
@@ -301,7 +299,7 @@ export abstract class Api {
 				errors.push({
 					message: 'This field is read-only and cannot be changed.',
 					path: field,
-					value: newObj[field]
+					value: newObj[field],
 				});
 			}
 		});
@@ -315,13 +313,13 @@ export abstract class Api {
 	 */
 	protected assertFields(ctx: Context, updatableFields: string[]) {
 		// fail if invalid fields provided
-		let submittedFields = keys(ctx.request.body);
+		const submittedFields = keys(ctx.request.body);
 		if (intersection(updatableFields, submittedFields).length !== submittedFields.length) {
-			let invalidFields = difference(submittedFields, updatableFields);
+			const invalidFields = difference(submittedFields, updatableFields);
 			throw new ApiError('Invalid field%s: ["%s"]. Allowed fields: ["%s"]',
 				invalidFields.length === 1 ? '' : 's',
 				invalidFields.join('", "'),
-				updatableFields.join('", "')
+				updatableFields.join('", "'),
 			).status(400);
 		}
 	}

@@ -18,17 +18,17 @@
  */
 
 import Application = require('koa');
-import mongoose, { Schema } from 'mongoose';
 import Router from 'koa-router';
+import mongoose, { Schema } from 'mongoose';
 
-import { state } from '../state';
 import { EndPoint } from '../common/api.endpoint';
-import { starSchema } from './star.schema';
+import { state } from '../state';
 import { Star } from './star';
+import { starSchema } from './star.schema';
 
 export class StarEndPoint extends EndPoint {
 
-	readonly name: string = 'Star API';
+	public readonly name: string = 'Star API';
 
 	private readonly _schema: Schema;
 
@@ -37,11 +37,11 @@ export class StarEndPoint extends EndPoint {
 		this._schema = starSchema;
 	}
 
-	getRouter(): Router {
+	public getRouter(): Router {
 		return null;
 	}
 
-	async register(app: Application): Promise<void> {
+	public async register(app: Application): Promise<void> {
 		state.models.Star = mongoose.model<Star>('Star', this._schema);
 	}
 }

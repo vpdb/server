@@ -19,15 +19,15 @@
 
 /* istanbul ignore file */
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
-import { parse, stringify } from 'querystring'
+import { parse, stringify } from 'querystring';
 import randomString from 'randomstring';
 
+import { ApiError } from '../../common/api.error';
+import { logger } from '../../common/logger';
 import { config } from '../../common/settings';
 import { Context } from '../../common/typings/context';
-import { ApiError } from '../../common/api.error';
 import { OAuthProfile } from '../authentication.api';
 import { Strategy } from './strategy';
-import { logger } from '../../common/logger';
 
 /**
  * GitHub authentication strategy.
@@ -55,7 +55,7 @@ export class GitHubStrategy extends Strategy {
 			client_id: config.vpdb.passport.github.clientID,
 			redirect_uri: this.redirectUri,
 			scope: 'user:email',
-			state: state
+			state,
 		});
 	}
 
@@ -67,9 +67,9 @@ export class GitHubStrategy extends Strategy {
 		let res = await this.client.post('/login/oauth/access_token', {
 			client_id: config.vpdb.passport.github.clientID,
 			client_secret: config.vpdb.passport.github.clientSecret,
-			code: code,
+			code,
 			redirect_uri: this.redirectUri,
-			state: state
+			state,
 		}) as AxiosResponse;
 
 		// handle errors
@@ -87,14 +87,14 @@ export class GitHubStrategy extends Strategy {
 		// looking good, get profile.
 		const token = body.access_token;
 		const type = body.token_type;
-		res = await this.apiClient.get('/user', { headers: { 'Authorization': `${type} ${token}` } });
+		res = await this.apiClient.get('/user', { headers: { Authorization: `${type} ${token}` } });
 		const profile = res.data;
 
 		// get emails
-		res = await this.apiClient.get('/user/emails', { headers: { 'Authorization': `${type} ${token}` } });
+		res = await this.apiClient.get('/user/emails', { headers: { Authorization: `${type} ${token}` } });
 		profile.emails = (res.data as GitHubEmail[])
 			.filter(email => email.verified)
-			.map(email => { return { value: email.email, type: 'unknown' } });
+			.map(email => ({ value: email.email, type: 'unknown' }));
 
 		return profile;
 	}
@@ -113,10 +113,10 @@ export class GitHubStrategy extends Strategy {
 			emails: profile.emails,
 			username: profile.login,
 			displayName: profile.name,
-			_json: profile
+			_json: profile,
 		};
 		if (profile.avatar_url) {
-			normalizedProfile.photos = [{ value: profile.avatar_url }]
+			normalizedProfile.photos = [{ value: profile.avatar_url }];
 		}
 		return normalizedProfile;
 	}

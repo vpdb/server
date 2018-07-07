@@ -24,7 +24,7 @@ import { router } from './misc.api.router';
 
 export class MiscEndPoint extends EndPoint {
 
-	readonly name: string = 'Misc API';
+	public readonly name: string = 'Misc API';
 
 	private readonly _router: Router;
 
@@ -33,11 +33,11 @@ export class MiscEndPoint extends EndPoint {
 		this._router = router;
 	}
 
-	getRouter(): Router {
+	public getRouter(): Router {
 		return this._router;
 	}
 
-	async register(app: Application): Promise<void> {
+	public async register(app: Application): Promise<void> {
 		// nothing to register
 	}
 }

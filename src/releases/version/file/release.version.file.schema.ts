@@ -20,9 +20,9 @@
 import { keys } from 'lodash';
 import { PrettyIdModel, PrettyIdOptions, Schema } from 'mongoose';
 
-import { flavors } from '../../release.flavors';
 import { fileReferencePlugin } from '../../../common/mongoose/file.reference.plugin';
 import { prettyIdPlugin } from '../../../common/mongoose/pretty.id.plugin';
+import { flavors } from '../../release.flavors';
 import { ReleaseVersionFile } from './release.version.file';
 
 const validationStatusValues = ['verified', 'playable', 'broken'];
@@ -30,26 +30,26 @@ const validationStatusValues = ['verified', 'playable', 'broken'];
 export const releaseVersionFileFields = {
 	_file:  { type: Schema.Types.ObjectId, required: 'You must provide a file reference.', ref: 'File' },
 	flavor: {
-		orientation: { type: String, 'enum': { values: keys(flavors.flavorValues('orientation')), message: 'Invalid orientation. Valid orientation are: ["' + keys(flavors.flavorValues('orientation')).join('", "') + '"].' }},
-		lighting:    { type: String, 'enum': { values: keys(flavors.flavorValues('lighting')), message: 'Invalid lighting. Valid options are: ["' + keys(flavors.flavorValues('lighting')).join('", "') + '"].' }}
+		orientation: { type: String, enum: { values: keys(flavors.flavorValues('orientation')), message: 'Invalid orientation. Valid orientation are: ["' + keys(flavors.flavorValues('orientation')).join('", "') + '"].' }},
+		lighting:    { type: String, enum: { values: keys(flavors.flavorValues('lighting')), message: 'Invalid lighting. Valid options are: ["' + keys(flavors.flavorValues('lighting')).join('", "') + '"].' }},
 	},
 	validation: {
-		status:  { type: String, 'enum': { values: validationStatusValues, message: 'Invalid status, must be one of: ["' + validationStatusValues.join('", "') + '"].' }},
+		status:  { type: String, enum: { values: validationStatusValues, message: 'Invalid status, must be one of: ["' + validationStatusValues.join('", "') + '"].' }},
 		message: { type: String },
 		validated_at:    { type: Date },
-		_validated_by:   { type: Schema.Types.ObjectId, ref: 'User' }
+		_validated_by:   { type: Schema.Types.ObjectId, ref: 'User' },
 	},
 	_compatibility: [ { type: Schema.Types.ObjectId, ref: 'Build' } ],
 	_playfield_image: { type: Schema.Types.ObjectId, ref: 'File' },
 	_playfield_video: { type: Schema.Types.ObjectId, ref: 'File' },
 	released_at: { type: Date, required: true },
 	counter: {
-		downloads: { type: Number, 'default': 0 }
-	}
+		downloads: { type: Number, default: 0 },
+	},
 };
 
 export interface ReleaseVersionFileModel extends PrettyIdModel<ReleaseVersionFile> {}
-export const releaseVersionFileSchema = new Schema(releaseVersionFileFields,{ toObject: { virtuals: true, versionKey: false } });
+export const releaseVersionFileSchema = new Schema(releaseVersionFileFields, { toObject: { virtuals: true, versionKey: false } });
 
 releaseVersionFileSchema.plugin(fileReferencePlugin);
 releaseVersionFileSchema.plugin(prettyIdPlugin, { model: 'ReleaseVersionFile' } as PrettyIdOptions);

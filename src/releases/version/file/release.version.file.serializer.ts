@@ -17,13 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { state } from '../../../state';
-import { Serializer, SerializerOptions } from '../../../common/serializer';
-import { ReleaseVersionFile } from './release.version.file';
-import { Context } from '../../../common/typings/context';
 import { Build } from '../../../builds/build';
+import { Serializer, SerializerOptions } from '../../../common/serializer';
+import { Context } from '../../../common/typings/context';
 import { File } from '../../../files/file';
+import { state } from '../../../state';
 import { User } from '../../../users/user';
+import { ReleaseVersionFile } from './release.version.file';
 
 export class ReleaseVersionFileSerializer extends Serializer<ReleaseVersionFile> {
 
@@ -47,14 +47,14 @@ export class ReleaseVersionFileSerializer extends Serializer<ReleaseVersionFile>
 		return versionFile;
 	}
 
-	private serializeReleaseVersionFile(ctx:Context, doc:ReleaseVersionFile, opts:SerializerOptions,
-					  buildSerializer: (ctx: Context, doc: Build, opts: SerializerOptions) => Build,
-					  fileSerializer: (ctx: Context, doc: File, opts: SerializerOptions) => File): ReleaseVersionFile {
+	private serializeReleaseVersionFile(ctx: Context, doc: ReleaseVersionFile, opts: SerializerOptions,
+					                                buildSerializer: (ctx: Context, doc: Build, opts: SerializerOptions) => Build,
+					                                fileSerializer: (ctx: Context, doc: File, opts: SerializerOptions) => File): ReleaseVersionFile {
 
 		const versionFile = {
 			flavor: doc.flavor,
 			counter: doc.counter,
-			released_at: doc.released_at
+			released_at: doc.released_at,
 		} as ReleaseVersionFile;
 
 		// file
@@ -73,7 +73,7 @@ export class ReleaseVersionFileSerializer extends Serializer<ReleaseVersionFile>
 				status: doc.validation.status,
 				message: doc.validation.message,
 				validated_at: doc.validation.validated_at,
-				validated_by: this._populated(doc, 'validation._validated_by') ? state.serializers.User.reduced(ctx, doc.validation._validated_by as User, opts) : undefined
+				validated_by: this._populated(doc, 'validation._validated_by') ? state.serializers.User.reduced(ctx, doc.validation._validated_by as User, opts) : undefined,
 			};
 		}
 

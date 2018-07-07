@@ -17,10 +17,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { format as sprintf } from 'util';
-import { format as logFormat } from 'logform';
 import chalk from 'chalk';
 import hasAnsi from 'has-ansi';
+import { format as logFormat } from 'logform';
+import { format as sprintf } from 'util';
 
 const winston = require('winston'); // todo use typings when available (https://github.com/winstonjs/winston/issues/1190)
 
@@ -32,26 +32,26 @@ export class Logger {
 			logFormat.colorize(),
 			logFormat.timestamp(),
 			//logFormat.align(),
-			logFormat.printf(info => `${info.timestamp} ${info.level}: ${info.message}`)
+			logFormat.printf(info => `${info.timestamp} ${info.level}: ${info.message}`),
 		);
 		this.logger = winston.createLogger({
 			format: alignedWithColorsAndTime,
 			transports: [
 				new winston.transports.Console(),
 			],
-			level: 'silly'
+			level: 'silly',
 		});
 	}
 
-	private colorMessage(message: string, prefixColor:any, messageColor?:any): string {
+	private colorMessage(message: string, prefixColor: any, messageColor?: any): string {
 		if (hasAnsi(message)) {
 			return message;
 		}
 		const match = message.match(/^(\[[^\]]+])(.+)/);
 		if (match) {
-			let prefix:string;
+			let prefix: string;
 			if (prefixColor == null) {
-				let [m1, m2] = match[1].split('.', 2);
+				const [m1, m2] = match[1].split('.', 2);
 				prefix = m2  ?
 					'[' + chalk.cyan(m1.substring(1)) + '.' + chalk.blueBright(m2.substring(0, m2.length - 1)) + ']' :
 					'[' + chalk.cyan(match[1].substring(1, match[1].length - 1)) + ']';
@@ -63,45 +63,45 @@ export class Logger {
 		return messageColor ? messageColor(message) : message;
 	}
 
-	wtf(format: any, ...param: any[]) {
+	public wtf(format: any, ...param: any[]) {
 		this.logger.log({
 			level: 'info',
-			message: this.colorMessage(sprintf.apply(null, arguments), chalk.bgBlack.redBright, chalk.bgRedBright.whiteBright)
+			message: this.colorMessage(sprintf.apply(null, arguments), chalk.bgBlack.redBright, chalk.bgRedBright.whiteBright),
 		});
 	}
 
-	error(format: any, ...param: any[]) {
+	public error(format: any, ...param: any[]) {
 		this.logger.log({
 			level: 'error',
-			message: this.colorMessage(sprintf.apply(null, arguments), chalk.bgBlack.redBright, chalk.whiteBright)
+			message: this.colorMessage(sprintf.apply(null, arguments), chalk.bgBlack.redBright, chalk.whiteBright),
 		});
 	}
 
-	warn(format: any, ...param: any[]) {
+	public warn(format: any, ...param: any[]) {
 		this.logger.log({
 			level: 'warn',
-			message: this.colorMessage(sprintf.apply(null, arguments), chalk.bgBlack.yellowBright, chalk.whiteBright)
+			message: this.colorMessage(sprintf.apply(null, arguments), chalk.bgBlack.yellowBright, chalk.whiteBright),
 		});
 	}
 
-	info(format: any, ...param: any[]) {
+	public info(format: any, ...param: any[]) {
 		this.logger.log({
 			level: 'info',
-			message: this.colorMessage(sprintf.apply(null, arguments), null, chalk.white)
+			message: this.colorMessage(sprintf.apply(null, arguments), null, chalk.white),
 		});
 	}
 
-	verbose(format: any, ...param: any[]) {
+	public verbose(format: any, ...param: any[]) {
 		this.logger.log({
 			level: 'verbose',
-			message: this.colorMessage(sprintf.apply(null, arguments), chalk.bgBlack.gray, chalk.gray)
+			message: this.colorMessage(sprintf.apply(null, arguments), chalk.bgBlack.gray, chalk.gray),
 		});
 	}
 
-	debug(format: any, ...param: any[]) {
+	public debug(format: any, ...param: any[]) {
 		this.logger.log({
 			level: 'debug',
-			message: this.colorMessage(sprintf.apply(null, arguments), chalk.bgBlack.gray, chalk.gray)
+			message: this.colorMessage(sprintf.apply(null, arguments), chalk.bgBlack.gray, chalk.gray),
 		});
 	}
 }

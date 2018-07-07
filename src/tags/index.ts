@@ -21,17 +21,17 @@ import Application = require('koa');
 import Router from 'koa-router';
 import mongoose, { Document, Schema } from 'mongoose';
 
-import { state } from '../state';
 import { EndPoint } from '../common/api.endpoint';
-import { TagSerializer } from './tag.serializer';
-import { tagSchema } from './tag.schema';
-import { router } from './tag.api.router';
-import { Tag } from './tag';
+import { state } from '../state';
 import { initialTags } from './initial-data/tags';
+import { Tag } from './tag';
+import { router } from './tag.api.router';
+import { tagSchema } from './tag.schema';
+import { TagSerializer } from './tag.serializer';
 
 export class TagApiEndPoint extends EndPoint {
 
-	readonly name: string = 'Build API';
+	public readonly name: string = 'Build API';
 
 	private readonly _router: Router;
 	private readonly _schema: Schema;
@@ -42,11 +42,11 @@ export class TagApiEndPoint extends EndPoint {
 		this._router = router;
 	}
 
-	getRouter(): Router {
+	public getRouter(): Router {
 		return this._router;
 	}
 
-	async register(app: Application): Promise<void> {
+	public async register(app: Application): Promise<void> {
 		state.models.Tag = mongoose.model<Tag>('Tag', this._schema);
 		state.serializers.Tag = new TagSerializer();
 

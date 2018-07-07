@@ -17,23 +17,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { inspect } from 'util';
 import { cloneDeep, defaults, orderBy, pick } from 'lodash';
+import { inspect } from 'util';
 
-import { state } from '../../state';
-import { ApiError } from '../../common/api.error';
-import { Context } from '../../common/typings/context';
 import { acl } from '../../common/acl';
+import { apiCache } from '../../common/api.cache';
+import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
 import { mailer } from '../../common/mailer';
-import { LogEventUtil } from '../../log-event/log.event.util';
-import { Game } from '../../games/game';
-import { User } from '../../users/user';
+import { Context } from '../../common/typings/context';
 import { File } from '../../files/file';
+import { Game } from '../../games/game';
+import { LogEventUtil } from '../../log-event/log.event.util';
+import { state } from '../../state';
+import { User } from '../../users/user';
+import { ReleaseAbstractApi } from '../release.abstract.api';
 import { ReleaseVersionFile } from './file/release.version.file';
 import { ReleaseVersion } from './release.version';
-import { apiCache } from '../../common/api.cache';
-import { ReleaseAbstractApi } from '../release.abstract.api';
 
 export class ReleaseVersionApi extends ReleaseAbstractApi {
 
@@ -87,7 +87,7 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 		try {
 			await newVersion.validate();
 		} catch (err) {
-			validationErr = err
+			validationErr = err;
 		} finally {
 			// validate existing version here
 			if (release.versions.filter(v => v.version === newVersion.version).length > 0) {
@@ -95,7 +95,7 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 					validationErr.errors.version = {
 						path: 'version',
 						message: 'Provided version already exists and you cannot add a version twice. Try updating the version instead of adding a new one.',
-						value: newVersion.version
+						value: newVersion.version,
 					};
 				} else {
 					throw new ApiError().validationError('version', 'Provided version already exists and you cannot add a version twice. Try updating the version instead of adding a new one.', newVersion.version);
@@ -135,10 +135,10 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 		// log event
 		await LogEventUtil.log(ctx, 'create_release_version', true, {
 			release: pick(state.serializers.Release.detailed(ctx, release, { thumbFormat: 'medium' }), ['id', 'name', 'authors', 'versions']),
-			game: pick(state.serializers.Game.simple(ctx, release._game as Game), ['id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type'])
+			game: pick(state.serializers.Game.simple(ctx, release._game as Game), ['id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type']),
 		}, {
 			release: release._id,
-			game: release._game._id
+			game: release._game._id,
 		});
 
 		// notify pusher
@@ -207,9 +207,9 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 		for (const fileObj of (ctx.request.body.files || [])) {
 
 			// check if file reference is already part of this version
-			let existingVersionFile = version.files.find(f => (f._file as File).id === fileObj._file);
+			const existingVersionFile = version.files.find(f => (f._file as File).id === fileObj._file);
 			if (existingVersionFile) {
-				let versionFileToUpdate = versionToUpdate.files.find(f => f._id.equals(existingVersionFile._id));
+				const versionFileToUpdate = versionToUpdate.files.find(f => f._id.equals(existingVersionFile._id));
 				await versionFileToUpdate.updateInstance(pick(fileObj, updatableFileFields));
 
 			} else {
@@ -267,7 +267,7 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 		// log event
 		await LogEventUtil.log(ctx, 'update_release_version', false,
 			LogEventUtil.diff(oldVersion, ctx.request.body),
-			{ release: release._id, game: release._game._id }
+			{ release: release._id, game: release._game._id },
 		);
 
 		// notify (co-)author(s)
@@ -279,6 +279,5 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 			}
 		}
 	}
-
 
 }

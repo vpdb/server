@@ -19,31 +19,31 @@
 import gm from 'gm';
 import { pick } from 'lodash';
 
-import { Metadata } from './metadata';
 import { File } from '../file';
-import { FileVariation } from '../file.variations';
 import { FileDocument } from '../file.document';
+import { FileVariation } from '../file.variations';
+import { Metadata } from './metadata';
 
 require('bluebird').promisifyAll(gm.prototype);
 
 export class ImageMetadata extends Metadata {
 
-	isValid(file: File, variation?: FileVariation): boolean {
+	public isValid(file: File, variation?: FileVariation): boolean {
 		return FileDocument.getMimeTypePrimary(file, variation) === 'image';
 	}
 
-	async getMetadata(file: File, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
-		return await (gm(path) as any).identifyAsync();
+	public async getMetadata(file: File, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
+		return (gm(path) as any).identifyAsync();
 	}
 
-	serializeDetailed(metadata: { [p: string]: any }): { [p: string]: any } {
+	public serializeDetailed(metadata: { [p: string]: any }): { [p: string]: any } {
 		return pick(metadata, 'format', 'size', 'depth', 'JPEG-Quality');
 	}
 
-	serializeVariation(metadata: { [p: string]: any }): { [p: string]: any } {
+	public serializeVariation(metadata: { [p: string]: any }): { [p: string]: any } {
 		return {
 			width: metadata.size.width,
-			height: metadata.size.height
+			height: metadata.size.height,
 		};
 	}
 }

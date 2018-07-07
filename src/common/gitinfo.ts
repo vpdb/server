@@ -22,7 +22,7 @@ import { logger } from './logger';
 
 class GitInfo {
 
-	private currentLocalBranch:LastCommit;
+	private currentLocalBranch: LastCommit;
 
 	constructor() {
 		(async () => {
@@ -40,7 +40,7 @@ class GitInfo {
 						shortSHA: commit.sha().substr(0, 7),
 						lastCommitTime: new Date(commit.timeMs()),
 						lastCommitMessage: commit.message(),
-						lastCommitAuthor: commit.author().name
+						lastCommitAuthor: commit.author().name,
 					};
 					logger.info('[git] Successfully read git config from %s.', repoRoot);
 				} catch (err) {
@@ -54,11 +54,11 @@ class GitInfo {
 		})();
 	}
 
-	public hasInfo():boolean {
+	public hasInfo(): boolean {
 		return !!this.currentLocalBranch;
 	}
 
-	public getLastCommit():LastCommit {
+	public getLastCommit(): LastCommit {
 		return this.currentLocalBranch;
 	}
 }

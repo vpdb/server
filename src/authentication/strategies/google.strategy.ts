@@ -20,11 +20,11 @@
 /* istanbul ignore file */
 import { OAuth2Client } from 'google-auth-library';
 
+import { logger } from '../../common/logger';
 import { config } from '../../common/settings';
 import { Context } from '../../common/typings/context';
-import { Strategy } from './strategy';
 import { OAuthProfile } from '../authentication.api';
-import { logger } from '../../common/logger';
+import { Strategy } from './strategy';
 
 export class GoogleStrategy extends Strategy {
 
@@ -38,7 +38,7 @@ export class GoogleStrategy extends Strategy {
 		this.client = new OAuth2Client(
 			config.vpdb.passport.github.clientID,
 			config.vpdb.passport.github.clientSecret,
-			redirectUri
+			redirectUri,
 		);
 		logger.info('[GoogleStrategy] Instantiated with redirection URL %s', redirectUri);
 	}
@@ -46,7 +46,7 @@ export class GoogleStrategy extends Strategy {
 	protected getAuthUrl(): string {
 		return this.client.generateAuthUrl({
 			access_type: 'offline',
-			scope: ['profile', 'email']
+			scope: ['profile', 'email'],
 		});
 	}
 
@@ -66,22 +66,22 @@ export class GoogleStrategy extends Strategy {
 	 * @return {OAuthProfile}
 	 */
 	protected normalizeProfile(profile: any): OAuthProfile {
-		const normalizedProfile:OAuthProfile = {
+		const normalizedProfile: OAuthProfile = {
 			provider: this.name,
 			id: profile.id,
 			emails: profile.emails,
 			displayName: profile.displayName,
-			_json: profile
+			_json: profile,
 		};
 		if (profile.name) {
 			normalizedProfile.name = {
 				familyName: profile.name.familyName,
 				givenName: profile.name.givenName,
-				middleName: profile.name.middleName
-			}
+				middleName: profile.name.middleName,
+			};
 		}
 		if (profile.image) {
-			normalizedProfile.photos = [ { value: profile.image.url }]
+			normalizedProfile.photos = [ { value: profile.image.url }];
 		}
 		return normalizedProfile;
 	}

@@ -18,18 +18,18 @@
  */
 
 import Application = require('koa');
-import mongoose, { Schema } from 'mongoose';
 import Router from 'koa-router';
+import mongoose, { Schema } from 'mongoose';
 
-import { state } from '../state';
 import { EndPoint } from '../common/api.endpoint';
-import { CommentModel, commentSchema } from './comment.schema';
+import { state } from '../state';
 import { Comment } from './comment';
+import { CommentModel, commentSchema } from './comment.schema';
 import { CommentSerializer } from './comment.serializer';
 
 export class CommentEndPoint extends EndPoint {
 
-	readonly name: string = 'Comment API';
+	public readonly name: string = 'Comment API';
 
 	private readonly _schema: Schema;
 
@@ -38,11 +38,11 @@ export class CommentEndPoint extends EndPoint {
 		this._schema = commentSchema;
 	}
 
-	getRouter(): Router {
+	public getRouter(): Router {
 		return null;
 	}
 
-	async register(app: Application): Promise<void> {
+	public async register(app: Application): Promise<void> {
 		state.models.Comment = mongoose.model<Comment, CommentModel>('Comment', this._schema);
 		state.serializers.Comment = new CommentSerializer();
 	}

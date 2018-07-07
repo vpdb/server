@@ -18,8 +18,8 @@
  */
 
 import { PaginateModel, Schema } from 'mongoose';
-import { LogEvent } from './log.event';
 import paginatePlugin = require('mongoose-paginate');
+import { LogEvent } from './log.event';
 
 // also update slackbot when adding new events
 const events = [
@@ -33,7 +33,7 @@ const events = [
 	'create_release', 'update_release', 'create_release_version', 'update_release_version', 'delete_release', 'validate_release',
 	'create_backglass', 'delete_backglass', 'update_backglass',
 	'moderate',
-	'create_game_request', 'update_game_request', 'delete_game_request'
+	'create_game_request', 'update_game_request', 'delete_game_request',
 ];
 
 //-----------------------------------------------------------------------------
@@ -47,13 +47,13 @@ export const logEventFields = {
 		backglass: { type: Schema.Types.ObjectId, ref: 'Backglass', index: true, sparse: true },
 		user: { type: Schema.Types.ObjectId, ref: 'User', index: true, sparse: true },
 		game_request: { type: Schema.Types.ObjectId, ref: 'GameRequest', index: true, sparse: true },
-		build: { type: Schema.Types.ObjectId, ref: 'Build', index: true, sparse: true }
+		build: { type: Schema.Types.ObjectId, ref: 'Build', index: true, sparse: true },
 	},
-	event: { type: String, 'enum': events, required: true, index: true },
+	event: { type: String, enum: events, required: true, index: true },
 	payload: {},
-	is_public: { type: Boolean, required: true, 'default': false },
+	is_public: { type: Boolean, required: true, default: false },
 	ip: { type: String, required: true },
-	logged_at: { type: Date, required: true }
+	logged_at: { type: Date, required: true },
 };
 export interface LogEventModel extends PaginateModel<LogEvent> { }
 export const logEventSchema = new Schema(logEventFields, { toObject: { virtuals: true, versionKey: false } });

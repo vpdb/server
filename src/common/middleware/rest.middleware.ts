@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Context } from '../typings/context';
 import { config } from '../settings';
+import { Context } from '../typings/context';
 
 /**
  * Makes sure that content headers are included.
@@ -33,7 +33,7 @@ export function koaRestHandler() {
 
 		// don't care about content type if it's not the api
 		if (ctx.path.substr(0, apiPrefix.length) !== apiPrefix) {
-			return await next();
+			return next();
 		}
 
 		if (hasBody && !ctx.request.get('content-type')) {
@@ -49,5 +49,5 @@ export function koaRestHandler() {
 		}
 
 		await next();
-	}
+	};
 }

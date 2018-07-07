@@ -19,13 +19,13 @@
 
 import { isEmpty, pick } from 'lodash';
 
-import { state } from '../state';
-import { Serializer, SerializerOptions } from '../common/serializer';
-import { Game, GameRestrictions } from './game';
-import { File } from '../files/file';
-import { Context } from '../common/typings/context';
-import { config } from '../common/settings';
 import { ipdb } from '../common/ipdb';
+import { Serializer, SerializerOptions } from '../common/serializer';
+import { config } from '../common/settings';
+import { Context } from '../common/typings/context';
+import { File } from '../files/file';
+import { state } from '../state';
+import { Game, GameRestrictions } from './game';
 
 export class GameSerializer extends Serializer<Game> {
 
@@ -44,7 +44,7 @@ export class GameSerializer extends Serializer<Game> {
 		game.rating = doc.rating;
 
 		// restrictions
-		const restrictions:GameRestrictions = {};
+		const restrictions: GameRestrictions = {};
 		if (config.vpdb.restrictions.release.denyMpu.includes(doc.ipdb.mpu)) {
 			restrictions.release = { mpu: true };
 		}

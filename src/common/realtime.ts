@@ -19,13 +19,13 @@
 
 import { uniq } from 'lodash';
 
-import { state } from '../state';
-import { config } from './settings';
 import { Game } from '../games/game';
 import { Release } from '../releases/release';
 import { ReleaseVersion } from '../releases/version/release.version';
-import { logger } from './logger';
+import { state } from '../state';
 import { User } from '../users/user';
+import { logger } from './logger';
+import { config } from './settings';
 
 const Pusher = require('pusher');
 
@@ -44,7 +44,7 @@ class Realtime {
 		}
 	}
 
-	public async addVersion(game:Game, release:Release, version:ReleaseVersion) {
+	public async addVersion(game: Game, release: Release, version: ReleaseVersion) {
 
 		// don't even bother quering..
 		if (!this.isEnabled) {
@@ -54,26 +54,26 @@ class Realtime {
 		const subscribedUsers = await state.models.User.find({ 'channel_config.subscribed_releases': release.id });
 
 		const users = subscribedUsers.filter(user => this.isUserEnabled(user));
-			logger.info('Found %d authorized user(s) subscribed to release %s.', users.length, release.id);
+		logger.info('Found %d authorized user(s) subscribed to release %s.', users.length, release.id);
 
-			const userChannels = uniq(users.map(user => this.getChannel(user)));
-			userChannels.forEach(chan => {
+		const userChannels = uniq(users.map(user => this.getChannel(user)));
+		userChannels.forEach(chan => {
 				logger.info('Announcing update to channel %s', chan);
 				this.api.trigger(chan, 'new_release_version', { game_id: game.id, release_id: release.id, version: version.version });
 			});
 	}
 
-	public star(type:string, entity:{id:string}, user:User) {
+	public star(type: string, entity: {id: string}, user: User) {
 		/* istanbul ignore if: Pusher not enabled in tests */
 		if (this.isUserEnabled(user)) {
-			this.api.trigger(this.getChannel(user), 'star', { id: entity.id, type: type });
+			this.api.trigger(this.getChannel(user), 'star', { id: entity.id, type });
 		}
 	}
 
-	public unstar(type:string, entity:{id:string}, user:User) {
+	public unstar(type: string, entity: {id: string}, user: User) {
 		/* istanbul ignore if: Pusher not enabled in tests */
 		if (this.isUserEnabled(user)) {
-			this.api.trigger(this.getChannel(user), 'unstar', { id: entity.id, type: type });
+			this.api.trigger(this.getChannel(user), 'unstar', { id: entity.id, type });
 		}
 	}
 
@@ -82,12 +82,12 @@ class Realtime {
 	 * @param user User to check
 	 * @returns {boolean} True if a message can be sent, false otherwise.
 	 */
-	public isUserEnabled(user:User) {
+	public isUserEnabled(user: User) {
 		return this.isEnabled && user.planConfig.enableRealtime;
 	}
 
 	/* istanbul ignore next: Pusher not enabled in tests */
-	private getChannel(user:User) {
+	private getChannel(user: User) {
 		return 'private-user-' + user.id;
 	}
 }

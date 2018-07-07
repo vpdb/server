@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { MiscApi } from './misc.api';
 import { Scope } from '../common/scope';
+import { MiscApi } from './misc.api';
 
 const api = new MiscApi();
 export const router = api.apiRouter();

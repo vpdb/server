@@ -21,17 +21,17 @@ import { Document, Types } from 'mongoose';
 import { User } from '../users/user';
 
 export interface Token extends Document {
-	id: string,
-	token: string,
-	label: string,
-	type: 'personal' | 'provider' | 'jwt-refreshed' | 'jwt',
-	scopes: string[],
-	provider: string,
-	is_active: boolean,
-	last_used_at: Date,
-	expires_at: Date,
-	created_at: Date,
-	_created_by: User | Types.ObjectId,
+	id: string;
+	token: string;
+	label: string;
+	type: 'personal' | 'provider' | 'jwt-refreshed' | 'jwt';
+	scopes: string[];
+	provider: string;
+	is_active: boolean;
+	last_used_at: Date;
+	expires_at: Date;
+	created_at: Date;
+	_created_by: User | Types.ObjectId;
 
 	// generated
 	browser?: IUAParser.IResult;

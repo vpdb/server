@@ -18,9 +18,9 @@
  */
 
 import { config } from '../common/settings';
-import { Game } from './game';
 import { File } from '../files/file';
 import { ReleaseDocument } from '../releases/release.document';
+import { Game } from './game';
 
 /**
  * Contains the Game's instance methods so they can also be accessed
@@ -54,7 +54,7 @@ export class GameDocument {
 				if (bg.versions && bg.versions.length > 0) {
 					return bg.versions.map(v => v.file);
 				}
-				return []
+				return [];
 			});
 			if (backglassFiles && backglassFiles.length > 0) {
 				files.push(...backglassFiles);

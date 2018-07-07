@@ -20,8 +20,8 @@
 import { isArray, keys } from 'lodash';
 import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
-import { Context } from '../common/typings/context';
 import { logger } from '../common/logger';
+import { Context } from '../common/typings/context';
 import { AuthenticationUtil } from './authentication.util';
 
 export class AuthenticationStorageApi extends Api {
@@ -40,7 +40,7 @@ export class AuthenticationStorageApi extends Api {
 		if (ctx.request.body && !ctx.request.body.paths) {
 			throw new ApiError().validationErrors([{
 				message: 'You must provide the paths of the storage tokens.',
-				path: 'paths'
+				path: 'paths',
 			}]);
 		}
 		const paths: string[] = !isArray(ctx.request.body.paths) ? [ctx.request.body.paths] : ctx.request.body.paths;

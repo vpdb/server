@@ -17,21 +17,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { promisify } from 'util';
-import { dirname } from 'path';
+import { Job } from 'bull';
 import { exists, rename, stat, unlink } from 'fs';
 import { assign } from 'lodash';
-import { Job } from 'bull';
+import { dirname } from 'path';
+import { promisify } from 'util';
 
-import { state } from '../../state';
 import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
-import { Metadata } from '../metadata/metadata';
+import { state } from '../../state';
 import { File } from '../file';
 import { FileUtil } from '../file.util';
+import { FileVariation } from '../file.variations';
+import { Metadata } from '../metadata/metadata';
 import { processorManager } from './processor.manager';
 import { JobData } from './processor.queue';
-import { FileVariation } from '../file.variations';
 
 const renameAsync = promisify(rename);
 const statAsync = promisify(stat);
@@ -93,9 +93,9 @@ export class ProcessorWorker {
 			const fileData: any = {};
 			fileData['variations.' + variation.name] = assign(metadataReader.serializeVariation(metadata), {
 				bytes: (await statAsync(destPath)).size,
-				mime_type: variation.mimeType
+				mime_type: variation.mimeType,
 			});
-			await state.models.File.findByIdAndUpdate(file._id, { $set: fileData }, { 'new': true }).exec();
+			await state.models.File.findByIdAndUpdate(file._id, { $set: fileData }, { new: true }).exec();
 
 			// abort if deleted
 			if (await ProcessorWorker.isFileDeleted(file)) {
@@ -126,7 +126,7 @@ export class ProcessorWorker {
 
 			// clean up source
 			if (await existsAsync(srcPath)) {
-				await unlinkAsync(srcPath)
+				await unlinkAsync(srcPath);
 			}
 
 			// nothing to return here because it's in the background.
@@ -186,13 +186,13 @@ export class ProcessorWorker {
 			if (variation) {
 				fileData['variations.' + variation.name] = assign(metadataReader.serializeVariation(metadata), {
 					bytes: (await statAsync(destPath)).size,
-					mime_type: variation.mimeType
+					mime_type: variation.mimeType,
 				});
 			} else {
 				fileData.metadata = await Metadata.readFrom(file, destPath);
 				fileData.bytes = (await statAsync(destPath)).size;
 			}
-			await state.models.File.findByIdAndUpdate(file._id, { $set: fileData }, { 'new': true }).exec();
+			await state.models.File.findByIdAndUpdate(file._id, { $set: fileData }, { new: true }).exec();
 
 			// abort if deleted
 			if (await ProcessorWorker.isFileDeleted(file)) {
@@ -231,11 +231,11 @@ export class ProcessorWorker {
 	 * @param {File} file File
 	 * @param {FileVariation} createdVariation Created variation
 	 */
-	private static async continueCreation(file:File, createdVariation:FileVariation) {
+	private static async continueCreation(file: File, createdVariation: FileVariation) {
 
 		// send direct references to creation queue (with a copy)
 		const dependentVariations = file.getDirectVariationDependencies(createdVariation);
-		for (let dependentVariation of dependentVariations) {
+		for (const dependentVariation of dependentVariations) {
 			const processor = processorManager.getValidCreationProcessor(file, createdVariation, dependentVariation);
 			if (processor) {
 				const srcPath = file.getPath(createdVariation, { tmpSuffix: '_' + dependentVariation.name + '.source' });
@@ -254,7 +254,7 @@ export class ProcessorWorker {
 
 		// send variation to optimization queue.
 		let n = 0;
-		for (let processor of processorManager.getValidOptimizationProcessors(file, createdVariation)) {
+		for (const processor of processorManager.getValidOptimizationProcessors(file, createdVariation)) {
 			n++;
 			const destPath = file.getPath(createdVariation, { tmpSuffix: '_' + processor.name + '.processing' });
 			await processorManager.queueOptimization(processor, file, file.getPath(createdVariation), destPath, createdVariation);
@@ -269,7 +269,7 @@ export class ProcessorWorker {
 	 * @param {File} file File to check
 	 * @return {Promise<boolean>} True if the file was deleted, false otherwise.
 	 */
-	private static async isFileDeleted(file:File):Promise<boolean> {
+	private static async isFileDeleted(file: File): Promise<boolean> {
 		return !!(await state.redis.get('queue:delete:' + file.id));
 	}
 
@@ -281,7 +281,7 @@ export class ProcessorWorker {
 	 * @param {string} what Calling function for logging purpose
 	 * @return {Promise<string | null>} Path to new destination or null if no rename
 	 */
-	private static async isFileRenamed(path:string, what:string):Promise<string|null> {
+	private static async isFileRenamed(path: string, what: string): Promise<string | null> {
 		const newPath = await state.redis.get('queue:rename:' + path);
 		if (newPath) {
 			logger.info('[ProcessorWorker.%s] Activation rename from %s to %s', what, FileUtil.log(path), FileUtil.log(newPath));

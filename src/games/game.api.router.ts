@@ -17,14 +17,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Scope } from '../common/scope';
-import { GameApi } from './game.api';
-import { LogEventApi } from '../log-event/log.event.api';
-import { StarApi } from '../stars/star.api';
-import { MediumApi } from '../media/medium.api';
-import { RatingApi } from '../ratings/rating.api';
 import { BackglassApi } from '../backglasses/backglass.api';
 import { apiCache } from '../common/api.cache';
+import { Scope } from '../common/scope';
+import { LogEventApi } from '../log-event/log.event.api';
+import { MediumApi } from '../media/medium.api';
+import { RatingApi } from '../ratings/rating.api';
+import { StarApi } from '../stars/star.api';
+import { GameApi } from './game.api';
 import { gameDetailsCacheCounters, gameListCacheCounters } from './game.api.cache.config';
 
 const api = new GameApi();

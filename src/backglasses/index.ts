@@ -18,20 +18,20 @@
  */
 
 import Application = require('koa');
-import mongoose, { Schema } from 'mongoose';
 import Router from 'koa-router';
+import mongoose, { Schema } from 'mongoose';
 
-import { state } from '../state';
 import { EndPoint } from '../common/api.endpoint';
-import { BackglassModel, backglassSchema } from './backglass.schema';
+import { state } from '../state';
 import { Backglass } from './backglass';
+import { router } from './backglass.api.router';
+import { BackglassModel, backglassSchema } from './backglass.schema';
 import { BackglassSerializer } from './backglass.serializer';
 import { BackglassVersionSerializer } from './backglass.version.serializer';
-import { router } from './backglass.api.router';
 
 export class BackglassEndPoint extends EndPoint {
 
-	readonly name: string = 'Backglass API';
+	public readonly name: string = 'Backglass API';
 
 	private readonly _router: Router;
 	private readonly _schema: Schema;
@@ -42,11 +42,11 @@ export class BackglassEndPoint extends EndPoint {
 		this._schema = backglassSchema;
 	}
 
-	getRouter(): Router {
+	public getRouter(): Router {
 		return this._router;
 	}
 
-	async register(app: Application): Promise<void> {
+	public async register(app: Application): Promise<void> {
 		state.models.Backglass = mongoose.model<Backglass, BackglassModel>('Backglass', this._schema);
 		state.serializers.Backglass = new BackglassSerializer();
 		state.serializers.BackglassVersion = new BackglassVersionSerializer();

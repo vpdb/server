@@ -18,12 +18,12 @@
  */
 
 import { FileReferenceDocument, MetricsDocument, PrettyIdDocument, Schema, Types } from 'mongoose';
+import { Backglass } from '../backglasses/backglass';
 import { Mpu } from '../common/ipdb';
 import { File } from '../files/file';
-import { User } from '../users/user';
-import { Release } from '../releases/release';
-import { Backglass } from '../backglasses/backglass';
 import { Medium } from '../media/medium';
+import { Release } from '../releases/release';
+import { User } from '../users/user';
 
 export interface Game extends FileReferenceDocument, MetricsDocument, PrettyIdDocument {
 	id?: string;

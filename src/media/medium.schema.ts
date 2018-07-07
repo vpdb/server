@@ -18,14 +18,14 @@
  */
 
 import { keys } from 'lodash';
-import { PaginateModel, PrettyIdModel, Schema, MetricsModel } from 'mongoose';
-import uniqueValidator from 'mongoose-unique-validator';
+import { MetricsModel, PaginateModel, PrettyIdModel, Schema } from 'mongoose';
 import paginatePlugin = require('mongoose-paginate');
+import uniqueValidator from 'mongoose-unique-validator';
 
-import { state } from '../state';
-import { prettyIdPlugin } from '../common/mongoose/pretty.id.plugin';
 import { fileReferencePlugin } from '../common/mongoose/file.reference.plugin';
 import { metricsPlugin } from '../common/mongoose/metrics.plugin';
+import { prettyIdPlugin } from '../common/mongoose/pretty.id.plugin';
+import { state } from '../state';
 import { Medium } from './medium';
 import { mediumCategories } from './medium.category';
 
@@ -35,20 +35,20 @@ const shortId = require('shortid32');
 // SCHEMA
 //-----------------------------------------------------------------------------
 export const mediumFields = {
-	id: { type: String, required: true, unique: true, 'default': shortId.generate },
+	id: { type: String, required: true, unique: true, default: shortId.generate },
 	_file: { type: Schema.Types.ObjectId, required: 'You must provide a file reference.', ref: 'File' },
 	_ref: {
 		game: { type: Schema.Types.ObjectId, ref: 'Game', index: true },
-		release: { type: Schema.Types.ObjectId, ref: 'Release', index: true }
+		release: { type: Schema.Types.ObjectId, ref: 'Release', index: true },
 	},
 	category: { type: String, required: 'You must provide a category' },
 	description: { type: String },
 	acknowledgements: { type: String },
 	counter: {
-		stars: { type: Number, 'default': 0 }
+		stars: { type: Number, default: 0 },
 	},
 	created_at: { type: Date, required: true },
-	_created_by: { type: Schema.Types.ObjectId, ref: 'User', required: true }
+	_created_by: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 };
 
 export interface MediumModel extends PrettyIdModel<Medium>, PaginateModel<Medium>, MetricsModel<Medium> { }
@@ -67,8 +67,8 @@ mediumSchema.plugin(metricsPlugin);
 // VALIDATIONS
 //-----------------------------------------------------------------------------
 mediumSchema.path('category').validate(function() {
-	let [categoryName, childName] = this.category.split('/');
-	let category = mediumCategories[categoryName];
+	const [categoryName, childName] = this.category.split('/');
+	const category = mediumCategories[categoryName];
 
 	// validate category
 	if (!category) {
@@ -116,8 +116,8 @@ mediumSchema.path('category').validate(function() {
 
 mediumSchema.path('_file').validate(async function(value: any) {
 	const file = await state.models.File.findById(value).exec();
-	let [categoryName, childName] = this.category.split('/');
-	let category = mediumCategories[categoryName];
+	const [categoryName, childName] = this.category.split('/');
+	const category = mediumCategories[categoryName];
 	if (category) {
 
 		// check mime type

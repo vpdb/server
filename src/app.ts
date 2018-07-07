@@ -19,22 +19,21 @@
 
 import mongoose from 'mongoose';
 
-import { server } from './server';
-import { config, settings } from './common/settings';
 import { init as initAcls } from './common/acl';
-import { logger } from './common/logger';
 import { EndPoint } from './common/api.endpoint';
+import { logger } from './common/logger';
+import { config, settings } from './common/settings';
+import { server } from './server';
 
 import { AuthenticationEndPoint, AuthenticationStorageEndPoint } from './authentication';
 import { BackglassEndPoint } from './backglasses';
+import { BuildApiEndPoint } from './builds';
 import { CommentEndPoint } from './comments';
 import { FilesApiEndPoint, FilesProtectedStorageEndPoint, FilesPublicStorageEndPoint } from './files';
-import { GamesApiEndPoint } from './games';
 import { GameRequestApiEndPoint } from './game-requests';
+import { GamesApiEndPoint } from './games';
 import { LogEventEndPoint } from './log-event';
 import { LogUserEndPoint } from './log-user';
-import { TagApiEndPoint } from './tags';
-import { TokenEndPoint } from './tokens';
 import { MediaApiEndPoint } from './media';
 import { MiscEndPoint } from './misc';
 import { ProfileEndPoint } from './profile';
@@ -42,8 +41,9 @@ import { RatingEndPoint } from './ratings';
 import { ReleaseEndPoint, ReleaseStorageEndPoint } from './releases';
 import { RomApiEndPoint } from './roms';
 import { StarEndPoint } from './stars';
+import { TagApiEndPoint } from './tags';
+import { TokenEndPoint } from './tokens';
 import { UserEndPoint } from './users';
-import { BuildApiEndPoint } from './builds';
 
 const shortId = require('shortid32');
 shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
@@ -92,7 +92,7 @@ shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 		await mongoose.connect(config.vpdb.db);
 
 		// bootstrap endpoints
-		for (let endPoint of endPoints) {
+		for (const endPoint of endPoints) {
 			logger.info('[app] Registering %s:', endPoint.name);
 			await server.register(endPoint);
 		}

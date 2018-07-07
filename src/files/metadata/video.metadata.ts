@@ -19,11 +19,11 @@
 import Ffmpeg from 'fluent-ffmpeg';
 import { pick } from 'lodash';
 
-import { Metadata } from './metadata';
-import { File } from '../file';
-import { FileVariation } from '../file.variations';
 import { config } from '../../common/settings';
+import { File } from '../file';
 import { FileDocument } from '../file.document';
+import { FileVariation } from '../file.variations';
+import { Metadata } from './metadata';
 
 const ffmpeg = require('bluebird').promisifyAll(Ffmpeg);
 
@@ -37,15 +37,15 @@ export class VideoMetadata extends Metadata {
 		}
 	}
 
-	isValid(file: File, variation?: FileVariation): boolean {
+	public isValid(file: File, variation?: FileVariation): boolean {
 		return FileDocument.getMimeCategory(file, variation) === 'video';
 	}
 
-	async getMetadata(file: File, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
-		return await ffmpeg.ffprobeAsync(path);
+	public async getMetadata(file: File, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
+		return ffmpeg.ffprobeAsync(path);
 	}
 
-	serializeDetailed(metadata: { [p: string]: any }): { [p: string]: any } {
+	public serializeDetailed(metadata: { [p: string]: any }): { [p: string]: any } {
 		let short: any = {};
 		if (metadata.format) {
 			short = pick(metadata.format, ['format_name', 'format_long_name', 'duration', 'bit_rate']);
@@ -63,13 +63,13 @@ export class VideoMetadata extends Metadata {
 		return short;
 	}
 
-	serializeVariation(metadata: { [p: string]: any }): { [p: string]: any } {
+	public serializeVariation(metadata: { [p: string]: any }): { [p: string]: any } {
 		if (metadata.video) {
 			return {
 				width: metadata.video.width,
 				height: metadata.video.height,
 				bit_rate: metadata.video.bit_rate,
-				codec_name: metadata.video.codec_name
+				codec_name: metadata.video.codec_name,
 			};
 		} else {
 			return undefined;

@@ -22,20 +22,20 @@ import { Build } from '../../builds/build';
 import { GameRequest } from '../../game-requests/game.request';
 import { Rating } from '../../ratings/rating';
 import { TableBlock } from '../../releases/release.tableblock';
+import { Star } from '../../stars/star';
 import { Tag } from '../../tags/tag';
 import { Token } from '../../tokens/token';
-import { Star } from '../../stars/star';
 
+import { BackglassModel } from '../../backglasses/backglass.schema';
 import { CommentModel } from '../../comments/comment.schema';
 import { FileModel } from '../../files/file.schema';
 import { GameModel } from '../../games/game.schema';
-import { BackglassModel } from '../../backglasses/backglass.schema';
 import { LogEventModel } from '../../log-event/log.event.schema';
 import { LogUserModel } from '../../log-user/log.user.schema';
 import { MediumModel } from '../../media/medium.schema';
 import { ReleaseModel } from '../../releases/release.schema';
-import { ReleaseVersionModel } from '../../releases/version/release.version.schema';
 import { ReleaseVersionFileModel } from '../../releases/version/file/release.version.file.schema';
+import { ReleaseVersionModel } from '../../releases/version/release.version.schema';
 import { RomModel } from '../../roms/rom.schema';
 import { UserModel } from '../../users/user.schema';
 
@@ -59,5 +59,5 @@ export interface Models {
 	Token: Model<Token>;
 	Star: Model<Star>;
 	User: UserModel;
-	[key:string]: Model<Document>;
+	[key: string]: Model<Document>;
 }

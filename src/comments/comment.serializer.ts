@@ -19,11 +19,11 @@
 
 import { pick } from 'lodash';
 
-import { state } from '../state';
-import { Context } from '../common/typings/context';
 import { Serializer, SerializerOptions } from '../common/serializer';
-import { Comment } from './comment';
+import { Context } from '../common/typings/context';
+import { state } from '../state';
 import { User } from '../users/user';
+import { Comment } from './comment';
 
 export class CommentSerializer extends Serializer<Comment> {
 

@@ -18,31 +18,31 @@
  */
 import { extend, omit } from 'lodash';
 
-import { Metadata } from './metadata';
-import { File } from '../file';
-import { FileVariation } from '../file.variations';
 import { visualPinballTable } from '../../common/visualpinball.table';
+import { File } from '../file';
 import { FileDocument } from '../file.document';
+import { FileVariation } from '../file.variations';
+import { Metadata } from './metadata';
 
 export class VptMetadata extends Metadata {
 
-	isValid(file: File, variation?: FileVariation): boolean {
+	public isValid(file: File, variation?: FileVariation): boolean {
 		return ['application/x-visual-pinball-table', 'application/x-visual-pinball-table-x']
 			.includes(FileDocument.getMimeType(file, variation));
 	}
 
-	async getMetadata(file: File, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
+	public async getMetadata(file: File, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
 		const script = await visualPinballTable.readScriptFromTable(path);
 		const props = await visualPinballTable.getTableInfo(path);
 		extend(props, { table_script: script.code });
 		return props;
 	}
 
-	serializeDetailed(metadata: { [p: string]: any }): { [p: string]: any } {
+	public serializeDetailed(metadata: { [p: string]: any }): { [p: string]: any } {
 		return omit(metadata, 'table_script');
 	}
 
-	serializeVariation(metadata: { [p: string]: any }): { [p: string]: any } {
+	public serializeVariation(metadata: { [p: string]: any }): { [p: string]: any } {
 		return omit(metadata, 'table_script');
 	}
 }

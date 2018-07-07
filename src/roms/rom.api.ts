@@ -17,19 +17,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { extend, pick, assign } from 'lodash';
 import Zip from 'adm-zip'; // todo migrate to unzip
+import { assign, extend, pick } from 'lodash';
 
+import { Schema, Types } from 'mongoose';
+import { acl } from '../common/acl';
 import { Api } from '../common/api';
-import { Context } from '../common/typings/context';
 import { ApiError } from '../common/api.error';
+import { logger } from '../common/logger';
+import { Context } from '../common/typings/context';
+import { Game } from '../games/game';
+import { LogEventUtil } from '../log-event/log.event.util';
 import { state } from '../state';
 import { Rom } from './rom';
-import { Game } from '../games/game';
-import { logger } from '../common/logger';
-import { LogEventUtil } from '../log-event/log.event.util';
-import { acl } from '../common/acl';
-import { Schema, Types } from 'mongoose';
 
 export class RomApi extends Api {
 
@@ -57,12 +57,12 @@ export class RomApi extends Api {
 			}
 		}
 
-		let q = ctx.params.gameId ? { id: ctx.params.gameId } : { 'ipdb.number': ctx.request.body._ipdb_number };
+		const q = ctx.params.gameId ? { id: ctx.params.gameId } : { 'ipdb.number': ctx.request.body._ipdb_number };
 		let game = await state.models.Game.findOne(q).exec();
 
 		const rom = extend(pick(ctx.request.body, validFields), {
 			_created_by: ctx.state.user._id,
-			created_at: new Date()
+			created_at: new Date(),
 		}) as Rom;
 
 		let gameRef: Game;
@@ -85,7 +85,7 @@ export class RomApi extends Api {
 		const file = await state.models.File.findById(newRom._file).exec();
 		try {
 			newRom.rom_files = [];
-			let zip = new Zip(file.getPath());
+			const zip = new Zip(file.getPath());
 			zip.getEntries().forEach(zipEntry => {
 				if (zipEntry.isDirectory) {
 					return;
@@ -94,7 +94,7 @@ export class RomApi extends Api {
 					filename: zipEntry.name,
 					bytes: (zipEntry.header as any).size,
 					crc: (zipEntry.header as any).crc,
-					modified_at: new Date((zipEntry.header as any).time)
+					modified_at: new Date((zipEntry.header as any).time),
 				});
 			});
 
@@ -107,7 +107,7 @@ export class RomApi extends Api {
 
 		await LogEventUtil.log(ctx, 'upload_rom', true, {
 			rom: state.serializers.Rom.simple(ctx, newRom),
-			game: gameRef
+			game: gameRef,
 		}, { game: game._id });
 
 		return this.success(ctx, state.serializers.Rom.simple(ctx, newRom), 201);
@@ -122,7 +122,7 @@ export class RomApi extends Api {
 	 */
 	public async list(ctx: Context) {
 
-		let pagination = this.pagination(ctx, 10, 50);
+		const pagination = this.pagination(ctx, 10, 50);
 		let game: Game;
 		let ipdbNumber: number;
 
@@ -165,12 +165,12 @@ export class RomApi extends Api {
 			results = [];
 			count = 0;
 		} else {
-			let sort = game ? { version: -1 } : { '_file.name': 1 };
+			const sort = game ? { version: -1 } : { '_file.name': 1 };
 			const r = await state.models.Rom.paginate(query, {
 				page: pagination.page,
 				limit: pagination.perPage,
 				populate: ['_file', '_created_by'],
-				sort: sort
+				sort,
 			});
 			results = r.docs;
 			count = r.total;

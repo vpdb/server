@@ -29,7 +29,7 @@ export const initialBuilds = [
 		description: '*The next major release of Visual Pinball, featuring DirectX 9 and new physics.*\n',
 		type: 'release',
 		is_range: false,
-		is_active: true
+		is_active: true,
 	},
 	{
 		id: '9.9.0',
@@ -70,7 +70,7 @@ In case your setup cannot handle VP 9.9.0 properly for whatever reason, please d
 * Technical note: the minimum version to compile VP is now visual studio 2008 (incl. feature pack)\n',
 		type: 'release',
 		is_range: false,
-		is_active: true
+		is_active: true,
 	},
 	{
 		id: '9.2.1',
@@ -127,7 +127,7 @@ all parameters are now: `PlaySound "name"`, `loopcount`, `volume`, `pan`, `rando
 - Script editor updated to use latest scintilla (3.3.9)',
 		type: 'release',
 		is_range: false,
-		is_active: true
+		is_active: true,
 	},
 	{
 		id: 'physmod2',
@@ -144,7 +144,7 @@ all parameters are now: `PlaySound "name"`, `loopcount`, `volume`, `pan`, `rando
 - Fixed ball jumping on flipper resting in up position',
 		type: 'experimental',
 		is_range: false,
-		is_active: true
+		is_active: true,
 	},
 	{
 		id: 'physmod5',
@@ -163,7 +163,7 @@ all parameters are now: `PlaySound "name"`, `loopcount`, `volume`, `pan`, `rando
 This version also has the latest updates from VP 9.9.0.',
 		type: 'experimental',
 		is_range: false,
-		is_active: true
+		is_active: true,
 	},
 	{
 		id: 'rubberdemo4',
@@ -175,7 +175,7 @@ This version also has the latest updates from VP 9.9.0.',
 		built_at: '2014-07-21T20:51:00.000Z',
 		type: 'experimental',
 		is_range: false,
-		is_active: true
+		is_active: true,
 	},
 	{
 		id: '9.2.1-r932',
@@ -188,7 +188,7 @@ This version also has the latest updates from VP 9.9.0.',
 		description: 'Commit Message: `add comment on 2 sec exit`',
 		type: 'nightly',
 		is_range: false,
-		is_active: true
+		is_active: true,
 	},
 	{
 		id: '-9.2.1',
@@ -199,7 +199,7 @@ This version also has the latest updates from VP 9.9.0.',
 		built_at: '2014-03-21T00:00:00.000Z',
 		type: 'release',
 		is_range: true,
-		is_active: true
+		is_active: true,
 	},
 	{
 		id: '-9.9.0',
@@ -210,7 +210,7 @@ This version also has the latest updates from VP 9.9.0.',
 		built_at: '2014-04-29T00:00:00.000Z',
 		type: 'release',
 		is_range: true,
-		is_active: true
+		is_active: true,
 	},
 	{
 		id: '8.x',
@@ -221,7 +221,7 @@ This version also has the latest updates from VP 9.9.0.',
 		built_at: '2009-02-07T15:23:00.000Z',
 		type: 'release',
 		is_range: true,
-		is_active: true
+		is_active: true,
 	},
 	{
 		id: '10.x',
@@ -232,6 +232,6 @@ This version also has the latest updates from VP 9.9.0.',
 		built_at: '2015-12-31T00:00:00.000Z',
 		type: 'release',
 		is_range: false,
-		is_active: true
-	}
+		is_active: true,
+	},
 ];

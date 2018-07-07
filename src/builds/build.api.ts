@@ -20,13 +20,13 @@
 import { assign, cloneDeep, pick } from 'lodash';
 import { Schema, Types } from 'mongoose';
 
-import { state } from '../state';
+import { acl } from '../common/acl';
 import { Api } from '../common/api';
-import { Context } from '../common/typings/context';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
+import { Context } from '../common/typings/context';
 import { LogEventUtil } from '../log-event/log.event.util';
-import { acl } from '../common/acl';
+import { state } from '../state';
 
 export class BuildApi extends Api {
 
@@ -76,7 +76,6 @@ export class BuildApi extends Api {
 		// check fields and assign to object
 		this.assertFields(ctx, updatableFields);
 		assign(build, pick(ctx.request.body, updatableFields));
-
 
 		// those fields are empty if data comes from initialization, so populate them.
 		if (!build.created_at) {

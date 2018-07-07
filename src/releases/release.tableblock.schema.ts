@@ -25,8 +25,8 @@ import { Schema } from 'mongoose';
 export const tableBlockFields = {
 	hash:  { type: Buffer, required: true, unique: true, index: true },
 	bytes: { type: Number, required: true },
-	type:  { type: String, required: true, 'enum': [ 'image', 'sound', 'gameitem', 'collection' ] },
+	type:  { type: String, required: true, enum: [ 'image', 'sound', 'gameitem', 'collection' ] },
 	meta:  { type: Schema.Types.Mixed },
-	_files: { type: [ Schema.Types.ObjectId ], ref: 'File', index: true }
+	_files: { type: [ Schema.Types.ObjectId ], ref: 'File', index: true },
 };
 export const tableBlockSchema = new Schema(tableBlockFields);

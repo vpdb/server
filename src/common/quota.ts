@@ -18,22 +18,22 @@
  */
 
 import { isArray, isObject, isUndefined, sum } from 'lodash';
-import { VpdbPlanCategoryCost, VpdbPlanCost, VpdbQuotaConfig } from './typings/config';
+import { File } from '../files/file';
+import { FileDocument } from '../files/file.document';
+import { FileVariation } from '../files/file.variations';
+import { state } from '../state';
 import { User } from '../users/user';
 import { ApiError } from './api.error';
-import { config } from './settings';
 import { logger } from './logger';
-import { File } from '../files/file';
-import { FileVariation } from '../files/file.variations';
-import { FileDocument } from '../files/file.document';
-import { state } from '../state';
+import { config } from './settings';
+import { VpdbPlanCategoryCost, VpdbPlanCost, VpdbQuotaConfig } from './typings/config';
 import { Context } from './typings/context';
 
 export class Quota {
 
 	private readonly namespace = 'quota';
 	private readonly config: VpdbQuotaConfig = config.vpdb.quota;
-	private readonly durations:Map<string, number> = new Map();
+	private readonly durations: Map<string, number> = new Map();
 
 	/**
 	 * Initializes quota plans
@@ -53,8 +53,8 @@ export class Quota {
 	 * @param {number} weight How much to consume
 	 * @return {Promise<UserQuota>} Updated quota after consumption
 	 */
-	private async consume(user:User, weight:number):Promise<UserQuota> {
-		let plan = user.planConfig;
+	private async consume(user: User, weight: number): Promise<UserQuota> {
+		const plan = user.planConfig;
 		/* istanbul ignore if: That's a configuration error. */
 		if (!plan) {
 			throw new ApiError('Unable to find plan "%s" for user.', user._plan);
@@ -72,8 +72,8 @@ export class Quota {
 			.exec();
 
 		const all = res[1][1];
-		const count = sum(all.map((m:string) => JSON.parse(m).w));
-		let oldest:number;
+		const count = sum(all.map((m: string) => JSON.parse(m).w));
+		let oldest: number;
 		if (all.length === 1) {
 			await state.redis.pexpire(key, period);
 			oldest = now;
@@ -86,7 +86,7 @@ export class Quota {
 			limit: plan.credits,
 			period: period / 1000,
 			remaining: count < plan.credits ? plan.credits - count : 0,
-			reset: Math.ceil((oldest + period) / 1000)
+			reset: Math.ceil((oldest + period) / 1000),
 		};
 	}
 
@@ -97,7 +97,7 @@ export class Quota {
 	 * @return {Promise<UserQuota>} Remaining quota
 	 */
 	public async get(user: User): Promise<UserQuota> {
-		let plan = user.planConfig;
+		const plan = user.planConfig;
 		/* istanbul ignore if: That's a configuration error. */
 		if (!plan) {
 			throw new ApiError('Unable to find plan "%s" for user.', user._plan);
@@ -119,7 +119,7 @@ export class Quota {
 			reset = period / 1000;
 			logger.info('[Quota.get] No active period, full credits apply.');
 		} else {
-			const count = sum(range.map((m:string) => JSON.parse(m).w));
+			const count = sum(range.map((m: string) => JSON.parse(m).w));
 			const oldest = JSON.parse(range[0]).t;
 			remaining = count < plan.credits ? plan.credits - count : 0;
 			reset = Math.ceil((oldest + period) / 1000);
@@ -130,8 +130,8 @@ export class Quota {
 			unlimited: false,
 			limit: plan.credits,
 			period: period / 1000,
-			remaining: remaining,
-			reset: reset
+			remaining,
+			reset,
 		};
 	}
 
@@ -184,7 +184,7 @@ export class Quota {
 	 * @param {Context} ctx Koa context
 	 * @param {UserQuota} quota Current user quota
 	 */
-	public setHeader(ctx: Context, quota:UserQuota) {
+	public setHeader(ctx: Context, quota: UserQuota) {
 		ctx.response.set({
 			'X-RateLimit-Limit': String(quota.limit),
 			'X-RateLimit-Remaining': String(quota.remaining),
@@ -202,7 +202,7 @@ export class Quota {
 		let file, sum = 0;
 		for (let i = 0; i < files.length; i++) {
 			file = files[i];
-			let cost = this.getCost(file);
+			const cost = this.getCost(file);
 			// a free file
 			if (cost === 0) {
 				continue;
@@ -219,7 +219,7 @@ export class Quota {
 	 * @param {string|object} [variation] Optional variation
 	 * @returns {*}
 	 */
-	getCost(file: File, variation: FileVariation = null): number {
+	public getCost(file: File, variation: FileVariation = null): number {
 
 		// if already set, return directly.
 		if (!variation && !isUndefined(file.cost)) {
@@ -249,7 +249,7 @@ export class Quota {
 
 		// if a variation is demanded and cost contains variation def, ignore the rest.
 		if (variation) {
-			let variationCost:number;
+			let variationCost: number;
 			// EVERY VARIATION costs n credits. Example: { costs: { backglass: { variation: -1 } } }
 			if (costObj) {
 				if (!isUndefined(costObj.variation)) {
@@ -323,7 +323,7 @@ export interface UserQuota {
 	/**
 	 * How long until period ends, in seconds.
 	 */
-	reset: number
+	reset: number;
 }
 
 export const quota = new Quota();

@@ -17,11 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Serializer, SerializerOptions } from '../common/serializer';
-import { Token } from './token';
-import { Context } from '../common/typings/context';
 import { pick } from 'lodash';
 import UAParser from 'ua-parser-js';
+import { Serializer, SerializerOptions } from '../common/serializer';
+import { Context } from '../common/typings/context';
+import { Token } from './token';
 
 export class TokenSerializer extends Serializer<Token> {
 

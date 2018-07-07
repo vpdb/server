@@ -17,30 +17,30 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import gm from 'gm';
 import { createWriteStream } from 'fs';
+import gm from 'gm';
 
-import { CreationProcessor } from './processor';
-import { File } from '../file';
 import { logger } from '../../common/logger';
-import { FileVariation, ImageFileVariation } from '../file.variations';
+import { File } from '../file';
 import { FileUtil } from '../file.util';
+import { FileVariation, ImageFileVariation } from '../file.variations';
+import { CreationProcessor } from './processor';
 
 require('bluebird').promisifyAll(gm.prototype);
 
 export class ImageVariationProcessor implements CreationProcessor<ImageFileVariation> {
 
-	name: string = 'image.variation';
+	public name: string = 'image.variation';
 
-	canProcess(file: File, srcVariation: FileVariation, destVariation: FileVariation): boolean {
+	public canProcess(file: File, srcVariation: FileVariation, destVariation: FileVariation): boolean {
 		return file.getMimeTypePrimary(srcVariation) === 'image' && file.getMimeTypePrimary(srcVariation) === 'image';
 	}
 
-	getOrder(variation?: FileVariation): number {
+	public getOrder(variation?: FileVariation): number {
 		return 100 + (variation && variation.priority ? variation.priority : 0);
 	}
 
-	async process(file: File, src: string, dest: string, variation?: ImageFileVariation): Promise<string> {
+	public async process(file: File, src: string, dest: string, variation?: ImageFileVariation): Promise<string> {
 
 		logger.debug('[ImageVariationProcessor] Start: %s from %s to %s', file.toDetailedString(variation), FileUtil.log(src), FileUtil.log(dest));
 
@@ -88,7 +88,7 @@ export class ImageVariationProcessor implements CreationProcessor<ImageFileVaria
 		await new Promise<File>((resolve, reject) => {
 			const writeStream = createWriteStream(dest);
 			// setup success handler
-			writeStream.on('finish', function () {
+			writeStream.on('finish', function() {
 				resolve(file);
 			});
 			writeStream.on('error', reject);

@@ -17,11 +17,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-
+import { assign, get, includes, isString, keys, mapValues, omitBy, pickBy, set } from 'lodash';
 import mongoose, { Document, PrettyIdDocument, PrettyIdOptions, Schema } from 'mongoose';
-import { assign, isString, omitBy, pickBy, mapValues, includes, keys, set, get } from 'lodash';
-import { explodePaths, traversePaths } from './util';
 import { logger } from '../logger';
+import { explodePaths, traversePaths } from './util';
 
 /**
  * Plugin that converts pretty IDs to ObjectIds before passing it to mongoose.
@@ -53,7 +52,7 @@ export function prettyIdPlugin(schema: Schema, options: PrettyIdOptions = {}) {
 		return includes(options.ignore, path.replace(/\.0$/g, ''));
 	});
 
-	schema.statics.getInstance = async function (obj: Object): Promise<Document> {
+	schema.statics.getInstance = async function(obj: Object): Promise<Document> {
 
 		const invalidations = await replaceIds(obj, paths, options);
 		const Model = mongoose.model(options.model);
@@ -68,7 +67,7 @@ export function prettyIdPlugin(schema: Schema, options: PrettyIdOptions = {}) {
 
 	};
 
-	schema.methods.updateInstance = async function<T extends Document>(this:T, obj: Object): Promise<T> {
+	schema.methods.updateInstance = async function<T extends Document>(this: T, obj: Object): Promise<T> {
 
 		const invalidations = await replaceIds(obj, paths, options);
 		assign(this, obj);
@@ -90,20 +89,20 @@ export function prettyIdPlugin(schema: Schema, options: PrettyIdOptions = {}) {
  * @param options
  * @returns {Promise.<Array>} Promise returning an array of invalidations.
  */
-async function replaceIds(obj: Object, paths: { [key: string]: any }, options: PrettyIdOptions): Promise<{ path: string, message: string, value: any }[]> {
+async function replaceIds(obj: Object, paths: { [key: string]: any }, options: PrettyIdOptions): Promise<Array<{ path: string, message: string, value: any }>> {
 
 	const Model = mongoose.model(options.model);
-	const invalidations: { path: string, message: string, value: any }[] = [];
+	const invalidations: Array<{ path: string, message: string, value: any }> = [];
 	const models = { [options.model]: Model };
 	const refPaths = getRefPaths(obj, paths);
 
-	for (let objPath of keys(refPaths)) {
+	for (const objPath of keys(refPaths)) {
 
 		const refModelName = refPaths[objPath];
 		const RefModel = models[refModelName] || mongoose.model(refModelName);
 		models[refModelName] = RefModel;
 
-		let prettyId = get(obj, objPath);
+		const prettyId = get(obj, objPath);
 
 		if (!prettyId) {
 			continue;
@@ -120,13 +119,13 @@ async function replaceIds(obj: Object, paths: { [key: string]: any }, options: P
 			invalidations.push({
 				path: objPath,
 				message: 'No such ' + refModelName.toLowerCase() + ' with ID "' + prettyId + '".',
-				value: prettyId
+				value: prettyId,
 			});
 			set(obj, objPath, '000000000000000000000000'); // to avoid class cast error to objectId message
 
 		} else {
 			// validations
-			options.validations.forEach(function (validation) {
+			options.validations.forEach(function(validation) {
 				if (validation.path === objPath) {
 					if (validation.mimeType && (refObj as any).mime_type !== validation.mimeType) {
 						invalidations.push({ path: objPath, message: validation.message, value: prettyId });
@@ -193,6 +192,6 @@ declare module 'mongoose' {
 		 */
 		ignore?: string[];
 
-		validations?: { path: string, mimeType: string, message: string, fileType: string }[]
+		validations?: Array<{ path: string, mimeType: string, message: string, fileType: string }>;
 	}
 }

@@ -18,28 +18,28 @@
  */
 
 import Application = require('koa');
-import mongoose, { Schema } from 'mongoose';
 import Router from 'koa-router';
+import mongoose, { Schema } from 'mongoose';
 
-import { state } from '../state';
 import { EndPoint } from '../common/api.endpoint';
+import { state } from '../state';
+import { Release } from './release';
+import { router as apiRouter } from './release.api.router';
+import { ReleaseModel, releaseSchema } from './release.schema';
 import { ReleaseSerializer } from './release.serializer';
+import { router as storageRouter } from './release.storage.router';
 import { TableBlock } from './release.tableblock';
 import { tableBlockSchema } from './release.tableblock.schema';
-import { Release } from './release';
-import { ReleaseModel, releaseSchema } from './release.schema';
-import { ReleaseVersionModel, releaseVersionSchema } from './version/release.version.schema';
-import { ReleaseVersionFileModel, releaseVersionFileSchema } from './version/file/release.version.file.schema';
-import { ReleaseVersion } from './version/release.version';
 import { ReleaseVersionFile } from './version/file/release.version.file';
-import { router as apiRouter } from './release.api.router';
-import { router as storageRouter } from './release.storage.router';
-import { ReleaseVersionSerializer } from './version/release.version.serializer';
+import { ReleaseVersionFileModel, releaseVersionFileSchema } from './version/file/release.version.file.schema';
 import { ReleaseVersionFileSerializer } from './version/file/release.version.file.serializer';
+import { ReleaseVersion } from './version/release.version';
+import { ReleaseVersionModel, releaseVersionSchema } from './version/release.version.schema';
+import { ReleaseVersionSerializer } from './version/release.version.serializer';
 
 export class ReleaseEndPoint extends EndPoint {
 
-	readonly name: string = 'Release API';
+	public readonly name: string = 'Release API';
 
 	private readonly _router: Router;
 	private readonly _releaseSchema: Schema;
@@ -54,11 +54,11 @@ export class ReleaseEndPoint extends EndPoint {
 		this._releaseVersionFileSchema = releaseVersionFileSchema;
 	}
 
-	getRouter(): Router {
+	public getRouter(): Router {
 		return this._router;
 	}
 
-	async register(app: Application): Promise<void> {
+	public async register(app: Application): Promise<void> {
 		state.models.Release = mongoose.model<Release>('Release', this._releaseSchema) as ReleaseModel;
 		state.models.ReleaseVersion = mongoose.model<ReleaseVersion, ReleaseVersionModel>('ReleaseVersion', this._releaseVersionSchema);
 		state.models.ReleaseVersionFile = mongoose.model<ReleaseVersionFile, ReleaseVersionFileModel>('ReleaseVersionFile', this._releaseVersionFileSchema);
@@ -71,7 +71,7 @@ export class ReleaseEndPoint extends EndPoint {
 
 export class ReleaseStorageEndPoint extends EndPoint {
 
-	readonly name: string = 'Release storage API';
+	public readonly name: string = 'Release storage API';
 
 	private readonly _router: Router;
 
@@ -80,11 +80,11 @@ export class ReleaseStorageEndPoint extends EndPoint {
 		this._router = storageRouter;
 	}
 
-	getRouter(): Router {
+	public getRouter(): Router {
 		return this._router;
 	}
 
-	async register(app: Application): Promise<void> {
+	public async register(app: Application): Promise<void> {
 		// nothing to register
 	}
 }

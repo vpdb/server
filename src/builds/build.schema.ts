@@ -17,10 +17,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { isDate, isString } from 'lodash';
 import { Schema } from 'mongoose';
-import { isString, isDate } from 'lodash';
-import validator from 'validator';
 import uniqueValidator from 'mongoose-unique-validator';
+import validator from 'validator';
 
 export const platforms = ['vp'];
 export const types = ['release', 'nightly', 'experimental'];
@@ -33,10 +33,10 @@ const buildFields = {
 	platform: {
 		type: String,
 		required: 'The platform must be provided.',
-		'enum': {
+		enum: {
 			values: platforms,
-			message: 'Invalid platform. Valid platforms are: [ "' + platforms.join('", "') + '" ].'
-		}
+			message: 'Invalid platform. Valid platforms are: [ "' + platforms.join('", "') + '" ].',
+		},
 	},
 	label: { type: String, required: 'A label must be provided.', unique: true },
 	major_version: { type: String, required: 'Major version must be provided.' },
@@ -47,16 +47,16 @@ const buildFields = {
 	type: {
 		type: String,
 		required: 'The type of the build must be provided.',
-		'enum': { values: types, message: 'Invalid type. Valid types are: [ "' + types.join('", "') + '" ].' }
+		enum: { values: types, message: 'Invalid type. Valid types are: [ "' + types.join('", "') + '" ].' },
 	},
 	is_range: {
 		type: Boolean,
 		required: 'You need to provide if the build is a range of versions or one specific version.',
-		default: false
+		default: false,
 	},
 	is_active: { type: Boolean, required: true, default: false },
 	created_at: { type: Date, required: true },
-	_created_by: { type: Schema.Types.ObjectId, ref: 'User', required: true }
+	_created_by: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 };
 export const buildSchema = new Schema(buildFields, { toObject: { virtuals: true, versionKey: false } });
 
@@ -64,7 +64,6 @@ export const buildSchema = new Schema(buildFields, { toObject: { virtuals: true,
 // PLUGINS
 //-----------------------------------------------------------------------------
 buildSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
-
 
 //-----------------------------------------------------------------------------
 // VALIDATIONS

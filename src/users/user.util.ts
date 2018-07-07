@@ -17,21 +17,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import randomstring from 'randomstring';
 import { assign, keys, sum, uniq, values } from 'lodash';
+import randomstring from 'randomstring';
 
-import { state } from '../state';
-import { Context } from '../common/typings/context';
+import { Backglass } from '../backglasses/backglass';
 import { acl } from '../common/acl';
-import { logger } from '../common/logger';
-import { config } from '../common/settings';
-import { mailer } from '../common/mailer';
 import { ApiError } from '../common/api.error';
+import { logger } from '../common/logger';
+import { mailer } from '../common/mailer';
+import { config } from '../common/settings';
+import { Context } from '../common/typings/context';
+import { Rating } from '../ratings/rating';
 import { Release } from '../releases/release';
 import { ReleaseVersionFile } from '../releases/version/file/release.version.file';
-import { Backglass } from '../backglasses/backglass';
-import { Rating } from '../ratings/rating';
 import { Star } from '../stars/star';
+import { state } from '../state';
 import { ContentAuthor } from './content.author';
 import { User } from './user';
 
@@ -42,7 +42,7 @@ export class UserUtil {
 		let user = new state.models.User(assign(userObj, {
 			created_at: new Date(),
 			roles: ['member'],
-			_plan: config.vpdb.quota.defaultPlan
+			_plan: config.vpdb.quota.defaultPlan,
 		}));
 
 		if (confirmUserEmail) {
@@ -50,7 +50,7 @@ export class UserUtil {
 				code: 'pending_registration',
 				token: randomstring.generate(16),
 				expires_at: new Date(new Date().getTime() + 86400000), // 1d valid
-				value: userObj.email
+				value: userObj.email,
 			};
 		} else {
 			user.email_status = { code: 'confirmed' };
@@ -68,7 +68,7 @@ export class UserUtil {
 
 		logger.info('[UserUtil.createUser] %s <%s> successfully created with ID "%s" and plan "%s".', count ? 'User' : 'Root user', user.email, user.id, user._plan);
 		return user;
-	};
+	}
 
 	/**
 	 * Tries to merge a bunch of users based on request parameters.
@@ -85,7 +85,7 @@ export class UserUtil {
 				const otherUsers = mergeUsers.filter(u => u.id !== ctx.query.merged_user_id);
 				logger.info('[UserUtil.tryMergeUsers] Merging users [ %s ] into %s as per query parameter.', otherUsers.map(u => u.id).join(', '), keepUser.id);
 				// merge users
-				for (let otherUser of otherUsers) {
+				for (const otherUser of otherUsers) {
 					await UserUtil.mergeUsers(ctx, keepUser, otherUser, explanation);
 				}
 				return keepUser;
@@ -95,10 +95,10 @@ export class UserUtil {
 		} else {
 			// otherwise, fail and query merge resolution
 			throw new ApiError('Conflicted users, must merge.')
-				.body({ explanation: explanation, users: mergeUsers.map(u => state.serializers.User.detailed(ctx, u)) })
+				.body({ explanation, users: mergeUsers.map(u => state.serializers.User.detailed(ctx, u)) })
 				.status(409);
 		}
-	};
+	}
 
 	/**
 	 * Merges one user into another.
@@ -108,14 +108,14 @@ export class UserUtil {
 	 * @param {string} explanation Explanation to put into mail, if null no mail is sent.
 	 * @return {Promise<User>} Merged user
 	 */
-	public static async mergeUsers(ctx: Context, keepUser: User, mergeUser: User, explanation:string): Promise<User> {
+	public static async mergeUsers(ctx: Context, keepUser: User, mergeUser: User, explanation: string): Promise<User> {
 
 		logger.info('[UserUtil.mergeUsers] Merging %s into %s...', mergeUser.id, keepUser.id);
 		if (keepUser.id === mergeUser.id) {
 			return Promise.reject('Cannot merge user ' + keepUser.id + ' into itself!');
 		}
 		let num = 0;
-		let queries:Array<any>;
+		let queries: any[];
 
 		// 1. update references
 		await state.models.Backglass.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
@@ -134,7 +134,6 @@ export class UserUtil {
 		await state.models.Tag.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
 		await state.models.Token.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
 
-
 		// const strs = ['%s backglass(es)', '%s build(s)', '%s comment(s)', '%s file(s)', '%s game(s)', '%s game request(s)',
 		// 	'%s log event(s) as actor', '%s log events as ref', '%s user log(s) as user', '%s user log(s) as actor',
 		// 	'%s media', '%s release(s)', '%s rom(s)', '%s tag(s)', '%s token(s).'];
@@ -143,7 +142,7 @@ export class UserUtil {
 		// 1.1 update release versions
 		const releasesByAuthor = await state.models.Release.find({ 'authors._user': mergeUser._id.toString() }).exec();
 		await Promise.all(releasesByAuthor.map((release: any) => {
-			release.authors.forEach((author:ContentAuthor) => {
+			release.authors.forEach((author: ContentAuthor) => {
 				if (mergeUser._id.equals(author._user)) {
 					author._user = keepUser._id;
 					num++;
@@ -188,7 +187,7 @@ export class UserUtil {
 		num = 0;
 
 		// 1.4 backglass moderation
-		await Promise.all(backglasses.map((backglass:Backglass) => {
+		await Promise.all(backglasses.map((backglass: Backglass) => {
 			backglass.moderation.history.forEach(historyItem => {
 				if (mergeUser._id.equals(historyItem._created_by)) {
 					historyItem._created_by = keepUser._id;
@@ -197,7 +196,6 @@ export class UserUtil {
 			});
 			return backglass.save();
 		}));
-
 
 		logger.info('[UserUtil.mergeUsers] Merged %s item(s) in backglass moderation history', num);
 		num = 0;
@@ -221,9 +219,9 @@ export class UserUtil {
 		Array.from(ratingMap.values()).filter(ratings => ratings.length > 1).forEach(dupeRatings => {
 			// update first
 			const first = dupeRatings.shift();
-			queries.push(first.update({ value: Math.round(sum(dupeRatings.map((r:Rating) => r.value)) / dupeRatings.length) }));
+			queries.push(first.update({ value: Math.round(sum(dupeRatings.map((r: Rating) => r.value)) / dupeRatings.length) }));
 			// delete the rest
-			dupeRatings.forEach((r:Rating) => queries.push(r.remove()));
+			dupeRatings.forEach((r: Rating) => queries.push(r.remove()));
 		});
 		await Promise.all(queries);
 
@@ -246,10 +244,9 @@ export class UserUtil {
 			// keep first
 			dupeStars.shift();
 			// delete the rest
-			dupeStars.forEach((s:Star) => queries.push(s.remove()));
+			dupeStars.forEach((s: Star) => queries.push(s.remove()));
 		});
 		await Promise.all(queries);
-
 
 		// 2. merge data
 		config.vpdb.quota.plans.forEach(plan => { // we assume that in the settings, the plans are sorted by increasing value
@@ -272,7 +269,6 @@ export class UserUtil {
 		keepUser.counter.downloads = keepUser.counter.downloads + mergeUser.counter.downloads;
 		keepUser.counter.stars = keepUser.counter.stars + mergeUser.counter.stars;
 		keepUser.validated_emails = uniq([...keepUser.validated_emails, ...mergeUser.validated_emails]);
-
 
 		if (mergeUser.providers) {
 			if (!keepUser.providers) {
@@ -309,11 +305,11 @@ export class UserUtil {
 	 * @param {User} user
 	 * @returns {Promise<{permissions: string[]}>}
 	 */
-	static async getACLs(user:User): Promise<{ permissions: string[]}> {
+	public static async getACLs(user: User): Promise<{ permissions: string[]}> {
 		const roles = await acl.userRoles(user.id);
 		const resources = await acl.whatResources(roles);
 		const permissions = await acl.allowedPermissions(user.id, keys(resources));
-		return { permissions: permissions };
+		return { permissions };
 	}
 
 	/**
@@ -321,7 +317,7 @@ export class UserUtil {
 	 * @param {string} str Input with diacritics
 	 * @returns {string}
 	 */
-	 public static removeDiacritics = function(str:string) {
+	public static removeDiacritics = function(str: string) {
 		const diacriticsRemovalMap = [
 			{ base: 'A', letters: /[\u0041\u24B6\uFF21\u00C0\u00C1\u00C2\u1EA6\u1EA4\u1EAA\u1EA8\u00C3\u0100\u0102\u1EB0\u1EAE\u1EB4\u1EB2\u0226\u01E0\u00C4\u01DE\u1EA2\u00C5\u01FA\u01CD\u0200\u0202\u1EA0\u1EAC\u1EB6\u1E00\u0104\u023A\u2C6F]/g},
 			{ base: 'AA', letters: /[\uA732]/g},
@@ -406,7 +402,7 @@ export class UserUtil {
 			{ base: 'w', letters: /[\u0077\u24E6\uFF57\u1E81\u1E83\u0175\u1E87\u1E85\u1E98\u1E89\u2C73]/g},
 			{ base: 'x', letters: /[\u0078\u24E7\uFF58\u1E8B\u1E8D]/g},
 			{ base: 'y', letters: /[\u0079\u24E8\uFF59\u1EF3\u00FD\u0177\u1EF9\u0233\u1E8F\u00FF\u1EF7\u1E99\u1EF5\u01B4\u024F\u1EFF]/g},
-			{ base: 'z', letters: /[\u007A\u24E9\uFF5A\u017A\u1E91\u017C\u017E\u1E93\u1E95\u01B6\u0225\u0240\u2C6C\uA763]/g}
+			{ base: 'z', letters: /[\u007A\u24E9\uFF5A\u017A\u1E91\u017C\u017E\u1E93\u1E95\u01B6\u0225\u0240\u2C6C\uA763]/g},
 		];
 		for (let i = 0; i < diacriticsRemovalMap.length; i++) {
 			str = str.replace(diacriticsRemovalMap[i].letters, diacriticsRemovalMap[i].base);

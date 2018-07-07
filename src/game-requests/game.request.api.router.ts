@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { GameRequestApi } from './game.request.api';
 import { Scope } from '../common/scope';
+import { GameRequestApi } from './game.request.api';
 
 const api = new GameRequestApi();
 export const router = api.apiRouter();

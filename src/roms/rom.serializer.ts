@@ -17,13 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Serializer, SerializerOptions } from '../common/serializer';
-import { Rom } from './rom';
-import { Context } from '../common/typings/context';
 import { pick } from 'lodash';
-import { state } from '../state';
+import { Serializer, SerializerOptions } from '../common/serializer';
+import { Context } from '../common/typings/context';
 import { File } from '../files/file';
+import { state } from '../state';
 import { User } from '../users/user';
+import { Rom } from './rom';
 
 export class RomSerializer extends Serializer<Rom> {
 
@@ -33,7 +33,7 @@ export class RomSerializer extends Serializer<Rom> {
 
 	protected _simple(ctx: Context, doc: Rom, opts: SerializerOptions): Rom {
 		const rom = pick(doc, ['id', 'version', 'notes', 'languages']) as Rom;
-		rom.rom_files = doc.rom_files.map((f:any) => pick(f, ['filename', 'bytes', 'crc', 'modified_at']));
+		rom.rom_files = doc.rom_files.map((f: any) => pick(f, ['filename', 'bytes', 'crc', 'modified_at']));
 
 		// file
 		if (this._populated(doc, '_file')) {

@@ -19,11 +19,11 @@
 
 import { compact, includes, isArray, pick } from 'lodash';
 
-import { state } from '../../state';
 import { Serializer, SerializerOptions } from '../../common/serializer';
 import { Context } from '../../common/typings/context';
-import { ReleaseVersion } from './release.version';
+import { state } from '../../state';
 import { flavors } from '../release.flavors';
+import { ReleaseVersion } from './release.version';
 
 export class ReleaseVersionSerializer extends Serializer<ReleaseVersion> {
 
@@ -74,7 +74,7 @@ export class ReleaseVersionSerializer extends Serializer<ReleaseVersion> {
 						continue;
 					}
 					flavorValues = [];
-					for (let key in flavors.values) {
+					for (const key in flavors.values) {
 						//noinspection JSUnfilteredForInLoop
 						flavorValues.push(versions[i].files[j].flavor[key]);
 					}

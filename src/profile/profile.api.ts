@@ -20,18 +20,18 @@
 import { assign, extend, pick, uniq, values } from 'lodash';
 import randomstring from 'randomstring';
 
-import { state } from '../state';
-import { Api } from '../common/api';
 import { acl } from '../common/acl';
-import { Context } from '../common/typings/context';
-import { quota } from '../common/quota';
-import { logger } from '../common/logger';
-import { LogUserUtil } from '../log-user/log.user.util';
+import { Api } from '../common/api';
 import { ApiError, ApiValidationError } from '../common/api.error';
-import { User } from '../users/user';
+import { logger } from '../common/logger';
 import { mailer } from '../common/mailer';
-import { config } from '../common/settings';
+import { quota } from '../common/quota';
 import { realtime } from '../common/realtime';
+import { config } from '../common/settings';
+import { Context } from '../common/typings/context';
+import { LogUserUtil } from '../log-user/log.user.util';
+import { state } from '../state';
+import { User } from '../users/user';
 import { UserUtil } from '../users/user.util';
 
 export class ProfileApi extends Api {
@@ -60,9 +60,9 @@ export class ProfileApi extends Api {
 		const updatableFields = ['name', 'location', 'email', 'preferences', 'channel_config'];
 
 		// api test behavior
-		let testMode = process.env.NODE_ENV === 'test';
-		let currentUser = ctx.state.user;
-		let errors:ApiValidationError[] = [];
+		const testMode = process.env.NODE_ENV === 'test';
+		const currentUser = ctx.state.user;
+		const errors: ApiValidationError[] = [];
 
 		const updatedUser = await state.models.User.findById(currentUser._id).exec();
 		if (!updatedUser) {
@@ -73,7 +73,7 @@ export class ProfileApi extends Api {
 		if (ctx.request.body.name) {
 			const dupeNameUser = await state.models.User.findOne({
 				name: ctx.request.body.name,
-				id: { $ne: currentUser.id }
+				id: { $ne: currentUser.id },
 			}).exec();
 			if (dupeNameUser) {
 				throw new ApiError('Validation failed').validationError('name', 'User with this name already exists', ctx.request.body.name);
@@ -90,7 +90,7 @@ export class ProfileApi extends Api {
 			if (!ctx.request.body.current_password) {
 				errors.push({
 					message: 'You must provide your current password.',
-					path: 'current_password'
+					path: 'current_password',
 				});
 
 			} else {
@@ -123,7 +123,7 @@ export class ProfileApi extends Api {
 				message: 'Cannot change username for already local account.',
 				path: 'username',
 				value: ctx.request.body.username,
-				kind: 'read_only'
+				kind: 'read_only',
 			});
 		}
 
@@ -131,7 +131,7 @@ export class ProfileApi extends Api {
 		if (ctx.request.body.channel_config && !realtime.isUserEnabled(updatedUser)) {
 			errors.push({
 				message: 'Realtime features are not enabled for this account.',
-				path: 'channel_config'
+				path: 'channel_config',
 			});
 		}
 
@@ -163,7 +163,7 @@ export class ProfileApi extends Api {
 				} else {
 					throw new ApiError().validationErrors([{
 						message: 'You cannot update an email address that is still pending confirmation. If your previous change was false, reset the email first by providing the original value.',
-						path: 'email'
+						path: 'email',
 					}]).status(422);
 				}
 
@@ -177,12 +177,12 @@ export class ProfileApi extends Api {
 						code: 'pending_update',
 						token: randomstring.generate(16),
 						expires_at: new Date(new Date().getTime() + 86400000), // 1d valid
-						value: updatedUser.email
+						value: updatedUser.email,
 					};
 					updatedUser.email = currentUser.email;
 					await LogUserUtil.success(ctx, updatedUser, 'update_email_request', {
-						'old': { email: currentUser.email },
-						'new': { email: updatedUser.email_status.value }
+						old: { email: currentUser.email },
+						new: { email: updatedUser.email_status.value },
 					});
 					await mailer.emailUpdateConfirmation(updatedUser);
 				}
@@ -199,7 +199,7 @@ export class ProfileApi extends Api {
 				logger.warn('[ProfileApi.update] Canceling email confirmation with token "%s" for user <%s> -> <%s> (%s).', currentUser.email_status.token, currentUser.email, currentUser.email_status.value, currentUser.id);
 				await LogUserUtil.success(ctx, updatedUser, 'cancel_email_update', {
 					email: currentUser.email,
-					email_canceled: currentUser.email_status.value
+					email_canceled: currentUser.email_status.value,
 				});
 				updatedUser.email_status = { code: 'confirmed' };
 			}
@@ -261,14 +261,14 @@ export class ProfileApi extends Api {
 			$or: [
 				{ email: emailToConfirm },
 				{ emails: emailToConfirm },
-				{ validated_emails: emailToConfirm }
+				{ validated_emails: emailToConfirm },
 			],
-			id: { $ne: user.id }
+			id: { $ne: user.id },
 		}).exec();
 
 		let delCounter = 0;
 		const mergeUsers: User[] = [];
-		for (let otherUser of otherUsers) {
+		for (const otherUser of otherUsers) {
 			// "pending_registration" are the only accounts where "email" is not confirmed ("pending_update" doesn't update "email").
 			// these can be deleted because they don't have anything merge-worthy (given it's an email confirmation, we already have local credentials).
 			if (otherUser.email_status && otherUser.email_status.code === 'pending_registration') {
@@ -293,7 +293,7 @@ export class ProfileApi extends Api {
 			user = await UserUtil.tryMergeUsers(ctx, [user, ...mergeUsers], explanation);
 		}
 
-		let logEvent:string, successMsg:string;
+		let logEvent: string, successMsg: string;
 		const currentCode = user.email_status.code;
 		if (currentCode === 'pending_registration') {
 			user.is_active = true;
@@ -323,10 +323,9 @@ export class ProfileApi extends Api {
 			message: successMsg,
 			previous_code: currentCode,
 			deleted_users: delCounter,
-			merged_users: mergeUsers.length
+			merged_users: mergeUsers.length,
 		});
 	}
-
 
 	/**
 	 * Authentication route for third party strategies.
@@ -342,7 +341,6 @@ export class ProfileApi extends Api {
 	// 	// use passport with a custom callback: http://passportjs.org/guide/authenticate/
 	// 	passport.authenticate(ctx.params.strategy, passportCallback(req, res))(req, res, next);
 	// }
-
 
 	/**
 	 * Skips passport authentication and processes the user profile directly.
@@ -425,6 +423,6 @@ export class ProfileApi extends Api {
 		const roles = await acl.userRoles(user.id);
 		const resources = await acl.whatResources(roles);
 		const permissions = await acl.allowedPermissions(user.id, Object.keys(resources));
-		return { permissions: permissions };
+		return { permissions };
 	}
 }

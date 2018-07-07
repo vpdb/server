@@ -18,8 +18,8 @@
  */
 
 import { Context as KoaContext } from 'koa';
-import { User } from '../../users/user';
 import { Token } from '../../tokens/token';
+import { User } from '../../users/user';
 import { ApiError } from '../api.error';
 
 export interface Context extends KoaContext {
@@ -55,5 +55,5 @@ export interface Context extends KoaContext {
 		 * Set when authentication failed.
 		 */
 		authError: ApiError;
-	}
+	};
 }

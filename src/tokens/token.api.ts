@@ -19,16 +19,16 @@
 
 import { extend, includes, pick } from 'lodash';
 
-import { state } from '../state';
-import { Api } from '../common/api';
 import { acl } from '../common/acl';
+import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
-import { Context } from '../common/typings/context';
-import { config } from '../common/settings';
 import { logger } from '../common/logger';
 import { Scope, scope } from '../common/scope';
-import { Token } from './token';
+import { config } from '../common/settings';
+import { Context } from '../common/typings/context';
+import { state } from '../state';
 import { User } from '../users/user';
+import { Token } from './token';
 
 const jwt = require('jwt-simple');
 
@@ -93,7 +93,7 @@ export class TokenApi extends Api {
 				is_active: true,
 				created_at: new Date(),
 				expires_at: new Date(new Date().getTime() + 315360000000), // 10 years
-				_created_by: ctx.state.user._id
+				_created_by: ctx.state.user._id,
 			}));
 
 		} else {
@@ -102,7 +102,7 @@ export class TokenApi extends Api {
 				is_active: true,
 				created_at: new Date(),
 				expires_at: new Date(new Date().getTime() + 31536000000), // 1 year
-				_created_by: ctx.state.user._id
+				_created_by: ctx.state.user._id,
 			}));
 		}
 		await newToken.save();
@@ -125,7 +125,7 @@ export class TokenApi extends Api {
 		// app token?
 		if (/[0-9a-f]{32,}/i.test(token)) {
 
-			const appToken = await state.models.Token.findOne({ token: token }).populate('_created_by').exec();
+			const appToken = await state.models.Token.findOne({ token }).populate('_created_by').exec();
 
 			// fail if not found
 			if (!appToken) {
@@ -179,7 +179,7 @@ export class TokenApi extends Api {
 	 * @see GET /v1/tokens
 	 * @param {Context} ctx Koa context
 	 */
-	public async list(ctx:Context) {
+	public async list(ctx: Context) {
 
 		const query = { _created_by: ctx.state.user._id, type: 'personal' };
 		const allowedTypes = [ 'personal', 'provider' ];
@@ -218,7 +218,7 @@ export class TokenApi extends Api {
 	public async update(ctx: Context) {
 		const updatableFields = ['label', 'is_active', 'scopes'];
 		if (process.env.NODE_ENV === 'test') {
-			updatableFields.push('expires_at')
+			updatableFields.push('expires_at');
 		}
 		const token = await state.models.Token.findOne({ id: ctx.params.id, _created_by: ctx.state.user._id }).exec();
 		if (!token) {

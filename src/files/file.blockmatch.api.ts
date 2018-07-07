@@ -18,16 +18,16 @@
  */
 import { pick, sortBy, sumBy } from 'lodash';
 
-import { state } from '../state';
-import { Api } from '../common/api';
-import { Context } from '../common/typings/context';
-import { ApiError } from '../common/api.error';
-import { TableBlock, TableBlockBase, TableBlockMatch, TableBlockMatchResult } from '../releases/release.tableblock';
-import { File } from './file';
-import { Release } from '../releases/release';
-import { ReleaseVersion } from '../releases/version/release.version';
-import { ReleaseVersionFile } from '../releases/version/file/release.version.file';
 import { Build } from '../builds/build';
+import { Api } from '../common/api';
+import { ApiError } from '../common/api.error';
+import { Context } from '../common/typings/context';
+import { Release } from '../releases/release';
+import { TableBlock, TableBlockBase, TableBlockMatch, TableBlockMatchResult } from '../releases/release.tableblock';
+import { ReleaseVersionFile } from '../releases/version/file/release.version.file';
+import { ReleaseVersion } from '../releases/version/release.version';
+import { state } from '../state';
+import { File } from './file';
 
 export class FileBlockmatchApi extends Api {
 
@@ -81,7 +81,7 @@ export class FileBlockmatchApi extends Api {
 		const matchedReleases = await state.models.Release.find({ 'versions.files._file': { $in: Array.from(matches.keys()) } }).populate(rlsFields.join(' ')).exec();
 
 		// map <file._id>: <release>
-		let releases = new Map<string, Release>();
+		const releases = new Map<string, Release>();
 		matchedReleases.forEach(release => {
 			release.versions.forEach(version => {
 				version.files.forEach(file => {
@@ -91,13 +91,13 @@ export class FileBlockmatchApi extends Api {
 		});
 		const totalBytes = sumBy(blocks, b => b.bytes);
 		result.matches = [];
-		for (let [key, matchedBlocks] of matches) {
+		for (const [key, matchedBlocks] of matches) {
 			const matchedBytes = sumBy(matchedBlocks, b => b.bytes);
 			const match = this.populateBlockmatch<TableBlockMatch>(ctx, releases.get(key), key, {
 				matchedCount: matchedBlocks.length,
-				matchedBytes: matchedBytes,
+				matchedBytes,
 				countPercentage: matchedBlocks.length / blocks.length * 100,
-				bytesPercentage: matchedBytes / totalBytes * 100
+				bytesPercentage: matchedBytes / totalBytes * 100,
 			});
 			result.matches.push(match);
 		}
@@ -108,7 +108,6 @@ export class FileBlockmatchApi extends Api {
 		result.matches = sortBy(result.matches, m => -(m.countPercentage + m.bytesPercentage));
 		return this.success(ctx, result);
 	}
-
 
 	/**
 	 * Searches a file with a given ID within a release and updates
@@ -122,14 +121,14 @@ export class FileBlockmatchApi extends Api {
 		if (!release) {
 			return base;
 		}
-		let rls = state.serializers.Release.simple(ctx, release);
+		const rls = state.serializers.Release.simple(ctx, release);
 		base.release = pick(rls, ['id', 'name', 'created_at', 'authors']) as Release;
 		base.game = rls.game;
 		release.versions.forEach(version => {
 			version.files.forEach(versionFile => {
 				if ((versionFile._file as File)._id.toString() === fileId) {
 					base.version = pick(version.toObject(), ['version', 'released_at']) as ReleaseVersion;
-					let f = versionFile.toObject();
+					const f = versionFile.toObject();
 					base.file = pick(f, ['released_at', 'flavor']) as ReleaseVersionFile;
 					base.file.compatibility = f._compatibility.map((c: Build) => pick(c, ['id', 'label']));
 					base.file.file = state.serializers.File.simple(ctx, versionFile._file as File);

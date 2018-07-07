@@ -18,13 +18,13 @@
  */
 
 import chalk from 'chalk';
+import { resolve } from 'path';
+import { quota } from '../common/quota';
+import { config, settings } from '../common/settings';
 import { File, FilePathOptions } from './file';
 import { mimeTypes } from './file.mimetypes';
-import { resolve } from 'path';
-import { FileVariation } from './file.variations';
-import { config, settings } from '../common/settings';
-import { quota } from '../common/quota';
 import { fileTypes } from './file.types';
+import { FileVariation } from './file.variations';
 
 /**
  * Contains the Game's instance methods so they can also be accessed
@@ -74,7 +74,7 @@ export class FileDocument {
 	 * @return {string}
 	 */
 	public static getUrl(file: File, variation: FileVariation = null): string {
-		let storageUri = FileDocument.isPublic(file, variation) ? settings.storagePublicUri.bind(settings) : settings.storageProtectedUri.bind(settings);
+		const storageUri = FileDocument.isPublic(file, variation) ? settings.storagePublicUri.bind(settings) : settings.storageProtectedUri.bind(settings);
 		return variation ?
 			storageUri('/files/' + variation.name + '/' + file.id + FileDocument.getExt(file, variation)) :
 			storageUri('/files/' + file.id + FileDocument.getExt(file, variation));
@@ -189,8 +189,8 @@ export class FileDocument {
 		if (!file.variations) {
 			return [];
 		}
-		for (let name of Object.keys(file.variations)) {
-			variations.push({ name: name, mimeType: file.variations[name].mime_type });
+		for (const name of Object.keys(file.variations)) {
+			variations.push({ name, mimeType: file.variations[name].mime_type });
 		}
 		return variations;
 	}

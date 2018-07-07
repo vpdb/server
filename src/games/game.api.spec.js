@@ -383,7 +383,7 @@ describe('The VPDB `game` API', function() {
 		});
 	});
 
-	describe('when retrieving a game', function() {
+	describe('when viewing a game', function() {
 
 		const user = 'moderator';
 		let game;
@@ -408,6 +408,7 @@ describe('The VPDB `game` API', function() {
 				.get('/api/v1/games/' + game.id)
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 200);
+					hlp.dump(res);
 					expect(res.body).to.be.an('object');
 					expect(res.body.title).to.be(game.title);
 					expect(res.body.manufacturer).to.be(game.manufacturer);
@@ -415,6 +416,7 @@ describe('The VPDB `game` API', function() {
 					expect(res.body.game_type).to.be(game.game_type);
 					expect(res.body.backglass).to.be.an('object');
 					expect(res.body.backglass.variations).to.be.an('object');
+					expect(res.body.backglass.variations.medium).to.be.an('object');
 					done();
 				});
 		});

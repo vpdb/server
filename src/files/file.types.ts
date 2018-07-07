@@ -50,7 +50,10 @@ class FileTypes {
 	private readonly logo:FileType<ImageFileVariation> = {
 		name: 'logo',
 		mimeTypes: ['image/png'],
-		variations: []
+		variations: [
+			{ name: 'medium',    width: 300, height: 600, mimeType: 'image/png' },
+			{ name: 'medium-2x', width: 600, height: 1200, mimeType: 'image/png' }
+		]
 	};
 
 	private readonly playfield:FileType<ImageFileVariation> = {

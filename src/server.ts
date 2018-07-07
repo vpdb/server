@@ -17,11 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { existsSync } from 'fs';
+import { uniq } from 'lodash';
 import Application from 'koa';
 import koaBodyParser from 'koa-bodyparser';
 import koaJson from 'koa-json';
-import koaStatic from 'koa-static';
-import { uniq } from 'lodash';
 
 import { EndPoint } from './common/api.endpoint';
 import { config, settings } from './common/settings'
@@ -32,6 +32,7 @@ import { koa404Handler } from './common/middleware/notfound.handler.middleware';
 import { logger } from './common/logger';
 import { apiCache } from './common/api.cache';
 import { koaRestHandler } from './common/middleware/rest.middleware';
+import { koaWebsiteHandler } from './common/middleware/website.middleware';
 
 const koaResponseTime = require('koa-response-time');
 const koaCors = require('@koa/cors');
@@ -52,9 +53,10 @@ export class Server {
 		this.app.use(koaJson({ pretty: false, param: 'pretty' }));
 		this.app.use(apiCache.middleware.bind(apiCache));
 
-		if (process.env.WEBAPP) { // host website at the same time, currently used for website CI
+		// host website at the same time, currently used for website CI
+		if (process.env.WEBAPP && existsSync(process.env.WEBAPP)) {
 			logger.warn('[Server] Statically hosting website at %s', process.env.WEBAPP);
-			this.app.use(koaStatic(process.env.WEBAPP));
+			this.app.use(koaWebsiteHandler(process.env.WEBAPP));
 		}
 	}
 

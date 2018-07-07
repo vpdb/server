@@ -408,7 +408,6 @@ describe('The VPDB `game` API', function() {
 				.get('/api/v1/games/' + game.id)
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 200);
-					hlp.dump(res);
 					expect(res.body).to.be.an('object');
 					expect(res.body.title).to.be(game.title);
 					expect(res.body.manufacturer).to.be(game.manufacturer);

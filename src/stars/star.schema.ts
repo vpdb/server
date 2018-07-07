@@ -18,7 +18,6 @@
  */
 import { Schema } from 'mongoose';
 
-
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
@@ -30,10 +29,10 @@ export const starFields = {
 		release: { type: Schema.Types.ObjectId, ref: 'Release', index: true, sparse: true },
 		user: { type: Schema.Types.ObjectId, ref: 'User', index: true, sparse: true },
 		medium: { type: Schema.Types.ObjectId, ref: 'Medium', index: true, sparse: true },
-		backglass: { type: Schema.Types.ObjectId, ref: 'Backglass', index: true, sparse: true }
+		backglass: { type: Schema.Types.ObjectId, ref: 'Backglass', index: true, sparse: true },
 	},
-	type: { type: String, 'enum': ['game', 'release', 'user', 'medium', 'backglass'], required: true, index: true },
-	created_at: { type: Date, required: true }
+	type: { type: String, enum: ['game', 'release', 'user', 'medium', 'backglass'], required: true, index: true },
+	created_at: { type: Date, required: true },
 };
 
 export const starSchema = new Schema(starFields, { toObject: { virtuals: true, versionKey: false } });

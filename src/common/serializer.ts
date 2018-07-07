@@ -17,13 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { assign, defaultsDeep, get, isArray, pick } from 'lodash';
 import { Document, ModeratedDocument, Types } from 'mongoose';
-import { get, isArray, defaultsDeep, assign, pick } from 'lodash';
 
-import { state } from '../state';
-import { Context } from './typings/context';
 import { File } from '../files/file';
 import { ReleaseVersionFile } from '../releases/version/file/release.version.file';
+import { state } from '../state';
+import { Context } from './typings/context';
 import { Thumb } from './typings/serializers';
 
 export abstract class Serializer<T extends Document | ModeratedDocument> {
@@ -42,7 +42,7 @@ export abstract class Serializer<T extends Document | ModeratedDocument> {
 	 * @param {SerializerOptions} [opts] Additional options for serialization
 	 * @return Promise<T> Serialized object
 	 */
-	reduced(ctx: Context, doc: T, opts?: SerializerOptions): T {
+	public reduced(ctx: Context, doc: T, opts?: SerializerOptions): T {
 		return this.serialize(this._reduced.bind(this), ctx, doc, opts);
 	}
 
@@ -54,7 +54,7 @@ export abstract class Serializer<T extends Document | ModeratedDocument> {
 	 * @param {SerializerOptions} [opts] Additional options for serialization
 	 * @return Promise<T> Serialized object
 	 */
-	simple(ctx: Context, doc: T, opts?: SerializerOptions): T {
+	public simple(ctx: Context, doc: T, opts?: SerializerOptions): T {
 		return this.serialize(this._simple.bind(this), ctx, doc, opts);
 	}
 
@@ -66,7 +66,7 @@ export abstract class Serializer<T extends Document | ModeratedDocument> {
 	 * @param {SerializerOptions} [opts] Additional options for serialization
 	 * @return Promise<T> Serialized object
 	 */
-	detailed(ctx: Context, doc: T, opts?: SerializerOptions): T {
+	public detailed(ctx: Context, doc: T, opts?: SerializerOptions): T {
 		return this.serialize(this._detailed.bind(this), ctx, doc, opts);
 	}
 
@@ -118,7 +118,7 @@ export abstract class Serializer<T extends Document | ModeratedDocument> {
 		if (isArray(obj) && obj.length > 0) {
 			obj = obj[0];
 		}
-		return !(obj instanceof Types.ObjectId)
+		return !(obj instanceof Types.ObjectId);
 	}
 
 	protected _defaultOpts(opts: SerializerOptions): SerializerOptions {
@@ -130,12 +130,12 @@ export abstract class Serializer<T extends Document | ModeratedDocument> {
 			thumbFlavor: null,
 			thumbFormat: null,
 			fullThumbData: false,
-			thumbPerFile: false
+			thumbPerFile: false,
 		});
 	}
 
-	protected sortByDate<T>(attr: string):(a:T, b:T) => number {
-		return (a:T, b:T) => {
+	protected sortByDate<T>(attr: string): (a: T, b: T) => number {
+		return (a: T, b: T) => {
 			const dateA = new Date((a as any)[attr]).getTime();
 			const dateB = new Date((b as any)[attr]).getTime();
 			if (dateA < dateB) {
@@ -178,7 +178,7 @@ export abstract class Serializer<T extends Document | ModeratedDocument> {
 		if (opts.thumbFormat === 'original') {
 			return assign(pick(playfieldImage, thumbFields), {
 				width: playfieldImage.metadata.size.width,
-				height: playfieldImage.metadata.size.height
+				height: playfieldImage.metadata.size.height,
 			}) as Thumb;
 
 		} else if (playfieldImage.variations[opts.thumbFormat]) {
@@ -212,5 +212,5 @@ export interface SerializerOptions {
 	 * after starring.
 	 */
 	starredReleaseIds?: string[];
-	fields?:string[];
+	fields?: string[];
 }

@@ -19,14 +19,14 @@
 
 /* istanbul ignore file */
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
-import { parse, stringify } from 'querystring'
+import { parse, stringify } from 'querystring';
 import randomString from 'randomstring';
 
-import { logger } from '../../common/logger';
-import { Context } from '../../common/typings/context';
 import { ApiError } from '../../common/api.error';
-import { OAuthProfile } from '../authentication.api';
+import { logger } from '../../common/logger';
 import { VpdbIpsConfig } from '../../common/typings/config';
+import { Context } from '../../common/typings/context';
+import { OAuthProfile } from '../authentication.api';
 import { Strategy } from './strategy';
 
 /**
@@ -71,7 +71,7 @@ export class IpsStrategy extends Strategy {
 			client_id: this.config.clientID,
 			redirect_uri: this.redirectUri,
 			scope: 'user:email',
-			state: state
+			state,
 		});
 	}
 
@@ -90,9 +90,9 @@ export class IpsStrategy extends Strategy {
 		let res = await this.client.post(path, {
 			client_id: this.config.clientID,
 			client_secret: this.config.clientSecret,
-			code: code,
+			code,
 			redirect_uri: this.redirectUri,
-			state: state
+			state,
 		}) as AxiosResponse;
 
 		// handle errors
@@ -115,7 +115,7 @@ export class IpsStrategy extends Strategy {
 
 		// looking good, get profile.
 		const token = body.access_token;
-		res = await this.client.get(path, { headers: { 'Authorization': `Bearer ${token}` } });
+		res = await this.client.get(path, { headers: { Authorization: `Bearer ${token}` } });
 		return res.data;
 	}
 
@@ -135,7 +135,7 @@ export class IpsStrategy extends Strategy {
 					username: profile.login,
 					displayName: profile.name,
 					photos: profile.avatar && profile.avatar.full && profile.avatar.full.height ? [{ value: profile.avatar.thumb.url }] : undefined,
-					_json: profile
+					_json: profile,
 				};
 
 			case 4:
@@ -146,7 +146,7 @@ export class IpsStrategy extends Strategy {
 					username: profile.username,
 					displayName: profile.displayName,
 					photos: profile.avatar && profile.avatar.full && profile.avatar.full.height ? [{ value: profile.avatar.thumb.url }] : undefined,
-					_json: profile
+					_json: profile,
 				};
 
 			case 4.3:
@@ -157,7 +157,7 @@ export class IpsStrategy extends Strategy {
 					username: profile.name,
 					displayName: profile.formattedName,
 					photos: profile.photoUrl ? [{ value: profile.photoUrl }] : undefined,
-					_json: profile
+					_json: profile,
 				};
 
 			default: throw new ApiError('Unsupported IPS version %s', this.config.version);

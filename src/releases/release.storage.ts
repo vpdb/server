@@ -17,27 +17,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import archiver, { Archiver } from 'archiver';
 import { createReadStream } from 'fs';
-import { basename, extname } from 'path';
 import { intersection, isArray, isUndefined, sortBy } from 'lodash';
 import { Types } from 'mongoose';
+import { basename, extname } from 'path';
 import unzip from 'unzip';
-import archiver, { Archiver } from 'archiver';
 
 import { Api } from '../common/api';
+import { ApiError } from '../common/api.error';
+import { logger } from '../common/logger';
+import { quota } from '../common/quota';
 import { Context } from '../common/typings/context';
+import { File } from '../files/file';
+import { fileTypes } from '../files/file.types';
+import { Game } from '../games/game';
+import { state } from '../state';
 import { User, UserPreferences } from '../users/user';
 import { Release } from './release';
-import { logger } from '../common/logger';
-import { File } from '../files/file';
 import { flavors } from './release.flavors';
-import { Game } from '../games/game';
-import { ReleaseVersion } from './version/release.version';
 import { ReleaseVersionFile } from './version/file/release.version.file';
-import { ApiError } from '../common/api.error';
-import { quota } from '../common/quota';
-import { state } from '../state';
-import { fileTypes } from '../files/file.types';
+import { ReleaseVersion } from './version/release.version';
 
 const Unrar = require('unrar');
 
@@ -87,7 +87,7 @@ export class ReleaseStorage extends Api {
 		archive.pipe(ctx.res);
 
 		// add tables to stream
-		let releaseFiles: string[] = [];
+		const releaseFiles: string[] = [];
 		for (const file of requestedFiles) {
 			let name = '';
 			let path = '';
@@ -162,8 +162,8 @@ export class ReleaseStorage extends Api {
 			// per default, put files into the root folder.
 			name = name || file.name;
 			archive.append(createReadStream(path || file.getPath()), {
-				name: name,
-				date: file.created_at
+				name,
+				date: file.created_at,
 			});
 		}
 
@@ -176,7 +176,6 @@ export class ReleaseStorage extends Api {
 		archive.finalize();
 		logger.info('[ReleaseStorage.download] Archive successfully created.');
 	}
-
 
 	/**
 	 * This does all the checks and returns 200 if all okay but doesn't actually serve
@@ -200,7 +199,7 @@ export class ReleaseStorage extends Api {
 			ctx.response.status = err.code;
 			ctx.response.body = null;
 		}
-	};
+	}
 
 	public async thumbRedirect(ctx: Context) {
 		const validFormats = fileTypes.getVariationNames(['playfield', 'playfield-fs', 'playfield-ws']);
@@ -209,7 +208,6 @@ export class ReleaseStorage extends Api {
 		const release = await state.models.Release.findOne({ id: ctx.params.release_id })
 			.populate('versions.files._playfield_image')
 			.exec();
-
 
 		// fail if no release
 		if (!release) {
@@ -233,8 +231,8 @@ export class ReleaseStorage extends Api {
 	 */
 	private async collectFiles(ctx: Context, dryRun: boolean): Promise<[Release, FileExtended[]]> {
 		let body: DownloadReleaseBody;
-		let counters: (() => Promise<any>)[] = [];
-		let requestedFiles: FileExtended[] = [];
+		const counters: Array<() => Promise<any>> = [];
+		const requestedFiles: FileExtended[] = [];
 		let requestedFileIds: string[];
 		let numTables = 0;
 		if (ctx.query.body) {
@@ -286,7 +284,7 @@ export class ReleaseStorage extends Api {
 				return; // continue
 			}
 			version.files.forEach((versionFile, pos) => {
-				let file = versionFile._file as FileExtended;
+				const file = versionFile._file as FileExtended;
 				file.release_version = version.toObject();
 				file.release_file = versionFile.toObject();
 
@@ -326,7 +324,7 @@ export class ReleaseStorage extends Api {
 		// add game media
 		if (isArray(body.game_media)) {
 			body.game_media.forEach(mediaId => {
-				let medium = media.find(m => m.id === mediaId);
+				const medium = media.find(m => m.id === mediaId);
 				if (!medium) {
 					throw new ApiError('Medium with id %s is not part of the game\'s media.', mediaId).status(422);
 				}
@@ -339,7 +337,7 @@ export class ReleaseStorage extends Api {
 		if (isArray(body.roms)) {
 			const roms = await state.models.Rom.find({ _game: release._game._id.toString() }).populate('_file').exec();
 			body.roms.forEach(romId => {
-				let rom = roms.find(r => r.id === romId);
+				const rom = roms.find(r => r.id === romId);
 				if (!rom) {
 					throw new ApiError('Could not find ROM with id %s for game.', romId).status(422);
 				}
@@ -357,7 +355,7 @@ export class ReleaseStorage extends Api {
 			if (!(backglass._game as Types.ObjectId).equals(release._game._id)) {
 				throw new ApiError('Backglass is not the same game as release.', body.backglass).status(422);
 			}
-			let file = sortBy(backglass.versions, v => -v.released_at)[0]._file;
+			const file = sortBy(backglass.versions, v => -v.released_at)[0]._file;
 			requestedFiles.push(file as FileExtended);
 			counters.push(() => (file as File).incrementCounter('downloads'));
 		}
@@ -411,7 +409,7 @@ export class ReleaseStorage extends Api {
 			release_compatibility: (file.release_file as ReleaseVersionFile).compatibility.map(v => v.label).join(','),
 			release_flavor_orientation: flavorTags.orientation[file.release_file.flavor.orientation],
 			release_flavor_lighting: flavorTags.lighting[file.release_file.flavor.lighting],
-			original_filename: basename(file.name).replace(/\.[^/.]+$/, '')
+			original_filename: basename(file.name).replace(/\.[^/.]+$/, ''),
 		};
 
 		const fileBase = tableName.replace(/({\s*([^}\s]+)\s*})/g, (m1, m2, m3) => isUndefined(data[m3]) ? m1 : data[m3]);
@@ -446,12 +444,12 @@ export class ReleaseStorage extends Api {
 	 */
 	private async streamZipfile(file: File, archive: Archiver) {
 		return new Promise(resolve => {
-			let rarFile = new Unrar(file.getPath());
+			const rarFile = new Unrar(file.getPath());
 			file.metadata.entries.forEach((entry: any) => {
-				let stream = rarFile.stream(entry.filename);
+				const stream = rarFile.stream(entry.filename);
 				archive.append(stream, {
 					name: this.getArchivedFilename(entry.filename, file.name),
-					date: entry.modified_at
+					date: entry.modified_at,
 				});
 				stream.on('error', (err: Error) => {
 					logger.info('Error extracting file %s from rar: %s', entry.filename, err);
@@ -474,7 +472,7 @@ export class ReleaseStorage extends Api {
 				.on('entry', entry => {
 					if (entry.type === 'File') {
 						archive.append(entry, {
-							name: this.getArchivedFilename(entry.path, file.name)
+							name: this.getArchivedFilename(entry.path, file.name),
 						});
 					} else {
 						entry.autodrain();

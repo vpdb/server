@@ -17,19 +17,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { uniq, isArray, assign } from 'lodash';
+import { assign, isArray, uniq } from 'lodash';
 
-import { state } from '../state';
 import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
-import { Context } from '../common/typings/context';
 import { logger } from '../common/logger';
-import { config } from '../common/settings';
 import { mailer } from '../common/mailer';
+import { scope } from '../common/scope';
+import { config } from '../common/settings';
+import { Context } from '../common/typings/context';
+import { LogUserUtil } from '../log-user/log.user.util';
+import { state } from '../state';
 import { User } from '../users/user';
 import { UserUtil } from '../users/user.util';
-import { LogUserUtil } from '../log-user/log.user.util';
-import { scope } from '../common/scope';
 import { AuthenticationUtil } from './authentication.util';
 
 export class AuthenticationApi extends Api {
@@ -87,7 +87,7 @@ export class AuthenticationApi extends Api {
 			const num: number = await state.redis.incr(backoffNumKey);
 
 			// check how log to wait
-			let wait = backoffDelay[Math.min(num, backoffDelay.length) - 1];
+			const wait = backoffDelay[Math.min(num, backoffDelay.length) - 1];
 			logger.info('[AuthenticationApi.authenticate] Increasing back-off time to %s for try number %d.', wait, num);
 
 			// if there's a wait, set the lock and expire it to wait time
@@ -116,7 +116,7 @@ export class AuthenticationApi extends Api {
 		const user = await this.verifyCallbackOAuth(ctx, strategy, null, profile);
 		logger.info('[AuthenticationApi.mockOAuth] Successfully authenticated with user <%s>.', user.email);
 
-		return await this.authenticateUser(ctx, user, 'oauth');
+		return this.authenticateUser(ctx, user, 'oauth');
 	}
 
 	/**
@@ -135,7 +135,7 @@ export class AuthenticationApi extends Api {
 		const expires = new Date(now.getTime() + config.vpdb.apiTokenLifetime);
 		const token = AuthenticationUtil.generateApiToken(authenticatedUser, now, how !== 'password' && how !== 'oauth');
 
-		await LogUserUtil.success(ctx, authenticatedUser, 'authenticate', { provider: 'local', how: how });
+		await LogUserUtil.success(ctx, authenticatedUser, 'authenticate', { provider: 'local', how });
 		logger.info('[AuthenticationApi.authenticate] User <%s> successfully authenticated using %s.', authenticatedUser.email, how);
 		/* istanbul ignore if */
 		if (config.vpdb.services.sqreen.enabled) {
@@ -143,9 +143,9 @@ export class AuthenticationApi extends Api {
 		}
 		const acls = await UserUtil.getACLs(authenticatedUser);
 		const response = {
-			token: token,
-			expires: expires,
-			user: assign(state.serializers.User.detailed(ctx, authenticatedUser), acls)
+			token,
+			expires,
+			user: assign(state.serializers.User.detailed(ctx, authenticatedUser), acls),
 		};
 
 		/* istanbul ignore if */
@@ -381,9 +381,9 @@ export class AuthenticationApi extends Api {
 		//
 		const pendingUsers = await state.models.User.find({
 			email: { $in: emails },
-			'email_status.code': 'pending_registration'
+			'email_status.code': 'pending_registration',
 		});
-		for (let user of pendingUsers) {
+		for (const user of pendingUsers) {
 			logger.warn('[AuthenticationApi.removePendingUsers] Deleting local user %s with pending registration (match by [ %s ]).', user.toString(), emails.join(', '));
 			await user.remove();
 		}
@@ -405,11 +405,11 @@ export class AuthenticationApi extends Api {
 			$or: [
 				{ ['providers.' + provider + '.id']: profileId },
 				{ emails: { $in: emails } },           // emails from other providers
-				{ validated_emails: { $in: emails } }  // emails the user manually validated during sign-up or email change
-			]
+				{ validated_emails: { $in: emails } },  // emails the user manually validated during sign-up or email change
+			],
 		};
 		logger.info('[AuthenticationApi.findOtherUsers] Checking for existing user: %s', JSON.stringify(query));
-		return await state.models.User.find(query).exec();
+		return state.models.User.find(query).exec();
 	}
 
 	/**
@@ -433,7 +433,7 @@ export class AuthenticationApi extends Api {
 
 			// but we might need to merge first (and fail if no auto-merge possible)
 			const explanation = `The email address we've received from the OAuth provider you've just linked to your account to was already in our database.`;
-			for (let otherUser of otherUsers) {
+			for (const otherUser of otherUsers) {
 				await UserUtil.mergeUsers(ctx, ctx.state.user, otherUser, explanation);
 			}
 			return ctx.state.user;
@@ -456,7 +456,7 @@ export class AuthenticationApi extends Api {
 					otherUsers.length, otherUsers.map(u => u.id).join(', '), provider, profileId, emails.join(', '));
 
 				const explanation = `The email address we've received from the OAuth provider you've just logged was already in our database. This can happen when you change the email address at the provider's to one you've already used at VPDB under a different account.`;
-				return await UserUtil.tryMergeUsers(ctx, otherUsers, explanation);
+				return UserUtil.tryMergeUsers(ctx, otherUsers, explanation);
 			}
 		}
 	}
@@ -482,14 +482,14 @@ export class AuthenticationApi extends Api {
 			user.providers[provider] = {
 				id: String(profile.id),
 				name: this.getNameFromProfile(profile),
-				emails: emails,
+				emails,
 				created_at: new Date(),
 				modified_at: new Date(),
-				profile: profile._json
+				profile: profile._json,
 			};
 			await LogUserUtil.success(ctx, user, 'authenticate', {
-				provider: provider,
-				profile: profile._json
+				provider,
+				profile: profile._json,
 			});
 			logger.info('[AuthenticationApi.updateOAuthUser] Adding profile from %s to user.', provider, emails[0]);
 
@@ -499,7 +499,7 @@ export class AuthenticationApi extends Api {
 			user.providers[provider].name = this.getNameFromProfile(profile);
 			user.providers[provider].modified_at = new Date();
 			user.providers[provider].profile = profile._json;
-			await LogUserUtil.success(ctx, user, 'authenticate', { provider: provider });
+			await LogUserUtil.success(ctx, user, 'authenticate', { provider });
 			logger.info('[AuthenticationApi.updateOAuthUser] Returning user %s', emails[0]);
 		}
 
@@ -513,7 +513,7 @@ export class AuthenticationApi extends Api {
 		}
 
 		// save and return
-		return await user.save();
+		return user.save();
 	}
 
 	/**
@@ -538,25 +538,25 @@ export class AuthenticationApi extends Api {
 
 		// check if username doesn't conflict
 		let newUser: User;
-		const dupeNameUser = await state.models.User.findOne({ name: name }).exec();
+		const dupeNameUser = await state.models.User.findOne({ name }).exec();
 		if (dupeNameUser) {
 			name += Math.floor(Math.random() * 1000);
 		}
 		const now = new Date();
 		newUser = {
 			is_local: false,
-			name: name,
+			name,
 			email: emails[0],
 			providers: {
 				[provider]: {
 					id: String(profile.id),
 					name: this.getNameFromProfile(profile),
-					emails: emails,
+					emails,
 					created_at: now,
 					modified_at: now,
-					profile: profile._json
-				}
-			}
+					profile: profile._json,
+				},
+			},
 		} as User;
 		// optional data
 		if (profile.photos && profile.photos.length > 0) {
@@ -576,8 +576,8 @@ export class AuthenticationApi extends Api {
 		}
 
 		await LogUserUtil.success(ctx, newUser, 'registration', {
-			provider: provider,
-			email: newUser.email
+			provider,
+			email: newUser.email,
 		});
 		logger.info('[AuthenticationApi.createOAuthUser] New user <%s> created.', newUser.email);
 		await mailer.welcomeOAuth(newUser);
@@ -639,9 +639,9 @@ export interface OAuthProfile {
 		 * The middle name of this user.
 		 */
 		middleName?: string;
-	}
+	};
 
-	emails: {
+	emails: Array<{
 		/**
 		 * The actual email address.
 		 */
@@ -651,14 +651,14 @@ export interface OAuthProfile {
 		 * The type of email address (home, work, etc.).
 		 */
 		type: string;
-	}[];
+	}>;
 
-	photos?: {
+	photos?: Array<{
 		/**
 		 * The URL of the image.
 		 */
 		value: string;
-	}[];
+	}>;
 
 	/**
 	 * The original JSON profile as fetched from the provider.

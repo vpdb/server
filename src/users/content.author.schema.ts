@@ -21,5 +21,5 @@ import { Schema } from 'mongoose';
 
 export const authorSchema = new Schema({
 	_user: { type: Schema.Types.ObjectId, required: 'Reference to user must be provided.', ref: 'User' },
-	roles: [ String ]
+	roles: [ String ],
 }, { toObject: { virtuals: true, versionKey: false } });

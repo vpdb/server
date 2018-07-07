@@ -20,13 +20,13 @@
 import { pick } from 'lodash';
 import { MetricsDocument, Model } from 'mongoose';
 
-import { state } from '../state';
 import { Api } from '../common/api';
-import { Context } from '../common/typings/context';
-import { ApiError } from '../common/api.error';
-import { LogEventUtil } from '../log-event/log.event.util';
-import { Star } from './star';
 import { apiCache } from '../common/api.cache';
+import { ApiError } from '../common/api.error';
+import { Context } from '../common/typings/context';
+import { LogEventUtil } from '../log-event/log.event.util';
+import { state } from '../state';
+import { Star } from './star';
 
 export class StarApi extends Api {
 
@@ -39,7 +39,7 @@ export class StarApi extends Api {
 			game: { model: 'Game', titleAttr: 'title' },
 			user: { model: 'User', titleAttr: 'email' },
 			backglass: { model: 'Backglass' },
-			medium: { model: 'Medium' }
+			medium: { model: 'Medium' },
 		};
 	}
 
@@ -129,7 +129,7 @@ export class StarApi extends Api {
 			_from: ctx.state.user._id,
 			_ref: { [modelName]: entity._id },
 			type: modelName,
-			created_at: new Date()
+			created_at: new Date(),
 		};
 		const star = new state.models.Star(obj);
 		await star.save();
@@ -188,20 +188,20 @@ export class StarApi extends Api {
 			const q = {
 				['_ref.' + modelName]: entity._id,
 				_from: ctx.state.user._id,
-				type: modelName
+				type: modelName,
 			};
 			const star = await state.models.Star.findOne(q);
 			return [entity, star];
 		};
 	}
 
-	private logPayload(entity:MetricsDocument, type:string) {
+	private logPayload(entity: MetricsDocument, type: string) {
 		const payload: any = {};
 		payload[type] = entity.toObject();
 		return payload;
 	}
 
-	private logRefs(star:any, entity:any, type:string) {
+	private logRefs(star: any, entity: any, type: string) {
 		const ref: any = {};
 		ref[type] = star._ref[type]._id;
 		if (type === 'release') {

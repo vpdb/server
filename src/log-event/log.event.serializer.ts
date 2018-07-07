@@ -17,17 +17,17 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-import { pick, isEmpty } from 'lodash';
+import { isEmpty, pick } from 'lodash';
 
-import { state } from '../state';
+import { Backglass } from '../backglasses/backglass';
 import { Serializer, SerializerOptions } from '../common/serializer';
-import { LogEvent } from './log.event';
 import { Context } from '../common/typings/context';
-import { User } from '../users/user';
+import { GameRequest } from '../game-requests/game.request';
 import { Game } from '../games/game';
 import { Release } from '../releases/release';
-import { Backglass } from '../backglasses/backglass';
-import { GameRequest } from '../game-requests/game.request';
+import { state } from '../state';
+import { User } from '../users/user';
+import { LogEvent } from './log.event';
 
 export class LogEventSerializer extends Serializer<LogEvent> {
 

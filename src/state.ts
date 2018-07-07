@@ -17,14 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Model, Document } from 'mongoose';
-import { upperFirst } from 'lodash';
 import IORedis from 'ioredis';
+import { upperFirst } from 'lodash';
+import { Document, Model } from 'mongoose';
 
+import { config } from './common/settings';
 import { Models } from './common/typings/models';
 import { Serializers } from './common/typings/serializers';
-import { config } from './common/settings';
-
 
 /**
  * A global state module that is accessible from anywhere.
@@ -38,18 +37,17 @@ class State {
 	/**
 	 * Reference to all our database models.
 	 */
-	models: Models;
+	public models: Models;
 
 	/**
 	 * Reference to all serializers
 	 */
-	serializers: Serializers;
+	public serializers: Serializers;
 
 	/**
 	 * Promisified Redis client
 	 */
-	redis: IORedis.Redis;
-
+	public redis: IORedis.Redis;
 
 	constructor() {
 		(this.models as any) = {};
@@ -66,13 +64,12 @@ class State {
 		return this.models[upperFirst(modelName)] as M;
 	}
 
-
 	private setupRedis(): IORedis.Redis {
 		return new IORedis({
 			port: config.vpdb.redis.port,
 			host: config.vpdb.redis.host,
 			family: 4,           // 4 (IPv4) or 6 (IPv6)
-			db: config.vpdb.redis.db
+			db: config.vpdb.redis.db,
 		});
 	}
 }

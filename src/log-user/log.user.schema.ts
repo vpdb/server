@@ -18,8 +18,8 @@
  */
 
 import { PaginateModel, Schema } from 'mongoose';
-import { LogUser } from './log.user';
 import paginatePlugin = require('mongoose-paginate');
+import { LogUser } from './log.user';
 
 //-----------------------------------------------------------------------------
 // SCHEMA
@@ -29,10 +29,10 @@ const fields = {
 	_actor: { type: Schema.Types.ObjectId, required: true, ref: 'User', index: true },
 	event: { type: String, index: true },
 	payload: {},
-	result: { type: String, 'enum': ['success', 'failure'], required: true },
+	result: { type: String, enum: ['success', 'failure'], required: true },
 	message: { type: String }, // in case of failure, this is the error message.
 	ip: { type: String, required: true },
-	logged_at: { type: Date, required: true }
+	logged_at: { type: Date, required: true },
 };
 
 export interface LogUserModel extends PaginateModel<LogUser> { }

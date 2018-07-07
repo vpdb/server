@@ -17,20 +17,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import gm from 'gm';
 import { exists } from 'fs';
+import gm from 'gm';
 import { promisify } from 'util';
 
-import { state } from '../state';
 import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
-import { Context } from '../common/typings/context';
 import { logger } from '../common/logger';
+import { Context } from '../common/typings/context';
 import { File } from '../files/file';
 import { FileUtil } from '../files/file.util';
-import { Release } from './release';
 import { Metadata } from '../files/metadata/metadata';
 import { processorQueue } from '../files/processor/processor.queue';
+import { state } from '../state';
+import { Release } from './release';
 
 const existsAsync = promisify(exists);
 require('bluebird').promisifyAll(gm.prototype);
@@ -69,7 +69,7 @@ export abstract class ReleaseAbstractApi extends Api {
 		if (ctx.query.rotate) {
 
 			// validate input format
-			let rotations = this.parseRotationParams(ctx.query.rotate);
+			const rotations = this.parseRotationParams(ctx.query.rotate);
 
 			// validate input data
 			for (const rotation of rotations) {
@@ -105,9 +105,9 @@ export abstract class ReleaseAbstractApi extends Api {
 				// update metadata
 				const metadata = await Metadata.readFrom(file, file.getPath());
 				await state.models.File.findByIdAndUpdate(file._id, {
-					metadata: metadata,
+					metadata,
 					file_type: 'playfield-' + (metadata.size.width > metadata.size.height ? 'ws' : 'fs'),
-					preprocessed: file.preprocessed
+					preprocessed: file.preprocessed,
 				}).exec();
 			}
 		}
@@ -124,7 +124,7 @@ export abstract class ReleaseAbstractApi extends Api {
 		if (ctx.query.rotate) {
 
 			// validate input format
-			let rotations = this.parseRotationParams(ctx.query.rotate);
+			const rotations = this.parseRotationParams(ctx.query.rotate);
 
 			// validate input data
 			for (const rotation of rotations) {
@@ -144,9 +144,9 @@ export abstract class ReleaseAbstractApi extends Api {
 				// update metadata
 				const metadata = await Metadata.readFrom(file, file.getPath());
 				await state.models.File.findByIdAndUpdate(file._id, {
-					metadata: metadata,
+					metadata,
 					file_type: file.file_type,
-					preprocessed: file.preprocessed
+					preprocessed: file.preprocessed,
 				}).exec();
 			}
 		}
@@ -167,7 +167,7 @@ export abstract class ReleaseAbstractApi extends Api {
 			if (file.preprocessed && file.preprocessed.unvalidatedRotation) {
 				logger.info('[ReleaseApi.postprocess] Validation passed, setting rotation to %s°', file.preprocessed.unvalidatedRotation);
 				await state.models.File.update({ _id: file._id }, {
-					preprocessed: { rotation: file.preprocessed.unvalidatedRotation }
+					preprocessed: { rotation: file.preprocessed.unvalidatedRotation },
 				});
 			}
 			await processorQueue.processFile(file, file.getPath(null, { tmpSuffix: '_original' }));
@@ -182,7 +182,7 @@ export abstract class ReleaseAbstractApi extends Api {
 	 * @returns {Promise.<string>} New location
 	 */
 	private async backupFile(file: File): Promise<string> {
-		let backup = file.getPath(null, { tmpSuffix: '_original' });
+		const backup = file.getPath(null, { tmpSuffix: '_original' });
 		if (!(await existsAsync(backup))) {
 			logger.info('[ReleaseApi.backupFile] Copying "%s" to "%s".', file.getPath(), backup);
 			await FileUtil.cp(file.getPath(), backup);
@@ -201,7 +201,7 @@ export abstract class ReleaseAbstractApi extends Api {
 			if (!r.includes(':')) {
 				throw new ApiError('When providing the "rotation" query, pairs must be separated by ":".').status(400);
 			}
-			let rot = r.split(':');
+			const rot = r.split(':');
 
 			if (!['0', '90', '180', '270'].includes(rot[1])) {
 				throw new ApiError('Wrong angle "%s", must be one of: [0, 90, 180, 270].', rot[1]).status(400);

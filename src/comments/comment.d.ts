@@ -18,8 +18,8 @@
  */
 
 import { Document, Schema, Types } from 'mongoose';
-import { User } from '../users/user';
 import { Release } from '../releases/release';
+import { User } from '../users/user';
 
 export interface Comment extends Document {
 	id: string;

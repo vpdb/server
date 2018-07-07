@@ -17,12 +17,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { assign, pick, find, uniq, mapValues, pickBy, isEmpty, keys } from 'lodash';
 import { createHash } from 'crypto';
+import { assign, find, isEmpty, keys, mapValues, pick, pickBy, uniq } from 'lodash';
+import { realtime } from '../common/realtime';
+import { Serializer, SerializerOptions } from '../common/serializer';
 import { config } from '../common/settings';
 import { Context } from '../common/typings/context';
-import { Serializer, SerializerOptions } from '../common/serializer';
-import { realtime } from '../common/realtime';
 import { User } from './user';
 
 export class UserSerializer extends Serializer<User> {
@@ -71,7 +71,7 @@ export class UserSerializer extends Serializer<User> {
 		user.plan = {
 			id: doc._plan,
 			app_tokens_enabled: plan.enableAppTokens,
-			push_notifications_enabled: plan.enableRealtime
+			push_notifications_enabled: plan.enableRealtime,
 		};
 
 		// pusher

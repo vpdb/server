@@ -17,27 +17,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document, Model, ModeratedDocument, ModeratedModel, Schema, ModerationData } from 'mongoose';
 import { assign, includes, isArray, isObject } from 'lodash';
+import { Document, Model, ModeratedDocument, ModeratedModel, ModerationData, Schema } from 'mongoose';
 
+import { LogEventUtil } from '../../log-event/log.event.util';
 import { state } from '../../state';
-import { Context } from '../typings/context';
 import { User } from '../../users/user';
 import { acl } from '../acl';
 import { ApiError } from '../api.error';
 import { logger } from '../logger';
-import { LogEventUtil } from '../../log-event/log.event.util';
+import { Context } from '../typings/context';
 
 const modelResourceMap: { [key: string]: string } = {
 	Release: 'releases',
 	Backglass: 'backglasses',
-	Rom: 'roms'
+	Rom: 'roms',
 };
 
 const modelReferenceMap: { [key: string]: string } = {
 	Release: 'release',
 	Backglass: 'backglass',
-	Rom: 'rom'
+	Rom: 'rom',
 };
 
 /**
@@ -58,23 +58,23 @@ export function moderationPlugin(schema: Schema) {
 	 */
 	schema.add({
 		moderation: {
-			is_approved: { type: Boolean, required: true, 'default': false },
-			is_refused: { type: Boolean, required: true, 'default': false },
-			auto_approved: { type: Boolean, required: true, 'default': false },
+			is_approved: { type: Boolean, required: true, default: false },
+			is_refused: { type: Boolean, required: true, default: false },
+			auto_approved: { type: Boolean, required: true, default: false },
 			history: [{
-				event: { type: String, 'enum': ['approved', 'refused', 'pending'], required: true },
+				event: { type: String, enum: ['approved', 'refused', 'pending'], required: true },
 				message: { type: String },
 				created_at: { type: Date },
-				_created_by: { type: Schema.Types.ObjectId, ref: 'User' }
-			}]
-		}
+				_created_by: { type: Schema.Types.ObjectId, ref: 'User' },
+			}],
+		},
 	});
 
 	/*
 	 * Post save trigger that automatically approves if the creator has
 	 * the "auto-approve" permission.
 	 */
-	schema.pre('save', async function (this: ModeratedDocument) {
+	schema.pre('save', async function(this: ModeratedDocument) {
 		if (!this.isNew) {
 			return;
 		}
@@ -99,7 +99,7 @@ export function moderationPlugin(schema: Schema) {
 				is_approved: true,
 				is_refused: false,
 				auto_approved: true,
-				history: [{ event: 'approved', created_at: now, _created_by: user }]
+				history: [{ event: 'approved', created_at: now, _created_by: user }],
 			} as ModerationData;
 			if (this.postApprove) {
 				return this.postApprove();
@@ -109,7 +109,7 @@ export function moderationPlugin(schema: Schema) {
 				is_approved: false,
 				is_refused: false,
 				auto_approved: false,
-				history: []
+				history: [],
 			} as ModerationData;
 		}
 
@@ -175,7 +175,7 @@ export function moderationPlugin(schema: Schema) {
 	 * @param {ModeratedDocument} entity Entity with moderation plugin enabled
 	 * @return {Promise<ModerationData>} Moderation data
 	 */
-	schema.statics.handleModeration = async function (ctx: Context, entity: ModeratedDocument): Promise<ModerationData> {
+	schema.statics.handleModeration = async function(ctx: Context, entity: ModeratedDocument): Promise<ModerationData> {
 		const actions = ['refuse', 'approve', 'moderate'];
 		if (!ctx.request.body.action) {
 			throw new ApiError('Validations failed.').validationError('action', 'An action must be provided. Valid actions are: [ "' + actions.join('", "') + '" ].');
@@ -205,7 +205,7 @@ export function moderationPlugin(schema: Schema) {
 		const referenceName = modelReferenceMap[this.modelName];
 		await LogEventUtil.log(ctx, 'moderate', false, {
 			action: ctx.request.body.action,
-			message: ctx.request.body.message
+			message: ctx.request.body.message,
 		}, { [referenceName]: entity._id });
 
 		return moderation;
@@ -226,7 +226,7 @@ export function moderationPlugin(schema: Schema) {
 	 * @param {Application.Context} ctx Koa context
 	 * @returns {Promise.<ModeratedDocument>} This entity
 	 */
-	schema.methods.assertModeratedView = async function (ctx: Context): Promise<ModeratedDocument> {
+	schema.methods.assertModeratedView = async function(ctx: Context): Promise<ModeratedDocument> {
 
 		const resource: string = modelResourceMap[this.constructor.modelName];
 		const reference: string = modelReferenceMap[this.constructor.modelName];
@@ -264,7 +264,7 @@ export function moderationPlugin(schema: Schema) {
 	 * @param {{includedFields: string[]}} opts Options
 	 * @returns {ModeratedDocument | boolean} Populated entity if fields added, false otherwise.
 	 */
-	schema.methods.populateModeration = async function (ctx: Context, opts: { includedFields: string[] }): Promise<ModeratedDocument | false> {
+	schema.methods.populateModeration = async function(ctx: Context, opts: { includedFields: string[] }): Promise<ModeratedDocument | false> {
 		const resource: string = modelResourceMap[this.constructor.modelName];
 		if (opts.includedFields.includes('moderation')) {
 			if (!ctx.state.user) {
@@ -274,7 +274,7 @@ export function moderationPlugin(schema: Schema) {
 			if (!isModerator) {
 				throw new ApiError('You must be moderator in order to fetch moderation fields.').status(403);
 			}
-			return await this.populate('moderation.history._created_by').execPopulate();
+			return this.populate('moderation.history._created_by').execPopulate();
 
 		} else {
 			// if owner or moderator, don't populate but still return object so moderation fields aren't deleted
@@ -295,28 +295,28 @@ export function moderationPlugin(schema: Schema) {
 	 * @param {string} [message] Optional message
 	 * @returns {Promise.<{}>} Updated moderation attribute
 	 */
-	schema.methods.approve = async function (user: User, message: string): Promise<ModerationData> {
+	schema.methods.approve = async function(user: User, message: string): Promise<ModerationData> {
 
 		const model = state.getModel<ModeratedModel<ModeratedDocument>>(this.constructor.modelName);
-		let previousModeration = { isApproved: this.moderation.is_approved, isRefused: this.moderation.is_refused };
+		const previousModeration = { isApproved: this.moderation.is_approved, isRefused: this.moderation.is_refused };
 		await model.findByIdAndUpdate(this._id, {
 			'moderation.is_approved': true,
 			'moderation.is_refused': false,
 			$push: {
 				'moderation.history': {
 					event: 'approved',
-					message: message,
+					message,
 					created_at: new Date(),
-					_created_by: user._id || user
-				}
-			}
+					_created_by: user._id || user,
+				},
+			},
 		}).exec();
 
 		let entity = await model.findOne({ _id: this._id }).exec();
 		if (entity.moderationChanged) {
 			entity = await entity.moderationChanged(previousModeration, { isApproved: true, isRefused: false });
 		}
-		return entity.moderation
+		return entity.moderation;
 	};
 
 	/**
@@ -325,10 +325,10 @@ export function moderationPlugin(schema: Schema) {
 	 * @param {string} reason Reason why entity was refused
 	 ** @returns {Promise.<{}>} Updated moderation attribute
 	 */
-	schema.methods.refuse = async function (user: User, reason: string): Promise<ModerationData> {
+	schema.methods.refuse = async function(user: User, reason: string): Promise<ModerationData> {
 
 		const model = state.getModel<ModeratedModel<ModeratedDocument>>(this.constructor.modelName);
-		let previousModeration = { isApproved: this.moderation.is_approved, isRefused: this.moderation.is_refused };
+		const previousModeration = { isApproved: this.moderation.is_approved, isRefused: this.moderation.is_refused };
 		await model.findByIdAndUpdate(this._id, {
 			'moderation.is_approved': false,
 			'moderation.is_refused': true,
@@ -337,9 +337,9 @@ export function moderationPlugin(schema: Schema) {
 					event: 'refused',
 					message: reason,
 					created_at: new Date(),
-					_created_by: user._id || user
-				}
-			}
+					_created_by: user._id || user,
+				},
+			},
 		}).exec();
 
 		let entity = await model.findOne({ _id: this._id }).exec();
@@ -355,21 +355,21 @@ export function moderationPlugin(schema: Schema) {
 	 * @param {string} [message] Optional message
 	 * @returns {Promise.<{}>} Updated moderation attribute
 	 */
-	schema.methods.moderate = async function (user: User, message: string): Promise<ModerationData> {
+	schema.methods.moderate = async function(user: User, message: string): Promise<ModerationData> {
 
 		const model = state.getModel<ModeratedModel<ModeratedDocument>>(this.constructor.modelName);
-		let previousModeration = { isApproved: this.moderation.is_approved, isRefused: this.moderation.is_refused };
+		const previousModeration = { isApproved: this.moderation.is_approved, isRefused: this.moderation.is_refused };
 		await model.findByIdAndUpdate(this._id, {
 			'moderation.is_approved': false,
 			'moderation.is_refused': false,
 			$push: {
 				'moderation.history': {
 					event: 'pending',
-					message: message,
+					message,
 					created_at: new Date(),
-					_created_by: user._id || user
-				}
-			}
+					_created_by: user._id || user,
+				},
+			},
 		}).exec();
 
 		let entity: ModeratedDocument = await model.findOne({ _id: this._id }).exec();
@@ -434,7 +434,7 @@ declare module 'mongoose' {
 		 * @param {string} [message] Optional message
 		 * @returns {Promise.<{}>} Updated moderation attribute
 		 */
-		approve(user: User, message: string): Promise<ModerationData>,
+		approve(user: User, message: string): Promise<ModerationData>;
 
 		/**
 		 * Marks the entity as refused.
@@ -464,20 +464,20 @@ declare module 'mongoose' {
 		/**
 		 * An optional hook executed when the moderation was approved.
 		 */
-		postApprove?(): void
+		postApprove?(): void;
 	}
 
 	export interface ModerationData extends Document {
 		is_approved: boolean;
 		is_refused: boolean;
 		auto_approved: boolean;
-		history?: {
+		history?: Array<{
 			event: 'approved' | 'refused' | 'pending';
 			message?: string;
 			created_at: Date;
 			_created_by?: User | Types.ObjectId;
 			created_by?: User;
-		}[]
+		}>;
 	}
 
 	// statics
@@ -489,7 +489,7 @@ declare module 'mongoose' {
 		 * @param {T} query Current query
 		 * @returns {Promise<T>} Moderated query
 		 */
-		handleModerationQuery<T>(ctx: Context, query: T): Promise<T>,
+		handleModerationQuery<T>(ctx: Context, query: T): Promise<T>;
 
 		/**
 		 * Handles moderation requests from the API.
@@ -497,14 +497,14 @@ declare module 'mongoose' {
 		 * @param {ModeratedDocument} entity Entity with moderation plugin enabled
 		 * @return {Promise<ModerationData>} Moderation data
 		 */
-		handleModeration(ctx: Context, entity: ModeratedDocument): Promise<ModerationData>,
+		handleModeration(ctx: Context, entity: ModeratedDocument): Promise<ModerationData>;
 
 		/**
 		 * Returns the query used for listing only approved entities.
 		 * @param {T} query
 		 * @returns {T} Updated query
 		 */
-		approvedQuery<T>(query: T): T,
+		approvedQuery<T>(query: T): T;
 	}
 
 	export function model<T extends ModeratedDocument>(
@@ -513,4 +513,3 @@ declare module 'mongoose' {
 		collection?: string,
 		skipInit?: boolean): ModeratedModel<T>;
 }
-

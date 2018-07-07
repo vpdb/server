@@ -18,18 +18,17 @@
  */
 
 import { Document, PaginateModel, PrettyIdModel, Schema } from 'mongoose';
+import paginatePlugin = require('mongoose-paginate');
 import uniqueValidator from 'mongoose-unique-validator';
 import validator from 'validator';
-import paginatePlugin = require('mongoose-paginate');
 
-import { state } from '../state';
-import { config } from '../common/settings';
-import { File } from '../files/file';
 import { fileReferencePlugin } from '../common/mongoose/file.reference.plugin';
 import { metricsPlugin } from '../common/mongoose/metrics.plugin';
 import { prettyIdPlugin } from '../common/mongoose/pretty.id.plugin';
 import { sortableTitlePlugin } from '../common/mongoose/sortable.title.plugin';
-
+import { config } from '../common/settings';
+import { File } from '../files/file';
+import { state } from '../state';
 
 import { isInteger, isString } from 'lodash';
 import { Game } from './game';
@@ -52,8 +51,8 @@ export const gameFields = {
 		required: true,
 		enum: {
 			values: gameTypes,
-			message: 'Invalid game type. Valid game types are: ["' + gameTypes.join('", "') + '"].'
-		}
+			message: 'Invalid game type. Valid game types are: ["' + gameTypes.join('", "') + '"].',
+		},
 	},
 	_backglass: { type: Schema.Types.ObjectId, ref: 'File', required: 'Backglass image must be provided.' },
 	_logo: { type: Schema.Types.ObjectId, ref: 'File' },
@@ -75,31 +74,31 @@ export const gameFields = {
 		rating: Number,
 		rank: Number,
 		mfg: Number,
-		mpu: Number
+		mpu: Number,
 	},
 	pinside: {
 		ids: [String],
 		ranks: [Number],
-		rating: Number
+		rating: Number,
 	},
 	counter: {
-		releases: { type: Number, 'default': 0 },
-		views: { type: Number, 'default': 0 },
-		downloads: { type: Number, 'default': 0 },
-		comments: { type: Number, 'default': 0 },
-		stars: { type: Number, 'default': 0 }
+		releases: { type: Number, default: 0 },
+		views: { type: Number, default: 0 },
+		downloads: { type: Number, default: 0 },
+		comments: { type: Number, default: 0 },
+		stars: { type: Number, default: 0 },
 	},
 	metrics: {
-		popularity: { type: Number, 'default': 0 } // time-decay based score like reddit, but based on views, downloads, comments, favs. see SO/11653545
+		popularity: { type: Number, default: 0 }, // time-decay based score like reddit, but based on views, downloads, comments, favs. see SO/11653545
 	},
 	rating: {
-		average: { type: Number, 'default': 0 },
-		votes: { type: Number, 'default': 0 },
-		score: { type: Number, 'default': 0 } // imdb-top-250-like score, a bayesian estimate.
+		average: { type: Number, default: 0 },
+		votes: { type: Number, default: 0 },
+		score: { type: Number, default: 0 }, // imdb-top-250-like score, a bayesian estimate.
 	},
 	modified_at: { type: Date }, // only release add/update modifies this
 	created_at: { type: Date, required: true },
-	_created_by: { type: Schema.Types.ObjectId, required: true, ref: 'User' }
+	_created_by: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
 };
 export interface GameModel extends PrettyIdModel<Game>, PaginateModel<Game> {}
 export const gameSchema = new Schema(gameFields, { toObject: { virtuals: true, versionKey: false } });
@@ -114,14 +113,13 @@ gameSchema.plugin(paginatePlugin);
 gameSchema.plugin(metricsPlugin, { hotness: { popularity: { views: 1, downloads: 10, comments: 20, stars: 30 } } });
 gameSchema.plugin(sortableTitlePlugin, { src: 'title', dest: 'title_sortable' });
 
-
 //-----------------------------------------------------------------------------
 // VALIDATIONS
 //-----------------------------------------------------------------------------
 
-gameSchema.path('game_type').validate(async function () {
+gameSchema.path('game_type').validate(async function() {
 
-	let ipdb = this.ipdb ? this.ipdb.number : null;
+	const ipdb = this.ipdb ? this.ipdb.number : null;
 
 	// only check if not an original game.
 	if (this.game_type !== 'og' && (!ipdb || (!isInteger(ipdb) && !(isString(ipdb) && validator.isInt(ipdb))))) {
@@ -139,7 +137,7 @@ gameSchema.path('game_type').validate(async function () {
 	return true;
 });
 
-gameSchema.path('_backglass').validate(async function (this: Document, backglass: File) {
+gameSchema.path('_backglass').validate(async function(this: Document, backglass: File) {
 	if (!backglass) {
 		return true;
 	}
@@ -159,21 +157,19 @@ gameSchema.path('_backglass').validate(async function (this: Document, backglass
 	return true;
 });
 
-
 //-----------------------------------------------------------------------------
 // METHODS
 //-----------------------------------------------------------------------------
 
-gameSchema.methods.isRestricted = function (what: 'release' | 'backglass'):boolean {
+gameSchema.methods.isRestricted = function(what: 'release' | 'backglass'): boolean {
 	return GameDocument.isRestricted(this, what);
 };
-
 
 //-----------------------------------------------------------------------------
 // TRIGGERS
 //-----------------------------------------------------------------------------
-gameSchema.pre('remove', async function () {
-	await state.models.Rating.remove({ '_ref.game':this._id }).exec();
-	await state.models.Star.remove({ '_ref.game':this._id }).exec();
-	await state.models.Medium.remove({ '_ref.game':this._id }).exec();
+gameSchema.pre('remove', async function() {
+	await state.models.Rating.remove({ '_ref.game': this._id }).exec();
+	await state.models.Star.remove({ '_ref.game': this._id }).exec();
+	await state.models.Medium.remove({ '_ref.game': this._id }).exec();
 });

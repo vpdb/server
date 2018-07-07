@@ -21,19 +21,19 @@ import { BackglassSerializer } from '../../backglasses/backglass.serializer';
 import { BackglassVersionSerializer } from '../../backglasses/backglass.version.serializer';
 import { BuildSerializer } from '../../builds/build.serializer';
 import { CommentSerializer } from '../../comments/comment.serializer';
-import { ContentAuthorSerializer } from '../../users/content.author.serializer';
 import { FileSerializer } from '../../files/file.serializer';
-import { GameSerializer } from '../../games/game.serializer';
 import { GameRequestSerializer } from '../../game-requests/game.request.serializer';
+import { GameSerializer } from '../../games/game.serializer';
 import { LogEventSerializer } from '../../log-event/log.event.serializer';
 import { LogUserSerializer } from '../../log-user/log.user.serializer';
 import { MediumSerializer } from '../../media/medium.serializer';
 import { ReleaseSerializer } from '../../releases/release.serializer';
-import { ReleaseVersionSerializer } from '../../releases/version/release.version.serializer';
 import { ReleaseVersionFileSerializer } from '../../releases/version/file/release.version.file.serializer';
+import { ReleaseVersionSerializer } from '../../releases/version/release.version.serializer';
 import { RomSerializer } from '../../roms/rom.serializer';
 import { TagSerializer } from '../../tags/tag.serializer';
 import { TokenSerializer } from '../../tokens/token.serializer';
+import { ContentAuthorSerializer } from '../../users/content.author.serializer';
 import { UserSerializer } from '../../users/user.serializer';
 
 export interface Serializers {

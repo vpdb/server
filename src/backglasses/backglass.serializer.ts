@@ -19,13 +19,13 @@
 
 import { pick } from 'lodash';
 
-import { state } from '../state';
-import { Backglass } from './backglass';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { Context } from '../common/typings/context';
-import { BackglassVersion } from './backglass.version';
 import { Game } from '../games/game';
+import { state } from '../state';
 import { User } from '../users/user';
+import { Backglass } from './backglass';
+import { BackglassVersion } from './backglass.version';
 
 export class BackglassSerializer extends Serializer<Backglass> {
 
@@ -47,8 +47,8 @@ export class BackglassSerializer extends Serializer<Backglass> {
 		return backglass;
 	}
 
-	private _serialize(ctx:Context, doc:Backglass, opts:SerializerOptions,
-					   versionSerializer:(ctx: Context, doc: BackglassVersion, opts: SerializerOptions) => BackglassVersion): Backglass {
+	private _serialize(ctx: Context, doc: Backglass, opts: SerializerOptions,
+					               versionSerializer: (ctx: Context, doc: BackglassVersion, opts: SerializerOptions) => BackglassVersion): Backglass {
 
 		// primitive fields
 		const backglass = pick(doc, ['id', 'description', 'acknowledgements', 'created_at']) as Backglass;

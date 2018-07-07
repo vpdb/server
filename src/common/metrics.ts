@@ -17,12 +17,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { state } from '../state';
-import { logger } from './logger';
 import { Document, Model } from 'mongoose';
 import { Rating } from '../ratings/rating';
-import { config } from './settings';
+import { state } from '../state';
 import { apiCache } from './api.cache';
+import { logger } from './logger';
+import { config } from './settings';
 
 class Metrics {
 
@@ -57,7 +57,7 @@ class Metrics {
 		return {
 			value: rating ? rating.value : 0,
 			created_at: rating ? rating.created_at : undefined,
-			[modelName]: summary
+			[modelName]: summary,
 		};
 	}
 
@@ -82,11 +82,11 @@ class Metrics {
 		 *    m = minimum number of votes for the item to be taken into account
 		 *    ATm = arithmetic total mean when considering the collection of all the items
 		 */
-		let m = config.vpdb.metrics.bayesianEstimate.minVotes;
+		const m = config.vpdb.metrics.bayesianEstimate.minVotes;
 		let am, n;
 
 		// get arithmetic local mean
-		let q = { ['_ref.' + modelName]: entity._id };
+		const q = { ['_ref.' + modelName]: entity._id };
 		let metrics;
 
 		const results = await this.aggregate(q);
@@ -98,7 +98,7 @@ class Metrics {
 			metrics = {
 				average: Math.round(am * 1000) / 1000,
 				votes: n,
-				score: (n / (n + m)) * am + (m / (n + m)) * atm
+				score: (n / (n + m)) * am + (m / (n + m)) * atm,
 			};
 		} else {
 			metrics = { average: 0, votes: 0, score: 0 };
@@ -118,7 +118,7 @@ class Metrics {
 		if (config.vpdb.metrics.bayesianEstimate.globalMean !== null) {
 			return Promise.resolve(config.vpdb.metrics.bayesianEstimate.globalMean);
 		}
-		let q: any = { ['_ref.' + modelName]: { '$ne': null } };
+		const q: any = { ['_ref.' + modelName]: { $ne: null } };
 
 		const results = await this.aggregate(q);
 		if (results.length === 1) {
@@ -132,7 +132,7 @@ class Metrics {
 
 	private async updateGlobalMean(atm: any) {
 		return state.redis.set(this.redisAtmKey, atm);
-	};
+	}
 
 	private async updateAllEntities(modelName: string, atm: number) {
 
@@ -145,7 +145,7 @@ class Metrics {
 		}
 
 		// update all entities that have at least one rating
-		const entities = await model.find({ 'rating.votes': { '$gt': 0 } }).exec();
+		const entities = await model.find({ 'rating.votes': { $gt: 0 } }).exec();
 		logger.info('[Metrics.updateAllEntities] Updating metrics for %d %ss...', entities.length, modelName);
 
 		for (const entity of entities) {
@@ -153,16 +153,16 @@ class Metrics {
 		}
 	}
 
-	private async aggregate(q:any) {
+	private async aggregate(q: any) {
 		// Mongoose API FTW!!
 		return new Promise<any[]>((resolve, reject) => {
-			let data: any[] = [];
+			const data: any[] = [];
 			return state.models.Rating.aggregate([{ $match: q }, {
 				$group: {
 					_id: null,
 					sum: { $sum: '$value' },
-					count: { $sum: 1 }
-				}
+					count: { $sum: 1 },
+				},
 			}])
 				.cursor({})
 				.exec()

@@ -17,17 +17,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Metadata } from './metadata';
 import { ArchiveMetadata } from './archive.metadata';
 import { Directb2sMetadata } from './directb2s.metadata';
 import { ImageMetadata } from './image.metadata';
-import { VptMetadata } from './vpt.metadata';
+import { Metadata } from './metadata';
 import { VideoMetadata } from './video.metadata';
+import { VptMetadata } from './vpt.metadata';
 
 export const instances: Metadata[] = [
 	new ArchiveMetadata(),
 	new Directb2sMetadata(),
 	new ImageMetadata(),
 	new VideoMetadata(),
-	new VptMetadata()
+	new VptMetadata(),
 ];

@@ -17,24 +17,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { format, parse } from 'url';
 import { extend } from 'lodash';
+import { format, parse } from 'url';
 import builder from 'xmlbuilder';
 
+import { roles } from '../common/acl';
 import { Api } from '../common/api';
+import { apiCache } from '../common/api.cache';
+import { ApiError } from '../common/api.error';
+import { gitInfo } from '../common/gitinfo';
+import { ipdb } from '../common/ipdb';
 import { logger } from '../common/logger';
 import { config } from '../common/settings';
 import { Context } from '../common/typings/context';
-import { gitInfo } from '../common/gitinfo';
-import { ipdb } from '../common/ipdb';
-import { roles } from '../common/acl';
-import { processorQueue } from '../files/processor/processor.queue';
-import { apiCache } from '../common/api.cache';
-import { ApiError } from '../common/api.error';
-import { state } from '../state';
 import { File } from '../files/file';
-import { User } from '../users/user';
+import { processorQueue } from '../files/processor/processor.queue';
 import { Game } from '../games/game';
+import { state } from '../state';
+import { User } from '../users/user';
 
 const pak = require('../../package.json');
 
@@ -52,7 +52,7 @@ export class MiscApi extends Api {
 			app_name: config.vpdb.name,
 			app_version: pak.version,
 			app_date: gitInfo.hasInfo() ? gitInfo.getLastCommit().lastCommitTime : undefined,
-			app_sha: gitInfo.hasInfo() ? gitInfo.getLastCommit().SHA : undefined
+			app_sha: gitInfo.hasInfo() ? gitInfo.getLastCommit().SHA : undefined,
 		};
 		return this.success(ctx, result, 200);
 	}
@@ -89,7 +89,7 @@ export class MiscApi extends Api {
 		config.vpdb.quota.plans.forEach(plan => {
 			plans.push(extend(plan, {
 				name: plan.name || plan.id,
-				is_default: plan.id === config.vpdb.quota.defaultPlan
+				is_default: plan.id === config.vpdb.quota.defaultPlan,
 			}));
 		});
 		return this.success(ctx, plans, 200);
@@ -138,11 +138,10 @@ export class MiscApi extends Api {
 
 		const webUrl = format(parsedUrl);
 
-		let rootNode = builder
+		const rootNode = builder
 			.create('urlset', { version: '1.0', encoding: 'UTF-8' })
 			.att('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9')
 			.att('xmlns:image', 'http://www.google.com/schemas/sitemap-image/1.1');
-
 
 		// static urls
 		rootNode.ele('url').ele('loc', webUrl);
@@ -178,12 +177,12 @@ export class MiscApi extends Api {
 			const url = rootNode.ele('url');
 			url.ele('loc', webUrl + 'games/' + game.id + '/releases/' + release.id);
 			if (fsImage) {
-				let img = url.ele('image:image');
+				const img = url.ele('image:image');
 				img.ele('image:loc', fsImage.getUrl(fsImage.getVariation('full')));
 				img.ele('image:caption', 'Portrait playfield for ' + game.title + ', ' + release.name + ' by ' + authors + '.');
 			}
 			if (dtImage) {
-				let img = url.ele('image:image');
+				const img = url.ele('image:image');
 				img.ele('image:loc', dtImage.getUrl(dtImage.getVariation('full')));
 				img.ele('image:caption', 'Landscape playfield for ' + game.title + ', ' + release.name + ' by ' + authors + '.');
 			}
@@ -201,13 +200,13 @@ export class MiscApi extends Api {
 				const file = medium._file as File;
 				switch (medium.category) {
 					case 'wheel_image': {
-						let img = url.ele('image:image');
+						const img = url.ele('image:image');
 						img.ele('image:loc', file.getUrl(file.getVariation('medium-2x')));
 						img.ele('image:caption', 'Logo for ' + game.title);
 						break;
 					}
 					case 'backglass_image': {
-						let img = url.ele('image:image');
+						const img = url.ele('image:image');
 						img.ele('image:loc', file.getUrl(file.getVariation('full')));
 						img.ele('image:caption', 'Backglass for ' + game.title);
 						break;

@@ -16,15 +16,15 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-import { PrettyIdModel, Schema, Types } from 'mongoose';
 import { filter, isArray, isEqual, keys, map, uniq } from 'lodash';
+import { PrettyIdModel, Schema, Types } from 'mongoose';
 
 import { fileReferencePlugin } from '../../common/mongoose/file.reference.plugin';
 import { prettyIdPlugin } from '../../common/mongoose/pretty.id.plugin';
-import { releaseVersionFileFields, releaseVersionFileSchema } from './file/release.version.file.schema';
-import { ReleaseFileFlavor, ReleaseVersionFile } from './file/release.version.file';
 import { state } from '../../state';
 import { Release } from '../release';
+import { ReleaseFileFlavor, ReleaseVersionFile } from './file/release.version.file';
+import { releaseVersionFileFields, releaseVersionFileSchema } from './file/release.version.file.schema';
 import { ReleaseVersion } from './release.version';
 import { ReleaseVersionDocument } from './release.version.document';
 
@@ -35,12 +35,12 @@ export const releaseVersionFields = {
 	files: {
 		validate: { validator: nonEmptyArray, message: 'You must provide at least one file.' },
 		type: [releaseVersionFileSchema],
-		index: true
+		index: true,
 	},
 	counter: {
-		downloads: { type: Number, 'default': 0 },
-		comments: { type: Number, 'default': 0 }
-	}
+		downloads: { type: Number, default: 0 },
+		comments: { type: Number, default: 0 },
+	},
 };
 
 export interface ReleaseVersionModel extends PrettyIdModel<ReleaseVersion> {}
@@ -55,7 +55,7 @@ releaseVersionSchema.plugin(prettyIdPlugin, { model: 'ReleaseVersion' });
  * Note that individual files cannot be updated; they can only be added or
  * removed. Thus, we base the file index (i) on new items only.
  */
-releaseVersionSchema.path('files').validate(async function (files: ReleaseVersionFile[]) {
+releaseVersionSchema.path('files').validate(async function(files: ReleaseVersionFile[]) {
 
 	// ignore if no files set
 	if (!isArray(files) || files.length === 0) {
@@ -63,14 +63,14 @@ releaseVersionSchema.path('files').validate(async function (files: ReleaseVersio
 	}
 
 	let hasTableFile = false;
-	const tableFiles: { file: ReleaseVersionFile, index: number }[] = [];
+	const tableFiles: Array<{ file: ReleaseVersionFile, index: number }> = [];
 
 	let index = 0; // when updating a version, ignore existing files, so increment only if new
-	for (let f of files) {
+	for (const f of files) {
 		const isTableFile = await validateFile(this, f, index);
 		if (isTableFile) {
 			hasTableFile = true;
-			tableFiles.push({ file: f, index: index });
+			tableFiles.push({ file: f, index });
 		}
 		if (f.isNew) {
 			index++;
@@ -88,7 +88,7 @@ releaseVersionSchema.path('files').validate(async function (files: ReleaseVersio
 
 	// validate existing compat/flavor combination
 	tableFiles.forEach(tableFile => {
-		let f = tableFile.file;
+		const f = tableFile.file;
 
 		if (!f.flavor || !f._compatibility) {
 			return;
@@ -170,7 +170,7 @@ async function validateFile(release: Release, tableFile: ReleaseVersionFile, ind
 		release.invalidate('files.' + index + '._playfield_image', 'Playfield image must be provided.', tableFile._playfield_image);
 	}
 
-	const mediaValidations: Promise<void>[] = [];
+	const mediaValidations: Array<Promise<void>> = [];
 
 	// validate playfield image
 	if (tableFile._playfield_image) {
@@ -238,14 +238,14 @@ async function validateFile(release: Release, tableFile: ReleaseVersionFile, ind
 	return true;
 }
 
-function nonEmptyArray(value:any[]) {
+function nonEmptyArray(value: any[]) {
 	return isArray(value) && value.length > 0;
 }
 
-releaseVersionSchema.methods.getFileIds = function (this:ReleaseVersion, files?: ReleaseVersionFile[]): string[] {
+releaseVersionSchema.methods.getFileIds = function(this: ReleaseVersion, files?: ReleaseVersionFile[]): string[] {
 	return ReleaseVersionDocument.getFileIds(this, files);
 };
 
-releaseVersionSchema.methods.getPlayfieldImageIds = function (this:ReleaseVersion): string[] {
+releaseVersionSchema.methods.getPlayfieldImageIds = function(this: ReleaseVersion): string[] {
 	return ReleaseVersionDocument.getPlayfieldImageIds(this.files);
 };

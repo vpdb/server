@@ -17,11 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { reduce, pick, isEqual, isObject, keys } from 'lodash';
+import { isEqual, isObject, keys, pick, reduce } from 'lodash';
 
-import { state } from '../state';
-import { Context } from '../common/typings/context';
 import { slackbot } from '../common/slackbot';
+import { Context } from '../common/typings/context';
+import { state } from '../state';
 
 export class LogEventUtil {
 
@@ -30,11 +30,11 @@ export class LogEventUtil {
 		let log = new state.models.LogEvent({
 			_actor: actor,
 			_ref: ref,
-			event: event,
-			payload: payload,
+			event,
+			payload,
 			is_public: isPublic,
 			ip: ctx.request.get('x-forwarded-for') || ctx.ip || '0.0.0.0',
-			logged_at: new Date()
+			logged_at: new Date(),
 		});
 		log = await log.save();
 		await slackbot.logEvent(log);
@@ -46,7 +46,7 @@ export class LogEventUtil {
 		return reduce(fromDB, (result: { old: { [key: string]: any }, new: { [key: string]: any } }, val, key) => {
 			if (!isEqual(fromAPI[key], val)) {
 				if (isObject(val)) {
-					let d = LogEventUtil.diff(val, fromAPI[key]);
+					const d = LogEventUtil.diff(val, fromAPI[key]);
 					result.old[key] = d.old;
 					result.new[key] = d.new;
 				} else {

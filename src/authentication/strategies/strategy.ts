@@ -18,10 +18,10 @@
  */
 
 /* istanbul ignore file */
-import { AuthenticationApi, OAuthProfile } from '../authentication.api';
-import { Context } from '../../common/typings/context';
-import { logger } from '../../common/logger';
 import { ApiError } from '../../common/api.error';
+import { logger } from '../../common/logger';
+import { Context } from '../../common/typings/context';
+import { AuthenticationApi, OAuthProfile } from '../authentication.api';
 
 export abstract class Strategy extends AuthenticationApi {
 
@@ -59,7 +59,7 @@ export abstract class Strategy extends AuthenticationApi {
 		const user = await this.verifyCallbackOAuth(ctx, this.name, this.providerName, this.normalizeProfile(profile));
 		logger.info('[Strategy.authenticate] Successfully authenticated with user <%s>.', user.email);
 
-		return await this.authenticateUser(ctx, user, 'oauth');
+		return this.authenticateUser(ctx, user, 'oauth');
 	}
 
 	/**

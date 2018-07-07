@@ -17,19 +17,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 import Ffmpeg from 'fluent-ffmpeg';
-import { OptimizationProcessor } from './processor';
-import { File } from '../file';
-import { logger } from '../../common/logger';
-import { VideoFileVariation } from '../file.variations';
 import { ApiError } from '../../common/api.error';
-import { VideoMetadata } from '../metadata/video.metadata';
+import { logger } from '../../common/logger';
 import { config } from '../../common/settings';
+import { File } from '../file';
+import { VideoFileVariation } from '../file.variations';
+import { VideoMetadata } from '../metadata/video.metadata';
+import { OptimizationProcessor } from './processor';
 
 const ffmpeg = require('bluebird').promisifyAll(Ffmpeg);
 
 export class VideoOptimizationProcessor implements OptimizationProcessor<VideoFileVariation> {
 
-	name: string = 'video.optimization';
+	public name: string = 'video.optimization';
 
 	private metadataReader = new VideoMetadata();
 
@@ -39,15 +39,15 @@ export class VideoOptimizationProcessor implements OptimizationProcessor<VideoFi
 		}
 	}
 
-	canProcess(file: File, variation?: VideoFileVariation): boolean {
+	public canProcess(file: File, variation?: VideoFileVariation): boolean {
 		return !variation && file.getMimeCategory() === 'video';
 	}
 
-	getOrder(variation?: VideoFileVariation): number {
+	public getOrder(variation?: VideoFileVariation): number {
 		return 500;
 	}
 
-	async process(file: File, src: string, dest: string, variation?: VideoFileVariation): Promise<string> {
+	public async process(file: File, src: string, dest: string, variation?: VideoFileVariation): Promise<string> {
 		return new Promise<string>((resolve, reject) => {
 
 			logger.info('[VideoOptimizationProcessor] Starting video processing of %s', file.toShortString(variation));
@@ -64,21 +64,21 @@ export class VideoOptimizationProcessor implements OptimizationProcessor<VideoFi
 			const proc = ffmpeg(src)
 				.noAudio()
 				.videoCodec('libx264')
-				.on('start', function (commandLine: string) {
+				.on('start', function(commandLine: string) {
 					logger.info('[VideoOptimizationProcessor] > %s', commandLine);
 				})
-				.on('error', function (err: Error, stdout: string, stderr: string) {
+				.on('error', function(err: Error, stdout: string, stderr: string) {
 					logger.error('[VideoOptimizationProcessor] ' + err);
 					logger.error('[VideoOptimizationProcessor] [ffmpeg|stdout] ' + stdout);
 					logger.error('[VideoOptimizationProcessor] [ffmpeg|stderr] ' + stderr);
 					reject(new ApiError('Error processing video').log(err));
 				})
-				.on('progress', function (progress: { percent: number }) {
+				.on('progress', function(progress: { percent: number }) {
 					if (progress.percent) {
 						logger.info('[VideoOptimizationProcessor] Processing %s: %s%', file.toShortString(variation), Math.round(progress.percent * 100) / 100);
 					}
 				})
-				.on('end', function () {
+				.on('end', function() {
 					logger.info('[VideoOptimizationProcessor] Transcoding succeeded after %dms, written to %s', Date.now() - started, dest);
 					resolve(dest);
 				});

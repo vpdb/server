@@ -19,18 +19,18 @@
 
 import Ffmpeg from 'fluent-ffmpeg';
 
-import { CreationProcessor } from './processor';
-import { File } from '../file';
-import { logger } from '../../common/logger';
-import { FileVariation, VideoFileVariation } from '../file.variations';
 import { ApiError } from '../../common/api.error';
+import { logger } from '../../common/logger';
 import { config } from '../../common/settings';
+import { File } from '../file';
+import { FileVariation, VideoFileVariation } from '../file.variations';
+import { CreationProcessor } from './processor';
 
 const ffmpeg = require('bluebird').promisifyAll(Ffmpeg);
 
 export class VideoThumbProcessor implements CreationProcessor<VideoFileVariation> {
 
-	name: string = 'video.thumb';
+	public name: string = 'video.thumb';
 
 	constructor() {
 		if (config.ffmpeg && config.ffmpeg.path) {
@@ -38,15 +38,15 @@ export class VideoThumbProcessor implements CreationProcessor<VideoFileVariation
 		}
 	}
 
-	canProcess(file: File, srcVariation: FileVariation, destVariation: VideoFileVariation): boolean {
+	public canProcess(file: File, srcVariation: FileVariation, destVariation: VideoFileVariation): boolean {
 		return file.getMimeTypePrimary(srcVariation) === 'video' && file.getMimeTypePrimary(destVariation) === 'video';
 	}
 
-	getOrder(variation?: FileVariation): number {
+	public getOrder(variation?: FileVariation): number {
 		return 100 + (variation && variation.priority ? variation.priority : 0);
 	}
 
-	async process(file: File, src: string, dest: string, variation?: VideoFileVariation): Promise<string> {
+	public async process(file: File, src: string, dest: string, variation?: VideoFileVariation): Promise<string> {
 		return new Promise<string>((resolve, reject) => {
 			logger.debug('[VideoScreenshotProcessor] Starting processing %s at %s.', file.toShortString(variation), dest);
 			const started = Date.now();

@@ -19,8 +19,8 @@
 
 import { Scope } from '../common/scope';
 
-import { BackglassApi } from './backglass.api';
 import { StarApi } from '../stars/star.api';
+import { BackglassApi } from './backglass.api';
 
 const api = new BackglassApi();
 const starApi = new StarApi();

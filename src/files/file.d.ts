@@ -31,7 +31,7 @@ export interface File extends MetricsDocument {
 	variations: { [key: string]: any };  // todo type
 	preprocessed: { // currently rotation settings of playfield images
 		rotation?: number,
-		unvalidatedRotation?: number
+		unvalidatedRotation?: number,
 	};
 	is_active: boolean;
 	counter: { [T in FileCounterType]: number; };
@@ -162,7 +162,7 @@ export interface File extends MetricsDocument {
 	 * @param {string} variationName Name of the variation
 	 * @returns {FileVariation | null} File variation or null if the variation doesn't exist.
 	 */
-	getVariation(variationName:string): FileVariation | null;
+	getVariation(variationName: string): FileVariation | null;
 
 	/**
 	 * Returns all direct dependencies of a variation.
@@ -189,7 +189,7 @@ export interface File extends MetricsDocument {
 	 * @param {FileVariation} [variation] File variation or null for original file
 	 * @returns {string}
 	 */
-	toDetailedString(variation?:FileVariation): string;
+	toDetailedString(variation?: FileVariation): string;
 }
 
 export type FileCounterType = 'downloads';

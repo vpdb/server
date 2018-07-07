@@ -17,17 +17,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { WebClient, RTMClient } from '@slack/client';
+import { RTMClient, WebClient } from '@slack/client';
 import { MessageAttachment } from '@slack/client/dist/methods';
 import { RTMClientOptions } from '@slack/client/dist/RTMClient';
 
-import { state } from '../state';
-import { settings, config } from './settings';
-import { logger } from './logger';
-import { User } from '../users/user';
-import { ContentAuthor } from '../users/content.author';
 import { LogEvent } from '../log-event/log.event';
 import { LogUser } from '../log-user/log.user';
+import { state } from '../state';
+import { ContentAuthor } from '../users/content.author';
+import { User } from '../users/user';
+import { logger } from './logger';
+import { config, settings } from './settings';
 
 const red = '#cf0000';
 const delay = 5000;
@@ -54,7 +54,7 @@ export class SlackBot {
 		}
 	}
 
-	async logEvent(log: LogEvent): Promise<void> {
+	public async logEvent(log: LogEvent): Promise<void> {
 		if (!this.enabled) {
 			return;
 		}
@@ -66,7 +66,7 @@ export class SlackBot {
 				msg.atts = [{
 					fallback: log.payload.comment.message,
 					text: '> ' + log.payload.comment.message.trim(),
-					mrkdwn_in: ['text']
+					mrkdwn_in: ['text'],
 				} as MessageAttachment];
 				break;
 
@@ -116,7 +116,7 @@ export class SlackBot {
 					fallback: `${log.payload.game.title} (${log.payload.game.manufacturer} ${log.payload.game.year})`,
 					title: `${log.payload.game.title} (${log.payload.game.manufacturer} ${log.payload.game.year})`,
 					title_link: settings.webUri('/games/' + log.payload.game.id),
-					image_url: log.payload.game.backglass.variations.small.url
+					image_url: log.payload.game.backglass.variations.small.url,
 				}];
 				break;
 
@@ -128,7 +128,7 @@ export class SlackBot {
 					title: `${game.title} (${game.manufacturer} ${game.year})`,
 					title_link: settings.webUri('/games/' + game.id),
 					text: '```\n' + JSON.stringify(log.payload.new, null, '  ') + '```',
-					mrkdwn_in: ['text']
+					mrkdwn_in: ['text'],
 				} as MessageAttachment];
 				break;
 
@@ -144,14 +144,14 @@ export class SlackBot {
 					title_link: settings.webUri('/games/' + log.payload.game.id + '/releases/' + log.payload.release.id),
 					text: log.payload.release.description,
 					mrkdwn_in: ['text'],
-					image_url: log.payload.release.thumb.image.url
+					image_url: log.payload.release.thumb.image.url,
 				} as MessageAttachment);
 				if (!log.payload.release.moderation.auto_approved) {
 					msg.atts.push({
 						fallback: 'Approval needed!',
 						title: 'Approval needed!',
 						title_link: settings.webUri('/admin/uploads'),
-						color: red
+						color: red,
 					});
 				}
 				msg.msg = `Created new release for *${log.payload.game.title}* (${log.payload.game.manufacturer} ${log.payload.game.year}):`;
@@ -192,21 +192,21 @@ export class SlackBot {
 				as_user: false,
 				username: actor.name,
 				attachments: msg.atts,
-				icon_url: 'https://www.gravatar.com/avatar/' + actor.gravatar_id + '?d=retro'
+				icon_url: 'https://www.gravatar.com/avatar/' + actor.gravatar_id + '?d=retro',
 			});
 		} catch (err) {
 			logger.error(err, 'Error sending event log to slack.');
 		}
 	}
 
-	async logUser(log: LogUser): Promise<void> {
+	public async logUser(log: LogUser): Promise<void> {
 		if (!this.enabled) {
 			return;
 		}
 		const user = await state.models.User.findById((log._user as User)._id || log._user).exec();
 		const actor = await state.models.User.findById((log._actor as User)._id || log._actor).exec();
 
-		let self = user.id === actor.id;
+		const self = user.id === actor.id;
 		const msg: { msg: string, atts?: MessageAttachment[] } = { msg: '', atts: [] };
 		switch (log.event) {
 			case 'authenticate':
@@ -262,7 +262,7 @@ export class SlackBot {
 					as_user: false,
 					username: actor.name,
 					attachments: msg.atts,
-					icon_url: 'https://www.gravatar.com/avatar/' + actor.gravatar_id + '?d=retro'
+					icon_url: 'https://www.gravatar.com/avatar/' + actor.gravatar_id + '?d=retro',
 				});
 
 				//this.rtm.sendMessage(msg, this.config.channels.userLog);

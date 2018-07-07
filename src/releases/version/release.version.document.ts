@@ -28,7 +28,7 @@ export class ReleaseVersionDocument {
 		const releaseFileIds: string[] = versionFiles
 			.map(f => f._file as File)
 			.filter(f => !!f)
-			.map((file:File) => file._id.toString());
+			.map((file: File) => file._id.toString());
 
 		const playfieldImageId: string[] = ReleaseVersionDocument.getPlayfieldImageIds(versionFiles);
 		const playfieldVideoId: string[] = ReleaseVersionDocument.getPlayfieldVideoIds(versionFiles);
@@ -40,13 +40,13 @@ export class ReleaseVersionDocument {
 		return versionFiles
 			.map(f => f._playfield_image as File)
 			.filter(f => !!f)
-			.map((file:File) => file._id.toString());
+			.map((file: File) => file._id.toString());
 	}
 
 	public static getPlayfieldVideoIds(versionFiles: ReleaseVersionFile[]): string[] {
 		return versionFiles
 			.map(f => f._playfield_video as File)
 			.filter(f => !!f)
-			.map((file:File) => file._id.toString());
+			.map((file: File) => file._id.toString());
 	}
 }

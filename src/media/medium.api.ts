@@ -17,15 +17,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Types } from 'mongoose';
 import { extend } from 'lodash';
+import { Types } from 'mongoose';
 
+import { acl } from '../common/acl';
 import { Api } from '../common/api';
+import { ApiError } from '../common/api.error';
+import { logger } from '../common/logger';
 import { Context } from '../common/typings/context';
 import { state } from '../state';
-import { logger } from '../common/logger';
-import { ApiError } from '../common/api.error';
-import { acl } from '../common/acl';
 
 export class MediumApi extends Api {
 
@@ -39,7 +39,7 @@ export class MediumApi extends Api {
 		const now = new Date();
 		const medium = await state.models.Medium.getInstance(extend(ctx.request.body, {
 			_created_by: ctx.state.user._id,
-			created_at: now
+			created_at: now,
 		}));
 		await medium.save();
 		logger.info('[MediumApi.create] Medium "%s" successfully created.', medium.id);

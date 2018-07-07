@@ -21,17 +21,17 @@ import Application = require('koa');
 import Router from 'koa-router';
 import mongoose, { Schema } from 'mongoose';
 
-import { state } from '../state';
 import { EndPoint } from '../common/api.endpoint';
+import { state } from '../state';
 import { File } from './file';
-import { FileSerializer } from './file.serializer';
-import { FileModel, fileSchema } from './file.schema';
 import { router as apiRouter } from './file.api.router';
+import { FileModel, fileSchema } from './file.schema';
+import { FileSerializer } from './file.serializer';
 import { protectedRouter, publicRouter } from './file.storage.router';
 
 export class FilesApiEndPoint extends EndPoint {
 
-	readonly name: string = 'Files API';
+	public readonly name: string = 'Files API';
 
 	private readonly _router: Router;
 	private readonly _schema: Schema;
@@ -42,11 +42,11 @@ export class FilesApiEndPoint extends EndPoint {
 		this._router = apiRouter;
 	}
 
-	getRouter(): Router {
+	public getRouter(): Router {
 		return this._router;
 	}
 
-	async register(app: Application): Promise<void> {
+	public async register(app: Application): Promise<void> {
 		state.models.File = mongoose.model<File, FileModel>('File', this._schema);
 		state.serializers.File = new FileSerializer();
 	}
@@ -54,7 +54,7 @@ export class FilesApiEndPoint extends EndPoint {
 
 export class FilesProtectedStorageEndPoint extends EndPoint {
 
-	readonly name: string = 'Storage Protected Files API';
+	public readonly name: string = 'Storage Protected Files API';
 
 	private readonly _router: Router;
 
@@ -63,18 +63,18 @@ export class FilesProtectedStorageEndPoint extends EndPoint {
 		this._router = protectedRouter;
 	}
 
-	getRouter(): Router {
+	public getRouter(): Router {
 		return this._router;
 	}
 
-	async register(app: Application): Promise<void> {
+	public async register(app: Application): Promise<void> {
 		// nothing to register
 	}
 }
 
 export class FilesPublicStorageEndPoint extends EndPoint {
 
-	readonly name: string = 'Storage Public Files API';
+	public readonly name: string = 'Storage Public Files API';
 
 	private readonly _router: Router;
 
@@ -83,11 +83,11 @@ export class FilesPublicStorageEndPoint extends EndPoint {
 		this._router = publicRouter;
 	}
 
-	getRouter(): Router {
+	public getRouter(): Router {
 		return this._router;
 	}
 
-	async register(app: Application): Promise<void> {
+	public async register(app: Application): Promise<void> {
 		// nothing to register
 	}
 }

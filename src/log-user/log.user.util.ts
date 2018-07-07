@@ -17,12 +17,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { isEmpty, reduce, isEqual } from 'lodash';
+import { isEmpty, isEqual, reduce } from 'lodash';
 
-import { state } from '../state';
 import { logger } from '../common/logger';
 import { slackbot } from '../common/slackbot';
 import { Context } from '../common/typings/context';
+import { state } from '../state';
 import { User } from '../users/user';
 
 export class LogUserUtil {
@@ -43,13 +43,13 @@ export class LogUserUtil {
 	}
 
 	public static diff(obj1: { [key: string]: any }, obj2: { [key: string]: any }): ObjectDiff {
-		return reduce(obj1, function (result: ObjectDiff, val, key) {
+		return reduce(obj1, function(result: ObjectDiff, val, key) {
 			if (!isEqual(obj2[key], val)) {
 				result.old[key] = val;
 				result.new[key] = obj2[key];
 			}
 			return result;
-		}, { 'old': {}, 'new': {} });
+		}, { old: {}, new: {} });
 	}
 
 	private static async log(ctx: Context, user: User, result: 'success' | 'failure', event: string, payload: { [key: string]: any }, actor: User, message: string): Promise<void> {
@@ -57,12 +57,12 @@ export class LogUserUtil {
 		const log = new state.models.LogUser({
 			_user: user._id || user,
 			_actor: actor,
-			event: event,
-			payload: payload,
+			event,
+			payload,
 			ip: ctx.ip || ctx.request.get('x-forwarded-for') || '0.0.0.0',
-			result: result,
-			message: message,
-			logged_at: new Date()
+			result,
+			message,
+			logged_at: new Date(),
 		});
 		try {
 			await log.save();
@@ -74,6 +74,6 @@ export class LogUserUtil {
 }
 
 interface ObjectDiff {
-	'old': { [key: string]: any },
-	'new': { [key: string]: any }
+	'old': { [key: string]: any };
+	'new': { [key: string]: any };
 }

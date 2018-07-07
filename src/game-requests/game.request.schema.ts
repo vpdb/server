@@ -25,15 +25,15 @@ const shortId = require('shortid32');
 //-----------------------------------------------------------------------------
 
 const gameRequestFields = {
-	id:          { type: String, required: true, unique: true, 'default': shortId.generate },
+	id:          { type: String, required: true, unique: true, default: shortId.generate },
 	title:       { type: String },
 	notes:       { type: String },
 	ipdb_number: { type: Number, required: 'At least the IPDB number must be supplied.' },
 	ipdb_title:  { type: String, required: 'Must be fetched from IPDB' },
-	is_closed:   { type: Boolean, required: true, 'default': false },
+	is_closed:   { type: Boolean, required: true, default: false },
 	message:     { type: String }, // moderator feedback sent to user
 	_game:       { type: Schema.Types.ObjectId, ref: 'Game' },
 	_created_by: { type: Schema.Types.ObjectId, required: true, ref: 'User', index: true },
-	created_at:  { type: Date, required: true }
+	created_at:  { type: Date, required: true },
 };
 export const gameRequestSchema = new Schema(gameRequestFields, { toObject: { virtuals: true, versionKey: false } });

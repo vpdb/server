@@ -2,7 +2,10 @@
 	"extends": "tslint:latest",
 	"rules": {
 		"quotemark": [ true, "single", "avoid-escape" ],
-		"indent": [true, "tabs" ],
+		"indent": [ true, "tabs" ],
 		"comment-format": false,
+		"arrow-parens": false,
+		"max-line-length": false,
+		"object-literal-key-quotes": [ true, "as-needed" ]
 	}
 }

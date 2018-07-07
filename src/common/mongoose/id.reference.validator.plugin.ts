@@ -49,7 +49,7 @@ export function idReferenceValidatorPlugin(schema: Schema, options: IdReferenceV
 		}
 
 		if (validateFunction) {
-			schema.path(path).validate(async function (value: any) {
+			schema.path(path).validate(async function(value: any) {
 				return validateFunction(this, path, refModelName, value, conditions);
 			}, message);
 		}
@@ -57,7 +57,7 @@ export function idReferenceValidatorPlugin(schema: Schema, options: IdReferenceV
 }
 
 async function executeQuery<T>(query: Query<T>, conditions: string[], validateValue: any) {
-	for (let fieldName in conditions) {
+	for (const fieldName in conditions) {
 		query.where(fieldName, conditions[fieldName]);
 	}
 	const count = await query.exec();
@@ -78,7 +78,7 @@ async function validateIdArray(doc: Document, path: string, refModelName: string
 		return true;
 	}
 	let n = 0;
-	for (let value of values) {
+	for (const value of values) {
 		const valid = await validateId(doc, path, refModelName, value, conditions);
 		if (!valid) {
 			doc.invalidate(path + '.' + n, 'No such ' + refModelName + ' with id "' + value + '".', value);

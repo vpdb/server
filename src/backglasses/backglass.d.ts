@@ -23,11 +23,11 @@ import {
 	MetricsDocument,
 	ModeratedDocument,
 	PrettyIdDocument,
-	Types
+	Types,
 } from 'mongoose';
+import { ContentAuthor } from '../users/content.author';
 import { User } from '../users/user';
 import { BackglassVersion } from './backglass.version';
-import { ContentAuthor } from '../users/content.author';
 
 export interface Backglass extends ModeratedDocument, GameReferenceDocument, PrettyIdDocument, MetricsDocument, FileReferenceDocument {
 	id: string;
@@ -44,5 +44,5 @@ export interface Backglass extends ModeratedDocument, GameReferenceDocument, Pre
 	// serialized
 	created_by: User;
 
-	isCreatedBy(user:User):boolean;
+	isCreatedBy(user: User): boolean;
 }

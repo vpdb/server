@@ -21,14 +21,14 @@ import { FileReferenceDocument, PrettyIdDocument } from 'mongoose';
 import { ReleaseVersionFile } from './file/release.version.file';
 
 export interface ReleaseVersion extends FileReferenceDocument, PrettyIdDocument {
-	version: string,
-	released_at: Date | string,
-	changes: string,
-	files: ReleaseVersionFile[],
+	version: string;
+	released_at: Date | string;
+	changes: string;
+	files: ReleaseVersionFile[];
 	counter: {
 		downloads: number,
-		comments: number
-	}
+		comments: number,
+	};
 
 	/**
 	 * Returns all file IDs of the version files.
@@ -43,5 +43,5 @@ export interface ReleaseVersion extends FileReferenceDocument, PrettyIdDocument 
 	 *
 	 * @returns {string[]} Playfield image IDs
 	 */
-	getPlayfieldImageIds (): string[];
+	getPlayfieldImageIds(): string[];
 }

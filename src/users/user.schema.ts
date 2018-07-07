@@ -17,19 +17,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-
-import { Schema, MetricsModel } from 'mongoose';
-import { each, find, isArray, isBoolean, isString, isUndefined, keys } from 'lodash';
 import { createHmac } from 'crypto';
-import { isEmail, isLength, matches } from 'validator';
+import { each, find, isArray, isBoolean, isString, isUndefined, keys } from 'lodash';
+import { MetricsModel, Schema } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
+import { isEmail, isLength, matches } from 'validator';
 
-import { state } from '../state';
 import { acl } from '../common/acl';
 import { logger } from '../common/logger';
-import { config } from '../common/settings';
 import { metricsPlugin } from '../common/mongoose/metrics.plugin';
+import { config } from '../common/settings';
 import { flavors } from '../releases/release.flavors';
+import { state } from '../state';
 import { User } from './user';
 
 const shortId = require('shortid32');
@@ -37,16 +36,16 @@ const shortId = require('shortid32');
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
-export const userFields:any = {
-	id: { type: String, required: true, unique: true, 'default': shortId.generate },
+export const userFields: any = {
+	id: { type: String, required: true, unique: true, default: shortId.generate },
 	name: { type: String, index: true, required: 'Name must be provided.' }, // display name, equals username when locally registering.
 	username: { type: String, index: true, unique: true, sparse: true },     // login name when logging locally, empty if oauth
 	email: { type: String, index: true, unique: true, required: 'Email must be provided.' },
 	email_status: {
-		code: { type: String, 'enum': ['confirmed', 'pending_registration', 'pending_update'], required: true },
+		code: { type: String, enum: ['confirmed', 'pending_registration', 'pending_update'], required: true },
 		token: { type: String },
 		expires_at: { type: Date },
-		value: { type: String }
+		value: { type: String },
 	},
 	emails: { type: [String], index: true }, // collected from profiles
 	roles: { type: [String], required: 'Roles must be provided.' },
@@ -60,33 +59,33 @@ export const userFields:any = {
 	preferences: {
 		tablefile_name: { type: String },
 		flavor_tags: { type: Schema.Types.Mixed },
-		notify_release_moderation_status: { type: Boolean, 'default': true },
-		notify_release_validation_status: { type: Boolean, 'default': true },
-		notify_backglass_moderation_status: { type: Boolean, 'default': true },
-		notify_game_requests: { type: Boolean, 'default': true },
-		notify_created_release_comments: { type: Boolean, 'default': true },
-		notify_created_release_followers: { type: Boolean, 'default': true }, // not implemented
-		notify_mentions: { type: Boolean, 'default': true },                  // not implemented
-		contributor_notify_game_request_created: { type: Boolean, 'default': true }, // not implemented
-		moderator_notify_release_submitted: { type: Boolean, 'default': true },
-		moderator_notify_release_auto_approved: { type: Boolean, 'default': false },
-		moderator_notify_release_commented: { type: Boolean, 'default': true },
-		moderator_notify_backglass_submitted: { type: Boolean, 'default': true },
-		moderator_notify_backglass_auto_approved: { type: Boolean, 'default': false }
+		notify_release_moderation_status: { type: Boolean, default: true },
+		notify_release_validation_status: { type: Boolean, default: true },
+		notify_backglass_moderation_status: { type: Boolean, default: true },
+		notify_game_requests: { type: Boolean, default: true },
+		notify_created_release_comments: { type: Boolean, default: true },
+		notify_created_release_followers: { type: Boolean, default: true }, // not implemented
+		notify_mentions: { type: Boolean, default: true },                  // not implemented
+		contributor_notify_game_request_created: { type: Boolean, default: true }, // not implemented
+		moderator_notify_release_submitted: { type: Boolean, default: true },
+		moderator_notify_release_auto_approved: { type: Boolean, default: false },
+		moderator_notify_release_commented: { type: Boolean, default: true },
+		moderator_notify_backglass_submitted: { type: Boolean, default: true },
+		moderator_notify_backglass_auto_approved: { type: Boolean, default: false },
 	},
 	credits: { type: Schema.Types.Number },
 	counter: {
-		comments: { type: Number, 'default': 0 },
-		downloads: { type: Number, 'default': 0 },
-		stars: { type: Number, 'default': 0 }
+		comments: { type: Number, default: 0 },
+		downloads: { type: Number, default: 0 },
+		stars: { type: Number, default: 0 },
 	},
 	created_at: { type: Date, required: true },
-	is_active: { type: Boolean, required: true, 'default': false },
+	is_active: { type: Boolean, required: true, default: false },
 	validated_emails: { type: [String], index: true },
 	channel_config: {
-		subscribe_to_starred: { type: Boolean, 'default': false }, // "nice to know", useless
-		subscribed_releases: { type: [String], index: true }     // linked releases on client side, so we can announce properly in realtime
-	}
+		subscribe_to_starred: { type: Boolean, default: false }, // "nice to know", useless
+		subscribed_releases: { type: [String], index: true },     // linked releases on client side, so we can announce properly in realtime
+	},
 };
 const providerSchema = new Schema({
 	id: { type: String, required: 'Provider ID is required.', index: true },
@@ -94,7 +93,7 @@ const providerSchema = new Schema({
 	emails: { type: [String], required: false },
 	created_at: { type: Date, required: true },
 	modified_at: { type: Date },
-	profile: {}
+	profile: {},
 });
 
 // provider data fields
@@ -104,7 +103,7 @@ if (config.vpdb.passport.github.enabled) {
 if (config.vpdb.passport.google.enabled) {
 	userFields.providers.google = providerSchema;
 }
-config.vpdb.passport.ipboard.forEach(function (ipbConfig) {
+config.vpdb.passport.ipboard.forEach(function(ipbConfig) {
 	if (ipbConfig.enabled) {
 		userFields.providers[ipbConfig.id] = providerSchema;
 	}
@@ -125,17 +124,17 @@ userSchema.plugin(metricsPlugin);
 //-----------------------------------------------------------------------------
 
 userSchema.virtual('password')
-	.set(function (password: string) {
+	.set(function(password: string) {
 		this._password = password;
 		this.password_salt = this.makeSalt();
 		this.password_hash = this.hashPassword(password);
 	})
-	.get(function () {
+	.get(function() {
 		return this._password;
 	});
 
 userSchema.virtual('planConfig')
-	.get(function () {
+	.get(function() {
 		let plan = find(config.vpdb.quota.plans, p => p.id === this._plan);
 		if (!plan) {
 			logger.warn('[User.planConfig] Cannot find plan "%s" for user "%s" in server config.', this._plan, this.email);
@@ -145,7 +144,7 @@ userSchema.virtual('planConfig')
 	});
 
 userSchema.virtual('provider')
-	.get(function () {
+	.get(function() {
 		return find(keys(this.providers), p => this.providers[p] && this.providers[p].id) || 'local';
 	});
 
@@ -174,12 +173,11 @@ userSchema.virtual('provider')
 // 	next();
 // });
 
-
 //-----------------------------------------------------------------------------
 // VALIDATIONS
 //-----------------------------------------------------------------------------
 const validNameRegex = /^[0-9a-z ]{3,}$/i;
-userSchema.path('name').validate(function (name: string) {
+userSchema.path('name').validate(function(name: string) {
 	// this gets default from username if not set anyway.
 	if (this.isNew) {
 		return true;
@@ -187,7 +185,7 @@ userSchema.path('name').validate(function (name: string) {
 	return isString(name) && isLength(name, 3, 30);
 }, 'Name must be between 3 and 30 characters.');
 
-userSchema.path('name').validate(function (name: string) {
+userSchema.path('name').validate(function(name: string) {
 	// this gets default from username if not set anyway.
 	if (this.isNew) {
 		return true;
@@ -195,7 +193,7 @@ userSchema.path('name').validate(function (name: string) {
 	return validNameRegex.test(name);
 }, 'Name can only contain letters, numbers and spaces.');
 
-userSchema.path('email').validate(function (email: string) {
+userSchema.path('email').validate(function(email: string) {
 	// if you are authenticating by any of the oauth strategies, don't validate
 	if (this.isNew && !this.is_local) {
 		return true;
@@ -203,11 +201,11 @@ userSchema.path('email').validate(function (email: string) {
 	return isString(email) && isEmail(email);
 }, 'Email must be in the correct format.');
 
-userSchema.path('location').validate(function (location: string) {
+userSchema.path('location').validate(function(location: string) {
 	return isString(location) && isLength(location, 0, 100);
 }, 'Location must not be longer than 100 characters.');
 
-userSchema.path('is_local').validate(async function (isLocal: boolean) {
+userSchema.path('is_local').validate(async function(isLocal: boolean) {
 
 	// validate presence of password. can't do that in the password validator
 	// below because it's not run when there's no value (and it can be null,
@@ -243,9 +241,9 @@ userSchema.path('is_local').validate(async function (isLocal: boolean) {
 		if (!this.preferences.tablefile_name.trim()) {
 			this.invalidate('preferences.tablefile_name', 'Must not be empty if set.');
 		}
-		let rg1 = /^[^\\/:*?"<>|]+$/;                        // forbidden characters \ / : * ? " < > |
-		let rg2 = /^\./;                                     // cannot start with dot (.)
-		let rg3 = /^(nul|prn|con|lpt[0-9]|com[0-9])(\.|$)/i; // forbidden file names
+		const rg1 = /^[^\\/:*?"<>|]+$/;                        // forbidden characters \ / : * ? " < > |
+		const rg2 = /^\./;                                     // cannot start with dot (.)
+		const rg3 = /^(nul|prn|con|lpt[0-9]|com[0-9])(\.|$)/i; // forbidden file names
 		if (!rg1.test(this.preferences.tablefile_name) || rg2.test(this.preferences.tablefile_name) || rg3.test(this.preferences.tablefile_name)) {
 			this.invalidate('preferences.tablefile_name', 'Must be a valid windows filename, which "' + this.preferences.tablefile_name + '" is not.');
 		}
@@ -293,10 +291,9 @@ userSchema.path('is_local').validate(async function (isLocal: boolean) {
 	// }
 	return true;
 
-
 }, 'Error while validating is_local.');
 
-userSchema.path('password_hash').validate(function () {
+userSchema.path('password_hash').validate(function() {
 	// here we check the length. remember that the virtual _password field is
 	// the one that triggers the hashing.
 	if (this._password && isString(this._password) && !isLength(this._password, 6)) {
@@ -304,10 +301,9 @@ userSchema.path('password_hash').validate(function () {
 	}
 }, null);
 
-userSchema.path('_plan').validate(function (plan: string) {
+userSchema.path('_plan').validate(function(plan: string) {
 	return config.vpdb.quota.plans.map(p => p.id).includes(plan);
 }, 'Plan must be one of: [' + config.vpdb.quota.plans.map(p => p.id).join(',') + ']');
-
 
 //-----------------------------------------------------------------------------
 // METHODS
@@ -318,7 +314,7 @@ userSchema.path('_plan').validate(function (plan: string) {
  * @param {string} plainText Plaintext password
  * @return {boolean} True if match, false otherwise.
  */
-userSchema.methods.authenticate = function (plainText: string): boolean {
+userSchema.methods.authenticate = function(plainText: string): boolean {
 	return this.hashPassword(plainText) === this.password_hash;
 };
 
@@ -326,7 +322,7 @@ userSchema.methods.authenticate = function (plainText: string): boolean {
  * Creates a random salt
  * @return {string} Random salt
  */
-userSchema.methods.makeSalt = function (): string {
+userSchema.methods.makeSalt = function(): string {
 	return Math.round((new Date().valueOf() * Math.random())) + '';
 };
 
@@ -335,7 +331,7 @@ userSchema.methods.makeSalt = function (): string {
  * @param {string} password Plain text password
  * @return {string} Hex-encoded hash
  */
-userSchema.methods.hashPassword = function (password: string): string {
+userSchema.methods.hashPassword = function(password: string): string {
 	if (!password) {
 		return '';
 	}
@@ -349,7 +345,7 @@ userSchema.methods.hashPassword = function (password: string): string {
  * Checks if password has been set.
  * @return {boolean}
  */
-userSchema.methods.passwordSet = function (): boolean {
+userSchema.methods.passwordSet = function(): boolean {
 	return this.password_salt && this.password_hash;
 };
 
@@ -358,7 +354,7 @@ userSchema.methods.passwordSet = function (): boolean {
  * @param {string | string[]} role Roles to check
  * @return {boolean} True if at least one role matches, false otherwise.
  */
-userSchema.methods.hasRole = function (role: string | string[]): boolean {
+userSchema.methods.hasRole = function(role: string | string[]): boolean {
 	if (isArray(role)) {
 		for (let i = 0; i < role.length; i++) {
 			if (this.roles.includes(role[i])) {
@@ -375,7 +371,7 @@ userSchema.methods.hasRole = function (role: string | string[]): boolean {
 //-----------------------------------------------------------------------------
 // TRIGGERS
 //-----------------------------------------------------------------------------
-userSchema.post('remove', async function (obj: User) {
+userSchema.post('remove', async function(obj: User) {
 	await state.models.LogUser.remove({ _user: obj._id });
 	await state.models.Token.remove({ _created_by: obj._id });
 	await acl.removeUserRoles(obj.id, obj.roles);

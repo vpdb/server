@@ -73,7 +73,7 @@ export interface CreationProcessor<V extends FileVariation> extends Processor<V>
 	 * @param {FileVariation} destVariation Variation of destination file to process
 	 * @returns {boolean} True if it can be processed, false otherwise.
 	 */
-	canProcess(file: File, srcVariation: FileVariation, destVariation:FileVariation): boolean;
+	canProcess(file: File, srcVariation: FileVariation, destVariation: FileVariation): boolean;
 }
 
 export interface OptimizationProcessor<V extends FileVariation> extends Processor<V> {

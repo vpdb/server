@@ -17,26 +17,26 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document, GameReferenceDocument, GameReferenceOptions, Model, ModelProperties, Schema } from 'mongoose';
 import { assign, isArray, isEmpty, isObject, map } from 'lodash';
+import { Document, GameReferenceDocument, GameReferenceOptions, Model, ModelProperties, Schema } from 'mongoose';
 
-import { state } from '../../state';
-import { Context } from '../typings/context';
-import { config } from '../settings';
 import { Game } from '../../games/game';
-import { User } from '../../users/user';
+import { state } from '../../state';
 import { ContentAuthor } from '../../users/content.author';
+import { User } from '../../users/user';
 import { acl } from '../acl';
+import { config } from '../settings';
+import { Context } from '../typings/context';
 
 const modelResourceMap: { [key: string]: string } = {
 	Release: 'releases',
 	Backglass: 'backglasses',
-	Rom: 'roms'
+	Rom: 'roms',
 };
 const modelReferenceMap: { [key: string]: string } = {
 	Release: 'release',
 	Backglass: 'backglass',
-	Rom: 'rom'
+	Rom: 'rom',
 };
 
 /**
@@ -89,8 +89,8 @@ export function gameReferencePlugin(schema: Schema, options: GameReferenceOption
 				$or: [
 					{ _created_by: ctx.state.user._id },
 					{ 'authors._user': ctx.state.user._id },
-					{ _game: { $nin: map(games, '_id') } }
-				]
+					{ _game: { $nin: map(games, '_id') } },
+				],
 			}, query);
 
 		} else {
@@ -140,7 +140,7 @@ export function gameReferencePlugin(schema: Schema, options: GameReferenceOption
 	 * @param {GameReferenceDocument} entity ntity that references the game. Needed to in order to check for owner.
 	 * @return {Promise<boolean>} True if access granted, false otherwise.
 	 */
-	schema.statics.hasRestrictionAccess = async function (ctx: Context, game: Game, entity: GameReferenceDocument): Promise<boolean> {
+	schema.statics.hasRestrictionAccess = async function(ctx: Context, game: Game, entity: GameReferenceDocument): Promise<boolean> {
 
 		const reference = modelReferenceMap[this.modelName];
 		const resource = modelResourceMap[this.modelName];
@@ -207,7 +207,6 @@ function addToQuery<T>(toAdd: object, query: T): T {
 	}
 	return query;
 }
-
 
 declare module 'mongoose' {
 

@@ -18,20 +18,20 @@
  */
 
 import Application = require('koa');
-import mongoose, { Schema } from 'mongoose';
 import Router from 'koa-router';
+import mongoose, { Schema } from 'mongoose';
 
-import { state } from '../state';
 import { EndPoint } from '../common/api.endpoint';
-import { User } from './user';
-import { UserSerializer } from './user.serializer';
+import { state } from '../state';
 import { ContentAuthorSerializer } from './content.author.serializer';
-import { UserModel, userSchema } from './user.schema';
+import { User } from './user';
 import { router } from './user.api.router';
+import { UserModel, userSchema } from './user.schema';
+import { UserSerializer } from './user.serializer';
 
 export class UserEndPoint extends EndPoint {
 
-	readonly name: string = 'User API';
+	public readonly name: string = 'User API';
 
 	private readonly _router: Router;
 	private readonly _schema: Schema;
@@ -42,11 +42,11 @@ export class UserEndPoint extends EndPoint {
 		this._schema = userSchema;
 	}
 
-	getRouter(): Router {
+	public getRouter(): Router {
 		return this._router;
 	}
 
-	async register(app: Application): Promise<void> {
+	public async register(app: Application): Promise<void> {
 		state.models.User = mongoose.model<User, UserModel>('User', this._schema);
 		state.serializers.User = new UserSerializer();
 		state.serializers.ContentAuthor = new ContentAuthorSerializer();

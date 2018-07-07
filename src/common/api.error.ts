@@ -18,8 +18,8 @@
  */
 
 import chalk from 'chalk';
+import { compact, isArray, isEmpty, isObject } from 'lodash';
 import { basename, dirname, sep } from 'path';
-import { compact, isArray, isObject, isEmpty } from 'lodash';
 import { format as sprintf } from 'util';
 
 import { logger } from './logger';
@@ -57,7 +57,7 @@ export class ApiError extends Error {
 	 *
 	 * Independently of this value, if statusCode is 500, `error` is assumed.
 	 */
-	private logLevel: 'warn'|'error';
+	private logLevel: 'warn' | 'error';
 
 	/**
 	 * The message that is returned to the client as `{ error: message }`.
@@ -142,7 +142,7 @@ export class ApiError extends Error {
 	 * error to the crash reporter.
 	 * @return {ApiError}
 	 */
-	public log(cause?:Error): ApiError {
+	public log(cause?: Error): ApiError {
 		this.logLevel = 'error';
 		this.cause = cause;
 		return this;
@@ -160,7 +160,7 @@ export class ApiError extends Error {
 			this.message = 'Validation failed.';
 		}
 		this.errors = this.errors || [];
-		this.errors.push({ path: path, message: message, value: value });
+		this.errors.push({ path, message, value });
 		this.statusCode = 422;
 		this.stripFields();
 		return this;
@@ -185,7 +185,7 @@ export class ApiError extends Error {
 	 * Sends the error to the HTTP client.
 	 * @param {Context} ctx Koa context
 	 */
-	public respond(ctx:Context) {
+	public respond(ctx: Context) {
 
 		const body = this.getResponse();
 		ctx.response.status = this.statusCode;
@@ -198,7 +198,7 @@ export class ApiError extends Error {
 	private getResponse() {
 		// if the message contains a stack trace, replace.
 		const message = this.message.match(/\n\s+at/) ? 'Internal error.' : this.message;
-		const body:any = this.data || { error: this.responseMessage || message, code: this.errorCode || undefined };
+		const body: any = this.data || { error: this.responseMessage || message, code: this.errorCode || undefined };
 		if (this.errors) {
 			body.errors = this.errors.map(ApiError.mapValidationError);
 		}
@@ -209,13 +209,13 @@ export class ApiError extends Error {
 	 * Maps the full validation error object to what we return in the API.
  	 * @param error Validation error
 	 */
-	private static mapValidationError(error:any) {
+	private static mapValidationError(error: any) {
 		return {
 			field: error.path,
 			message: error.message,
 			value: isEmpty(error.value) ? undefined : error.value,
-			code: isEmpty(error.kind) || error.kind == 'user defined' ? undefined : error.kind
-		}
+			code: isEmpty(error.kind) || error.kind == 'user defined' ? undefined : error.kind,
+		};
 	}
 
 	/**
@@ -231,7 +231,7 @@ export class ApiError extends Error {
 		}
 		let responseLog = '';
 		if (requestLog) {
-			responseLog = '\n' + chalk.cyan(JSON.stringify(this.getResponse(), null, "  "));
+			responseLog = '\n' + chalk.cyan(JSON.stringify(this.getResponse(), null, '  '));
 		}
 		if (this.statusCode === 500 || this.logLevel === 'error') {
 			logger.error('\n\n' + ApiError.colorStackTrace(this) + cause + requestLog + '\n\n');
@@ -250,7 +250,7 @@ export class ApiError extends Error {
 	 * Returns if the trace of the error should be sent to the crash reporter.
 	 * @returns {boolean}
 	 */
-	public sendError():boolean {
+	public sendError(): boolean {
 		return this.statusCode === 500 || this.logLevel === 'error';
 	}
 
@@ -269,13 +269,13 @@ export class ApiError extends Error {
 				return chalk.redBright(line);
 			}
 			let match = line.match(/(\s*)at\s+([^\s]+)\s*\(([^)]{2}[^:]+):(\d+):(\d+)\)/i);
-			let lineMatch:{ ident: string, method?: string, fileName: string, row: string, col:string };
+			let lineMatch: { ident: string, method?: string, fileName: string, row: string, col: string };
 			if (match) {
-				lineMatch = { ident: match[1], method: match[2], fileName: match[3], row: match[4], col: match[5] }
+				lineMatch = { ident: match[1], method: match[2], fileName: match[3], row: match[4], col: match[5] };
 			} else {
 				match = line.match(/(\s*)at\s+(.*?):(\d+):(\d+)/i);
 				if (match) {
-					lineMatch = { ident: match[1], fileName: match[2], row: match[3], col: match[4] }
+					lineMatch = { ident: match[1], fileName: match[2], row: match[3], col: match[4] };
 				}
 			}
 			if (line.indexOf('node_modules') > 0 || (lineMatch && /^internal\/|^events|^fs|^_stream_readable/i.test(lineMatch.fileName))) {
@@ -303,10 +303,10 @@ export class ApiError extends Error {
 		if (!this.fieldPrefix) {
 			return;
 		}
-		let map = new Map();
+		const map = new Map();
 		this.errors = compact(this.errors.map(error => {
 			error.path = error.path.replace(this.fieldPrefix, '');
-			let key = error.path + '|' + error.message + '|' + error.value;
+			const key = error.path + '|' + error.message + '|' + error.value;
 			// eliminate dupes
 			if (map.has(key)) {
 				return null;

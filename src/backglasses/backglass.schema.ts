@@ -22,15 +22,15 @@ import { GameReferenceModel, MetricsModel, ModeratedModel, PaginateModel, Pretty
 import paginatePlugin from 'mongoose-paginate';
 import uniqueValidatorPlugin from 'mongoose-unique-validator';
 
-import { metricsPlugin } from '../common/mongoose/metrics.plugin';
-import { gameReferencePlugin } from '../common/mongoose/game.reference.plugin';
-import { prettyIdPlugin } from '../common/mongoose/pretty.id.plugin';
 import { fileReferencePlugin } from '../common/mongoose/file.reference.plugin';
+import { gameReferencePlugin } from '../common/mongoose/game.reference.plugin';
+import { metricsPlugin } from '../common/mongoose/metrics.plugin';
 import { moderationPlugin } from '../common/mongoose/moderation.plugin';
+import { prettyIdPlugin } from '../common/mongoose/pretty.id.plugin';
 import { authorSchema } from '../users/content.author.schema';
 import { User } from '../users/user';
-import { backglassVersionSchema } from './backglass.version.schema';
 import { Backglass } from './backglass';
+import { backglassVersionSchema } from './backglass.version.schema';
 
 const shortId = require('shortid32');
 
@@ -39,16 +39,16 @@ const shortId = require('shortid32');
 //-----------------------------------------------------------------------------
 
 export const backglassFields = {
-	id:            { type: String, required: true, unique: true, 'default': shortId.generate },
+	id:            { type: String, required: true, unique: true, default: shortId.generate },
 	versions:      { type: [ backglassVersionSchema ], validate: { validator: nonEmptyArray, message: 'You must provide at least one version for the backglass.' } },
 	description:   { type: String },
 	authors:       { type: [ authorSchema ], validate: { validator: nonEmptyArray, message: 'You must provide at least one author.' } },
 	acknowledgements: { type: String },
 	counter:       {
-		stars:     { type: Number, 'default': 0 }
+		stars:     { type: Number, default: 0 },
 	},
 	created_at:   { type: Date, required: true },
-	_created_by:  { type: Schema.Types.ObjectId, ref: 'User', required: true }
+	_created_by:  { type: Schema.Types.ObjectId, ref: 'User', required: true },
 };
 export interface BackglassModel extends GameReferenceModel<Backglass>, PrettyIdModel<Backglass>, ModeratedModel<Backglass>, PaginateModel<Backglass>, MetricsModel<Backglass> {}
 export const backglassSchema = new Schema(backglassFields, { toObject: { virtuals: true, versionKey: false } });
@@ -60,7 +60,7 @@ backglassSchema.plugin(gameReferencePlugin);
 backglassSchema.plugin(uniqueValidatorPlugin, { message: 'The {PATH} "{VALUE}" is already taken.', code: 'duplicate_field' });
 backglassSchema.plugin(prettyIdPlugin, { model: 'Backglass', ignore: [ '_created_by' ], validations: [
 	{ path: '_file', mimeType: 'application/x-directb2s', message: 'Must be a .directb2s file.' },
-	{ path: '_file', fileType: 'backglass', message: 'Must be a file of type "backglass".' }
+	{ path: '_file', fileType: 'backglass', message: 'Must be a file of type "backglass".' },
 ] });
 backglassSchema.plugin(fileReferencePlugin);
 backglassSchema.plugin(paginatePlugin);
@@ -71,7 +71,7 @@ backglassSchema.plugin(metricsPlugin);
 // METHODS
 //-----------------------------------------------------------------------------
 
-backglassSchema.methods.isCreatedBy = function(user:User):boolean {
+backglassSchema.methods.isCreatedBy = function(user: User): boolean {
 	if (!user) {
 		return false;
 	}
@@ -81,6 +81,6 @@ backglassSchema.methods.isCreatedBy = function(user:User):boolean {
 //-----------------------------------------------------------------------------
 // VALIDATIONS
 //-----------------------------------------------------------------------------
-function nonEmptyArray(value:any[]) {
+function nonEmptyArray(value: any[]) {
 	return isArray(value) && value.length > 0;
 }

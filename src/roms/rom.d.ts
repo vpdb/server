@@ -25,12 +25,12 @@ export interface Rom extends GameReferenceDocument, PrettyIdDocument, FileRefere
 	id: string;
 	_file: File | Types.ObjectId;
 	_ipdb_number: number;
-	rom_files: {
+	rom_files: Array<{
 		filename: string;
 		bytes: number;
 		crc: number;
 		modified_at: Date;
-	}[];
+	}>;
 	version: string;
 	languages: string[];
 	notes: string;

@@ -20,12 +20,12 @@
 import { extend } from 'lodash';
 import { Types } from 'mongoose';
 
-import { state } from '../state';
-import { Api } from '../common/api';
 import { acl } from '../common/acl';
-import { Context } from '../common/typings/context';
-import { logger } from '../common/logger';
+import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
+import { logger } from '../common/logger';
+import { Context } from '../common/typings/context';
+import { state } from '../state';
 
 export class TagApi extends Api {
 
@@ -61,7 +61,7 @@ export class TagApi extends Api {
 			_id: ctx.request.body.name ? ctx.request.body.name.replace(/(^[^a-z0-9]+)|([^a-z0-9]+$)/gi, '').replace(/[^a-z0-9]+/gi, '-').toLowerCase() : '-',
 			is_active: false,
 			created_at: new Date(),
-			_created_by: ctx.state.user._id
+			_created_by: ctx.state.user._id,
 		}));
 		await newTag.save();
 		logger.info('[TagApi.create] Tag "%s" successfully created.', newTag.name);

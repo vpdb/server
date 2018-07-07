@@ -18,12 +18,12 @@
  */
 
 import { existsSync } from 'fs';
-import { keys, times, isUndefined } from 'lodash';
+import { isUndefined, keys, times } from 'lodash';
 import { OleCompoundDoc, Storage } from 'ole-doc';
 
-import { logger } from './logger';
 import { createHash } from 'crypto';
 import { TableBlock } from '../releases/release.tableblock';
+import { logger } from './logger';
 
 const OleDoc = require('ole-doc').OleCompoundDoc;
 const bindexOf = require('buffer-indexof');
@@ -44,7 +44,7 @@ class VisualPinballTable {
 		}
 		const doc = await this.readDoc(tablePath);
 
-		let storage = doc.storage('GameStg');
+		const storage = doc.storage('GameStg');
 		const buf = await this.readStream(storage, 'GameData');
 
 		const codeStart: number = bindexOf(buf, new Buffer('04000000434F4445', 'hex')); // 0x04000000 "CODE"
@@ -57,7 +57,7 @@ class VisualPinballTable {
 		return {
 			code: buf.slice(codeStart + 12, codeEnd).toString(),
 			head: buf.slice(0, codeStart + 12),
-			tail: buf.slice(codeEnd)
+			tail: buf.slice(codeEnd),
 		};
 	}
 
@@ -75,8 +75,8 @@ class VisualPinballTable {
 		}
 		const doc = await this.readDoc(tablePath);
 
-		let storage = doc.storage('TableInfo');
-		let props: { [key: string]: string } = {};
+		const storage = doc.storage('TableInfo');
+		const props: { [key: string]: string } = {};
 		if (!storage) {
 			logger.warn('[VisualPinballTable.getTableInfo] Storage "TableInfo" not found in "%s".', tablePath);
 			return props;
@@ -90,9 +90,9 @@ class VisualPinballTable {
 			ReleaseDate: 'release_date',
 			TableVersion: 'table_version',
 			AuthorWebSite: 'author_website',
-			TableDescription: 'table_description'
+			TableDescription: 'table_description',
 		};
-		for (let key of keys(streams)) {
+		for (const key of keys(streams)) {
 			const propKey = streams[key];
 			try {
 				const buf = await this.readStream(storage, key);
@@ -124,10 +124,10 @@ class VisualPinballTable {
 		const data = await this.readStream(storage, 'GameData');
 		const block = this.parseBiff(data);
 		const gameData = this.parseGameData(block);
-		const tableBlocks:TableBlock[] = [];
+		const tableBlocks: TableBlock[] = [];
 
 		// images
-		for (let streamName of times(gameData.numTextures, n => 'Image' + n)) {
+		for (const streamName of times(gameData.numTextures, n => 'Image' + n)) {
 			const data = await this.readStream(storage, streamName);
 			const blocks = this.parseBiff(data);
 			const [parsedData, meta] = this.parseImage(blocks, streamName);
@@ -137,7 +137,7 @@ class VisualPinballTable {
 			}
 		}
 		// sounds
-		for (let streamName of times(gameData.numSounds, n => 'Sound' + n)) {
+		for (const streamName of times(gameData.numSounds, n => 'Sound' + n)) {
 			const data = await this.readStream(storage, streamName);
 			const blocks = this.parseUntaggedBiff(data);
 			const [parsedData, meta] = await this.parseSound(blocks, streamName);
@@ -148,7 +148,7 @@ class VisualPinballTable {
 		}
 
 		// game items
-		for (let streamName of times(gameData.numGameItems, n => 'GameItem' + n)) {
+		for (const streamName of times(gameData.numGameItems, n => 'GameItem' + n)) {
 			const data = await this.readStream(storage, streamName);
 			const blocks = await this.parseBiff(data, 4);
 			const meta = await this.parseGameItem(blocks, streamName);
@@ -159,7 +159,7 @@ class VisualPinballTable {
 		}
 
 		// collections
-		for (let streamName of times(gameData.numCollections, n => 'Collection' + n)) {
+		for (const streamName of times(gameData.numCollections, n => 'Collection' + n)) {
 			const data = await this.readStream(storage, streamName);
 			const blocks = await this.parseBiff(data);
 			const meta = await this.parseCollection(blocks, streamName);
@@ -229,7 +229,7 @@ class VisualPinballTable {
 	private parseBiff(buf: Buffer, offset: number = 0): Block[] {
 		offset = offset || 0;
 		let tag, data, blockSize, block;
-		let blocks: Block[] = [];
+		const blocks: Block[] = [];
 		let i = offset;
 		try {
 			do {
@@ -279,7 +279,7 @@ class VisualPinballTable {
 				if (!counterIncreased) {
 					if (blockSize > 4) {
 						data = block.slice(4);
-						blocks.push({ tag: tag, data: data });
+						blocks.push({ tag, data });
 					}
 					i += blockSize + 4;
 				}
@@ -327,7 +327,7 @@ class VisualPinballTable {
 	 * @return {GameDataItem} GameData values
 	 */
 	private parseGameData(blocks: Block[]): GameDataItem {
-		let gameData: GameDataItem = {};
+		const gameData: GameDataItem = {};
 		blocks.forEach(block => {
 			switch (block.tag) {
 				case 'SEDT':
@@ -373,7 +373,7 @@ class VisualPinballTable {
 	 * @return {[Buffer, ImageItem]}
 	 */
 	private parseImage(blocks: Block[], streamName: string): [Buffer, ImageItem] {
-		let meta: ImageItem = { stream: streamName };
+		const meta: ImageItem = { stream: streamName };
 		let data = null;
 		blocks.forEach(block => {
 			switch (block.tag) {
@@ -399,7 +399,7 @@ class VisualPinballTable {
 			stream: streamName,
 			name: blocks[0].toString('utf8'),
 			path: blocks[1] ? blocks[1].toString('utf8').replace(/\\/g, '/') : null,
-			id: blocks[2] ? blocks[2].toString('utf8') : null
+			id: blocks[2] ? blocks[2].toString('utf8') : null,
 		}];
 	}
 
@@ -411,7 +411,7 @@ class VisualPinballTable {
 	 * @return {BaseItem}
 	 */
 	private parseGameItem(blocks: Block[], streamName: string): BaseItem {
-		let meta: BaseItem = { stream: streamName };
+		const meta: BaseItem = { stream: streamName };
 		blocks.forEach(block => {
 			switch (block.tag) {
 				case 'NAME':
@@ -430,7 +430,7 @@ class VisualPinballTable {
 	 * @return {BaseItem}
 	 */
 	private parseCollection(blocks: Block[], streamName: string): BaseItem {
-		let meta: BaseItem = { stream: streamName };
+		const meta: BaseItem = { stream: streamName };
 		blocks.forEach(block => {
 			switch (block.tag) {
 				case 'NAME':
@@ -458,7 +458,7 @@ class VisualPinballTable {
 	 * @return {string} Parsed string
 	 */
 	private parseString16(block: Buffer) {
-		let chars: number[] = [];
+		const chars: number[] = [];
 		block.slice(4).forEach((v, i) => {
 			if (i % 2 === 0) {
 				chars.push(v);
@@ -483,20 +483,20 @@ class VisualPinballTable {
 		return {
 			hash: createHash('md5').update(data).digest(),
 			bytes: data.length,
-			type: type,
-			meta: meta
+			type,
+			meta,
 		} as TableBlock;
 	}
 }
 
 interface Block {
-	tag: string,
-	data: Buffer
+	tag: string;
+	data: Buffer;
 }
 
 interface BaseItem {
-	stream: string,
-	name?: string
+	stream: string;
+	name?: string;
 }
 
 interface SoundItem extends BaseItem {
@@ -511,13 +511,13 @@ interface ImageItem extends BaseItem {
 }
 
 interface GameDataItem {
-	numGameItems?: number,
-	numSounds?: number,
-	numTextures?: number,
-	numFonts?: number,
-	numCollections?: number,
-	collections?: number,
-	script?: string
+	numGameItems?: number;
+	numSounds?: number;
+	numTextures?: number;
+	numFonts?: number;
+	numCollections?: number;
+	collections?: number;
+	script?: string;
 }
 
 export const visualPinballTable = new VisualPinballTable();

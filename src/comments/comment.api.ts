@@ -17,17 +17,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { acl } from '../common/acl';
 import { Api } from '../common/api';
-import { Context } from '../common/typings/context';
-import { state } from '../state';
+import { apiCache } from '../common/api.cache';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
+import { mailer } from '../common/mailer';
+import { Context } from '../common/typings/context';
 import { Game } from '../games/game';
 import { LogEventUtil } from '../log-event/log.event.util';
-import { mailer } from '../common/mailer';
+import { state } from '../state';
 import { User } from '../users/user';
-import { acl } from '../common/acl';
-import { apiCache } from '../common/api.cache';
 
 export class CommentApi extends Api {
 
@@ -53,16 +53,16 @@ export class CommentApi extends Api {
 		}
 		let comment = new state.models.Comment({
 			_from: ctx.state.user._id,
-			_ref: { release: release },
+			_ref: { release },
 			message: ctx.request.body.message,
 			ip: this.getIpAddress(ctx),
-			created_at: new Date()
+			created_at: new Date(),
 		});
 		await comment.save();
 
 		logger.info('[CommentApi.createForRelease] User <%s> commented on release "%s" (%s).', ctx.state.user.email, release.id, release.name);
 
-		let updates: (() => Promise<any>)[] = [];
+		const updates: Array<() => Promise<any>> = [];
 		updates.push(() => release.incrementCounter('comments'));
 		updates.push(() => game.incrementCounter('comments'));
 		updates.push(() => ctx.state.user.incrementCounter('comments'));
@@ -120,7 +120,7 @@ export class CommentApi extends Api {
 			_ref: { release_moderation: release },
 			message: ctx.request.body.message,
 			ip: this.getIpAddress(ctx),
-			created_at: new Date()
+			created_at: new Date(),
 		});
 		await comment.save();
 
@@ -141,9 +141,9 @@ export class CommentApi extends Api {
 	 */
 	public async listForRelease(ctx: Context) {
 
-		let pagination = this.pagination(ctx, 10, 50);
+		const pagination = this.pagination(ctx, 10, 50);
 		const sort = this.sortParams(ctx, { released_at: 1 }, { date: '-created_at' });
-		let release = await state.models.Release.findOne({ id: ctx.params.id })
+		const release = await state.models.Release.findOne({ id: ctx.params.id })
 			.populate('_game')
 			.populate('_created_by')
 			.exec();
@@ -160,10 +160,10 @@ export class CommentApi extends Api {
 			page: pagination.page,
 			limit: pagination.perPage,
 			populate: ['_from'],
-			sort: sort
+			sort,
 		});
 
-		let comments = results.docs.map(comment => state.serializers.Comment.simple(ctx, comment));
+		const comments = results.docs.map(comment => state.serializers.Comment.simple(ctx, comment));
 		return this.success(ctx, comments, 200, this.paginationOpts(pagination, results.total));
 	}
 

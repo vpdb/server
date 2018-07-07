@@ -18,21 +18,21 @@
  */
 
 import { existsSync } from 'fs';
-import { uniq } from 'lodash';
 import Application from 'koa';
 import koaBodyParser from 'koa-bodyparser';
 import koaJson from 'koa-json';
+import { uniq } from 'lodash';
 
+import { apiCache } from './common/api.cache';
 import { EndPoint } from './common/api.endpoint';
-import { config, settings } from './common/settings'
-import { koaLogger } from './common/middleware/logger.middleware';
+import { logger } from './common/logger';
 import { koaAuth } from './common/middleware/authentication.middleware';
 import { handleParseError, koaErrorHandler } from './common/middleware/error.handler.middleware';
+import { koaLogger } from './common/middleware/logger.middleware';
 import { koa404Handler } from './common/middleware/notfound.handler.middleware';
-import { logger } from './common/logger';
-import { apiCache } from './common/api.cache';
 import { koaRestHandler } from './common/middleware/rest.middleware';
 import { koaWebsiteHandler } from './common/middleware/website.middleware';
+import { config, settings } from './common/settings';
 
 const koaResponseTime = require('koa-response-time');
 const koaCors = require('@koa/cors');
@@ -69,7 +69,7 @@ export class Server {
 			this.app.use(router.allowedMethods());
 
 			// pretty print registered paths with methods
-			const methods:Map<string, string[]> = new Map<string, string[]>();
+			const methods: Map<string, string[]> = new Map<string, string[]>();
 			router.stack.forEach(layer => methods.set(layer.path, [ ...methods.get(layer.path) || [], ...layer.methods ]));
 			uniq(router.stack.map(layer => layer.path)).sort().forEach(path => {
 				logger.info('  %s (%s)', path, methods.get(path).join(','));

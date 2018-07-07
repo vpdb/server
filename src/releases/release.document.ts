@@ -17,14 +17,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Types, ModeratedDocument } from 'mongoose';
 import { compact, flatten, map } from 'lodash';
+import { ModeratedDocument, Types } from 'mongoose';
 
-import { User } from '../users/user';
-import { File } from '../files/file';
-import { Release } from './release';
-import { state } from '../state';
 import { isArray } from 'util';
+import { File } from '../files/file';
+import { state } from '../state';
+import { User } from '../users/user';
+import { Release } from './release';
 
 export class ReleaseDocument {
 
@@ -37,12 +37,12 @@ export class ReleaseDocument {
 	 * @param {{isApproved: boolean, isRefused: boolean}} moderation
 	 * @returns {Promise<Game>} Updated game
 	 */
-	public static async moderationChanged(release:Release, previousModeration: { isApproved: boolean, isRefused: boolean }, moderation: { isApproved: boolean, isRefused: boolean }): Promise<ModeratedDocument> {
+	public static async moderationChanged(release: Release, previousModeration: { isApproved: boolean, isRefused: boolean }, moderation: { isApproved: boolean, isRefused: boolean }): Promise<ModeratedDocument> {
 		if (previousModeration.isApproved && !moderation.isApproved) {
-			return await state.models.Game.update({ _id: release._game }, { $inc: { 'counter.releases': -1 } });
+			return state.models.Game.update({ _id: release._game }, { $inc: { 'counter.releases': -1 } });
 		}
 		if (!previousModeration.isApproved && moderation.isApproved) {
-			return await state.models.Game.update({ _id: release._game }, { $inc: { 'counter.releases': 1 } });
+			return state.models.Game.update({ _id: release._game }, { $inc: { 'counter.releases': 1 } });
 		}
 	}
 
@@ -54,10 +54,10 @@ export class ReleaseDocument {
 	 * @returns {string[]} File IDs
 	 */
 	public static getFileIds(release: Release): string[] {
-		let files = flatten(map(release.versions, 'files'));
-		let tableFileIds = map(files, '_file').map(file => file ? file._id.toString() : null);
-		let playfieldImageId = compact(map(files, '_playfield_image')).map(file => file._id.toString());
-		let playfieldVideoId = compact(map(files, '_playfield_video')).map(file => file._id.toString());
+		const files = flatten(map(release.versions, 'files'));
+		const tableFileIds = map(files, '_file').map(file => file ? file._id.toString() : null);
+		const playfieldImageId = compact(map(files, '_playfield_image')).map(file => file._id.toString());
+		const playfieldVideoId = compact(map(files, '_playfield_video')).map(file => file._id.toString());
 		return compact(flatten([...tableFileIds, playfieldImageId, playfieldVideoId]));
 	}
 
@@ -68,7 +68,7 @@ export class ReleaseDocument {
 	 * @returns {string[]} File IDs
 	 */
 	public static getPlayfieldImageIds(release: Release): string[] {
-		let files = flatten(map(release.versions, 'files'));
+		const files = flatten(map(release.versions, 'files'));
 		return compact(map(files, '_playfield_image')).map(file => file._id.toString());
 	}
 
@@ -86,7 +86,7 @@ export class ReleaseDocument {
 		if (release._created_by._id instanceof Types.ObjectId) {
 			return release._created_by._id.equals(user._id);
 		}
-		let userId = user._id instanceof Types.ObjectId ? user._id.toString() : user._id;
+		const userId = user._id instanceof Types.ObjectId ? user._id.toString() : user._id;
 		return release._created_by === userId;
 	}
 
@@ -105,10 +105,10 @@ export class ReleaseDocument {
 		if (release.versions && release.versions.length > 0) {
 			[[files]] = release.versions.map(v => {
 				if (v.files && v.files.length > 0) {
-					return v.files.map(f => [f.playfield_image, f.playfield_video, f.file])
+					return v.files.map(f => [f.playfield_image, f.playfield_video, f.file]);
 				}
 				return [];
-			})
+			});
 		}
 		return files.filter(f => !!f);
 	}

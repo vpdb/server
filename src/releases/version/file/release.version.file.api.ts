@@ -17,17 +17,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { state } from '../../../state';
 import { Api } from '../../../common/api';
+import { apiCache } from '../../../common/api.cache';
 import { ApiError } from '../../../common/api.error';
-import { Context } from '../../../common/typings/context';
 import { logger } from '../../../common/logger';
 import { mailer } from '../../../common/mailer';
-import { LogEventUtil } from '../../../log-event/log.event.util';
-import { Game } from '../../../games/game';
-import { User } from '../../../users/user';
+import { Context } from '../../../common/typings/context';
 import { File } from '../../../files/file';
-import { apiCache } from '../../../common/api.cache';
+import { Game } from '../../../games/game';
+import { LogEventUtil } from '../../../log-event/log.event.util';
+import { state } from '../../../state';
+import { User } from '../../../users/user';
 
 export class ReleaseVersionFileApi extends Api {
 
@@ -59,12 +59,12 @@ export class ReleaseVersionFileApi extends Api {
 		const versionFileId = versionFile._id;
 
 		// validations
-		let validationErrors = [];
+		const validationErrors = [];
 		if (!ctx.request.body.message) {
 			validationErrors.push({
 				path: 'message',
 				message: 'A message must be provided.',
-				value: ctx.request.body.message
+				value: ctx.request.body.message,
 			});
 		}
 		if (!ctx.request.body.status) {
@@ -84,7 +84,7 @@ export class ReleaseVersionFileApi extends Api {
 			status: ctx.request.body.status,
 			message: ctx.request.body.message,
 			validated_at: now,
-			_validated_by: ctx.state.user._id
+			_validated_by: ctx.state.user._id,
 		};
 
 		try {
@@ -110,13 +110,12 @@ export class ReleaseVersionFileApi extends Api {
 		version = release.versions.find(v => v.version === ctx.params.version);
 		versionFile = version.files.find(f => (f._file as File).id === ctx.params.file);
 
-
 		this.success(ctx, state.serializers.ReleaseVersionFile.detailed(ctx, versionFile).validation, 200);
 
 		// log event
 		await LogEventUtil.log(ctx, 'validate_release', false,
 			{ validation: versionFile.validation },
-			{ release: release._id, game: release._game._id }
+			{ release: release._id, game: release._game._id },
 		);
 
 		await mailer.releaseValidated(release._created_by as User, ctx.state.user, release._game as Game, release, state.serializers.ReleaseVersionFile.detailed(ctx, versionFile));

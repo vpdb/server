@@ -72,7 +72,7 @@ export interface VpdbConfig {
 				path: string,
 
 				/** URI of the API. Used to construct URLs. */
-				api: VpdbHost
+				api: VpdbHost,
 			},
 
 			/**
@@ -84,8 +84,8 @@ export interface VpdbConfig {
 				path: string,
 
 				/** URI of the API. Used to construct URLs. */
-				api: VpdbHost
-			}
+				api: VpdbHost,
+			},
 		},
 
 		/**
@@ -119,7 +119,7 @@ export interface VpdbConfig {
 		redis: {
 			host: string,
 			port: number,
-			db: number
+			db: number,
 		},
 
 		/**
@@ -146,7 +146,7 @@ export interface VpdbConfig {
 			 * the user fails to login, the counter will continue to increase
 			 * during that time even if a successful login occurs.
 			 */
-			keep: number
+			keep: number,
 		},
 
 		/**
@@ -166,7 +166,7 @@ export interface VpdbConfig {
 			 */
 			sender: {
 				email: string,
-				name: string
+				name: string,
 			},
 
 			/**
@@ -180,9 +180,9 @@ export interface VpdbConfig {
 				port: number,
 				auth: {
 					user: string,
-					pass: string
-				}
-			}
+					pass: string,
+				},
+			},
 		},
 
 		/**
@@ -206,7 +206,7 @@ export interface VpdbConfig {
 				/**
 				 * Whether to log application data
 				 */
-				app: boolean
+				app: boolean,
 			},
 
 			/**
@@ -220,7 +220,7 @@ export interface VpdbConfig {
 				/**
 				 * File location of the application log. Null or empty for no logging.
 				 */
-				app: string
+				app: string,
 			},
 
 			/**
@@ -248,8 +248,8 @@ export interface VpdbConfig {
 					host: string,
 					port: number,
 					program: string,
-					colorize: boolean
-				}
+					colorize: boolean,
+				},
 			},
 
 			slack: {
@@ -258,9 +258,9 @@ export interface VpdbConfig {
 				channels: {
 					eventLog: string,
 					userLog: string,
-					general: string
-				}
-			}
+					general: string,
+				},
+			},
 		},
 
 		/**
@@ -297,8 +297,8 @@ export interface VpdbConfig {
 				 * Mean across the whole pool. If set to null, it is calculated
 				 * each time a rating is submitted (and scores will be re-computed).
 				 */
-				globalMean: number
-			}
+				globalMean: number,
+			},
 		},
 
 		/**
@@ -314,7 +314,7 @@ export interface VpdbConfig {
 				/**
 				 * Don't allow releases for Stern S.A.M (54) and SPIKE (61) games
 				 */
-				denyMpu: number[]
+				denyMpu: number[],
 			},
 
 			/**
@@ -325,7 +325,7 @@ export interface VpdbConfig {
 				/**
 				 * Don't allow backglasses for Stern S.A.M (54) and SPIKE (61) games
 				 */
-				denyMpu: number[]
+				denyMpu: number[],
 			},
 
 			/**
@@ -336,7 +336,7 @@ export interface VpdbConfig {
 				/**
 				 * Don't allow ROMs for Stern S.A.M (54) and SPIKE (61) games
 				 */
-				denyMpu: number[]
+				denyMpu: number[],
 			},
 			[key: string]: { denyMpu: number[] };
 		},
@@ -359,8 +359,8 @@ export interface VpdbConfig {
 				appId: string,
 				key: string,
 				secret: string,
-				encrypted: boolean
-			}
+				encrypted: boolean,
+			},
 		},
 
 		/**
@@ -389,7 +389,7 @@ export interface VpdbConfig {
 				 * The client secret of the generated application.
 				 * @important
 				 */
-				clientSecret: string
+				clientSecret: string,
 			},
 
 			/**
@@ -413,7 +413,7 @@ export interface VpdbConfig {
 				 * The client secret of the generated application.
 				 * @important
 				 */
-				clientSecret: string
+				clientSecret: string,
 			},
 
 			/**
@@ -423,7 +423,7 @@ export interface VpdbConfig {
 			 *
 			 * You can also add multiple entries if you like to offer authentication from multiple boards.
 			 */
-			ipboard: VpdbIpsConfig[]
+			ipboard: VpdbIpsConfig[],
 		},
 
 		/**
@@ -455,7 +455,7 @@ export interface VpdbConfig {
 			 */
 			raygun: {
 				enabled: boolean,
-				apiKey: string
+				apiKey: string,
 			},
 
 			/**
@@ -463,10 +463,10 @@ export interface VpdbConfig {
 			 */
 			sqreen: {
 				enabled: boolean,
-				token: string
-			}
-		}
-	},
+				token: string,
+			},
+		},
+	};
 
 	ffmpeg?: {
 
@@ -474,54 +474,54 @@ export interface VpdbConfig {
 		 * Path to the ffmpeg binary.
 		 */
 		path: string;
-	}
+	};
 }
 
 export interface VpdbIpsConfig {
 	/**
 	 * Set false to disable.
 	 */
-	enabled: boolean,
+	enabled: boolean;
 
 	/**
 	 * Must contain only letters or numbers (no spaces or special chars).
 	 */
-	id: string,
+	id: string;
 
 	/**
 	 * Label of the button
 	 */
-	name: string,
+	name: string;
 
 	/**
 	 * Index file of the forum.
 	 */
-	baseURL: string,
+	baseURL: string;
 
 	/**
 	 * The client ID of the generated application.
 	 * @important
 	 */
-	clientID: string,
+	clientID: string;
 
 	/**
 	 * The client secret of the generated application.
 	 * @important
 	 */
-	clientSecret: string,
+	clientSecret: string;
 
 	/**
 	 * Version of the IPS board. Either `3` or `4`.
 	 */
-	version: 3 | 4 | 4.3
+	version: 3 | 4 | 4.3;
 }
 
 export interface VpdbHost {
-	protocol: 'https' | 'http',
-	hostname: string,
-	port: number,
-	pathname?: string,
-	prefix?: string
+	protocol: 'https' | 'http';
+	hostname: string;
+	port: number;
+	pathname?: string;
+	prefix?: string;
 }
 
 export interface VpdbQuotaConfigPlan {
@@ -546,12 +546,12 @@ export interface VpdbQuotaConfig {
 	 *  You can add any number of plans here (they will show up in the
 	 *  user control panel), but at least one default plan must exist.
 	 */
-	plans: VpdbQuotaConfigPlan[],
+	plans: VpdbQuotaConfigPlan[];
 
 	/**
 	 * The default plan which is assigned to new users.
 	 */
-	defaultPlan: string,
+	defaultPlan: string;
 
 	/**
 	 * How many credits are debited per download. Give the file type as
@@ -573,7 +573,7 @@ export interface VpdbQuotaConfig {
 	 *
 	 * [1] https://github.com/vpdb/backend/blob/master/src/modules/filetypes.js
 	 */
-	costs: { [key: string]: number | VpdbPlanCost }
+	costs: { [key: string]: number | VpdbPlanCost };
 }
 
 export interface VpdbPlanCost {

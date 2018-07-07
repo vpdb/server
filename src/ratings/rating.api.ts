@@ -18,17 +18,17 @@
  */
 
 import { pick } from 'lodash';
-import { Model, Document } from 'mongoose';
+import { Document, Model } from 'mongoose';
 
-import { state } from '../state';
 import { Api } from '../common/api';
-import { Context } from '../common/typings/context';
-import { ApiError } from '../common/api.error';
-import { metrics } from '../common/metrics';
-import { logger } from '../common/logger';
-import { LogEventUtil } from '../log-event/log.event.util';
-import { Rating } from './rating';
 import { apiCache } from '../common/api.cache';
+import { ApiError } from '../common/api.error';
+import { logger } from '../common/logger';
+import { metrics } from '../common/metrics';
+import { Context } from '../common/typings/context';
+import { LogEventUtil } from '../log-event/log.event.util';
+import { state } from '../state';
+import { Rating } from './rating';
 
 export class RatingApi extends Api {
 
@@ -39,7 +39,7 @@ export class RatingApi extends Api {
 	 * @param {Context} ctx Koa context
 	 */
 	public async createForGame(ctx: Context) {
-		return await this.create(ctx, 'game', this.find(state.models.Game, 'game'));
+		return this.create(ctx, 'game', this.find(state.models.Game, 'game'));
 	}
 
 	/**
@@ -49,7 +49,7 @@ export class RatingApi extends Api {
 	 * @param {Context} ctx Koa context
 	 */
 	public async getForGame(ctx: Context) {
-		return await this.view(ctx, this.find(state.models.Game, 'game'), 'title');
+		return this.view(ctx, this.find(state.models.Game, 'game'), 'title');
 	}
 
 	/**
@@ -59,7 +59,7 @@ export class RatingApi extends Api {
 	 * @param {Context} ctx Koa context
 	 */
 	public async updateForGame(ctx: Context) {
-		return await this.update(ctx, 'game', this.find(state.models.Game, 'game'), 'title');
+		return this.update(ctx, 'game', this.find(state.models.Game, 'game'), 'title');
 	}
 
 	/**
@@ -69,7 +69,7 @@ export class RatingApi extends Api {
 	 * @param {Context} ctx Koa context
 	 */
 	public async deleteForGame(ctx: Context) {
-		return await this.del(ctx, 'game', this.find(state.models.Game, 'game'), 'title');
+		return this.del(ctx, 'game', this.find(state.models.Game, 'game'), 'title');
 	}
 
 	/**
@@ -79,7 +79,7 @@ export class RatingApi extends Api {
 	 * @param {Context} ctx Koa context
 	 */
 	public async createForRelease(ctx: Context) {
-		return await this.create(ctx, 'release', this.find(state.models.Release, 'release', '_game'));
+		return this.create(ctx, 'release', this.find(state.models.Release, 'release', '_game'));
 	}
 
 	/**
@@ -89,7 +89,7 @@ export class RatingApi extends Api {
 	 * @param {Context} ctx Koa context
 	 */
 	public async getForRelease(ctx: Context) {
-		return await this.view(ctx, this.find(state.models.Release, 'release'), 'name');
+		return this.view(ctx, this.find(state.models.Release, 'release'), 'name');
 	}
 
 	/**
@@ -99,7 +99,7 @@ export class RatingApi extends Api {
 	 * @param {Context} ctx Koa context
 	 */
 	public async updateForRelease(ctx: Context) {
-		return await this.update(ctx, 'release', this.find(state.models.Release, 'release', '_game'), 'name');
+		return this.update(ctx, 'release', this.find(state.models.Release, 'release', '_game'), 'name');
 	}
 
 	/**
@@ -109,7 +109,7 @@ export class RatingApi extends Api {
 	 * @param {Context} ctx Koa context
 	 */
 	public async deleteForRelease(ctx: Context) {
-		return await this.del(ctx, 'release', this.find(state.models.Release, 'release', '_game'), 'name');
+		return this.del(ctx, 'release', this.find(state.models.Release, 'release', '_game'), 'name');
 	}
 
 	/**
@@ -143,7 +143,7 @@ export class RatingApi extends Api {
 			_from: ctx.state.user._id,
 			_ref: { [modelName]: entity._id },
 			value: ctx.request.body.value,
-			created_at: new Date()
+			created_at: new Date(),
 		};
 		const rating = new state.models.Rating(obj);
 		await rating.save();
@@ -169,7 +169,6 @@ export class RatingApi extends Api {
 
 		await this.updateRatedEntity(ctx, modelName, entity, rating, 200);
 	}
-
 
 	/**
 	 * Generic function for deleting a rating.
@@ -243,7 +242,7 @@ export class RatingApi extends Api {
 			}
 			const q = {
 				_from: ctx.state.user._id,
-				['_ref.' + modelName]: entity._id
+				['_ref.' + modelName]: entity._id,
 			};
 			const rating = await state.models.Rating.findOne(q);
 			return [entity, rating];
@@ -251,7 +250,7 @@ export class RatingApi extends Api {
 	}
 
 	private async logPayload(rating: any, entity: any, modelName: string, updateOnly: boolean) {
-		let payload:any;
+		let payload: any;
 		if (rating) {
 			payload = { rating: pick(rating.toObject(), ['id', 'value']), updated: updateOnly };
 		} else {

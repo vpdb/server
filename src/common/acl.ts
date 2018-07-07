@@ -19,9 +19,9 @@
 
 import ACL = require('acl');
 
+import Redis = require('redis');
 import { state } from '../state';
 import { logger } from './logger';
-import Redis = require('redis');
 import { config } from './settings';
 
 // instantiate
@@ -42,8 +42,8 @@ export async function init(): Promise<void> {
 				{ resources: 'tokens', permissions: ['provider-token'] },
 				{ resources: 'roles',  permissions: ['list'] },
 				{ resources: 'users',  permissions: ['update', 'list', 'full-details', 'send-confirmation'] },
-				{ resources: 'cache',  permissions: ['delete'] }
-			]
+				{ resources: 'cache',  permissions: ['delete'] },
+			],
 		}, {
 			roles: 'moderator',
 			allows: [
@@ -55,23 +55,23 @@ export async function init(): Promise<void> {
 				{ resources: 'media',         permissions: ['delete'] },
 				{ resources: 'releases',      permissions: ['moderate', 'view-restriced', 'update', 'validate'] },
 				{ resources: 'roms',          permissions: ['delete', 'view-restriced'] },
-				{ resources: 'tags',          permissions: ['delete'] }
-			]
+				{ resources: 'tags',          permissions: ['delete'] },
+			],
 		}, {
 			roles: 'contributor',
-			allows: [{ resources: 'roms', permissions: ['add', 'delete-own'] }]
+			allows: [{ resources: 'roms', permissions: ['add', 'delete-own'] }],
 		}, {
 			roles: 'game-contributor',
 			allows: [
 				{ resources: 'games', permissions: ['update', 'add'] },
 				{ resources: 'ipdb',  permissions: ['view'] },
-			]
+			],
 		}, {
 			roles: 'release-contributor',
-			allows: [{ resources: 'releases', permissions: ['auto-approve'] }]
+			allows: [{ resources: 'releases', permissions: ['auto-approve'] }],
 		}, {
 			roles: 'backglass-contributor',
-			allows: [{ resources: 'backglasses', permissions: ['auto-approve'] }]
+			allows: [{ resources: 'backglasses', permissions: ['auto-approve'] }],
 		}, {
 			// TODO: split further up so we can deactivate post permissions, download permission etc separately.
 			roles: 'member',
@@ -88,14 +88,14 @@ export async function init(): Promise<void> {
 				{ resources: 'tags',          permissions: ['add', 'delete-own'] },
 				{ resources: 'tokens',        permissions: ['add', 'delete-own', 'update-own', 'list'] },
 				{ resources: 'user',          permissions: ['view', 'update'] },                          // profile
-				{ resources: 'users',         permissions: ['view', 'search', 'star'] }                   // any other user
-			]
+				{ resources: 'users',         permissions: ['view', 'search', 'star'] },                   // any other user
+			],
 		}, {
 			roles: 'mocha',
 			allows: [
-				{ resources: 'users', permissions: 'delete' }
-			]
-		}
+				{ resources: 'users', permissions: 'delete' },
+			],
+		},
 	]);
 
 	// this must reflect what's described below in roles.
@@ -112,53 +112,53 @@ export async function init(): Promise<void> {
 	logger.info('[acl.init] Applying ACLs to %d users...', users.length);
 
 	/* istanbul ignore next: No initial users when testing */
-	for (let user of users) {
+	for (const user of users) {
 		await acl.addUserRoles(user.id, user.roles);
 	}
 	logger.info('[acl.init] ACLs applied.');
 }
 
-export const roles:Role[] = [
+export const roles: Role[] = [
 	{
 		id: 'root',
 		name: 'root',
 		description: 'Super user. Can create, edit and delete everything including admins.',
-		parents: ['admin', 'moderator']
+		parents: ['admin', 'moderator'],
 	}, {
 		id: 'admin',
 		name: 'Administrator',
 		description: 'User administrator. Can edit users and roles. Inherits from member.',
-		parents: ['member']
+		parents: ['member'],
 	}, {
 		id: 'moderator',
 		name: 'Moderator',
 		description: 'Can moderate and delete all entities. Inherits from contributor.',
-		parents: ['contributor']
+		parents: ['contributor'],
 	}, {
 		id: 'contributor',
 		name: 'Contributor',
 		description: 'Can upload releases, backglasses and ROMs without approval, as well as add and edit games. Inherits from all other contributors.',
-		parents: ['game-contributor', 'release-contributor', 'backglass-contributor']
+		parents: ['game-contributor', 'release-contributor', 'backglass-contributor'],
 	}, {
 		id: 'game-contributor',
 		name: 'Game Contributor',
 		description: 'Can add and edit game data. Inherits from member.',
-		parents: ['member']
+		parents: ['member'],
 	}, {
 		id: 'release-contributor',
 		name: 'Release Contributor',
 		description: 'Can upload releases without approval. Inherits from member.',
-		parents: ['member']
+		parents: ['member'],
 	}, {
 		id: 'backglass-contributor',
 		name: 'Backglass Contributor',
 		description: 'Can upload backglasses without approval. Inherits from member.',
-		parents: ['member']
+		parents: ['member'],
 	}, {
 		id: 'member',
 		name: 'Member',
 		description: 'A registered member. This role every user should have. Removing results in having the same permissions as anonymous.',
-		parents: []
+		parents: [],
 	},
 ];
 

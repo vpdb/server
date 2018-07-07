@@ -18,11 +18,11 @@
  */
 
 import { existsSync } from 'fs';
-import { isAbsolute, resolve } from 'path';
 import { isArray, isFunction, isObject, isUndefined, keys } from 'lodash';
-import { VpdbConfig } from './typings/config';
+import { isAbsolute, resolve } from 'path';
 import { logger } from './logger';
 import { setttingValidations } from './settings.validator';
+import { VpdbConfig } from './typings/config';
 
 export class Settings {
 
@@ -50,7 +50,7 @@ export class Settings {
 	 *
 	 * @return {boolean} true if passes, false otherwise.
 	 */
-	validate() {
+	public validate() {
 		logger.info('[Settings.validate] Validating settings at %s', this.filePath);
 		return this._validate(setttingValidations, this.current, '');
 	}
@@ -64,10 +64,10 @@ export class Settings {
 	 * @returns {boolean}
 	 * @private
 	 */
-	_validate(validation: { [key: string]: any }, setting: { [key: string]: any }, path: string) {
+	public _validate(validation: { [key: string]: any }, setting: { [key: string]: any }, path: string) {
 		let success = true;
 		let validationError, p, i, j;
-		for (let s of keys(validation)) {
+		for (const s of keys(validation)) {
 			p = (path + '.' + s).substr(1);
 
 			// validation function
@@ -90,10 +90,7 @@ export class Settings {
 						success = false;
 					}
 				}
-			}
-
-			// array
-			else if (validation[s].__array) {
+			} else if (validation[s].__array) {
 				if (!isArray(setting[s])) {
 					logger.error('[Settings.validate] %s [KO]: Setting must be an array.', p);
 					success = false;
@@ -105,10 +102,7 @@ export class Settings {
 						}
 					}
 				}
-			}
-
-			// object
-			else if (validation[s] && isObject(validation[s])) {
+			} else if (validation[s] && isObject(validation[s])) {
 
 				if (isUndefined(setting[s])) {
 					logger.error('[Settings.validate] %s [KO]: Setting block is missing.', p);
@@ -125,34 +119,34 @@ export class Settings {
 			logger.info('[Settings.validate] Congrats, your settings look splendid!');
 		}
 		return success;
-	};
+	}
 
-	_logError(p: string, error: { path: string, message: string, setting?: string }, setting: object | string) {
+	public _logError(p: string, error: { path: string, message: string, setting?: string }, setting: object | string) {
 		setting = !isUndefined(error.setting) ? error.setting : setting;
-		let s = isObject(setting) ? JSON.stringify(setting) : setting;
+		const s = isObject(setting) ? JSON.stringify(setting) : setting;
 		if (isObject(error)) {
 			logger.error('[Settings.validate] %s.%s [KO]: %s (%s).', p, error.path, error.message, s);
 		} else {
 			logger.error('[Settings.validate] %s [KO]: %s (%s).', p, error, s);
 		}
-	};
+	}
 
 	/**
 	 * Returns the API URL containing the host only.
 	 * @returns {string} API URL
 	 */
-	apiHost() {
+	public apiHost() {
 		return this.current.vpdb.api.protocol + '://' +
 			this.current.vpdb.api.hostname +
 			(this.current.vpdb.api.port === 80 || this.current.vpdb.api.port === 443 ? '' : ':' + this.current.vpdb.api.port);
-	};
+	}
 
 	/**
 	 * Returns the internal path of an API resource
 	 * @param {string} path Path of the resource
 	 * @returns {string} Internal path
 	 */
-	apiPath(path = '') {
+	public apiPath(path = '') {
 		return (this.current.vpdb.api.prefix || '') + this.current.vpdb.api.pathname + (path || '');
 	}
 
@@ -160,25 +154,25 @@ export class Settings {
 	 * Returns the external URL of the API
 	 * @returns {string} External URL
 	 */
-	apiUri(path = '') {
+	public apiUri(path = '') {
 		return this.apiHost() + this.apiPath(path);
-	};
+	}
 
 	/**
 	 * Returns the external URL of a public storage resource
 	 * @param {string} [path] Path of the resource
 	 * @returns {string} External URL
 	 */
-	storagePublicUri(path = '') {
+	public storagePublicUri(path = '') {
 		return this.storageUri(this.current.vpdb.storage.public.api.pathname + (path || ''), 'public');
-	};
+	}
 
 	/**
 	 * Returns the internal path of a public storage resource
 	 * @param {string} path Path of the resource
 	 * @returns {string} Internal path
 	 */
-	storagePublicPath(path = '') {
+	public storagePublicPath(path = '') {
 		return (this.current.vpdb.storage.public.api.prefix || '') + this.current.vpdb.storage.public.api.pathname + (path || '');
 	}
 
@@ -187,7 +181,7 @@ export class Settings {
 	 * @param {string} [path] Path of the resource
 	 * @returns {string} External URL
 	 */
-	storageProtectedUri(path = '') {
+	public storageProtectedUri(path = '') {
 		return this.storageUri(this.current.vpdb.storage.protected.api.pathname + (path || ''), 'protected');
 	}
 
@@ -196,7 +190,7 @@ export class Settings {
 	 * @param {string} path Path of the resource
 	 * @returns {string} Internal path
 	 */
-	storageProtectedPath(path = '') {
+	public storageProtectedPath(path = '') {
 		return (this.current.vpdb.storage.protected.api.prefix || '') + this.current.vpdb.storage.protected.api.pathname + (path || '');
 	}
 
@@ -205,7 +199,7 @@ export class Settings {
 	 * @param {string} [path] Path of the URL
 	 * @returns {string}
 	 */
-	webUri(path = '') {
+	public webUri(path = '') {
 		return this.current.vpdb.webapp.protocol + '://' +
 			this.current.vpdb.webapp.hostname +
 			(this.current.vpdb.webapp.port === 80 || this.current.vpdb.webapp.port === 443 ? '' : ':' + this.current.vpdb.webapp.port) +
@@ -218,8 +212,8 @@ export class Settings {
 	 * @param {string} visibility Either "public" or "protected", depending which API is demanded
 	 * @returns {string} Full URL
 	 */
-	storageUri(path: string, visibility: 'public' | 'protected') {
-		let api = this.current.vpdb.storage[visibility].api;
+	public storageUri(path: string, visibility: 'public' | 'protected') {
+		const api = this.current.vpdb.storage[visibility].api;
 		return api.protocol + '://' + api.hostname + (api.port === 80 || api.port === 443 ? '' : ':' + api.port) + (path || '');
 	}
 
@@ -228,14 +222,14 @@ export class Settings {
 	 * @param internalPath
 	 * @returns {{protocol: string, hostname: string, port: number, pathname: string, prefix: string }|null} API or null if no match.
 	 */
-	getApi(internalPath: string = null) {
+	public getApi(internalPath: string = null) {
 		if (!internalPath) {
 			return null;
 		}
-		let apis = [this.current.vpdb.storage.protected.api, this.current.vpdb.storage.public.api, this.current.vpdb.api];
+		const apis = [this.current.vpdb.storage.protected.api, this.current.vpdb.storage.public.api, this.current.vpdb.api];
 		for (let i = 0; i < apis.length; i++) {
-			let api = apis[i];
-			let pathPrefix = (api.prefix || '') + api.pathname;
+			const api = apis[i];
+			const pathPrefix = (api.prefix || '') + api.pathname;
 			if (pathPrefix === internalPath.substr(0, pathPrefix.length)) {
 				return api;
 			}
@@ -248,8 +242,8 @@ export class Settings {
 	 * @param internalPath
 	 * @returns {string} External URL if an API could be matched, otherwise same string as given.
 	 */
-	intToExt(internalPath: string) {
-		let api = this.getApi(internalPath);
+	public intToExt(internalPath: string) {
+		const api = this.getApi(internalPath);
 		if (!api || !api.prefix) {
 			return internalPath;
 		}

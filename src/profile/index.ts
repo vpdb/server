@@ -25,7 +25,7 @@ import { router } from './profile.api.router';
 
 export class ProfileEndPoint extends EndPoint {
 
-	readonly name: string = 'User Profile API';
+	public readonly name: string = 'User Profile API';
 
 	private readonly _router: Router;
 
@@ -34,11 +34,11 @@ export class ProfileEndPoint extends EndPoint {
 		this._router = router;
 	}
 
-	getRouter(): Router {
+	public getRouter(): Router {
 		return this._router;
 	}
 
-	async register(app: Application): Promise<void> {
+	public async register(app: Application): Promise<void> {
 		// nothing to register
 	}
 }

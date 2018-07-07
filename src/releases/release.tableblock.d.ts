@@ -19,21 +19,21 @@
 
 import { Document, Types } from 'mongoose';
 import { File } from '../files/file';
-import { Release } from './release';
 import { Game } from '../games/game';
-import { ReleaseVersion } from './version/release.version';
+import { Release } from './release';
 import { ReleaseVersionFile } from './version/file/release.version.file';
+import { ReleaseVersion } from './version/release.version';
 
 export interface TableBlock extends Document {
-	hash: Buffer,
-	bytes: number,
-	type: 'image' | 'sound' | 'gameitem' | 'collection',
-	meta: any,
-	_files?: File[] | Types.ObjectId[]
+	hash: Buffer;
+	bytes: number;
+	type: 'image' | 'sound' | 'gameitem' | 'collection';
+	meta: any;
+	_files?: File[] | Types.ObjectId[];
 }
 
 export interface TableBlockMatchResult extends TableBlockBase {
-	matches?: TableBlockMatch[]
+	matches?: TableBlockMatch[];
 }
 
 export interface TableBlockMatch extends TableBlockBase {

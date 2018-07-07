@@ -19,8 +19,8 @@
 
 import { config, settings } from '../common/settings';
 import { AuthenticationApi } from './authentication.api';
-import { GoogleStrategy } from './strategies/google.strategy';
 import { GitHubStrategy } from './strategies/github.strategy';
+import { GoogleStrategy } from './strategies/google.strategy';
 import { IpsStrategy } from './strategies/ips.strategy';
 
 export const api = new AuthenticationApi();

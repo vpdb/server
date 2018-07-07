@@ -17,26 +17,26 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { uniq } from 'lodash';
 import Bull, { Job, JobOptions, Queue, QueueOptions } from 'bull';
+import { uniq } from 'lodash';
 
-import { config } from '../../common/settings';
-import { logger } from '../../common/logger';
 import { ApiError } from '../../common/api.error';
+import { logger } from '../../common/logger';
+import { config } from '../../common/settings';
 import { File } from '../file';
-import { FileVariation } from '../file.variations';
 import { mimeTypeCategories } from '../file.mimetypes';
-import { CreationProcessor, OptimizationProcessor, Processor } from './processor';
-import { ProcessorWorker } from './processor.worker';
-import { JobData, ProcessorQueueType } from './processor.queue';
+import { FileVariation } from '../file.variations';
 import { Directb2sOptimizationProcessor } from './directb2s.optimization.processor';
 import { Directb2sThumbProcessor } from './directb2s.thumb.processor';
 import { ImageOptimizationProcessor } from './image.optimization.processor';
 import { ImageVariationProcessor } from './image.variation.processor';
+import { CreationProcessor, OptimizationProcessor, Processor } from './processor';
+import { JobData, ProcessorQueueType } from './processor.queue';
+import { ProcessorWorker } from './processor.worker';
 import { VideoOptimizationProcessor } from './video.optimization.processor';
-import { VptBlockindexProcessor } from './vpt.blockindex.processor';
 import { VideoScreenshotProcessor } from './video.screenshot.processor';
 import { VideoThumbProcessor } from './video.thumb.processor';
+import { VptBlockindexProcessor } from './vpt.blockindex.processor';
 
 export const processorTypes: ProcessorQueueType[] = ['creation', 'optimization'];
 
@@ -50,12 +50,12 @@ class ProcessorManager {
 	/**
 	 * Creation processor instances
 	 */
-	private readonly creationProcessors: CreationProcessor<any>[] = [];
+	private readonly creationProcessors: Array<CreationProcessor<any>> = [];
 
 	/**
 	 * Optimization processor instances
 	 */
-	private readonly optimizationProcessors: OptimizationProcessor<any>[] = [];
+	private readonly optimizationProcessors: Array<OptimizationProcessor<any>> = [];
 
 	/**
 	 * Processor queues. There are two queues for every mime category.
@@ -74,8 +74,8 @@ class ProcessorManager {
 			redis: {
 				port: config.vpdb.redis.port,
 				host: config.vpdb.redis.host,
-				db: config.vpdb.redis.db
-			}
+				db: config.vpdb.redis.db,
+			},
 		};
 
 		// define worker function per type
@@ -84,9 +84,9 @@ class ProcessorManager {
 		workers.set('optimization', ProcessorWorker.optimize);
 
 		// create queues
-		for (let type of processorTypes) {
+		for (const type of processorTypes) {
 			this.queues.set(type, new Map());
-			for (let category of mimeTypeCategories) {
+			for (const category of mimeTypeCategories) {
 				const queue = new Bull(`${type}:${category}`, opts);
 				queue.process(workers.get(type));
 				this.queues.get(type).set(category, queue);
@@ -99,13 +99,13 @@ class ProcessorManager {
 			new Directb2sThumbProcessor(),
 			new ImageVariationProcessor(),
 			new VideoScreenshotProcessor(),
-			new VideoThumbProcessor()
+			new VideoThumbProcessor(),
 		];
 		this.optimizationProcessors = [
 			new Directb2sOptimizationProcessor(),
 			new ImageOptimizationProcessor(),
 			new VideoOptimizationProcessor(),
-			new VptBlockindexProcessor()
+			new VptBlockindexProcessor(),
 		];
 	}
 
@@ -118,8 +118,8 @@ class ProcessorManager {
 	 * @return {CreationProcessor<any> | null} Processor instances or null if none available
 	 */
 	public getValidCreationProcessor(file: File, srcVariation: FileVariation, destVariation: FileVariation): CreationProcessor<any> | null {
-		const processors: CreationProcessor<any>[] = [];
-		for (let processor of this.creationProcessors) {
+		const processors: Array<CreationProcessor<any>> = [];
+		for (const processor of this.creationProcessors) {
 			if (processor.canProcess(file, srcVariation, destVariation)) {
 				processors.push(processor);
 			}
@@ -145,9 +145,9 @@ class ProcessorManager {
 	 * @param {FileVariation} [variation=null] Variation or null if original
 	 * @return {OptimizationProcessor<any>[]} Processor instances
 	 */
-	public getValidOptimizationProcessors(file: File, variation?: FileVariation): OptimizationProcessor<any>[] {
-		const processors: OptimizationProcessor<any>[] = [];
-		for (let processor of this.optimizationProcessors) {
+	public getValidOptimizationProcessors(file: File, variation?: FileVariation): Array<OptimizationProcessor<any>> {
+		const processors: Array<OptimizationProcessor<any>> = [];
+		for (const processor of this.optimizationProcessors) {
 			if (processor.canProcess(file, variation)) {
 				processors.push(processor);
 			}
@@ -181,8 +181,8 @@ class ProcessorManager {
 		// when file given, return all queues from all categories of the file and its variations
 		const queues: Queue[] = [];
 		const categories = uniq([file.getMimeCategory(), ...file.getVariations().map(v => file.getMimeCategory(v))]);
-		for (let type of processorTypes) {
-			for (let category of mimeTypeCategories) {
+		for (const type of processorTypes) {
+			for (const category of mimeTypeCategories) {
 				if (categories.includes(category)) {
 					queues.push(this.queues.get(type).get(category));
 				}
@@ -227,10 +227,10 @@ class ProcessorManager {
 		const job = await queue.add({
 			fileId: file.id,
 			processor: processor.name,
-			srcPath: srcPath,
-			destPath: destPath,
+			srcPath,
+			destPath,
 			srcVariation: srcVariation ? srcVariation.name : undefined,
-			destVariation: destVariation.name
+			destVariation: destVariation.name,
 		} as JobData, {
 			priority: processor.getOrder(destVariation),
 			// removeOnComplete: true,
@@ -256,10 +256,10 @@ class ProcessorManager {
 		const job = await queue.add({
 			fileId: file.id,
 			processor: processor.name,
-			srcPath: srcPath,
-			destPath: destPath,
+			srcPath,
+			destPath,
 			srcVariation: variation ? variation.name : undefined,
-			destVariation: variation ? variation.name : undefined
+			destVariation: variation ? variation.name : undefined,
 		} as JobData, {
 			priority: processor.getOrder(variation),
 			// removeOnComplete: true,

@@ -18,8 +18,8 @@
  */
 
 import { Scope } from '../common/scope';
-import { MediumApi } from './medium.api';
 import { StarApi } from '../stars/star.api';
+import { MediumApi } from './medium.api';
 
 const api = new MediumApi();
 const starApi = new StarApi();

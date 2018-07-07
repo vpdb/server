@@ -17,18 +17,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Schema, Types } from 'mongoose';
 import { assign, pick } from 'lodash';
+import { Schema, Types } from 'mongoose';
 
-import { state } from '../state';
+import { acl } from '../common/acl';
 import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
-import { acl } from '../common/acl';
-import { logger } from '../common/logger';
-import { Context } from '../common/typings/context';
 import { ipdb } from '../common/ipdb';
+import { logger } from '../common/logger';
 import { mailer } from '../common/mailer';
+import { Context } from '../common/typings/context';
 import { LogEventUtil } from '../log-event/log.event.util';
+import { state } from '../state';
 import { User } from '../users/user';
 
 export class GameRequestApi extends Api {
@@ -85,14 +85,14 @@ export class GameRequestApi extends Api {
 			ipdb_title: ipdbData.title,
 			is_closed: false,
 			_created_by: ctx.state.user._id,
-			created_at: now
+			created_at: now,
 		});
 		gameRequest = await gameRequest.save();
 
 		await LogEventUtil.log(ctx, 'create_game_request', false, {
 			game_request: pick(state.serializers.GameRequest.simple(ctx, gameRequest), ['id', 'title', 'ipdb_number', 'ipdb_title']),
 		}, {
-			game_request: gameRequest._id
+			game_request: gameRequest._id,
 		});
 		return this.success(ctx, state.serializers.GameRequest.simple(ctx, gameRequest), 201);
 	}
@@ -133,10 +133,10 @@ export class GameRequestApi extends Api {
 
 		await LogEventUtil.log(ctx, 'update_game_request', false, {
 			game_request: pick(state.serializers.GameRequest.simple(ctx, gameRequest), ['id', 'title', 'ipdb_number', 'ipdb_title']),
-			before: before,
-			after: pick(gameRequest, updatableFields)
+			before,
+			after: pick(gameRequest, updatableFields),
 		}, {
-			game_request: gameRequest._id
+			game_request: gameRequest._id,
 		});
 
 		if (requestClosed) {
@@ -194,9 +194,9 @@ export class GameRequestApi extends Api {
 		logger.info('[GameRequestApi.del] Game Request "%s" successfully deleted.', gameRequest.id);
 
 		await LogEventUtil.log(ctx, 'delete_game_request', false, {
-			game_request: pick(state.serializers.GameRequest.simple(ctx, gameRequest), ['id', 'title', 'ipdb_number', 'ipdb_title'])
+			game_request: pick(state.serializers.GameRequest.simple(ctx, gameRequest), ['id', 'title', 'ipdb_number', 'ipdb_title']),
 		}, {
-			game_request: gameRequest._id
+			game_request: gameRequest._id,
 		});
 		return this.success(ctx, null, 204);
 	}

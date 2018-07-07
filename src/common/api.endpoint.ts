@@ -37,19 +37,19 @@ export abstract class EndPoint {
 	/**
 	 * The name (plural) of the end point.
 	 */
-	abstract readonly name: string;
+	public abstract readonly name: string;
 
 	/**
 	 * Returns the router containing all the routes of the end point.
 	 * @return {Router}
 	 */
-	abstract getRouter(): Router;
+	public abstract getRouter(): Router;
 
 	/**
 	 * Registers the end point with the application.
 	 * @param {Application} app Koa application
 	 */
-	abstract register(app: Application): Promise<void>;
+	public abstract register(app: Application): Promise<void>;
 
 	/**
 	 * Bulk-imports data.

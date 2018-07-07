@@ -20,8 +20,8 @@
 import bytes = require('bytes');
 import chalk, { Chalk, ColorSupport } from 'chalk';
 
-import { Context } from '../typings/context';
 import { logger } from '../logger';
+import { Context } from '../typings/context';
 
 const Counter = require('passthrough-counter');
 
@@ -30,7 +30,7 @@ const statusStyle: { [key: number]: Chalk & { supportsColor: ColorSupport } } = 
 	200: chalk.black.bgGreenBright,
 	300: chalk.black.bgCyanBright,
 	400: chalk.black.bgYellowBright,
-	500: chalk.black.bgRedBright
+	500: chalk.black.bgRedBright,
 };
 
 const methodStyle: { [key: string]: Chalk & { supportsColor: ColorSupport } } = {
@@ -92,7 +92,7 @@ export function koaLogger() {
 			res.removeListener('close', onClose);
 			log(ctx, start, counter ? counter.length : length, null, event);
 		}
-	}
+	};
 }
 
 function log(ctx: Context, start: number, len: number, err: any = null, event: string = null) {
@@ -108,7 +108,7 @@ function log(ctx: Context, start: number, len: number, err: any = null, event: s
 	} else {
 		length = bytes(len).toLowerCase();
 	}
-	let cache:string = '';
+	let cache: string = '';
 	if (ctx.response.headers['x-cache-api']) {
 		cache = ' [' + ctx.response.headers['x-cache-api'].toLowerCase() + ']';
 	}

@@ -17,19 +17,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { assignIn, pick, assign, isString, isNumber, isObject, uniq, escapeRegExp, difference, includes } from 'lodash';
+import { assign, assignIn, difference, escapeRegExp, includes, isNumber, isObject, isString, pick, uniq } from 'lodash';
 
-import { state } from '../state';
-import { Context } from '../common/typings/context';
+import { acl } from '../common/acl';
 import { Api } from '../common/api';
 import { ApiError, ApiValidationError } from '../common/api.error';
-import { mailer } from '../common/mailer';
-import { acl } from '../common/acl';
 import { logger } from '../common/logger';
+import { mailer } from '../common/mailer';
 import { config } from '../common/settings';
+import { Context } from '../common/typings/context';
+import { LogUserUtil } from '../log-user/log.user.util';
+import { state } from '../state';
 import { User } from './user';
 import { UserUtil } from './user.util';
-import { LogUserUtil } from '../log-user/log.user.util';
 
 const randomString = require('randomstring');
 const validator = require('validator');
@@ -45,9 +45,9 @@ export class UserApi extends Api {
 	 */
 	public async create(ctx: Context) {
 
-		const newUser:User = assignIn<User>(pick(ctx.request.body, 'username', 'password', 'email'), {
+		const newUser: User = assignIn<User>(pick(ctx.request.body, 'username', 'password', 'email'), {
 			is_local: true,
-			name: ctx.request.body.name || ctx.request.body.username
+			name: ctx.request.body.name || ctx.request.body.username,
 		});
 
 		// api test behavior
@@ -58,14 +58,14 @@ export class UserApi extends Api {
 		let user = await state.models.User.findOne({
 			$or: [
 				{ emails: newUser.email },
-				{ validated_emails: newUser.email }
-			]
+				{ validated_emails: newUser.email },
+			],
 		}).exec();
 
 		if (user) {
 			throw new ApiError('User with email <%s> already exists.', newUser.email).warn().status(409);
 		}
-		let confirmUserEmail = config.vpdb.email.confirmUserEmail && !skipEmailConfirmation;
+		const confirmUserEmail = config.vpdb.email.confirmUserEmail && !skipEmailConfirmation;
 		user = await UserUtil.createUser(ctx, newUser, confirmUserEmail);
 
 		if (config.vpdb.services.sqreen.enabled) {
@@ -75,7 +75,7 @@ export class UserApi extends Api {
 		await LogUserUtil.success(ctx, user, 'registration', {
 			provider: 'local',
 			email: newUser.email,
-			username: newUser.username
+			username: newUser.username,
 		});
 
 		// user validated and created. time to send the activation email.
@@ -144,8 +144,8 @@ export class UserApi extends Api {
 			$or: [
 				{ ['providers.' + provider + '.id']: ctx.request.body.provider_id },
 				{ email: ctx.request.body.email },
-				{ validated_emails: ctx.request.body.email }
-			]
+				{ validated_emails: ctx.request.body.email },
+			],
 		};
 		const existingUser = await state.models.User.findOne(query).exec();
 
@@ -159,15 +159,15 @@ export class UserApi extends Api {
 					emails: [ctx.request.body.email],
 					created_at: new Date(),
 					modified_at: new Date(),
-					profile: ctx.request.body.provider_profile
+					profile: ctx.request.body.provider_profile,
 				};
 				await LogUserUtil.success(ctx, existingUser, 'provider_add', {
-					provider: provider,
-					profile: ctx.request.body.provider_profile
+					provider,
+					profile: ctx.request.body.provider_profile,
 				});
 			} else {
 				existingUser.providers[provider].modified_at = new Date();
-				await LogUserUtil.success(ctx, existingUser, 'provider_update', { provider: provider });
+				await LogUserUtil.success(ctx, existingUser, 'provider_update', { provider });
 			}
 			existingUser.emails = uniq([existingUser.email, ...existingUser.emails, ctx.request.body.email]);
 			isNew = false;
@@ -177,14 +177,14 @@ export class UserApi extends Api {
 
 			// check if username doesn't conflict
 			let newUser;
-			let originalName = name;
-			const dupeNameUser = await state.models.User.findOne({ name: name }).exec();
+			const originalName = name;
+			const dupeNameUser = await state.models.User.findOne({ name }).exec();
 			if (dupeNameUser) {
 				name += Math.floor(Math.random() * 1000);
 			}
 			newUser = {
 				is_local: false,
-				name: name,
+				name,
 				email: ctx.request.body.email,
 				emails: [ctx.request.body.email],
 				providers: {
@@ -193,15 +193,15 @@ export class UserApi extends Api {
 						name: originalName,
 						emails: [ctx.request.body.email],
 						created_at: new Date(),
-						profile: ctx.request.body.provider_profile
-					}
-				}
+						profile: ctx.request.body.provider_profile,
+					},
+				},
 			};
 			isNew = true;
 			user = await UserUtil.createUser(ctx, newUser as User, false);
 		}
 
-		await LogUserUtil.success(ctx, user, 'provider_registration', { provider: provider, email: user.email });
+		await LogUserUtil.success(ctx, user, 'provider_registration', { provider, email: user.email });
 		return this.success(ctx, state.serializers.User.detailed(ctx, user), isNew ? 201 : 200);
 	}
 
@@ -223,27 +223,27 @@ export class UserApi extends Api {
 		if (!canList && (!ctx.request.query.q || ctx.request.query.q.length < 3) && !ctx.request.query.name) {
 			throw new ApiError('Please provide a search query with at least three characters or a user name').status(403);
 		}
-		let query = [];
+		const query = [];
 
 		// text search
 		if (ctx.request.query.q) {
 			// sanitize and build regex
-			let q = ctx.request.query.q.trim().replace(/[^a-z0-9]+/gi, ' ').replace(/\s+/g, '.*');
-			let regex = new RegExp(q, 'i');
+			const q = ctx.request.query.q.trim().replace(/[^a-z0-9]+/gi, ' ').replace(/\s+/g, '.*');
+			const regex = new RegExp(q, 'i');
 			if (canList) {
 				query.push({
 					$or: [
 						{ name: regex },
 						{ username: regex },
-						{ email: regex }
-					]
+						{ email: regex },
+					],
 				});
 			} else {
 				query.push({
 					$or: [
 						{ name: regex },
-						{ username: regex }
-					]
+						{ username: regex },
+					],
 				});
 			}
 		}
@@ -254,7 +254,7 @@ export class UserApi extends Api {
 		// filter by role
 		if (canList && ctx.request.query.roles) {
 			// sanitze and split
-			let roles = ctx.request.query.roles.trim().replace(/[^a-z0-9,-]+/gi, '').split(',');
+			const roles = ctx.request.query.roles.trim().replace(/[^a-z0-9,-]+/gi, '').split(',');
 			query.push({ roles: { $in: roles } });
 		}
 		let users = await state.models.User.find(this.searchQuery(query)).exec();
@@ -262,7 +262,7 @@ export class UserApi extends Api {
 		// reduce
 		users = users.map(user => canGetFullDetails ?
 			state.serializers.User.detailed(ctx, user) :
-			state.serializers.User.simple(ctx, user)
+			state.serializers.User.simple(ctx, user),
 		);
 		return this.success(ctx, users);
 	}
@@ -369,7 +369,7 @@ export class UserApi extends Api {
 	 * @param {Application.Context} ctx Koa context
 	 * @return {Promise<boolean>}
 	 */
-	public async view(ctx:Context) {
+	public async view(ctx: Context) {
 		const user = await state.models.User.findOne({ id: ctx.params.id }).exec();
 		if (!user) {
 			throw new ApiError('No such user').status(404);
@@ -385,7 +385,7 @@ export class UserApi extends Api {
 	 * @param {Application.Context} ctx Koa context
 	 * @return {Promise<boolean>}
 	 */
-	public async del(ctx:Context) {
+	public async del(ctx: Context) {
 
 		const user = await state.models.User.findOne({ id: ctx.params.id }).exec();
 		if (!user) {
@@ -398,7 +398,6 @@ export class UserApi extends Api {
 		return this.success(ctx, null, 204);
 	}
 
-
 	/**
 	 * Resets the token and expiration date and resends the confirmation mail to
 	 * an existing user.
@@ -410,7 +409,7 @@ export class UserApi extends Api {
 	 * @param {Application.Context} ctx Koa context
 	 * @return {Promise<boolean>}
 	 */
-	public async sendConfirmationMail(ctx:Context) {
+	public async sendConfirmationMail(ctx: Context) {
 
 		const user = await state.models.User.findOne({ id: ctx.params.id }).exec();
 
@@ -427,5 +426,5 @@ export class UserApi extends Api {
 		await mailer.registrationConfirmation(user);
 
 		return this.success(ctx, null, 200);
-	};
+	}
 }

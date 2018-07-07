@@ -18,19 +18,19 @@
  */
 
 import { cloneDeep, difference, extend, intersection, isArray, isUndefined, keys, pick } from 'lodash';
-import { inspect } from 'util';
 import { Types } from 'mongoose';
+import { inspect } from 'util';
 
-import { state } from '../state';
-import { Context } from '../common/typings/context';
+import { acl } from '../common/acl';
 import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
-import { acl } from '../common/acl';
-import { SerializerOptions } from '../common/serializer';
 import { logger } from '../common/logger';
 import { mailer } from '../common/mailer';
-import { LogEventUtil } from '../log-event/log.event.util';
+import { SerializerOptions } from '../common/serializer';
+import { Context } from '../common/typings/context';
 import { Game } from '../games/game';
+import { LogEventUtil } from '../log-event/log.event.util';
+import { state } from '../state';
 import { User } from '../users/user';
 import { Backglass } from './backglass';
 
@@ -48,7 +48,7 @@ export class BackglassApi extends Api {
 
 		const backglass = await state.models.Backglass.getInstance(extend(ctx.request.body, {
 			_created_by: ctx.state.user._id,
-			created_at: now
+			created_at: now,
 		}));
 
 		if (isArray(backglass.versions)) {
@@ -102,10 +102,10 @@ export class BackglassApi extends Api {
 		// event log
 		await LogEventUtil.log(ctx, 'create_backglass', true, {
 			backglass: state.serializers.Backglass.detailed(ctx, populatedBackglass),
-			game: state.serializers.Game.reduced(ctx, populatedBackglass._game as Game)
+			game: state.serializers.Game.reduced(ctx, populatedBackglass._game as Game),
 		}, {
 			backglass: populatedBackglass._id,
-			game: populatedBackglass._game._id
+			game: populatedBackglass._game._id,
 		});
 
 		// return object
@@ -182,10 +182,10 @@ export class BackglassApi extends Api {
 	 */
 	public async list(ctx: Context) {
 		let query: any = {};
-		let pagination = this.pagination(ctx, 10, 30);
-		let serializerOpts: SerializerOptions = {};
-		let fields = ctx.query && ctx.query.fields ? ctx.query.fields.split(',') : [];
-		let populate = ['authors._user', 'versions._file'];
+		const pagination = this.pagination(ctx, 10, 30);
+		const serializerOpts: SerializerOptions = {};
+		const fields = ctx.query && ctx.query.fields ? ctx.query.fields.split(',') : [];
+		const populate = ['authors._user', 'versions._file'];
 		let game: Game;
 		// list roms of a game below /api/v1/games/{gameId}
 		if (ctx.params.gameId) {
@@ -225,8 +225,8 @@ export class BackglassApi extends Api {
 		const result = await state.models.Backglass.paginate(query, {
 			page: pagination.page,
 			limit: pagination.perPage,
-			populate: populate,
-			sort: { 'created_at': -1 }
+			populate,
+			sort: { created_at: -1 },
 		});
 		const backglasses = result.docs.map(bg => state.serializers.Backglass.simple(ctx, bg, serializerOpts));
 		return this.success(ctx, backglasses, 200, this.paginationOpts(pagination, result.total));
@@ -239,8 +239,8 @@ export class BackglassApi extends Api {
 	 * @param {Context} ctx Koa context
 	 */
 	public async view(ctx: Context) {
-		let serializerOpts: SerializerOptions = {
-			fields: []
+		const serializerOpts: SerializerOptions = {
+			fields: [],
 		};
 		let backglass = await state.models.Backglass.findOne({ id: ctx.params.id })
 			.populate({ path: '_game' })
@@ -293,10 +293,10 @@ export class BackglassApi extends Api {
 		// event log
 		await LogEventUtil.log(ctx, 'delete_backglass', false, {
 			backglass: pick(state.serializers.Backglass.detailed(ctx, backglass), ['id', 'authors', 'versions']),
-			game: state.serializers.Game.simple(ctx, backglass._game as Game)
+			game: state.serializers.Game.simple(ctx, backglass._game as Game),
 		}, {
 			backglass: backglass._id,
-			game: backglass._game._id
+			game: backglass._game._id,
 		});
 		return this.success(ctx, null, 204);
 	}

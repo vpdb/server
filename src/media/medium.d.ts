@@ -19,10 +19,10 @@
 
 import { FileReferenceDocument, MetricsDocument, PrettyIdDocument, Types } from 'mongoose';
 
-import { User } from '../users/user';
+import { File } from '../files/file';
 import { Game } from '../games/game';
 import { Release } from '../releases/release';
-import { File } from '../files/file';
+import { User } from '../users/user';
 
 export interface Medium extends PrettyIdDocument, FileReferenceDocument, MetricsDocument {
 
@@ -32,13 +32,13 @@ export interface Medium extends PrettyIdDocument, FileReferenceDocument, Metrics
 	_ref: {
 		game?: Game | Types.ObjectId;
 		release?: Release | Types.ObjectId;
-	},
+	};
 	category: string;
 	description: string;
 	acknowledgements: string;
 	counter: {
 		stars: number;
-	},
+	};
 	created_at: Date;
 	_created_by: User | Types.ObjectId;
 

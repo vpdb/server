@@ -18,18 +18,18 @@
  */
 
 import { Document, Types } from 'mongoose';
+import { Game } from '../games/game';
 import { Release } from '../releases/release';
 import { User } from '../users/user';
-import { Game } from '../games/game';
 
 export interface Rating extends Document {
-	id: string,
-	_from: User | Types.ObjectId,
+	id: string;
+	_from: User | Types.ObjectId;
 	_ref: {
 		game: Game | Types.ObjectId,
 		release: Release | Types.ObjectId,
-	},
-	value: number
-	modified_at: Date,
-	created_at: Date
+	};
+	value: number;
+	modified_at: Date;
+	created_at: Date;
 }

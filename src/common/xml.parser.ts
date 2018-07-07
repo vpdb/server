@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { createReadStream, ReadStream } from 'fs';
 import { EventEmitter } from 'events';
+import { createReadStream, ReadStream } from 'fs';
 import sax = require('sax');
 import { logger } from './logger';
 
@@ -38,8 +38,8 @@ export class XmlParser extends EventEmitter {
 	private filename: string;
 	private stack: any[];
 	private paused: boolean;
-	private readStream:ReadStream;
-	private saxStream:any;
+	private readStream: ReadStream;
+	private saxStream: any;
 
 	constructor(filename: string) {
 		super();
@@ -57,9 +57,9 @@ export class XmlParser extends EventEmitter {
 	 * @param data Event parameters
 	 * @private
 	 */
-	_emit(name:string, data:any) {
+	public _emit(name: string, data: any) {
 		if (this.paused) {
-			this.stack.push({ name: name, data: data});
+			this.stack.push({ name, data});
 		} else {
 			this.emit(name, data);
 		}
@@ -72,7 +72,7 @@ export class XmlParser extends EventEmitter {
 	 * @param {{ trim: Boolean, normalize: Boolean, lowercase: Boolean, xmlns: Boolean, position: Boolean, strictEntities: Boolean }} [options] Options
 	 * @returns {Stream}
 	 */
-	stream(strict:boolean, options?:any) {
+	public stream(strict: boolean, options?: any) {
 		this.readStream = createReadStream(this.filename);
 		return this.readStream.pipe(this.createStream(strict, options));
 	}
@@ -84,26 +84,26 @@ export class XmlParser extends EventEmitter {
 	 * @param {{ trim: Boolean, normalize: Boolean, lowercase: Boolean, xmlns: Boolean, position: Boolean, strictEntities: Boolean }} [options] Options
 	 * @returns {*}
 	 */
-	createStream(strict:boolean, options?:any) {
+	public createStream(strict: boolean, options?: any) {
 		this.saxStream = sax.createStream(strict, options);
-		this.saxStream.on('error', (data:any) => this._emit('error', data));
-		this.saxStream.on('text', (data:any) => this._emit('text', data));
-		this.saxStream.on('doctype', (data:any) => this._emit('doctype', data));
-		this.saxStream.on('processinginstruction', (data:any) => this._emit('processinginstruction', data));
-		this.saxStream.on('sgmldeclaration', (data:any) => this._emit('sgmldeclaration', data));
-		this.saxStream.on('opentagstart', (data:any) => this._emit('opentagstart', data));
-		this.saxStream.on('opentag', (data:any) => this._emit('opentag', data));
-		this.saxStream.on('closetag', (data:any) => this._emit('closetag', data));
-		this.saxStream.on('attribute', (data:any) => this._emit('attribute', data));
-		this.saxStream.on('comment', (data:any) => this._emit('comment', data));
-		this.saxStream.on('opencdata', (data:any) => this._emit('opencdata', data));
-		this.saxStream.on('cdata', (data:any) => this._emit('cdata', data));
-		this.saxStream.on('closecdata', (data:any) => this._emit('closecdata', data));
-		this.saxStream.on('opennamespace', (data:any) => this._emit('opennamespace', data));
-		this.saxStream.on('closenamespace', (data:any) => this._emit('closenamespace', data));
-		this.saxStream.on('end', (data:any) => this._emit('end', data));
-		this.saxStream.on('ready', (data:any) => this._emit('ready', data));
-		this.saxStream.on('noscript', (data:any) => this._emit('noscript', data));
+		this.saxStream.on('error', (data: any) => this._emit('error', data));
+		this.saxStream.on('text', (data: any) => this._emit('text', data));
+		this.saxStream.on('doctype', (data: any) => this._emit('doctype', data));
+		this.saxStream.on('processinginstruction', (data: any) => this._emit('processinginstruction', data));
+		this.saxStream.on('sgmldeclaration', (data: any) => this._emit('sgmldeclaration', data));
+		this.saxStream.on('opentagstart', (data: any) => this._emit('opentagstart', data));
+		this.saxStream.on('opentag', (data: any) => this._emit('opentag', data));
+		this.saxStream.on('closetag', (data: any) => this._emit('closetag', data));
+		this.saxStream.on('attribute', (data: any) => this._emit('attribute', data));
+		this.saxStream.on('comment', (data: any) => this._emit('comment', data));
+		this.saxStream.on('opencdata', (data: any) => this._emit('opencdata', data));
+		this.saxStream.on('cdata', (data: any) => this._emit('cdata', data));
+		this.saxStream.on('closecdata', (data: any) => this._emit('closecdata', data));
+		this.saxStream.on('opennamespace', (data: any) => this._emit('opennamespace', data));
+		this.saxStream.on('closenamespace', (data: any) => this._emit('closenamespace', data));
+		this.saxStream.on('end', (data: any) => this._emit('end', data));
+		this.saxStream.on('ready', (data: any) => this._emit('ready', data));
+		this.saxStream.on('noscript', (data: any) => this._emit('noscript', data));
 		return this.saxStream;
 	}
 
@@ -111,7 +111,7 @@ export class XmlParser extends EventEmitter {
 	 * Pauses the stream. No further events will be submitted
 	 * until {@link #resume()} is called.
 	 */
-	pause() {
+	public pause() {
 		this.paused = true;
 		this.readStream.pause();
 	}
@@ -119,14 +119,14 @@ export class XmlParser extends EventEmitter {
 	/**
 	 * Resumes a paused stream.
 	 */
-	resume() {
+	public resume() {
 		this.paused = false;
 		while (this.stack.length > 0 && !this.paused) {
-			let e = this.stack.shift();
+			const e = this.stack.shift();
 			this.emit(e.name, e.data);
 		}
 		if (this.stack.length === 0) {
 			this.readStream.resume();
 		}
-	};
+	}
 }

@@ -17,9 +17,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { state } from '../state';
-import { Context } from '../common/typings/context';
 import { Serializer, SerializerOptions } from '../common/serializer';
+import { Context } from '../common/typings/context';
+import { state } from '../state';
 import { ContentAuthor } from './content.author';
 import { User } from './user';
 
@@ -28,14 +28,14 @@ export class ContentAuthorSerializer extends Serializer<ContentAuthor> {
 	protected _reduced(ctx: Context, doc: ContentAuthor, opts: SerializerOptions): ContentAuthor {
 		return {
 			user: state.serializers.User.reduced(ctx, doc._user as User, opts),
-			roles: doc.roles
+			roles: doc.roles,
 		} as ContentAuthor;
 	}
 
 	protected _simple(ctx: Context, doc: ContentAuthor, opts: SerializerOptions): ContentAuthor {
 		return {
 			user: state.serializers.User.simple(ctx, doc._user as User, opts),
-			roles: doc.roles
+			roles: doc.roles,
 		} as ContentAuthor;
 	}
 

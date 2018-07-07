@@ -17,14 +17,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Context } from '../typings/context';
-import { config, settings } from '../settings';
+import { decode as jwtDecode } from 'jwt-simple';
+import { AuthenticationUtil, Jwt } from '../../authentication/authentication.util';
 import { state } from '../../state';
 import { User } from '../../users/user';
 import { ApiError } from '../api.error';
-import { decode as jwtDecode } from 'jwt-simple';
 import { Scope } from '../scope';
-import { AuthenticationUtil, Jwt } from '../../authentication/authentication.util';
+import { config, settings } from '../settings';
+import { Context } from '../typings/context';
 
 /**
  * Middleware that populates the authentication state. It sets:
@@ -80,7 +80,7 @@ export function koaAuth() {
 
 		// continue with next middleware
 		await next();
-	}
+	};
 }
 
 /**
@@ -107,13 +107,13 @@ function retrieveToken(ctx: Context): { value: string, fromUrl: boolean } {
 		}
 		return {
 			value: credentials,
-			fromUrl: false
+			fromUrl: false,
 		};
 
 	} else if (ctx.query && ctx.query.token) {
 		return {
 			value: ctx.query.token,
-			fromUrl: true
+			fromUrl: true,
 		};
 	} else {
 		throw new ApiError('Unauthorized. You need to provide credentials for this resource').status(401);
@@ -230,7 +230,7 @@ async function authenticateWithJwt(ctx: Context, token: { value: string, fromUrl
 	}
 
 	// check for expiration
-	let tokenExp = new Date(decoded.exp);
+	const tokenExp = new Date(decoded.exp);
 	if (tokenExp.getTime() < new Date().getTime()) {
 		throw new ApiError('Token has expired').status(401);
 	}
@@ -240,7 +240,7 @@ async function authenticateWithJwt(ctx: Context, token: { value: string, fromUrl
 	}
 
 	// check for path && method
-	let extPath = settings.intToExt(ctx.request.path);
+	const extPath = settings.intToExt(ctx.request.path);
 	if (decoded.path && (decoded.path !== extPath || (ctx.method !== 'GET' && ctx.method !== 'HEAD'))) {
 		throw new ApiError('Token is only valid for "GET/HEAD %s" but got "%s %s".', decoded.path, ctx.method, extPath).status(401);
 	}
@@ -252,7 +252,7 @@ async function authenticateWithJwt(ctx: Context, token: { value: string, fromUrl
 	}
 
 	// generate new token if it's a short term token.
-	let tokenIssued = new Date(decoded.iat);
+	const tokenIssued = new Date(decoded.iat);
 	if (tokenExp.getTime() - tokenIssued.getTime() === config.vpdb.apiTokenLifetime) {
 		ctx.set('X-Token-Refresh', AuthenticationUtil.generateApiToken(user, new Date(), true));
 	}

@@ -17,12 +17,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 import { Document, Types } from 'mongoose';
-import { User } from '../users/user';
+import { Backglass } from '../backglasses/backglass';
+import { Build } from '../builds/build';
+import { GameRequest } from '../game-requests/game.request';
 import { Game } from '../games/game';
 import { Release } from '../releases/release';
-import { Backglass } from '../backglasses/backglass';
-import { GameRequest } from '../game-requests/game.request';
-import { Build } from '../builds/build';
+import { User } from '../users/user';
 
 export interface LogEvent extends Document {
 	_actor: User | Types.ObjectId;
@@ -33,7 +33,7 @@ export interface LogEvent extends Document {
 		user?: User | Types.ObjectId;
 		game_request?: GameRequest | Types.ObjectId;
 		build?: Build | Types.ObjectId;
-	},
+	};
 	event: string;
 	payload: any;
 	is_public: boolean;
@@ -49,5 +49,5 @@ export interface LogEvent extends Document {
 		user?: User;
 		game_request?: GameRequest;
 		build?: Build;
-	},
+	};
 }

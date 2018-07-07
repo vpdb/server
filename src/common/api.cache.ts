@@ -17,16 +17,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { get, intersection, isObject } from 'lodash';
 import Router, { IRouterOptions } from 'koa-router';
+import { get, intersection, isObject } from 'lodash';
 import pathToRegexp from 'path-to-regexp';
 
+import { MetricsDocument, MetricsModel } from 'mongoose';
+import { Release } from '../releases/release';
 import { state } from '../state';
+import { User } from '../users/user';
 import { logger } from './logger';
 import { Context } from './typings/context';
-import { User } from '../users/user';
-import { Release } from '../releases/release';
-import { MetricsDocument, MetricsModel } from 'mongoose';
 
 /**
  * An in-memory cache using Redis.
@@ -51,7 +51,7 @@ class ApiCache {
 	private readonly redisRefPrefix = 'api-cache-ref:';
 	private readonly redisCounterPrefix = 'api-cache-counter:';
 
-	private readonly cacheRoutes: CacheRoute<any>[] = [];
+	private readonly cacheRoutes: Array<CacheRoute<any>> = [];
 
 	private readonly endpoints: Map<string, string> = new Map([
 		['release', '/v1/releases'],
@@ -70,9 +70,9 @@ class ApiCache {
 	 * @param {CacheInvalidationTag} config How responses from the route get invalidated. See {@link CacheInvalidationTag}.
 	 * @param {CacheCounterConfig} counters Counter config, see {@link CacheCounterConfig}.
 	 */
-	public enable<T>(router: Router, path: string, config: CacheInvalidationConfig, counters?:CacheCounterConfig<T>[]) {
+	public enable<T>(router: Router, path: string, config: CacheInvalidationConfig, counters?: Array<CacheCounterConfig<T>>) {
 		const opts = (router as any).opts as IRouterOptions;
-		this.cacheRoutes.push({ path: path, regex: pathToRegexp(opts.prefix + path), config: config, counters: counters });
+		this.cacheRoutes.push({ path, regex: pathToRegexp(opts.prefix + path), config, counters });
 	}
 
 	/**
@@ -86,13 +86,13 @@ class ApiCache {
 
 		// if not a GET or HEAD operation, abort.
 		if (ctx.request.method !== 'GET' && ctx.request.method !== 'HEAD') {
-			return await next();
+			return next();
 		}
 
 		// check if enabled for this route
 		const cacheRoute = this.cacheRoutes.find(route => route.regex.test(ctx.request.path));
 		if (!cacheRoute) {
-			return await next();
+			return next();
 		}
 
 		// retrieve the cached response
@@ -105,7 +105,7 @@ class ApiCache {
 
 			// update counters
 			if (cacheRoute.counters) {
-				const refs: { counter:CacheCounterConfig<any>, key: string, id: string, c: string }[] = [];
+				const refs: Array<{ counter: CacheCounterConfig<any>, key: string, id: string, c: string }> = [];
 				for (const counter of cacheRoute.counters) {
 					for (const c of counter.counters) {
 						const counters = counter.get(body, c);
@@ -174,12 +174,12 @@ class ApiCache {
 		}
 
 		const now = Date.now();
-		const allRefs:string[][][] = [];
+		const allRefs: string[][][] = [];
 		let invalidationKeys = new Set<string>();
 		for (let i = 0; i < tagLists.length; i++) {
 			const tags = tagLists[i];
 			allRefs[i] = [];
-			const keys:string[][] = [];
+			const keys: string[][] = [];
 			for (const tag of tags) {
 				const refs: string[] = [];
 
@@ -244,14 +244,14 @@ class ApiCache {
 	 */
 	private async setCache<T>(ctx: Context, key: string, cacheRoute: CacheRoute<T>) {
 
-		let body:any;
+		let body: any;
 		const now = Date.now();
-		const refs: (() => Promise<any>)[] = [];
+		const refs: Array<() => Promise<any>> = [];
 		const refKeys: string[] = [];
 		const response: CacheResponse = {
 			status: ctx.status,
 			headers: ctx.headers,
-			body: ctx.response.body
+			body: ctx.response.body,
 		};
 
 		// set the cache todo set ttl to user caches
@@ -301,7 +301,7 @@ class ApiCache {
 		// save counters
 		let numCounters = 0;
 		if (cacheRoute.counters) {
-			const refPairs:any[] = [];
+			const refPairs: any[] = [];
 			body = body || (isObject(ctx.response.body) ? ctx.response.body : JSON.parse(ctx.response.body));
 			for (const counter of cacheRoute.counters) {
 				for (const c of counter.counters) {
@@ -361,16 +361,16 @@ class ApiCache {
 	 * @param entity Starred entity
 	 */
 	public async invalidateStarredEntity(modelName: string, entity: any, user: User) {
-		const tags:CacheInvalidationTag[][] = [];
+		const tags: CacheInvalidationTag[][] = [];
 
 		/** list endpoints that include the user's starred status in the payload */
 		const modelsListingStar = ['release'];
 
 		if (modelsListingStar.includes(modelName) && this.endpoints.has(modelName)) {
-			tags.push([{ path: this.endpoints.get(modelName) }, { user: user }]);
+			tags.push([{ path: this.endpoints.get(modelName) }, { user }]);
 		}
 		if (entity._game && entity._game.id) {
-			tags.push([{ path: '/v1/games/' + entity._game.id }, { user: user }]);
+			tags.push([{ path: '/v1/games/' + entity._game.id }, { user }]);
 		}
 		await this.invalidate(...tags);
 	}
@@ -427,7 +427,7 @@ class ApiCache {
 		return this.redisRefPrefix + 'user:' + user.id;
 	}
 
-	private getCounterKey(entity:string, entityId:string, counter:string) {
+	private getCounterKey(entity: string, entityId: string, counter: string) {
 		return this.redisCounterPrefix + entity + ':' + counter + ':' + entityId;
 	}
 
@@ -440,7 +440,7 @@ class ApiCache {
 	 * @see https://github.com/galanonym/redis-delete-wildcard/blob/master/index.js
 	 * @return {Promise<number>} Number of invalidated caches
 	 */
-	private async deleteWildcard(wildcard:string): Promise<number> {
+	private async deleteWildcard(wildcard: string): Promise<number> {
 		const num = await state.redis.eval(
 			'local keysToDelete = redis.call(\'keys\', ARGV[1]) ' + // find keys with wildcard
 			'if unpack(keysToDelete) ~= nil then ' +              // if there are any keys
@@ -461,7 +461,7 @@ interface CacheRoute<T> {
 	regex: RegExp;
 	path: string;
 	config: CacheInvalidationConfig;
-	counters: CacheCounterConfig<T>[];
+	counters: Array<CacheCounterConfig<T>>;
 }
 
 /**
@@ -474,7 +474,7 @@ export interface CacheInvalidationTag {
 	 * Invalidate one or multiple resources.
 	 * All caches tagged with any of the provided resources will be invalidated.
 	 */
-	resources?: string[],
+	resources?: string[];
 	/**
 	 * Invalidates a specific path defined by {@link ApiCache.enable}.
 	 * Placeholders are replaced with values.
@@ -509,7 +509,7 @@ export interface CacheInvalidationConfig {
 	 * resource, e.g. the games resource which also includes releases and
 	 * users.
 	 */
-	resources?: string[],
+	resources?: string[];
 
 	/**
 	 * Reference a specific entity.
@@ -536,7 +536,7 @@ export interface CacheInvalidationConfig {
 		 * Points to the child's ID.
 		 */
 		idField: string
-	}
+	};
 }
 
 /**
@@ -588,7 +588,7 @@ export interface CacheCounterConfig<T> {
 	 * @param {string} counter Counter name, e.g. "views"
 	 * @returns {CacheCounterValues} Counter values of all entities in the response body for given counter
 	 */
-	get: (response:T, counter:string) => CacheCounterValues;
+	get: (response: T, counter: string) => CacheCounterValues;
 
 	/**
 	 * A function that updates the counters of all occurrences of the given
@@ -598,7 +598,7 @@ export interface CacheCounterConfig<T> {
 	 * @param {string} counter Counter name, e.g. "views"
 	 * @param {CacheCounterValues} values Updated counter values of all entities in the response body for given counter
 	 */
-	set: (response:T, counter:string, values:CacheCounterValues) => void;
+	set: (response: T, counter: string, values: CacheCounterValues) => void;
 
 	/**
 	 * If set, increments a counter even if fetched from cache.
@@ -615,10 +615,10 @@ export interface CacheCounterConfig<T> {
 		 * @param {T} response Response body coming from cache
 		 * @return {string} ID of the entity
 		 */
-		getId: (response:T) => string;
-	}
+		getId: (response: T) => string;
+	};
 }
-export type CacheCounterValues = { [key:string]: number };
+export interface CacheCounterValues { [key: string]: number; }
 
 interface CacheResponse {
 	status: number;

@@ -80,7 +80,7 @@ export class ScopeHelper {
 	 */
 	private _scopes: { personal: Scope[], provider: Scope[] } = {
 		personal: [Scope.ALL, Scope.LOGIN, Scope.COMMUNITY, Scope.CREATE, Scope.STORAGE],
-		provider: [Scope.COMMUNITY, Scope.CREATE, Scope.STORAGE, Scope.SERVICE]
+		provider: [Scope.COMMUNITY, Scope.CREATE, Scope.STORAGE, Scope.SERVICE],
 	};
 
 	/**
@@ -90,7 +90,7 @@ export class ScopeHelper {
 	 * @param {"personal"|"provider"} type Token type
 	 * @return {string[]} Valid scopes
 	 */
-	getScopes(type: 'personal' | 'provider'): Scope[] {
+	public getScopes(type: 'personal' | 'provider'): Scope[] {
 		return this._scopes[type];
 	}
 
@@ -101,8 +101,8 @@ export class ScopeHelper {
 	 * @param {string} scope Scope
 	 * @return {boolean} True if found, false otherwise.
 	 */
-	has(scopes: Scope[] | string[] | null, scope: Scope | string): boolean {
-		return scopes && (<string[]>scopes).includes(<string>scope);
+	public has(scopes: Scope[] | string[] | null, scope: Scope | string): boolean {
+		return scopes && (scopes as string[]).includes(scope as string);
 	}
 
 	/**
@@ -113,7 +113,7 @@ export class ScopeHelper {
 	 * @param {string[]} scopesToValidate Scopes to check
 	 * @return {boolean} True if all scopes are valid
 	 */
-	isValid(validScopes: string[] | 'personal' | 'provider' | null, scopesToValidate: Scope[] |string[]): boolean {
+	public isValid(validScopes: string[] | 'personal' | 'provider' | null, scopesToValidate: Scope[] | string[]): boolean {
 		if (validScopes === null) {
 			return true;
 		}
@@ -133,7 +133,7 @@ export class ScopeHelper {
 	 * @param {string[]} scopes
 	 * @return {boolean} True if identical, false otherwise.
 	 */
-	isIdentical(validScopes: Scope[] | string[], scopes: Scope[] | string[]) {
+	public isIdentical(validScopes: Scope[] | string[], scopes: Scope[] | string[]) {
 		if (scopes.length !== validScopes.length) {
 			return false;
 		}

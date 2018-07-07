@@ -19,34 +19,34 @@
 
 /* istanbul ignore file */
 import { existsSync, lstatSync } from 'fs';
-import { isLength, isEmail } from 'validator';
-import { isArray, isNumber, isBoolean, isObject, isString, keys } from 'lodash';
+import { isArray, isBoolean, isNumber, isObject, isString, keys } from 'lodash';
 import { dirname } from 'path';
-import { VpdbConfig } from './typings/config';
+import { isEmail, isLength } from 'validator';
 import { fileTypes } from '../files/file.types';
+import { VpdbConfig } from './typings/config';
 
 export const setttingValidations = {
 	vpdb: {
-		name: (name:any) => {
+		name: (name: any) => {
 			if (!isLength(name, 1)) {
 				return 'Name must contain at least one character.';
 			}
 		},
 		api: { hostname: checkHost, port: checkPort, protocol: checkProtocol, pathname: checkPath },
 		storage: {
-			'public': { path: checkFolder, api: { hostname: checkHost, port: checkPort, protocol: checkProtocol, pathname: checkPath } },
-			'protected': { path: checkFolder, api: { hostname: checkHost, port: checkPort, protocol: checkProtocol, pathname: checkPath } }
+			public: { path: checkFolder, api: { hostname: checkHost, port: checkPort, protocol: checkProtocol, pathname: checkPath } },
+			protected: { path: checkFolder, api: { hostname: checkHost, port: checkPort, protocol: checkProtocol, pathname: checkPath } },
 		},
 		webapp: { hostname: checkHost, port: checkPort, protocol: checkProtocol },
-		db: (db:any) => {
+		db: (db: any) => {
 			if (!/mongodb:\/\/[^\/]+\/[a-z0-9]+/i.test(db)) {
 				return 'Database must fit the scheme "mongodb://<host>/<db-name>"';
 			}
 		},
 		redis: {
 			host: (host: any) => {
-				let validIp = !/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/.test(host);
-				let validHost = /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]).)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9-]*[A-Za-z0-9])$/.test(host);
+				const validIp = !/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/.test(host);
+				const validHost = /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]).)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9-]*[A-Za-z0-9])$/.test(host);
 				if (!validIp && !validHost) {
 					return 'Must be a valid host or IP address';
 				}
@@ -56,7 +56,7 @@ export const setttingValidations = {
 				if (parseInt(db) > 15 || parseInt(db) < 0) {
 					return 'Redis database must be an integer between 0 and 15';
 				}
-			}
+			},
 		},
 		apiTokenLifetime: (timeout: any) => {
 			if (!parseInt(timeout) || parseInt(timeout) < 1) {
@@ -91,7 +91,7 @@ export const setttingValidations = {
 				if (!isNumber(keep)) {
 					return 'Keep duration must be a number.';
 				}
-			}
+			},
 		},
 
 		logging: {
@@ -110,7 +110,7 @@ export const setttingValidations = {
 					if (!isBoolean(bool)) {
 						return 'Console application log must be either true or false';
 					}
-				}
+				},
 			},
 			file: {
 				access: (logPath: any) => {
@@ -136,7 +136,7 @@ export const setttingValidations = {
 					if (!lstatSync(logDir).isDirectory()) {
 						return 'App log path is not a folder.';
 					}
-				}
+				},
 			},
 			papertrail: {
 				access: (bool: any) => {
@@ -153,8 +153,8 @@ export const setttingValidations = {
 					if (!isObject(bool)) {
 						return 'Papertrail config must be at least an object, even if it\'s empty.';
 					}
-				}
-			}
+				},
+			},
 		},
 		email: {
 			confirmUserEmail: (bool: any) => {
@@ -172,13 +172,13 @@ export const setttingValidations = {
 					if (!isLength(name, 1)) {
 						return 'Sender name must contain at least one character.';
 					}
-				}
+				},
 			},
 			nodemailer: (obj: any) => {
 				if (!isObject(obj)) {
 					return 'Nodemailer configuration must be an object.';
 				}
-			}
+			},
 		},
 		quota: {
 			plans: (plans: any) => {
@@ -189,21 +189,21 @@ export const setttingValidations = {
 				if (plans.length < 1) {
 					return 'Quota plans must contain at least one plan.';
 				}
-				const errors:any[] = [];
+				const errors: any[] = [];
 				plans.forEach(plan => {
 					if (plan.unlimited !== true) {
 						if (!durations.includes(plan.per)) {
 							errors.push({
 								path: plan.id + '.per',
 								message: 'Invalid duration. Valid durations are: ["' + durations.join('", "') + '"].',
-								setting: plan.per
+								setting: plan.per,
 							});
 						}
 						if (!isNumber(parseInt(plan.credits)) || parseInt(plan.credits) < 0) {
 							errors.push({
 								path: plan.id + '.credits',
 								message: 'Credits must be an integer equal or greater than 0.',
-								setting: plan.credits
+								setting: plan.credits,
 							});
 						}
 						if (!isBoolean(plan.enableAppTokens)) {
@@ -218,35 +218,35 @@ export const setttingValidations = {
 					return errors;
 				}
 			},
-			defaultPlan: (defaultPlan: any, setting:any, settings:VpdbConfig) => {
+			defaultPlan: (defaultPlan: any, setting: any, settings: VpdbConfig) => {
 				if (!settings.vpdb.quota.plans.find(p => p.id === defaultPlan)) {
 					return 'Default plan must exist in the "vpdb.quota.plans" setting.';
 				}
 			},
 			costs: (costs: any) => {
 				let cost;
-				const errors:any[] = [];
-				for (let fileType of keys(costs)) {
+				const errors: any[] = [];
+				for (const fileType of keys(costs)) {
 					cost = costs[fileType];
 					if (!fileTypes.exists(fileType)) {
 						errors.push({
 							path: fileType,
 							message: 'Invalid file type. Valid file types are: ["' + fileTypes.names.join('", "') + '"].',
-							setting: fileType
+							setting: fileType,
 						});
 					}
 					if (!isNumber(cost) && !isObject(cost)) {
 						errors.push({
 							path: fileType,
 							message: 'Cost must be an integer or object.',
-							setting: cost
+							setting: cost,
 						});
 					}
 				}
 				if (errors.length > 0) {
 					return errors;
 				}
-			}
+			},
 		},
 		metrics: {
 			bayesianEstimate: {
@@ -259,8 +259,8 @@ export const setttingValidations = {
 					if (mean !== null && !isNumber(mean)) {
 						return 'Must be either null or a number';
 					}
-				}
-			}
+				},
+			},
 		},
 		restrictions: {
 			release: {
@@ -268,22 +268,22 @@ export const setttingValidations = {
 					if (!isArray(ids)) {
 						return 'Denied MPUs must be an array.';
 					}
-				}
+				},
 			},
 			backglass: {
 				denyMpu: (ids: any) => {
 					if (!isArray(ids)) {
 						return 'Denied MPUs must be an array.';
 					}
-				}
+				},
 			},
 			rom: {
 				denyMpu: (ids: any) => {
 					if (!isArray(ids)) {
 						return 'Denied MPUs must be an array.';
 					}
-				}
-			}
+				},
+			},
 		},
 		pusher: {
 			enabled: (isEnabled: any) => {
@@ -298,7 +298,7 @@ export const setttingValidations = {
 				if (!isObject(opt)) {
 					return 'Pusher options must be an object.';
 				}
-			}
+			},
 		},
 		passport: {
 			google: {
@@ -325,7 +325,7 @@ export const setttingValidations = {
 					if (secret === 'CLIENT_SECRET') {
 						return 'You\'re using the default client secret.';
 					}
-				}
+				},
 			},
 			github: {
 				enabled: (isEnabled: any) => {
@@ -351,7 +351,7 @@ export const setttingValidations = {
 					if (secret === 'CLIENT_SECRET') {
 						return 'You\'re using the default client secret. Please consult https://github.com/settings/applications/ in order to obtain GitHub\'s client secret';
 					}
-				}
+				},
 			},
 			ipboard: {
 				enabled: (isEnabled: any) => {
@@ -403,8 +403,8 @@ export const setttingValidations = {
 						return 'IPS version must be either 3, 4 or 4.3';
 					}
 				},
-				__array: true
-			}
+				__array: true,
+			},
 		},
 		tmp: (path: any) => {
 			if (!existsSync(path)) {
@@ -436,7 +436,7 @@ export const setttingValidations = {
 					if (!isString(apiKey)) {
 						return 'API key must be a string';
 					}
-				}
+				},
 			},
 			sqreen: {
 				enabled: (isEnabled: any) => {
@@ -448,10 +448,10 @@ export const setttingValidations = {
 					if (!isString(token)) {
 						return 'Token must be a string';
 					}
-				}
-			}
-		}
-	}
+				},
+			},
+		},
+	},
 };
 
 function checkUrl(str: any) {
@@ -482,7 +482,7 @@ function checkUrl(str: any) {
 		'(?::\\d{2,5})?' +
 		// resource path
 		'(?:/[^\\s]*)?' +
-		'$', 'i'
+		'$', 'i',
 	);
 	/* istanbul ignore if */
 	if (!pattern.test(str)) {
@@ -491,8 +491,8 @@ function checkUrl(str: any) {
 }
 
 function checkHost(host: any) {
-	let validIp = !/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/.test(host);
-	let validHost = /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]).)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9-]*[A-Za-z0-9])$/.test(host);
+	const validIp = !/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/.test(host);
+	const validHost = /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]).)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9-]*[A-Za-z0-9])$/.test(host);
 	/* istanbul ignore if */
 	if (!validIp && !validHost) {
 		return 'Must be a valid host or IP address';

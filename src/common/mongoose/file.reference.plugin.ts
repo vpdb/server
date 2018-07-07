@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document, FileReferenceDocument, FileReferenceOptions, Schema } from 'mongoose';
 import { get, keys, omitBy, pickBy } from 'lodash';
+import { Document, FileReferenceDocument, FileReferenceOptions, Schema } from 'mongoose';
 
 import { state } from '../../state';
 import { explodePaths, traversePaths } from './util';
@@ -44,7 +44,7 @@ export function fileReferencePlugin(schema: Schema, options: FileReferenceOption
 	//-----------------------------------------------------------------------------
 	keys(fileRefs).forEach(path => {
 
-		schema.path(path).validate(async function (fileId: any) {
+		schema.path(path).validate(async function(fileId: any) {
 
 			if (!fileId || !this._created_by) {
 				return true;
@@ -71,17 +71,17 @@ export function fileReferencePlugin(schema: Schema, options: FileReferenceOption
 	 *
 	 * @returns {Promise.<String[]>} File IDs that have been activated.
 	 */
-	schema.methods.activateFiles = async function (): Promise<string[]> {
-		let ids: string[] = [];
-		let objPaths = keys(explodePaths(this, fileRefs));
+	schema.methods.activateFiles = async function(): Promise<string[]> {
+		const ids: string[] = [];
+		const objPaths = keys(explodePaths(this, fileRefs));
 		objPaths.forEach(path => {
-			let id = get(this, path);
+			const id = get(this, path);
 			if (id) {
 				ids.push(id._id || id);
 			}
 		});
 		const files = await state.models.File.find({ _id: { $in: ids }, is_active: false }).exec();
-		for (let file of files) {
+		for (const file of files) {
 			await file.switchToActive();
 		}
 		await this.populate(objPaths.join(' ')).execPopulate();
@@ -91,12 +91,12 @@ export function fileReferencePlugin(schema: Schema, options: FileReferenceOption
 	/**
 	 * Remove file references from database
 	 */
-	schema.post('remove', async function (obj: Document) {
+	schema.post('remove', async function(obj: Document) {
 
-		let objPaths = keys(explodePaths(obj, fileRefs));
-		let ids: string[] = [];
+		const objPaths = keys(explodePaths(obj, fileRefs));
+		const ids: string[] = [];
 		objPaths.forEach(path => {
-			let id = get(obj, path + '._id');
+			const id = get(obj, path + '._id');
 			if (id) {
 				ids.push(id);
 			}
@@ -104,7 +104,7 @@ export function fileReferencePlugin(schema: Schema, options: FileReferenceOption
 		const files = await state.models.File.find({ _id: { $in: ids } }).exec();
 
 		// remove file references from db
-		for (let file of files) {
+		for (const file of files) {
 			await file.remove();
 		}
 	});

@@ -17,16 +17,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Readable } from 'stream';
 import { createWriteStream, stat } from 'fs';
+import { Readable } from 'stream';
 import { promisify } from 'util';
 
 import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
 import { XmlParser } from '../../common/xml.parser';
-import { OptimizationProcessor } from './processor';
 import { File } from '../file';
 import { BackglassVariation, FileVariation } from '../file.variations';
+import { OptimizationProcessor } from './processor';
 
 const PngQuant = require('pngquant');
 const base64 = require('base64-stream');
@@ -34,24 +34,24 @@ const statAsync = promisify(stat);
 
 export class Directb2sOptimizationProcessor implements OptimizationProcessor<BackglassVariation> {
 
-	name: string = 'directb2s.optimization';
+	public name: string = 'directb2s.optimization';
 
-	canProcess(file: File, variation?: FileVariation): boolean {
+	public canProcess(file: File, variation?: FileVariation): boolean {
 		return file.getMimeType(variation) === 'application/x-directb2s';
 	}
 
-	getOrder(variation?: FileVariation): number {
+	public getOrder(variation?: FileVariation): number {
 		return 600 + (variation && variation.priority ? variation.priority : 0);
 	}
 
-	async process(file: File, src: string, dest: string, variation?: BackglassVariation): Promise<string> {
+	public async process(file: File, src: string, dest: string, variation?: BackglassVariation): Promise<string> {
 
 		logger.debug('[Directb2sOptimizationProcessor] Starting processing %s at %s.', file.toShortString(variation), dest);
 
 		const now = new Date().getTime();
-		let originalSize = (await statAsync(src)).size;
-		let out = createWriteStream(dest);
-		let parser = new XmlParser(src);
+		const originalSize = (await statAsync(src)).size;
+		const out = createWriteStream(dest);
+		const parser = new XmlParser(src);
 		let closePrevious = '';
 		let emptyElement: boolean;
 		let level = 0;
@@ -62,7 +62,7 @@ export class Directb2sOptimizationProcessor implements OptimizationProcessor<Bac
 			const write = (text: string) => out.write(text);
 
 			parser.on('opentagstart', tag => {
-				let name = tag.name;
+				const name = tag.name;
 				level++;
 				emptyElement = true;
 				write(closePrevious);
@@ -77,12 +77,12 @@ export class Directb2sOptimizationProcessor implements OptimizationProcessor<Bac
 					(currentTag === 'ThumbnailImage' && attr.name === 'Value')) {
 
 					parser.pause();
-					let source = new Readable();
+					const source = new Readable();
 					let started = false;
-					let quanter = new PngQuant([192, '--ordered']);
+					const quanter = new PngQuant([192, '--ordered']);
 
 					/* istanbul ignore next */
-					let handleError = (err: Error) => {
+					const handleError = (err: Error) => {
 						logger.error('[Directb2sOptimizationProcessor] %s', err.message);
 						if (!started) {
 							write(' ' + attr.name + '="');
@@ -139,7 +139,7 @@ export class Directb2sOptimizationProcessor implements OptimizationProcessor<Bac
 				if (level === 0) {
 					out.end();
 					statAsync(dest).then(s => {
-						let crushedSize = s.size;
+						const crushedSize = s.size;
 						logger.debug('[Directb2sOptimizationProcessor] Optimized "%s" in %sms (crushed down to %s%%).', dest, new Date().getTime() - now, Math.round(crushedSize / originalSize * 100));
 						resolve();
 					});
@@ -202,7 +202,7 @@ export class Directb2sOptimizationProcessor implements OptimizationProcessor<Bac
 			'"': '&quot;',
 			'&': '&amp;',
 			'\r': '&#xD;',
-			'\n': '&#xA;'
+			'\n': '&#xA;',
 		};
 		const pattern = '([&"<>\'\n\r])';
 		return string.replace(new RegExp(pattern, 'g'), (str, item) => map[item]);

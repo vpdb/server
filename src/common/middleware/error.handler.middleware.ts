@@ -17,13 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { assign, keys, values } from 'lodash';
 import chalk from 'chalk';
+import { assign, keys, values } from 'lodash';
 
-import { Context } from '../typings/context';
-import { logger } from '../logger';
-import { ApiError, ApiValidationError } from '../api.error';
 import { Error } from 'tslint/lib/error';
+import { ApiError, ApiValidationError } from '../api.error';
+import { logger } from '../logger';
+import { Context } from '../typings/context';
 
 /**
  * Gracefully handles errors.
@@ -72,7 +72,7 @@ export function koaErrorHandler() {
 				reportError(err as Error);
 			}
 		}
-	}
+	};
 }
 
 export function handleParseError(err: Error, ctx: Context) {

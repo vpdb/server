@@ -18,18 +18,18 @@
  */
 
 import Application = require('koa');
-import mongoose, { Schema } from 'mongoose';
 import Router from 'koa-router';
+import mongoose, { Schema } from 'mongoose';
 
-import { state } from '../state';
 import { EndPoint } from '../common/api.endpoint';
-import { logUserSchema } from './log.user.schema';
+import { state } from '../state';
 import { LogUser } from './log.user';
+import { logUserSchema } from './log.user.schema';
 import { LogUserSerializer } from './log.user.serializer';
 
 export class LogUserEndPoint extends EndPoint {
 
-	readonly name: string = 'User Log API';
+	public readonly name: string = 'User Log API';
 
 	private readonly _router: Router;
 	private readonly _schema: Schema;
@@ -39,11 +39,11 @@ export class LogUserEndPoint extends EndPoint {
 		this._schema = logUserSchema;
 	}
 
-	getRouter(): Router {
+	public getRouter(): Router {
 		return this._router;
 	}
 
-	async register(app: Application): Promise<void> {
+	public async register(app: Application): Promise<void> {
 		state.models.LogUser = mongoose.model<LogUser>('LogUser', this._schema);
 		state.serializers.LogUser = new LogUserSerializer();
 	}

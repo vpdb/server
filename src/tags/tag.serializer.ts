@@ -17,12 +17,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { state } from '../state';
-import { Serializer, SerializerOptions } from '../common/serializer';
-import { Tag } from './tag';
-import { Context } from '../common/typings/context';
 import { pick } from 'lodash';
+import { Serializer, SerializerOptions } from '../common/serializer';
+import { Context } from '../common/typings/context';
+import { state } from '../state';
 import { User } from '../users/user';
+import { Tag } from './tag';
 
 export class TagSerializer extends Serializer<Tag> {
 

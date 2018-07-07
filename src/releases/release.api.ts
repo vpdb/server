@@ -17,25 +17,25 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { inspect } from 'util';
 import { assign, cloneDeep, difference, extend, intersection, isArray, isUndefined, keys, orderBy, pick } from 'lodash';
 import { Types } from 'mongoose';
+import { inspect } from 'util';
 
-import { state } from '../state';
-import { ApiError } from '../common/api.error';
-import { Context } from '../common/typings/context';
 import { acl } from '../common/acl';
-import { logger } from '../common/logger';
-import { SerializerOptions } from '../common/serializer';
-import { mailer } from '../common/mailer';
 import { apiCache } from '../common/api.cache';
-import { LogEventUtil } from '../log-event/log.event.util';
+import { ApiError } from '../common/api.error';
+import { logger } from '../common/logger';
+import { mailer } from '../common/mailer';
+import { SerializerOptions } from '../common/serializer';
+import { Context } from '../common/typings/context';
 import { Game } from '../games/game';
+import { LogEventUtil } from '../log-event/log.event.util';
+import { state } from '../state';
 import { User } from '../users/user';
-import { ReleaseVersion } from './version/release.version';
-import { ReleaseVersionFile } from './version/file/release.version.file';
-import { flavors } from './release.flavors';
 import { ReleaseAbstractApi } from './release.abstract.api';
+import { flavors } from './release.flavors';
+import { ReleaseVersionFile } from './version/file/release.version.file';
+import { ReleaseVersion } from './version/release.version';
 
 export class ReleaseApi extends ReleaseAbstractApi {
 
@@ -67,7 +67,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		const newRelease = await state.models.Release.getInstance(extend(ctx.request.body, {
 			_created_by: ctx.state.user._id,
 			modified_at: now,
-			created_at: now
+			created_at: now,
 		}));
 
 		release = newRelease;
@@ -102,10 +102,10 @@ export class ReleaseApi extends ReleaseAbstractApi {
 
 		await LogEventUtil.log(ctx, 'create_release', true, {
 			release: state.serializers.Release.detailed(ctx, release, { thumbFormat: 'medium' }),
-			game: pick(state.serializers.Game.simple(ctx, release._game as Game), ['id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type'])
+			game: pick(state.serializers.Game.simple(ctx, release._game as Game), ['id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type']),
 		}, {
 			release: release._id,
-			game: release._game._id
+			game: release._game._id,
 		});
 
 		// notify (co-)author(s)
@@ -179,7 +179,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		// log event
 		await LogEventUtil.log(ctx, 'update_release', false,
 			LogEventUtil.diff(oldRelease, ctx.request.body),
-			{ release: release._id, game: release._game._id }
+			{ release: release._id, game: release._game._id },
 		);
 	}
 
@@ -191,11 +191,11 @@ export class ReleaseApi extends ReleaseAbstractApi {
 	 */
 	public async list(ctx: Context) {
 
-		let pagination = this.pagination(ctx, 12, 60);
+		const pagination = this.pagination(ctx, 12, 60);
 		let starredReleaseIds: string[] = null;
 		let titleRegex: RegExp = null;
-		let serializerOpts: SerializerOptions = {};
-		let fields = ctx.query && ctx.query.fields ? ctx.query.fields.split(',') : [];
+		const serializerOpts: SerializerOptions = {};
+		const fields = ctx.query && ctx.query.fields ? ctx.query.fields.split(',') : [];
 
 		// flavor, thumb selection
 		if (ctx.query.thumb_flavor) {
@@ -229,7 +229,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 
 		// filter by tag
 		if (ctx.query.tags) {
-			let t = ctx.query.tags.split(',');
+			const t = ctx.query.tags.split(',');
 			// all tags must be matched
 			for (let i = 0; i < t.length; i++) {
 				query.push({ _tags: { $in: [t[i]] } });
@@ -238,7 +238,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 
 		// filter by release id
 		if (ctx.query.ids) {
-			let ids = ctx.query.ids.split(',');
+			const ids = ctx.query.ids.split(',');
 			query.push({ id: { $in: ids } });
 		}
 
@@ -250,15 +250,15 @@ export class ReleaseApi extends ReleaseAbstractApi {
 			}
 
 			// sanitize and build regex
-			let titleQuery = ctx.query.q.trim().replace(/[^a-z0-9-]+/gi, '');
+			const titleQuery = ctx.query.q.trim().replace(/[^a-z0-9-]+/gi, '');
 			titleRegex = new RegExp(titleQuery.split('').join('.*?'), 'i');
-			let idQuery = ctx.query.q.trim().replace(/[^a-z0-9-]+/gi, ''); // TODO tune
-			let q = {
+			const idQuery = ctx.query.q.trim().replace(/[^a-z0-9-]+/gi, ''); // TODO tune
+			const q = {
 				'counter.releases': { $gt: 0 },
-				$or: [{ title: titleRegex }, { id: idQuery }]
+				$or: [{ title: titleRegex }, { id: idQuery }],
 			};
 			const games = await state.models.Game.find(q, '_id').exec();
-			let gameIds = games.map(g => g._id);
+			const gameIds = games.map(g => g._id);
 			if (gameIds.length > 0) {
 				query.push({ $or: [{ name: titleRegex }, { _game: { $in: gameIds } }] });
 			} else {
@@ -283,7 +283,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		if (ctx.state.user) {
 			const starsResult = await state.models.Star.find({
 				type: 'release',
-				_from: ctx.state.user._id
+				_from: ctx.state.user._id,
 			}, '_ref.release').exec();
 			starredReleaseIds = starsResult.map(s => s._ref.release.toString());
 		}
@@ -303,7 +303,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 
 		// compat filter
 		if (!isUndefined(ctx.query.builds)) {
-			let buildIds = ctx.query.builds.split(',');
+			const buildIds = ctx.query.builds.split(',');
 			const builds = await state.models.Build.find({ id: { $in: buildIds } }).exec();
 			query.push({ 'versions.files._compatibility': { $in: builds.map(b => b._id) } });
 		}
@@ -320,10 +320,10 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		}
 
 		// file size filter
-		let fileSize = parseInt(ctx.query.filesize, 10);
+		const fileSize = parseInt(ctx.query.filesize, 10);
 		if (fileSize) {
-			let threshold = parseInt(ctx.query.threshold, 10);
-			let q: any = { file_type: 'release' };
+			const threshold = parseInt(ctx.query.threshold, 10);
+			const q: any = { file_type: 'release' };
 			if (threshold) {
 				q.bytes = { $gt: fileSize - threshold, $lt: fileSize + threshold };
 			} else {
@@ -359,9 +359,9 @@ export class ReleaseApi extends ReleaseAbstractApi {
 			name: 'name_sortable',
 			num_downloads: '-counter.downloads',
 			num_comments: '-counter.comments',
-			num_stars: '-counter.stars'
+			num_stars: '-counter.stars',
 		});
-		let populatedFields = ['_game', 'versions.files._file', 'versions.files._playfield_image',
+		const populatedFields = ['_game', 'versions.files._file', 'versions.files._playfield_image',
 			'versions.files._compatibility', 'authors._user'];
 
 		const searchQuery = this.searchQuery(query);
@@ -371,10 +371,10 @@ export class ReleaseApi extends ReleaseAbstractApi {
 			page: pagination.page,
 			limit: pagination.perPage,
 			populate: populatedFields,
-			sort: sort  // '_game.title', '_game.id'
+			sort,  // '_game.title', '_game.id'
 		});
 
-		let releases = results.docs.map(release => {
+		const releases = results.docs.map(release => {
 			if (starredReleaseIds) {
 				serializerOpts.starred = starredReleaseIds.includes(release._id.toString());
 			}
@@ -404,8 +404,8 @@ export class ReleaseApi extends ReleaseAbstractApi {
 	 */
 	public async view(ctx: Context) {
 
-		let opts:SerializerOptions = {
-			excludedFields: []
+		const opts: SerializerOptions = {
+			excludedFields: [],
 		};
 		let release = await state.models.Release.findOne({ id: ctx.params.id })
 			.populate({ path: '_game' })
@@ -440,7 +440,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 			const star = await state.models.Star.findOne({
 				type: 'release',
 				_from: ctx.state.user._id,
-				'_ref.release': release._id
+				'_ref.release': release._id,
 			}).exec();
 			if (star) {
 				opts.starred = true;
@@ -495,7 +495,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		// log event
 		await LogEventUtil.log(ctx, 'delete_release', false,
 			{ release: pick(state.serializers.Release.simple(ctx, release), ['id', 'name', 'authors', 'versions']) },
-			{ release: release._id, game: release._game }
+			{ release: release._id, game: release._game },
 		);
 
 		return this.success(ctx, null, 204);
@@ -536,12 +536,12 @@ export class ReleaseApi extends ReleaseAbstractApi {
 
 		// if message set, create a comment.
 		if (lastEvent.message) {
-			let comment = new state.models.Comment({
+			const comment = new state.models.Comment({
 				_from: ctx.state.user._id,
 				_ref: { release_moderation: release },
 				message: lastEvent.message,
 				ip: this.getIpAddress(ctx),
-				created_at: new Date()
+				created_at: new Date(),
 			});
 			await comment.save();
 		}

@@ -17,11 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Schema } from 'mongoose';
 import { randomBytes } from 'crypto';
 import { isString } from 'lodash';
-import { isLength } from 'validator';
+import { Schema } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
+import { isLength } from 'validator';
 
 import { scope } from '../common/scope';
 import { config } from '../common/settings';
@@ -34,17 +34,17 @@ const validTypes = ['personal', 'provider'];
 // SCHEMA
 //-----------------------------------------------------------------------------
 export const tokenFields = {
-	id: { type: String, required: true, unique: true, 'default': shortId.generate },
-	token: { type: String, required: true, unique: true, 'default': () => randomBytes(16).toString('hex') },
+	id: { type: String, required: true, unique: true, default: shortId.generate },
+	token: { type: String, required: true, unique: true, default: () => randomBytes(16).toString('hex') },
 	label: { type: String, required: 'A label must be provided' },
-	type: { type: String, 'enum': validTypes, required: true },
+	type: { type: String, enum: validTypes, required: true },
 	scopes: { type: [String] },
 	provider: { type: String }, // must be set for provider tokens
-	is_active: { type: Boolean, required: true, 'default': true },
+	is_active: { type: Boolean, required: true, default: true },
 	last_used_at: { type: Date },
 	expires_at: { type: Date, required: true },
 	created_at: { type: Date, required: true },
-	_created_by: { type: Schema.Types.ObjectId, required: true, ref: 'User' }
+	_created_by: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
 };
 
 export const tokenSchema = new Schema(tokenFields, { toObject: { virtuals: true, versionKey: false } });
@@ -52,11 +52,11 @@ export const tokenSchema = new Schema(tokenFields, { toObject: { virtuals: true,
 //-----------------------------------------------------------------------------
 // VALIDATIONS
 //-----------------------------------------------------------------------------
-tokenSchema.path('label').validate(function (label: string) {
+tokenSchema.path('label').validate(function(label: string) {
 	return isString(label) && isLength(label ? label.trim() : '', 3);
 }, 'Label must contain at least three characters.');
 
-tokenSchema.path('scopes').validate(function (scopes: string[]) {
+tokenSchema.path('scopes').validate(function(scopes: string[]) {
 	if (!scopes || scopes.length === 0) {
 		this.invalidate('scopes', 'Scopes are required');
 		return true;
@@ -69,7 +69,7 @@ tokenSchema.path('scopes').validate(function (scopes: string[]) {
 	return true;
 });
 
-tokenSchema.path('type').validate(function (type: string) {
+tokenSchema.path('type').validate(function(type: string) {
 	if (type === 'provider') {
 		if (!this.provider) {
 			this.invalidate('provider', 'Provider is required for provider tokens.');

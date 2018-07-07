@@ -17,13 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import ent from 'ent';
 import axios from 'axios';
+import ent from 'ent';
 import { isUndefined } from 'lodash';
 
+import { Game } from '../games/game';
 import { ApiError } from './api.error';
 import { logger } from './logger';
-import { Game } from '../games/game';
 
 class Ipdb {
 
@@ -33,7 +33,7 @@ class Ipdb {
 	 * @param {{ offline: boolean }} [opts] `offline` - if set, use local index instead of IPDB live query.
 	 * @return Promise
 	 */
-	async details(ipdbNo: number, opts:{ offline?:boolean }) {
+	public async details(ipdbNo: number, opts: { offline?: boolean }) {
 
 		opts = opts || {};
 		/* istanbul ignore if: we test online! */
@@ -60,7 +60,7 @@ class Ipdb {
 	}
 
 	/* istanbul ignore next */
-	public findDead(data: { ipdb: { number: number } }[]) {
+	public findDead(data: Array<{ ipdb: { number: number } }>) {
 		let id;
 		const ids = [];
 		for (let i = 0; i < data.length; i++) {
@@ -82,7 +82,6 @@ class Ipdb {
 		}
 		return match;
 	}
-
 
 	private async parseDetails(body: string) {
 
@@ -139,7 +138,7 @@ class Ipdb {
 		}
 	}
 
-	firstMatch(str: string, regex: RegExp): string {
+	public firstMatch(str: string, regex: RegExp): string {
 		const m = str.match(regex);
 		if (m) {
 			return m[1].replace(/&nbsp;/gi, ' ');
@@ -148,7 +147,7 @@ class Ipdb {
 		}
 	}
 
-	firstMatchWith<T>(str: string, regex: RegExp, postFn?: (str: string) => T): T {
+	public firstMatchWith<T>(str: string, regex: RegExp, postFn?: (str: string) => T): T {
 		const m = str.match(regex);
 		if (m) {
 			return postFn(m[1].replace(/&nbsp;/gi, ' '));
@@ -157,18 +156,18 @@ class Ipdb {
 		}
 	}
 
-	number(str: string): number {
+	public number(str: string): number {
 		if (isUndefined(str)) {
 			return undefined;
 		}
 		return parseInt(str);
 	}
 
-	trim(str: string): string {
+	public trim(str: string): string {
 		return str.replace(/[^-\w\d\s.,:_'"()&/]/ig, '');
 	}
 
-	striptags(str: string): string {
+	public striptags(str: string): string {
 		return str.replace(/<(?:.|\n)*?>/gm, '');
 	}
 
@@ -269,7 +268,7 @@ class Ipdb {
 		549: 'Professional Pinball of Toronto',
 		555: 'Fipermatic',
 		671: 'Spooky',
-		697: 'Skillpins'
+		697: 'Skillpins',
 	};
 
 	public owners: { [key: number]: string } = {
@@ -945,7 +944,7 @@ class Ipdb {
 		699: 'Jocmatic S.A. of Terrassa, Barcelona, Spain',
 		700: 'Coin Device Mfg. Co. Inc. of Syracuse, New York',
 		701: 'John Ellson of Albany, New York',
-		702: 'Marx Toys'
+		702: 'Marx Toys',
 	};
 
 	public systems: { [key: number]: Mpu } = {
@@ -1011,12 +1010,12 @@ class Ipdb {
 		30: { long: 'Williams WPC Security (WPC-S)', short: 'Williams WPC' },
 		11: { long: 'Williams WPC-95', short: 'Williams WPC-95' },
 		35: { long: 'Zaccaria Generation 1', short: 'Generation 1' },
-		36: { long: 'Zaccaria Generation 2', short: 'Generation 2' }
+		36: { long: 'Zaccaria Generation 2', short: 'Generation 2' },
 	};
 }
 
 export interface Mpu {
 	long: string;
-	short:string;
+	short: string;
 }
 export const ipdb = new Ipdb();

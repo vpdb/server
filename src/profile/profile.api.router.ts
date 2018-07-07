@@ -18,9 +18,9 @@
  */
 
 import { Scope } from '../common/scope';
-import { ProfileApi } from './profile.api';
-import { LogUserApi } from '../log-user/log.user.api';
 import { LogEventApi } from '../log-event/log.event.api';
+import { LogUserApi } from '../log-user/log.user.api';
+import { ProfileApi } from './profile.api';
 
 const api = new ProfileApi();
 const logApi = new LogUserApi();

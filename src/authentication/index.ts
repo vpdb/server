@@ -20,13 +20,13 @@
 import Router from 'koa-router';
 import { EndPoint } from '../common/api.endpoint';
 
+import Application = require('koa');
 import { router as apiRouter } from './authentication.api.router';
 import { router as storageRouter } from './authentication.storage.router';
-import Application = require('koa');
 
 export class AuthenticationEndPoint extends EndPoint {
 
-	readonly name: string = 'Authentication API';
+	public readonly name: string = 'Authentication API';
 
 	private readonly _router: Router;
 
@@ -97,18 +97,18 @@ export class AuthenticationEndPoint extends EndPoint {
 		//});
 	}
 
-	getRouter(): Router {
+	public getRouter(): Router {
 		return this._router;
 	}
 
-	async register(app: Application): Promise<void> {
+	public async register(app: Application): Promise<void> {
 		// nothing to initialize
 	}
 }
 
 export class AuthenticationStorageEndPoint extends EndPoint {
 
-	readonly name: string = 'Storage Authentication API';
+	public readonly name: string = 'Storage Authentication API';
 
 	private readonly _router: Router;
 
@@ -117,11 +117,11 @@ export class AuthenticationStorageEndPoint extends EndPoint {
 		this._router = storageRouter;
 	}
 
-	getRouter(): Router {
+	public getRouter(): Router {
 		return this._router;
 	}
 
-	async register(app: Application): Promise<void> {
+	public async register(app: Application): Promise<void> {
 		// nothing to register
 	}
 }

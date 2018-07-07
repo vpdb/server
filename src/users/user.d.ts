@@ -62,9 +62,9 @@ export interface User extends MetricsDocument {
 		app_tokens_enabled: boolean;
 		push_notifications_enabled: boolean;
 	};
-	[key:string]:any;
+	[key: string]: any;
 
-	planConfig?:VpdbQuotaConfigPlan;
+	planConfig?: VpdbQuotaConfigPlan;
 
 	/**
 	 * Checks if the passwords are the same
@@ -84,13 +84,13 @@ export interface User extends MetricsDocument {
 	 * @param {string} password Plain text password
 	 * @return {string} Hex-encoded hash
 	 */
-	hashPassword?(password:string):string;
+	hashPassword?(password: string): string;
 
 	/**
 	 * Checks if password has been set.
 	 * @return {boolean}
 	 */
-	passwordSet?():boolean;
+	passwordSet?(): boolean;
 
 	/**
 	 * Checks if the user has at least one of the given roles
@@ -128,7 +128,7 @@ export interface UserProviders {
 		created_at: Date;
 		modified_at: Date;
 		profile?: object;
-	}
+	};
 }
 
 export interface UserEmailStatus {

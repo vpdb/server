@@ -19,11 +19,11 @@
 
 import { pick } from 'lodash';
 
-import { state } from '../state';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { Context } from '../common/typings/context';
-import { LogUser } from './log.user';
+import { state } from '../state';
 import { User } from '../users/user';
+import { LogUser } from './log.user';
 
 export class LogUserSerializer extends Serializer<LogUser> {
 

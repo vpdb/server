@@ -19,19 +19,19 @@
 
 import { assign, pick } from 'lodash';
 import { quota } from '../common/quota';
-import { Context } from '../common/typings/context';
 import { Serializer, SerializerOptions } from '../common/serializer';
+import { Context } from '../common/typings/context';
 import { File } from './file';
-import { Metadata } from './metadata/metadata';
 import { FileDocument } from './file.document';
+import { Metadata } from './metadata/metadata';
 
 export class FileSerializer extends Serializer<File> {
 
-	protected _reduced(ctx: Context, doc: File, opts: SerializerOptions):File {
+	protected _reduced(ctx: Context, doc: File, opts: SerializerOptions): File {
 		return pick(doc, ['id', 'name', 'bytes', 'mime_type']) as File;
 	}
 
-	protected _simple(ctx: Context, doc: File, opts: SerializerOptions):File {
+	protected _simple(ctx: Context, doc: File, opts: SerializerOptions): File {
 		const file = this._reduced(ctx, doc, opts);
 		const cost = quota.getCost(doc);
 		file.bytes = doc.bytes;
@@ -53,7 +53,7 @@ export class FileSerializer extends Serializer<File> {
 		return file;
 	}
 
-	protected _detailed(ctx: Context, doc: File, opts: SerializerOptions):File {
+	protected _detailed(ctx: Context, doc: File, opts: SerializerOptions): File {
 		const file = this._simple(ctx, doc, opts);
 		assign(file, pick(doc, ['is_active', 'created_at', 'file_type' ]));
 

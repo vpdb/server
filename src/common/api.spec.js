@@ -41,27 +41,4 @@ describe('The VPDB API', () => {
 			.then(res => res.expectError(415, 'You need to set the "Content-Type" header'));
 	});
 
-	it('should list the API version', async () => {
-		res = await api
-			.get('/v1')
-			.then(res => res.expectStatus(200));
-		expect(res.data.app_name).to.be.ok();
-		expect(res.data.app_version).to.be.ok();
-	});
-
-	it('should list all plans', async () => {
-		res = await api
-			.get('/v1/plans')
-			.then(res => res.expectStatus(200));
-		expect(res.data.length).to.be(4);
-	});
-
-	it('should list all roles', async () => {
-		res = await api
-			.as('admin')
-			.get('/v1/roles')
-			.then(res => res.expectStatus(200));
-		const roles = res.data;
-		expect(roles.length).to.be(8);
-	});
 });

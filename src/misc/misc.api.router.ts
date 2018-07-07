@@ -23,6 +23,7 @@ import { Scope } from '../common/scope';
 const api = new MiscApi();
 export const router = api.apiRouter();
 
+router.get('/v1/sitemap', api.sitemap.bind(api)); // TODO add api cache
 router.get('/v1/ping',    api.ping.bind(api));
 router.get('/v1/plans',   api.plans.bind(api));
 router.get('/v1/roles',    api.auth(api.roles.bind(api), 'roles', 'list', [ Scope.ALL ]));

@@ -39,7 +39,7 @@ export class Logger {
 			transports: [
 				new winston.transports.Console(),
 			],
-			level: 'silly',
+			level: process.env.LOGLEVEL || 'silly',
 		});
 	}
 

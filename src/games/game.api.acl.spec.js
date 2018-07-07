@@ -55,6 +55,10 @@ describe('The ACLs of the `Game` API', function() {
 		it('should deny access to game deletion', function(done) {
 			request.del('/api/v1/games/mb').end(hlp.status(401, done));
 		});
+
+		it('should deny access to release name creation', function(done) {
+			request.get('/api/v1/games/test/release-name').send({}).end(hlp.status(401, done));
+		});
 	});
 
 	describe('for logged clients (role member)', function() {
@@ -69,6 +73,10 @@ describe('The ACLs of the `Game` API', function() {
 
 		it('should deny access to game deletion', function(done) {
 			request.del('/api/v1/games/mb').as('member').end(hlp.status(403, done));
+		});
+
+		it('should allow access to release name creation', function(done) {
+			request.post('/api/v1/games/test/release-name').as('member').send({}).end(hlp.status(404, done));
 		});
 	});
 
@@ -85,6 +93,10 @@ describe('The ACLs of the `Game` API', function() {
 		it('should deny to deleting a game', function(done) {
 			request.del('/api/v1/games/mb').as('contributor').end(hlp.status(403, done));
 		});
+
+		it('should deny access to release moderation', function(done) {
+			request.post('/api/v1/releases/1234/moderate').as('contributor').send({}).end(hlp.status(403, done));
+		});
 	});
 
 	describe('for members with the `moderator` role', function() {
@@ -99,6 +111,10 @@ describe('The ACLs of the `Game` API', function() {
 
 		it('should allow deleting a game', function(done) {
 			request.del('/api/v1/games/mb').as('moderator').end(hlp.status(404, done));
+		});
+
+		it('should allow access to release moderation', function(done) {
+			request.post('/api/v1/releases/1234/moderate').as('moderator').send({}).end(hlp.status(404, done));
 		});
 	});
 

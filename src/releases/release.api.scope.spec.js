@@ -130,6 +130,9 @@ describe('The scopes of the `Release` API', function() {
 			request.post('/api/v1/releases/1234/versions/1.0/files/1234/validate').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
 		});
 
+		it('should deny access to release moderation creation', done => {
+			request.post('/api/v1/releases/1234/moderate').send({}).with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
+		});
 	});
 
 	describe('using a community token', function() {
@@ -153,6 +156,10 @@ describe('The scopes of the `Release` API', function() {
 		it('should deny access to release file validation', done => {
 			request.post('/api/v1/releases/1234/versions/1.0/files/1234/validate').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
 		});
+		it('should deny access to release moderation creation', done => {
+			request.post('/api/v1/releases/1234/moderate').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
+		});
+
 	});
 
 	describe('using a service token', function() {
@@ -176,5 +183,9 @@ describe('The scopes of the `Release` API', function() {
 		it('should deny access to release file validation', done => {
 			request.post('/api/v1/releases/1234/versions/1.0/files/1234/validate').send({}).with(tokenService).end(hlp.status(401, 'invalid scope', done));
 		});
+		it('should deny access to release moderation creation', done => {
+			request.post('/api/v1/releases/1234/moderate').send({}).with(tokenService).end(hlp.status(401, 'invalid scope', done));
+		});
+
 	});
 });

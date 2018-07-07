@@ -20,6 +20,7 @@
 import Application from 'koa';
 import koaBodyParser from 'koa-bodyparser';
 import koaJson from 'koa-json';
+import koaStatic from 'koa-static';
 import { uniq } from 'lodash';
 
 import { EndPoint } from './common/api.endpoint';
@@ -37,7 +38,7 @@ const koaCors = require('@koa/cors');
 
 export class Server {
 
-	private app: Application;
+	private readonly app: Application;
 
 	constructor() {
 		this.app = new Application();
@@ -50,6 +51,11 @@ export class Server {
 		this.app.use(koaCors());
 		this.app.use(koaJson({ pretty: false, param: 'pretty' }));
 		this.app.use(apiCache.middleware.bind(apiCache));
+
+		if (process.env.WEBAPP) { // host website at the same time, currently used for website CI
+			logger.warn('[Server] Statically hosting website at %s', process.env.WEBAPP);
+			this.app.use(koaStatic(process.env.WEBAPP));
+		}
 	}
 
 	public async register<T>(endPoint: EndPoint): Promise<void> {

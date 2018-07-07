@@ -53,7 +53,7 @@ export class Server {
 		this.app.use(koaJson({ pretty: false, param: 'pretty' }));
 		this.app.use(apiCache.middleware.bind(apiCache));
 
-		// host website at the same time, currently used for website CI
+		/* istanbul ignore next: host website at the same time, currently used for website CI */
 		if (process.env.WEBAPP && existsSync(process.env.WEBAPP)) {
 			logger.warn('[Server] Statically hosting website at %s', process.env.WEBAPP);
 			this.app.use(koaWebsiteHandler(process.env.WEBAPP));

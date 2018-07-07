@@ -17,7 +17,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { format, parse } from 'url';
 import { extend } from 'lodash';
+import builder from 'xmlbuilder';
 
 import { Api } from '../common/api';
 import { logger } from '../common/logger';
@@ -28,6 +30,11 @@ import { ipdb } from '../common/ipdb';
 import { roles } from '../common/acl';
 import { processorQueue } from '../files/processor/processor.queue';
 import { apiCache } from '../common/api.cache';
+import { ApiError } from '../common/api.error';
+import { state } from '../state';
+import { File } from '../files/file';
+import { User } from '../users/user';
+import { Game } from '../games/game';
 
 const pak = require('../../package.json');
 
@@ -78,9 +85,12 @@ export class MiscApi extends Api {
 	 * @param {Application.Context} ctx Koa context
 	 */
 	public async plans(ctx: Context) {
-		const plans:any[] = [];
+		const plans: any[] = [];
 		config.vpdb.quota.plans.forEach(plan => {
-			plans.push(extend(plan, { name: plan.name || plan.id, is_default: plan.id === config.vpdb.quota.defaultPlan }));
+			plans.push(extend(plan, {
+				name: plan.name || plan.id,
+				is_default: plan.id === config.vpdb.quota.defaultPlan
+			}));
 		});
 		return this.success(ctx, plans, 200);
 	}
@@ -104,8 +114,110 @@ export class MiscApi extends Api {
 	public async invalidateCache(ctx: Context) {
 		const now = Date.now();
 		const num = await apiCache.invalidateAll();
-		logger.info("[MiscApi.invalidateCache] Cleared %s caches in %sms.", num, Date.now() - now);
+		logger.info('[MiscApi.invalidateCache] Cleared %s caches in %sms.', num, Date.now() - now);
 		return this.success(ctx, { cleared: num }, 204);
+	}
+
+	/**
+	 * Prints the sitemap for a site running vpdb-website.
+	 * @param {Context} ctx
+	 * @returns {Promise<void>}
+	 */
+	public async sitemap(ctx: Context) {
+
+		if (!ctx.query.url) {
+			throw new ApiError('Must specify website URL as "url" parameter.').status(400);
+		}
+		const parsedUrl = parse(ctx.query.url);
+		if (!parsedUrl.host || !parsedUrl.protocol) {
+			throw new ApiError('URL must contain at least protocol and host name.').status(400);
+		}
+		if (parsedUrl.search || parsedUrl.hash) {
+			throw new ApiError('URL must not contain a search query or hash').status(400);
+		}
+
+		const webUrl = format(parsedUrl);
+
+		let rootNode = builder
+			.create('urlset', { version: '1.0', encoding: 'UTF-8' })
+			.att('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9')
+			.att('xmlns:image', 'http://www.google.com/schemas/sitemap-image/1.1');
+
+
+		// static urls
+		rootNode.ele('url').ele('loc', webUrl);
+		rootNode.ele('url').ele('loc', webUrl + 'games');
+		rootNode.ele('url').ele('loc', webUrl + 'releases');
+		rootNode.ele('url').ele('loc', webUrl + 'about');
+		rootNode.ele('url').ele('loc', webUrl + 'rules');
+		rootNode.ele('url').ele('loc', webUrl + 'faq');
+		rootNode.ele('url').ele('loc', webUrl + 'legal');
+		rootNode.ele('url').ele('loc', webUrl + 'privacy');
+
+		// releases
+		const releases = await state.models.Release.find({})
+			.populate('_game')
+			.populate('versions.files._playfield_image')
+			.populate('authors._user')
+			.exec();
+		releases.forEach(release => {
+			const game = release._game as Game;
+			let fsImage: File;
+			let dtImage: File;
+			release.versions.forEach(version => {
+				version.files.forEach(file => {
+					const playfieldImage = file._playfield_image as File;
+					if (playfieldImage.metadata.size.width > playfieldImage.metadata.size.height) {
+						dtImage = playfieldImage;
+					} else {
+						fsImage = playfieldImage;
+					}
+				});
+			});
+			const authors = release.authors.map(author => (author._user as User).name).join(', ');
+			const url = rootNode.ele('url');
+			url.ele('loc', webUrl + 'games/' + game.id + '/releases/' + release.id);
+			if (fsImage) {
+				let img = url.ele('image:image');
+				img.ele('image:loc', fsImage.getUrl(fsImage.getVariation('full')));
+				img.ele('image:caption', 'Portrait playfield for ' + game.title + ', ' + release.name + ' by ' + authors + '.');
+			}
+			if (dtImage) {
+				let img = url.ele('image:image');
+				img.ele('image:loc', dtImage.getUrl(dtImage.getVariation('full')));
+				img.ele('image:caption', 'Landscape playfield for ' + game.title + ', ' + release.name + ' by ' + authors + '.');
+			}
+		});
+
+		// games
+		const games = await state.models.Game.find({}).exec();
+		for (const game of games) {
+
+			const url = rootNode.ele('url');
+			url.ele('loc', webUrl + 'games/' + game.id);
+
+			const media = await state.models.Medium.find({ '_ref.game': game._id }).populate({ path: '_file' }).exec();
+			for (const medium of media) {
+				const file = medium._file as File;
+				switch (medium.category) {
+					case 'wheel_image': {
+						let img = url.ele('image:image');
+						img.ele('image:loc', file.getUrl(file.getVariation('medium-2x')));
+						img.ele('image:caption', 'Logo for ' + game.title);
+						break;
+					}
+					case 'backglass_image': {
+						let img = url.ele('image:image');
+						img.ele('image:loc', file.getUrl(file.getVariation('full')));
+						img.ele('image:caption', 'Backglass for ' + game.title);
+						break;
+					}
+				}
+			}
+		}
+		ctx.status = 200;
+		ctx.set('Content-Type', 'application/xml');
+		ctx.response.body = rootNode.end({ pretty: true });
 	}
 
 	/**

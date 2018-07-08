@@ -66,7 +66,10 @@ export class Settings {
 	 */
 	public _validate(validation: { [key: string]: any }, setting: { [key: string]: any }, path: string) {
 		let success = true;
-		let validationError, p, i, j;
+		let validationError: Array<{ path: string, message: string, setting?: string }> | { path: string, message: string, setting?: string };
+		let p: string;
+		let i: number;
+		let j: number;
 		for (const s of keys(validation)) {
 			p = (path + '.' + s).substr(1);
 
@@ -227,8 +230,7 @@ export class Settings {
 			return null;
 		}
 		const apis = [this.current.vpdb.storage.protected.api, this.current.vpdb.storage.public.api, this.current.vpdb.api];
-		for (let i = 0; i < apis.length; i++) {
-			const api = apis[i];
+		for (const api of apis) {
 			const pathPrefix = (api.prefix || '') + api.pathname;
 			if (pathPrefix === internalPath.substr(0, pathPrefix.length)) {
 				return api;

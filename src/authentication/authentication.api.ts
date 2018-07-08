@@ -156,6 +156,49 @@ export class AuthenticationApi extends Api {
 	}
 
 	/**
+	 * Updates or creates a new user. This is executed when we have a successful
+	 * authentication via one of the Passport^s OAuth2 strategies. It basically:
+	 *
+	 *  - checks if a user with a given ID of a given provider is already in the
+	 *    database
+	 *  - if that's the case, updates the user's profile with received data
+	 *  - if not but an email address matches, update the profile
+	 *  - clean pending registration profiles
+	 *  - merge if multiple uses with the received emails match
+	 *  - otherwise create a new user.
+	 *
+	 * Note that if profile data is incomplete, callback will fail.
+	 *
+	 * @param {Context} ctx Koa context
+	 * @param {string} strategy Name of the strategy (e.g. "github", "google", "ips")
+	 * @param {string | null} providerName For IPS we can have multiple configurations, (e.g. "gameex", "vpu", ...)
+	 * @param profile Profile retrieved from the provider
+	 * @return {Promise<User>} Authenticated user
+	 */
+	protected async verifyCallbackOAuth(ctx: Context, strategy: string, providerName: string | null, profile: OAuthProfile): Promise<User> {
+		const provider = providerName || strategy;
+		const logTag = providerName ? strategy + ':' + providerName : strategy;
+
+		// retrieve emails from profile or fail if there are none
+		const emails = this.getEmailsFromProfile(ctx, provider, logTag, profile);
+
+		// remove non-confirmed users with matching email
+		await this.removePendingUsers(ctx, emails);
+
+		// find users who match confirmed email or provider id
+		const otherUsers = await this.findOtherUsers(ctx, provider, profile.id, emails);
+
+		// boil down found users to one
+		const foundUser = await this.identifyUser(ctx, otherUsers, provider, profile.id, emails);
+
+		return foundUser ?
+			// if user found, update and return.
+			this.updateOAuthUser(ctx, foundUser, provider, profile, emails) :
+			// otherwise, create new user.
+			this.createOAuthUser(ctx, provider, profile, emails);
+	}
+
+	/**
 	 * Tries to authenticate locally with user/password.
 	 *
 	 * @param {Context} ctx Koa context
@@ -282,54 +325,6 @@ export class AuthenticationApi extends Api {
 					.status(403);
 			}
 		}
-	}
-
-	/**
-	 * Updates or creates a new user. This is executed when we have a successful
-	 * authentication via one of the Passport^s OAuth2 strategies. It basically:
-	 *
-	 *  - checks if a user with a given ID of a given provider is already in the
-	 *    database
-	 *  - if that's the case, updates the user's profile with received data
-	 *  - if not but an email address matches, update the profile
-	 *  - clean pending registration profiles
-	 *  - merge if multiple uses with the received emails match
-	 *  - otherwise create a new user.
-	 *
-	 * Note that if profile data is incomplete, callback will fail.
-	 *
-	 * @param {Context} ctx Koa context
-	 * @param {string} strategy Name of the strategy (e.g. "github", "google", "ips")
-	 * @param {string | null} providerName For IPS we can have multiple configurations, (e.g. "gameex", "vpu", ...)
-	 * @param profile Profile retrieved from the provider
-	 * @return {Promise<User>} Authenticated user
-	 */
-	protected async verifyCallbackOAuth(ctx: Context, strategy: string, providerName: string | null, profile: OAuthProfile): Promise<User> {
-		const provider = providerName || strategy;
-		const logTag = providerName ? strategy + ':' + providerName : strategy;
-
-		// retrieve emails from profile or fail if there are none
-		const emails = this.getEmailsFromProfile(ctx, provider, logTag, profile);
-
-		// remove non-confirmed users with matching email
-		await this.removePendingUsers(ctx, emails);
-
-		// find users who match confirmed email or provider id
-		const otherUsers = await this.findOtherUsers(ctx, provider, profile.id, emails);
-
-		// boil down found users to one
-		const foundUser = await this.identifyUser(ctx, otherUsers, provider, profile.id, emails);
-
-		let user: User;
-		if (foundUser) {
-			// if user found, update and return.
-			user = await this.updateOAuthUser(ctx, foundUser, provider, profile, emails);
-
-		} else {
-			// otherwise, create new user.
-			user = await this.createOAuthUser(ctx, provider, profile, emails);
-		}
-		return user;
 	}
 
 	/**

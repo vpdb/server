@@ -293,7 +293,8 @@ export class ProfileApi extends Api {
 			user = await UserUtil.tryMergeUsers(ctx, [user, ...mergeUsers], explanation);
 		}
 
-		let logEvent: string, successMsg: string;
+		let logEvent: string;
+		let successMsg: string;
 		const currentCode = user.email_status.code;
 		if (currentCode === 'pending_registration') {
 			user.is_active = true;

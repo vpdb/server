@@ -52,7 +52,7 @@ export class GameRequestApi extends Api {
 			throw new ApiError().validationError('ipdb_number', 'Must be a whole number', ctx.request.body.ipdb_number);
 		}
 
-		ipdbNumber = parseInt(ctx.request.body.ipdb_number);
+		ipdbNumber = parseInt(ctx.request.body.ipdb_number, 10);
 		const game = await state.models.Game.findOne({ 'ipdb.number': ipdbNumber }).exec();
 
 		// check if game already exists

@@ -21,21 +21,14 @@ import Application = require('koa');
 import Router from 'koa-router';
 
 import { EndPoint } from '../common/api.endpoint';
-import { router } from './profile.api.router';
+import { profileApiRouter } from './profile.api.router';
 
 export class ProfileEndPoint extends EndPoint {
 
 	public readonly name: string = 'User Profile API';
 
-	private readonly _router: Router;
-
-	constructor() {
-		super();
-		this._router = router;
-	}
-
 	public getRouter(): Router {
-		return this._router;
+		return profileApiRouter;
 	}
 
 	public async register(app: Application): Promise<void> {

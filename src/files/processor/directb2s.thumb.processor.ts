@@ -102,7 +102,7 @@ export class Directb2sThumbProcessor implements CreationProcessor<BackglassVaria
 						const writeStream = createWriteStream(dest);
 
 						// setup success handler
-						writeStream.on('finish', function() {
+						writeStream.on('finish', () => {
 							logger.info('[Directb2sThumbProcessor] Saved extracted backglass to "%s" (%sms).', dest, Date.now() - now);
 							parser.resume();
 						});

@@ -18,7 +18,7 @@
  */
 
 import { createReadStream, createWriteStream, exists, mkdir, stat, unlink } from 'fs';
-import { dirname, resolve, sep } from 'path';
+import { dirname, resolve as resolvePath, sep } from 'path';
 import * as Stream from 'stream';
 import { promisify } from 'util';
 
@@ -36,8 +36,6 @@ const mkdirAsync = promisify(mkdir);
 const unlinkAsync = promisify(unlink);
 
 export class FileUtil {
-
-	private static MODE_0777 = parseInt('0777', 8);
 
 	/**
 	 * Creates a new file from a HTTP request stream.
@@ -121,9 +119,10 @@ export class FileUtil {
 	public static async mkdirp(path: string, opts: { mode?: number } = {}): Promise<string> {
 		let mode = opts.mode;
 		if (mode === undefined) {
+			/* tslint:disable:no-bitwise */
 			mode = FileUtil.MODE_0777 & (~process.umask());
 		}
-		path = resolve(path);
+		path = resolvePath(path);
 		try {
 			await mkdirAsync(path, mode);
 			return path;
@@ -135,8 +134,8 @@ export class FileUtil {
 					return FileUtil.mkdirp(path, opts);
 
 				default:
-					const stat = await statAsync(path);
-					if (!stat || !stat.isDirectory()) {
+					const st = await statAsync(path);
+					if (!st || !st.isDirectory()) {
 						throw err;
 					}
 					break;
@@ -152,7 +151,7 @@ export class FileUtil {
 	public static async cp(source: string, target: string): Promise<void> {
 		const rd = createReadStream(source);
 		const wr = createWriteStream(target);
-		return new Promise<void>(function(resolve, reject) {
+		return new Promise<void>((resolve, reject) => {
 			rd.on('error', reject);
 			wr.on('error', reject);
 			wr.on('finish', resolve);
@@ -183,6 +182,14 @@ export class FileUtil {
 		}
 	}
 
+	public static log(path: string): string {
+		return path
+			.replace(/storage(-test)?-protected/, chalk.gray('priv'))
+			.replace(/storage(-test)?-public/, chalk.gray('pub'))
+			.split(sep).slice(-3).join('/')
+			.replace(/^data\//, '');
+	}
+
 	/**
 	 * Physically removes a file and prints a warning when failed.
 	 *
@@ -201,11 +208,6 @@ export class FileUtil {
 		}
 	}
 
-	public static log(path: string): string {
-		return path
-			.replace(/storage(-test)?-protected/, chalk.gray('priv'))
-			.replace(/storage(-test)?-public/, chalk.gray('pub'))
-			.split(sep).slice(-3).join('/')
-			.replace(/^data\//, '');
-	}
+	/* tslint:disable:member-ordering */
+	private static MODE_0777 = parseInt('0777', 8);
 }

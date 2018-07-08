@@ -20,7 +20,7 @@
 import { AuthenticationStorageApi } from './authentication.storage';
 
 export const api = new AuthenticationStorageApi();
-export const router = api.storageRouter(true);
+export const authenticationStorageRouter = api.storageRouter(true);
 
 // url authentication
-router.post('/v1/authenticate', api.authenticateUrls.bind(api));
+authenticationStorageRouter.post('/v1/authenticate', api.authenticateUrls.bind(api));

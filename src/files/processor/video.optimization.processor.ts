@@ -64,21 +64,21 @@ export class VideoOptimizationProcessor implements OptimizationProcessor<VideoFi
 			const proc = ffmpeg(src)
 				.noAudio()
 				.videoCodec('libx264')
-				.on('start', function(commandLine: string) {
+				.on('start', (commandLine: string) => {
 					logger.info('[VideoOptimizationProcessor] > %s', commandLine);
 				})
-				.on('error', function(err: Error, stdout: string, stderr: string) {
+				.on('error', (err: Error, stdout: string, stderr: string) => {
 					logger.error('[VideoOptimizationProcessor] ' + err);
 					logger.error('[VideoOptimizationProcessor] [ffmpeg|stdout] ' + stdout);
 					logger.error('[VideoOptimizationProcessor] [ffmpeg|stderr] ' + stderr);
 					reject(new ApiError('Error processing video').log(err));
 				})
-				.on('progress', function(progress: { percent: number }) {
+				.on('progress', (progress: { percent: number }) => {
 					if (progress.percent) {
 						logger.info('[VideoOptimizationProcessor] Processing %s: %s%', file.toShortString(variation), Math.round(progress.percent * 100) / 100);
 					}
 				})
-				.on('end', function() {
+				.on('end', () => {
 					logger.info('[VideoOptimizationProcessor] Transcoding succeeded after %dms, written to %s', Date.now() - started, dest);
 					resolve(dest);
 				});

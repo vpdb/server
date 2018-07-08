@@ -19,12 +19,12 @@
 
 import Application = require('koa');
 import Router from 'koa-router';
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
 import { Rom } from './rom';
-import { router } from './rom.api.router';
+import { romApiRouter } from './rom.api.router';
 import { RomModel, romSchema } from './rom.schema';
 import { RomSerializer } from './rom.serializer';
 
@@ -32,21 +32,12 @@ export class RomApiEndPoint extends EndPoint {
 
 	public readonly name: string = 'Rom API';
 
-	private readonly _router: Router;
-	private readonly _schema: Schema;
-
-	constructor() {
-		super();
-		this._schema = romSchema;
-		this._router = router;
-	}
-
 	public getRouter(): Router {
-		return this._router;
+		return romApiRouter;
 	}
 
 	public async register(app: Application): Promise<void> {
-		state.models.Rom = mongoose.model<Rom, RomModel>('Rom', this._schema);
+		state.models.Rom = mongoose.model<Rom, RomModel>('Rom', romSchema);
 		state.serializers.Rom = new RomSerializer();
 	}
 }

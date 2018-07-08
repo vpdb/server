@@ -17,7 +17,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { includes } from 'lodash';
 import { MetricsModel, Schema } from 'mongoose';
 
 import { metricsPlugin } from '../common/mongoose/metrics.plugin';
@@ -139,7 +138,7 @@ fileSchema.methods.getDirectVariationDependencies = function(this: File, variati
 //-----------------------------------------------------------------------------
 // TRIGGERS
 //-----------------------------------------------------------------------------
-fileSchema.post('remove', async function(obj: File) {
+fileSchema.post('remove', async (obj: File) => {
 
 	// remove physical file
 	await FileUtil.remove(obj);

@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document, Model } from 'mongoose';
+import { Document } from 'mongoose';
 import { Rating } from '../ratings/rating';
 import { state } from '../state';
 import { apiCache } from './api.cache';
@@ -41,17 +41,17 @@ class Metrics {
 	 */
 	public async onRatingUpdated(modelName: string, entity: Document, rating: Rating) {
 
-		const atm = await this.getGlobalMean(modelName);
-		const summary = await this.updateEntityMetrics(modelName, entity, atm);
-		const _atm = parseInt(await state.redis.get(this.redisAtmKey));
+		const globalAtm = await this.getGlobalMean(modelName);
+		const summary = await this.updateEntityMetrics(modelName, entity, globalAtm);
+		const atm = parseInt(await state.redis.get(this.redisAtmKey), 10);
 		const precision = 100;
-		if (!_atm) {
+		if (!atm) {
 			// nothing set, update and go on.
-			await this.updateGlobalMean(atm);
+			await this.updateGlobalMean(globalAtm);
 
-		} else if (Math.round(_atm * precision) !== Math.round(atm * precision)) {
-			logger.info('[Metrics.onRatingUpdated] Global mean of %ss changed from %s to %s, re-calculating bayesian estimates.', modelName, Math.round(_atm * precision) / precision, Math.round(atm * precision) / precision);
-			await this.updateAllEntities(modelName, atm);
+		} else if (Math.round(atm * precision) !== Math.round(globalAtm * precision)) {
+			logger.info('[Metrics.onRatingUpdated] Global mean of %ss changed from %s to %s, re-calculating bayesian estimates.', modelName, Math.round(atm * precision) / precision, Math.round(globalAtm * precision) / precision);
+			await this.updateAllEntities(modelName, globalAtm);
 			await apiCache.invalidateAllEntities(modelName);
 		}
 		return {
@@ -83,11 +83,12 @@ class Metrics {
 		 *    ATm = arithmetic total mean when considering the collection of all the items
 		 */
 		const m = config.vpdb.metrics.bayesianEstimate.minVotes;
-		let am, n;
+		let am: number;
+		let n: number;
 
 		// get arithmetic local mean
 		const q = { ['_ref.' + modelName]: entity._id };
-		let metrics;
+		let entityMetrics;
 
 		const results = await this.aggregate(q);
 
@@ -95,21 +96,21 @@ class Metrics {
 			const result: any = results[0];
 			n = result.count;
 			am = result.sum / n;
-			metrics = {
+			entityMetrics = {
 				average: Math.round(am * 1000) / 1000,
 				votes: n,
 				score: (n / (n + m)) * am + (m / (n + m)) * atm,
 			};
 		} else {
-			metrics = { average: 0, votes: 0, score: 0 };
+			entityMetrics = { average: 0, votes: 0, score: 0 };
 		}
 
-		await entity.update({ rating: metrics });
+		await entity.update({ rating: entityMetrics });
 
 		// invalidate cache
 		await apiCache.invalidateEntity(modelName, entity.id);
 
-		return metrics;
+		return entityMetrics;
 	}
 
 	private async getGlobalMean(modelName: string): Promise<number> {

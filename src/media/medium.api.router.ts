@@ -24,11 +24,11 @@ import { MediumApi } from './medium.api';
 const api = new MediumApi();
 const starApi = new StarApi();
 
-export const router = api.apiRouter();
+export const mediumApiRouter = api.apiRouter();
 
-router.post('/v1/media',       api.auth(api.create.bind(api), 'media', 'add', [Scope.ALL, Scope.CREATE]));
-router.delete('/v1/media/:id', api.auth(api.del.bind(api), 'media', 'delete-own', [Scope.ALL, Scope.CREATE]));
+mediumApiRouter.post('/v1/media',       api.auth(api.create.bind(api), 'media', 'add', [Scope.ALL, Scope.CREATE]));
+mediumApiRouter.delete('/v1/media/:id', api.auth(api.del.bind(api), 'media', 'delete-own', [Scope.ALL, Scope.CREATE]));
 
-router.post('/v1/media/:id/star',   starApi.auth(starApi.star('medium').bind(starApi), 'media', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
-router.delete('/v1/media/:id/star', starApi.auth(starApi.unstar('medium').bind(starApi), 'media', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
-router.get('/v1/media/:id/star',    starApi.auth(starApi.get('medium').bind(starApi), 'media', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
+mediumApiRouter.post('/v1/media/:id/star',   starApi.auth(starApi.star('medium').bind(starApi), 'media', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
+mediumApiRouter.delete('/v1/media/:id/star', starApi.auth(starApi.unstar('medium').bind(starApi), 'media', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
+mediumApiRouter.get('/v1/media/:id/star',    starApi.auth(starApi.get('medium').bind(starApi), 'media', 'star', [ Scope.ALL, Scope.COMMUNITY ]));

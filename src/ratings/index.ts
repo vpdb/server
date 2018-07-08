@@ -19,7 +19,7 @@
 
 import Application = require('koa');
 import Router from 'koa-router';
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
@@ -30,18 +30,11 @@ export class RatingEndPoint extends EndPoint {
 
 	public readonly name: string = 'Ratings API';
 
-	private readonly _schema: Schema;
-
-	constructor() {
-		super();
-		this._schema = ratingSchema;
-	}
-
 	public getRouter(): Router {
 		return null;
 	}
 
 	public async register(app: Application): Promise<void> {
-		state.models.Rating = mongoose.model<Rating>('Rating', this._schema);
+		state.models.Rating = mongoose.model<Rating>('Rating', ratingSchema);
 	}
 }

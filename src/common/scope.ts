@@ -78,7 +78,7 @@ export class ScopeHelper {
 	 * Defines which scopes a token type is allowed to have *at creation*.
 	 * @private
 	 */
-	private _scopes: { personal: Scope[], provider: Scope[] } = {
+	private scopes: { personal: Scope[], provider: Scope[] } = {
 		personal: [Scope.ALL, Scope.LOGIN, Scope.COMMUNITY, Scope.CREATE, Scope.STORAGE],
 		provider: [Scope.COMMUNITY, Scope.CREATE, Scope.STORAGE, Scope.SERVICE],
 	};
@@ -91,18 +91,18 @@ export class ScopeHelper {
 	 * @return {string[]} Valid scopes
 	 */
 	public getScopes(type: 'personal' | 'provider'): Scope[] {
-		return this._scopes[type];
+		return this.scopes[type];
 	}
 
 	/**
 	 * Checks if given scopes contain a scope.
 	 *
 	 * @param {string[]|null} scopes Scopes to check
-	 * @param {string} scope Scope
+	 * @param {string} scopeToCheck Scope
 	 * @return {boolean} True if found, false otherwise.
 	 */
-	public has(scopes: Scope[] | string[] | null, scope: Scope | string): boolean {
-		return scopes && (scopes as string[]).includes(scope as string);
+	public has(scopes: Scope[] | string[] | null, scopeToCheck: Scope | string): boolean {
+		return scopes && (scopes as string[]).includes(scopeToCheck as string);
 	}
 
 	/**
@@ -117,9 +117,9 @@ export class ScopeHelper {
 		if (validScopes === null) {
 			return true;
 		}
-		const scopes: Scope[] = isArray(validScopes) ? validScopes as Scope[] : this._scopes[validScopes];
-		for (let i = 0; i < scopesToValidate.length; i++) {
-			if (this.has(scopes, scopesToValidate[i])) {
+		const scopes: Scope[] = isArray(validScopes) ? validScopes as Scope[] : this.scopes[validScopes];
+		for (const scopeToValidate of scopesToValidate) {
+			if (this.has(scopes, scopeToValidate)) {
 				return true;
 			}
 		}
@@ -130,15 +130,15 @@ export class ScopeHelper {
 	 * Checks if the given scopes are identical.
 	 *
 	 * @param {string[]} validScopes
-	 * @param {string[]} scopes
+	 * @param {string[]} scopesToCheck
 	 * @return {boolean} True if identical, false otherwise.
 	 */
-	public isIdentical(validScopes: Scope[] | string[], scopes: Scope[] | string[]) {
-		if (scopes.length !== validScopes.length) {
+	public isIdentical(validScopes: Scope[] | string[], scopesToCheck: Scope[] | string[]) {
+		if (scopesToCheck.length !== validScopes.length) {
 			return false;
 		}
-		for (let i = 0; i < scopes.length; i++) {
-			if (!this.has(validScopes, scopes[i])) {
+		for (const scopeToCheck of scopesToCheck) {
+			if (!this.has(validScopes, scopeToCheck)) {
 				return false;
 			}
 		}

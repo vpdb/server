@@ -210,7 +210,7 @@ export class SlackBot {
 		const msg: { msg: string, atts?: MessageAttachment[] } = { msg: '', atts: [] };
 		switch (log.event) {
 			case 'authenticate':
-				if (log.result == 'success') {
+				if (log.result === 'success') {
 					if (log.payload.provider === 'local') {
 						msg.msg = `Logged in using ${log.payload.how}.`;
 					} else {

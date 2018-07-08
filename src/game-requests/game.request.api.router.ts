@@ -21,9 +21,9 @@ import { Scope } from '../common/scope';
 import { GameRequestApi } from './game.request.api';
 
 const api = new GameRequestApi();
-export const router = api.apiRouter();
+export const gameRequestRouter = api.apiRouter();
 
-router.post('/v1/game_requests', api.auth(api.create.bind(api), 'game_requests', 'add', [Scope.ALL, Scope.COMMUNITY]));
-router.get('/v1/game_requests', api.auth(api.list.bind(api), 'game_requests', 'list', [Scope.ALL]));
-router.patch('/v1/game_requests/:id', api.auth(api.update.bind(api), 'game_requests', 'update', [Scope.ALL, Scope.COMMUNITY]));
-router.delete('/v1/game_requests/:id', api.auth(api.del.bind(api), 'game_requests', 'delete-own', [Scope.ALL, Scope.COMMUNITY]));
+gameRequestRouter.post('/v1/game_requests', api.auth(api.create.bind(api), 'game_requests', 'add', [Scope.ALL, Scope.COMMUNITY]));
+gameRequestRouter.get('/v1/game_requests', api.auth(api.list.bind(api), 'game_requests', 'list', [Scope.ALL]));
+gameRequestRouter.patch('/v1/game_requests/:id', api.auth(api.update.bind(api), 'game_requests', 'update', [Scope.ALL, Scope.COMMUNITY]));
+gameRequestRouter.delete('/v1/game_requests/:id', api.auth(api.del.bind(api), 'game_requests', 'delete-own', [Scope.ALL, Scope.COMMUNITY]));

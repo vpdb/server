@@ -81,6 +81,12 @@ declare module 'mongoose' {
 
 	// methods
 	export interface MetricsDocument extends Document {
+
+		/**
+		 * The counter object
+		 */
+		counter?: { [key: string]: number };
+
 		/**
 		 * Increments a counter.
 		 *
@@ -89,11 +95,6 @@ declare module 'mongoose' {
 		 * @returns {Promise}
 		 */
 		incrementCounter(counterName: string, decrement?: boolean): Promise<MetricsDocument>;
-
-		/**
-		 * The counter object
-		 */
-		counter?: { [key: string]: number };
 	}
 
 	// statics

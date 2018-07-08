@@ -190,9 +190,9 @@ export class Directb2sOptimizationProcessor implements OptimizationProcessor<Bac
 		});
 	}
 
-	private escape(string: string) {
+	private escape(str: string) {
 		/* istanbul ignore if */
-		if (string === null || string === undefined) {
+		if (str === null || str === undefined) {
 			return;
 		}
 		const map: { [key: string]: string } = {
@@ -205,6 +205,6 @@ export class Directb2sOptimizationProcessor implements OptimizationProcessor<Bac
 			'\n': '&#xA;',
 		};
 		const pattern = '([&"<>\'\n\r])';
-		return string.replace(new RegExp(pattern, 'g'), (str, item) => map[item]);
+		return str.replace(new RegExp(pattern, 'g'), (s, item) => map[item]);
 	}
 }

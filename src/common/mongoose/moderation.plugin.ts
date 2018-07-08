@@ -79,12 +79,11 @@ export function moderationPlugin(schema: Schema) {
 			return;
 		}
 		// check if _created_by is a contributor and auto-approve.
-		const User = state.models.User;
 		let user: User;
 		if (this.populated('_created_by')) {
 			user = this._created_by as User;
 		} else {
-			user = await User.findOne({ _id: this._created_by }).exec();
+			user = await state.models.User.findOne({ _id: this._created_by }).exec();
 		}
 
 		const resource = modelResourceMap[(this.constructor as any).modelName];
@@ -216,9 +215,7 @@ export function moderationPlugin(schema: Schema) {
 	 * @param {T} query
 	 * @returns {T}
 	 */
-	schema.statics.approvedQuery = function<T>(query: T): T {
-		return addToQuery({ 'moderation.is_approved': true }, query);
-	};
+	schema.statics.approvedQuery = <T>(query: T) => addToQuery({ 'moderation.is_approved': true }, query);
 
 	/**
 	 * Makes sure an API request has the permission to view the entity.
@@ -323,7 +320,7 @@ export function moderationPlugin(schema: Schema) {
 	 * Marks the entity as refused.
 	 * @param {User|ObjectId} user User who refused
 	 * @param {string} reason Reason why entity was refused
-	 ** @returns {Promise.<{}>} Updated moderation attribute
+	 * @returns {Promise.<{}>} Updated moderation attribute
 	 */
 	schema.methods.refuse = async function(user: User, reason: string): Promise<ModerationData> {
 
@@ -440,7 +437,7 @@ declare module 'mongoose' {
 		 * Marks the entity as refused.
 		 * @param {User|ObjectId} user User who refused
 		 * @param {string} reason Reason why entity was refused
-		 ** @returns {Promise.<{}>} Updated moderation attribute
+		 * @returns {Promise.<{}>} Updated moderation attribute
 		 */
 		refuse(user: User, reason: string): Promise<ModerationData>;
 

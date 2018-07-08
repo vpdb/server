@@ -103,7 +103,7 @@ if (config.vpdb.passport.github.enabled) {
 if (config.vpdb.passport.google.enabled) {
 	userFields.providers.google = providerSchema;
 }
-config.vpdb.passport.ipboard.forEach(function(ipbConfig) {
+config.vpdb.passport.ipboard.forEach(ipbConfig => {
 	if (ipbConfig.enabled) {
 		userFields.providers[ipbConfig.id] = providerSchema;
 	}
@@ -201,7 +201,7 @@ userSchema.path('email').validate(function(email: string) {
 	return isString(email) && isEmail(email);
 }, 'Email must be in the correct format.');
 
-userSchema.path('location').validate(function(location: string) {
+userSchema.path('location').validate((location: string) => {
 	return isString(location) && isLength(location, 0, 100);
 }, 'Location must not be longer than 100 characters.');
 
@@ -301,7 +301,7 @@ userSchema.path('password_hash').validate(function() {
 	}
 }, null);
 
-userSchema.path('_plan').validate(function(plan: string) {
+userSchema.path('_plan').validate((plan: string) => {
 	return config.vpdb.quota.plans.map(p => p.id).includes(plan);
 }, 'Plan must be one of: [' + config.vpdb.quota.plans.map(p => p.id).join(',') + ']');
 
@@ -322,7 +322,7 @@ userSchema.methods.authenticate = function(plainText: string): boolean {
  * Creates a random salt
  * @return {string} Random salt
  */
-userSchema.methods.makeSalt = function(): string {
+userSchema.methods.makeSalt = (): string => {
 	return Math.round((new Date().valueOf() * Math.random())) + '';
 };
 
@@ -356,8 +356,8 @@ userSchema.methods.passwordSet = function(): boolean {
  */
 userSchema.methods.hasRole = function(role: string | string[]): boolean {
 	if (isArray(role)) {
-		for (let i = 0; i < role.length; i++) {
-			if (this.roles.includes(role[i])) {
+		for (const r of role) {
+			if (this.roles.includes(r)) {
 				return true;
 			}
 		}
@@ -371,7 +371,7 @@ userSchema.methods.hasRole = function(role: string | string[]): boolean {
 //-----------------------------------------------------------------------------
 // TRIGGERS
 //-----------------------------------------------------------------------------
-userSchema.post('remove', async function(obj: User) {
+userSchema.post('remove', async (obj: User) => {
 	await state.models.LogUser.remove({ _user: obj._id });
 	await state.models.Token.remove({ _created_by: obj._id });
 	await acl.removeUserRoles(obj.id, obj.roles);

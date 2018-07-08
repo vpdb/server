@@ -23,6 +23,31 @@ import { FileVariation } from '../file.variations';
 export abstract class Metadata {
 
 	/**
+	 * Reads and returns metadata from the file.
+	 * @param {File} file
+	 * @param {string} path
+	 * @param {FileVariation} variation
+	 * @returns {Promise<object | undefined>} Metadata or null if no metadata reader found.
+	 */
+	public static async readFrom(file: File, path: string, variation?: FileVariation): Promise<{ [key: string]: any } | undefined> {
+		const reader = Metadata.getReader(file, variation);
+		if (reader === undefined) {
+			return undefined;
+		}
+		return Metadata.sanitizeObject(await reader.getMetadata(file, path, variation));
+	}
+
+	/**
+	 * Returns the metadata reader for a given file and variation.
+	 * @param {File} file File
+	 * @param {FileVariation} [variation] Variation or null for original file.
+	 * @return {Metadata | undefined} Metadata reader
+	 */
+	public static getReader(file: File, variation?: FileVariation): Metadata {
+		return require('.').instances.find((m: Metadata) => m.isValid(file, variation));
+	}
+
+	/**
 	 * Checks if the metadata class can be applied to a given file.
 	 *
 	 * @param {File} file File to check
@@ -55,31 +80,7 @@ export abstract class Metadata {
 	 */
 	public abstract serializeVariation(metadata: { [key: string]: any }): { [key: string]: any };
 
-	/**
-	 * Reads and returns metadata from the file.
-	 * @param {File} file
-	 * @param {string} path
-	 * @param {FileVariation} variation
-	 * @returns {Promise<object | undefined>} Metadata or null if no metadata reader found.
-	 */
-	public static async readFrom(file: File, path: string, variation?: FileVariation): Promise<{ [key: string]: any } | undefined> {
-		const reader = Metadata.getReader(file, variation);
-		if (reader === undefined) {
-			return undefined;
-		}
-		return Metadata.sanitizeObject(await reader.getMetadata(file, path, variation));
-	}
-
-	/**
-	 * Returns the metadata reader for a given file and variation.
-	 * @param {File} file File
-	 * @param {FileVariation} [variation] Variation or null for original file.
-	 * @return {Metadata | undefined} Metadata reader
-	 */
-	public static getReader(file: File, variation?: FileVariation): Metadata {
-		return require('.').instances.find((m: Metadata) => m.isValid(file, variation));
-	}
-
+	/* tslint:disable:member-ordering */
 	/**
 	 * A helper method that replaces the "$" and "." character in order to be able
 	 * to store non-structured objects in MongoDB.
@@ -92,9 +93,9 @@ export abstract class Metadata {
 		let oldProp;
 		for (let property in object) {
 			if (object.hasOwnProperty(property)) {
-				if (/\.|\$/.test(property)) {
+				if (/[.$]/.test(property)) {
 					oldProp = property;
-					property = oldProp.replace(/\.|\$/g, replacement);
+					property = oldProp.replace(/[.$]/g, replacement);
 					object[property] = object[oldProp];
 					delete object[oldProp];
 				}

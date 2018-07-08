@@ -73,10 +73,43 @@ class Ipdb {
 		return ids;
 	}
 
+	public firstMatch(str: string, regex: RegExp): string {
+		const m = str.match(regex);
+		if (m) {
+			return m[1].replace(/&nbsp;/gi, ' ');
+		} else {
+			return undefined;
+		}
+	}
+
+	public firstMatchWith<T>(str: string, regex: RegExp, postFn?: (str: string) => T): T {
+		const m = str.match(regex);
+		if (m) {
+			return postFn(m[1].replace(/&nbsp;/gi, ' '));
+		} else {
+			return undefined;
+		}
+	}
+
+	public number(str: string): number {
+		if (isUndefined(str)) {
+			return undefined;
+		}
+		return parseInt(str, 10);
+	}
+
+	public trim(str: string): string {
+		return str.replace(/[^-\w\d\s.,:_'"()&/]/ig, '');
+	}
+
+	public striptags(str: string): string {
+		return str.replace(/<(?:.|\n)*?>/gm, '');
+	}
+
 	/* istanbul ignore next */
 	private localDetails(ipdbNo: number | string, err: Error = null) {
-		const ipdb = require('../../data/ipdb.json');
-		const match = ipdb.find((i: { ipdb: { number: number } }) => i.ipdb.number === parseInt(ipdbNo as string));
+		const localIpdb = require('../../data/ipdb.json');
+		const match = localIpdb.find((i: { ipdb: { number: number } }) => i.ipdb.number === parseInt(ipdbNo as string, 10));
 		if (!match) {
 			throw (err || new ApiError('IPDB entry ' + ipdbNo + ' does not exist in local index. Try without the offline option.'));
 		}
@@ -85,18 +118,18 @@ class Ipdb {
 
 	private async parseDetails(body: string) {
 
-		const tidyText = (m: string) => {
-			m = this.striptags(m).replace(/<br>/gi, '\n\n');
-			return ent.decode(m.trim());
+		const tidyText = (match: string) => {
+			match = this.striptags(match).replace(/<br>/gi, '\n\n');
+			return ent.decode(match.trim());
 		};
 
-		const m = body.match(/<a name="(\d+)">([^<]+)/i);
+		const titleMatch = body.match(/<a name="(\d+)">([^<]+)/i);
 		const game: Game = { ipdb: {} } as Game;
 
 		/* istanbul ignore else */
-		if (m) {
-			game.title = this.trim(m[2]);
-			game.ipdb.number = this.number(m[1]);
+		if (titleMatch) {
+			game.title = this.trim(titleMatch[2]);
+			game.ipdb.number = this.number(titleMatch[1]);
 			game.ipdb.mfg = this.number(this.firstMatch(body, /Manufacturer:\s*<\/b>.*?mfgid=(\d+)/i));
 			if (game.ipdb.mfg && this.manufacturerNames[game.ipdb.mfg]) {
 				game.manufacturer = this.manufacturerNames[game.ipdb.mfg];
@@ -138,39 +171,7 @@ class Ipdb {
 		}
 	}
 
-	public firstMatch(str: string, regex: RegExp): string {
-		const m = str.match(regex);
-		if (m) {
-			return m[1].replace(/&nbsp;/gi, ' ');
-		} else {
-			return undefined;
-		}
-	}
-
-	public firstMatchWith<T>(str: string, regex: RegExp, postFn?: (str: string) => T): T {
-		const m = str.match(regex);
-		if (m) {
-			return postFn(m[1].replace(/&nbsp;/gi, ' '));
-		} else {
-			return undefined;
-		}
-	}
-
-	public number(str: string): number {
-		if (isUndefined(str)) {
-			return undefined;
-		}
-		return parseInt(str);
-	}
-
-	public trim(str: string): string {
-		return str.replace(/[^-\w\d\s.,:_'"()&/]/ig, '');
-	}
-
-	public striptags(str: string): string {
-		return str.replace(/<(?:.|\n)*?>/gm, '');
-	}
-
+	/* tslint:disable:member-ordering */
 	public manufacturerNames: { [key: number]: string } = {
 		2: 'Hankin',
 		9: 'A.B.T.',
@@ -1018,4 +1019,5 @@ export interface Mpu {
 	long: string;
 	short: string;
 }
+
 export const ipdb = new Ipdb();

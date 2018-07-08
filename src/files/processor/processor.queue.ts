@@ -19,7 +19,7 @@
 
 import Bluebird from 'bluebird';
 import Bull, { Job, Queue } from 'bull';
-import { exists, rename, stat, unlink } from 'fs';
+import { exists, rename, unlink } from 'fs';
 import { promisify } from 'util';
 
 import { dirname } from 'path';
@@ -156,8 +156,8 @@ class ProcessorQueue {
 	 * @returns {Promise<void>}
 	 */
 	public async waitForLastJob(): Promise<void> {
-		const numJobs = await this.countRemainingJobs();
-		if (numJobs === 0) {
+		const numRemainingJobs = await this.countRemainingJobs();
+		if (numRemainingJobs === 0) {
 			return;
 		}
 		return new Promise<any>(resolve => {
@@ -351,6 +351,7 @@ class ProcessorQueue {
 		return numbJobs;
 	}
 
+	/* tslint:disable:member-ordering */
 	/**
 	 * Compares two fileIds and variation names and returns true if they match.
 	 * @param jobData Job data to compare

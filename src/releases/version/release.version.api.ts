@@ -35,6 +35,7 @@ import { ReleaseAbstractApi } from '../release.abstract.api';
 import { ReleaseVersionFile } from './file/release.version.file';
 import { ReleaseVersion } from './release.version';
 
+/* tslint:disable:no-unsafe-finally */
 export class ReleaseVersionApi extends ReleaseAbstractApi {
 
 	/**

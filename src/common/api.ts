@@ -91,40 +91,58 @@ export abstract class Api {
 	}
 
 	/**
-	 * Authorizes an authenticated user with given permissions.
+	 * Returns the pagination object.
 	 *
-	 * @param ctx        Koa context
-	 * @param user       User to authorize
-	 * @param resource   Required resource
-	 * @param permission Required permission
-	 * @param scopes     Required scopes
-	 * @param planAttrs  Key/value pairs of plan options that must match, e.g. { enableAppTokens: false }
-	 * @throws {ApiError} If authorization failed.
+	 * @param ctx Koa context
+	 * @param [defaultPerPage=10] Default number of items returned if not indicated - default 10.
+	 * @param [maxPerPage=50] Maximal number of items returned if not indicated - default 50.
+	 * @return {{defaultPerPage: number, maxPerPage: number, page: Number, perPage: Number}}
 	 */
-	private async authorizeUser(ctx: Context, user: User, resource: string, permission: string, scopes: Scope[], planAttrs: { [key: string]: any }): Promise<void> {
+	public pagination(ctx: Context, defaultPerPage: number = 20, maxPerPage: number = 50): PaginationOpts {
+		return {
+			defaultPerPage,
+			maxPerPage,
+			page: Math.max(ctx.query.page, 1) || 1,
+			perPage: Math.max(0, Math.min(ctx.query.per_page, maxPerPage)) || defaultPerPage,
+		};
+	}
 
-		// check scopes
-		if (!scope.isValid(scopes, ctx.state.tokenScopes)) {
-			throw new ApiError('Your token has an invalid scope: [ "%s" ] (required: [ "%s" ])', (ctx.state.tokenScopes || []).join('", "'), (scopes || []).join('", "')).status(401).log();
+	/**
+	 * Adds item count to the pagination object.
+	 * @param pagination Current pagination object
+	 * @param count Total hits
+	 * @returns Updated options
+	 */
+	public paginationOpts(pagination: PaginationOpts, count: number): { pagination: PaginationOpts } {
+		return { pagination: extend(pagination, { count }) };
+	}
+
+	/**
+	 * Instantiates a new router with the API prefix.
+	 * @return API router
+	 */
+	public apiRouter() {
+		/* istanbul ignore else: test server uses a prefix */
+		if (config.vpdb.api.pathname) {
+			return new Router({ prefix: config.vpdb.api.pathname });
+
+		} else {
+			return new Router();
 		}
+	}
 
-		// check plan config if provided
-		if (isObject(planAttrs)) {
-			for (const key of keys(planAttrs)) {
-				const val = planAttrs[key];
-				if (user.planConfig[key] !== val) {
-					throw new ApiError('User <%s> with plan "%s" tried to access `%s` but was denied access due to missing plan configuration (%s is %s instead of %s).',
-						user.email, user._plan, ctx.url, key, val, user.planConfig[key]).display('Access denied').status(403).log();
-				}
-			}
-		}
+	/**
+	 * Instantiates a new router with the storage prefix.
+	 * @return Storage router
+	 */
+	public storageRouter(useProtected: boolean) {
+		const storageConfig = useProtected ? config.vpdb.storage.protected.api : config.vpdb.storage.public.api;
+		/* istanbul ignore else: test server uses a prefix */
+		if (storageConfig.pathname) {
+			return new Router({ prefix: storageConfig.pathname });
 
-		// check permissions
-		if (resource && permission) {
-			const granted = await acl.isAllowed(user.id, resource, permission);
-			if (!granted) {
-				throw new ApiError('User <%s> tried to access `%s` but was denied access due to missing permissions to %s/%s.', user.email, ctx.url, resource, permission).display('Access denied').status(403).log();
-			}
+		} else {
+			return new Router();
 		}
 	}
 
@@ -210,21 +228,22 @@ export abstract class Api {
 	 *
 	 * @param {Context} ctx Koa context
 	 * @param {object} defaultSort Sort modes when none provided
-	 * @param {object} map Maps URL parameters to Mongoose fields.
+	 * @param {object} paramMap Maps URL parameters to Mongoose fields.
 	 * @returns {object} Sort parameter
 	 */
-	protected sortParams(ctx: Context, defaultSort: { [key: string]: number }, map?: { [key: string]: string }) {
-		let key, order, mapOrder;
+	protected sortParams(ctx: Context, defaultSort: { [key: string]: number }, paramMap: { [key: string]: string } = {}) {
+		let key: string;
+		let order: number;
+		let mapOrder: number;
 		const sortBy: { [key: string]: number } = {};
 		defaultSort = defaultSort || { title: 1 };
-		map = map || {};
 		if (ctx.query.sort) {
 			let s = ctx.query.sort.match(/^(-?)([a-z0-9_-]+)+$/);
 			if (s) {
 				order = s[1] ? -1 : 1;
 				key = s[2];
-				if (map[key]) {
-					s = map[key].match(/^(-?)([a-z0-9_.]+)+$/);
+				if (paramMap[key]) {
+					s = paramMap[key].match(/^(-?)([a-z0-9_.]+)+$/);
 					key = s[2];
 					mapOrder = s[1] ? -1 : 1;
 				} else {
@@ -241,33 +260,6 @@ export abstract class Api {
 	}
 
 	/**
-	 * Returns the pagination object.
-	 *
-	 * @param ctx Koa context
-	 * @param [defaultPerPage=10] Default number of items returned if not indicated - default 10.
-	 * @param [maxPerPage=50] Maximal number of items returned if not indicated - default 50.
-	 * @return {{defaultPerPage: number, maxPerPage: number, page: Number, perPage: Number}}
-	 */
-	public pagination(ctx: Context, defaultPerPage: number = 20, maxPerPage: number = 50): PaginationOpts {
-		return {
-			defaultPerPage,
-			maxPerPage,
-			page: Math.max(ctx.query.page, 1) || 1,
-			perPage: Math.max(0, Math.min(ctx.query.per_page, maxPerPage)) || defaultPerPage,
-		};
-	}
-
-	/**
-	 * Adds item count to the pagination object.
-	 * @param pagination Current pagination object
-	 * @param count Total hits
-	 * @returns Updated options
-	 */
-	public paginationOpts(pagination: PaginationOpts, count: number): { pagination: PaginationOpts } {
-		return { pagination: extend(pagination, { count }) };
-	}
-
-	/**
 	 * Checks is an object has only changes of a given field.
 	 *
 	 * @param newObj        Object with changes
@@ -278,7 +270,8 @@ export abstract class Api {
 	protected checkReadOnlyFields(newObj: { [key: string]: any }, oldObj: { [key: string]: any }, allowedFields: string[]): ApiValidationError[] | boolean {
 		const errors: ApiValidationError[] = [];
 		difference(keys(newObj), allowedFields).forEach(field => {
-			let newVal, oldVal;
+			let newVal: any;
+			let oldVal: any;
 
 			// for dates we want to compare the time stamp
 			if (oldObj[field] instanceof Date) {
@@ -325,33 +318,43 @@ export abstract class Api {
 	}
 
 	/**
-	 * Instantiates a new router with the API prefix.
-	 * @return API router
+	 * Authorizes an authenticated user with given permissions.
+	 *
+	 * @param ctx        Koa context
+	 * @param user       User to authorize
+	 * @param resource   Required resource
+	 * @param permission Required permission
+	 * @param scopes     Required scopes
+	 * @param planAttrs  Key/value pairs of plan options that must match, e.g. { enableAppTokens: false }
+	 * @throws {ApiError} If authorization failed.
 	 */
-	public apiRouter() {
-		/* istanbul ignore else: test server uses a prefix */
-		if (config.vpdb.api.pathname) {
-			return new Router({ prefix: config.vpdb.api.pathname });
+	private async authorizeUser(ctx: Context, user: User, resource: string, permission: string, scopes: Scope[], planAttrs: { [key: string]: any }): Promise<void> {
 
-		} else {
-			return new Router();
+		// check scopes
+		if (!scope.isValid(scopes, ctx.state.tokenScopes)) {
+			throw new ApiError('Your token has an invalid scope: [ "%s" ] (required: [ "%s" ])', (ctx.state.tokenScopes || []).join('", "'), (scopes || []).join('", "')).status(401).log();
+		}
+
+		// check plan config if provided
+		if (isObject(planAttrs)) {
+			for (const key of keys(planAttrs)) {
+				const val = planAttrs[key];
+				if (user.planConfig[key] !== val) {
+					throw new ApiError('User <%s> with plan "%s" tried to access `%s` but was denied access due to missing plan configuration (%s is %s instead of %s).',
+						user.email, user._plan, ctx.url, key, val, user.planConfig[key]).display('Access denied').status(403).log();
+				}
+			}
+		}
+
+		// check permissions
+		if (resource && permission) {
+			const granted = await acl.isAllowed(user.id, resource, permission);
+			if (!granted) {
+				throw new ApiError('User <%s> tried to access `%s` but was denied access due to missing permissions to %s/%s.', user.email, ctx.url, resource, permission).display('Access denied').status(403).log();
+			}
 		}
 	}
 
-	/**
-	 * Instantiates a new router with the storage prefix.
-	 * @return Storage router
-	 */
-	public storageRouter(useProtected: boolean) {
-		const storageConfig = useProtected ? config.vpdb.storage.protected.api : config.vpdb.storage.public.api;
-		/* istanbul ignore else: test server uses a prefix */
-		if (storageConfig.pathname) {
-			return new Router({ prefix: storageConfig.pathname });
-
-		} else {
-			return new Router();
-		}
-	}
 }
 
 export interface SuccessOpts {

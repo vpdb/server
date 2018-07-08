@@ -28,12 +28,6 @@ import { Thumb } from './typings/serializers';
 
 export abstract class Serializer<T extends Document | ModeratedDocument> {
 
-	protected abstract _reduced(ctx: Context, doc: T, opts: SerializerOptions): T;
-
-	protected abstract _simple(ctx: Context, doc: T, opts: SerializerOptions): T;
-
-	protected abstract _detailed(ctx: Context, doc: T, opts: SerializerOptions): T;
-
 	/**
 	 * Returns the reduced version of the object.
 	 *
@@ -70,34 +64,11 @@ export abstract class Serializer<T extends Document | ModeratedDocument> {
 		return this.serialize(this._detailed.bind(this), ctx, doc, opts);
 	}
 
-	/** @private **/
-	private serialize(serializer: (ctx: Context, doc: T, opts?: SerializerOptions) => T, ctx: Context, doc: T, opts: SerializerOptions): T {
-		if (!doc) {
-			return undefined;
-		}
-		return this._post(ctx, doc, serializer(ctx, doc, this._defaultOpts(opts)), this._defaultOpts(opts));
-	}
+	protected abstract _reduced(ctx: Context, doc: T, opts: SerializerOptions): T;
 
-	/**
-	 * Updates serialized object with additional data, common for all detail
-	 * levels and types.
-	 */
-	private _post(ctx: Context, doc: T, object: T, opts: SerializerOptions): T {
-		if (!object) {
-			return object;
-		}
+	protected abstract _simple(ctx: Context, doc: T, opts: SerializerOptions): T;
 
-		// handle moderation field
-		if ((doc as ModeratedDocument).moderation) {
-			const ModerationSerializer = require('./mongoose/moderation.serializer');
-			(object as ModeratedDocument).moderation = ModerationSerializer._simple((doc as ModeratedDocument).moderation, ctx, opts);
-		}
-
-		// remove excluded fields
-		opts.excludedFields.forEach(field => delete (object as any)[field]);
-
-		return object;
-	}
+	protected abstract _detailed(ctx: Context, doc: T, opts: SerializerOptions): T;
 
 	/**
 	 * Checks if a field is populated.
@@ -134,8 +105,8 @@ export abstract class Serializer<T extends Document | ModeratedDocument> {
 		});
 	}
 
-	protected sortByDate<T>(attr: string): (a: T, b: T) => number {
-		return (a: T, b: T) => {
+	protected sortByDate<ST>(attr: string): (a: ST, b: ST) => number {
+		return (a: ST, b: ST) => {
 			const dateA = new Date((a as any)[attr]).getTime();
 			const dateB = new Date((b as any)[attr]).getTime();
 			if (dateA < dateB) {
@@ -185,6 +156,34 @@ export abstract class Serializer<T extends Document | ModeratedDocument> {
 			return pick(playfieldImage.variations[opts.thumbFormat], thumbFields) as Thumb;
 		}
 		return null;
+	}
+
+	private serialize(serializer: (ctx: Context, doc: T, opts?: SerializerOptions) => T, ctx: Context, doc: T, opts: SerializerOptions): T {
+		if (!doc) {
+			return undefined;
+		}
+		return this._post(ctx, doc, serializer(ctx, doc, this._defaultOpts(opts)), this._defaultOpts(opts));
+	}
+
+	/**
+	 * Updates serialized object with additional data, common for all detail
+	 * levels and types.
+	 */
+	private _post(ctx: Context, doc: T, object: T, opts: SerializerOptions): T {
+		if (!object) {
+			return object;
+		}
+
+		// handle moderation field
+		if ((doc as ModeratedDocument).moderation) {
+			const ModerationSerializer = require('./mongoose/moderation.serializer');
+			(object as ModeratedDocument).moderation = ModerationSerializer._simple((doc as ModeratedDocument).moderation, ctx, opts);
+		}
+
+		// remove excluded fields
+		opts.excludedFields.forEach(field => delete (object as any)[field]);
+
+		return object;
 	}
 }
 

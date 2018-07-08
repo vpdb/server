@@ -52,7 +52,7 @@ export function prettyIdPlugin(schema: Schema, options: PrettyIdOptions = {}) {
 		return includes(options.ignore, path.replace(/\.0$/g, ''));
 	});
 
-	schema.statics.getInstance = async function(obj: Object): Promise<Document> {
+	schema.statics.getInstance = async (obj: object) => {
 
 		const invalidations = await replaceIds(obj, paths, options);
 		const Model = mongoose.model(options.model);
@@ -67,7 +67,7 @@ export function prettyIdPlugin(schema: Schema, options: PrettyIdOptions = {}) {
 
 	};
 
-	schema.methods.updateInstance = async function<T extends Document>(this: T, obj: Object): Promise<T> {
+	schema.methods.updateInstance = async function<T extends Document>(this: T, obj: object): Promise<T> {
 
 		const invalidations = await replaceIds(obj, paths, options);
 		assign(this, obj);
@@ -89,7 +89,7 @@ export function prettyIdPlugin(schema: Schema, options: PrettyIdOptions = {}) {
  * @param options
  * @returns {Promise.<Array>} Promise returning an array of invalidations.
  */
-async function replaceIds(obj: Object, paths: { [key: string]: any }, options: PrettyIdOptions): Promise<Array<{ path: string, message: string, value: any }>> {
+async function replaceIds(obj: object, paths: { [key: string]: any }, options: PrettyIdOptions): Promise<Array<{ path: string, message: string, value: any }>> {
 
 	const Model = mongoose.model(options.model);
 	const invalidations: Array<{ path: string, message: string, value: any }> = [];
@@ -125,7 +125,7 @@ async function replaceIds(obj: Object, paths: { [key: string]: any }, options: P
 
 		} else {
 			// validations
-			options.validations.forEach(function(validation) {
+			options.validations.forEach(validation => {
 				if (validation.path === objPath) {
 					if (validation.mimeType && (refObj as any).mime_type !== validation.mimeType) {
 						invalidations.push({ path: objPath, message: validation.message, value: prettyId });
@@ -144,7 +144,7 @@ async function replaceIds(obj: Object, paths: { [key: string]: any }, options: P
 	return invalidations;
 }
 
-function getRefPaths(obj: Object, paths: { [key: string]: any }): { [key: string]: string } {
+function getRefPaths(obj: object, paths: { [key: string]: any }): { [key: string]: string } {
 
 	// pick because it's an object (map)
 	const singleRefsFiltered = pickBy(paths, schemaType => schemaType.options && schemaType.options.ref);
@@ -166,7 +166,7 @@ declare module 'mongoose' {
 		 * @param {Object} obj Object received
 		 * @returns {Promise<T extends module:mongoose.Document>} Updated document with IDs converted from pretty to Mongoose.
 		 */
-		updateInstance<T extends Document>(this: T, obj: Object): Promise<T>;
+		updateInstance<T extends Document>(this: T, obj: object): Promise<T>;
 	}
 
 	// statics
@@ -178,7 +178,7 @@ declare module 'mongoose' {
 		 * @param {Object} obj Object received
 		 * @returns {Promise<T extends module:mongoose.PrettyIdDocument>} IDs converted from pretty to Mongoose.
 		 */
-		getInstance(obj: Object): Promise<T>;
+		getInstance(obj: object): Promise<T>;
 	}
 
 	// options

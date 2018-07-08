@@ -43,7 +43,7 @@ export class LogUserUtil {
 	}
 
 	public static diff(obj1: { [key: string]: any }, obj2: { [key: string]: any }): ObjectDiff {
-		return reduce(obj1, function(result: ObjectDiff, val, key) {
+		return reduce(obj1, (result: ObjectDiff, val, key) => {
 			if (!isEqual(obj2[key], val)) {
 				result.old[key] = val;
 				result.new[key] = obj2[key];

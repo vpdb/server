@@ -48,7 +48,7 @@ export class BackglassSerializer extends Serializer<Backglass> {
 	}
 
 	private _serialize(ctx: Context, doc: Backglass, opts: SerializerOptions,
-					               versionSerializer: (ctx: Context, doc: BackglassVersion, opts: SerializerOptions) => BackglassVersion): Backglass {
+			versionSerializer: (ctx: Context, doc: BackglassVersion, opts: SerializerOptions) => BackglassVersion): Backglass {
 
 		// primitive fields
 		const backglass = pick(doc, ['id', 'description', 'acknowledgements', 'created_at']) as Backglass;

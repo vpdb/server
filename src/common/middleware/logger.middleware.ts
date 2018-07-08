@@ -53,7 +53,7 @@ const methodStyle: { [key: string]: Chalk & { supportsColor: ColorSupport } } = 
  */
 export function koaLogger() {
 
-	return async function logger(ctx: Context, next: () => Promise<any>) {
+	return async (ctx: Context, next: () => Promise<any>) => {
 		const start = Date.now();
 		try {
 			await next();
@@ -101,7 +101,7 @@ function log(ctx: Context, start: number, len: number, err: any = null, event: s
 		? (err.statusCode || err.status || 500)
 		: (ctx.status || 404);
 	let length;
-	if (~[204, 205, 304].indexOf(statusCode)) {
+	if ([204, 205, 304].includes(statusCode)) {
 		length = '';
 	} else if (len == null) {
 		length = '-';

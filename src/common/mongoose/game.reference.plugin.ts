@@ -222,6 +222,10 @@ declare module 'mongoose' {
 		 */
 		game?: Game;
 
+		// hack, those two we just assume are there.
+		_created_by?: User | Types.ObjectId;
+		authors?: ContentAuthor[];
+
 		/**
 		 * Returns true if the entity is restricted by its linked game.
 		 * Note that the game must be populated, otherwise <tt>true</tt> will be returned.
@@ -229,9 +233,6 @@ declare module 'mongoose' {
 		 * @return {boolean} True if linked game is restricted, false otherwise.
 		 */
 		isRestricted(): boolean;
-
-		_created_by?: User | Types.ObjectId;
-		authors?: ContentAuthor[];
 	}
 
 	// statics

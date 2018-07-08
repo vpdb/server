@@ -72,8 +72,8 @@ export class ArchiveMetadata extends Metadata {
 			entries: entries.map((entry: any) => {
 				return {
 					filename: entry.name,
-					bytes: parseInt(entry.size),
-					bytes_compressed: parseInt(entry.packedSize),
+					bytes: parseInt(entry.size, 10),
+					bytes_compressed: parseInt(entry.packedSize, 10),
 					crc: parseInt(entry.crc32, 16),
 					modified_at: new Date(entry.mtime.replace(/,\d+$/, '')),
 				};

@@ -21,17 +21,17 @@ import { Scope } from '../common/scope';
 import { MiscApi } from './misc.api';
 
 const api = new MiscApi();
-export const router = api.apiRouter();
+export const miscApiRouter = api.apiRouter();
 
-router.get('/v1/sitemap', api.sitemap.bind(api)); // TODO add api cache
-router.get('/v1/ping',    api.ping.bind(api));
-router.get('/v1/plans',   api.plans.bind(api));
-router.get('/v1/roles',    api.auth(api.roles.bind(api), 'roles', 'list', [ Scope.ALL ]));
-router.get('/v1/ipdb/:id', api.auth(api.ipdbDetails.bind(api), 'ipdb', 'view', [ Scope.ALL ]));
-router.delete('/v1/cache', api.auth(api.invalidateCache.bind(api), 'cache', 'delete', [ Scope.ALL ]));
+miscApiRouter.get('/v1/sitemap', api.sitemap.bind(api)); // TODO add api cache
+miscApiRouter.get('/v1/ping',    api.ping.bind(api));
+miscApiRouter.get('/v1/plans',   api.plans.bind(api));
+miscApiRouter.get('/v1/roles',    api.auth(api.roles.bind(api), 'roles', 'list', [ Scope.ALL ]));
+miscApiRouter.get('/v1/ipdb/:id', api.auth(api.ipdbDetails.bind(api), 'ipdb', 'view', [ Scope.ALL ]));
+miscApiRouter.delete('/v1/cache', api.auth(api.invalidateCache.bind(api), 'cache', 'delete', [ Scope.ALL ]));
 
 if (process.env.ENABLE_KILL_SWITCH) {
-	router.post('/v1/kill',     api.kill.bind(api));
+	miscApiRouter.post('/v1/kill',     api.kill.bind(api));
 }
-router.get('index', '/v1', api.index.bind(api));
-router.redirect('/', 'index');
+miscApiRouter.get('index', '/v1', api.index.bind(api));
+miscApiRouter.redirect('/', 'index');

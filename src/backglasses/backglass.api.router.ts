@@ -25,16 +25,16 @@ import { BackglassApi } from './backglass.api';
 const api = new BackglassApi();
 const starApi = new StarApi();
 
-export const router = api.apiRouter();
+export const backglassApiRouter = api.apiRouter();
 
-router.get('/v1/backglasses',       api.list.bind(api));
-router.post('/v1/backglasses',       api.auth(api.create.bind(api), 'backglasses', 'add', [ Scope.ALL, Scope.CREATE ]));
-router.get('/v1/backglasses/:id',   api.view.bind(api));
-router.patch('/v1/backglasses/:id',  api.auth(api.update.bind(api), 'backglasses', 'update-own', [ Scope.ALL, Scope.CREATE ]));
-router.delete('/v1/backglasses/:id', api.auth(api.del.bind(api), 'backglasses', 'delete-own', [ Scope.ALL, Scope.CREATE ]));
+backglassApiRouter.get('/v1/backglasses',       api.list.bind(api));
+backglassApiRouter.post('/v1/backglasses',       api.auth(api.create.bind(api), 'backglasses', 'add', [ Scope.ALL, Scope.CREATE ]));
+backglassApiRouter.get('/v1/backglasses/:id',   api.view.bind(api));
+backglassApiRouter.patch('/v1/backglasses/:id',  api.auth(api.update.bind(api), 'backglasses', 'update-own', [ Scope.ALL, Scope.CREATE ]));
+backglassApiRouter.delete('/v1/backglasses/:id', api.auth(api.del.bind(api), 'backglasses', 'delete-own', [ Scope.ALL, Scope.CREATE ]));
 
-router.post('/v1/backglasses/:id/star',   api.auth(starApi.star('backglass').bind(starApi), 'backglasses', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
-router.delete('/v1/backglasses/:id/star', api.auth(starApi.unstar('backglass').bind(starApi), 'backglasses', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
-router.get('/v1/backglasses/:id/star',    api.auth(starApi.get('backglass').bind(starApi), 'backglasses', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
+backglassApiRouter.post('/v1/backglasses/:id/star',   api.auth(starApi.star('backglass').bind(starApi), 'backglasses', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
+backglassApiRouter.delete('/v1/backglasses/:id/star', api.auth(starApi.unstar('backglass').bind(starApi), 'backglasses', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
+backglassApiRouter.get('/v1/backglasses/:id/star',    api.auth(starApi.get('backglass').bind(starApi), 'backglasses', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
 
-router.post('/v1/backglasses/:id/moderate', api.auth(api.moderate.bind(api), 'backglasses', 'moderate', [ Scope.ALL ]));
+backglassApiRouter.post('/v1/backglasses/:id/moderate', api.auth(api.moderate.bind(api), 'backglasses', 'moderate', [ Scope.ALL ]));

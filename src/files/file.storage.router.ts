@@ -21,17 +21,17 @@ import { Scope } from '../common/scope';
 import { FileStorage } from './file.storage';
 
 const storage = new FileStorage();
-export const protectedRouter = storage.storageRouter(true);
-export const publicRouter = storage.storageRouter(false);
+export const fileStorageRouterProtected = storage.storageRouter(true);
+export const fileStorageRouterPublic = storage.storageRouter(false);
 
-protectedRouter.post('/v1/files',                  storage.auth(storage.upload.bind(storage), 'files', 'upload', [ Scope.ALL ]));
-protectedRouter.head('/files/:id.:ext',            storage.auth(storage.head.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
-protectedRouter.head('/files/:variation/:id.:ext', storage.auth(storage.head.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
-protectedRouter.get('/files/:id.:ext',             storage.auth(storage.get.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
-protectedRouter.get('/files/:variation/:id.:ext',  storage.auth(storage.get.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
+fileStorageRouterProtected.post('/v1/files',                  storage.auth(storage.upload.bind(storage), 'files', 'upload', [ Scope.ALL ]));
+fileStorageRouterProtected.head('/files/:id.:ext',            storage.auth(storage.head.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
+fileStorageRouterProtected.head('/files/:variation/:id.:ext', storage.auth(storage.head.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
+fileStorageRouterProtected.get('/files/:id.:ext',             storage.auth(storage.get.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
+fileStorageRouterProtected.get('/files/:variation/:id.:ext',  storage.auth(storage.get.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
 
 // this is usually handled by nginx directly, but might be used as fallback when there's no file before processors finish.
-publicRouter.head('/files/:id.:ext',            storage.head.bind(storage));
-publicRouter.head('/files/:variation/:id.:ext', storage.head.bind(storage));
-publicRouter.get('/files/:id.:ext',             storage.get.bind(storage));
-publicRouter.get('/files/:variation/:id.:ext',  storage.get.bind(storage));
+fileStorageRouterPublic.head('/files/:id.:ext',            storage.head.bind(storage));
+fileStorageRouterPublic.head('/files/:variation/:id.:ext', storage.head.bind(storage));
+fileStorageRouterPublic.get('/files/:id.:ext',             storage.get.bind(storage));
+fileStorageRouterPublic.get('/files/:variation/:id.:ext',  storage.get.bind(storage));

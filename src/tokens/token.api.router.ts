@@ -21,10 +21,10 @@ import { Scope } from '../common/scope';
 import { TokenApi } from './token.api';
 
 const api = new TokenApi();
-export const router = api.apiRouter();
+export const tokenApiRouter = api.apiRouter();
 
-router.post('/v1/tokens',      api.auth(api.create.bind(api), 'tokens', 'add', [ Scope.ALL ]));
-router.get('/v1/tokens',       api.auth(api.list.bind(api), 'tokens', 'list', [ Scope.ALL ], { enableAppTokens: true }));
-router.get('/v1/tokens/:id',  api.view.bind(api));
-router.del('/v1/tokens/:id',   api.auth(api.del.bind(api), 'tokens', 'delete-own', [ Scope.ALL ]));
-router.patch('/v1/tokens/:id', api.auth(api.update.bind(api), 'tokens', 'update-own', [ Scope.ALL ]));
+tokenApiRouter.post('/v1/tokens',      api.auth(api.create.bind(api), 'tokens', 'add', [ Scope.ALL ]));
+tokenApiRouter.get('/v1/tokens',       api.auth(api.list.bind(api), 'tokens', 'list', [ Scope.ALL ], { enableAppTokens: true }));
+tokenApiRouter.get('/v1/tokens/:id',  api.view.bind(api));
+tokenApiRouter.del('/v1/tokens/:id',   api.auth(api.del.bind(api), 'tokens', 'delete-own', [ Scope.ALL ]));
+tokenApiRouter.patch('/v1/tokens/:id', api.auth(api.update.bind(api), 'tokens', 'update-own', [ Scope.ALL ]));

@@ -121,8 +121,8 @@ class VisualPinballTable {
 		logger.info('[VisualPinballTable.analyzeFile] Analyzing %s..', tablePath);
 		const doc = await this.readDoc(tablePath);
 		const storage = doc.storage('GameStg');
-		const data = await this.readStream(storage, 'GameData');
-		const block = this.parseBiff(data);
+		const gameDataStream = await this.readStream(storage, 'GameData');
+		const block = this.parseBiff(gameDataStream);
 		const gameData = this.parseGameData(block);
 		const tableBlocks: TableBlock[] = [];
 
@@ -228,7 +228,10 @@ class VisualPinballTable {
 	 */
 	private parseBiff(buf: Buffer, offset: number = 0): Block[] {
 		offset = offset || 0;
-		let tag, data, blockSize, block;
+		let tag: string;
+		let data: Buffer;
+		let blockSize: number;
+		let block: Buffer;
 		const blocks: Block[] = [];
 		let i = offset;
 		try {
@@ -304,7 +307,9 @@ class VisualPinballTable {
 	 */
 	private parseUntaggedBiff(buf: Buffer, offset: number = 0): Buffer[] {
 		offset = offset || 0;
-		let blockSize, block, blocks = [];
+		let blockSize: number;
+		let block: Buffer;
+		const blocks: Buffer[] = [];
 		let i = offset;
 		do {
 			/* we have:

@@ -20,6 +20,6 @@
 import { LogEventApi } from './log.event.api';
 
 const api = new LogEventApi();
-export const router = api.apiRouter();
+export const logEventApiRouter = api.apiRouter();
 
-router.get('/v1/events', api.list().bind(api));
+logEventApiRouter.get('/v1/events', api.list().bind(api));

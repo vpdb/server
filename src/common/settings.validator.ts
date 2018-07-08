@@ -53,18 +53,18 @@ export const setttingValidations = {
 			},
 			port: checkPort,
 			db: (db: any) => {
-				if (parseInt(db) > 15 || parseInt(db) < 0) {
+				if (parseInt(db, 10) > 15 || parseInt(db, 10) < 0) {
 					return 'Redis database must be an integer between 0 and 15';
 				}
 			},
 		},
 		apiTokenLifetime: (timeout: any) => {
-			if (!parseInt(timeout) || parseInt(timeout) < 1) {
+			if (!parseInt(timeout, 10) || parseInt(timeout, 10) < 1) {
 				return 'API token lifetime must be a number greater than 0';
 			}
 		},
 		storageTokenLifetime: (timeout: any) => {
-			if (!parseInt(timeout) || parseInt(timeout) < 1) {
+			if (!parseInt(timeout, 10) || parseInt(timeout, 10) < 1) {
 				return 'Ticket token lifetime must be a number greater than 0';
 			}
 		},
@@ -81,8 +81,8 @@ export const setttingValidations = {
 				if (!isArray(delay)) {
 					return 'Delay must be an array of integers.';
 				}
-				for (let i = 0; i < delay.length; i++) {
-					if (!isNumber(delay[i])) {
+				for (const d of delay) {
+					if (!isNumber(d)) {
 						return 'Delay must be an array of integers.';
 					}
 				}
@@ -199,7 +199,7 @@ export const setttingValidations = {
 								setting: plan.per,
 							});
 						}
-						if (!isNumber(parseInt(plan.credits)) || parseInt(plan.credits) < 0) {
+						if (!isNumber(parseInt(plan.credits, 10)) || parseInt(plan.credits, 10) < 0) {
 							errors.push({
 								path: plan.id + '.credits',
 								message: 'Credits must be an integer equal or greater than 0.',
@@ -500,7 +500,7 @@ function checkHost(host: any) {
 }
 
 function checkPort(port: any) {
-	if (!parseInt(port) || parseInt(port) > 65535 || parseInt(port) < 1) {
+	if (!parseInt(port, 10) || parseInt(port, 10) > 65535 || parseInt(port, 10) < 1) {
 		return 'Port must be an integer between 1 and 65535';
 	}
 }

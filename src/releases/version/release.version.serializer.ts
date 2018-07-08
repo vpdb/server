@@ -25,6 +25,7 @@ import { state } from '../../state';
 import { flavors } from '../release.flavors';
 import { ReleaseVersion } from './release.version';
 
+/* tslint:disable:member-ordering */
 export class ReleaseVersionSerializer extends Serializer<ReleaseVersion> {
 
 	protected _reduced(ctx: Context, doc: ReleaseVersion, opts: SerializerOptions): ReleaseVersion {
@@ -54,8 +55,10 @@ export class ReleaseVersionSerializer extends Serializer<ReleaseVersion> {
 	 * @return {ReleaseVersion[]}
 	 */
 	public strip(ctx: Context, versions: ReleaseVersion[], opts: SerializerOptions) {
-		let i, j;
-		let flavorValues: string[], flavorKey: string;
+		let i: number;
+		let j: number;
+		let flavorValues: string[];
+		let flavorKey: string;
 		const flavorKeys: { [key: string]: boolean } = {};
 		for (i = 0; i < versions.length; i++) {
 			for (j = 0; j < versions[i].files.length; j++) {
@@ -74,8 +77,7 @@ export class ReleaseVersionSerializer extends Serializer<ReleaseVersion> {
 						continue;
 					}
 					flavorValues = [];
-					for (const key in flavors.values) {
-						//noinspection JSUnfilteredForInLoop
+					for (const key of Object.keys(flavors.values)) {
 						flavorValues.push(versions[i].files[j].flavor[key]);
 					}
 					flavorKey = flavorValues.join(':');

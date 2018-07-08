@@ -21,9 +21,9 @@ import { Scope } from '../common/scope';
 import { ReleaseStorage } from './release.storage';
 
 const storage = new ReleaseStorage();
-export const router = storage.storageRouter(true);
+export const releaseStorageRouter = storage.storageRouter(true);
 
-router.get('/v1/releases/:release_id',        storage.auth(storage.download.bind(storage), 'files', 'download', [ Scope.ALL ]));
-router.head('/v1/releases/:release_id',       storage.auth(storage.checkDownload.bind(storage), 'files', 'download', [ Scope.ALL ]));
-router.post('/v1/releases/:release_id',       storage.auth(storage.download.bind(storage), 'files', 'download', [ Scope.ALL ]));
-router.get('/v1/releases/:release_id/thumb', storage.thumbRedirect.bind(storage));
+releaseStorageRouter.get('/v1/releases/:release_id',        storage.auth(storage.download.bind(storage), 'files', 'download', [ Scope.ALL ]));
+releaseStorageRouter.head('/v1/releases/:release_id',       storage.auth(storage.checkDownload.bind(storage), 'files', 'download', [ Scope.ALL ]));
+releaseStorageRouter.post('/v1/releases/:release_id',       storage.auth(storage.download.bind(storage), 'files', 'download', [ Scope.ALL ]));
+releaseStorageRouter.get('/v1/releases/:release_id/thumb', storage.thumbRedirect.bind(storage));

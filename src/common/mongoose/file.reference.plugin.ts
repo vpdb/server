@@ -91,7 +91,7 @@ export function fileReferencePlugin(schema: Schema, options: FileReferenceOption
 	/**
 	 * Remove file references from database
 	 */
-	schema.post('remove', async function(obj: Document) {
+	schema.post('remove', async (obj: Document) => {
 
 		const objPaths = keys(explodePaths(obj, fileRefs));
 		const ids: string[] = [];

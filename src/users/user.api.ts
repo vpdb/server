@@ -103,7 +103,9 @@ export class UserApi extends Api {
 	 */
 	public async createOrUpdate(ctx: Context) {
 
-		let name, provider, isNew;
+		let name: string;
+		let provider: string;
+		let isNew: boolean;
 
 		// make sure there's a provider token
 		if (!ctx.state.appToken || ctx.state.tokenType !== 'provider') {

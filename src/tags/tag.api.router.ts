@@ -21,8 +21,8 @@ import { Scope } from '../common/scope';
 import { TagApi } from './tag.api';
 
 const api = new TagApi();
-export const router = api.apiRouter();
+export const tagApiRouter = api.apiRouter();
 
-router.get('/v1/tags',       api.list.bind(api));
-router.post('/v1/tags',       api.auth(api.create.bind(api), 'tags', 'add', [Scope.ALL, Scope.CREATE]));
-router.delete('/v1/tags/:id', api.auth(api.del.bind(api), 'tags', 'delete-own', [Scope.ALL, Scope.CREATE]));
+tagApiRouter.get('/v1/tags',       api.list.bind(api));
+tagApiRouter.post('/v1/tags',       api.auth(api.create.bind(api), 'tags', 'add', [Scope.ALL, Scope.CREATE]));
+tagApiRouter.delete('/v1/tags/:id', api.auth(api.del.bind(api), 'tags', 'delete-own', [Scope.ALL, Scope.CREATE]));

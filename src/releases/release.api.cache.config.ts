@@ -25,8 +25,8 @@ import { ReleaseDocument } from './release.document';
 export const releaseListCacheCounters: Array<CacheCounterConfig<Release[]>> = [{
 	modelName: 'release',
 	counters: ['downloads', 'comments', 'stars', 'views'],
-	get: (releases: Release[], counter: ReleaseCounterType) => releases.reduce((acc: CacheCounterValues, releases) => {
-		acc[releases.id] = releases.counter[counter]; return acc; }, {}),
+	get: (releases: Release[], counter: ReleaseCounterType) => releases.reduce((acc: CacheCounterValues, reducedReleases) => {
+		acc[reducedReleases.id] = reducedReleases.counter[counter]; return acc; }, {}),
 	set: (releases: Release[], counter: ReleaseCounterType, values: CacheCounterValues) => Object.keys(values).forEach(
 		id => releases.filter(game => game.id === id).forEach(game => game.counter[counter] = values[id])),
 }, {

@@ -19,12 +19,12 @@
 
 import Application = require('koa');
 import Router from 'koa-router';
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
 import { GameRequest } from './game.request';
-import { router } from './game.request.api.router';
+import { gameRequestRouter } from './game.request.api.router';
 import { gameRequestSchema } from './game.request.schema';
 import { GameRequestSerializer } from './game.request.serializer';
 
@@ -32,21 +32,12 @@ export class GameRequestApiEndPoint extends EndPoint {
 
 	public readonly name: string = 'Game Request API';
 
-	private readonly _router: Router;
-	private readonly _schema: Schema;
-
-	constructor() {
-		super();
-		this._schema = gameRequestSchema;
-		this._router = router;
-	}
-
 	public getRouter(): Router {
-		return this._router;
+		return gameRequestRouter;
 	}
 
 	public async register(app: Application): Promise<void> {
-		state.models.GameRequest = mongoose.model<GameRequest>('GameRequest', this._schema);
+		state.models.GameRequest = mongoose.model<GameRequest>('GameRequest', gameRequestSchema);
 		state.serializers.GameRequest = new GameRequestSerializer();
 	}
 }

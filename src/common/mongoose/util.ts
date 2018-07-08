@@ -18,7 +18,7 @@
  */
 
 import { extend, get, isArray, keys } from 'lodash';
-import { Document, Schema } from 'mongoose';
+import { Schema } from 'mongoose';
 
 /**
  * Returns all paths of a given schema.
@@ -78,7 +78,7 @@ export function traversePaths(schema: Schema, prefix: string = '', paths: any = 
  * @param {object} [arrayRefs] Reference paths that contain an array of values
  * @returns {object} Exploded paths
  */
-export function explodePaths(obj: Object, singleRefs: { [key: string]: string }, arrayRefs: { [key: string]: any } = {}): { [key: string]: string } {
+export function explodePaths(obj: object, singleRefs: { [key: string]: string }, arrayRefs: { [key: string]: any } = {}): { [key: string]: string } {
 
 	arrayRefs = arrayRefs || {};
 
@@ -104,7 +104,7 @@ export function explodePaths(obj: Object, singleRefs: { [key: string]: string },
 	return extend(paths, arrayPathsExploded);
 }
 
-function appendNext(obj: Object, parts: string[], refModelName: string, level: number = 0, path: string = '') {
+function appendNext(obj: object, parts: string[], refModelName: string, level: number = 0, path: string = '') {
 	level = level || 0;
 	let paths: { [key: string]: string } = {};
 	const objPath = parts[level];

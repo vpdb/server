@@ -52,7 +52,7 @@ export const tokenSchema = new Schema(tokenFields, { toObject: { virtuals: true,
 //-----------------------------------------------------------------------------
 // VALIDATIONS
 //-----------------------------------------------------------------------------
-tokenSchema.path('label').validate(function(label: string) {
+tokenSchema.path('label').validate((label: string) => {
 	return isString(label) && isLength(label ? label.trim() : '', 3);
 }, 'Label must contain at least three characters.');
 

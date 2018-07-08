@@ -229,10 +229,10 @@ export class ReleaseApi extends ReleaseAbstractApi {
 
 		// filter by tag
 		if (ctx.query.tags) {
-			const t = ctx.query.tags.split(',');
+			const tags = ctx.query.tags.split(',');
 			// all tags must be matched
-			for (let i = 0; i < t.length; i++) {
-				query.push({ _tags: { $in: [t[i]] } });
+			for (const tag of tags) {
+				query.push({ _tags: { $in: [tag] } });
 			}
 		}
 

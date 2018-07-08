@@ -47,50 +47,6 @@ export class Quota {
 	}
 
 	/**
-	 * Consumes a quota and returns the user's updated quota config.
-	 *
-	 * @param {User} user User to consume quota for
-	 * @param {number} weight How much to consume
-	 * @return {Promise<UserQuota>} Updated quota after consumption
-	 */
-	private async consume(user: User, weight: number): Promise<UserQuota> {
-		const plan = user.planConfig;
-		/* istanbul ignore if: That's a configuration error. */
-		if (!plan) {
-			throw new ApiError('Unable to find plan "%s" for user.', user._plan);
-		}
-
-		const period = this.durations.get(plan.per);
-		const key = `${this.namespace}:${user.id}`;
-		const now = Date.now();
-		const member = JSON.stringify({ t: now, w: weight });
-
-		const res = await state.redis
-			.multi()
-			.zadd(key, String(now), member)  // add current
-			.zrange(key, 0, -1)   // get all
-			.exec();
-
-		const all = res[1][1];
-		const count = sum(all.map((m: string) => JSON.parse(m).w));
-		let oldest: number;
-		if (all.length === 1) {
-			await state.redis.pexpire(key, period);
-			oldest = now;
-			logger.info('[Quota.consume] New period starting with %s remaining credits after consuming %s.', plan.credits - count, weight);
-		} else {
-			oldest = JSON.parse(all[0]).t;
-			logger.info('[Quota.consume] Existing period updated with %s remaining credits after consuming %s.', plan.credits - count, weight);
-		}
-		return {
-			limit: plan.credits,
-			period: period / 1000,
-			remaining: count < plan.credits ? plan.credits - count : 0,
-			reset: Math.ceil((oldest + period) / 1000),
-		};
-	}
-
-	/**
 	 * Returns the current rate limits for the given user.
 	 *
 	 * @param {User} user User
@@ -113,7 +69,8 @@ export class Quota {
 		const now = Date.now();
 
 		const range = await state.redis.zrange(key, 0, now);
-		let remaining, reset;
+		let remaining: number;
+		let reset: number;
 		if (range.length === 0) {
 			remaining = plan.credits;
 			reset = period / 1000;
@@ -160,36 +117,36 @@ export class Quota {
 			this.setHeader(ctx, { limit: 0, remaining: 0, reset: 0, period: 0, unlimited: true });
 			return;
 		}
-		const sum = this.getTotalCost(files);
+		const totalCost = this.getTotalCost(files);
 
 		// don't even check quota if weight is 0
-		if (sum === 0) {
+		if (totalCost === 0) {
 			return;
 		}
 
-		let quota = await this.get(ctx.state.user);
-		if (quota.remaining < sum) {
-			this.setHeader(ctx, quota);
+		let userQuota = await this.get(ctx.state.user);
+		if (userQuota.remaining < totalCost) {
+			this.setHeader(ctx, userQuota);
 			throw new ApiError('No more quota left, requested %s of %s available. Try again in %ss.',
-				sum, quota.remaining, quota.reset).status(403);
+				totalCost, userQuota.remaining, userQuota.reset).status(403);
 		}
 
-		quota = await this.consume(ctx.state.user, sum);
-		this.setHeader(ctx, quota);
+		userQuota = await this.consume(ctx.state.user, totalCost);
+		this.setHeader(ctx, userQuota);
 	}
 
 	/**
 	 * Sets the rate-limit header.
 	 *
 	 * @param {Context} ctx Koa context
-	 * @param {UserQuota} quota Current user quota
+	 * @param {UserQuota} userQuota Current user quota
 	 */
-	public setHeader(ctx: Context, quota: UserQuota) {
+	public setHeader(ctx: Context, userQuota: UserQuota) {
 		ctx.response.set({
-			'X-RateLimit-Limit': String(quota.limit),
-			'X-RateLimit-Remaining': String(quota.remaining),
-			'X-RateLimit-Reset': String(quota.reset),
-			'X-RateLimit-Unlimited': String(!!quota.unlimited),
+			'X-RateLimit-Limit': String(userQuota.limit),
+			'X-RateLimit-Remaining': String(userQuota.remaining),
+			'X-RateLimit-Reset': String(userQuota.reset),
+			'X-RateLimit-Unlimited': String(!!userQuota.unlimited),
 		});
 	}
 
@@ -199,17 +156,16 @@ export class Quota {
 	 * @return {number} Total cost
 	 */
 	public getTotalCost(files: File[]): number {
-		let file, sum = 0;
-		for (let i = 0; i < files.length; i++) {
-			file = files[i];
+		let totalCost = 0;
+		for (const file of files) {
 			const cost = this.getCost(file);
 			// a free file
 			if (cost === 0) {
 				continue;
 			}
-			sum += cost;
+			totalCost += cost;
 		}
-		return sum;
+		return totalCost;
 	}
 
 	/**
@@ -301,6 +257,51 @@ export class Quota {
 		file.cost = 0;
 		return 0;
 	}
+
+	/**
+	 * Consumes a quota and returns the user's updated quota config.
+	 *
+	 * @param {User} user User to consume quota for
+	 * @param {number} weight How much to consume
+	 * @return {Promise<UserQuota>} Updated quota after consumption
+	 */
+	private async consume(user: User, weight: number): Promise<UserQuota> {
+		const plan = user.planConfig;
+		/* istanbul ignore if: That's a configuration error. */
+		if (!plan) {
+			throw new ApiError('Unable to find plan "%s" for user.', user._plan);
+		}
+
+		const period = this.durations.get(plan.per);
+		const key = `${this.namespace}:${user.id}`;
+		const now = Date.now();
+		const member = JSON.stringify({ t: now, w: weight });
+
+		const res = await state.redis
+			.multi()
+			.zadd(key, String(now), member)  // add current
+			.zrange(key, 0, -1)   // get all
+			.exec();
+
+		const all = res[1][1];
+		const count = sum(all.map((m: string) => JSON.parse(m).w));
+		let oldest: number;
+		if (all.length === 1) {
+			await state.redis.pexpire(key, period);
+			oldest = now;
+			logger.info('[Quota.consume] New period starting with %s remaining credits after consuming %s.', plan.credits - count, weight);
+		} else {
+			oldest = JSON.parse(all[0]).t;
+			logger.info('[Quota.consume] Existing period updated with %s remaining credits after consuming %s.', plan.credits - count, weight);
+		}
+		return {
+			limit: plan.credits,
+			period: period / 1000,
+			remaining: count < plan.credits ? plan.credits - count : 0,
+			reset: Math.ceil((oldest + period) / 1000),
+		};
+	}
+
 }
 
 export interface UserQuota {

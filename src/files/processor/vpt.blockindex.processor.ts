@@ -71,6 +71,7 @@ export class VptBlockindexProcessor implements OptimizationProcessor<ImageFileVa
 		return null;
 	}
 
+	/* tslint:disable:member-ordering */
 	/**
 	 * Compares the hashes of two blocks.
 	 * @param {{ hash: Buffer }} b1

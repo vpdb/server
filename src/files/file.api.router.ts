@@ -23,8 +23,8 @@ import { FileBlockmatchApi } from './file.blockmatch.api';
 
 const api = new FileApi();
 const blockmatchApi = new FileBlockmatchApi();
-export const router = api.apiRouter();
+export const fileApiRouter = api.apiRouter();
 
-router.get('/v1/files/:id',           api.view.bind(api));
-router.del('/v1/files/:id',            api.auth(api.del.bind(api), 'files', 'delete-own', [ Scope.ALL, Scope.CREATE ]));
-router.get('/v1/files/:id/blockmatch', api.auth(blockmatchApi.blockmatch.bind(blockmatchApi), 'files', 'blockmatch', [ Scope.ALL, Scope.CREATE ]));
+fileApiRouter.get('/v1/files/:id',           api.view.bind(api));
+fileApiRouter.del('/v1/files/:id',            api.auth(api.del.bind(api), 'files', 'delete-own', [ Scope.ALL, Scope.CREATE ]));
+fileApiRouter.get('/v1/files/:id/blockmatch', api.auth(blockmatchApi.blockmatch.bind(blockmatchApi), 'files', 'blockmatch', [ Scope.ALL, Scope.CREATE ]));

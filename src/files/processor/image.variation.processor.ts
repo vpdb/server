@@ -57,7 +57,8 @@ export class ImageVariationProcessor implements CreationProcessor<ImageFileVaria
 			img.rotate('black', variation.rotate);
 		}
 
-		let srcSize, scale;
+		let srcSize: { width: number, height: number };
+		let scale: number;
 		if (variation.portraitToSquare) {
 			srcSize = file.metadata.size;
 			scale = srcSize.height / 1920;
@@ -88,7 +89,7 @@ export class ImageVariationProcessor implements CreationProcessor<ImageFileVaria
 		await new Promise<File>((resolve, reject) => {
 			const writeStream = createWriteStream(dest);
 			// setup success handler
-			writeStream.on('finish', function() {
+			writeStream.on('finish', () => {
 				resolve(file);
 			});
 			writeStream.on('error', reject);

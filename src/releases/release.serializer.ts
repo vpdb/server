@@ -17,8 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { assign, compact, flatten, includes, intersection, isArray, isUndefined, orderBy, pick, uniq } from 'lodash';
-import { Document } from 'mongoose';
+import { assign, compact, flatten, intersection, isArray, isUndefined, orderBy, pick, uniq } from 'lodash';
 
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { Context } from '../common/typings/context';
@@ -50,9 +49,9 @@ export class ReleaseSerializer extends Serializer<Release> {
 	}
 
 	private serializeRelease(ctx: Context, doc: Release, opts: SerializerOptions,
-							                   versionSerializer: (ctx: Context, doc: ReleaseVersion, opts: SerializerOptions) => ReleaseVersion,
-							                   stripVersions: boolean,
-							                   additionalFields: string[] = []): Release {
+				versionSerializer: (ctx: Context, doc: ReleaseVersion, opts: SerializerOptions) => ReleaseVersion,
+				stripVersions: boolean,
+				additionalFields: string[] = []): Release {
 
 		const requestedFields = intersection(['description'], (ctx.query.include_fields || '').split(','));
 		additionalFields = additionalFields || [];
@@ -115,6 +114,7 @@ export class ReleaseSerializer extends Serializer<Release> {
 		return release;
 	}
 
+	/* tslint:disable:member-ordering */
 	/**
 	 * Returns the thumb object for the given options provided by the user.
 	 *

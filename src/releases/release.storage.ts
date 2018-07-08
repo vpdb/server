@@ -415,7 +415,8 @@ export class ReleaseStorage extends Api {
 		const fileBase = tableName.replace(/({\s*([^}\s]+)\s*})/g, (m1, m2, m3) => isUndefined(data[m3]) ? m1 : data[m3]);
 
 		// check for already used names and suffix with (n)
-		let newFilename, n = 0;
+		let newFilename: string;
+		let n = 0;
 		if (releaseFiles.includes(fileBase + file.getExt())) {
 			do {
 				n++;

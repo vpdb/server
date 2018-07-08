@@ -106,6 +106,6 @@ shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 
 	} catch (err) {
 		/* istanbul ignore next */
-		console.error(err);
+		logger.error(err);
 	}
 })();

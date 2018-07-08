@@ -105,12 +105,9 @@ export class CommentApi extends Api {
 		// must be owner or author of release or moderator
 		const authorIds = release.authors.map(a => a._user.toString());
 		const creatorId = release._created_by._id.toString();
-		let isAllowed: boolean;
-		if ([creatorId, ...authorIds].includes(ctx.state.user._id.toString())) {
-			isAllowed = true;
-		} else {
-			isAllowed = await acl.isAllowed(ctx.state.user.id, 'releases', 'moderate');
-		}
+		const isAllowed: boolean = [creatorId, ...authorIds].includes(ctx.state.user._id.toString()) ?
+			true :
+			await acl.isAllowed(ctx.state.user.id, 'releases', 'moderate');
 
 		if (!isAllowed) {
 			throw new ApiError('Access denied, must be either moderator or owner or author of release.').status(403);
@@ -183,13 +180,9 @@ export class CommentApi extends Api {
 		// check permission
 		const authorIds = release.authors.map(a => a._user.toString());
 		const creatorId = release._created_by.toString();
-		let isAllowed: boolean;
-
-		if ([creatorId, ...authorIds].includes(ctx.state.user._id.toString())) {
-			isAllowed = true;
-		} else {
-			isAllowed = await acl.isAllowed(ctx.state.user.id, 'releases', 'moderate');
-		}
+		const isAllowed: boolean = [creatorId, ...authorIds].includes(ctx.state.user._id.toString()) ?
+			true :
+			await acl.isAllowed(ctx.state.user.id, 'releases', 'moderate');
 
 		if (!isAllowed) {
 			throw new ApiError('Access denied, must be either moderator or owner or author of release.').status(403);

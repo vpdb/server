@@ -42,7 +42,7 @@ export function koaRestHandler() {
 			return;
 		}
 
-		if (hasBody && !~ctx.get('content-type').indexOf('application/json')) {
+		if (hasBody && !ctx.get('content-type').includes('application/json')) {
 			ctx.response.status = 415;
 			ctx.response.body = { error: 'Sorry, the API only talks JSON. Did you forget to set the "Content-Type" header correctly?' };
 			return;

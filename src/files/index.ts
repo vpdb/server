@@ -19,35 +19,26 @@
 
 import Application = require('koa');
 import Router from 'koa-router';
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
 import { File } from './file';
-import { router as apiRouter } from './file.api.router';
+import { fileApiRouter } from './file.api.router';
 import { FileModel, fileSchema } from './file.schema';
 import { FileSerializer } from './file.serializer';
-import { protectedRouter, publicRouter } from './file.storage.router';
+import { fileStorageRouterProtected, fileStorageRouterPublic } from './file.storage.router';
 
 export class FilesApiEndPoint extends EndPoint {
 
 	public readonly name: string = 'Files API';
 
-	private readonly _router: Router;
-	private readonly _schema: Schema;
-
-	constructor() {
-		super();
-		this._schema = fileSchema;
-		this._router = apiRouter;
-	}
-
 	public getRouter(): Router {
-		return this._router;
+		return fileApiRouter;
 	}
 
 	public async register(app: Application): Promise<void> {
-		state.models.File = mongoose.model<File, FileModel>('File', this._schema);
+		state.models.File = mongoose.model<File, FileModel>('File', fileSchema);
 		state.serializers.File = new FileSerializer();
 	}
 }
@@ -56,15 +47,8 @@ export class FilesProtectedStorageEndPoint extends EndPoint {
 
 	public readonly name: string = 'Storage Protected Files API';
 
-	private readonly _router: Router;
-
-	constructor() {
-		super();
-		this._router = protectedRouter;
-	}
-
 	public getRouter(): Router {
-		return this._router;
+		return fileStorageRouterProtected;
 	}
 
 	public async register(app: Application): Promise<void> {
@@ -76,15 +60,8 @@ export class FilesPublicStorageEndPoint extends EndPoint {
 
 	public readonly name: string = 'Storage Public Files API';
 
-	private readonly _router: Router;
-
-	constructor() {
-		super();
-		this._router = publicRouter;
-	}
-
 	public getRouter(): Router {
-		return this._router;
+		return fileStorageRouterPublic;
 	}
 
 	public async register(app: Application): Promise<void> {

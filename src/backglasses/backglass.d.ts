@@ -32,7 +32,7 @@ import { BackglassVersion } from './backglass.version';
 export interface Backglass extends ModeratedDocument, GameReferenceDocument, PrettyIdDocument, MetricsDocument, FileReferenceDocument {
 	id: string;
 	versions: BackglassVersion[];
-	description: { type: String };
+	description: { type: string };
 	authors: ContentAuthor[];
 	acknowledgements: string;
 	counter: {

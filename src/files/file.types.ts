@@ -23,6 +23,8 @@ import { FileVariation, ImageFileVariation } from './file.variations';
 
 class FileTypes {
 
+	public names: string[];
+
 	private readonly backglassImage: FileType<ImageFileVariation> = {
 		name: 'backglass',
 		mimeTypes: ['image/jpeg', 'image/png'],
@@ -137,7 +139,6 @@ class FileTypes {
 		variations: [],
 	};
 
-	public names: string[];
 	private fileTypes: Array<FileType<FileVariation>>;
 
 	constructor() {
@@ -186,11 +187,11 @@ class FileTypes {
 	 * For example, getting all playfield variations would be:
 	 *
 	 * @example getVariationNames(['playfield','playfield-fs','playfield-ws'])
-	 * @param {string[]} fileTypes
+	 * @param {string[]} types
 	 * @return {string[]}
 	 */
-	public getVariationNames(fileTypes: string[]): string[] {
-		return uniq(flatten(this.fileTypes.filter(t => fileTypes.includes(t.name)).map(t => t.variations.map(v => v.name))));
+	public getVariationNames(types: string[]): string[] {
+		return uniq(flatten(this.fileTypes.filter(t => types.includes(t.name)).map(t => t.variations.map(v => v.name))));
 	}
 
 	/**

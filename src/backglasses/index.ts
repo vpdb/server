@@ -24,7 +24,7 @@ import mongoose, { Schema } from 'mongoose';
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
 import { Backglass } from './backglass';
-import { router } from './backglass.api.router';
+import { backglassApiRouter } from './backglass.api.router';
 import { BackglassModel, backglassSchema } from './backglass.schema';
 import { BackglassSerializer } from './backglass.serializer';
 import { BackglassVersionSerializer } from './backglass.version.serializer';
@@ -33,21 +33,16 @@ export class BackglassEndPoint extends EndPoint {
 
 	public readonly name: string = 'Backglass API';
 
-	private readonly _router: Router;
-	private readonly _schema: Schema;
-
 	constructor() {
 		super();
-		this._router = router;
-		this._schema = backglassSchema;
 	}
 
 	public getRouter(): Router {
-		return this._router;
+		return backglassApiRouter;
 	}
 
 	public async register(app: Application): Promise<void> {
-		state.models.Backglass = mongoose.model<Backglass, BackglassModel>('Backglass', this._schema);
+		state.models.Backglass = mongoose.model<Backglass, BackglassModel>('Backglass', backglassSchema);
 		state.serializers.Backglass = new BackglassSerializer();
 		state.serializers.BackglassVersion = new BackglassVersionSerializer();
 	}

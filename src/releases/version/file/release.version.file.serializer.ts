@@ -48,8 +48,8 @@ export class ReleaseVersionFileSerializer extends Serializer<ReleaseVersionFile>
 	}
 
 	private serializeReleaseVersionFile(ctx: Context, doc: ReleaseVersionFile, opts: SerializerOptions,
-					                                buildSerializer: (ctx: Context, doc: Build, opts: SerializerOptions) => Build,
-					                                fileSerializer: (ctx: Context, doc: File, opts: SerializerOptions) => File): ReleaseVersionFile {
+					buildSerializer: (ctx: Context, doc: Build, opts: SerializerOptions) => Build,
+					fileSerializer: (ctx: Context, doc: File, opts: SerializerOptions) => File): ReleaseVersionFile {
 
 		const versionFile = {
 			flavor: doc.flavor,

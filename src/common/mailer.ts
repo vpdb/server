@@ -113,7 +113,6 @@ class Mailer {
 		}).exec();
 
 		for (const moderator of moderators) {
-			const game = release._game as Game;
 			result = await this.sendEmail(moderator, 'A new release has been submitted for ' + game.title, 'moderator-release-submitted', {
 				user,
 				moderator,
@@ -453,8 +452,8 @@ class Mailer {
 	/* istanbul ignore next: not testing real mail in tests */
 	private isUploaderAuthor(uploader: User, authors: ContentAuthor[]) {
 		const uploaderId = uploader._id || uploader;
-		for (let i = 0; i < authors.length; i++) {
-			const authorId = (authors[i]._user as User)._id || authors[i]._user;
+		for (const author of authors) {
+			const authorId = author._user._id;
 			if (authorId.equals(uploaderId)) {
 				return true;
 			}

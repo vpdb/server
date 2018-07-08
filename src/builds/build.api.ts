@@ -18,7 +18,7 @@
  */
 
 import { assign, cloneDeep, pick } from 'lodash';
-import { Schema, Types } from 'mongoose';
+import { Types } from 'mongoose';
 
 import { acl } from '../common/acl';
 import { Api } from '../common/api';
@@ -38,13 +38,10 @@ export class BuildApi extends Api {
 	 */
 	public async list(ctx: Context) {
 
-		let query: any;
-		if (ctx.state.user) {
+		const query: any = ctx.state.user ?
 			// logged users also get their own builds even if inactive.
-			query = { $or: [{ is_active: true }, { _created_by: ctx.state.user._id }] };
-		} else {
-			query = { is_active: true };
-		}
+			{ $or: [{ is_active: true }, { _created_by: ctx.state.user._id }] } :
+			{ is_active: true };
 
 		let builds = await state.models.Build.find(query).exec();
 

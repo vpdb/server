@@ -26,7 +26,7 @@ export function idReferenceValidatorPlugin(schema: Schema, options: IdReferenceV
 	const message = options.message || '{PATH} references a non existing ID';
 
 	schema.eachPath((path, schemaType: any) => {
-		let validateFunction: Function = null;
+		let validateFunction: (doc: Document, path: string, refModelName: string, values: any[], conditions: {[key: string]: any}) => Promise<boolean> = null;
 		let refModelName: string = null;
 		let conditions = {};
 
@@ -56,15 +56,15 @@ export function idReferenceValidatorPlugin(schema: Schema, options: IdReferenceV
 	});
 }
 
-async function executeQuery<T>(query: Query<T>, conditions: string[], validateValue: any) {
-	for (const fieldName in conditions) {
+async function executeQuery<T>(query: Query<T>, conditions: {[key: string]: any}, validateValue: any) {
+	for (const fieldName of Object.keys(conditions)) {
 		query.where(fieldName, conditions[fieldName]);
 	}
 	const count = await query.exec();
 	return count === validateValue;
 }
 
-async function validateId(doc: Document, path: string, refModelName: string, value: any, conditions: string[]) {
+async function validateId(doc: Document, path: string, refModelName: string, value: any, conditions: {[key: string]: any}) {
 	if (value === null) {
 		return true;
 	}
@@ -73,7 +73,7 @@ async function validateId(doc: Document, path: string, refModelName: string, val
 	return executeQuery(query, conditions, 1);
 }
 
-async function validateIdArray(doc: Document, path: string, refModelName: string, values: any[], conditions: string[]) {
+async function validateIdArray(doc: Document, path: string, refModelName: string, values: any[], conditions: {[key: string]: any}) {
 	if (values.length === 0) {
 		return true;
 	}

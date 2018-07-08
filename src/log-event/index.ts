@@ -19,12 +19,12 @@
 
 import Application = require('koa');
 import Router from 'koa-router';
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
 import { LogEvent } from './log.event';
-import { router } from './log.event.api.router';
+import { logEventApiRouter } from './log.event.api.router';
 import { logEventSchema } from './log.event.schema';
 import { LogEventSerializer } from './log.event.serializer';
 
@@ -32,21 +32,12 @@ export class LogEventEndPoint extends EndPoint {
 
 	public readonly name: string = 'Event Log API';
 
-	private readonly _router: Router;
-	private readonly _schema: Schema;
-
-	constructor() {
-		super();
-		this._router = router;
-		this._schema = logEventSchema;
-	}
-
 	public getRouter(): Router {
-		return this._router;
+		return logEventApiRouter;
 	}
 
 	public async register(app: Application): Promise<void> {
-		state.models.LogEvent = mongoose.model<LogEvent>('LogEvent', this._schema);
+		state.models.LogEvent = mongoose.model<LogEvent>('LogEvent', logEventSchema);
 		state.serializers.LogEvent = new LogEventSerializer();
 	}
 }

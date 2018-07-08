@@ -21,12 +21,12 @@ import { Scope } from '../common/scope';
 import { RomApi } from './rom.api';
 
 const api = new RomApi();
-export const router = api.apiRouter();
+export const romApiRouter = api.apiRouter();
 
-router.get('/v1/roms',       api.list.bind(api));
-router.post('/v1/roms',       api.auth(api.create.bind(api), 'roms', 'add', [ Scope.ALL , Scope.CREATE ]));
-router.get('/v1/roms/:id',   api.view.bind(api));
-router.delete('/v1/roms/:id', api.auth(api.del.bind(api), 'roms', 'delete-own', [ Scope.ALL , Scope.CREATE ]));
+romApiRouter.get('/v1/roms',       api.list.bind(api));
+romApiRouter.post('/v1/roms',       api.auth(api.create.bind(api), 'roms', 'add', [ Scope.ALL , Scope.CREATE ]));
+romApiRouter.get('/v1/roms/:id',   api.view.bind(api));
+romApiRouter.delete('/v1/roms/:id', api.auth(api.del.bind(api), 'roms', 'delete-own', [ Scope.ALL , Scope.CREATE ]));
 
-router.get('/v1/games/:gameId/roms', api.list.bind(api));
-router.post('/v1/games/:gameId/roms', api.auth(api.create.bind(api), 'roms', 'add', [ Scope.ALL , Scope.CREATE ]));
+romApiRouter.get('/v1/games/:gameId/roms', api.list.bind(api));
+romApiRouter.post('/v1/games/:gameId/roms', api.auth(api.create.bind(api), 'roms', 'add', [ Scope.ALL , Scope.CREATE ]));

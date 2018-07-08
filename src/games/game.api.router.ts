@@ -34,34 +34,34 @@ const ratingApi = new RatingApi();
 const mediumApi = new MediumApi();
 const backglassApi = new BackglassApi();
 
-export const router = api.apiRouter();
+export const gameApiRouter = api.apiRouter();
 
-router.get('/v1/games',       api.list.bind(api));
-router.head('/v1/games/:id',  api.head.bind(api));
-router.get('/v1/games/:id',   api.view.bind(api));
-router.patch('/v1/games/:id',  api.auth(api.update.bind(api), 'games', 'update', [ Scope.ALL ]));
-router.post('/v1/games',       api.auth(api.create.bind(api), 'games', 'add', [ Scope.ALL ]));
-router.delete('/v1/games/:id', api.auth(api.del.bind(api), 'games', 'delete', [ Scope.ALL ]));
+gameApiRouter.get('/v1/games',       api.list.bind(api));
+gameApiRouter.head('/v1/games/:id',  api.head.bind(api));
+gameApiRouter.get('/v1/games/:id',   api.view.bind(api));
+gameApiRouter.patch('/v1/games/:id',  api.auth(api.update.bind(api), 'games', 'update', [ Scope.ALL ]));
+gameApiRouter.post('/v1/games',       api.auth(api.create.bind(api), 'games', 'add', [ Scope.ALL ]));
+gameApiRouter.delete('/v1/games/:id', api.auth(api.del.bind(api), 'games', 'delete', [ Scope.ALL ]));
 
-router.post('/v1/games/:id/rating', api.auth(ratingApi.createForGame.bind(ratingApi), 'games', 'rate', [ Scope.ALL, Scope.COMMUNITY ]));
-router.put('/v1/games/:id/rating',  api.auth(ratingApi.updateForGame.bind(ratingApi), 'games', 'rate', [ Scope.ALL, Scope.COMMUNITY ]));
-router.get('/v1/games/:id/rating',  api.auth(ratingApi.getForGame.bind(ratingApi), 'games', 'rate', [ Scope.ALL, Scope.COMMUNITY ]));
-router.delete('/v1/games/:id/rating',  api.auth(ratingApi.deleteForGame.bind(ratingApi), 'games', 'rate', [ Scope.ALL, Scope.COMMUNITY ]));
+gameApiRouter.post('/v1/games/:id/rating', api.auth(ratingApi.createForGame.bind(ratingApi), 'games', 'rate', [ Scope.ALL, Scope.COMMUNITY ]));
+gameApiRouter.put('/v1/games/:id/rating',  api.auth(ratingApi.updateForGame.bind(ratingApi), 'games', 'rate', [ Scope.ALL, Scope.COMMUNITY ]));
+gameApiRouter.get('/v1/games/:id/rating',  api.auth(ratingApi.getForGame.bind(ratingApi), 'games', 'rate', [ Scope.ALL, Scope.COMMUNITY ]));
+gameApiRouter.delete('/v1/games/:id/rating',  api.auth(ratingApi.deleteForGame.bind(ratingApi), 'games', 'rate', [ Scope.ALL, Scope.COMMUNITY ]));
 
-router.post('/v1/games/:id/star',   api.auth(starsApi.star('game').bind(starsApi), 'games', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
-router.delete('/v1/games/:id/star', api.auth(starsApi.unstar('game').bind(starsApi), 'games', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
-router.get('/v1/games/:id/star',    api.auth(starsApi.get('game').bind(starsApi), 'games', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
+gameApiRouter.post('/v1/games/:id/star',   api.auth(starsApi.star('game').bind(starsApi), 'games', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
+gameApiRouter.delete('/v1/games/:id/star', api.auth(starsApi.unstar('game').bind(starsApi), 'games', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
+gameApiRouter.get('/v1/games/:id/star',    api.auth(starsApi.get('game').bind(starsApi), 'games', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
 
-router.post('/v1/games/:gameId/backglasses', api.auth(backglassApi.create.bind(backglassApi), 'backglasses', 'add', [ Scope.ALL, Scope.CREATE ]));
-router.get('/v1/games/:gameId/backglasses', backglassApi.list.bind(backglassApi));
+gameApiRouter.post('/v1/games/:gameId/backglasses', api.auth(backglassApi.create.bind(backglassApi), 'backglasses', 'add', [ Scope.ALL, Scope.CREATE ]));
+gameApiRouter.get('/v1/games/:gameId/backglasses', backglassApi.list.bind(backglassApi));
 
-router.get('/v1/games/:gameId/media', mediumApi.list.bind(mediumApi));
+gameApiRouter.get('/v1/games/:gameId/media', mediumApi.list.bind(mediumApi));
 
-router.get('/v1/games/:id/events', eventsApi.list({ byGame: true }).bind(eventsApi));
-router.get('/v1/games/:id/release-name', api.auth(api.releaseName.bind(api), 'releases', 'add', [ Scope.ALL, Scope.CREATE ]));
+gameApiRouter.get('/v1/games/:id/events', eventsApi.list({ byGame: true }).bind(eventsApi));
+gameApiRouter.get('/v1/games/:id/release-name', api.auth(api.releaseName.bind(api), 'releases', 'add', [ Scope.ALL, Scope.CREATE ]));
 
-apiCache.enable(router, '/v1/games', { resources: ['game', 'release', 'user'] }, gameListCacheCounters);
-apiCache.enable(router, '/v1/games/:id', { resources: ['user'], entities: { game: 'id' }, children: { modelName: 'release', entityField: 'releases', idField: 'id' } }, gameDetailsCacheCounters);
+apiCache.enable(gameApiRouter, '/v1/games', { resources: ['game', 'release', 'user'] }, gameListCacheCounters);
+apiCache.enable(gameApiRouter, '/v1/games/:id', { resources: ['user'], entities: { game: 'id' }, children: { modelName: 'release', entityField: 'releases', idField: 'id' } }, gameDetailsCacheCounters);
 //apiCache.enable(router, '/v1/games/:gameId/backglasses', { resources: ['backglass', 'user'] });
 //apiCache.enable(router, '/v1/games/:gameId/media', { resources: ['medium', 'user'] });
 //apiCache.enable(router, '/v1/games/:id/events', { resources: ['log_event'] });

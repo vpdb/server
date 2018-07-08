@@ -121,7 +121,7 @@ class ApiCache {
 				const values = refs.length > 0 ? (await state.redis.mget.apply(state.redis, refs.map(r => r.key))) : [];
 				for (let i = 0; i < values.length; i++) {
 					if (values[i]) {
-						refs[i].counter.set(body, refs[i].c, { [refs[i].id]: parseInt(values[i]) });
+						refs[i].counter.set(body, refs[i].c, { [refs[i].id]: parseInt(values[i], 10) });
 					}
 				}
 			}
@@ -131,11 +131,10 @@ class ApiCache {
 			// todo add auth headers such as x-token-refresh
 
 			// if request body was a string it was prettified, so let's do that again.
-			if (!isObject(response.body)) {
-				ctx.response.body = JSON.stringify(body, null, '  ');
-			} else {
-				ctx.response.body = body;
-			}
+			ctx.response.body = !isObject(response.body) ?
+				JSON.stringify(body, null, '  ') :
+				body;
+
 			return;
 		}
 		ctx.set('X-Cache-Api', 'MISS');
@@ -146,180 +145,6 @@ class ApiCache {
 		if (ctx.status >= 200 && ctx.status < 300) {
 			await this.setCache(ctx, key, cacheRoute);
 		}
-	}
-
-	/**
-	 * Invalidates a cache.
-	 *
-	 * The tags describe how the cache is invalidated. Every
-	 * `CacheInvalidationTag` is an operator in a logical `and`, while its attributes
-	 * compose an `or` condition.
-	 *
-	 * Examples:
-	 *
-	 * - `invalidate([{ user: foo, path: '/v1/bar' }])` invalidates all caches
-	 *    for user foo and all caches for path `/v1/bar`.
-	 * - `invalidate([{ user: foo }, { path: '/v1/games' }], [{ path: '/v1/bar' }])`
-	 *    invalidates all `/v1/games` caches for user foo as well as all `/v1/bar`
-	 *    caches for everyone.
-	 *
-	 * @param {CacheInvalidationTag[][]} tagLists
-	 * @return {Promise<number>}
-	 */
-	private async invalidate(...tagLists: CacheInvalidationTag[][]): Promise<number> {
-
-		if (!tagLists || tagLists.length === 0) {
-			logger.debug('[Cache.invalidate]: Nothing to invalidate.');
-			return;
-		}
-
-		const now = Date.now();
-		const allRefs: string[][][] = [];
-		let invalidationKeys = new Set<string>();
-		for (let i = 0; i < tagLists.length; i++) {
-			const tags = tagLists[i];
-			allRefs[i] = [];
-			const keys: string[][] = [];
-			for (const tag of tags) {
-				const refs: string[] = [];
-
-				// path
-				if (tag.path) {
-					refs.push(this.getPathKey(tag.path));
-				}
-
-				// resources
-				if (tag.resources) {
-					for (const resource of tag.resources) {
-						refs.push(this.getResourceKey(resource));
-					}
-				}
-				// entities
-				if (tag.entities) {
-					for (const entity of Object.keys(tag.entities)) {
-						refs.push(this.getEntityKey(entity, tag.entities[entity]));
-					}
-				}
-				// user
-				if (tag.user) {
-					refs.push(this.getUserKey(tag.user));
-				}
-				allRefs[i].push(refs);
-				const union = await state.redis.sunion(...refs);
-				// logger.wtf('SUNION %s -> %s', refs.join(' '), union.join(','));
-				keys.push(union);
-			}
-			// logger.verbose('invalidationKeys = new Set(%s | inter(%s))', Array.from(invalidationKeys).join(','), keys.map(k => '[' + k.join(',') + ']').join(','));
-			// logger.verbose('invalidationKeys = new Set(%s | %s)', Array.from(invalidationKeys).join(','), intersection(...keys).join(','));
-			invalidationKeys = new Set([...invalidationKeys, ...intersection(...keys)]); // redis could do this too using SUNIONSTORE to temp sets and INTER them
-		}
-		logger.debug('[ApiCache.invalidate]: Invalidating caches: (%s).',
-			'(' + allRefs.map(r => '(' + r.map(r => r.join(' || ')).join(') && (') + ')').join(') || (') + ')');
-
-		let n = 0;
-		for (const key of invalidationKeys) {
-			// logger.wtf('DEL %s', key);
-			await state.redis.del(key);
-			n++;
-		}
-		logger.debug('[ApiCache.invalidate]: Cleared %s caches in %sms.', n, Date.now() - now);
-		return n;
-	}
-
-	/**
-	 * Invalidates all caches.
-	 * @see https://github.com/galanonym/redis-delete-wildcard/blob/master/index.js
-	 * @return {Promise<number>} Number of invalidated caches
-	 */
-	public async invalidateAll(): Promise<number> {
-		return this.deleteWildcard('api-cache*');
-	}
-
-	/**
-	 * Caches a miss.
-	 *
-	 * @param {Context} ctx Koa context
-	 * @param {string} key Cache key
-	 * @param {CacheRoute} cacheRoute Route where the miss occurred
-	 */
-	private async setCache<T>(ctx: Context, key: string, cacheRoute: CacheRoute<T>) {
-
-		let body: any;
-		const now = Date.now();
-		const refs: Array<() => Promise<any>> = [];
-		const refKeys: string[] = [];
-		const response: CacheResponse = {
-			status: ctx.status,
-			headers: ctx.headers,
-			body: ctx.response.body,
-		};
-
-		// set the cache todo set ttl to user caches
-		await state.redis.set(key, JSON.stringify(response));
-
-		// reference path
-		const toPath = pathToRegexp.compile(cacheRoute.path);
-		const refKey = this.getPathKey(toPath(ctx.params));
-		refs.push(() => state.redis.sadd(refKey, key));
-		refKeys.push(refKey);
-
-		// reference resources
-		if (cacheRoute.config.resources) {
-			for (const resource of cacheRoute.config.resources) {
-				const refKey = this.getResourceKey(resource);
-				refs.push(() => state.redis.sadd(refKey, key));
-				refKeys.push(refKey);
-			}
-		}
-
-		// reference entities
-		if (cacheRoute.config.entities) {
-			for (const entity of Object.keys(cacheRoute.config.entities)) {
-				const refKey = this.getEntityKey(entity, ctx.params[cacheRoute.config.entities[entity]]);
-				refs.push(() => state.redis.sadd(refKey, key));
-				refKeys.push(refKey);
-			}
-		}
-
-		// reference children
-		if (cacheRoute.config.children) {
-			body = isObject(ctx.response.body) ? ctx.response.body : JSON.parse(ctx.response.body);
-			for (const entity of get(body, cacheRoute.config.children.entityField)) {
-				const refKey = this.getEntityKey(cacheRoute.config.children.modelName, get(entity, cacheRoute.config.children.idField));
-				refs.push(() => state.redis.sadd(refKey, key));
-				refKeys.push(refKey);
-			}
-		}
-
-		// reference user
-		if (ctx.state.user) {
-			const refKey = this.getUserKey(ctx.state.user);
-			refs.push(() => state.redis.sadd(refKey, key));
-			refKeys.push(refKey);
-		}
-
-		// save counters
-		let numCounters = 0;
-		if (cacheRoute.counters) {
-			const refPairs: any[] = [];
-			body = body || (isObject(ctx.response.body) ? ctx.response.body : JSON.parse(ctx.response.body));
-			for (const counter of cacheRoute.counters) {
-				for (const c of counter.counters) {
-					const counters = counter.get(body, c);
-					for (const id of Object.keys(counters)) {
-						refPairs.push(this.getCounterKey(counter.modelName, id, c));
-						refPairs.push(parseInt(counters[id] as any));
-						numCounters++;
-					}
-				}
-			}
-			if (refPairs.length > 0) {
-				refs.push(() => state.redis.mset.apply(state.redis, refPairs));
-			}
-		}
-		await Promise.all(refs.map(ref => ref()));
-		logger.debug('[Cache] No hit, saved as "%s" with references [ %s ] and %s counters in %sms.',
-			key, refKeys.join(', '), numCounters, Date.now() - now);
 	}
 
 	/**
@@ -404,6 +229,180 @@ class ApiCache {
 			logger.verbose('[ApiCache.invalidateAllEntities] Clearing: %s', keys.join(', '));
 			await state.redis.del(keys);
 		}
+	}
+
+	/**
+	 * Invalidates all caches.
+	 * @see https://github.com/galanonym/redis-delete-wildcard/blob/master/index.js
+	 * @return {Promise<number>} Number of invalidated caches
+	 */
+	public async invalidateAll(): Promise<number> {
+		return this.deleteWildcard('api-cache*');
+	}
+
+	/**
+	 * Invalidates a cache.
+	 *
+	 * The tags describe how the cache is invalidated. Every
+	 * `CacheInvalidationTag` is an operator in a logical `and`, while its attributes
+	 * compose an `or` condition.
+	 *
+	 * Examples:
+	 *
+	 * - `invalidate([{ user: foo, path: '/v1/bar' }])` invalidates all caches
+	 *    for user foo and all caches for path `/v1/bar`.
+	 * - `invalidate([{ user: foo }, { path: '/v1/games' }], [{ path: '/v1/bar' }])`
+	 *    invalidates all `/v1/games` caches for user foo as well as all `/v1/bar`
+	 *    caches for everyone.
+	 *
+	 * @param {CacheInvalidationTag[][]} tagLists
+	 * @return {Promise<number>}
+	 */
+	private async invalidate(...tagLists: CacheInvalidationTag[][]): Promise<number> {
+
+		if (!tagLists || tagLists.length === 0) {
+			logger.debug('[Cache.invalidate]: Nothing to invalidate.');
+			return;
+		}
+
+		const now = Date.now();
+		const allRefs: string[][][] = [];
+		let invalidationKeys = new Set<string>();
+		for (let i = 0; i < tagLists.length; i++) {
+			const tags = tagLists[i];
+			allRefs[i] = [];
+			const keys: string[][] = [];
+			for (const tag of tags) {
+				const refs: string[] = [];
+
+				// path
+				if (tag.path) {
+					refs.push(this.getPathKey(tag.path));
+				}
+
+				// resources
+				if (tag.resources) {
+					for (const resource of tag.resources) {
+						refs.push(this.getResourceKey(resource));
+					}
+				}
+				// entities
+				if (tag.entities) {
+					for (const entity of Object.keys(tag.entities)) {
+						refs.push(this.getEntityKey(entity, tag.entities[entity]));
+					}
+				}
+				// user
+				if (tag.user) {
+					refs.push(this.getUserKey(tag.user));
+				}
+				allRefs[i].push(refs);
+				const union = await state.redis.sunion(...refs);
+				// logger.wtf('SUNION %s -> %s', refs.join(' '), union.join(','));
+				keys.push(union);
+			}
+			// logger.verbose('invalidationKeys = new Set(%s | inter(%s))', Array.from(invalidationKeys).join(','), keys.map(k => '[' + k.join(',') + ']').join(','));
+			// logger.verbose('invalidationKeys = new Set(%s | %s)', Array.from(invalidationKeys).join(','), intersection(...keys).join(','));
+			invalidationKeys = new Set([...invalidationKeys, ...intersection(...keys)]); // redis could do this too using SUNIONSTORE to temp sets and INTER them
+		}
+		logger.debug('[ApiCache.invalidate]: Invalidating caches: (%s).',
+			'(' + allRefs.map(r => '(' + r.map(s => s.join(' || ')).join(') && (') + ')').join(') || (') + ')');
+
+		let n = 0;
+		for (const key of invalidationKeys) {
+			// logger.wtf('DEL %s', key);
+			await state.redis.del(key);
+			n++;
+		}
+		logger.debug('[ApiCache.invalidate]: Cleared %s caches in %sms.', n, Date.now() - now);
+		return n;
+	}
+
+	/**
+	 * Caches a miss.
+	 *
+	 * @param {Context} ctx Koa context
+	 * @param {string} key Cache key
+	 * @param {CacheRoute} cacheRoute Route where the miss occurred
+	 */
+	private async setCache<T>(ctx: Context, key: string, cacheRoute: CacheRoute<T>) {
+
+		let body: any;
+		const now = Date.now();
+		const refs: Array<() => Promise<any>> = [];
+		const refKeys: string[] = [];
+		const response: CacheResponse = {
+			status: ctx.status,
+			headers: ctx.headers,
+			body: ctx.response.body,
+		};
+
+		// set the cache todo set ttl to user caches
+		await state.redis.set(key, JSON.stringify(response));
+
+		// reference path
+		const toPath = pathToRegexp.compile(cacheRoute.path);
+		const pathRefKey = this.getPathKey(toPath(ctx.params));
+		refs.push(() => state.redis.sadd(pathRefKey, key));
+		refKeys.push(pathRefKey);
+
+		// reference resources
+		if (cacheRoute.config.resources) {
+			for (const resource of cacheRoute.config.resources) {
+				const refKey = this.getResourceKey(resource);
+				refs.push(() => state.redis.sadd(refKey, key));
+				refKeys.push(refKey);
+			}
+		}
+
+		// reference entities
+		if (cacheRoute.config.entities) {
+			for (const entity of Object.keys(cacheRoute.config.entities)) {
+				const refKey = this.getEntityKey(entity, ctx.params[cacheRoute.config.entities[entity]]);
+				refs.push(() => state.redis.sadd(refKey, key));
+				refKeys.push(refKey);
+			}
+		}
+
+		// reference children
+		if (cacheRoute.config.children) {
+			body = isObject(ctx.response.body) ? ctx.response.body : JSON.parse(ctx.response.body);
+			for (const entity of get(body, cacheRoute.config.children.entityField)) {
+				const refKey = this.getEntityKey(cacheRoute.config.children.modelName, get(entity, cacheRoute.config.children.idField));
+				refs.push(() => state.redis.sadd(refKey, key));
+				refKeys.push(refKey);
+			}
+		}
+
+		// reference user
+		if (ctx.state.user) {
+			const refKey = this.getUserKey(ctx.state.user);
+			refs.push(() => state.redis.sadd(refKey, key));
+			refKeys.push(refKey);
+		}
+
+		// save counters
+		let numCounters = 0;
+		if (cacheRoute.counters) {
+			const refPairs: any[] = [];
+			body = body || (isObject(ctx.response.body) ? ctx.response.body : JSON.parse(ctx.response.body));
+			for (const counter of cacheRoute.counters) {
+				for (const c of counter.counters) {
+					const counters = counter.get(body, c);
+					for (const id of Object.keys(counters)) {
+						refPairs.push(this.getCounterKey(counter.modelName, id, c));
+						refPairs.push(parseInt(counters[id] as any, 10));
+						numCounters++;
+					}
+				}
+			}
+			if (refPairs.length > 0) {
+				refs.push(() => state.redis.mset.apply(state.redis, refPairs));
+			}
+		}
+		await Promise.all(refs.map(ref => ref()));
+		logger.debug('[Cache] No hit, saved as "%s" with references [ %s ] and %s counters in %sms.',
+			key, refKeys.join(', '), numCounters, Date.now() - now);
 	}
 
 	private getCacheKey(ctx: Context): string {

@@ -41,7 +41,7 @@ export class BackglassVersionSerializer extends Serializer<BackglassVersion> {
 	}
 
 	private _serialize(ctx: Context, doc: BackglassVersion, opts: SerializerOptions,
-					               fileSerializer: (ctx: Context, doc: File, opts: SerializerOptions) => File): BackglassVersion {
+					fileSerializer: (ctx: Context, doc: File, opts: SerializerOptions) => File): BackglassVersion {
 
 		const backglassVersion = pick(doc, ['version', 'changes', 'released_at']) as BackglassVersion;
 		backglassVersion.counter = doc.counter;

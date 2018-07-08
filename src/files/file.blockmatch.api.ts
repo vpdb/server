@@ -82,10 +82,10 @@ export class FileBlockmatchApi extends Api {
 
 		// map <file._id>: <release>
 		const releases = new Map<string, Release>();
-		matchedReleases.forEach(release => {
-			release.versions.forEach(version => {
-				version.files.forEach(file => {
-					releases.set((file._file as File)._id.toString(), release);
+		matchedReleases.forEach(rls => {
+			rls.versions.forEach(version => {
+				version.files.forEach(f => {
+					releases.set((f._file as File)._id.toString(), rls);
 				});
 			});
 		});

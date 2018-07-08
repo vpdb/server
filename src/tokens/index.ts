@@ -19,12 +19,12 @@
 
 import Application = require('koa');
 import Router from 'koa-router';
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
 import { Token } from './token';
-import { router } from './token.api.router';
+import { tokenApiRouter } from './token.api.router';
 import { tokenSchema } from './token.schema';
 import { TokenSerializer } from './token.serializer';
 
@@ -32,21 +32,12 @@ export class TokenEndPoint extends EndPoint {
 
 	public readonly name: string = 'Token API';
 
-	private readonly _router: Router;
-	private readonly _schema: Schema;
-
-	constructor() {
-		super();
-		this._router = router;
-		this._schema = tokenSchema;
-	}
-
 	public getRouter(): Router {
-		return this._router;
+		return tokenApiRouter;
 	}
 
 	public async register(app: Application): Promise<void> {
-		state.models.Token = mongoose.model<Token>('Token', this._schema);
+		state.models.Token = mongoose.model<Token>('Token', tokenSchema);
 		state.serializers.Token = new TokenSerializer();
 	}
 }

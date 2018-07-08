@@ -57,16 +57,16 @@ export class ImageOptimizationProcessor implements OptimizationProcessor<FileVar
 			const writeStream = createWriteStream(dest);
 
 			// setup success handler
-			writeStream.on('finish', function() {
+			writeStream.on('finish', () => {
 				logger.debug('[ImageOptimizationProcessor] Done: %s', file.toDetailedString(variation));
 				resolve(dest);
 			});
 			writeStream.on('error', reject);
 
 			// setup error handler
-			const handleErr = function(what: string) {
+			const handleErr = (what: string) => {
 				/* istanbul ignore next */
-				return function(err: Error) {
+				return (err: Error) => {
 					reject(new ApiError('Error at %s while processing.', what).display('Error at %s while processing %s.', what, file.toShortString(variation)).log(err));
 				};
 			};

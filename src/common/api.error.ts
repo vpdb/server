@@ -18,7 +18,7 @@
  */
 
 import chalk from 'chalk';
-import { compact, isArray, isEmpty, isObject } from 'lodash';
+import { compact, isEmpty } from 'lodash';
 import { basename, dirname, sep } from 'path';
 import { format as sprintf } from 'util';
 
@@ -193,32 +193,6 @@ export class ApiError extends Error {
 	}
 
 	/**
-	 * Returns the error response body.
-	 */
-	private getResponse() {
-		// if the message contains a stack trace, replace.
-		const message = this.message.match(/\n\s+at/) ? 'Internal error.' : this.message;
-		const body: any = this.data || { error: this.responseMessage || message, code: this.errorCode || undefined };
-		if (this.errors) {
-			body.errors = this.errors.map(ApiError.mapValidationError);
-		}
-		return body;
-	}
-
-	/**
-	 * Maps the full validation error object to what we return in the API.
- 	 * @param error Validation error
-	 */
-	private static mapValidationError(error: any) {
-		return {
-			field: error.path,
-			message: error.message,
-			value: isEmpty(error.value) ? undefined : error.value,
-			code: isEmpty(error.kind) || error.kind == 'user defined' ? undefined : error.kind,
-		};
-	}
-
-	/**
 	 * Logs the error with the current logger.
 	 */
 	public print(requestLog = '') {
@@ -254,6 +228,40 @@ export class ApiError extends Error {
 		return this.statusCode === 500 || this.logLevel === 'error';
 	}
 
+	/**
+	 * Returns the error response body.
+	 */
+	private getResponse() {
+		// if the message contains a stack trace, replace.
+		const message = this.message.match(/\n\s+at/) ? 'Internal error.' : this.message;
+		const body: any = this.data || { error: this.responseMessage || message, code: this.errorCode || undefined };
+		if (this.errors) {
+			body.errors = this.errors.map(ApiError.mapValidationError);
+		}
+		return body;
+	}
+
+	/**
+	 * Strips prefix off validation paths if set.
+	 */
+	private stripFields() {
+		if (!this.fieldPrefix) {
+			return;
+		}
+		const map = new Map();
+		this.errors = compact(this.errors.map(error => {
+			error.path = error.path.replace(this.fieldPrefix, '');
+			const key = error.path + '|' + error.message + '|' + error.value;
+			// eliminate dupes
+			if (map.has(key)) {
+				return null;
+			}
+			map.set(key, true);
+			return error;
+		}));
+	}
+
+	/* tslint:disable:member-ordering */
 	/**
 	 * Returns a colored stack trace of a given error.
 	 *
@@ -296,24 +304,18 @@ export class ApiError extends Error {
 		}).join('\n');
 	}
 
+	/* tslint:disable:member-ordering */
 	/**
-	 * Strips prefix off validation paths if set.
+	 * Maps the full validation error object to what we return in the API.
+	 * @param error Validation error
 	 */
-	private stripFields() {
-		if (!this.fieldPrefix) {
-			return;
-		}
-		const map = new Map();
-		this.errors = compact(this.errors.map(error => {
-			error.path = error.path.replace(this.fieldPrefix, '');
-			const key = error.path + '|' + error.message + '|' + error.value;
-			// eliminate dupes
-			if (map.has(key)) {
-				return null;
-			}
-			map.set(key, true);
-			return error;
-		}));
+	private static mapValidationError(error: any) {
+		return {
+			field: error.path,
+			message: error.message,
+			value: isEmpty(error.value) ? undefined : error.value,
+			code: isEmpty(error.kind) || error.kind === 'user defined' ? undefined : error.kind,
+		};
 	}
 }
 

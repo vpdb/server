@@ -21,10 +21,10 @@ import { Scope } from '../common/scope';
 import { BuildApi } from './build.api';
 
 const api = new BuildApi();
-export const router = api.apiRouter();
+export const buildApiRouter = api.apiRouter();
 
-router.get('/v1/builds',       api.list.bind(api));
-router.post('/v1/builds',       api.auth(api.create.bind(api), 'builds', 'add', [ Scope.ALL, Scope.CREATE ]));
-router.get('/v1/builds/:id',   api.view.bind(api));
-router.patch('/v1/builds/:id',  api.auth(api.update.bind(api), 'builds', 'update', [ Scope.ALL, Scope.CREATE ]));
-router.delete('/v1/builds/:id', api.auth(api.del.bind(api), 'builds', 'delete-own', [ Scope.ALL, Scope.CREATE ]));
+buildApiRouter.get('/v1/builds',       api.list.bind(api));
+buildApiRouter.post('/v1/builds',       api.auth(api.create.bind(api), 'builds', 'add', [ Scope.ALL, Scope.CREATE ]));
+buildApiRouter.get('/v1/builds/:id',   api.view.bind(api));
+buildApiRouter.patch('/v1/builds/:id',  api.auth(api.update.bind(api), 'builds', 'update', [ Scope.ALL, Scope.CREATE ]));
+buildApiRouter.delete('/v1/builds/:id', api.auth(api.del.bind(api), 'builds', 'delete-own', [ Scope.ALL, Scope.CREATE ]));

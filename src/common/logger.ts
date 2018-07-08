@@ -43,26 +43,6 @@ export class Logger {
 		});
 	}
 
-	private colorMessage(message: string, prefixColor: any, messageColor?: any): string {
-		if (hasAnsi(message)) {
-			return message;
-		}
-		const match = message.match(/^(\[[^\]]+])(.+)/);
-		if (match) {
-			let prefix: string;
-			if (prefixColor == null) {
-				const [m1, m2] = match[1].split('.', 2);
-				prefix = m2  ?
-					'[' + chalk.cyan(m1.substring(1)) + '.' + chalk.blueBright(m2.substring(0, m2.length - 1)) + ']' :
-					'[' + chalk.cyan(match[1].substring(1, match[1].length - 1)) + ']';
-			} else {
-				prefix = prefixColor(match[1]);
-			}
-			return prefix + (messageColor ? messageColor(match[2]) : match[2]);
-		}
-		return messageColor ? messageColor(message) : message;
-	}
-
 	public wtf(format: any, ...param: any[]) {
 		this.logger.log({
 			level: 'info',
@@ -103,6 +83,26 @@ export class Logger {
 			level: 'debug',
 			message: this.colorMessage(sprintf.apply(null, arguments), chalk.bgBlack.gray, chalk.gray),
 		});
+	}
+
+	private colorMessage(message: string, prefixColor: any, messageColor?: any): string {
+		if (hasAnsi(message)) {
+			return message;
+		}
+		const match = message.match(/^(\[[^\]]+])(.+)/);
+		if (match) {
+			let prefix: string;
+			if (prefixColor == null) {
+				const [m1, m2] = match[1].split('.', 2);
+				prefix = m2  ?
+					'[' + chalk.cyan(m1.substring(1)) + '.' + chalk.blueBright(m2.substring(0, m2.length - 1)) + ']' :
+					'[' + chalk.cyan(match[1].substring(1, match[1].length - 1)) + ']';
+			} else {
+				prefix = prefixColor(match[1]);
+			}
+			return prefix + (messageColor ? messageColor(match[2]) : match[2]);
+		}
+		return messageColor ? messageColor(message) : message;
 	}
 }
 

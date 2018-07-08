@@ -19,15 +19,15 @@
 
 import Application = require('koa');
 import Router from 'koa-router';
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
 import { Release } from './release';
-import { router as apiRouter } from './release.api.router';
+import { releaseApiRouter } from './release.api.router';
 import { ReleaseModel, releaseSchema } from './release.schema';
 import { ReleaseSerializer } from './release.serializer';
-import { router as storageRouter } from './release.storage.router';
+import { releaseStorageRouter } from './release.storage.router';
 import { TableBlock } from './release.tableblock';
 import { tableBlockSchema } from './release.tableblock.schema';
 import { ReleaseVersionFile } from './version/file/release.version.file';
@@ -41,27 +41,14 @@ export class ReleaseEndPoint extends EndPoint {
 
 	public readonly name: string = 'Release API';
 
-	private readonly _router: Router;
-	private readonly _releaseSchema: Schema;
-	private readonly _releaseVersionSchema: Schema;
-	private readonly _releaseVersionFileSchema: Schema;
-
-	constructor() {
-		super();
-		this._router = apiRouter;
-		this._releaseSchema = releaseSchema;
-		this._releaseVersionSchema = releaseVersionSchema;
-		this._releaseVersionFileSchema = releaseVersionFileSchema;
-	}
-
 	public getRouter(): Router {
-		return this._router;
+		return releaseApiRouter;
 	}
 
 	public async register(app: Application): Promise<void> {
-		state.models.Release = mongoose.model<Release>('Release', this._releaseSchema) as ReleaseModel;
-		state.models.ReleaseVersion = mongoose.model<ReleaseVersion, ReleaseVersionModel>('ReleaseVersion', this._releaseVersionSchema);
-		state.models.ReleaseVersionFile = mongoose.model<ReleaseVersionFile, ReleaseVersionFileModel>('ReleaseVersionFile', this._releaseVersionFileSchema);
+		state.models.Release = mongoose.model<Release>('Release', releaseSchema) as ReleaseModel;
+		state.models.ReleaseVersion = mongoose.model<ReleaseVersion, ReleaseVersionModel>('ReleaseVersion', releaseVersionSchema);
+		state.models.ReleaseVersionFile = mongoose.model<ReleaseVersionFile, ReleaseVersionFileModel>('ReleaseVersionFile', releaseVersionFileSchema);
 		state.serializers.Release = new ReleaseSerializer();
 		state.serializers.ReleaseVersion = new ReleaseVersionSerializer();
 		state.serializers.ReleaseVersionFile = new ReleaseVersionFileSerializer();
@@ -73,15 +60,8 @@ export class ReleaseStorageEndPoint extends EndPoint {
 
 	public readonly name: string = 'Release storage API';
 
-	private readonly _router: Router;
-
-	constructor() {
-		super();
-		this._router = storageRouter;
-	}
-
 	public getRouter(): Router {
-		return this._router;
+		return releaseStorageRouter;
 	}
 
 	public async register(app: Application): Promise<void> {

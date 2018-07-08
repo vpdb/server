@@ -35,36 +35,36 @@ const ratingApi = new RatingApi();
 const starApi = new StarApi();
 const eventApi = new LogEventApi();
 const commentApi = new CommentApi();
-export const router = api.apiRouter();
+export const releaseApiRouter = api.apiRouter();
 
-router.get('/v1/releases',       api.list.bind(api));
-router.get('/v1/releases/:id',   api.view.bind(api));
-router.patch('/v1/releases/:id',  api.auth(api.update.bind(api), 'releases', 'update-own', [Scope.ALL, Scope.CREATE]));
-router.post('/v1/releases',       api.auth(api.create.bind(api), 'releases', 'add', [Scope.ALL, Scope.CREATE]));
-router.delete('/v1/releases/:id', api.auth(api.del.bind(api), 'releases', 'delete-own', [Scope.ALL, Scope.CREATE]));
+releaseApiRouter.get('/v1/releases',       api.list.bind(api));
+releaseApiRouter.get('/v1/releases/:id',   api.view.bind(api));
+releaseApiRouter.patch('/v1/releases/:id',  api.auth(api.update.bind(api), 'releases', 'update-own', [Scope.ALL, Scope.CREATE]));
+releaseApiRouter.post('/v1/releases',       api.auth(api.create.bind(api), 'releases', 'add', [Scope.ALL, Scope.CREATE]));
+releaseApiRouter.delete('/v1/releases/:id', api.auth(api.del.bind(api), 'releases', 'delete-own', [Scope.ALL, Scope.CREATE]));
 
-router.post('/v1/releases/:id/versions',                               versionApi.auth(versionApi.addVersion.bind(api), 'releases', 'add', [Scope.ALL, Scope.CREATE]));
-router.patch('/v1/releases/:id/versions/:version',                     versionApi.auth(versionApi.updateVersion.bind(api), 'releases', 'update-own', [Scope.ALL, Scope.CREATE]));
-router.post('/v1/releases/:id/versions/:version/files/:file/validate', versionFileApi.auth(versionFileApi.validateFile.bind(api), 'releases', 'validate', [Scope.ALL, Scope.CREATE]));
+releaseApiRouter.post('/v1/releases/:id/versions',                               versionApi.auth(versionApi.addVersion.bind(api), 'releases', 'add', [Scope.ALL, Scope.CREATE]));
+releaseApiRouter.patch('/v1/releases/:id/versions/:version',                     versionApi.auth(versionApi.updateVersion.bind(api), 'releases', 'update-own', [Scope.ALL, Scope.CREATE]));
+releaseApiRouter.post('/v1/releases/:id/versions/:version/files/:file/validate', versionFileApi.auth(versionFileApi.validateFile.bind(api), 'releases', 'validate', [Scope.ALL, Scope.CREATE]));
 
-router.get('/v1/releases/:id/comments', commentApi.listForRelease.bind(commentApi));
-router.post('/v1/releases/:id/comments', api.auth(commentApi.createForRelease.bind(commentApi), 'comments', 'add', [ Scope.ALL, Scope.COMMUNITY ]));
+releaseApiRouter.get('/v1/releases/:id/comments', commentApi.listForRelease.bind(commentApi));
+releaseApiRouter.post('/v1/releases/:id/comments', api.auth(commentApi.createForRelease.bind(commentApi), 'comments', 'add', [ Scope.ALL, Scope.COMMUNITY ]));
 
-router.post('/v1/releases/:id/rating', api.auth(ratingApi.createForRelease.bind(ratingApi), 'releases', 'rate', [Scope.ALL, Scope.COMMUNITY]));
-router.put('/v1/releases/:id/rating',  api.auth(ratingApi.updateForRelease.bind(ratingApi), 'releases', 'rate', [Scope.ALL, Scope.COMMUNITY]));
-router.get('/v1/releases/:id/rating',  api.auth(ratingApi.getForRelease.bind(ratingApi), 'releases', 'rate', [Scope.ALL, Scope.COMMUNITY]));
-router.delete('/v1/releases/:id/rating',  api.auth(ratingApi.deleteForRelease.bind(ratingApi), 'releases', 'rate', [Scope.ALL, Scope.COMMUNITY]));
+releaseApiRouter.post('/v1/releases/:id/rating', api.auth(ratingApi.createForRelease.bind(ratingApi), 'releases', 'rate', [Scope.ALL, Scope.COMMUNITY]));
+releaseApiRouter.put('/v1/releases/:id/rating',  api.auth(ratingApi.updateForRelease.bind(ratingApi), 'releases', 'rate', [Scope.ALL, Scope.COMMUNITY]));
+releaseApiRouter.get('/v1/releases/:id/rating',  api.auth(ratingApi.getForRelease.bind(ratingApi), 'releases', 'rate', [Scope.ALL, Scope.COMMUNITY]));
+releaseApiRouter.delete('/v1/releases/:id/rating',  api.auth(ratingApi.deleteForRelease.bind(ratingApi), 'releases', 'rate', [Scope.ALL, Scope.COMMUNITY]));
 
-router.post('/v1/releases/:id/star',   api.auth(starApi.star('release').bind(starApi), 'releases', 'star', [Scope.ALL, Scope.COMMUNITY]));
-router.delete('/v1/releases/:id/star', api.auth(starApi.unstar('release').bind(starApi), 'releases', 'star', [Scope.ALL, Scope.COMMUNITY]));
-router.get('/v1/releases/:id/star',    api.auth(starApi.get('release').bind(starApi), 'releases', 'star', [Scope.ALL, Scope.COMMUNITY]));
+releaseApiRouter.post('/v1/releases/:id/star',   api.auth(starApi.star('release').bind(starApi), 'releases', 'star', [Scope.ALL, Scope.COMMUNITY]));
+releaseApiRouter.delete('/v1/releases/:id/star', api.auth(starApi.unstar('release').bind(starApi), 'releases', 'star', [Scope.ALL, Scope.COMMUNITY]));
+releaseApiRouter.get('/v1/releases/:id/star',    api.auth(starApi.get('release').bind(starApi), 'releases', 'star', [Scope.ALL, Scope.COMMUNITY]));
 
-router.post('/v1/releases/:id/moderate',          api.auth(api.moderate.bind(api), 'releases', 'moderate', [Scope.ALL]));
-router.post('/v1/releases/:id/moderate/comments', api.auth(commentApi.createForReleaseModeration.bind(commentApi), 'releases', 'add', [ Scope.ALL ]));
-router.get('/v1/releases/:id/moderate/comments',  api.auth(commentApi.listForReleaseModeration.bind(commentApi), 'releases', 'add', [ Scope.ALL ]));
+releaseApiRouter.post('/v1/releases/:id/moderate',          api.auth(api.moderate.bind(api), 'releases', 'moderate', [Scope.ALL]));
+releaseApiRouter.post('/v1/releases/:id/moderate/comments', api.auth(commentApi.createForReleaseModeration.bind(commentApi), 'releases', 'add', [ Scope.ALL ]));
+releaseApiRouter.get('/v1/releases/:id/moderate/comments',  api.auth(commentApi.listForReleaseModeration.bind(commentApi), 'releases', 'add', [ Scope.ALL ]));
 
-router.get('/v1/releases/:id/events', eventApi.list({ byRelease: true }).bind(eventApi));
+releaseApiRouter.get('/v1/releases/:id/events', eventApi.list({ byRelease: true }).bind(eventApi));
 
-apiCache.enable(router, '/v1/releases', { resources: [ 'release', 'user' ] }, releaseListCacheCounters);
-apiCache.enable(router, '/v1/releases/:id',  { resources: [ 'user' ], entities: { release: 'id' } }, releaseDetailsCacheCounters);
+apiCache.enable(releaseApiRouter, '/v1/releases', { resources: [ 'release', 'user' ] }, releaseListCacheCounters);
+apiCache.enable(releaseApiRouter, '/v1/releases/:id',  { resources: [ 'user' ], entities: { release: 'id' } }, releaseDetailsCacheCounters);
 //apiCache.enable(this._router, '/v1/releases/:id/comments', { entities: { release: 'id' } });

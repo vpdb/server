@@ -108,7 +108,7 @@ export class GameApi extends Api {
 
 		} else if (game.ipdb && game.ipdb.number) {
 			gameRequest = await state.models.GameRequest
-				.findOne({ ipdb_number: parseInt(String(game.ipdb.number)) })
+				.findOne({ ipdb_number: parseInt(String(game.ipdb.number), 10) })
 				.populate('_created_by')
 				.exec();
 		}
@@ -248,7 +248,7 @@ export class GameApi extends Api {
 
 	/**
 	 * Lists all games.
-	 *@param {Context} ctx Koa context
+	 * @param {Context} ctx Koa context
 	 */
 	public async list(ctx: Context) {
 
@@ -295,7 +295,7 @@ export class GameApi extends Api {
 		 *
 		 * Note that this a quick fix and doesn't work for min_releases > 1, though this use case isn't very useful.
 		 */
-		const minReleases = parseInt(ctx.query.min_releases);
+		const minReleases = parseInt(ctx.query.min_releases, 10);
 		if (minReleases) {
 
 			// counter includes restricted releases

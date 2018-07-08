@@ -142,9 +142,6 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 			game: release._game._id,
 		});
 
-		// notify pusher
-		//pusher.addVersion(release._game, release, newVersion);
-
 		// notify (co-)author(s)
 		for (const author of release.authors) {
 			if ((author._user as User).id !== ctx.state.user.id) {

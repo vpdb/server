@@ -140,7 +140,6 @@ export class StarApi extends Api {
 		// invalidate cache for user
 		await apiCache.invalidateStarredEntity(modelName, entity, ctx.state.user);
 
-		//pusher.star(type, entity, req.user);
 		return this.success(ctx, { created_at: obj.created_at, total_stars: entity.counter.stars + 1 }, 201);
 	}
 
@@ -163,7 +162,6 @@ export class StarApi extends Api {
 		// invalidate cache for user
 		await apiCache.invalidateStarredEntity(modelName, entity, ctx.state.user);
 
-		//pusher.unstar(type, entity, req.user);
 		return this.success(ctx, null, 204);
 	}
 

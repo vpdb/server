@@ -285,21 +285,6 @@ export const setttingValidations = {
 				},
 			},
 		},
-		pusher: {
-			enabled: (isEnabled: any) => {
-				if (!isBoolean(isEnabled)) {
-					return 'Enabled flag must be either true or false';
-				}
-			},
-			options: (opt: any, setting: any) => {
-				if (!setting.enabled) {
-					return;
-				}
-				if (!isObject(opt)) {
-					return 'Pusher options must be an object.';
-				}
-			},
-		},
 		passport: {
 			google: {
 				enabled: (isEnabled: any) => {

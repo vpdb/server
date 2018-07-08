@@ -19,7 +19,6 @@
 
 import { createHash } from 'crypto';
 import { assign, find, isEmpty, keys, mapValues, pick, pickBy, uniq } from 'lodash';
-import { realtime } from '../common/realtime';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { config } from '../common/settings';
 import { Context } from '../common/typings/context';
@@ -73,12 +72,6 @@ export class UserSerializer extends Serializer<User> {
 			app_tokens_enabled: plan.enableAppTokens,
 			push_notifications_enabled: plan.enableRealtime,
 		};
-
-		// pusher
-		if (realtime.isUserEnabled(doc)) {
-			user.channel_config = doc.channel_config;
-			user.channel_config.api_key = config.vpdb.pusher.options.key;
-		}
 
 		// emails
 		user.emails = uniq([...doc.emails, ...doc.validated_emails]);

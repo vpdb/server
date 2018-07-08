@@ -22,15 +22,21 @@
 const expect = require('expect.js');
 
 const ApiClient = require('../../test/modules/api.client');
+const ReleaseHelper = require('../../test/modules/release.helper');
 const api = new ApiClient();
+const releaseHelper = new ReleaseHelper(api);
 
 let res;
 describe('The VPDB API', () => {
 
+	let release;
 	before(async () => {
 		await api.setupUsers({
 			admin: { roles: ['admin'] },
+			moderator: { roles: ['moderator'] },
+			contributor: { roles: ['contributor'] },
 		});
+		release = await releaseHelper.createRelease('contributor');
 	});
 
 	after(async () => await api.teardown());
@@ -62,20 +68,20 @@ describe('The VPDB API', () => {
 	describe('when retrieving the sitemap', () => {
 
 		it('should fail when providing no URL', async () => {
-			res = await api
+			await api
 				.get('/v1/sitemap')
 				.then(res => res.expectError(400, 'Must specify website URL'));
 		});
 
 		it('should fail when providing an url without protocol', async () => {
-			res = await api
+			await api
 				.withQuery({ url: 'vpdb.io' })
 				.get('/v1/sitemap')
 				.then(res => res.expectError(400, 'must contain at least protocol and host name'));
 		});
 
 		it('should fail when providing an url with a query path', async () => {
-			res = await api
+			await api
 				.withQuery({ url: 'https://vpdb.io/?suckme' })
 				.get('/v1/sitemap')
 				.then(res => res.expectError(400, 'must not contain a search query or hash'));
@@ -86,6 +92,8 @@ describe('The VPDB API', () => {
 				.withQuery({ url: 'https://vpdb.io' })
 				.get('/v1/sitemap')
 				.then(res => res.expectStatus(200).expectHeader('content-type', 'application/xml'));
+			expect(res.data).to.contain(release.name);
+			expect(res.data).to.contain(release.game.title);
 		});
 	})
 });

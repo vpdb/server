@@ -255,25 +255,6 @@ describe('The VPDB `profile` API', () => {
 		});
 	});
 
-	describe('when a user updates the channel config', () => {
-
-		it('should fail for users with realtime features disabled', async () => {
-			await api.as('member')
-				.patch('/v1/profile', { channel_config: {} })
-				.then(res => res.expectValidationError('channel_config', 'features are not enabled'));
-		});
-
-		it.skip('should fail when for non-existent releases', async () => {
-			const user = await api.createUser({ _plan: 'vip' });
-			await api.as(user)
-				.patch('/v1/profile', { channel_config: { subscribed_releases: [ shortId(), '-invalid-' ] } })
-				.then(res => res.expectValidationErrors([
-					['channel_config.subscribed_releases.0', 'does not exist'],
-					['channel_config.subscribed_releases.1', 'does not exist']
-				]));
-		});
-	});
-
 	describe('when a user updates its email', () => {
 
 		it('should fail when providing a valid email but email is unconfirmed', async () => {

@@ -18,7 +18,7 @@
  */
 
 import { assign, extend, pick, uniq, values } from 'lodash';
-import randomstring from 'randomstring';
+import randomString from 'randomstring';
 
 import { acl } from '../common/acl';
 import { Api } from '../common/api';
@@ -26,7 +26,6 @@ import { ApiError, ApiValidationError } from '../common/api.error';
 import { logger } from '../common/logger';
 import { mailer } from '../common/mailer';
 import { quota } from '../common/quota';
-import { realtime } from '../common/realtime';
 import { config } from '../common/settings';
 import { Context } from '../common/typings/context';
 import { LogUserUtil } from '../log-user/log.user.util';
@@ -127,14 +126,6 @@ export class ProfileApi extends Api {
 			});
 		}
 
-		// CHANNEL CONFIG
-		if (ctx.request.body.channel_config && !realtime.isUserEnabled(updatedUser)) {
-			errors.push({
-				message: 'Realtime features are not enabled for this account.',
-				path: 'channel_config',
-			});
-		}
-
 		// validate
 		try {
 			await updatedUser.validate();
@@ -175,7 +166,7 @@ export class ProfileApi extends Api {
 				} else {
 					updatedUser.email_status = {
 						code: 'pending_update',
-						token: randomstring.generate(16),
+						token: randomString.generate(16),
 						expires_at: new Date(new Date().getTime() + 86400000), // 1d valid
 						value: updatedUser.email,
 					};

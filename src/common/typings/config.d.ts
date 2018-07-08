@@ -342,28 +342,6 @@ export interface VpdbConfig {
 		},
 
 		/**
-		 * Pusher settings
-		 * See https://github.com/pusher/pusher-http-node
-		 */
-		pusher: {
-
-			/**
-			 * Set true for realtime support.
-			 */
-			enabled: boolean,
-
-			/**
-			 * Options passed to the library
-			 */
-			options: {
-				appId: string,
-				key: string,
-				secret: string,
-				encrypted: boolean,
-			},
-		},
-
-		/**
 		 * Configure login strategies here.
 		 */
 		passport: {

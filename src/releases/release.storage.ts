@@ -24,6 +24,7 @@ import { Types } from 'mongoose';
 import { basename, extname } from 'path';
 import unzip from 'unzip';
 
+import { Build } from '../builds/build';
 import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
@@ -53,7 +54,7 @@ export class ReleaseStorage extends Api {
 	 *
 	 *    GET https://vpdb.io/storage/v1/releases/XkviQgQ6m?body={}&token=123
 	 *
-	 * where body is something like (url-encoded):
+	 * where body is something like (url-encoded for GET):
 	 *
 	 *  {
 	 *  	"files": [ "XJejOk7p7" ],
@@ -66,6 +67,8 @@ export class ReleaseStorage extends Api {
 	 *  	"roms": [ "afm_113b", "afm_113" ]
 	 *  }
 	 *
+	 * @see GET /v1/releases/:release_id
+	 * @see POST /v1/releases/:release_id
 	 * @param {Context} ctx Koa context
 	 */
 	public async download(ctx: Context) {
@@ -364,20 +367,16 @@ export class ReleaseStorage extends Api {
 			throw new ApiError('Requested file IDs did not match any release file.').status(422);
 		}
 
-		// check the quota
+		// check the quota && update counters
 		if (!dryRun) {
 			await quota.assert(ctx, requestedFiles);
+			await Promise.all(counters.map(p => p()));
 
 		} else {
 			const q = await quota.get(ctx.state.user);
 			if (!q.unlimited && quota.getTotalCost(requestedFiles) > q.remaining) {
 				throw new ApiError('Not enough quota left.').status(403);
 			}
-		}
-
-		// update counters
-		if (!dryRun) {
-			await Promise.all(counters.map(p => p()));
 		}
 
 		return [release, requestedFiles];
@@ -405,8 +404,8 @@ export class ReleaseStorage extends Api {
 			game_manufacturer: game.manufacturer,
 			game_year: game.year,
 			release_name: release.name,
-			release_version: (file.release_version as ReleaseVersion).version,
-			release_compatibility: (file.release_file as ReleaseVersionFile).compatibility.map(v => v.label).join(','),
+			release_version: file.release_version.version,
+			release_compatibility: (file.release_file._compatibility as Build[]).map(v => v.label).join(','),
 			release_flavor_orientation: flavorTags.orientation[file.release_file.flavor.orientation],
 			release_flavor_lighting: flavorTags.lighting[file.release_file.flavor.lighting],
 			original_filename: basename(file.name).replace(/\.[^/.]+$/, ''),

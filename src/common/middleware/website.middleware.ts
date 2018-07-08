@@ -42,7 +42,7 @@ export function koaWebsiteHandler(root: string, opts?: any) {
 			if (ctx.method !== 'HEAD' && ctx.method !== 'GET') {
 				throw err;
 			}
-			if (ctx.path.startsWith(settings.apiPath())) {
+			if (ctx.path.startsWith(settings.apiPath()) || ctx.path.startsWith(settings.storagePublicPath()) || ctx.path.startsWith(settings.storageProtectedPath())) {
 				throw err;
 			}
 			try {

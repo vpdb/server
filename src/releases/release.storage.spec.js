@@ -17,85 +17,64 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict"; /* global describe, before, after, it */
+'use strict';
+/* global describe, before, after, it */
 
-const async = require('async');
-const request = require('superagent');
 const expect = require('expect.js');
 
-const superagentTest = require('../../test/modules/superagent-test');
-const hlp = require('../../test/modules/helper');
+const ApiClient = require('../../test/modules/api.client');
+const ReleaseHelper = require('../../test/modules/release.helper');
+const api = new ApiClient();
+const releaseHelper = new ReleaseHelper(api);
 
-superagentTest(request);
+let res;
+describe('The VPDB `Release` storage API', () => {
 
-describe.skip('The VPDB `Release` storage API', function() {
+	describe('when downloading a release', () => {
 
-	describe('when downloading a release', function() {
-
-		before(function(done) {
-			hlp.setupUsers(request, {
-				countertest: { roles: [ 'member' ] },
-				moderator: { roles: [ 'moderator' ] },
-				contributor: { roles: [ 'contributor' ] }
-			}, done);
-		});
-
-		after(function(done) {
-			hlp.cleanup(request, done);
-		});
-
-		it('should update all the necessary download counters.', function(done) {
-
-			hlp.release.createRelease('contributor', request, function(release) {
-				const url = '/storage/v1/releases/' + release.id;
-				const body = {
-					files: [release.versions[0].files[0].file.id],
-					media: {
-						playfield_image: false,
-						playfield_video: false
-					},
-					game_media: false
-				};
-				hlp.storageToken(request, 'countertest', url, function(token) {
-					request.get(hlp.urlPath(url)).query({ token: token, body: JSON.stringify(body) }).end(function(err, res) {
-						hlp.expectStatus(err, res, 200);
-
-						const tests = [];
-
-						// game downloads
-						tests.push(function(next) {
-							request.get('/api/v1/games/' + release.game.id).end(function(err, res) {
-								hlp.expectStatus(err, res, 200);
-								expect(res.body.counter.downloads).to.be(1);
-								next();
-							});
-						});
-
-						// release / file downloads
-						tests.push(function(next) {
-							request.get('/api/v1/releases/' + release.id).end(function(err, res) {
-								hlp.expectStatus(err, res, 200);
-								expect(res.body.counter.downloads).to.be(1);
-								expect(res.body.versions[0].counter.downloads).to.be(1);
-								expect(res.body.versions[0].files[0].counter.downloads).to.be(1);
-								expect(res.body.versions[0].files[0].file.counter.downloads).to.be(1);
-								next();
-							});
-						});
-
-						// check user counter
-						tests.push(function(next) {
-							request.get('/api/v1/user').as('countertest').end(function(err, res) {
-								hlp.expectStatus(err, res, 200);
-								expect(res.body.counter.downloads).to.be(1);
-								next();
-							});
-						});
-
-						async.series(tests, done);
-					});
-				});
+		before(async () => {
+			await api.setupUsers({
+				countertest: { roles: ['member'] },
+				moderator: { roles: ['moderator'] },
+				contributor: { roles: ['contributor'] }
 			});
+		});
+
+		after(async () => await api.teardown());
+
+		it('should update all the necessary download counters.', async () => {
+
+			const release = await releaseHelper.createRelease('contributor');
+			const url = '/storage/v1/releases/' + release.id;
+			const body = {
+				files: [release.versions[0].files[0].file.id],
+				media: {
+					playfield_image: false,
+					playfield_video: false
+				},
+				game_media: false
+			};
+			const token = await api.retrieveStorageToken('countertest', url);
+			await api
+				.withQuery(({ token: token, body: JSON.stringify(body) }))
+				.debug()
+				.getAbsolute(url)
+				.then(res => res.expectStatus(200));
+
+			// game downloads
+			res = await api.get('/v1/games/' + release.game.id).then(res => res.expectStatus(200));
+			expect(res.data.counter.downloads).to.be(1);
+
+			// release / file downloads
+			res = await api.get('/v1/releases/' + release.id).then(res => res.expectStatus(200));
+			expect(res.data.counter.downloads).to.be(1);
+			expect(res.data.versions[0].counter.downloads).to.be(1);
+			expect(res.data.versions[0].files[0].counter.downloads).to.be(1);
+			expect(res.data.versions[0].files[0].file.counter.downloads).to.be(1);
+
+			// check user counter
+			res = await api.as('countertest').get('/v1/user').then(res => res.expectStatus(200));
+			expect(res.data.counter.downloads).to.be(1);
 		});
 	});
 

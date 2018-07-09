@@ -19,6 +19,7 @@
 
 import { get, keys, omitBy, pickBy } from 'lodash';
 import { Document, FileReferenceDocument, FileReferenceOptions, Schema } from 'mongoose';
+import { logger } from '../logger';
 
 import { state } from '../../state';
 import { explodePaths, traversePaths } from './util';
@@ -105,6 +106,7 @@ export function fileReferencePlugin(schema: Schema, options: FileReferenceOption
 
 		// remove file references from db
 		for (const file of files) {
+			logger.debug('[fileReferencePlugin] Removing referenced file %s', file.toDetailedString());
 			await file.remove();
 		}
 	});

@@ -26,7 +26,6 @@ import { fileReferencePlugin } from '../common/mongoose/file.reference.plugin';
 import { metricsPlugin } from '../common/mongoose/metrics.plugin';
 import { prettyIdPlugin } from '../common/mongoose/pretty.id.plugin';
 import { sortableTitlePlugin } from '../common/mongoose/sortable.title.plugin';
-import { config } from '../common/settings';
 import { File } from '../files/file';
 import { state } from '../state';
 
@@ -157,6 +156,8 @@ gameSchema.path('_backglass').validate(async function(this: Document, backglass:
 	return true;
 });
 
+// TODO validate logo
+
 //-----------------------------------------------------------------------------
 // METHODS
 //-----------------------------------------------------------------------------
@@ -168,8 +169,18 @@ gameSchema.methods.isRestricted = function(what: 'release' | 'backglass'): boole
 //-----------------------------------------------------------------------------
 // TRIGGERS
 //-----------------------------------------------------------------------------
-gameSchema.pre('remove', async function() {
-	await state.models.Rating.remove({ '_ref.game': this._id }).exec();
-	await state.models.Star.remove({ '_ref.game': this._id }).exec();
-	await state.models.Medium.remove({ '_ref.game': this._id }).exec();
+gameSchema.post('remove', async function() {
+	// remove reference separately so post-hooks are run
+	const ratings = await state.models.Rating.find({ '_ref.game': this._id }).exec();
+	for (const rating of ratings) {
+		await rating.remove();
+	}
+	const stars = await state.models.Star.find({ '_ref.game': this._id }).exec();
+	for (const star of stars) {
+		await star.remove();
+	}
+	const media = await state.models.Medium.find({ '_ref.game': this._id }).exec();
+	for (const medium of media) {
+		await medium.remove();
+	}
 });

@@ -19,7 +19,7 @@
 
 import Bluebird from 'bluebird';
 import Bull, { Job, Queue } from 'bull';
-import { exists, rename, unlink } from 'fs';
+import { exists, rename, stat, Stats, unlink } from 'fs';
 import { promisify } from 'util';
 
 import { dirname } from 'path';
@@ -34,6 +34,7 @@ import { processorManager } from './processor.manager';
 const renameAsync = promisify(rename);
 const existsAsync = promisify(exists);
 const unlinkAsync = promisify(unlink);
+const statAsync = promisify(stat);
 
 /**
  * Processes files after upload.
@@ -111,6 +112,33 @@ class ProcessorQueue {
 		if (n === 0) {
 			logger.info('[ProcessorQueue.processFile] No processors matched %s.', file.toDetailedString());
 		}
+	}
+
+	/**
+	 * Stats a file and waits until it has been created.
+	 * @param {File} file
+	 * @param {FileVariation | null} variation
+	 * @returns {Promise<Stats>}
+	 */
+	public async stats(file: File, variation: FileVariation | null): Promise<Stats> {
+		const path = file.getPath(variation);
+		let stats: Stats;
+		try {
+			stats = await statAsync(path);
+			// variation creation has already begun but not finished
+			/* istanbul ignore if: this is really hard to test because it's a race condition */
+			if (stats.size === 0) {
+				logger.info('[ProcessorQueue.stats] Waiting for %s to finish', file.toShortString());
+				await this.waitForVariationCreation(file, variation);
+				stats = await statAsync(path);
+			}
+		} catch (err) {
+			// statAsync failed, no file at all yet.
+			logger.info('[ProcessorQueue.stats] Waiting for %s to start (and finish)', file.toShortString());
+			await this.waitForVariationCreation(file, variation);
+			stats = await statAsync(path);
+		}
+		return stats;
 	}
 
 	/**

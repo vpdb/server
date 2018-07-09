@@ -26,8 +26,10 @@ require('bluebird').promisifyAll(gm.prototype);
 
 const rar = resolve(__dirname, '../../data/test/files/dmd.rar');
 const zip = resolve(__dirname, '../../data/test/files/dmd.zip');
+const rom = resolve(__dirname, '../../data/test/files/hulk.zip');
 const vpt = resolve(__dirname, '../../data/test/files/empty.vpt');
 const vpt2 = resolve(__dirname, '../../data/test/files/table.vpt');
+const mp3 = resolve(__dirname, '../../data/test/files/test.mp3');
 const mp4 = resolve(__dirname, '../../data/test/files/afm.f4v');
 const avi = resolve(__dirname, '../../data/test/files/afm.avi');
 
@@ -50,6 +52,33 @@ class FileHelper {
 	async createPlayfield(user, orientation, type, opts) {
 		const playfields = await this.createPlayfields(user, orientation, 1, type, opts);
 		return playfields[0];
+	}
+
+	/**
+	 * Uploads a logo at 600x200 pixels.
+	 *
+	 * @param user Uploader
+	 * @param opts
+	 * @returns {Promise<Object>} Uploaded file
+	 */
+	async createLogo(user, opts) {
+		opts = opts || {};
+		const fileType = 'logo';
+		const mimeType = 'image/png';
+		const teardown = opts.keep ? false : undefined;
+		const name = 'logo.png';
+		const img = gm(600, 200, pleasejs.make_color());
+		const data = await img.toBufferAsync('PNG');
+		const res = await this.api.onStorage()
+			.as(user)
+			.markTeardown(teardown)
+			.withQuery({ type: fileType })
+			.withContentType(mimeType)
+			.withHeader('Content-Disposition', 'attachment; filename="' + name + '"')
+			.withHeader('Content-Length', data.length)
+			.post('/v1/files', data)
+			.then(res => res.expectStatus(201));
+		return res.data;
 	}
 
 	/**
@@ -144,10 +173,29 @@ class FileHelper {
 		return res.data;
 	}
 
-	async createTextfile(user) {
+	async createRom(user, opts) {
+		opts = opts || {};
+		const fileName = opts.fileName || 'hulk.zip';
+		const teardown = opts.keep ? false : undefined;
+		const data = readFileSync(rom);
 		const res = await this.api.onStorage()
 			.as(user)
-			.markTeardown()
+			.markTeardown(teardown)
+			.withQuery({ type: 'rom' })
+			.withContentType('application/zip')
+			.withHeader('Content-Disposition', 'attachment; filename="' + fileName + '"')
+			.withHeader('Content-Length', data.length)
+			.post('/v1/files', data)
+			.then(res => res.expectStatus(201));
+		return res.data;
+	}
+
+	async createTextfile(user, opts) {
+		opts = opts || {};
+		const teardown = opts.keep ? false : undefined;
+		const res = await this.api.onStorage()
+			.as(user)
+			.markTeardown(teardown)
 			.withQuery({ type: 'release' })
 			.withContentType('text/plain')
 			.withHeader('Content-Disposition', 'attachment; filename="README.txt"')
@@ -170,11 +218,29 @@ class FileHelper {
 		return res.data;
 	}
 
-	async createAvi(user) {
-		const data = readFileSync(avi);
+	async createMp3(user, opts) {
+		opts = opts || {};
+		const data = readFileSync(mp3);
+		const teardown = opts.keep ? false : undefined;
 		const res = await this.api.onStorage()
 			.as(user)
-			.markTeardown()
+			.markTeardown(teardown)
+			.withQuery({ type: 'release' })
+			.withContentType('audio/mp3')
+			.withHeader('Content-Disposition', 'attachment; filename="test.mp3"')
+			.withHeader('Content-Length', data.length)
+			.post('/v1/files', data)
+			.then(res => res.expectStatus(201));
+		return res.data;
+	}
+
+	async createAvi(user, opts) {
+		opts = opts || {};
+		const data = readFileSync(avi);
+		const teardown = opts.keep ? false : undefined;
+		const res = await this.api.onStorage()
+			.as(user)
+			.markTeardown(teardown)
 			.withQuery({ type: 'playfield-fs' })
 			.withContentType('video/avi')
 			.withHeader('Content-Disposition', 'attachment; filename="playfield.avi"')

@@ -16,6 +16,10 @@ const isString = require('lodash').isString;
 const isObject = require('lodash').isObject;
 const FormData = require('form-data');
 
+const FileHelper = require('./file.helper');
+const ReleaseHelper = require('./release.helper');
+const GameHelper = require('./game.helper');
+
 const ApiClientResult = require('./api.client.result');
 
 class ApiClient {
@@ -23,6 +27,10 @@ class ApiClient {
 	constructor(opts) {
 
 		opts = opts || {};
+
+		this.fileHelper = new FileHelper(this);
+		this.gameHelper = new GameHelper(this);
+		this.releaseHelper = new ReleaseHelper(this);
 
 		this._users = new Map();
 		this._tokens = new Map();
@@ -244,6 +252,16 @@ class ApiClient {
 	 */
 	withContentType(contentType) {
 		return this.withHeader('Content-Type', contentType);
+	}
+
+	/**
+	 * Indicates the type of data that the server will respond with.
+	 * @param {string} responseType One of: 'arraybuffer', 'blob', 'document', 'json', 'text', 'stream'
+	 * @returns {ApiClient}
+	 */
+	responseAs(responseType) {
+		this._config.responseType = responseType;
+		return this;
 	}
 
 	/**

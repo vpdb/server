@@ -39,30 +39,34 @@ class ReleaseHelper {
 	 * @param game Game to link to
 	 * @param opts Configuration object
 	 * @param {string} opts.author User name of the author
+	 * @param {object[]} opts.files Additional version files
+	 * @param {object} opts.file Extend version file with this data
+	 * @param {object} opts.release Extend release with this data
 	 * @returns {Promise<Object>} Created release
 	 */
 	async createReleaseForGame(user, game, opts) {
 		opts = opts || {};
 		const vptFile = await this.fileHelper.createVpt(user, { keep: true });
 		const playfield = await this.fileHelper.createPlayfield(user, 'fs', null, { keep: true });
+		const additionalFiles = opts.files || [];
 		const res = await this.api
 			.as(user)
 			.markTeardown()
-			.post('/v1/releases', {
+			.post('/v1/releases', Object.assign({
 				name: faker.company.catchPhraseAdjective() + ' Edition',
 				license: 'by-sa',
 				_game: game.id,
 				versions: [{
-					files: [{
+					files: [ Object.assign({
 						_file: vptFile.id,
 						_playfield_image: playfield.id,
 						_compatibility: ['9.9.0'],
 						flavor: { orientation: 'fs', lighting: 'night' }
-					}],
+					}, opts.file || {}), ...additionalFiles],
 					version: '1.0.0'
 				}],
 				authors: [{ _user: this.api.getUser(opts.author || user).id, roles: ['Table Creator'] }]
-			}).then(res => res.expectStatus(201));
+			}, opts.release || {})).then(res => res.expectStatus(201));
 		const release = res.data;
 		release.game = game;
 		return release;
@@ -84,13 +88,14 @@ class ReleaseHelper {
 	 * Creates a DirectB2s backglass release.
 	 *
 	 * @param user Uploader
-	 * @param [opts] Configuration object
-	 * @param {string} opts.author User name of the author
+	 * @param {object} [opts] Configuration object
+	 * @param {object} [opts.game] Use provided game object instead of creating a new one
+	 * @param {string} [opts.author] User name of the author
 	 * @returns {Promise<Object>} Created DirectB2S
 	 */
 	async createDirectB2S(user, opts) {
 		opts = opts || {};
-		const game = await this.gameHelper.createGame('moderator');
+		const game = opts.game || (await this.gameHelper.createGame('moderator'));
 		const bgFile = await this.fileHelper.createDirectB2S(user, { keep: true });
 		const res = await this.api
 			.as(user)

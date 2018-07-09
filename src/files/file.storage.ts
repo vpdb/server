@@ -278,23 +278,7 @@ export class FileStorage extends Api {
 
 		const variation = file.getVariation(variationName);
 		const path = file.getPath(variation);
-
-		let stats: Stats;
-		try {
-			stats = await statAsync(path);
-			// variation creation has already begun but not finished
-			/* istanbul ignore if: this is really hard to test because it's a race condition */
-			if (stats.size === 0) {
-				logger.info('[FileStorage.serve] Waiting for %s to finish', file.toShortString());
-				await processorQueue.waitForVariationCreation(file, variation);
-				stats = await statAsync(path);
-			}
-		} catch (err) {
-			// statAsync failed, no file at all yet.
-			logger.info('[FileStorage.serve] Waiting for %s to start (and finish)', file.toShortString());
-			await processorQueue.waitForVariationCreation(file, variation);
-			stats = await statAsync(path);
-		}
+		const stats = await processorQueue.stats(file, variation);
 
 		// Now serve the file!
 		// -------------------

@@ -59,6 +59,21 @@ class GameHelper {
 		return games;
 	}
 
+	async createRom(user, gameId, opts) {
+		opts = opts || {};
+		const name = opts.romName || 'hulk';
+		const file = await this.fileHelper.createRom(user, Object.assign({}, opts, { keep: true }));
+		const res = await this.api
+			.as(user)
+			.markTeardown('id', '/v1/roms')
+			.post('/v1/games/' + gameId + '/roms', {
+				id: name,
+				_file: file.id
+			})
+			.then(res => res.expectStatus(201));
+		return res.data;
+	}
+
 	getGame(attrs, ipdbNumber) {
 		const game = this._popGame(ipdbNumber);
 		if (game.short) {

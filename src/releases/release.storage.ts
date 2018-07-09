@@ -18,7 +18,7 @@
  */
 
 import archiver, { Archiver } from 'archiver';
-import { createReadStream } from 'fs';
+import { createReadStream, exists } from 'fs';
 import { intersection, isArray, isUndefined, sortBy } from 'lodash';
 import { Types } from 'mongoose';
 import { basename, extname } from 'path';
@@ -39,8 +39,12 @@ import { Release } from './release';
 import { flavors } from './release.flavors';
 import { ReleaseVersionFile } from './version/file/release.version.file';
 import { ReleaseVersion } from './version/release.version';
+import { promisify } from "util";
+import { FileVariation } from '../files/file.variations';
+import { processorQueue } from '../files/processor/processor.queue';
 
 const Unrar = require('unrar');
+const existsAsync = promisify(exists);
 
 export class ReleaseStorage extends Api {
 
@@ -84,6 +88,7 @@ export class ReleaseStorage extends Api {
 			gameName += ' (' + game.manufacturer + ' ' + game.year + ')';
 		}
 
+		ctx.respond = false;
 		ctx.status = 200;
 		ctx.set('Content-Type', 'application/zip');
 		ctx.set('Content-Disposition', 'attachment; filename="' + gameName + '.zip"'); // todo add release name and authors to zip filename
@@ -93,7 +98,7 @@ export class ReleaseStorage extends Api {
 		const releaseFiles: string[] = [];
 		for (const file of requestedFiles) {
 			let name = '';
-			let path = '';
+			let variation: FileVariation = null;
 			let filename;
 			switch (file.file_type) {
 				case 'logo':
@@ -113,11 +118,10 @@ export class ReleaseStorage extends Api {
 				case 'playfield-ws':
 					if (file.getMimeCategory() === 'image') {
 						name = 'PinballX/Media/Visual Pinball/Table Images/' + gameName + file.getExt();
-						path = file.getPath(file.getVariation('hyperpin'));
+						variation = file.getVariation('hyperpin');
 					}
 					if (file.getMimeCategory() === 'video') {
 						name = 'PinballX/Media/Visual Pinball/Table Videos/' + gameName + file.getExt();
-						path = file.getPath();
 					}
 					break;
 
@@ -164,7 +168,14 @@ export class ReleaseStorage extends Api {
 			}
 			// per default, put files into the root folder.
 			name = name || file.name;
-			archive.append(createReadStream(path || file.getPath()), {
+
+			// wait until created
+			if (variation) {
+				await processorQueue.stats(file, variation);
+			}
+
+			// now stream it
+			archive.append(createReadStream(file.getPath(variation)), {
 				name,
 				date: file.created_at,
 			});
@@ -300,10 +311,10 @@ export class ReleaseStorage extends Api {
 						numTables++;
 
 						// add media if checked
-						if (body.playfield_image && versionFile._playfield_image) {
+						if (body.media && body.media.playfield_image && versionFile._playfield_image) {
 							requestedFiles.push(versionFile._playfield_image as FileExtended);
 						}
-						if (body.playfield_video && versionFile._playfield_video) {
+						if (body.media && body.media.playfield_video && versionFile._playfield_video) {
 							requestedFiles.push(versionFile._playfield_video as FileExtended);
 						}
 					}
@@ -491,8 +502,10 @@ interface FileExtended extends File {
 
 interface DownloadReleaseBody {
 	files: string[];
-	playfield_image: boolean;
-	playfield_video: boolean;
+	media: {
+		playfield_image: boolean;
+		playfield_video: boolean;
+	};
 	game_media: string[];
 	backglass: string;
 	roms: string[];

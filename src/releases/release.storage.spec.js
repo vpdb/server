@@ -21,30 +21,110 @@
 /* global describe, before, after, it */
 
 const expect = require('expect.js');
+const yauzl = require('yauzl');
 
 const ApiClient = require('../../test/modules/api.client');
-const ReleaseHelper = require('../../test/modules/release.helper');
+
 const api = new ApiClient();
-const releaseHelper = new ReleaseHelper(api);
 
 let res;
 describe('The VPDB `Release` storage API', () => {
 
+	let release, backglass, mp3, rom, pfVideo, txt, logo, game, gameName;
 	describe('when downloading a release', () => {
 
 		before(async () => {
 			await api.setupUsers({
 				countertest: { roles: ['member'] },
 				moderator: { roles: ['moderator'] },
-				contributor: { roles: ['contributor'] }
+				contributor: { roles: ['contributor'] },
+				creator: { roles: ['moderator', 'contributor'] },
 			});
+
+			// create a full game
+			logo = await api.fileHelper.createLogo('creator', { keep: true });
+			game = await api.gameHelper.createGame('creator', { _logo: logo.id });
+			gameName = game.title;
+			if (game.year && game.manufacturer) {
+				gameName += ' (' + game.manufacturer + ' ' + game.year + ')';
+			}
+
+			// create a backglass
+			backglass = await api.releaseHelper.createDirectB2S('creator', { game: game });
+
+			// create rom
+			rom = await api.gameHelper.createRom('creator', game.id);
+
+			// create full release
+			pfVideo = await api.fileHelper.createAvi('creator', { keep: true });
+			mp3 = await api.fileHelper.createMp3('creator', { keep: true });
+			txt = await api.fileHelper.createTextfile('creator', { keep: true });
+
+			release = await api.releaseHelper.createReleaseForGame('creator', game, {
+				release: {
+					description: 'Release description',
+					acknowledgements: 'CREDITS file'
+				},
+				file: { _playfield_video: pfVideo.id },
+				files: [{ _file: mp3.id }, { _file: txt.id }]
+			});
+			res = await api.get('/v1/games/' + game.id).then(res => res.expectStatus(200));
+			game = res.data;
 		});
 
 		after(async () => await api.teardown());
 
+		it('should correctly download everything', async () => {
+
+			const body = {
+				files: [release.versions[0].files[0].file.id],
+				media: {
+					playfield_image: true,
+					playfield_video: true
+				},
+				game_media: game.media.map(m => m.id),
+				backglass: backglass.id,
+				roms: [rom.id]
+			};
+
+			res = await api
+				.onStorage()
+				.as('creator')
+				.withQuery(({ body: JSON.stringify(body) }))
+				.withHeader('Accept', 'application/zip')
+				.responseAs('arraybuffer')
+				.get('/v1/releases/' + release.id)
+				.then(res => res.expectStatus(200));
+
+			const entries = await new Promise((resolve, reject) => {
+				const e = new Map();
+				yauzl.fromBuffer(res.data, (err, zipfile) => {
+					if (err) {
+						return reject(err);
+					}
+					zipfile.on('entry', entry => e.set(entry.fileName, entry.uncompressedSize));
+					zipfile.on('end', () => resolve(e));
+					zipfile.on('error', reject);
+				});
+			});
+
+			const tableFile = release.versions[0].files.find(vf => vf.file.mime_type.includes('visual-pinball-table'));
+
+			expect(entries.get(`Visual Pinball/Tables/${gameName}.vpt`)).to.be(tableFile.file.bytes);
+			expect(entries.get(`Visual Pinball/Tables/${txt.name}`)).to.be(txt.bytes);
+			expect(entries.get(`Visual Pinball/Music/${mp3.name}`)).to.be(mp3.bytes);
+			expect(entries.get(`Visual Pinball/VPinMAME/roms/${rom.name}`)).to.be(rom.bytes);
+			expect(entries.get(`Visual Pinball/Tables/${gameName}.directb2s`)).to.be.ok();
+			expect(entries.get(`PinballX/Media/Visual Pinball/Wheel Images/${gameName}.png`)).to.be.ok();
+			expect(entries.get(`PinballX/Media/Visual Pinball/Table Images/${gameName}.png`)).to.be.ok();
+			expect(entries.get(`PinballX/Media/Visual Pinball/Table Videos/${gameName}.avi`)).to.be.ok();
+			expect(entries.get(`README.txt`)).to.be.ok();
+			expect(entries.get(`CREDITS.txt`)).to.be.ok();
+		});
+
 		it('should update all the necessary download counters.', async () => {
 
-			const release = await releaseHelper.createRelease('contributor');
+			const release = await api.releaseHelper.createRelease('contributor');
 			const url = '/storage/v1/releases/' + release.id;
 			const body = {
 				files: [release.versions[0].files[0].file.id],
@@ -57,7 +137,6 @@ describe('The VPDB `Release` storage API', () => {
 			const token = await api.retrieveStorageToken('countertest', url);
 			await api
 				.withQuery(({ token: token, body: JSON.stringify(body) }))
-				.debug()
 				.getAbsolute(url)
 				.then(res => res.expectStatus(200));
 

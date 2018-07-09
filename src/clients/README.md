@@ -93,9 +93,9 @@ user is logged at vpdb.io and has VPDB Agent running on the cab. The caller is t
     			"client_id": "1234-abcd", 
     			"app_name": "VPDB Agent", 
     			"machine_name": "My Pincab",
-    			"machine_os": "win64"
-    			"machine_os_version": "10"
-    			"machine_host": "1.1.1.1",
+    			"machine_os": "win64",
+    			"machine_os_version": "10",
+    			"machine_host": "1.1.1.1"
     		},
     		"channels": {
     			"file_system": { 
@@ -185,7 +185,7 @@ will result in a message sent to the caller:
 ```json
 {
 	"event": "error",
-	"error": "Invalid client ID \"non-existent-id\"."
+	"error": "Invalid client ID \"non-existent-id\".",
 	"message": {
 		"recipient": "non-existent-id",
 		"action": "download_release",
@@ -210,7 +210,7 @@ status by calling `GET /v1/clients` after being relaunched:
 				"session_id": "0987-yxyz",
 				"data": { ... } },
 				"last_events": {
-					"download_start": { "data": { ... }, "created_at": "..." }
+					"download_start": { "data": { ... }, "created_at": "..." },
 					"download_progress": { "data": { ... }, "created_at": "..." }
 				}
 			} ]
@@ -236,7 +236,7 @@ the server will announce it to all subscribed clients:
 ```
 
 If something happens on client side the callee can't handle (let's say disk is full during a download), it can also send
-an error explictly:
+an error explicitly:
 
 ```json
 {
@@ -253,3 +253,7 @@ Only registered users can make use of the websocket. One way would be passing th
 the websocket as described [here](https://github.com/websockets/ws/issues/929). A good idea is probably to introduce a 
 scope for realtime access, so it can be easily disabled per user.
 
+### References
+
+- [Server Library](https://github.com/websockets/ws)
+- [Websockets for Angular](https://github.com/gdi2290/angular-websocket)

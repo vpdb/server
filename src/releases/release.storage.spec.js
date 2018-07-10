@@ -31,48 +31,193 @@ let res;
 describe('The VPDB `Release` storage API', () => {
 
 	let release, backglass, mp3, rom, pfVideo, txt, logo, game, gameName;
-	describe('when downloading a release', () => {
-
-		before(async () => {
-			await api.setupUsers({
-				countertest: { roles: ['member'] },
-				moderator: { roles: ['moderator'] },
-				contributor: { roles: ['contributor'] },
-				creator: { roles: ['moderator', 'contributor'] },
-			});
-
-			// create a full game
-			logo = await api.fileHelper.createLogo('creator', { keep: true });
-			game = await api.gameHelper.createGame('creator', { _logo: logo.id });
-			gameName = game.title;
-			if (game.year && game.manufacturer) {
-				gameName += ' (' + game.manufacturer + ' ' + game.year + ')';
-			}
-
-			// create a backglass
-			backglass = await api.releaseHelper.createDirectB2S('creator', { game: game });
-
-			// create rom
-			rom = await api.gameHelper.createRom('creator', game.id);
-
-			// create full release
-			pfVideo = await api.fileHelper.createAvi('creator', { keep: true });
-			mp3 = await api.fileHelper.createMp3('creator', { keep: true });
-			txt = await api.fileHelper.createTextfile('creator', { keep: true });
-
-			release = await api.releaseHelper.createReleaseForGame('creator', game, {
-				release: {
-					description: 'Release description',
-					acknowledgements: 'CREDITS file'
-				},
-				file: { _playfield_video: pfVideo.id },
-				files: [{ _file: mp3.id }, { _file: txt.id }]
-			});
-			res = await api.get('/v1/games/' + game.id).then(res => res.expectStatus(200));
-			game = res.data;
+	before(async () => {
+		await api.setupUsers({
+			countertest: { roles: ['member'] },
+			moderator: { roles: ['moderator'] },
+			contributor: { roles: ['contributor'] },
+			creator: { roles: ['moderator', 'contributor'] },
 		});
 
-		after(async () => await api.teardown());
+		// create a full game
+		logo = await api.fileHelper.createLogo('creator', { keep: true });
+		game = await api.gameHelper.createGame('creator', { _logo: logo.id });
+		gameName = game.title;
+		if (game.year && game.manufacturer) {
+			gameName += ' (' + game.manufacturer + ' ' + game.year + ')';
+		}
+
+		// create a backglass
+		backglass = await api.releaseHelper.createDirectB2S('creator', { game: game });
+
+		// create rom
+		rom = await api.gameHelper.createRom('creator', game.id);
+
+		// create full release
+		pfVideo = await api.fileHelper.createAvi('creator', { keep: true });
+		mp3 = await api.fileHelper.createMp3('creator', { keep: true });
+		txt = await api.fileHelper.createTextfile('creator', { keep: true });
+		const folderZip = await api.fileHelper.createZip('creator', { file: 'release.asset.folder.zip', keep: true });
+		const rootZip = await api.fileHelper.createZip('creator', { file: 'release.asset.root.zip', keep: true });
+		const folderRar = await api.fileHelper.createRar('creator', { file: 'release.asset.folder.rar', keep: true });
+		const rootRar = await api.fileHelper.createRar('creator', { file: 'release.asset.root.rar', keep: true });
+
+		release = await api.releaseHelper.createReleaseForGame('creator', game, {
+			release: {
+				description: 'Release description',
+				acknowledgements: 'CREDITS file'
+			},
+			file: { _playfield_video: pfVideo.id },
+			files: [
+				{ _file: mp3.id },
+				{ _file: txt.id },
+				{ _file: folderZip.id },
+				{ _file: rootZip.id },
+				{ _file: folderRar.id },
+				{ _file: rootRar.id },
+			]
+		});
+		res = await api.get('/v1/games/' + game.id).then(res => res.expectStatus(200));
+		game = res.data;
+	});
+
+	after(async () => await api.teardown());
+
+	describe('when downloading a release', () => {
+
+		it('should fail when invalid JSON is provided as body', async () => {
+			res = await api
+				.onStorage()
+				.as('creator')
+				.withQuery(({ body: '{ "test"' }))
+				.withHeader('Accept', 'application/zip')
+				.get('/v1/releases/' + release.id)
+				.then(res => res.expectError(400, 'Error parsing JSON'));
+		});
+
+		it('should fail when no files are provided', async () => {
+			res = await api
+				.onStorage()
+				.as('creator')
+				.withQuery(({ body: JSON.stringify({ files: [] })}))
+				.withHeader('Accept', 'application/zip')
+				.get('/v1/releases/' + release.id)
+				.then(res => res.expectError(422, 'need to provide which files'));
+		});
+
+		it('should fail for invalid release', async () => {
+			res = await api
+				.onStorage()
+				.as('creator')
+				.withQuery(({ body: JSON.stringify({ files: [ 'duh' ] })}))
+				.withHeader('Accept', 'application/zip')
+				.get('/v1/releases/foobar')
+				.then(res => res.expectError(404, 'No such release'));
+		});
+
+		it('should fail when invalid release files are provided', async () => {
+			res = await api
+				.onStorage()
+				.as('creator')
+				.withQuery(({ body: JSON.stringify({ files: [ 'suckah' ] })}))
+				.withHeader('Accept', 'application/zip')
+				.get('/v1/releases/' + release.id)
+				.then(res => res.expectError(422, 'did not match any release file'));
+		});
+
+		it('should fail when invalid media files are provided', async () => {
+			res = await api
+				.onStorage()
+				.as('creator')
+				.withQuery(({
+					body: JSON.stringify({
+						files: [release.versions[0].files[0].file.id],
+						game_media: ['foobar']
+					})
+				}))
+				.withHeader('Accept', 'application/zip')
+				.get('/v1/releases/' + release.id)
+				.then(res => res.expectError(422, 'is not part of the game\'s media'));
+		});
+
+		it('should fail when invalid ROM files are provided', async () => {
+			res = await api
+				.onStorage()
+				.as('creator')
+				.withQuery(({
+					body: JSON.stringify({
+						files: [release.versions[0].files[0].file.id],
+						roms: ['foobar']
+					})
+				}))
+				.withHeader('Accept', 'application/zip')
+				.get('/v1/releases/' + release.id)
+				.then(res => res.expectError(422, 'Could not find ROM'));
+		});
+
+		it('should fail when invalid backglass files are provided', async () => {
+			res = await api
+				.onStorage()
+				.as('creator')
+				.withQuery(({
+					body: JSON.stringify({
+						files: [release.versions[0].files[0].file.id],
+						backglass: ['foobar']
+					})
+				}))
+				.withHeader('Accept', 'application/zip')
+				.get('/v1/releases/' + release.id)
+				.then(res => res.expectError(422, 'Could not find backglass'));
+		});
+
+		it('should fail when unrelated backglass files are provided', async () => {
+			const bg = await api.releaseHelper.createDirectB2S('creator');
+			res = await api
+				.onStorage()
+				.as('creator')
+				.withQuery(({
+					body: JSON.stringify({
+						files: [release.versions[0].files[0].file.id],
+						backglass: [bg.id]
+					})
+				}))
+				.withHeader('Accept', 'application/zip')
+				.get('/v1/releases/' + release.id)
+				.then(res => res.expectError(422, 'is not the same game as'));
+		});
+
+		it('should fail validation when no files are provided', async () => {
+			res = await api
+				.onStorage()
+				.as('creator')
+				.withQuery(({ body: JSON.stringify({ files: [] })}))
+				.withHeader('Accept', 'application/zip')
+				.head('/v1/releases/' + release.id)
+				.then(res => res.expectStatus(204).expectHeader('x-error', 'You need to provide which files you want to include in the download.'));
+		});
+
+		it('should correctly validate the download', async () => {
+
+			const body = {
+				files: [release.versions[0].files[0].file.id],
+				media: {
+					playfield_image: true,
+					playfield_video: true
+				},
+				game_media: game.media.map(m => m.id),
+				backglass: backglass.id,
+				roms: [rom.id]
+			};
+
+			res = await api
+				.onStorage()
+				.as('creator')
+				.withQuery(({ body: JSON.stringify(body) }))
+				.withHeader('Accept', 'application/zip')
+				.head('/v1/releases/' + release.id)
+				.then(res => res.expectStatus(204));
+		});
+
 
 		it('should correctly download everything', async () => {
 
@@ -115,9 +260,13 @@ describe('The VPDB `Release` storage API', () => {
 			expect(entries.get(`Visual Pinball/Music/${mp3.name}`)).to.be(mp3.bytes);
 			expect(entries.get(`Visual Pinball/VPinMAME/roms/${rom.name}`)).to.be(rom.bytes);
 			expect(entries.get(`Visual Pinball/Tables/${gameName}.directb2s`)).to.be.ok();
-			expect(entries.get(`PinballX/Media/Visual Pinball/Wheel Images/${gameName}.png`)).to.be.ok();
-			expect(entries.get(`PinballX/Media/Visual Pinball/Table Images/${gameName}.png`)).to.be.ok();
-			expect(entries.get(`PinballX/Media/Visual Pinball/Table Videos/${gameName}.avi`)).to.be.ok();
+			expect(entries.get(`PinballX/Media/Visual Pinball/Wheel Images/${gameName}.png`)).to.be.greaterThan(100);
+			expect(entries.get(`PinballX/Media/Visual Pinball/Table Images/${gameName}.png`)).to.be.greaterThan(100);
+			expect(entries.get(`PinballX/Media/Visual Pinball/Table Videos/${gameName}.avi`)).to.be.greaterThan(1000);
+			expect(entries.get(`Visual Pinball/Tables/release.asset.root/tablepic.from.zip.png`)).to.be.greaterThan(1000);
+			expect(entries.get(`Visual Pinball/Tables/release.asset.root/tablepic.from.rar.png`)).to.be.greaterThan(1000);
+			expect(entries.get(`Visual Pinball/Tables/subfolder-zip/tablepic.from.zip.png`)).to.be.greaterThan(1000);
+			expect(entries.get(`Visual Pinball/Tables/subfolder-rar/tablepic.from.rar.png`)).to.be.greaterThan(1000);
 			expect(entries.get(`README.txt`)).to.be.ok();
 			expect(entries.get(`CREDITS.txt`)).to.be.ok();
 		});
@@ -157,4 +306,23 @@ describe('The VPDB `Release` storage API', () => {
 		});
 	});
 
+	describe('when requesting a thumb redirection', () => {
+
+		it('should fail for a non-existent release', async () => {
+			await api
+				.onStorage()
+				.get('/v1/releases/foobar/thumb')
+				.then(res => res.expectError(404, 'No such release'));
+		});
+
+		it('should succeed for valid release', async () => {
+			res = await api
+				.onStorage()
+				.withQuery({ format: 'playfield-fs' })
+				.get('/v1/releases/' + release.id + '/thumb')
+				.then(res => res.expectStatus(302));
+			expect(res.headers['location']).to.contain('/storage/public/files/medium/');
+		});
+
+	});
 });

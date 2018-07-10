@@ -25,6 +25,7 @@ import { File, FilePathOptions } from './file';
 import { mimeTypes } from './file.mimetypes';
 import { fileTypes } from './file.types';
 import { FileVariation } from './file.variations';
+import { logger } from '../common/logger';
 
 /**
  * Contains the Game's instance methods so they can also be accessed

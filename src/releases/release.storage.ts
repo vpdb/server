@@ -210,22 +210,29 @@ export class ReleaseStorage extends Api {
 		} catch (err) {
 			ctx.set('Content-Length', String(0));
 			ctx.set('X-Error', err.message);
-			ctx.response.status = err.code;
+			ctx.response.status = err.statusCode;
 			ctx.response.body = null;
 		}
 	}
 
+	/**
+	 * Redirects to the desired thumb without knowing the file id
+	 *
+	 * @see GET /v1/releases/:release_id/thumb
+	 * @param {Context} ctx Koa context
+	 */
 	public async thumbRedirect(ctx: Context) {
 		const validFormats = fileTypes.getVariationNames(['playfield', 'playfield-fs', 'playfield-ws']);
 		const format = ctx.query.format && validFormats.includes(ctx.query.format) ? ctx.query.format : 'medium';
 
 		const release = await state.models.Release.findOne({ id: ctx.params.release_id })
 			.populate('versions.files._playfield_image')
+			.populate('versions.files._file')
 			.exec();
 
 		// fail if no release
 		if (!release) {
-			throw new ApiError('No such release with ID "%s".', ctx.params.id).status(404);
+			throw new ApiError('No such release with ID "%s".', ctx.params.release_id).status(404);
 		}
 
 		const thumb = state.serializers.Release.findThumb(ctx, release.versions, { thumbFormat: format });
@@ -253,7 +260,7 @@ export class ReleaseStorage extends Api {
 			try {
 				body = JSON.parse(ctx.query.body);
 			} catch (e) {
-				throw new ApiError(e, 'Error parsing JSON from URL query.').status(400);
+				throw new ApiError('Error parsing JSON from URL query: %s', e.message).status(400);
 			}
 		}
 		body = body || ctx.request.body;

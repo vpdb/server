@@ -111,7 +111,8 @@ class ApiClient {
 		this._config = {};
 		this._baseConfig = {
 			baseURL: this._baseUrl + path,
-			validateStatus: status => status >= 200
+			validateStatus: status => status >= 200,
+			maxRedirects: 0
 		};
 		this.api = axios.create();
 	}

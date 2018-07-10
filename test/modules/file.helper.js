@@ -24,8 +24,6 @@ const pleasejs = require('pleasejs');
 
 require('bluebird').promisifyAll(gm.prototype);
 
-const rar = resolve(__dirname, '../../data/test/files/dmd.rar');
-const zip = resolve(__dirname, '../../data/test/files/dmd.zip');
 const rom = resolve(__dirname, '../../data/test/files/hulk.zip');
 const vpt = resolve(__dirname, '../../data/test/files/empty.vpt');
 const vpt2 = resolve(__dirname, '../../data/test/files/table.vpt');
@@ -145,28 +143,36 @@ class FileHelper {
 		return res.data;
 	}
 
-	async createRar(user) {
+	async createRar(user, opts) {
+		opts = opts || {};
+		const file = opts.file || 'dmd.rar';
+		const teardown = opts.keep ? false : undefined;
+		const rar = resolve(__dirname, '../../data/test/files', file);
 		const data = readFileSync(rar);
 		const res = await this.api.onStorage()
 			.as(user)
-			.markTeardown()
+			.markTeardown(teardown)
 			.withQuery({ type: 'release' })
 			.withContentType('application/rar')
-			.withHeader('Content-Disposition', 'attachment; filename="dmd.rar"')
+			.withHeader('Content-Disposition', 'attachment; filename="' + file + '"')
 			.withHeader('Content-Length', String(data.length))
 			.post('/v1/files', data)
 			.then(res => res.expectStatus(201));
 		return res.data;
 	}
 
-	async createZip(user) {
+	async createZip(user, opts) {
+		opts = opts || {};
+		const file = opts.file || 'dmd.zip';
+		const teardown = opts.keep ? false : undefined;
+		const zip = resolve(__dirname, '../../data/test/files', file);
 		const data = readFileSync(zip);
 		const res = await this.api.onStorage()
 			.as(user)
-			.markTeardown()
+			.markTeardown(teardown)
 			.withQuery({ type: 'release' })
 			.withContentType('application/zip')
-			.withHeader('Content-Disposition', 'attachment; filename="dmd.zip"')
+			.withHeader('Content-Disposition', 'attachment; filename="' + file + '"')
 			.withHeader('Content-Length', data.length)
 			.post('/v1/files', data)
 			.then(res => res.expectStatus(201));

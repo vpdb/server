@@ -174,7 +174,7 @@ class ApiClientResult {
 		});
 		if (res.data) {
 			err += '\n<--';
-			err += '\n<-- ' + JSON.stringify(res.data, null, '  ').replace(/\n/g, '\n<-- ');
+			err += '\n<-- ' + JSON.stringify(Buffer.isBuffer(res.data ) ? res.data.toString() : res.data, null, '  ').replace(/\n/g, '\n<-- ');
 		}
 		err += '\n---\n--- Request config: ' + JSON.stringify(res.config);
 		return err;

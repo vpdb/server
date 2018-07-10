@@ -1,3 +1,16 @@
+const { existsSync, mkdirSync } = require('fs');
+
+const dataRoot = process.env.VPDB_DATA_ROOT || './data';
+const pubStorage = dataRoot + '/storage-test-public';
+const privStorage = dataRoot + '/storage-test-protected';
+
+if (!existsSync(pubStorage)) {
+	mkdirSync(pubStorage);
+}
+if (!existsSync(privStorage)) {
+	mkdirSync(privStorage);
+}
+
 /**
  * Test server configuration file.
  */
@@ -7,8 +20,8 @@ module.exports = {
 		name: 'Test API',
 		api: { protocol: 'http', hostname: 'localhost', port: 7357, pathname: '/api', prefix: '' },
 		storage: {
-			'public': { path: './data/storage-test-public', api: { protocol: 'http', hostname: 'localhost', port: 7357, pathname: '/storage/public', prefix: '' } },
-			'protected': { path: './data/storage-test-protected', api: { protocol: 'http', hostname: 'localhost', port: 7357, pathname: '/storage', prefix: '' } }
+			'public': { path: pubStorage, api: { protocol: 'http', hostname: 'localhost', port: 7357, pathname: '/storage/public', prefix: '' } },
+			'protected': { path: privStorage, api: { protocol: 'http', hostname: 'localhost', port: 7357, pathname: '/storage', prefix: '' } }
 		},
 		webapp: { protocol: 'http', hostname: 'localhost', port: 3333 },
 		db: 'mongodb://localhost/vpdb-test',

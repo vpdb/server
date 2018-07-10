@@ -30,6 +30,7 @@ export class Settings {
 	private readonly filePath: string;
 
 	constructor() {
+		/* istanbul ignore if */
 		if (!process.env.APP_SETTINGS) {
 			const e = new Error('Settings location not found. Please set the `APP_SETTINGS` environment variable to your configuration file and retry.');
 			logger.error(e.stack);
@@ -64,6 +65,7 @@ export class Settings {
 	 * @returns {boolean}
 	 * @private
 	 */
+	/* istanbul ignore next */
 	public _validate(validation: { [key: string]: any }, setting: { [key: string]: any }, path: string) {
 		let success = true;
 		let validationError: Array<{ path: string, message: string, setting?: string }> | { path: string, message: string, setting?: string };

@@ -407,17 +407,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		const opts: SerializerOptions = {
 			excludedFields: [],
 		};
-		let release = await state.models.Release.findOne({ id: ctx.params.id })
-			.populate({ path: '_game' })
-			.populate({ path: '_tags' })
-			.populate({ path: '_created_by' })
-			.populate({ path: 'authors._user' })
-			.populate({ path: 'versions.files._file' })
-			.populate({ path: 'versions.files._playfield_image' })
-			.populate({ path: 'versions.files._playfield_video' })
-			.populate({ path: 'versions.files._compatibility' })
-			.populate({ path: 'versions.files.validation._validated_by' })
-			.exec();
+		let release = await this.populateAll(state.models.Release.findOne({ id: ctx.params.id })).exec();
 
 		if (!release) {
 			throw new ApiError('No such release with ID "%s"', ctx.params.id).status(404);

@@ -18,11 +18,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-declare module "mongoose" {
+declare module 'mongoose' {
 	namespace Types {
 		export interface ObjectId {
 			_id: this;
-			equals(id: ObjectId): boolean;
+			equals(id: ObjectId | string): boolean;
 		}
 	}
 }

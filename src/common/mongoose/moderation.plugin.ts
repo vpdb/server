@@ -79,6 +79,7 @@ export function moderationPlugin(schema: Schema) {
 			return;
 		}
 		// check if _created_by is a contributor and auto-approve.
+		/* istanbul ignore else */
 		let user: User;
 		if (this.populated('_created_by')) {
 			user = this._created_by as User;
@@ -100,9 +101,6 @@ export function moderationPlugin(schema: Schema) {
 				auto_approved: true,
 				history: [{ event: 'approved', created_at: now, _created_by: user }],
 			} as ModerationData;
-			if (this.postApprove) {
-				return this.postApprove();
-			}
 		} else {
 			this.moderation = {
 				is_approved: false,
@@ -117,17 +115,26 @@ export function moderationPlugin(schema: Schema) {
 	/**
 	 * Returns the query used for listing only approved entities.
 	 *
+	 * Note that this can *add* entities to the result.
+	 *
 	 * @param {Context} ctx Koa context
 	 * @param {T} query Current query
 	 * @returns {Promise<T>} Moderated query
 	 */
 	schema.statics.handleModerationQuery = async function<T>(ctx: Context, query: T): Promise<T> {
+
+		// no moderation filter requested, move on.
+		if (!ctx.query || !ctx.query.moderation) {
+			return addToQuery({ 'moderation.is_approved': true }, query);
+		}
+
 		let isModerator = false;
 		if (ctx.query && ctx.query.moderation) {
 			if (!ctx.state.user) {
 				throw new ApiError('Must be logged in order to retrieve moderated items.').status(401);
 			}
 			const resource = modelResourceMap[this.modelName];
+			/* istanbul ignore if: configuration error */
 			if (!resource) {
 				logger.info(this);
 				throw new Error('Tried to check moderation permission for unmapped entity "' + this.modelName + '".');
@@ -135,9 +142,6 @@ export function moderationPlugin(schema: Schema) {
 			isModerator = await acl.isAllowed(ctx.state.user.id, resource, 'moderate');
 		}
 
-		if (!ctx.query || !ctx.query.moderation) {
-			return addToQuery({ 'moderation.is_approved': true }, query);
-		}
 		if (!isModerator) {
 			throw new ApiError('Must be moderator in order to retrieved moderated items.').status(403);
 		}
@@ -145,7 +149,7 @@ export function moderationPlugin(schema: Schema) {
 		const filters = ['refused', 'pending', 'auto_approved', 'manually_approved', 'all'];
 
 		if (!includes(filters, ctx.query.moderation)) {
-			throw new ApiError('Invalid moderation filter. Valid filters are: [ "' + filters.join('", "') + '" ].').status(403);
+			throw new ApiError('Invalid moderation filter. Valid filters are: [ "' + filters.join('", "') + '" ].').status(400);
 		}
 		switch (ctx.query.moderation) {
 			case 'refused':
@@ -457,11 +461,6 @@ declare module 'mongoose' {
 		 * @returns {Promise<ModeratedDocument>}
 		 */
 		moderationChanged?(previousModeration: { isApproved: boolean, isRefused: boolean }, moderation: { isApproved: boolean, isRefused: boolean }): Promise<ModeratedDocument>;
-
-		/**
-		 * An optional hook executed when the moderation was approved.
-		 */
-		postApprove?(): void;
 	}
 
 	export interface ModerationData extends Document {

@@ -19,6 +19,7 @@
 
 import { exists } from 'fs';
 import gm from 'gm';
+import { DocumentQuery } from 'mongoose';
 import { promisify } from 'util';
 
 import { Api } from '../common/api';
@@ -43,7 +44,17 @@ export abstract class ReleaseAbstractApi extends Api {
 	 * @returns {Promise.<Release>}
 	 */
 	protected async getDetails(id: string) {
-		return state.models.Release.findById(id)
+		return this.populateAll(state.models.Release.findById(id)).exec();
+	}
+
+	/**
+	 * Adds population for release details.
+	 *
+	 * @param {module:mongoose.DocumentQuery<T | null, Release>} query
+	 * @returns {module:mongoose.DocumentQuery<T | null, Release>}
+	 */
+	protected populateAll<T>(query: DocumentQuery<T | null, Release>): DocumentQuery<T | null, Release> {
+		return query
 			.populate({ path: '_game' })
 			.populate({ path: '_tags' })
 			.populate({ path: '_created_by' })
@@ -52,8 +63,7 @@ export abstract class ReleaseAbstractApi extends Api {
 			.populate({ path: 'versions.files._playfield_image' })
 			.populate({ path: 'versions.files._playfield_video' })
 			.populate({ path: 'versions.files._compatibility' })
-			.populate({ path: 'versions.files.validation._validated_by' })
-			.exec();
+			.populate({ path: 'versions.files.validation._validated_by' });
 	}
 
 	/**

@@ -18,7 +18,7 @@
  */
 
 import archiver, { Archiver } from 'archiver';
-import { createReadStream, exists } from 'fs';
+import { createReadStream } from 'fs';
 import { intersection, isArray, isUndefined, sortBy } from 'lodash';
 import { Types } from 'mongoose';
 import { basename, extname } from 'path';
@@ -32,6 +32,8 @@ import { quota } from '../common/quota';
 import { Context } from '../common/typings/context';
 import { File } from '../files/file';
 import { fileTypes } from '../files/file.types';
+import { FileVariation } from '../files/file.variations';
+import { processorQueue } from '../files/processor/processor.queue';
 import { Game } from '../games/game';
 import { state } from '../state';
 import { User, UserPreferences } from '../users/user';
@@ -39,12 +41,8 @@ import { Release } from './release';
 import { flavors } from './release.flavors';
 import { ReleaseVersionFile } from './version/file/release.version.file';
 import { ReleaseVersion } from './version/release.version';
-import { promisify } from "util";
-import { FileVariation } from '../files/file.variations';
-import { processorQueue } from '../files/processor/processor.queue';
 
 const Unrar = require('unrar');
-const existsAsync = promisify(exists);
 
 export class ReleaseStorage extends Api {
 

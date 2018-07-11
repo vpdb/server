@@ -11,7 +11,8 @@ const settings = require('../../config/settings.test');
 
 const mongoOpts = {
 	keepAlive: true,
-	connectTimeoutMS: 5000
+	connectTimeoutMS: 5000,
+	useNewUrlParser: true
 };
 let redisClient;
 mongoose.connect(settings.vpdb.db, mongoOpts).then(() => {

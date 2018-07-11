@@ -89,7 +89,7 @@ shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 
 		// bootstrap models
 		logger.info('[app] Connecting to MongoDB...');
-		await mongoose.connect(config.vpdb.db);
+		await mongoose.connect(config.vpdb.db, { useNewUrlParser: true });
 
 		// bootstrap endpoints
 		for (const endPoint of endPoints) {

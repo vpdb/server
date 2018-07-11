@@ -11,7 +11,7 @@ module.exports = {
 			'protected': { path: './data/storage-test-protected', api: { protocol: 'http', hostname: 'localhost', port: 7357, pathname: '/storage/v1', prefix: '' } }
 		},
 		webapp: { protocol: 'http', hostname: 'localhost', port: 3333 },
-		db: 'mongodb://localhost/vpdb-test',
+		db: 'mongodb://localhost:27017/vpdb-test',
 		redis: { host: '127.0.0.1', port: 6379, db: 7 },
 		apiTokenLifetime: 3600000,
 		storageTokenLifetime: 60000,

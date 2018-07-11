@@ -92,7 +92,7 @@ module.exports = {
 		/**
 		 * Database configuration. Must point to a MongoDB schema.
 		 */
-		db: 'mongodb://localhost/vpdb',
+		db: 'mongodb://localhost:27017/vpdb',
 
 		/**
 		 * Redis configuration.

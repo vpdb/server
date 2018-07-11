@@ -146,6 +146,21 @@ class ApiClientResult {
 	}
 
 	/**
+	 * Expects a give number of validation errors.
+	 * @param numErrors Number of validation errors
+	 * @returns {ApiClientResult}
+	 */
+	expectNumValidationErrors(numErrors) {
+		if (!isArray(this.response.data.errors)) {
+			throw new Error('Expected ' + numErrors + ' validation errors but got none.');
+		}
+		if (this.response.data.errors.length !== numErrors) {
+			throw new Error('Expected ' + numErrors + ' validation errors but got ' + this.response.data.errors.length + '.');
+		}
+		return this;
+	}
+
+	/**
 	 * Expects a given response header.
 	 * @param {string} name Name of the header
 	 * @param {string} [contains] If set, must be contained, otherwise the header must just exist

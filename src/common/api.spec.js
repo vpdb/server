@@ -1,11 +1,9 @@
 'use strict';
 /*global describe, before, after, beforeEach, afterEach, it*/
-const expect = require('expect.js');
 
 const ApiClient = require('../../test/modules/api.client');
 const api = new ApiClient();
 
-let res;
 describe('The VPDB API', () => {
 
 	before(async () => {

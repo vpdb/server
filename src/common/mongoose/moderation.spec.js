@@ -19,206 +19,133 @@
 
 "use strict"; /* global describe, before, after, it */
 
-const request = require('superagent');
 const expect = require('expect.js');
 const faker = require('faker');
 
-const superagentTest = require('../../../test/modules/superagent-test');
-const hlp = require('../../../test/modules/helper');
+const ApiClient = require('../../../test/modules/api.client');
+const api = new ApiClient();
 
-superagentTest(request);
+let res;
+describe.only('The VPDB moderation feature', () => {
 
-describe('The VPDB moderation feature', function() {
+	let game, backglass, release;
 
-	describe('when accepting a moderated backglass', function() {
-
-		let game, backglass;
-
-		before(function(done) {
-			hlp.setupUsers(request, {
-				member: { roles: ['member'] },
-				moderator: { roles: ['moderator'] }
-			}, function() {
-				hlp.game.createGame('moderator', request, function(g) {
-					game = g;
-
-					hlp.file.createDirectB2S('member', request, function(b2s) {
-						request
-							.post('/api/v1/backglasses')
-							.as('member')
-							.send({
-								_game: game.id,
-								authors: [ {
-									_user: hlp.users.member.id,
-									roles: [ 'creator' ]
-								} ],
-								versions: [ {
-									version: '1.0',
-									_file: b2s.id
-								} ]
-							})
-							.end(function(err, res) {
-								backglass = res.body;
-								hlp.expectStatus(err, res, 201);
-								hlp.doomBackglass('member', res.body.id);
-								done();
-							});
-					});
-				});
-			});
+	before(async () => {
+		await api.setupUsers({
+			member: { roles: ['member'] },
+			member2: { roles: [ 'member' ] },
+			moderator: { roles: ['moderator'] }
 		});
+		game = await api.gameHelper.createGame('moderator');
+		const b2s = await api.fileHelper.createDirectB2S('member', { keep: true });
+		res = await api
+			.as('member')
+			.markTeardown()
+			.post('/v1/backglasses', {
+				_game: game.id,
+				authors: [{
+					_user: api.getUser('member').id,
+					roles: ['creator']
+				}],
+				versions: [{
+					version: '1.0',
+					_file: b2s.id
+				}]
+			}).then(res => res.expectStatus(201));
+		backglass = res.data;
+		release = await api.releaseHelper.createRelease('member');
+	});
 
-		after(function(done) {
-			hlp.cleanup(request, done);
-		});
+	after(async () => await api.teardown());
 
-		it('should fail for empty data', function(done) {
+	describe('when accepting a moderated backglass', () => {
+
+		it('should fail for empty data', async () => {
 			const user = 'moderator';
-			request
-				.post('/api/v1/backglasses/' + backglass.id + '/moderate')
+			await api
 				.as(user)
-				.send({})
-				.end(function(err, res) {
-					expect(res.body.errors).to.have.length(1);
-					hlp.expectValidationError(err, res, 'action', 'must be provided');
-					done();
-				});
+				.post('/v1/backglasses/' + backglass.id + '/moderate', {})
+				.then(res => res.expectValidationError('action', 'must be provided').expectNumValidationErrors(1));
 		});
 
-		it('should fail for invalid action', function(done) {
+		it('should fail for invalid action', async () => {
 			const user = 'moderator';
-			request
-				.post('/api/v1/backglasses/' + backglass.id + '/moderate')
+			await api
 				.as(user)
-				.send({ action: 'brümütz!!'})
-				.end(function(err, res) {
-					expect(res.body.errors).to.have.length(1);
-					hlp.expectValidationError(err, res, 'action', 'invalid action');
-					done();
-				});
+				.post('/v1/backglasses/' + backglass.id + '/moderate', { action: 'brümütz!!'})
+				.then(res => res.expectValidationError('action', 'invalid action').expectNumValidationErrors(1));
 		});
 
-		it('should fail when message is missing for refusal', function(done) {
+		it('should fail when message is missing for refusal', async () => {
 			const user = 'moderator';
-			request
-				.post('/api/v1/backglasses/' + backglass.id + '/moderate')
+			await api
 				.as(user)
-				.send({ action: 'refuse' })
-				.end(function(err, res) {
-					expect(res.body.errors).to.have.length(1);
-					hlp.expectValidationError(err, res, 'message', 'message must be provided');
-					done();
-				});
+				.post('/v1/backglasses/' + backglass.id + '/moderate', { action: 'refuse' })
+				.then(res => res.expectValidationError('message', 'message must be provided').expectNumValidationErrors(1));
 		});
 
 	});
 
-	describe('when commenting a moderated release', function() {
+	describe('when commenting a moderated release', () => {
 
-		let release;
-
-		before(function(done) {
-			hlp.setupUsers(request, {
-				member: { roles: [ 'member' ] },
-				member2: { roles: [ 'member' ] },
-				moderator: { roles: [ 'moderator' ] }
-			}, function() {
-				hlp.release.createRelease('member', request, function(r) {
-					release = r;
-					done(null, r);
-				});
-			});
-		});
-
-		after(function(done) {
-			hlp.cleanup(request, done);
-		});
-
-		it('should fail if the commentor is neither owner nor moderator', function(done) {
-			request
-				.post('/api/v1/releases/' + release.id + '/moderate/comments')
+		it('should fail if the commentator is neither owner nor moderator', async () => {
+			await api
 				.as('member2')
-				.send({})
-				.end(hlp.status(403, 'must be either moderator or owner', done));
+				.post('/v1/releases/' + release.id + '/moderate/comments', {})
+				.then(res => res.expectError(403, 'must be either moderator or owner'));
 		});
 
-		it('should succeed when posting as owner', function(done) {
+		it('should succeed when posting as owner', async () => {
 			const msg = faker.company.catchPhrase();
-			request
-				.post('/api/v1/releases/' + release.id + '/moderate/comments')
+			res = await api
 				.as('member')
-				.send({ message: msg })
-				.end(function(err, res) {
-					hlp.expectStatus(err, res, 201);
-					expect(res.body.from.id).to.be(hlp.getUser('member').id);
-					expect(res.body.message).to.be(msg);
-					request
-						.get('/api/v1/releases/' + release.id + '/moderate/comments')
-						.as('member')
-						.end(function(err, res) {
-							hlp.expectStatus(err, res, 200);
-							expect(res.body).to.be.an('array');
-							expect(res.body).to.not.be.empty();
-							done();
-						});
-				});
+				.post('/v1/releases/' + release.id + '/moderate/comments', { message: msg })
+				.then(res => res.expectStatus(201));
+			expect(res.data.from.id).to.be(api.getUser('member').id);
+			expect(res.data.message).to.be(msg);
+
+			res = await api
+				.as('member')
+				.get('/v1/releases/' + release.id + '/moderate/comments')
+				.then(res => res.expectStatus(200));
+			expect(res.data).to.be.an('array');
+			expect(res.data).to.not.be.empty();
 		});
 
-		it('should succeed when posting as moderator', function(done) {
+		it('should succeed when posting as moderator', async () => {
 			const msg = faker.company.catchPhrase();
-			request
-				.post('/api/v1/releases/' + release.id + '/moderate/comments')
+			res = await api
 				.as('moderator')
-				.send({ message: msg })
-				.end(function(err, res) {
-					hlp.expectStatus(err, res, 201);
-					expect(res.body.from.id).to.be(hlp.getUser('moderator').id);
-					expect(res.body.message).to.be(msg);
-					done();
-				});
+				.post('/v1/releases/' + release.id + '/moderate/comments', { message: msg })
+				.then(res => res.expectStatus(201));
+
+			expect(res.data.from.id).to.be(api.getUser('moderator').id);
+			expect(res.data.message).to.be(msg);
 		});
 
 	});
 
-	describe('when listing moderation comments of a release', function() {
+	describe('when listing moderation comments of a release', () => {
 
-		let release;
-		before(function(done) {
-			hlp.setupUsers(request, {
-				member: { roles: [ 'member' ] },
-				member2: { roles: [ 'member' ] },
-				moderator: { roles: [ 'moderator' ] }
-			}, function() {
-				hlp.release.createRelease('member', request, function(r) {
-					release = r;
-					done(null, r);
-				});
-			});
-		});
-
-		after(function(done) {
-			hlp.cleanup(request, done);
-		});
-
-		it('should fail if the commentor is neither owner nor moderator', function(done) {
-			request
-				.get('/api/v1/releases/' + release.id + '/moderate/comments')
+		it('should fail if the commentator is neither owner nor moderator', async () => {
+			await api
 				.as('member2')
-				.end(hlp.status(403, 'must be either moderator or owner', done));
+				.get('/v1/releases/' + release.id + '/moderate/comments')
+				.then(res => res.expectError(403, 'must be either moderator or owner'));
 		});
 
-		it('should succeed when listing as owner', function(done) {
-			request
-				.get('/api/v1/releases/' + release.id + '/moderate/comments')
+		it('should succeed when listing as owner', async () => {
+			await api
 				.as('member')
-				.end(hlp.status(200, done));
+				.get('/v1/releases/' + release.id + '/moderate/comments')
+				.then(res => res.expectStatus(200));
 		});
 
-		it('should succeed when listing as moderator', function(done) {
-			request
-				.get('/api/v1/releases/' + release.id + '/moderate/comments')
+		it('should succeed when listing as moderator', async () => {
+			await api
 				.as('moderator')
-				.end(hlp.status(200, done));
+				.get('/v1/releases/' + release.id + '/moderate/comments')
+				.then(res => res.expectStatus(200));
 		});
 
 	});

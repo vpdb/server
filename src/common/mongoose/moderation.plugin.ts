@@ -79,7 +79,7 @@ export function moderationPlugin(schema: Schema) {
 			return;
 		}
 		// check if _created_by is a contributor and auto-approve.
-		/* istanbul ignore else */
+		/* istanbul ignore if */
 		let user: User;
 		if (this.populated('_created_by')) {
 			user = this._created_by as User;
@@ -88,6 +88,7 @@ export function moderationPlugin(schema: Schema) {
 		}
 
 		const resource = modelResourceMap[(this.constructor as any).modelName];
+		/* istanbul ignore if: Configuration error */
 		if (!resource) {
 			throw new Error('Tried to check moderation permission for unmapped entity "' + (this.constructor as any).modelName + '".');
 		}
@@ -128,20 +129,17 @@ export function moderationPlugin(schema: Schema) {
 			return addToQuery({ 'moderation.is_approved': true }, query);
 		}
 
-		let isModerator = false;
-		if (ctx.query && ctx.query.moderation) {
-			if (!ctx.state.user) {
-				throw new ApiError('Must be logged in order to retrieve moderated items.').status(401);
-			}
-			const resource = modelResourceMap[this.modelName];
-			/* istanbul ignore if: configuration error */
-			if (!resource) {
-				logger.info(this);
-				throw new Error('Tried to check moderation permission for unmapped entity "' + this.modelName + '".');
-			}
-			isModerator = await acl.isAllowed(ctx.state.user.id, resource, 'moderate');
+		if (!ctx.state.user) {
+			throw new ApiError('Must be logged in order to retrieve moderated items.').status(401);
+		}
+		const resource = modelResourceMap[this.modelName];
+		/* istanbul ignore if: configuration error */
+		if (!resource) {
+			logger.info(this);
+			throw new Error('Tried to check moderation permission for unmapped entity "' + this.modelName + '".');
 		}
 
+		const isModerator = await acl.isAllowed(ctx.state.user.id, resource, 'moderate');
 		if (!isModerator) {
 			throw new ApiError('Must be moderator in order to retrieved moderated items.').status(403);
 		}
@@ -231,6 +229,7 @@ export function moderationPlugin(schema: Schema) {
 
 		const resource: string = modelResourceMap[this.constructor.modelName];
 		const reference: string = modelReferenceMap[this.constructor.modelName];
+		/* istanbul ignore if: configuration error */
 		if (!resource) {
 			throw new Error('Tried to check moderation permission for unmapped entity "' + this.constructor.modelName + '".');
 		}
@@ -246,7 +245,7 @@ export function moderationPlugin(schema: Schema) {
 		}
 
 		// if viewing own entity, okay
-		if (ctx.state.user._id.equals(this._created_by._id || this._created_by)) {
+		if (ctx.state.user._id.equals(this._created_by._id)) {
 			return this;
 		}
 

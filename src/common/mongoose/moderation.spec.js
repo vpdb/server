@@ -83,7 +83,7 @@ describe('The VPDB moderation feature', () => {
 
 	});
 
-	describe('when accepting a moderated backglass', () => {
+	describe('when moderating a backglass', () => {
 
 		it('should fail for empty data', async () => {
 			const user = 'moderator';
@@ -207,6 +207,24 @@ describe('The VPDB moderation feature', () => {
 				.get('/v1/backglasses')
 				.then(res => res.expectStatus(200));
 			expect(res.data.find(b => b.id === backglass.id)).to.be.ok();
+		});
+
+		it('should list the backglass when requesting all entities', async () => {
+			res = await api
+				.as('moderator')
+				.withQuery({ moderation: 'all' })
+				.get('/v1/backglasses')
+				.then(res => res.expectStatus(200));
+			expect(res.data.find(b => b.id === backglass.id)).to.be.ok();
+		});
+
+		it('should not list the backglass when requesting other statuses', async () => {
+			res = await api.as('moderator').withQuery({ moderation: 'refused' }).get('/v1/backglasses').then(res => res.expectStatus(200));
+			expect(res.data.find(b => b.id === backglass.id)).not.to.be.ok();
+			res = await api.as('moderator').withQuery({ moderation: 'auto_approved' }).get('/v1/backglasses').then(res => res.expectStatus(200));
+			expect(res.data.find(b => b.id === backglass.id)).not.to.be.ok();
+			res = await api.as('moderator').withQuery({ moderation: 'manually_approved' }).get('/v1/backglasses').then(res => res.expectStatus(200));
+			expect(res.data.find(b => b.id === backglass.id)).not.to.be.ok();
 		});
 	});
 });

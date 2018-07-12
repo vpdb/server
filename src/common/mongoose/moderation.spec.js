@@ -26,7 +26,7 @@ const ApiClient = require('../../../test/modules/api.client');
 const api = new ApiClient();
 
 let res;
-describe.only('The VPDB moderation feature', () => {
+describe('The VPDB moderation feature', () => {
 
 	let game, backglass, release;
 

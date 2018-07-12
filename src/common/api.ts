@@ -216,6 +216,15 @@ export abstract class Api {
 	}
 
 	/**
+	 * Returns the requested fields of the query as an array.
+	 * @param {Context} ctx Koa context
+	 * @returns {string[]} Requested fields or empty array if none provided.
+	 */
+	protected getRequestedFields(ctx: Context): string[] {
+		return ctx.query && ctx.query.fields ? ctx.query.fields.split(',') : [];
+	}
+
+	/**
 	 * Returns the IP address of the current request.
 	 * @param {Context} ctx
 	 */

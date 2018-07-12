@@ -35,6 +35,7 @@ import { TagSerializer } from '../../tags/tag.serializer';
 import { TokenSerializer } from '../../tokens/token.serializer';
 import { ContentAuthorSerializer } from '../../users/content.author.serializer';
 import { UserSerializer } from '../../users/user.serializer';
+import { ModerationSerializer } from '../mongoose/moderation.serializer';
 
 export interface Serializers {
 	Backglass: BackglassSerializer;
@@ -48,6 +49,7 @@ export interface Serializers {
 	LogEvent: LogEventSerializer;
 	LogUser: LogUserSerializer;
 	Medium: MediumSerializer;
+	Moderation: ModerationSerializer;
 	Release: ReleaseSerializer;
 	ReleaseVersion: ReleaseVersionSerializer;
 	ReleaseVersionFile: ReleaseVersionFileSerializer;

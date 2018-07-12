@@ -44,6 +44,7 @@ export class BackglassSerializer extends Serializer<Backglass> {
 		if (this._populated(doc, '_created_by')) {
 			backglass.created_by = state.serializers.User.reduced(ctx, doc._created_by as User, opts);
 		}
+
 		return backglass;
 	}
 

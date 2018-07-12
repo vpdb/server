@@ -18,14 +18,14 @@
  */
 
 import { isArray, pick } from 'lodash';
-import { ModerationData } from 'mongoose';
+import { ModerationData, ModerationDataEvent } from 'mongoose';
 
 import { state } from '../../state';
 import { User } from '../../users/user';
 import { Serializer, SerializerOptions } from '../serializer';
 import { Context } from '../typings/context';
 
-class ModerationSerializer extends Serializer<ModerationData> {
+export class ModerationSerializer extends Serializer<ModerationData> {
 
 	protected _detailed(ctx: Context, doc: ModerationData, opts: SerializerOptions): ModerationData {
 		return undefined;
@@ -48,11 +48,9 @@ class ModerationSerializer extends Serializer<ModerationData> {
 					event: h.event,
 					created_at: h.created_at,
 					created_by: state.serializers.User.reduced(ctx, h._created_by as User, opts) as User,
-				};
+				} as ModerationDataEvent;
 			});
 		}
 		return moderationData;
 	}
 }
-
-module.exports = new ModerationSerializer();

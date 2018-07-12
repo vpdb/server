@@ -18,7 +18,7 @@
  */
 
 import { assign, includes, isArray, isObject } from 'lodash';
-import { Document, Model, ModeratedDocument, ModeratedModel, ModerationData, Schema } from 'mongoose';
+import { Document, Model, ModeratedDocument, ModeratedModel, ModerationData, ModerationDataEvent, Schema } from 'mongoose';
 
 import { LogEventUtil } from '../../log-event/log.event.util';
 import { state } from '../../state';
@@ -174,9 +174,9 @@ export function moderationPlugin(schema: Schema) {
 	 * Handles moderation requests from the API.
 	 * @param {Application.Context} ctx Koa context
 	 * @param {ModeratedDocument} entity Entity with moderation plugin enabled
-	 * @return {Promise<ModerationData>} Moderation data
+	 * @return {Promise<ModerationDataEvent>} Created moderation event
 	 */
-	schema.statics.handleModeration = async function(ctx: Context, entity: ModeratedDocument): Promise<ModerationData> {
+	schema.statics.handleModeration = async function(ctx: Context, entity: ModeratedDocument): Promise<ModerationDataEvent> {
 		const actions = ['refuse', 'approve', 'moderate'];
 		if (!ctx.request.body.action) {
 			throw new ApiError('Validations failed.').validationError('action', 'An action must be provided. Valid actions are: [ "' + actions.join('", "') + '" ].');
@@ -184,21 +184,21 @@ export function moderationPlugin(schema: Schema) {
 		if (!includes(actions, ctx.request.body.action)) {
 			throw new ApiError('Validations failed.').validationError('action', 'Invalid action "' + ctx.request.body.action + '". Valid actions are: [ "' + actions.join('", "') + '" ].');
 		}
-		let moderation: ModerationData;
+		let moderationEvent: ModerationDataEvent;
 		switch (ctx.request.body.action) {
 			case 'refuse':
 				if (!ctx.request.body.message) {
 					throw new ApiError('Validations failed.').validationError('message', 'A message must be provided when refusing.', ctx.request.body.message);
 				}
-				moderation = await entity.refuse(ctx.state.user, ctx.request.body.message);
+				moderationEvent = await entity.refuse(ctx.state.user, ctx.request.body.message);
 				break;
 
 			case 'approve':
-				moderation = await entity.approve(ctx.state.user, ctx.request.body.message);
+				moderationEvent = await entity.approve(ctx.state.user, ctx.request.body.message);
 				break;
 
 			case 'moderate':
-				moderation = await entity.moderate(ctx.state.user, ctx.request.body.message);
+				moderationEvent = await entity.moderate(ctx.state.user, ctx.request.body.message);
 				break;
 		}
 
@@ -209,7 +209,7 @@ export function moderationPlugin(schema: Schema) {
 			message: ctx.request.body.message,
 		}, { [referenceName]: entity._id });
 
-		return moderation;
+		return moderationEvent;
 	};
 
 	/**
@@ -293,91 +293,90 @@ export function moderationPlugin(schema: Schema) {
 	 * Marks the entity as approved.
 	 * @param {User|ObjectId} user User who approved
 	 * @param {string} [message] Optional message
-	 * @returns {Promise.<{}>} Updated moderation attribute
+	 * @returns {Promise<ModerationDataEvent>} Created moderation event
 	 */
-	schema.methods.approve = async function(user: User, message: string): Promise<ModerationData> {
-
-		const model = state.getModel<ModeratedModel<ModeratedDocument>>(this.constructor.modelName);
-		const previousModeration = { isApproved: this.moderation.is_approved, isRefused: this.moderation.is_refused };
-		await model.findByIdAndUpdate(this._id, {
-			'moderation.is_approved': true,
-			'moderation.is_refused': false,
-			$push: {
-				'moderation.history': {
-					event: 'approved',
-					message,
-					created_at: new Date(),
-					_created_by: user._id || user,
-				},
-			},
-		}).exec();
-
-		let entity = await model.findOne({ _id: this._id }).exec();
-		if (entity.moderationChanged) {
-			entity = await entity.moderationChanged(previousModeration, { isApproved: true, isRefused: false });
-		}
-		return entity.moderation;
+	schema.methods.approve = async function(user: User, message: string): Promise<ModerationDataEvent> {
+		return await moderateEntity.bind(this)(
+			this.constructor.modelName,
+			user,
+			message,
+			'approved',
+			true,
+			false,
+		);
 	};
 
 	/**
 	 * Marks the entity as refused.
 	 * @param {User|ObjectId} user User who refused
 	 * @param {string} reason Reason why entity was refused
-	 * @returns {Promise.<{}>} Updated moderation attribute
+	 * @returns {Promise<ModerationDataEvent>} Created moderation event
 	 */
-	schema.methods.refuse = async function(user: User, reason: string): Promise<ModerationData> {
-
-		const model = state.getModel<ModeratedModel<ModeratedDocument>>(this.constructor.modelName);
-		const previousModeration = { isApproved: this.moderation.is_approved, isRefused: this.moderation.is_refused };
-		await model.findByIdAndUpdate(this._id, {
-			'moderation.is_approved': false,
-			'moderation.is_refused': true,
-			$push: {
-				'moderation.history': {
-					event: 'refused',
-					message: reason,
-					created_at: new Date(),
-					_created_by: user._id || user,
-				},
-			},
-		}).exec();
-
-		let entity = await model.findOne({ _id: this._id }).exec();
-		if (entity.moderationChanged) {
-			entity = await entity.moderationChanged(previousModeration, { isApproved: false, isRefused: true });
-		}
-		return entity.moderation;
+	schema.methods.refuse = async function(user: User, reason: string): Promise<ModerationDataEvent> {
+		return await moderateEntity.bind(this)(
+			this.constructor.modelName,
+			user,
+			reason,
+			'refused',
+			false,
+			true,
+		);
 	};
 
 	/**
 	 * Sets the entity back to moderated
 	 * @param {User|ObjectId} user User who reset to moderated
 	 * @param {string} [message] Optional message
-	 * @returns {Promise.<{}>} Updated moderation attribute
+	 * @returns {Promise<ModerationDataEvent>} Created moderation event
 	 */
 	schema.methods.moderate = async function(user: User, message: string): Promise<ModerationData> {
-
-		const model = state.getModel<ModeratedModel<ModeratedDocument>>(this.constructor.modelName);
-		const previousModeration = { isApproved: this.moderation.is_approved, isRefused: this.moderation.is_refused };
-		await model.findByIdAndUpdate(this._id, {
-			'moderation.is_approved': false,
-			'moderation.is_refused': false,
-			$push: {
-				'moderation.history': {
-					event: 'pending',
-					message,
-					created_at: new Date(),
-					_created_by: user._id || user,
-				},
-			},
-		}).exec();
-
-		let entity: ModeratedDocument = await model.findOne({ _id: this._id }).exec();
-		if (entity.moderationChanged) {
-			entity = await entity.moderationChanged(previousModeration, { isApproved: false, isRefused: false });
-		}
-		return entity.moderation;
+		return await moderateEntity.bind(this)(
+			this.constructor.modelName,
+			user,
+			message,
+			'pending',
+			false,
+			false,
+		);
 	};
+}
+
+/**
+ * Sets the moderation status to a new value and adds it to the history.
+ *
+ * @param {string} modelName Name of the model
+ * @param {User} user User performing the action
+ * @param {string} message Message from the user
+ * @param {string} eventName Name of the event
+ * @param {boolean} isApproved True if new status is approved
+ * @param {boolean} isRefused True if new status is refused
+ * @returns {Promise<ModerationDataEvent>} Created moderation event
+ */
+async function moderateEntity(this: ModeratedDocument, modelName: string, user: User, message: string, eventName: string, isApproved: boolean, isRefused: boolean): Promise<ModerationDataEvent> {
+
+	const model = state.getModel<ModeratedModel<ModeratedDocument>>(modelName);
+	const previousModeration = { isApproved: this.moderation.is_approved, isRefused: this.moderation.is_refused };
+	const event = {
+		event: eventName,
+		message,
+		created_at: new Date(),
+		_created_by: user._id,
+	} as ModerationDataEvent;
+
+	// update entity
+	await model.findByIdAndUpdate(this._id, {
+		'moderation.is_approved': isApproved,
+		'moderation.is_refused': isRefused,
+		$push: { 'moderation.history': event },
+	}).exec();
+
+	const entity = await model.findOne({ _id: this._id }).exec();
+
+	// execute post hook if defined (typically used to update counters)
+	if (entity.moderationChanged) {
+		await entity.moderationChanged(previousModeration, { isApproved, isRefused });
+	}
+	return event;
 }
 
 /**
@@ -432,25 +431,25 @@ declare module 'mongoose' {
 		 * Marks the entity as approved.
 		 * @param {User|ObjectId} user User who approved
 		 * @param {string} [message] Optional message
-		 * @returns {Promise.<{}>} Updated moderation attribute
+		 * @returns {Promise<ModerationDataEvent>} Created moderation event
 		 */
-		approve(user: User, message: string): Promise<ModerationData>;
+		approve(user: User, message: string): Promise<ModerationDataEvent>;
 
 		/**
 		 * Marks the entity as refused.
 		 * @param {User|ObjectId} user User who refused
 		 * @param {string} reason Reason why entity was refused
-		 * @returns {Promise.<{}>} Updated moderation attribute
+		 * @returns {Promise<ModerationDataEvent>} Created moderation event
 		 */
-		refuse(user: User, reason: string): Promise<ModerationData>;
+		refuse(user: User, reason: string): Promise<ModerationDataEvent>;
 
 		/**
 		 * Sets the entity back to moderated
 		 * @param {User|ObjectId} user User who reset to moderated
 		 * @param {string} [message] Optional message
-		 * @returns {Promise.<{}>} Updated moderation attribute
+		 * @returns {Promise<ModerationDataEvent>} Created moderation event
 		 */
-		moderate(user: User, message: string): Promise<ModerationData>;
+		moderate(user: User, message: string): Promise<ModerationDataEvent>;
 
 		/**
 		 * An optional hook executed when moderation changed.
@@ -466,13 +465,15 @@ declare module 'mongoose' {
 		is_approved: boolean;
 		is_refused: boolean;
 		auto_approved: boolean;
-		history?: Array<{
-			event: 'approved' | 'refused' | 'pending';
-			message?: string;
-			created_at: Date;
-			_created_by?: User | Types.ObjectId;
-			created_by?: User;
-		}>;
+		history?: ModerationDataEvent[];
+	}
+
+	export interface ModerationDataEvent extends Document {
+		event: 'approved' | 'refused' | 'pending';
+		message?: string;
+		created_at: Date;
+		_created_by?: User | Types.ObjectId;
+		created_by?: User;
 	}
 
 	// statics
@@ -490,9 +491,9 @@ declare module 'mongoose' {
 		 * Handles moderation requests from the API.
 		 * @param {Application.Context} ctx Koa context
 		 * @param {ModeratedDocument} entity Entity with moderation plugin enabled
-		 * @return {Promise<ModerationData>} Moderation data
+		 * @return {Promise<ModerationDataEvent>} Created moderation event
 		 */
-		handleModeration(ctx: Context, entity: ModeratedDocument): Promise<ModerationData>;
+		handleModeration(ctx: Context, entity: ModeratedDocument): Promise<ModerationDataEvent>;
 
 		/**
 		 * Returns the query used for listing only approved entities.

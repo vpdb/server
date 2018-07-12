@@ -58,13 +58,124 @@ describe('The VPDB moderation feature', () => {
 
 	after(async () => await api.teardown());
 
-	describe('when creating a non-approved backglass', () => {
+	describe('when moderating a backglass', () => {
 
-		it('should only display details as creator and moderator', async () => {
-			await api.get('/v1/backglasses/' + backglass.id).then(res => res.expectStatus(404));
-			await api.as('member2').get('/v1/backglasses/' + backglass.id).then(res => res.expectStatus(404));
-			await api.as('member').get('/v1/backglasses/' + backglass.id).then(res => res.expectStatus(200));
-			await api.as('moderator').get('/v1/backglasses/' + backglass.id).then(res => res.expectStatus(200));
+		it('should fail for invalid backglass', async () => {
+			await api
+				.as('moderator')
+				.post('/v1/backglasses/zigizagizug/moderate', {})
+				.then(res => res.expectError(404, 'no such backglass'));
+		});
+
+		it('should fail for empty data', async () => {
+			await api
+				.as('moderator')
+				.post('/v1/backglasses/' + backglass.id + '/moderate', {})
+				.then(res => res.expectValidationError('action', 'must be provided').expectNumValidationErrors(1));
+		});
+
+		it('should fail for invalid action', async () => {
+			await api
+				.as('moderator')
+				.post('/v1/backglasses/' + backglass.id + '/moderate', { action: 'brümütz!!'})
+				.then(res => res.expectValidationError('action', 'invalid action').expectNumValidationErrors(1));
+		});
+
+		describe('when accepting', () => {
+
+			it('should succeed approval', async () => {
+				const unapprovedBackglass = await api.releaseHelper.createDirectB2S('member');
+				res = await api
+					.as('moderator')
+					.post('/v1/backglasses/' + unapprovedBackglass.id + '/moderate', { action: 'approve' })
+					.then(res => res.expectStatus(200));
+
+				expect(res.data.is_approved).to.be(true);
+				expect(res.data.is_refused).to.be(false);
+				expect(res.data.auto_approved).to.be(false);
+				expect(res.data.history).to.be.an('array');
+				expect(res.data.history).to.have.length(1);
+			});
+		});
+
+		describe('when refusing', () => {
+
+			it('should fail when message is missing', async () => {
+				await api
+					.as('moderator')
+					.post('/v1/backglasses/' + backglass.id + '/moderate', { action: 'refuse' })
+					.then(res => res.expectValidationError('message', 'message must be provided').expectNumValidationErrors(1));
+			});
+
+			it('should succeed refusal', async () => {
+				const refusedBackglass = await api.releaseHelper.createDirectB2S('member');
+				await api
+					.as('moderator')
+					.post('/v1/backglasses/' + refusedBackglass.id + '/moderate', { action: 'refuse', message: 'Your request has been denied.' })
+					.then(res => res.expectStatus(200));
+			});
+		});
+
+		describe('when resetting', () => {
+
+		});
+
+		describe('when auto-accepting', () => {
+
+		});
+
+	});
+
+	describe('when listing backglasses with moderation fields', () => {
+
+		it('should fail as anonymous', async () => {
+			await api
+				.withQuery({ fields: 'moderation' })
+				.get('/v1/backglasses')
+				.then(res => res.expectError(403, 'must be logged'));
+		});
+
+		it('should fail as non-moderator', async () => {
+			await api
+				.as('member')
+				.withQuery({ fields: 'moderation' })
+				.get('/v1/backglasses')
+				.then(res => res.expectError(403, 'must be moderator'));
+		});
+
+		it('should succeed as moderator', async () => {
+			await api
+				.as('moderator')
+				.withQuery({ fields: 'moderation' })
+				.get('/v1/backglasses')
+				.then(res => res.expectStatus(200));
+		});
+
+	});
+
+	describe('when listing moderated backglasses', () => {
+
+		it('should fail as anonymous', async () => {
+			await api
+				.withQuery({ moderation: 'all' })
+				.get('/v1/backglasses')
+				.then(res => res.expectError(401, 'Must be logged in order to retrieve moderated items'));
+		});
+
+		it('should fail as member', async () => {
+			await api
+				.as('member')
+				.withQuery({ moderation: 'all' })
+				.get('/v1/backglasses')
+				.then(res => res.expectError(403, 'Must be moderator'));
+		});
+
+		it('should fail with an invalid parameter', async () => {
+			await api
+				.as('moderator')
+				.withQuery({ moderation: 'duh' })
+				.get('/v1/backglasses')
+				.then(res => res.expectError(400, 'Invalid moderation filter'));
 		});
 
 		it('should never list the backglass without requesting moderated entities', async () => {
@@ -81,34 +192,45 @@ describe('The VPDB moderation feature', () => {
 			expect(res.data.find(b => b.id === backglass.id)).not.to.be.ok();
 		});
 
+		it('should succeed listing pending backglasses', async () => {
+			res = await api
+				.as('moderator')
+				.withQuery({ moderation: 'pending' })
+				.get('/v1/backglasses')
+				.then(res => res.expectStatus(200));
+			expect(res.data.find(b => b.id === backglass.id)).to.be.ok();
+		});
+
+		it('should succeed listing all entities', async () => {
+			res = await api
+				.as('moderator')
+				.withQuery({ moderation: 'all' })
+				.get('/v1/backglasses')
+				.then(res => res.expectStatus(200));
+			expect(res.data.find(b => b.id === backglass.id)).to.be.ok();
+		});
+
+		it('should not list the backglass when requesting other statuses', async () => {
+			res = await api.as('moderator').withQuery({ moderation: 'refused' }).get('/v1/backglasses').then(res => res.expectStatus(200));
+			expect(res.data.find(b => b.id === backglass.id)).not.to.be.ok();
+			res = await api.as('moderator').withQuery({ moderation: 'auto_approved' }).get('/v1/backglasses').then(res => res.expectStatus(200));
+			expect(res.data.find(b => b.id === backglass.id)).not.to.be.ok();
+			res = await api.as('moderator').withQuery({ moderation: 'manually_approved' }).get('/v1/backglasses').then(res => res.expectStatus(200));
+			expect(res.data.find(b => b.id === backglass.id)).not.to.be.ok();
+		});
 	});
 
-	describe('when moderating a backglass', () => {
+	describe('when retrieving backglass details', () => {
 
-		it('should fail for empty data', async () => {
-			const user = 'moderator';
-			await api
-				.as(user)
-				.post('/v1/backglasses/' + backglass.id + '/moderate', {})
-				.then(res => res.expectValidationError('action', 'must be provided').expectNumValidationErrors(1));
+		it('should fail as anonymous an non-creator', async () => {
+			await api.get('/v1/backglasses/' + backglass.id).then(res => res.expectStatus(404));
+			await api.as('member2').get('/v1/backglasses/' + backglass.id).then(res => res.expectStatus(404));
 		});
 
-		it('should fail for invalid action', async () => {
-			const user = 'moderator';
-			await api
-				.as(user)
-				.post('/v1/backglasses/' + backglass.id + '/moderate', { action: 'brümütz!!'})
-				.then(res => res.expectValidationError('action', 'invalid action').expectNumValidationErrors(1));
+		it('should succeed as creator and moderator', async () => {
+			await api.as('member').get('/v1/backglasses/' + backglass.id).then(res => res.expectStatus(200));
+			await api.as('moderator').get('/v1/backglasses/' + backglass.id).then(res => res.expectStatus(200));
 		});
-
-		it('should fail when message is missing for refusal', async () => {
-			const user = 'moderator';
-			await api
-				.as(user)
-				.post('/v1/backglasses/' + backglass.id + '/moderate', { action: 'refuse' })
-				.then(res => res.expectValidationError('message', 'message must be provided').expectNumValidationErrors(1));
-		});
-
 	});
 
 	describe('when commenting a moderated release', () => {
@@ -175,56 +297,4 @@ describe('The VPDB moderation feature', () => {
 
 	});
 
-	describe('when listing moderated backglasses', () => {
-
-		it('should fail as anonymous', async () => {
-			await api
-				.withQuery({ moderation: 'all' })
-				.get('/v1/backglasses')
-				.then(res => res.expectError(401, 'Must be logged in order to retrieve moderated items'));
-		});
-
-		it('should fail as member', async () => {
-			await api
-				.as('member')
-				.withQuery({ moderation: 'all' })
-				.get('/v1/backglasses')
-				.then(res => res.expectError(403, 'Must be moderator'));
-		});
-
-		it('should fail with an invalid parameter', async () => {
-			await api
-				.as('moderator')
-				.withQuery({ moderation: 'duh' })
-				.get('/v1/backglasses')
-				.then(res => res.expectError(400, 'Invalid moderation filter'));
-		});
-
-		it('should list the backglass when requesting pending entities', async () => {
-			res = await api
-				.as('moderator')
-				.withQuery({ moderation: 'pending' })
-				.get('/v1/backglasses')
-				.then(res => res.expectStatus(200));
-			expect(res.data.find(b => b.id === backglass.id)).to.be.ok();
-		});
-
-		it('should list the backglass when requesting all entities', async () => {
-			res = await api
-				.as('moderator')
-				.withQuery({ moderation: 'all' })
-				.get('/v1/backglasses')
-				.then(res => res.expectStatus(200));
-			expect(res.data.find(b => b.id === backglass.id)).to.be.ok();
-		});
-
-		it('should not list the backglass when requesting other statuses', async () => {
-			res = await api.as('moderator').withQuery({ moderation: 'refused' }).get('/v1/backglasses').then(res => res.expectStatus(200));
-			expect(res.data.find(b => b.id === backglass.id)).not.to.be.ok();
-			res = await api.as('moderator').withQuery({ moderation: 'auto_approved' }).get('/v1/backglasses').then(res => res.expectStatus(200));
-			expect(res.data.find(b => b.id === backglass.id)).not.to.be.ok();
-			res = await api.as('moderator').withQuery({ moderation: 'manually_approved' }).get('/v1/backglasses').then(res => res.expectStatus(200));
-			expect(res.data.find(b => b.id === backglass.id)).not.to.be.ok();
-		});
-	});
 });

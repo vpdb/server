@@ -29,6 +29,7 @@ import { AuthenticationEndPoint, AuthenticationStorageEndPoint } from './authent
 import { BackglassEndPoint } from './backglasses';
 import { BuildApiEndPoint } from './builds';
 import { CommentEndPoint } from './comments';
+import { ModerationSerializer } from './common/mongoose/moderation.serializer';
 import { FilesApiEndPoint, FilesProtectedStorageEndPoint, FilesPublicStorageEndPoint } from './files';
 import { GameRequestApiEndPoint } from './game-requests';
 import { GamesApiEndPoint } from './games';
@@ -41,6 +42,7 @@ import { RatingEndPoint } from './ratings';
 import { ReleaseEndPoint, ReleaseStorageEndPoint } from './releases';
 import { RomApiEndPoint } from './roms';
 import { StarEndPoint } from './stars';
+import { state } from './state';
 import { TagApiEndPoint } from './tags';
 import { TokenEndPoint } from './tokens';
 import { UserEndPoint } from './users';
@@ -96,6 +98,10 @@ shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 			logger.info('[app] Registering %s:', endPoint.name);
 			await server.register(endPoint);
 		}
+
+		// global serializers
+		state.serializers.Moderation = new ModerationSerializer();
+
 		server.postRegister();
 
 		// setup ACLs

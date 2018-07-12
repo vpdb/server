@@ -58,6 +58,7 @@ export class MediumApi extends Api {
 	 *
 	 * Currently, this is only used under /games/{game_id}/media, so params.gameId is mandatory.
 	 *
+	 * @see GET /v1/games/:gameId/media
 	 * @param {Context} ctx Koa context
 	 */
 	public async list(ctx: Context) {

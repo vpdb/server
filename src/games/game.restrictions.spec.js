@@ -198,7 +198,7 @@ describe('The VPDB restriction feature', function() {
 
 	});
 
-	describe('when dealing with restriced backglasses', function() {
+	describe('when dealing with restricted backglasses', function() {
 
 		let restrictedGame, legalGame;
 		let restrictedBackglass, legalBackglass;
@@ -355,7 +355,7 @@ describe('The VPDB restriction feature', function() {
 
 	});
 
-	describe('when dealing with restriced ROMs', function() {
+	describe('when dealing with restricted ROMs', function() {
 
 		let restrictedGame, legalGame;
 		let restrictedRom, legalRom;

@@ -126,6 +126,7 @@ export class Settings {
 		return success;
 	}
 
+	/* istanbul ignore next: Our test settings are correct! */
 	public _logError(p: string, error: { path: string, message: string, setting?: string }, setting: object | string) {
 		setting = !isUndefined(error.setting) ? error.setting : setting;
 		const s = isObject(setting) ? JSON.stringify(setting) : setting;

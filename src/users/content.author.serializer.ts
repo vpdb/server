@@ -32,6 +32,7 @@ export class ContentAuthorSerializer extends Serializer<ContentAuthor> {
 		} as ContentAuthor;
 	}
 
+	/* istanbul ignore next: Actually never used */
 	protected _simple(ctx: Context, doc: ContentAuthor, opts: SerializerOptions): ContentAuthor {
 		return {
 			user: state.serializers.User.simple(ctx, doc._user as User, opts),
@@ -39,6 +40,7 @@ export class ContentAuthorSerializer extends Serializer<ContentAuthor> {
 		} as ContentAuthor;
 	}
 
+	/* istanbul ignore next */
 	protected _detailed(ctx: Context, doc: ContentAuthor, opts: SerializerOptions): ContentAuthor {
 		return undefined;
 	}

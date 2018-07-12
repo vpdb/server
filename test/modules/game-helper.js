@@ -1,19 +1,19 @@
 "use strict";
 
-var _ = require('lodash');
-var path = require('path');
-var async = require('async');
-var expect = require('expect.js');
-var randomstring = require('randomstring');
+const _ = require('lodash');
+const async = require('async');
+const expect = require('expect.js');
+const randomString = require('randomstring');
 
-var ipdb = require(path.resolve(__dirname, '../../data/ipdb.json'));
+const ApiClient = require('./api.client');
+const api = new ApiClient();
 
 exports.getGame = function(attrs, ipdbNumber) {
-	var game = popGame(ipdbNumber);
+	const game = api.gameHelper.getGame(attrs, ipdbNumber);
 	if (game.short) {
 		game.id = game.short[0].replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
 	} else {
-		game.id = /unknown/i.test(game.title) ? randomstring.generate(7) : game.title.replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
+		game.id = /unknown/i.test(game.title) ? randomString.generate(7) : game.title.replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
 	}
 	game.year = game.year || 1900;
 	game.game_type = game.game_type || 'na';
@@ -35,7 +35,7 @@ exports.createGame = function(user, request, game, done) {
 		done = game;
 		game = {};
 	}
- 	var hlp = require('./helper');
+	const hlp = require('./helper');
 	hlp.file.createBackglass(user, request, function(backglass) {
 		// backglass doomed by game
 		request
@@ -62,14 +62,3 @@ exports.createGames = function(user, request, count, done) {
 		done(games);
 	});
 };
-
-function popGame(ipdbNumber) {
-	if (ipdbNumber) {
-		return _.find(ipdb, i => i.ipdb.number === parseInt(ipdbNumber));
-	}
-	return ipdb.splice(randomInt(ipdb.length), 1)[0];
-}
-
-function randomInt(max) {
-	return Math.floor(Math.random() * max - 1) + 1;
-}

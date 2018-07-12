@@ -48,6 +48,7 @@ export class StarApi extends Api {
 	 *
 	 * @see POST /v1/releases/:id/star
 	 * @see POST /v1/backglasses/:id/star
+	 * @see POST /v1/games/:id/star
 	 * @param {string} modelName Name of the model, e.g. "game"
 	 * @return {(ctx: Context) => Promise<void>}
 	 */
@@ -65,6 +66,7 @@ export class StarApi extends Api {
 	 *
 	 * @see DELETE /v1/releases/:id/star
 	 * @see DELETE /v1/backglasses/:id/star
+	 * @see DELETE /v1/games/:id/star
 	 * @param {string} modelName Name of the model, e.g. "game"
 	 * @return {(ctx: Context) => Promise<void>}
 	 */
@@ -82,6 +84,7 @@ export class StarApi extends Api {
 	 *
 	 * @see GET /v1/releases/:id/star
 	 * @see GET /v1/backglasses/:id/star
+	 * @see GET /v1/games/:id/star
 	 * @param {string} modelName Name of the model, e.g. "game"
 	 * @return {(ctx: Context) => Promise<void>}
 	 */

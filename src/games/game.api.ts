@@ -68,6 +68,8 @@ export class GameApi extends Api {
 
 	/**
 	 * Creates a new game.
+	 *
+	 * @see POST /v1/games
 	 * @param {Context} ctx Koa context
 	 */
 	public async create(ctx: Context) {
@@ -144,6 +146,7 @@ export class GameApi extends Api {
 	/**
 	 * Updates an existing game.
 	 *
+	 * @see PATCH /v1/games/:id
 	 * @param {Context} ctx Koa context
 	 */
 	public async update(ctx: Context) {
@@ -214,6 +217,8 @@ export class GameApi extends Api {
 
 	/**
 	 * Deletes a game.
+	 *
+	 * @see DELETE /v1/games/:id
 	 * @param {Context} ctx Koa context
 	 */
 	public async del(ctx: Context) {
@@ -248,6 +253,8 @@ export class GameApi extends Api {
 
 	/**
 	 * Lists all games.
+	 *
+	 * @see GET /v1/games
 	 * @param {Context} ctx Koa context
 	 */
 	public async list(ctx: Context) {
@@ -344,6 +351,8 @@ export class GameApi extends Api {
 
 	/**
 	 * Lists a game of a given game ID.
+	 *
+	 * @see GET /v1/games/:id
 	 * @param {Context} ctx Koa context
 	 */
 	public async view(ctx: Context) {
@@ -362,7 +371,7 @@ export class GameApi extends Api {
 
 		// retrieve linked releases
 		const opts: SerializerOptions = {};
-		const rlsQuery = await state.models.Release.restrictedQuery(ctx, game, { _game: game._id });
+		const rlsQuery = await state.models.Release.applyRestrictionsForGame(ctx, game, { _game: game._id });
 		if (rlsQuery) {
 			// retrieve stars if logged
 			if (ctx.state.user) {
@@ -390,7 +399,7 @@ export class GameApi extends Api {
 		}
 
 		// retrieve linked backglasses
-		const backglassQuery = await state.models.Backglass.restrictedQuery(ctx, game, { _game: game._id });
+		const backglassQuery = await state.models.Backglass.applyRestrictionsForGame(ctx, game, { _game: game._id });
 		if (backglassQuery) {
 			const backglasses = await state.models.Backglass.find(state.models.Backglass.approvedQuery(backglassQuery))
 				.populate({ path: 'authors._user' })
@@ -416,6 +425,7 @@ export class GameApi extends Api {
 	/**
 	 * Returns a random name for release name inspiration
 	 *
+	 * @see GET /v1/games/:id/release-name
 	 * @param {Context} ctx Koa context
 	 */
 	public async releaseName(ctx: Context) {

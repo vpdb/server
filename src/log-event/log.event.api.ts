@@ -37,6 +37,7 @@ export class LogEventApi extends Api {
 	 * @see GET /v1/events
 	 * @see GET /v1/releases/:id/events
 	 * @see GET /v1/profile/events
+	 * @see GET /v1/games/:id/events
 	 */
 	public list(opts: ListLogEventOpts = {}) {
 

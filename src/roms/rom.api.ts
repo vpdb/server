@@ -143,7 +143,7 @@ export class RomApi extends Api {
 
 		let query: any;
 		if (game) {
-			query = await state.models.Rom.restrictedQuery(ctx, game, { _game: game._id });
+			query = await state.models.Rom.applyRestrictionsForGame(ctx, game, { _game: game._id });
 		} else {
 			// no game found.
 			if (ctx.params.gameId) {
@@ -155,7 +155,7 @@ export class RomApi extends Api {
 			if (ipdbNumber) {
 				query = { _ipdb_number: ipdbNumber };
 			} else {
-				query = await state.models.Rom.handleGameQuery(ctx, {});
+				query = await state.models.Rom.applyRestrictions(ctx, {});
 			}
 		}
 

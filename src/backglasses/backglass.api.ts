@@ -40,6 +40,7 @@ export class BackglassApi extends Api {
 	 * Creates a new backglass.
 	 *
 	 * @see POST /v1/backglasses
+	 * @see POST /v1/games/:gameId/backglasses
 	 * @param {Context} ctx Koa context
 	 */
 	public async create(ctx: Context) {
@@ -178,6 +179,7 @@ export class BackglassApi extends Api {
 	 * Lists all backglasses.
 	 *
 	 * @see GET /v1/backglasses
+	 * @see GET /v1/games/:gameId/backglasses
 	 * @param {Context} ctx Koa context
 	 */
 	public async list(ctx: Context) {
@@ -217,7 +219,7 @@ export class BackglassApi extends Api {
 			}
 			serializerOpts.includedFields = ['moderation'];
 		}
-		query = await state.models.Backglass.handleGameQuery(ctx, await state.models.Backglass.handleModerationQuery(ctx, query));
+		query = await state.models.Backglass.applyRestrictions(ctx, await state.models.Backglass.handleModerationQuery(ctx, query));
 
 		logger.info('[BackglassApi.list] query: %s', inspect(query, { depth: null }));
 

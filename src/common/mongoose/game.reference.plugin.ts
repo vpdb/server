@@ -59,19 +59,20 @@ export function gameReferencePlugin(schema: Schema, options: GameReferenceOption
 	}
 
 	/**
-	 * Returns the query used for listing only approved entities.
+	 * Returns the query used for listing only non-restricted entities.
 	 *
 	 * @param {Application.Context} ctx Koa context
 	 * @param {Array<any> | object} query Input query
 	 * @return {Promise<Array<any> | object>} Output query
 	 */
-	schema.statics.handleGameQuery = async function<T>(this: ModelProperties, ctx: Context, query: T): Promise<T> {
+	schema.statics.applyRestrictions = async function<T>(this: ModelProperties, ctx: Context, query: T): Promise<T> {
 
 		const reference = modelReferenceMap[this.modelName];
 		const resource = modelResourceMap[this.modelName];
 
+		/* istanbul ignore if: Only applies when no restrictions are configured */
 		if (!config.vpdb.restrictions[reference] || isEmpty(config.vpdb.restrictions[reference].denyMpu)) {
-			return Promise.resolve(query);
+			return query;
 		}
 
 		const isModerator = ctx.state.user ? (await acl.isAllowed(ctx.state.user.id, resource, 'view-restriced')) : false;
@@ -94,31 +95,31 @@ export function gameReferencePlugin(schema: Schema, options: GameReferenceOption
 			}, query);
 
 		} else {
-			return addToQuery({ _game: { $nin: map(games, '_id') } }, query);
+			return addToQuery({ _game: { $nin: games.map(g => g._id) } }, query);
 		}
 	};
 
 	/**
-	 * Returns the query for listing only approved entities for a given game.
+	 * Returns the query for listing only non-restricted entities for a given game.
 	 *
 	 * @param {Application.Context} ctx Koa context
 	 * @param {Game} game Game to fetch entities for.
 	 * @param {Array<any> | object} query Query to append
 	 * @return {Promise<Array<any> | object | null>} Updated query on restriction, same without restriction and null if not logged.
 	 */
-	schema.statics.restrictedQuery = async function<T>(ctx: Context, game: Game, query: T): Promise<T | null> {
+	schema.statics.applyRestrictionsForGame = async function<T>(this: ModelProperties, ctx: Context, game: Game, query: T): Promise<T | null> {
 
 		const reference = modelReferenceMap[this.modelName];
 		const resource = modelResourceMap[this.modelName];
 
 		// if not restricted, return same query (no filter)
 		if (!game.isRestricted(reference)) {
-			return Promise.resolve(query);
+			return query;
 		}
 
 		// if restricted by not logged, return null (no results)
 		if (!ctx.state.user) {
-			return Promise.resolve(null);
+			return null;
 		}
 
 		// now we have a user, check if either moderator or owner
@@ -239,23 +240,23 @@ declare module 'mongoose' {
 	export interface GameReferenceModel<T extends GameReferenceDocument> extends Model<T> {
 
 		/**
-		 * Returns the query used for listing only approved entities.
+		 * Returns the query used for listing only non-restricted entities.
 		 *
 		 * @param {Application.Context} ctx Koa context
 		 * @param {T} query Input query
 		 * @return {Promise<T>} Output query
 		 */
-		handleGameQuery<T>(this: ModelProperties, ctx: Context, query: T): Promise<T>;
+		applyRestrictions<T>(this: ModelProperties, ctx: Context, query: T): Promise<T>;
 
 		/**
-		 * Returns the query for listing only approved entities for a given game.
+		 * Returns the query for listing only non-restricted entities for a given game.
 		 *
 		 * @param {Application.Context} ctx Koa context
 		 * @param {Game} game Game to fetch entities for.
 		 * @param {T} query Query to append
 		 * @return {Promise<T | null>} Updated query on restriction, same without restriction and null if not logged.
 		 */
-		restrictedQuery<T>(ctx: Context, game: Game, query: T): Promise<T | null>;
+		applyRestrictionsForGame<T>(ctx: Context, game: Game, query: T): Promise<T | null>;
 
 		/**
 		 * Checks whether a user can access a given game.

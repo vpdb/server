@@ -225,7 +225,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		}
 
 		// moderation && restricted games
-		const query = await state.models.Release.handleGameQuery(ctx, await state.models.Release.handleModerationQuery(ctx, []));
+		const query = await state.models.Release.applyRestrictions(ctx, await state.models.Release.handleModerationQuery(ctx, []));
 
 		// filter by tag
 		if (ctx.query.tags) {

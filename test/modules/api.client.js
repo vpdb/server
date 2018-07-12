@@ -548,7 +548,6 @@ class ApiClient {
 				if (entity.stack) {
 					console.log(entity.stack)
 				}
-				throw err;
 			}
 		}
 		this._users.clear();

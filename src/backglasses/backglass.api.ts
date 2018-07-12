@@ -243,7 +243,7 @@ export class BackglassApi extends Api {
 		const serializerOpts: SerializerOptions = {
 			fields: [],
 		};
-		let backglass = await state.models.Backglass.findOne({ id: ctx.params.id })
+		const backglass = await state.models.Backglass.findOne({ id: ctx.params.id })
 			.populate({ path: '_game' })
 			.populate({ path: 'authors._user' })
 			.populate({ path: 'versions._file' })
@@ -252,11 +252,8 @@ export class BackglassApi extends Api {
 		if (!backglass) {
 			throw new ApiError('No such backglass with ID "%s"', ctx.params.id).status(404);
 		}
-		const hasAccess = await state.models.Backglass.hasRestrictionAccess(ctx, backglass._game as Game, backglass);
-		if (!hasAccess) {
-			throw new ApiError('No such backglass with ID "%s"', ctx.params.id).status(404);
-		}
-		backglass = await backglass.assertModeratedView(ctx);
+		await backglass.assertRestrictedView(ctx);
+		await backglass.assertModeratedView(ctx);
 		const populated = await backglass.populateModeration(ctx, this.getRequestedFields(ctx));
 		if (populated !== false) {
 			serializerOpts.includedFields = ['moderation'];

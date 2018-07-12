@@ -223,15 +223,16 @@ export function moderationPlugin(schema: Schema) {
 	 * Makes sure an API request has the permission to view the entity.
 	 *
 	 * @param {Application.Context} ctx Koa context
-	 * @returns {Promise.<ModeratedDocument>} This entity
+	 * @returns {Promise<ModeratedDocument>} This entity
 	 */
-	schema.methods.assertModeratedView = async function(ctx: Context): Promise<ModeratedDocument> {
+	schema.methods.assertModeratedView = async function(this: ModeratedDocument, ctx: Context): Promise<ModeratedDocument> {
 
-		const resource: string = modelResourceMap[this.constructor.modelName];
-		const reference: string = modelReferenceMap[this.constructor.modelName];
+		const modelName = (this.constructor as any).modelName;
+		const resource: string = modelResourceMap[modelName];
+		const reference: string = modelReferenceMap[modelName];
 		/* istanbul ignore if: configuration error */
 		if (!resource) {
-			throw new Error('Tried to check moderation permission for unmapped entity "' + this.constructor.modelName + '".');
+			throw new Error('Tried to check moderation permission for unmapped entity "' + modelName + '".');
 		}
 
 		// if approved, all okay.
@@ -264,8 +265,10 @@ export function moderationPlugin(schema: Schema) {
 	 * @param {string[]} includedFields List of included fields from request query
 	 * @returns {ModeratedDocument | boolean} Populated entity if fields added, false otherwise.
 	 */
-	schema.methods.populateModeration = async function(ctx: Context, includedFields: string[]): Promise<ModeratedDocument | false> {
-		const resource: string = modelResourceMap[this.constructor.modelName];
+	schema.methods.populateModeration = async function(this: ModeratedDocument, ctx: Context, includedFields: string[]): Promise<ModeratedDocument | false> {
+
+		const modelName = (this.constructor as any).modelName;
+		const resource: string = modelResourceMap[modelName];
 		if (includedFields.includes('moderation')) {
 			if (!ctx.state.user) {
 				throw new ApiError('You must be logged in order to fetch moderation fields.').status(403);
@@ -415,7 +418,7 @@ declare module 'mongoose' {
 		 * Makes sure an API request has the permission to view the entity.
 		 *
 		 * @param {Application.Context} ctx Koa context
-		 * @returns {Promise.<ModeratedDocument>} This entity
+		 * @returns {Promise<ModeratedDocument>} This entity
 		 */
 		assertModeratedView(ctx: Context): Promise<this>;
 

@@ -88,11 +88,7 @@ export class LogEventApi extends Api {
 				if (!release) {
 					throw new ApiError('No such release with id %s.', ctx.params.id).status(404);
 				}
-				const hasAccess = await state.models.Release.hasRestrictionAccess(ctx, release._game as Game, release);
-
-				if (!hasAccess) {
-					throw new ApiError('No such release with ID "%s"', ctx.params.id).status(404);
-				}
+				await release.assertRestrictedView(ctx);
 				query.push({ '_ref.release': release._id });
 			}
 

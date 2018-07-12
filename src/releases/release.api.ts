@@ -407,16 +407,14 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		const opts: SerializerOptions = {
 			excludedFields: [],
 		};
-		let release = await this.populateAll(state.models.Release.findOne({ id: ctx.params.id })).exec();
+		const release = await this.populateAll(state.models.Release.findOne({ id: ctx.params.id })).exec();
 
 		if (!release) {
 			throw new ApiError('No such release with ID "%s"', ctx.params.id).status(404);
 		}
-		const hasAccess = await state.models.Release.hasRestrictionAccess(ctx, release._game as Game, release);
-		if (!hasAccess) {
-			throw new ApiError('No such release with ID "%s"', ctx.params.id).status(404);
-		}
-		release = await release.assertModeratedView(ctx);
+		await release.assertRestrictedView(ctx);
+		await release.assertModeratedView(ctx);
+
 		const populated = await release.populateModeration(ctx, this.getRequestedFields(ctx));
 		if (populated === false) {
 			opts.excludedFields.push('moderation');

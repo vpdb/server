@@ -499,7 +499,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 	 */
 	public async moderate(ctx: Context) {
 
-		const release = await state.models.Release.findOne({ id: ctx.params.id })
+		let release = await state.models.Release.findOne({ id: ctx.params.id })
 			.populate('_game')
 			.populate('_created_by')
 			.exec();
@@ -507,36 +507,31 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		if (!release) {
 			throw new ApiError('No such release with ID "%s".', ctx.params.id).status(404);
 		}
-		const moderation = await state.models.Release.handleModeration(ctx, release);
-
-		let lastEvent;
-		if (isArray(moderation.history)) {
-			moderation.history.sort((m1, m2) => m2.created_at.getTime() - m1.created_at.getTime());
-			lastEvent = moderation.history[0];
-			const errHandler = (err: Error) => logger.error('[moderation] Error sending moderation mail: %s', err.message);
-			switch (lastEvent.event) {
-				case 'approved':
-					await mailer.releaseApproved(release._created_by as User, release, lastEvent.message).catch(errHandler);
-					break;
-				case 'refused':
-					await mailer.releaseRefused(release._created_by as User, release, lastEvent.message).catch(errHandler);
-					break;
-			}
+		const moderationEvent = await state.models.Release.handleModeration(ctx, release);
+		switch (moderationEvent.event) {
+			case 'approved':
+				await mailer.releaseApproved(release._created_by as User, release, moderationEvent.message);
+				break;
+			case 'refused':
+				await mailer.releaseRefused(release._created_by as User, release, moderationEvent.message);
+				break;
 		}
 
 		// if message set, create a comment.
-		if (lastEvent.message) {
+		if (moderationEvent.message) {
 			const comment = new state.models.Comment({
 				_from: ctx.state.user._id,
 				_ref: { release_moderation: release },
-				message: lastEvent.message,
+				message: moderationEvent.message,
 				ip: this.getIpAddress(ctx),
 				created_at: new Date(),
 			});
 			await comment.save();
 		}
-
-		return this.success(ctx, moderation, 200);
+		release = await state.models.Release.findById(release._id)
+			.populate('moderation.history._created_by')
+			.exec();
+		return this.success(ctx, state.serializers.Release.detailed(ctx, release, { includedFields: ['moderation'] }).moderation, 200);
 	}
 
 	/**

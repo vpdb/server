@@ -47,14 +47,14 @@ export async function init(): Promise<void> {
 		}, {
 			roles: 'moderator',
 			allows: [
-				{ resources: 'backglasses',   permissions: ['delete', 'moderate', 'update', 'view-restriced'] },
+				{ resources: 'backglasses',   permissions: ['delete', 'moderate', 'update', 'view-restricted'] },
 				{ resources: 'builds',        permissions: ['delete', 'update'] },
 				{ resources: 'files',         permissions: ['blockmatch'] },
 				{ resources: 'games',         permissions: ['delete'] },
 				{ resources: 'game_requests', permissions: ['list', 'update', 'delete'] },
 				{ resources: 'media',         permissions: ['delete'] },
-				{ resources: 'releases',      permissions: ['moderate', 'view-restriced', 'update', 'validate'] },
-				{ resources: 'roms',          permissions: ['delete', 'view-restriced'] },
+				{ resources: 'releases',      permissions: ['moderate', 'view-restricted', 'update', 'validate'] },
+				{ resources: 'roms',          permissions: ['delete', 'view-restricted'] },
 				{ resources: 'tags',          permissions: ['delete'] },
 			],
 		}, {

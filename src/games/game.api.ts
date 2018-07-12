@@ -309,7 +309,7 @@ export class GameApi extends Api {
 			query.push({ 'counter.releases': { $gte: minReleases } });
 
 			// check if additional conditions are needed
-			const isModerator = ctx.state.user ? (await acl.isAllowed(ctx.state.user.id, 'releases', 'view-restriced')) : false;
+			const isModerator = ctx.state.user ? (await acl.isAllowed(ctx.state.user.id, 'releases', 'view-restricted')) : false;
 
 			// moderator gets unfiltered list
 			if (!isModerator) {

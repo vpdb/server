@@ -75,7 +75,7 @@ export function gameReferencePlugin(schema: Schema, options: GameReferenceOption
 			return query;
 		}
 
-		const isModerator = ctx.state.user ? (await acl.isAllowed(ctx.state.user.id, resource, 'view-restriced')) : false;
+		const isModerator = ctx.state.user ? (await acl.isAllowed(ctx.state.user.id, resource, 'view-restricted')) : false;
 
 		// if moderator, don't filter.
 		if (isModerator) {
@@ -123,7 +123,7 @@ export function gameReferencePlugin(schema: Schema, options: GameReferenceOption
 		}
 
 		// now we have a user, check if either moderator or owner
-		const canViewRestricted = await acl.isAllowed(ctx.state.user.id, resource, 'view-restriced');
+		const canViewRestricted = await acl.isAllowed(ctx.state.user.id, resource, 'view-restricted');
 		// if moderator, return same query (no filter)
 		if (canViewRestricted) {
 			return query;
@@ -157,7 +157,7 @@ export function gameReferencePlugin(schema: Schema, options: GameReferenceOption
 		}
 
 		// now we have a user, check if either moderator or owner
-		const isModerator = await acl.isAllowed(ctx.state.user.id, resource, 'view-restriced');
+		const isModerator = await acl.isAllowed(ctx.state.user.id, resource, 'view-restricted');
 
 		// if moderator, has access
 		if (isModerator) {
@@ -165,8 +165,8 @@ export function gameReferencePlugin(schema: Schema, options: GameReferenceOption
 		}
 
 		// if no moderator, must be owner or author
-		const createdBy = (entity._created_by as User)._id || entity._created_by;
-		const authoredBy = entity.authors ? entity.authors.map(author => (author._user as User)._id || author._user) : [];
+		const createdBy = (entity._created_by as User)._id;
+		const authoredBy = entity.authors ? entity.authors.map(author => (author._user as User)._id) : [];
 		return [...authoredBy, createdBy].reduce((a, id) => a || ctx.state.user._id.equals(id), false);
 	};
 
@@ -206,6 +206,7 @@ function addToQuery<T>(toAdd: object, query: T): T {
 	if (isObject(query)) {
 		return assign(query, toAdd);
 	}
+	/* istanbul ignore next: Don't screw up when getting weird query objects, but that hasn't happened. */
 	return query;
 }
 

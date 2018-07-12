@@ -382,7 +382,7 @@ describe('The VPDB restriction feature', function() {
 								hlp.doomRom('owner', legalRom.id);
 								hlp.file.createRom('owner', request, function(file) {
 									request.post('/api/v1/games/' + restrictedGame.id + '/roms').as('owner').send({
-										id: 'restricedRom',
+										id: 'restrictedRom',
 										_file: file.id
 									}).end(function(err, res) {
 										hlp.expectStatus(err, res, 201);

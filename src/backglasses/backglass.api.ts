@@ -252,9 +252,8 @@ export class BackglassApi extends Api {
 		if (!backglass) {
 			throw new ApiError('No such backglass with ID "%s"', ctx.params.id).status(404);
 		}
-		const isModerator = ctx.state.user ? (await acl.isAllowed(ctx.state.user.id, 'backglasses', 'moderate')) : false;
-
-		if (!isModerator && (backglass._game as Game).isRestricted('backglass') && !backglass.isCreatedBy(ctx.state.user)) {
+		const hasAccess = await state.models.Backglass.hasRestrictionAccess(ctx, backglass._game as Game, backglass);
+		if (!hasAccess) {
 			throw new ApiError('No such backglass with ID "%s"', ctx.params.id).status(404);
 		}
 		backglass = await backglass.assertModeratedView(ctx);

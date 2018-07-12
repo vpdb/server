@@ -308,26 +308,25 @@ export class BackglassApi extends Api {
 	 * @param {Context} ctx Koa context
 	 */
 	public async moderate(ctx: Context) {
-		const backglass = await state.models.Backglass.findOne({ id: ctx.params.id })
+		let backglass = await state.models.Backglass.findOne({ id: ctx.params.id })
 			.populate('_game')
 			.populate('_created_by')
 			.exec();
 		if (!backglass) {
 			throw new ApiError('No such backglass with ID "%s".', ctx.params.id).status(404);
 		}
-		const moderation = await state.models.Backglass.handleModeration(ctx, backglass);
-		if (isArray(moderation.history)) {
-			moderation.history.sort((m1, m2) => m2.created_at.getTime() - m1.created_at.getTime());
-			const lastEvent = moderation.history[0];
-			switch (lastEvent.event) {
-				case 'approved':
-					await mailer.backglassApproved(backglass._created_by as User, backglass, lastEvent.message);
-					break;
-				case 'refused':
-					await mailer.backglassRefused(backglass._created_by as User, backglass, lastEvent.message);
-					break;
-			}
+		const moderationEvent = await state.models.Backglass.handleModeration(ctx, backglass);
+		switch (moderationEvent.event) {
+			case 'approved':
+				await mailer.backglassApproved(backglass._created_by as User, backglass, moderationEvent.message);
+				break;
+			case 'refused':
+				await mailer.backglassRefused(backglass._created_by as User, backglass, moderationEvent.message);
+				break;
 		}
-		return this.success(ctx, moderation, 200);
+		backglass = await state.models.Backglass.findById(backglass._id)
+			.populate('moderation.history._created_by')
+			.exec();
+		return this.success(ctx, state.serializers.Backglass.detailed(ctx, backglass, { includedFields: ['moderation'] }).moderation, 200);
 	}
 }

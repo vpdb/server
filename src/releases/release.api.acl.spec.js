@@ -118,6 +118,10 @@ describe('The ACLs of the `Release` API', function() {
 		it('should deny access to release file validation', function(done) {
 			request.post('/api/v1/releases/123/versions/1.2/files/1234/validate').as('contributor').send({}).end(hlp.status(403, done));
 		});
+
+		it('should deny access to release moderation', function(done) {
+			request.post('/api/v1/releases/1234/moderate').as('contributor').send({}).end(hlp.status(403, done));
+		});
 	});
 
 	describe('for members with the `moderator` role', function() {
@@ -134,6 +138,10 @@ describe('The ACLs of the `Release` API', function() {
 			request.post('/api/v1/releases/123/versions/1.2/files/1234/validate').as('moderator').send({}).end(hlp.status(404, done));
 		});
 
+		it('should allow access to release moderation', function(done) {
+			request.post('/api/v1/releases/1234/moderate').as('moderator').send({}).end(hlp.status(404, done));
+		});
+
 	});
 
 	describe('for members with the `admin` role', function() {
@@ -146,6 +154,9 @@ describe('The ACLs of the `Release` API', function() {
 			request.del('/api/v1/releases/123456').as('admin').end(hlp.status(404, done));
 		});
 
+		it('should deny access to release moderation', function(done) {
+			request.post('/api/v1/releases/1234/moderate').as('contributor').send({}).end(hlp.status(403, done));
+		});
 	});
 
 	describe('for members with the `root` role', function() {
@@ -156,6 +167,10 @@ describe('The ACLs of the `Release` API', function() {
 
 		it('should allow to delete releases', function(done) {
 			request.del('/api/v1/releases/123456').as('root').end(hlp.status(404, done));
+		});
+
+		it('should allow access to release moderation', function(done) {
+			request.post('/api/v1/releases/1234/moderate').as('root').send({}).end(hlp.status(404, done));
 		});
 
 	});

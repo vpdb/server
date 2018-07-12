@@ -175,9 +175,8 @@ export abstract class Serializer<T extends Document | ModeratedDocument> {
 		}
 
 		// handle moderation field
-		if ((doc as ModeratedDocument).moderation) {
-			const ModerationSerializer = require('./mongoose/moderation.serializer');
-			(object as ModeratedDocument).moderation = ModerationSerializer._simple((doc as ModeratedDocument).moderation, ctx, opts);
+		if ((doc as ModeratedDocument).moderation && opts && opts.includedFields && opts.includedFields.includes('moderation')) {
+			(object as ModeratedDocument).moderation = state.serializers.Moderation.simple(ctx, (doc as ModeratedDocument).moderation, opts);
 		}
 
 		// remove excluded fields

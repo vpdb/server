@@ -283,11 +283,7 @@ export class ReleaseStorage extends Api {
 		if (!release) {
 			throw new ApiError('No such release with ID "%s".', ctx.params.release_id).status(404);
 		}
-		const hasAccess = await state.models.Release.hasRestrictionAccess(ctx, release._game as Game, release);
-
-		if (!hasAccess) {
-			throw new ApiError('No such release with ID "%s".', ctx.params.release_id).status(404);
-		}
+		await release.assertRestrictedView(ctx);
 		await release.assertModeratedView(ctx);
 
 		const media = await state.models.Medium.find({ '_ref.game': release._game._id }).populate('_file').exec();

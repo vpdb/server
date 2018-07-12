@@ -148,11 +148,8 @@ export class CommentApi extends Api {
 		if (!release) {
 			throw new ApiError('No such release with ID "%s"', ctx.params.id).status(404);
 		}
-		const hasAccess = await state.models.Release.hasRestrictionAccess(ctx, release._game as Game, release);
+		await release.assertRestrictedView(ctx);
 
-		if (!hasAccess) {
-			throw new ApiError('No such release with ID "%s"', ctx.params.id).status(404);
-		}
 		const results = await state.models.Comment.paginate({ '_ref.release': release._id }, {
 			page: pagination.page,
 			limit: pagination.perPage,

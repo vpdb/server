@@ -25,6 +25,7 @@ import { state } from '../../state';
 import { ContentAuthor } from '../../users/content.author';
 import { User } from '../../users/user';
 import { acl } from '../acl';
+import { ApiError } from '../api.error';
 import { config } from '../settings';
 import { Context } from '../typings/context';
 
@@ -134,26 +135,27 @@ export function gameReferencePlugin(schema: Schema, options: GameReferenceOption
 	};
 
 	/**
-	 * Checks whether a user can access a given game.
+	 * Makes sure an API request can access the entity.
 	 *
 	 * @param {Application.Context} ctx Koa context
-	 * @param {Game} game Game to check
-	 * @param {GameReferenceDocument} entity ntity that references the game. Needed to in order to check for owner.
-	 * @return {Promise<boolean>} True if access granted, false otherwise.
+	 * @returns {Promise<GameReferenceDocument>} This entity
+	 * @throws {ApiError} When access is denied
 	 */
-	schema.statics.hasRestrictionAccess = async function(ctx: Context, game: Game, entity: GameReferenceDocument): Promise<boolean> {
+	schema.methods.assertRestrictedView = async function(this: GameReferenceDocument, ctx: Context): Promise<GameReferenceDocument> {
 
-		const reference = modelReferenceMap[this.modelName];
-		const resource = modelResourceMap[this.modelName];
+		const game = this._game as Game;
+		const modelName = (this.constructor as any).modelName;
+		const reference = modelReferenceMap[modelName];
+		const resource = modelResourceMap[modelName];
 
 		// if not restricted, has access
 		if (!game.isRestricted(reference)) {
-			return true;
+			return this;
 		}
 
 		// if restricted by not logged, no access.
 		if (!ctx.state.user) {
-			return false;
+			throw new ApiError('No such %s with ID "%s"', reference, ctx.params.id).status(404);
 		}
 
 		// now we have a user, check if either moderator or owner
@@ -161,29 +163,18 @@ export function gameReferencePlugin(schema: Schema, options: GameReferenceOption
 
 		// if moderator, has access
 		if (isModerator) {
-			return true;
+			return this;
 		}
 
 		// if no moderator, must be owner or author
-		const createdBy = (entity._created_by as User)._id;
-		const authoredBy = entity.authors ? entity.authors.map(author => (author._user as User)._id) : [];
-		return [...authoredBy, createdBy].reduce((a, id) => a || ctx.state.user._id.equals(id), false);
-	};
+		const createdBy = (this._created_by as User)._id;
+		const authoredBy = this.authors ? this.authors.map(author => (author._user as User)._id) : [];
+		const isCreator = [...authoredBy, createdBy].reduce((a, id) => a || ctx.state.user._id.equals(id), false);
 
-	/**
-	 * Returns true if the entity is restricted by its linked game.
-	 * Note that the game must be populated, otherwise <tt>true</tt> will be returned.
-	 *
-	 * @return {boolean} True if linked game is restricted, false otherwise.
-	 */
-	schema.methods.isRestricted = function(): boolean {
-		const reference = modelReferenceMap[this.modelName];
-		//const reference = modelReferenceMap[this.constructor.modelName];
-		if (!(this._game as Game).ipdb) {
-			// game needs to be populated, so refuse if that's not the case
-			return true;
+		if (!isCreator) {
+			throw new ApiError('No such %s with ID "%s"', reference, ctx.params.id).status(404);
 		}
-		return config.vpdb.restrictions[reference].denyMpu.includes((this._game as Game).ipdb.mpu);
+		return this;
 	};
 }
 
@@ -229,12 +220,13 @@ declare module 'mongoose' {
 		authors?: ContentAuthor[];
 
 		/**
-		 * Returns true if the entity is restricted by its linked game.
-		 * Note that the game must be populated, otherwise <tt>true</tt> will be returned.
+		 * Makes sure an API request can access the entity.
 		 *
-		 * @return {boolean} True if linked game is restricted, false otherwise.
+		 * @param {Application.Context} ctx Koa context
+		 * @returns {Promise<GameReferenceDocument>} This entity
+		 * @throws {ApiError} When access is denied
 		 */
-		isRestricted(): boolean;
+		assertRestrictedView(ctx: Context): Promise<this>;
 	}
 
 	// statics
@@ -258,16 +250,6 @@ declare module 'mongoose' {
 		 * @return {Promise<T | null>} Updated query on restriction, same without restriction and null if not logged.
 		 */
 		applyRestrictionsForGame<T>(ctx: Context, game: Game, query: T): Promise<T | null>;
-
-		/**
-		 * Checks whether a user can access a given game.
-		 *
-		 * @param {Application.Context} ctx Koa context
-		 * @param {Game} game Game to check
-		 * @param {GameReferenceDocument<T>} entity entity that references the game. Needed to in order to check for owner.
-		 * @return {Promise<boolean>} True if access granted, false otherwise.
-		 */
-		hasRestrictionAccess(ctx: Context, game: Game, entity: GameReferenceDocument): Promise<boolean>;
 	}
 
 	// options

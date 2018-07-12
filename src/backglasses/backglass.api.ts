@@ -184,7 +184,6 @@ export class BackglassApi extends Api {
 		let query: any = {};
 		const pagination = this.pagination(ctx, 10, 30);
 		const serializerOpts: SerializerOptions = {};
-		const fields = ctx.query && ctx.query.fields ? ctx.query.fields.split(',') : [];
 		const populate = ['authors._user', 'versions._file'];
 		let game: Game;
 		// list roms of a game below /api/v1/games/{gameId}
@@ -208,7 +207,7 @@ export class BackglassApi extends Api {
 		}
 
 		// validate moderation field
-		if (fields.includes('moderation')) {
+		if (this.getRequestedFields(ctx).includes('moderation')) {
 			if (!ctx.state.user) {
 				throw new ApiError('You must be logged in order to fetch moderation fields.').status(403);
 			}
@@ -257,8 +256,7 @@ export class BackglassApi extends Api {
 			throw new ApiError('No such backglass with ID "%s"', ctx.params.id).status(404);
 		}
 		backglass = await backglass.assertModeratedView(ctx);
-		const fields = ctx.query && ctx.query.fields ? ctx.query.fields.split(',') : [];
-		const populated = await backglass.populateModeration(ctx, { includedFields: fields });
+		const populated = await backglass.populateModeration(ctx, this.getRequestedFields(ctx));
 		if (populated !== false) {
 			serializerOpts.includedFields = ['moderation'];
 		}

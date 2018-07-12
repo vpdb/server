@@ -417,8 +417,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 			throw new ApiError('No such release with ID "%s"', ctx.params.id).status(404);
 		}
 		release = await release.assertModeratedView(ctx);
-		const fields = ctx.query && ctx.query.fields ? ctx.query.fields.split(',') : [];
-		const populated = await release.populateModeration(ctx, { includedFields: fields });
+		const populated = await release.populateModeration(ctx, this.getRequestedFields(ctx));
 		if (populated === false) {
 			opts.excludedFields.push('moderation');
 		}

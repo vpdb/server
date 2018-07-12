@@ -79,8 +79,8 @@ export function moderationPlugin(schema: Schema) {
 			return;
 		}
 		// check if _created_by is a contributor and auto-approve.
-		/* istanbul ignore if */
 		let user: User;
+		/* istanbul ignore if */
 		if (this.populated('_created_by')) {
 			user = this._created_by as User;
 		} else {
@@ -261,12 +261,12 @@ export function moderationPlugin(schema: Schema) {
 	 * If moderation field is demanded in request, populates it.
 	 *
 	 * @param {Application.Context} ctx Koa context
-	 * @param {{includedFields: string[]}} opts Options
+	 * @param {string[]} includedFields List of included fields from request query
 	 * @returns {ModeratedDocument | boolean} Populated entity if fields added, false otherwise.
 	 */
-	schema.methods.populateModeration = async function(ctx: Context, opts: { includedFields: string[] }): Promise<ModeratedDocument | false> {
+	schema.methods.populateModeration = async function(ctx: Context, includedFields: string[]): Promise<ModeratedDocument | false> {
 		const resource: string = modelResourceMap[this.constructor.modelName];
-		if (opts.includedFields.includes('moderation')) {
+		if (includedFields.includes('moderation')) {
 			if (!ctx.state.user) {
 				throw new ApiError('You must be logged in order to fetch moderation fields.').status(403);
 			}
@@ -280,7 +280,7 @@ export function moderationPlugin(schema: Schema) {
 			// if owner or moderator, don't populate but still return object so moderation fields aren't deleted
 			if (ctx.state.user) {
 				const isModerator = await acl.isAllowed(ctx.state.user.id, resource, 'moderate');
-				if (isModerator || ctx.state.user._id.equals(this._created_by._id || this._created_by)) {
+				if (isModerator || ctx.state.user._id.equals(this._created_by._id)) {
 					return this;
 				}
 				return false;
@@ -398,6 +398,7 @@ function addToQuery<T>(toAdd: object, query: T): T {
 	if (isObject(query)) {
 		return assign(query, toAdd);
 	}
+	/* istanbul ignore next: Don't screw up when getting weird query objects, but that hasn't happened. */
 	return query;
 }
 
@@ -422,10 +423,10 @@ declare module 'mongoose' {
 		 * If moderation field is demanded in request, populates it.
 		 *
 		 * @param {Application.Context} ctx Koa context
-		 * @param {{includedFields: string[]}} opts Options
+		 * @param {string[]} includedFields List of included fields from request query
 		 * @returns {ModeratedDocument | boolean} Populated entity if fields added, false otherwise.
 		 */
-		populateModeration(ctx: Context, opts: { includedFields: string[] }): Promise<this | false>;
+		populateModeration(ctx: Context, includedFields: string[]): Promise<this | false>;
 
 		/**
 		 * Marks the entity as approved.

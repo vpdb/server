@@ -26,7 +26,7 @@ const ApiClient = require('../../../test/modules/api.client');
 const api = new ApiClient();
 
 let res;
-describe('The VPDB moderation feature', () => {
+describe.only('The VPDB moderation feature', () => {
 
 	let game, backglass, release;
 
@@ -34,7 +34,8 @@ describe('The VPDB moderation feature', () => {
 		await api.setupUsers({
 			member: { roles: ['member'] },
 			member2: { roles: [ 'member' ] },
-			moderator: { roles: ['moderator'] }
+			moderator: { roles: ['moderator'] },
+			contributor: { roles: ['contributor'] },
 		});
 		game = await api.gameHelper.createGame('moderator');
 		const b2s = await api.fileHelper.createDirectB2S('member', { keep: true });
@@ -109,19 +110,57 @@ describe('The VPDB moderation feature', () => {
 
 			it('should succeed refusal', async () => {
 				const refusedBackglass = await api.releaseHelper.createDirectB2S('member');
-				await api
+				res = await api
 					.as('moderator')
 					.post('/v1/backglasses/' + refusedBackglass.id + '/moderate', { action: 'refuse', message: 'Your request has been denied.' })
 					.then(res => res.expectStatus(200));
+
+				expect(res.data.is_approved).to.be(false);
+				expect(res.data.is_refused).to.be(true);
+				expect(res.data.auto_approved).to.be(false);
+				expect(res.data.history).to.be.an('array');
+				expect(res.data.history).to.have.length(1);
 			});
 		});
 
 		describe('when resetting', () => {
 
+			it('should succeed reset', async () => {
+				const moderatedBackglass = await api.releaseHelper.createDirectB2S('member');
+				await api
+					.as('moderator')
+					.post('/v1/backglasses/' + moderatedBackglass.id + '/moderate', { action: 'approve' })
+					.then(res => res.expectStatus(200));
+
+				res = await api
+					.as('moderator')
+					.post('/v1/backglasses/' + moderatedBackglass.id + '/moderate', { action: 'moderate' })
+					.then(res => res.expectStatus(200));
+
+				expect(res.data.is_approved).to.be(false);
+				expect(res.data.is_refused).to.be(false);
+				expect(res.data.auto_approved).to.be(false);
+				expect(res.data.history).to.be.an('array');
+				expect(res.data.history).to.have.length(2);
+			});
 		});
 
 		describe('when auto-accepting', () => {
 
+			it('should succeed when creating as contributor', async () => {
+				const moderatedBackglass = await api.releaseHelper.createDirectB2S('contributor');
+				res = await api
+					.as('moderator')
+					.withQuery({ fields: 'moderation' })
+					.get('/v1/backglasses/' + moderatedBackglass.id)
+					.then(res => res.expectStatus(200));
+
+				expect(res.data.moderation.is_approved).to.be(true);
+				expect(res.data.moderation.is_refused).to.be(false);
+				expect(res.data.moderation.auto_approved).to.be(true);
+				expect(res.data.moderation.history).to.be.an('array');
+				expect(res.data.moderation.history).to.have.length(1);
+			});
 		});
 
 	});
@@ -192,6 +231,11 @@ describe('The VPDB moderation feature', () => {
 			expect(res.data.find(b => b.id === backglass.id)).not.to.be.ok();
 		});
 
+		it('should not list the backglass within the game', async () => {
+			res = await api.get('/v1/games/' + game.id).then(res => res.expectStatus(200));
+			expect(res.data.backglasses.find(b => b.id === backglass.id)).not.to.be.ok();
+		});
+
 		it('should succeed listing pending backglasses', async () => {
 			res = await api
 				.as('moderator')
@@ -220,7 +264,7 @@ describe('The VPDB moderation feature', () => {
 		});
 	});
 
-	describe('when retrieving backglass details', () => {
+	describe('when retrieving pending backglass details', () => {
 
 		it('should fail as anonymous an non-creator', async () => {
 			await api.get('/v1/backglasses/' + backglass.id).then(res => res.expectStatus(404));
@@ -231,6 +275,63 @@ describe('The VPDB moderation feature', () => {
 			await api.as('member').get('/v1/backglasses/' + backglass.id).then(res => res.expectStatus(200));
 			await api.as('moderator').get('/v1/backglasses/' + backglass.id).then(res => res.expectStatus(200));
 		});
+
+	});
+
+	describe('when retrieving approved backglass details with moderation fields', () => {
+
+		let approvedBackglass;
+		before(async () => approvedBackglass = await api.releaseHelper.createDirectB2S('contributor'));
+
+		it('should fail as anonymous', async () => {
+			await api
+				.withQuery({ fields: 'moderation' })
+				.get('/v1/backglasses/' + approvedBackglass.id)
+				.then(res => res.expectError(403, 'you must be logged'));
+		});
+
+		it('should fail as member', async () => {
+			await api
+				.as('member')
+				.withQuery({ fields: 'moderation' })
+				.get('/v1/backglasses/' + approvedBackglass.id)
+				.then(res => res.expectError(403, 'you must be moderator'));
+		});
+
+		it('should return full history as moderator when requesting moderation field', async () => {
+			res = await api
+				.as('moderator')
+				.withQuery({ fields: 'moderation' })
+				.get('/v1/backglasses/' + approvedBackglass.id)
+				.then(res => res.expectStatus(200));
+			expect(res.data.moderation).to.be.an('object');
+			expect(res.data.moderation.history[0].created_by).to.be.an('object');
+		});
+
+		it('should return no history as moderator when not requesting moderation field', async () => {
+			res = await api
+				.as('moderator')
+				.get('/v1/backglasses/' + approvedBackglass.id)
+				.then(res => res.expectStatus(200));
+			expect(res.data.moderation).to.be.an('object');
+			expect(res.data.moderation.history).not.to.be.ok();
+		});
+
+		it('should return no moderation as anonymous when not requesting moderation field', async () => {
+			res = await api
+				.get('/v1/backglasses/' + approvedBackglass.id)
+				.then(res => res.expectStatus(200));
+			expect(res.data.moderation).not.to.be.ok();
+		});
+
+		it('should return no moderation as member when not requesting moderation field', async () => {
+			res = await api
+				.as('member')
+				.get('/v1/backglasses/' + approvedBackglass.id)
+				.then(res => res.expectStatus(200));
+			expect(res.data.moderation).not.to.be.ok();
+		});
+
 	});
 
 	describe('when commenting a moderated release', () => {

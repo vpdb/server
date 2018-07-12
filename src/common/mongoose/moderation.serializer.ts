@@ -27,15 +27,18 @@ import { Context } from '../typings/context';
 
 export class ModerationSerializer extends Serializer<ModerationData> {
 
+	/* istanbul ignore next */
 	protected _detailed(ctx: Context, doc: ModerationData, opts: SerializerOptions): ModerationData {
 		return undefined;
 	}
 
+	/* istanbul ignore next */
 	protected _reduced(ctx: Context, doc: ModerationData, opts: SerializerOptions): ModerationData {
 		return undefined;
 	}
 
 	protected _simple(ctx: Context, doc: ModerationData, opts: SerializerOptions): ModerationData {
+		/* istanbul ignore if */
 		if (!doc) {
 			return undefined;
 		}

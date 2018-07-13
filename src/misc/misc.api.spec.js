@@ -93,7 +93,7 @@ describe('The VPDB API', () => {
 				.get('/v1/sitemap')
 				.then(res => res.expectStatus(200).expectHeader('content-type', 'application/xml'));
 			expect(res.data).to.contain(release.name);
-			expect(res.data).to.contain(encodeURIComponent(release.game.title));
+			expect(res.data).to.contain(release.game.title.replace('&', '&amp;'));
 		});
 	})
 });

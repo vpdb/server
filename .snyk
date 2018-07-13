@@ -28,3 +28,12 @@ patch:
         patched: '2018-07-13T21:22:51.632Z'
     - nodegit > node-pre-gyp > request > hawk > cryptiles > boom > hoek:
         patched: '2018-07-13T21:22:51.632Z'
+  'npm:tunnel-agent:20170305':
+    - optipng > optipng-bin > bin-build > download > caw > tunnel-agent:
+        patched: '2018-07-13T21:56:19.990Z'
+    - optipng > optipng-bin > bin-wrapper > download > caw > tunnel-agent:
+        patched: '2018-07-13T21:56:19.990Z'
+    - pngquant > pngquant-bin > bin-build > download > caw > tunnel-agent:
+        patched: '2018-07-13T21:56:19.990Z'
+    - pngquant > pngquant-bin > bin-wrapper > download > caw > tunnel-agent:
+        patched: '2018-07-13T21:56:19.990Z'

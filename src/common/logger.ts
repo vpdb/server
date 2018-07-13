@@ -21,8 +21,7 @@ import chalk from 'chalk';
 import hasAnsi from 'has-ansi';
 import { format as logFormat } from 'logform';
 import { format as sprintf } from 'util';
-
-const winston = require('winston'); // todo use typings when available (https://github.com/winstonjs/winston/issues/1190)
+import winston from 'winston';
 
 export class Logger {
 	private logger: any;

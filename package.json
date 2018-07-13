@@ -94,7 +94,7 @@
 		"unrar": "0.1.7",
 		"unzip": "0.1.11",
 		"validator": "10.4.0",
-		"winston": "3.0.0-rc5",
+		"winston": "3.0.0",
 		"xmlbuilder": "10.0.0"
 	},
 	"devDependencies": {

@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { assign, cloneDeep, difference, extend, intersection, isArray, isUndefined, keys, orderBy, pick } from 'lodash';
+import { assign, cloneDeep, difference, extend, intersection, isUndefined, keys, orderBy, pick } from 'lodash';
 import { Types } from 'mongoose';
 import { inspect } from 'util';
 
@@ -194,24 +194,8 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		const pagination = this.pagination(ctx, 12, 60);
 		let starredReleaseIds: string[] = null;
 		let titleRegex: RegExp = null;
-		const serializerOpts: SerializerOptions = {};
 		const fields = ctx.query && ctx.query.fields ? ctx.query.fields.split(',') : [];
-
-		// flavor, thumb selection
-		if (ctx.query.thumb_flavor) {
-			serializerOpts.thumbFlavor = ctx.query.thumb_flavor;
-			// ex.: /api/v1/releases?flavor=orientation:fs,lighting:day
-		}
-		if (ctx.query.thumb_format) {
-			serializerOpts.thumbFormat = ctx.query.thumb_format;
-		}
-		serializerOpts.fullThumbData = this.parseBoolean(ctx.query.thumb_full_data);
-		serializerOpts.thumbPerFile = this.parseBoolean(ctx.query.thumb_per_file);
-
-		// check
-		if (serializerOpts.thumbPerFile && !serializerOpts.thumbFormat) {
-			throw new ApiError('You must specify "thumb_format" when requesting thumbs per file.').status(400);
-		}
+		const serializerOpts = this.parseQueryThumbOptions(ctx);
 
 		if (fields.includes('moderation')) {
 			if (!ctx.state.user) {
@@ -529,6 +513,33 @@ export class ReleaseApi extends ReleaseAbstractApi {
 			.populate('moderation.history._created_by')
 			.exec();
 		return this.success(ctx, state.serializers.Release.detailed(ctx, release, { includedFields: ['moderation'] }).moderation, 200);
+	}
+
+	/**
+	 * Reads and validates thumb parameters from the query and puts them into the serializer options.
+	 *
+	 * @param {Context} ctx Koa context
+	 * @param {SerializerOptions} serializerOpts Current serializer options
+	 * @returns {SerializerOptions}
+	 */
+	private parseQueryThumbOptions(ctx: Context, serializerOpts: SerializerOptions = {}): SerializerOptions {
+		// flavor, thumb selection
+		if (ctx.query.thumb_flavor) {
+			serializerOpts.thumbFlavor = ctx.query.thumb_flavor;
+			// ex.: /api/v1/releases?flavor=orientation:fs,lighting:day
+		}
+		if (ctx.query.thumb_format) {
+			serializerOpts.thumbFormat = ctx.query.thumb_format;
+		}
+		serializerOpts.fullThumbData = this.parseBoolean(ctx.query.thumb_full_data);
+		serializerOpts.thumbPerFile = this.parseBoolean(ctx.query.thumb_per_file);
+
+		// check
+		if (serializerOpts.thumbPerFile && !serializerOpts.thumbFormat) {
+			throw new ApiError('You must specify "thumb_format" when requesting thumbs per file.').status(400);
+		}
+
+		return serializerOpts;
 	}
 
 	/**

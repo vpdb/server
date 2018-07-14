@@ -100,50 +100,23 @@ class ApiCache {
 		const hit = await state.redis.get(key);
 
 		if (hit) {
-			const response = JSON.parse(hit) as CacheResponse;
-			const body = isObject(response.body) ? response.body : JSON.parse(response.body);
 
-			// update counters
-			if (cacheRoute.counters) {
-				const refs: Array<{ counter: CacheCounterConfig<any>, key: string, id: string, c: string }> = [];
-				for (const counter of cacheRoute.counters) {
-					for (const c of counter.counters) {
-						const counters = counter.get(body, c);
-						for (const id of Object.keys(counters)) {
-							refs.push({ key: this.getCounterKey(counter.modelName, id, c), id, c, counter });
-						}
-					}
-					// update db of view counter
-					if (counter.incrementCounter) {
-						await state.getModel<MetricsModel<MetricsDocument>>(counter.modelName).incrementCounter(counter.incrementCounter.getId(body), counter.incrementCounter.counter);
-					}
-				}
-				const values = refs.length > 0 ? (await state.redis.mget.apply(state.redis, refs.map(r => r.key))) : [];
-				for (let i = 0; i < values.length; i++) {
-					if (values[i]) {
-						refs[i].counter.set(body, refs[i].c, { [refs[i].id]: parseInt(values[i], 10) });
-					}
-				}
-			}
-
+			const response = await this.updateCounters(cacheRoute, hit);
 			ctx.status = response.status;
 			ctx.set('X-Cache-Api', 'HIT');
 			// todo add auth headers such as x-token-refresh
 
-			// if request body was a string it was prettified, so let's do that again.
-			ctx.response.body = !isObject(response.body) ?
-				JSON.stringify(body, null, '  ') :
-				body;
+			ctx.response.body = response.body;
 
-			return;
-		}
-		ctx.set('X-Cache-Api', 'MISS');
+		} else {
 
-		await next();
+			ctx.set('X-Cache-Api', 'MISS');
+			await next();
 
-		// only cache successful responses
-		if (ctx.status >= 200 && ctx.status < 300) {
-			await this.setCache(ctx, key, cacheRoute);
+			// only cache successful responses
+			if (ctx.status >= 200 && ctx.status < 300) {
+				await this.setCache(ctx, key, cacheRoute);
+			}
 		}
 	}
 
@@ -403,6 +376,42 @@ class ApiCache {
 		await Promise.all(refs.map(ref => ref()));
 		logger.debug('[Cache] No hit, saved as "%s" with references [ %s ] and %s counters in %sms.',
 			key, refKeys.join(', '), numCounters, Date.now() - now);
+	}
+
+	private async updateCounters(cacheRoute: CacheRoute<any>, cacheHit: string): Promise<CacheResponse> {
+
+		const response = JSON.parse(cacheHit) as CacheResponse;
+		const body = isObject(response.body) ? response.body : JSON.parse(response.body);
+
+		// update counters
+		if (cacheRoute.counters) {
+			const refs: Array<{ counter: CacheCounterConfig<any>, key: string, id: string, c: string }> = [];
+			for (const counter of cacheRoute.counters) {
+				for (const c of counter.counters) {
+					const counters = counter.get(body, c);
+					for (const id of Object.keys(counters)) {
+						refs.push({ key: this.getCounterKey(counter.modelName, id, c), id, c, counter });
+					}
+				}
+				// update db of view counter
+				if (counter.incrementCounter) {
+					await state.getModel<MetricsModel<MetricsDocument>>(counter.modelName).incrementCounter(counter.incrementCounter.getId(body), counter.incrementCounter.counter);
+				}
+			}
+			const values = refs.length > 0 ? (await state.redis.mget.apply(state.redis, refs.map(r => r.key))) : [];
+			for (let i = 0; i < values.length; i++) {
+				if (values[i]) {
+					refs[i].counter.set(body, refs[i].c, { [refs[i].id]: parseInt(values[i], 10) });
+				}
+			}
+		}
+
+		return {
+			status: response.status,
+			headers: response.headers,
+			// if request body was a string it was prettified, so let's do that again.
+			body: !isObject(response.body) ? JSON.stringify(body, null, '  ') : body,
+		};
 	}
 
 	private getCacheKey(ctx: Context): string {

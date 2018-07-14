@@ -312,6 +312,10 @@ describe('The VPDB `game` API', function() {
 			request.get('/api/v1/games?q=a').saveResponse({ path: 'games/search' }).end(hlp.status(400, 'must contain at least two characters', done));
 		});
 
+		it('should fail when providing nonsense number for year filter', function(done) {
+			request.get('/api/v1/games?decade=qwez').end(hlp.status(400, '"decade" must be an integer', done));
+		});
+
 		it('should find game by game id', function(done) {
 			// find added game with shortest id
 			const game = _.sortBy(games, function(game) {

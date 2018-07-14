@@ -151,7 +151,7 @@ export class GameApi extends Api {
 	 */
 	public async update(ctx: Context) {
 
-		const updateableFields = ['title', 'year', 'manufacturer', 'game_type', 'short', 'description', 'instructions',
+		const updatableFields = ['title', 'year', 'manufacturer', 'game_type', 'short', 'description', 'instructions',
 			'produced_units', 'model_number', 'themes', 'designers', 'artists', 'features', 'notes', 'toys', 'slogans',
 			'ipdb', 'number', '_backglass', '_logo', 'keywords'];
 
@@ -168,9 +168,9 @@ export class GameApi extends Api {
 
 		// fail if invalid fields provided
 		const submittedFields = keys(ctx.request.body);
-		if (intersection(updateableFields, submittedFields).length !== submittedFields.length) {
-			const invalidFields = difference(submittedFields, updateableFields);
-			throw new ApiError('Invalid field%s: ["%s"]. Allowed fields: ["%s"]', invalidFields.length === 1 ? '' : 's', invalidFields.join('", "'), updateableFields.join('", "')).status(400).log();
+		if (intersection(updatableFields, submittedFields).length !== submittedFields.length) {
+			const invalidFields = difference(submittedFields, updatableFields);
+			throw new ApiError('Invalid field%s: ["%s"]. Allowed fields: ["%s"]', invalidFields.length === 1 ? '' : 's', invalidFields.join('", "'), updatableFields.join('", "')).status(400).log();
 		}
 
 		const oldMediaBackglassObj = game._backglass as File;
@@ -282,10 +282,16 @@ export class GameApi extends Api {
 
 		// filter by decade
 		if (ctx.query.decade) {
-			const decades: string[] = ctx.query.decade.split(',');
+			const decades: number[] = ctx.query.decade.split(',').map((str: string) => {
+				const num = parseInt(str, 10);
+				if (isNaN(num)) {
+					throw new ApiError('Parameter "decade" must be an integer but got "%s".', str).status(400);
+				}
+				return num;
+			});
 			const d: any[] = [];
 			decades.forEach(decade => {
-				d.push({ year: { $gte: parseInt(decade, 10), $lt: parseInt(decade, 10) + 10 } });
+				d.push({ year: { $gte: decade, $lt: decade + 10 } });
 			});
 			if (d.length === 1) {
 				query.push(d[0]);

@@ -17,7 +17,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-/* istanbul ignore file */
 import { existsSync, lstatSync } from 'fs';
 import { isArray, isBoolean, isNumber, isObject, isString, keys } from 'lodash';
 import { dirname } from 'path';

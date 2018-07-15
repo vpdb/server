@@ -521,7 +521,7 @@ describe('The VPDB `ROM` API', function() {
 				contributor: { roles: ['contributor'] },
 				moderator: { roles: ['moderator'] }
 			}, function() {
-				hlp.game.createGame('moderator', request, function(g) {
+				hlp.game.createGame('moderator', request, { ipdb: { number: 889 } }, function(g) {
 					game = g;
 					hlp.file.createRom(user, request, function(file) {
 						request

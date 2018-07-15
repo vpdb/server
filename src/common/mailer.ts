@@ -408,12 +408,15 @@ class Mailer {
 		if (isEmpty(config.vpdb.email.nodemailer)) {
 			return false;
 		}
+		/* istanbul ignore if: Email is disabled in tests */
 		if (!pref) {
 			return true;
 		}
+		/* istanbul ignore if: Email is disabled in tests */
 		if (!user.preferences) {
 			return true;
 		}
+		/* istanbul ignore next: Email is disabled in tests */
 		return !!user.preferences[pref];
 	}
 

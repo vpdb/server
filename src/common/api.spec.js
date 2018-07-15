@@ -32,6 +32,10 @@ describe('The VPDB API', () => {
 		await api.get('/v1/foobar').then(res => res.expectError(404, 'No such resource'));
 	});
 
+	it('should return a HTTP 404 and a hint if the resource is not found', async () => {
+		await api.get('/foobar').then(res => res.expectError(404, 'Maybe you forgot to use the /v1 prefix'));
+	});
+
 	it('should return a HTTP 415 if no content-type header is provided', async () => {
 		await api
 			.withHeader('Content-Type', '')

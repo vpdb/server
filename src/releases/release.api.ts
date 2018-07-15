@@ -388,7 +388,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 	 */
 	public async view(ctx: Context) {
 
-		const opts: SerializerOptions = {
+		const serializerOpts: SerializerOptions = {
 			excludedFields: [],
 		};
 		const release = await this.populateAll(state.models.Release.findOne({ id: ctx.params.id })).exec();
@@ -400,8 +400,8 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		await release.assertModeratedView(ctx);
 
 		const populated = await release.populateModeration(ctx, this.getRequestedFields(ctx));
-		if (populated === false) {
-			opts.excludedFields.push('moderation');
+		if (populated !== false) {
+			serializerOpts.includedFields = ['moderation'];
 		}
 
 		await release.incrementCounter('views');
@@ -414,22 +414,22 @@ export class ReleaseApi extends ReleaseAbstractApi {
 				'_ref.release': release._id,
 			}).exec();
 			if (star) {
-				opts.starred = true;
+				serializerOpts.starred = true;
 			}
 		}
 
 		if (ctx.query.thumb_flavor) {
-			opts.thumbFlavor = ctx.query.thumb_flavor;
+			serializerOpts.thumbFlavor = ctx.query.thumb_flavor;
 			// ex.: /api/v1/releases?flavor=orientation:fs,lighting:day
 		}
 		if (ctx.query.thumb_format) {
-			opts.thumbFormat = ctx.query.thumb_format;
+			serializerOpts.thumbFormat = ctx.query.thumb_format;
 		}
 
-		opts.thumbPerFile = this.parseBoolean(ctx.query.thumb_per_file);
-		opts.full = this.parseBoolean(ctx.query.full);
+		serializerOpts.thumbPerFile = this.parseBoolean(ctx.query.thumb_per_file);
+		serializerOpts.full = this.parseBoolean(ctx.query.full);
 
-		return this.success(ctx, state.serializers.Release.detailed(ctx, release, opts));
+		return this.success(ctx, state.serializers.Release.detailed(ctx, release, serializerOpts));
 	}
 
 	/**

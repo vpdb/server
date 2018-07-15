@@ -165,6 +165,112 @@ describe('The VPDB moderation feature', () => {
 
 	});
 
+	describe('when moderating a release', () => {
+
+		it('should fail for invalid release', async () => {
+			await api
+				.as('moderator')
+				.post('/v1/releases/zigizagizug/moderate', {})
+				.then(res => res.expectError(404, 'no such release'));
+		});
+
+		it('should fail for empty data', async () => {
+			await api
+				.as('moderator')
+				.post('/v1/releases/' + release.id + '/moderate', {})
+				.then(res => res.expectValidationError('action', 'must be provided').expectNumValidationErrors(1));
+		});
+
+		it('should fail for invalid action', async () => {
+			await api
+				.as('moderator')
+				.post('/v1/releases/' + release.id + '/moderate', { action: 'brümütz!!'})
+				.then(res => res.expectValidationError('action', 'invalid action').expectNumValidationErrors(1));
+		});
+
+		describe('when accepting', () => {
+
+			it('should succeed approval', async () => {
+				const unapprovedRelease = await api.releaseHelper.createRelease('member');
+				res = await api
+					.as('moderator')
+					.post('/v1/releases/' + unapprovedRelease.id + '/moderate', { action: 'approve' })
+					.then(res => res.expectStatus(200));
+
+				expect(res.data.is_approved).to.be(true);
+				expect(res.data.is_refused).to.be(false);
+				expect(res.data.auto_approved).to.be(false);
+				expect(res.data.history).to.be.an('array');
+				expect(res.data.history).to.have.length(1);
+			});
+		});
+
+		describe('when refusing', () => {
+
+			it('should fail when message is missing', async () => {
+				await api
+					.as('moderator')
+					.post('/v1/releases/' + release.id + '/moderate', { action: 'refuse' })
+					.then(res => res.expectValidationError('message', 'message must be provided').expectNumValidationErrors(1));
+			});
+
+			it('should succeed refusal', async () => {
+				const refusedRelease = await api.releaseHelper.createRelease('member');
+				res = await api
+					.as('moderator')
+					.post('/v1/releases/' + refusedRelease.id + '/moderate', { action: 'refuse', message: 'Your request has been denied.' })
+					.then(res => res.expectStatus(200));
+
+				expect(res.data.is_approved).to.be(false);
+				expect(res.data.is_refused).to.be(true);
+				expect(res.data.auto_approved).to.be(false);
+				expect(res.data.history).to.be.an('array');
+				expect(res.data.history).to.have.length(1);
+			});
+		});
+
+		describe('when resetting', () => {
+
+			it('should succeed reset', async () => {
+				const moderatedRelease = await api.releaseHelper.createRelease('member');
+				await api
+					.as('moderator')
+					.post('/v1/releases/' + moderatedRelease.id + '/moderate', { action: 'approve' })
+					.then(res => res.expectStatus(200));
+
+				res = await api
+					.as('moderator')
+					.post('/v1/releases/' + moderatedRelease.id + '/moderate', { action: 'moderate' })
+					.then(res => res.expectStatus(200));
+
+				expect(res.data.is_approved).to.be(false);
+				expect(res.data.is_refused).to.be(false);
+				expect(res.data.auto_approved).to.be(false);
+				expect(res.data.history).to.be.an('array');
+				expect(res.data.history).to.have.length(2);
+			});
+		});
+
+		describe('when auto-accepting', () => {
+
+			it('should succeed when creating as contributor', async () => {
+				const moderatedRelease = await api.releaseHelper.createRelease('contributor');
+				res = await api
+					.as('moderator')
+					.withQuery({ fields: 'moderation' })
+					.get('/v1/releases/' + moderatedRelease.id)
+					.then(res => res.expectStatus(200));
+
+				expect(res.data.moderation.is_approved).to.be(true);
+				expect(res.data.moderation.is_refused).to.be(false);
+				expect(res.data.moderation.auto_approved).to.be(true);
+				expect(res.data.moderation.history).to.be.an('array');
+				expect(res.data.moderation.history).to.have.length(1);
+			});
+		});
+
+	});
+
 	describe('when listing backglasses with moderation fields', () => {
 
 		it('should fail as anonymous', async () => {
@@ -187,6 +293,33 @@ describe('The VPDB moderation feature', () => {
 				.as('moderator')
 				.withQuery({ fields: 'moderation' })
 				.get('/v1/backglasses')
+				.then(res => res.expectStatus(200));
+		});
+
+	});
+
+	describe('when listing releases with moderation fields', () => {
+
+		it('should fail as anonymous', async () => {
+			await api
+				.withQuery({ fields: 'moderation' })
+				.get('/v1/releases')
+				.then(res => res.expectError(403, 'must be logged'));
+		});
+
+		it('should fail as non-moderator', async () => {
+			await api
+				.as('member')
+				.withQuery({ fields: 'moderation' })
+				.get('/v1/releases')
+				.then(res => res.expectError(403, 'must be moderator'));
+		});
+
+		it('should succeed as moderator', async () => {
+			await api
+				.as('moderator')
+				.withQuery({ fields: 'moderation' })
+				.get('/v1/releases')
 				.then(res => res.expectStatus(200));
 		});
 
@@ -264,6 +397,78 @@ describe('The VPDB moderation feature', () => {
 		});
 	});
 
+	describe('when listing moderated releases', () => {
+
+		it('should fail as anonymous', async () => {
+			await api
+				.withQuery({ moderation: 'all' })
+				.get('/v1/releases')
+				.then(res => res.expectError(401, 'Must be logged in order to retrieve moderated items'));
+		});
+
+		it('should fail as member', async () => {
+			await api
+				.as('member')
+				.withQuery({ moderation: 'all' })
+				.get('/v1/releases')
+				.then(res => res.expectError(403, 'Must be moderator'));
+		});
+
+		it('should fail with an invalid parameter', async () => {
+			await api
+				.as('moderator')
+				.withQuery({ moderation: 'duh' })
+				.get('/v1/releases')
+				.then(res => res.expectError(400, 'Invalid moderation filter'));
+		});
+
+		it('should never list the releases without requesting moderated entities', async () => {
+			res = await api.get('/v1/releases').then(res => res.expectStatus(200));
+			expect(res.data.find(b => b.id === release.id)).not.to.be.ok();
+
+			res = await api.as('member2').get('/v1/releases').then(res => res.expectStatus(200));
+			expect(res.data.find(b => b.id === release.id)).not.to.be.ok();
+
+			res = await api.as('member').get('/v1/releases').then(res => res.expectStatus(200));
+			expect(res.data.find(b => b.id === release.id)).not.to.be.ok();
+
+			res = await api.as('moderator').get('/v1/releases').then(res => res.expectStatus(200));
+			expect(res.data.find(b => b.id === release.id)).not.to.be.ok();
+		});
+
+		it('should not list the release within the game', async () => {
+			res = await api.get('/v1/games/' + game.id).then(res => res.expectStatus(200));
+			expect(res.data.releases.find(b => b.id === release.id)).not.to.be.ok();
+		});
+
+		it('should succeed listing pending releases', async () => {
+			res = await api
+				.as('moderator')
+				.withQuery({ moderation: 'pending' })
+				.get('/v1/releases')
+				.then(res => res.expectStatus(200));
+			expect(res.data.find(b => b.id === release.id)).to.be.ok();
+		});
+
+		it('should succeed listing all entities', async () => {
+			res = await api
+				.as('moderator')
+				.withQuery({ moderation: 'all' })
+				.get('/v1/releases')
+				.then(res => res.expectStatus(200));
+			expect(res.data.find(b => b.id === release.id)).to.be.ok();
+		});
+
+		it('should not list the release when requesting other statuses', async () => {
+			res = await api.as('moderator').withQuery({ moderation: 'refused' }).get('/v1/releases').then(res => res.expectStatus(200));
+			expect(res.data.find(b => b.id === release.id)).not.to.be.ok();
+			res = await api.as('moderator').withQuery({ moderation: 'auto_approved' }).get('/v1/releases').then(res => res.expectStatus(200));
+			expect(res.data.find(b => b.id === release.id)).not.to.be.ok();
+			res = await api.as('moderator').withQuery({ moderation: 'manually_approved' }).get('/v1/releases').then(res => res.expectStatus(200));
+			expect(res.data.find(b => b.id === release.id)).not.to.be.ok();
+		});
+	});
+
 	describe('when retrieving pending backglass details', () => {
 
 		it('should fail as anonymous an non-creator', async () => {
@@ -274,6 +479,20 @@ describe('The VPDB moderation feature', () => {
 		it('should succeed as creator and moderator', async () => {
 			await api.as('member').get('/v1/backglasses/' + backglass.id).then(res => res.expectStatus(200));
 			await api.as('moderator').get('/v1/backglasses/' + backglass.id).then(res => res.expectStatus(200));
+		});
+
+	});
+
+	describe('when retrieving pending releases details', () => {
+
+		it('should fail as anonymous an non-creator', async () => {
+			await api.get('/v1/releases/' + release.id).then(res => res.expectStatus(404));
+			await api.as('member2').get('/v1/releases/' + release.id).then(res => res.expectStatus(404));
+		});
+
+		it('should succeed as creator and moderator', async () => {
+			await api.as('member').get('/v1/releases/' + release.id).then(res => res.expectStatus(200));
+			await api.as('moderator').get('/v1/releases/' + release.id).then(res => res.expectStatus(200));
 		});
 
 	});
@@ -328,6 +547,62 @@ describe('The VPDB moderation feature', () => {
 			res = await api
 				.as('member')
 				.get('/v1/backglasses/' + approvedBackglass.id)
+				.then(res => res.expectStatus(200));
+			expect(res.data.moderation).not.to.be.ok();
+		});
+
+	});
+
+	describe('when retrieving approved release details with moderation fields', () => {
+
+		let approvedRelease;
+		before(async () => approvedRelease = await api.releaseHelper.createRelease('contributor'));
+
+		it('should fail as anonymous', async () => {
+			await api
+				.withQuery({ fields: 'moderation' })
+				.get('/v1/releases/' + approvedRelease.id)
+				.then(res => res.expectError(403, 'you must be logged'));
+		});
+
+		it('should fail as member', async () => {
+			await api
+				.as('member')
+				.withQuery({ fields: 'moderation' })
+				.get('/v1/releases/' + approvedRelease.id)
+				.then(res => res.expectError(403, 'you must be moderator'));
+		});
+
+		it('should return full history as moderator when requesting moderation field', async () => {
+			res = await api
+				.as('moderator')
+				.withQuery({ fields: 'moderation' })
+				.get('/v1/releases/' + approvedRelease.id)
+				.then(res => res.expectStatus(200));
+			expect(res.data.moderation).to.be.an('object');
+			expect(res.data.moderation.history[0].created_by).to.be.an('object');
+		});
+
+		it('should return no history as moderator when not requesting moderation field', async () => {
+			res = await api
+				.as('moderator')
+				.get('/v1/releases/' + approvedRelease.id)
+				.then(res => res.expectStatus(200));
+			expect(res.data.moderation).to.be.an('object');
+			expect(res.data.moderation.history).not.to.be.ok();
+		});
+
+		it('should return no moderation as anonymous when not requesting moderation field', async () => {
+			res = await api
+				.get('/v1/releases/' + approvedRelease.id)
+				.then(res => res.expectStatus(200));
+			expect(res.data.moderation).not.to.be.ok();
+		});
+
+		it('should return no moderation as member when not requesting moderation field', async () => {
+			res = await api
+				.as('member')
+				.get('/v1/releases/' + approvedRelease.id)
 				.then(res => res.expectStatus(200));
 			expect(res.data.moderation).not.to.be.ok();
 		});

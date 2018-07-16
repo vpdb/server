@@ -99,7 +99,7 @@
 	"devDependencies": {
 		"@types/adm-zip": "0.4.31",
 		"@types/archiver": "2.1.2",
-		"@types/bluebird": "3.5.21",
+		"@types/bluebird": "3.5.22",
 		"@types/bull": "3.3.12",
 		"@types/busboy": "0.2.3",
 		"@types/bytes": "3.0.0",

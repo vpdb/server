@@ -20,10 +20,10 @@
 import { assign, isArray, isEmpty, isObject, map } from 'lodash';
 import { Document, GameReferenceDocument, GameReferenceOptions, Model, ModelProperties, Schema } from 'mongoose';
 
-import { Game } from '../../games/game';
+import { GameDocument } from '../../games/game.document';
 import { state } from '../../state';
 import { ContentAuthor } from '../../users/content.author';
-import { User } from '../../users/user';
+import { UserDocument } from '../../users/user.document';
 import { acl } from '../acl';
 import { ApiError } from '../api.error';
 import { config } from '../settings';
@@ -104,11 +104,11 @@ export function gameReferencePlugin(schema: Schema, options: GameReferenceOption
 	 * Returns the query for listing only non-restricted entities for a given game.
 	 *
 	 * @param {Application.Context} ctx Koa context
-	 * @param {Game} game Game to fetch entities for.
+	 * @param {GameDocument} game Game to fetch entities for.
 	 * @param {Array<any> | object} query Query to append
 	 * @return {Promise<Array<any> | object | null>} Updated query on restriction, same without restriction and null if not logged.
 	 */
-	schema.statics.applyRestrictionsForGame = async function<T>(this: ModelProperties, ctx: Context, game: Game, query: T): Promise<T | null> {
+	schema.statics.applyRestrictionsForGame = async function<T>(this: ModelProperties, ctx: Context, game: GameDocument, query: T): Promise<T | null> {
 
 		const reference = modelReferenceMap[this.modelName];
 		const resource = modelResourceMap[this.modelName];
@@ -143,7 +143,7 @@ export function gameReferencePlugin(schema: Schema, options: GameReferenceOption
 	 */
 	schema.methods.assertRestrictedView = async function(this: GameReferenceDocument, ctx: Context): Promise<GameReferenceDocument> {
 
-		const game = this._game as Game;
+		const game = this._game as GameDocument;
 		const modelName = (this.constructor as any).modelName;
 		const reference = modelReferenceMap[modelName];
 		const resource = modelResourceMap[modelName];
@@ -167,8 +167,8 @@ export function gameReferencePlugin(schema: Schema, options: GameReferenceOption
 		}
 
 		// if no moderator, must be owner or author
-		const createdBy = (this._created_by as User)._id;
-		const authoredBy = this.authors ? this.authors.map(author => (author._user as User)._id) : [];
+		const createdBy = (this._created_by as UserDocument)._id;
+		const authoredBy = this.authors ? this.authors.map(author => (author._user as UserDocument)._id) : [];
 		const isCreator = [...authoredBy, createdBy].reduce((a, id) => a || ctx.state.user._id.equals(id), false);
 
 		if (!isCreator) {
@@ -208,15 +208,15 @@ declare module 'mongoose' {
 		/**
 		 * Game reference or populated object
 		 */
-		_game?: Game | Types.ObjectId;
+		_game?: GameDocument | Types.ObjectId;
 
 		/**
 		 * Serialized game
 		 */
-		game?: Game;
+		game?: GameDocument;
 
 		// hack, those two we just assume are there.
-		_created_by?: User | Types.ObjectId;
+		_created_by?: UserDocument | Types.ObjectId;
 		authors?: ContentAuthor[];
 
 		/**
@@ -245,11 +245,11 @@ declare module 'mongoose' {
 		 * Returns the query for listing only non-restricted entities for a given game.
 		 *
 		 * @param {Application.Context} ctx Koa context
-		 * @param {Game} game Game to fetch entities for.
+		 * @param {GameDocument} game Game to fetch entities for.
 		 * @param {T} query Query to append
 		 * @return {Promise<T | null>} Updated query on restriction, same without restriction and null if not logged.
 		 */
-		applyRestrictionsForGame<T>(ctx: Context, game: Game, query: T): Promise<T | null>;
+		applyRestrictionsForGame<T>(ctx: Context, game: GameDocument, query: T): Promise<T | null>;
 	}
 
 	// options

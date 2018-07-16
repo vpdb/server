@@ -18,10 +18,10 @@
  */
 
 import { Document, Types } from 'mongoose';
-import { Game } from '../games/game';
-import { User } from '../users/user';
+import { GameDocument } from '../games/game.document';
+import { UserDocument } from '../users/user.document';
 
-export interface GameRequest extends Document {
+export interface GameRequestDocument extends Document {
 	id: string;
 	title: string;
 	notes: string;
@@ -29,11 +29,11 @@ export interface GameRequest extends Document {
 	ipdb_title: string;
 	is_closed: boolean;
 	message: string;
-	_game: Game | Types.ObjectId;
-	_created_by: User | Types.ObjectId;
+	_game: GameDocument | Types.ObjectId;
+	_created_by: UserDocument | Types.ObjectId;
 	created_at: Date;
 
 	// serialized
-	game: Game;
-	created_by: User;
+	game: GameDocument;
+	created_by: UserDocument;
 }

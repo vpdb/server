@@ -19,19 +19,19 @@
 import { extend, omit } from 'lodash';
 
 import { visualPinballTable } from '../../common/visualpinball.table';
-import { File } from '../file';
 import { FileDocument } from '../file.document';
+import { File } from '../file';
 import { FileVariation } from '../file.variations';
 import { Metadata } from './metadata';
 
 export class VptMetadata extends Metadata {
 
-	public isValid(file: File, variation?: FileVariation): boolean {
+	public isValid(file: FileDocument, variation?: FileVariation): boolean {
 		return ['application/x-visual-pinball-table', 'application/x-visual-pinball-table-x']
-			.includes(FileDocument.getMimeType(file, variation));
+			.includes(File.getMimeType(file, variation));
 	}
 
-	public async getMetadata(file: File, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
+	public async getMetadata(file: FileDocument, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
 		const script = await visualPinballTable.readScriptFromTable(path);
 		const props = await visualPinballTable.getTableInfo(path);
 		extend(props, { table_script: script.code });

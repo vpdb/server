@@ -20,7 +20,7 @@
 import { decode as jwtDecode } from 'jwt-simple';
 import { AuthenticationUtil, Jwt } from '../../authentication/authentication.util';
 import { state } from '../../state';
-import { User } from '../../users/user';
+import { UserDocument } from '../../users/user.document';
 import { ApiError } from '../api.error';
 import { Scope } from '../scope';
 import { config, settings } from '../settings';
@@ -130,10 +130,10 @@ function retrieveToken(ctx: Context): { value: string, fromUrl: boolean } {
  *
  * @param ctx   Koa context
  * @param token Retrieved token
- * @returns {Promise<User | null>} Authenticated user on success or null on successful service resource authentication.
+ * @returns {Promise<UserDocument | null>} Authenticated user on success or null on successful service resource authentication.
  * @throws {ApiError} If provided token is invalid.
  */
-async function authenticateWithAppToken(ctx: Context, token: { value: string, fromUrl: boolean }): Promise<User | null> {
+async function authenticateWithAppToken(ctx: Context, token: { value: string, fromUrl: boolean }): Promise<UserDocument | null> {
 
 	const vpdbUserIdHeader = 'x-vpdb-user-id';
 	const providerUserIdHeader = 'x-user-id';
@@ -151,8 +151,8 @@ async function authenticateWithAppToken(ctx: Context, token: { value: string, fr
 	}
 
 	// fail if incorrect plan
-	if (appToken.type === 'personal' && !(appToken._created_by as User).planConfig.enableAppTokens) {
-		throw new ApiError('Your current plan "%s" does not allow the use of personal tokens. Upgrade or contact an admin.', (appToken._created_by as User).planConfig.id).status(401);
+	if (appToken.type === 'personal' && !(appToken._created_by as UserDocument).planConfig.enableAppTokens) {
+		throw new ApiError('Your current plan "%s" does not allow the use of personal tokens. Upgrade or contact an admin.', (appToken._created_by as UserDocument).planConfig.id).status(401);
 	}
 
 	// fail if expired
@@ -170,7 +170,7 @@ async function authenticateWithAppToken(ctx: Context, token: { value: string, fr
 	ctx.state.tokenType = appToken.type;
 	ctx.state.tokenScopes = appToken.scopes;
 
-	let user: User;
+	let user: UserDocument;
 
 	// additional checks for provider token
 	if (appToken.type === 'provider') {
@@ -205,7 +205,7 @@ async function authenticateWithAppToken(ctx: Context, token: { value: string, fr
 		}
 
 	} else {
-		user = appToken._created_by as User;
+		user = appToken._created_by as UserDocument;
 	}
 	await appToken.update({ last_used_at: new Date() });
 	return user;
@@ -216,10 +216,10 @@ async function authenticateWithAppToken(ctx: Context, token: { value: string, fr
  *
  * @param ctx   Koa context
  * @param token Retrieved token
- * @returns {Promise<User>} Authenticated user on success.
+ * @returns {Promise<UserDocument>} Authenticated user on success.
  * @throws {ApiError} If provided token is invalid.
  */
-async function authenticateWithJwt(ctx: Context, token: { value: string, fromUrl: boolean }): Promise<User> {
+async function authenticateWithJwt(ctx: Context, token: { value: string, fromUrl: boolean }): Promise<UserDocument> {
 
 	// validate token
 	let decoded: Jwt;

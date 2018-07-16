@@ -41,14 +41,14 @@ import { mailer } from '../common/mailer';
 import { SerializerOptions } from '../common/serializer';
 import { config } from '../common/settings';
 import { Context } from '../common/typings/context';
-import { File } from '../files/file';
+import { FileDocument } from '../files/file.document';
 import { FileUtil } from '../files/file.util';
-import { GameRequest } from '../game-requests/game.request';
+import { GameRequestDocument } from '../game-requests/game.request.document';
 import { LogEventUtil } from '../log-event/log.event.util';
-import { Release } from '../releases/release';
+import { ReleaseDocument } from '../releases/release.doument';
 import { state } from '../state';
-import { User } from '../users/user';
-import { Game } from './game';
+import { UserDocument } from '../users/user.document';
+import { GameDocument } from './game.document';
 
 const generate = require('project-name-generator');
 
@@ -77,7 +77,7 @@ export class GameApi extends Api {
 		const game = await state.models.Game.getInstance(assign(ctx.request.body, {
 			_created_by: ctx.state.user._id,
 			created_at: new Date(),
-		})) as Game;
+		})) as GameDocument;
 
 		logger.info('[GameApi.create] %s', inspect(ctx.request.body));
 		await game.validate();
@@ -101,7 +101,7 @@ export class GameApi extends Api {
 		}
 
 		// find game request
-		let gameRequest: GameRequest;
+		let gameRequest: GameRequestDocument;
 		if (ctx.request.body._game_request) {
 			gameRequest = await state.models.GameRequest
 				.findOne({ id: ctx.request.body._game_request })
@@ -115,7 +115,7 @@ export class GameApi extends Api {
 				.exec();
 		}
 		if (gameRequest) {
-			await mailer.gameRequestProcessed(gameRequest._created_by as User, game);
+			await mailer.gameRequestProcessed(gameRequest._created_by as UserDocument, game);
 			gameRequest.is_closed = true;
 			gameRequest._game = game._id;
 			await gameRequest.save();
@@ -132,8 +132,8 @@ export class GameApi extends Api {
 		// copy backglass and logo to media
 		try {
 			await Promise.all([
-				this.copyMedia(ctx.state.user, game, game._backglass as File, 'backglass_image', bg => bg.metadata.size.width * bg.metadata.size.height > 647000),  // > 900x720
-				this.copyMedia(ctx.state.user, game, game._logo as File, 'wheel_image'),
+				this.copyMedia(ctx.state.user, game, game._backglass as FileDocument, 'backglass_image', bg => bg.metadata.size.width * bg.metadata.size.height > 647000),  // > 900x720
+				this.copyMedia(ctx.state.user, game, game._logo as FileDocument, 'wheel_image'),
 			]);
 		} catch (err) {
 			logger.error('[api|game:create] Error while copying media: %s', err.message);
@@ -164,7 +164,7 @@ export class GameApi extends Api {
 		if (!game) {
 			throw new ApiError('No such game with ID "%s".', ctx.params.id).status(404);
 		}
-		const oldGame = cloneDeep(game) as Game;
+		const oldGame = cloneDeep(game) as GameDocument;
 
 		// fail if invalid fields provided
 		const submittedFields = keys(ctx.request.body);
@@ -173,10 +173,10 @@ export class GameApi extends Api {
 			throw new ApiError('Invalid field%s: ["%s"]. Allowed fields: ["%s"]', invalidFields.length === 1 ? '' : 's', invalidFields.join('", "'), updatableFields.join('", "')).status(400).log();
 		}
 
-		const oldMediaBackglassObj = game._backglass as File;
-		const oldMediaLogoObj = game._logo as File;
-		const oldMediaBackglass = (game._backglass as File).id;
-		const oldMediaLogo = game._logo ? (game._logo as File).id : null;
+		const oldMediaBackglassObj = game._backglass as FileDocument;
+		const oldMediaLogoObj = game._logo as FileDocument;
+		const oldMediaBackglass = (game._backglass as FileDocument).id;
+		const oldMediaLogo = game._logo ? (game._logo as FileDocument).id : null;
 		const newMediaBackglass = ctx.request.body._backglass || oldMediaBackglass;
 		const newMediaLogo = ctx.request.body._logo || oldMediaLogo;
 
@@ -185,7 +185,7 @@ export class GameApi extends Api {
 		ctx.request.body._logo = newMediaLogo;
 
 		// apply changes
-		game = await game.updateInstance(ctx.request.body) as Game;
+		game = await game.updateInstance(ctx.request.body) as GameDocument;
 
 		// validate and save
 		await game.save();
@@ -198,11 +198,11 @@ export class GameApi extends Api {
 		// copy to media and delete old media if changed
 		try {
 			if (oldMediaBackglass !== newMediaBackglass) {
-				await this.copyMedia(ctx.state.user, game, game._backglass as File, 'backglass_image', bg => bg.metadata.size.width * bg.metadata.size.height > 647000);  // > 900x720
+				await this.copyMedia(ctx.state.user, game, game._backglass as FileDocument, 'backglass_image', bg => bg.metadata.size.width * bg.metadata.size.height > 647000);  // > 900x720
 				await oldMediaBackglassObj.remove();
 			}
 			if (oldMediaLogo !== newMediaLogo) {
-				await this.copyMedia(ctx.state.user, game, game._logo as File, 'wheel_image');
+				await this.copyMedia(ctx.state.user, game, game._logo as FileDocument, 'wheel_image');
 				if (oldMediaLogoObj) {
 					await oldMediaLogoObj.remove();
 				}
@@ -396,7 +396,7 @@ export class GameApi extends Api {
 				.populate({ path: 'versions.files._playfield_video' })
 				.populate({ path: 'versions.files._compatibility' })
 				.lean()
-				.exec() as Release[];
+				.exec() as ReleaseDocument[];
 			opts.excludedFields = ['game'];
 			result.releases = releases.map(release => state.serializers.Release.detailed(ctx, release, opts));
 
@@ -453,13 +453,13 @@ export class GameApi extends Api {
 	/**
 	 * Copies a given file to a given media type.
 	 *
-	 * @param {User} user Creator of the media
-	 * @param {Game} game Game the media will be linked to
-	 * @param {File} file File to be copied
+	 * @param {UserDocument} user Creator of the media
+	 * @param {GameDocument} game Game the media will be linked to
+	 * @param {FileDocument} file File to be copied
 	 * @param {string} category Media category
 	 * @param {function} [check] Function called with file parameter. Media gets discarded if false is returned.
 	 */
-	private async copyMedia(user: User, game: Game, file: File, category: string, check?: (file: File) => boolean): Promise<string[]> {
+	private async copyMedia(user: UserDocument, game: GameDocument, file: FileDocument, category: string, check?: (file: FileDocument) => boolean): Promise<string[]> {
 
 		check = check || (() => true);
 		if (file && check(file)) {
@@ -468,7 +468,7 @@ export class GameApi extends Api {
 			const fileToCopy = assign(pick(file, fieldsToCopy), {
 				_created_by: user,
 				variations: {},
-			}) as File;
+			}) as FileDocument;
 			const copiedFile = await FileUtil.create(fileToCopy, createReadStream(file.getPath()));
 			logger.info('[GameApi.copyMedia] Copied file "%s" to "%s".', file.id, copiedFile.id);
 			let medium = new state.models.Medium({

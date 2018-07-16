@@ -22,15 +22,15 @@ import { assign, find, isEmpty, keys, mapValues, pick, pickBy, uniq } from 'loda
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { config } from '../common/settings';
 import { Context } from '../common/typings/context';
-import { User } from './user';
+import { UserDocument } from './user.document';
 
-export class UserSerializer extends Serializer<User> {
+export class UserSerializer extends Serializer<UserDocument> {
 
 	/**
 	 * User info in other data.
 	 */
-	protected _reduced(ctx: Context, doc: User, opts: SerializerOptions): User {
-		const user: User = pick(doc, ['id', 'name', 'username']) as User;
+	protected _reduced(ctx: Context, doc: UserDocument, opts: SerializerOptions): UserDocument {
+		const user: UserDocument = pick(doc, ['id', 'name', 'username']) as UserDocument;
 
 		// gravatar
 		user.gravatar_id = doc.email ? createHash('md5').update(doc.email.toLowerCase()).digest('hex') : null;
@@ -45,8 +45,8 @@ export class UserSerializer extends Serializer<User> {
 	/**
 	 * User details for anon/members (when searching or clicking).
 	 */
-	protected _simple(ctx: Context, doc: User, opts: SerializerOptions): User {
-		const user: User = this._reduced(ctx, doc, opts);
+	protected _simple(ctx: Context, doc: UserDocument, opts: SerializerOptions): UserDocument {
+		const user: UserDocument = this._reduced(ctx, doc, opts);
 		assign(user, pick(doc, ['location']));
 
 		// counter
@@ -57,7 +57,7 @@ export class UserSerializer extends Serializer<User> {
 	/**
 	 * User details for admins, or profile data
 	 */
-	protected _detailed(ctx: Context, doc: User, opts: SerializerOptions): User {
+	protected _detailed(ctx: Context, doc: UserDocument, opts: SerializerOptions): UserDocument {
 		const user = this._simple(ctx, doc, opts);
 		assign(user, pick(doc, ['email', 'email_status', 'is_local', 'is_active', 'created_at']));
 

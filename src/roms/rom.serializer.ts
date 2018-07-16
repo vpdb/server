@@ -20,33 +20,33 @@
 import { pick } from 'lodash';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { Context } from '../common/typings/context';
-import { File } from '../files/file';
+import { FileDocument } from '../files/file.document';
 import { state } from '../state';
-import { User } from '../users/user';
-import { Rom } from './rom';
+import { UserDocument } from '../users/user.document';
+import { RomDocument } from './rom.document';
 
-export class RomSerializer extends Serializer<Rom> {
+export class RomSerializer extends Serializer<RomDocument> {
 
-	protected _reduced(ctx: Context, doc: Rom, opts: SerializerOptions): Rom {
+	protected _reduced(ctx: Context, doc: RomDocument, opts: SerializerOptions): RomDocument {
 		return this._simple(ctx, doc, opts);
 	}
 
-	protected _simple(ctx: Context, doc: Rom, opts: SerializerOptions): Rom {
-		const rom = pick(doc, ['id', 'version', 'notes', 'languages']) as Rom;
+	protected _simple(ctx: Context, doc: RomDocument, opts: SerializerOptions): RomDocument {
+		const rom = pick(doc, ['id', 'version', 'notes', 'languages']) as RomDocument;
 		rom.rom_files = doc.rom_files.map((f: any) => pick(f, ['filename', 'bytes', 'crc', 'modified_at']));
 
 		// file
 		if (this._populated(doc, '_file')) {
-			rom.file = state.serializers.File.simple(ctx, doc._file as File, opts);
+			rom.file = state.serializers.File.simple(ctx, doc._file as FileDocument, opts);
 		}
 
 		// creator
 		if (this._populated(doc, '_created_by')) {
-			rom.created_by = state.serializers.User.reduced(ctx, doc._created_by as User, opts);
+			rom.created_by = state.serializers.User.reduced(ctx, doc._created_by as UserDocument, opts);
 		}
 		return rom;
 	}
-	protected _detailed(ctx: Context, doc: Rom, opts: SerializerOptions): Rom {
+	protected _detailed(ctx: Context, doc: RomDocument, opts: SerializerOptions): RomDocument {
 		return this._simple(ctx, doc, opts);
 	}
 }

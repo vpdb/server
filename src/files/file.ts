@@ -21,7 +21,7 @@ import chalk from 'chalk';
 import { resolve } from 'path';
 import { quota } from '../common/quota';
 import { config, settings } from '../common/settings';
-import { File, FilePathOptions } from './file';
+import { FileDocument, FilePathOptions } from './file.document';
 import { mimeTypes } from './file.mimetypes';
 import { fileTypes } from './file.types';
 import { FileVariation } from './file.variations';
@@ -30,7 +30,7 @@ import { FileVariation } from './file.variations';
  * Contains the Game's instance methods so they can also be accessed
  * from dehydrated objects.
  */
-export class FileDocument {
+export class File {
 
 	/**
 	 * Returns the local path where the file is stored.
@@ -38,28 +38,28 @@ export class FileDocument {
 	 * Note that this is to *construct* the file name, and doesn't mean that the
 	 * file actually exists at the given location.
 	 *
-	 * @param {File} file Potentially dehydrated file
+	 * @param {FileDocument} file Potentially dehydrated file
 	 * @param {FileVariation} [variation] File variation or null for original file
 	 * @param {FilePathOptions} opts Path options
 	 * @return {string} Absolute path to storage
 	 */
-	public static getPath(file: File, variation: FileVariation = null, opts: FilePathOptions = {}): string {
-		const baseDir = FileDocument.isPublic(file, variation) && !opts.forceProtected ? config.vpdb.storage.public.path : config.vpdb.storage.protected.path;
+	public static getPath(file: FileDocument, variation: FileVariation = null, opts: FilePathOptions = {}): string {
+		const baseDir = File.isPublic(file, variation) && !opts.forceProtected ? config.vpdb.storage.public.path : config.vpdb.storage.protected.path;
 		const suffix = opts.tmpSuffix || '';
 		return variation ?
-			resolve(baseDir, variation.name, file.id) + suffix + FileDocument.getExt(file, variation) :
-			resolve(baseDir, file.id) + suffix + FileDocument.getExt(file, variation);
+			resolve(baseDir, variation.name, file.id) + suffix + File.getExt(file, variation) :
+			resolve(baseDir, file.id) + suffix + File.getExt(file, variation);
 	}
 
 	/**
 	 * Returns the file extension, inclusively the dot.
 	 *
-	 * @param {File} file Potentially dehydrated file
+	 * @param {FileDocument} file Potentially dehydrated file
 	 * @param {FileVariation} [variation] File variation or null for original file
 	 * @return {string} File extension
 	 */
-	public static getExt(file: File, variation: FileVariation = null): string {
-		return '.' + mimeTypes[FileDocument.getMimeType(file, variation)].ext;
+	public static getExt(file: FileDocument, variation: FileVariation = null): string {
+		return '.' + mimeTypes[File.getMimeType(file, variation)].ext;
 	}
 
 	/**
@@ -69,47 +69,47 @@ export class FileDocument {
 	 * Typically a release file is protected during release upload and becomes
 	 * public only after submission.
 	 *
-	 * @param {File} file Potentially dehydrated file
+	 * @param {FileDocument} file Potentially dehydrated file
 	 * @param {FileVariation} [variation] File variation or null for original file
 	 * @return {string}
 	 */
-	public static getUrl(file: File, variation: FileVariation = null): string {
-		const storageUri = FileDocument.isPublic(file, variation) ? settings.storagePublicUri.bind(settings) : settings.storageProtectedUri.bind(settings);
+	public static getUrl(file: FileDocument, variation: FileVariation = null): string {
+		const storageUri = File.isPublic(file, variation) ? settings.storagePublicUri.bind(settings) : settings.storageProtectedUri.bind(settings);
 		return variation ?
-			storageUri('/files/' + variation.name + '/' + file.id + FileDocument.getExt(file, variation)) :
-			storageUri('/files/' + file.id + FileDocument.getExt(file, variation));
+			storageUri('/files/' + variation.name + '/' + file.id + File.getExt(file, variation)) :
+			storageUri('/files/' + file.id + File.getExt(file, variation));
 	}
 
 	/**
 	 * Returns true if the file is public (as in accessible without being authenticated), false otherwise.
 	 *
-	 * @param {File} file Potentially dehydrated file
+	 * @param {FileDocument} file Potentially dehydrated file
 	 * @param {FileVariation} [variation] File variation or null for original file
 	 * @return {boolean}
 	 */
-	public static isPublic(file: File, variation: FileVariation = null): boolean {
+	public static isPublic(file: FileDocument, variation: FileVariation = null): boolean {
 		return file.is_active && quota.getCost(file, variation) === -1;
 	}
 
 	/**
 	 *  Returns true if the file is free (as in doesn't cost any credit), false otherwise.
 	 *
-	 * @param {File} file Potentially dehydrated file
+	 * @param {FileDocument} file Potentially dehydrated file
 	 * @param {FileVariation} [variation] File variation or null for original file
 	 * @return {boolean} True if free, false otherwise.
 	 */
-	public static isFree(file: File, variation: FileVariation = null): boolean {
+	public static isFree(file: FileDocument, variation: FileVariation = null): boolean {
 		return quota.getCost(file, variation) <= 0;
 	}
 
 	/**
 	 * Returns the MIME type for a given variation (or for the main file if not specified).
 	 *
-	 * @param {File} file Potentially dehydrated file
+	 * @param {FileDocument} file Potentially dehydrated file
 	 * @param {FileVariation} [variation] File variation or null for original file
 	 * @return {string} MIME type of the file or its variation.
 	 */
-	public static getMimeType(file: File, variation?: FileVariation): string {
+	public static getMimeType(file: FileDocument, variation?: FileVariation): string {
 		if (variation && file.variations && file.variations[variation.name] && file.variations[variation.name].mime_type) {
 			return file.variations[variation.name].mime_type;
 
@@ -124,44 +124,44 @@ export class FileDocument {
 	/**
 	 * Returns the "primary" type (the part before the `/`) of the mime type.
 	 *
-	 * @param {File} file Potentially dehydrated file
+	 * @param {FileDocument} file Potentially dehydrated file
 	 * @param {FileVariation} [variation] File variation or null for original file
 	 * @return {string} Primary part of the MIME type.
 	 */
-	public static getMimeTypePrimary(file: File, variation: FileVariation = null): string {
-		return FileDocument.getMimeType(file, variation).split('/')[0];
+	public static getMimeTypePrimary(file: FileDocument, variation: FileVariation = null): string {
+		return File.getMimeType(file, variation).split('/')[0];
 	}
 
 	/**
 	 * Returns the sub type (the part after the `/`) of the mime type.
 	 *
-	 * @param {File} file Potentially dehydrated file
+	 * @param {FileDocument} file Potentially dehydrated file
 	 * @param {FileVariation} [variation] File variation or null for original file
 	 * @return {string} Secondary part of the MIME type.
 	 */
-	public static getMimeSubtype(file: File, variation: FileVariation = null): string {
-		return FileDocument.getMimeType(file, variation).split('/')[1];
+	public static getMimeSubtype(file: FileDocument, variation: FileVariation = null): string {
+		return File.getMimeType(file, variation).split('/')[1];
 	}
 
 	/**
 	 * Returns the file category.
 	 *
-	 * @param {File} file Potentially dehydrated file
+	 * @param {FileDocument} file Potentially dehydrated file
 	 * @param {FileVariation} [variation] File variation or null for original file
 	 * @return {string}
 	 */
-	public static getMimeCategory(file: File, variation: FileVariation = null): string {
-		return mimeTypes[FileDocument.getMimeType(file, variation)].category;
+	public static getMimeCategory(file: FileDocument, variation: FileVariation = null): string {
+		return mimeTypes[File.getMimeType(file, variation)].category;
 	}
 
 	/**
 	 * Returns something useful for logging.
 	 *
-	 * @param {File} file Potentially dehydrated file
+	 * @param {FileDocument} file Potentially dehydrated file
 	 * @param {FileVariation} variation File variation or null for original file
 	 * @returns {string}
 	 */
-	public static toShortString(file: File, variation: FileVariation = null): string {
+	public static toShortString(file: FileDocument, variation: FileVariation = null): string {
 		const color = variation ? chalk.underline : chalk.underline.bold;
 		return color(file.file_type + ' "' + file.id + '"' + (variation ? ' (' + variation.name + ')' : ''));
 	}
@@ -169,22 +169,22 @@ export class FileDocument {
 	/**
 	 * Returns something even more useful for logging.
 	 *
-	 * @param {File} file Potentially dehydrated file
+	 * @param {FileDocument} file Potentially dehydrated file
 	 * @param {FileVariation} variation File variation or null for original file
 	 * @returns {string}
 	 */
-	public static toDetailedString(file: File, variation?: FileVariation): string {
+	public static toDetailedString(file: FileDocument, variation?: FileVariation): string {
 		const color = variation ? chalk.underline : chalk.underline.bold;
-		return color(file.file_type + '@' + FileDocument.getMimeType(file, variation) + ' "' + file.id + '"' + (variation ? ' (' + variation.name + ')' : ''));
+		return color(file.file_type + '@' + File.getMimeType(file, variation) + ' "' + file.id + '"' + (variation ? ' (' + variation.name + ')' : ''));
 	}
 
 	/**
 	 * Returns all variations that are stored in the database for this file.
 	 *
-	 * @param {File} file Potentially dehydrated file
+	 * @param {FileDocument} file Potentially dehydrated file
 	 * @returns {FileVariation[]} Existing variations
 	 */
-	public static getExistingVariations(file: File): FileVariation[] {
+	public static getExistingVariations(file: FileDocument): FileVariation[] {
 		const variations: FileVariation[] = [];
 		if (!file.variations) {
 			return [];
@@ -198,32 +198,32 @@ export class FileDocument {
 	/**
 	 * Returns all defined variations for this file.
 	 *
-	 * @param {File} file Potentially dehydrated file
+	 * @param {FileDocument} file Potentially dehydrated file
 	 * @returns {FileVariation[]}
 	 */
-	public static getVariations(file: File): FileVariation[] {
+	public static getVariations(file: FileDocument): FileVariation[] {
 		return fileTypes.getVariations(file.file_type, file.mime_type);
 	}
 
 	/**
 	 * Checks whether a variation for the given file exists.
 	 *
-	 * @param {File} file Potentially dehydrated file
+	 * @param {FileDocument} file Potentially dehydrated file
 	 * @param {string} variationName Name of the variation
 	 * @returns {FileVariation | null} File variation or null if the variation doesn't exist.
 	 */
-	public static getVariation(file: File, variationName: string): FileVariation | null {
+	public static getVariation(file: FileDocument, variationName: string): FileVariation | null {
 		return fileTypes.getVariation(file.file_type, file.mime_type, variationName);
 	}
 
 	/**
 	 * Returns all direct dependencies of a variation.
 	 *
-	 * @param {File} file Potentially dehydrated file
+	 * @param {FileDocument} file Potentially dehydrated file
 	 * @param {FileVariation} variation Variation
 	 * @returns {FileVariation[]} All variations that depend directly on the given variation.
 	 */
-	public static getDirectVariationDependencies(file: File, variation: FileVariation): FileVariation[] {
-		return FileDocument.getVariations(file).filter(v => v.source === variation.name);
+	public static getDirectVariationDependencies(file: FileDocument, variation: FileVariation): FileVariation[] {
+		return File.getVariations(file).filter(v => v.source === variation.name);
 	}
 }

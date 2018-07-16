@@ -30,7 +30,7 @@ import { config } from '../common/settings';
 import { Context } from '../common/typings/context';
 import { LogUserUtil } from '../log-user/log.user.util';
 import { state } from '../state';
-import { User } from '../users/user';
+import { UserDocument } from '../users/user.document';
 import { UserUtil } from '../users/user.util';
 
 export class ProfileApi extends Api {
@@ -258,7 +258,7 @@ export class ProfileApi extends Api {
 		}).exec();
 
 		let delCounter = 0;
-		const mergeUsers: User[] = [];
+		const mergeUsers: UserDocument[] = [];
 		for (const otherUser of otherUsers) {
 			// "pending_registration" are the only accounts where "email" is not confirmed ("pending_update" doesn't update "email").
 			// these can be deleted because they don't have anything merge-worthy (given it's an email confirmation, we already have local credentials).
@@ -408,10 +408,10 @@ export class ProfileApi extends Api {
 	/**
 	 * Returns the ACLs for a given user.
 	 *
-	 * @param {User} user
+	 * @param {UserDocument} user
 	 * @return Promise.<{permissions: string[]}>
 	 */
-	private async getACLs(user: User): Promise<{ permissions: string[] }> {
+	private async getACLs(user: UserDocument): Promise<{ permissions: string[] }> {
 		const roles = await acl.userRoles(user.id);
 		const resources = await acl.whatResources(roles);
 		const permissions = await acl.allowedPermissions(user.id, Object.keys(resources));

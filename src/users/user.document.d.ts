@@ -23,7 +23,7 @@ import { VpdbQuotaConfigPlan } from '../common/typings/config';
 /**
  * The user model as it comes from the database.
  */
-export interface User extends MetricsDocument {
+export interface UserDocument extends MetricsDocument {
 	id?: string;
 	name?: string;
 	username?: string;

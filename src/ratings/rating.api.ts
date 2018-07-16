@@ -28,7 +28,7 @@ import { metrics } from '../common/metrics';
 import { Context } from '../common/typings/context';
 import { LogEventUtil } from '../log-event/log.event.util';
 import { state } from '../state';
-import { Rating } from './rating';
+import { RatingDocument } from './rating.document';
 
 export class RatingApi extends Api {
 
@@ -119,7 +119,7 @@ export class RatingApi extends Api {
 	 * @param {(ctx: Context) => Promise<[Document, Rating]>} find Function that returns entity and rating.
 	 * @param {string} titleAttr Attribute of the entity that contains a title
 	 */
-	private async view(ctx: Context, find: (ctx: Context) => Promise<[Document, Rating]>, titleAttr: string) {
+	private async view(ctx: Context, find: (ctx: Context) => Promise<[Document, RatingDocument]>, titleAttr: string) {
 		const [entity, rating] = await find(ctx);
 		if (!rating) {
 			throw new ApiError('No rating of <%s> for "%s" found.', ctx.state.user.email, (entity as any)[titleAttr]).status(404);
@@ -134,7 +134,7 @@ export class RatingApi extends Api {
 	 * @param {string} modelName Name of the model, e.g. "game"
 	 * @param {(ctx: Context) => Promise<[Document, Rating]>} find Function that returns entity and rating.
 	 */
-	private async create(ctx: Context, modelName: string, find: (ctx: Context) => Promise<[Document, Rating]>) {
+	private async create(ctx: Context, modelName: string, find: (ctx: Context) => Promise<[Document, RatingDocument]>) {
 		const [entity, duplicateRating] = await find(ctx);
 		if (duplicateRating) {
 			throw new ApiError('Cannot vote twice. Use PUT in order to update a vote.').warn().status(400);
@@ -158,7 +158,7 @@ export class RatingApi extends Api {
 	 * @param {(ctx: Context) => Promise<[Document, Rating]>} find Function that returns entity and rating.
 	 * @param {string} titleAttr Attribute of the entity that contains a title
 	 */
-	private async update(ctx: Context, modelName: string, find: (ctx: Context) => Promise<[Document, Rating]>, titleAttr: string) {
+	private async update(ctx: Context, modelName: string, find: (ctx: Context) => Promise<[Document, RatingDocument]>, titleAttr: string) {
 		const [entity, rating] = await find(ctx);
 		if (!rating) {
 			throw new ApiError('No rating of <%s> for "%s" found.', ctx.state.user.email, (entity as any)[titleAttr]).status(404);
@@ -178,7 +178,7 @@ export class RatingApi extends Api {
 	 * @param {(ctx: Context) => Promise<[Document, Rating]>} find Function that returns entity and rating.
 	 * @param {string} titleAttr Attribute of the entity that contains a title
 	 */
-	private async del(ctx: Context, modelName: string, find: (ctx: Context) => Promise<[Document, Rating]>, titleAttr: string) {
+	private async del(ctx: Context, modelName: string, find: (ctx: Context) => Promise<[Document, RatingDocument]>, titleAttr: string) {
 		const [entity, rating] = await find(ctx);
 		if (!rating) {
 			throw new ApiError('No rating of <%s> for "%s" found.', ctx.state.user.email, (entity as any)[titleAttr]).status(404);
@@ -193,11 +193,11 @@ export class RatingApi extends Api {
 	 * @param {Context} ctx Koa context
 	 * @param {string} modelName Name of the model, e.g. "game"
 	 * @param entity Found entity
-	 * @param {Rating} rating New rating
+	 * @param {RatingDocument} rating New rating
 	 * @param {number} status Success status, either 200 or 201
 	 * @return {Promise<boolean>}
 	 */
-	private async updateRatedEntity(ctx: Context, modelName: string, entity: any, rating: Rating, status: number) {
+	private async updateRatedEntity(ctx: Context, modelName: string, entity: any, rating: RatingDocument, status: number) {
 		const result = await metrics.onRatingUpdated(modelName, entity, rating);
 
 		// if not 201, add modified date
@@ -231,7 +231,7 @@ export class RatingApi extends Api {
 	 * @return {(ctx: Context) => Promise<[Document, Rating]>} Function returning entity and rating
 	 */
 	private find(model: Model<Document>, modelName: string, populate?: string) {
-		return async (ctx: Context): Promise<[Document, Rating]> => {
+		return async (ctx: Context): Promise<[Document, RatingDocument]> => {
 			const query = model.findOne({ id: ctx.params.id });
 			if (populate) {
 				query.populate(populate);

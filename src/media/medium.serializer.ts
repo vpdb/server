@@ -20,39 +20,39 @@
 import { pick } from 'lodash';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { Context } from '../common/typings/context';
-import { File } from '../files/file';
-import { Game } from '../games/game';
-import { Release } from '../releases/release';
+import { FileDocument } from '../files/file.document';
+import { GameDocument } from '../games/game.document';
+import { ReleaseDocument } from '../releases/release.doument';
 import { state } from '../state';
-import { User } from '../users/user';
-import { Medium } from './medium';
+import { UserDocument } from '../users/user.document';
+import { MediumDocument } from './medium.document';
 
-export class MediumSerializer extends Serializer<Medium> {
+export class MediumSerializer extends Serializer<MediumDocument> {
 
 	/* istanbul ignore next */
-	protected _reduced(ctx: Context, doc: Medium, opts: SerializerOptions): Medium {
+	protected _reduced(ctx: Context, doc: MediumDocument, opts: SerializerOptions): MediumDocument {
 		return this._simple(ctx, doc, opts);
 	}
 
-	protected _simple(ctx: Context, doc: Medium, opts: SerializerOptions): Medium {
-		const medium = pick(doc, ['id', 'category', 'description', 'acknowledgements', 'created_at']) as Medium;
+	protected _simple(ctx: Context, doc: MediumDocument, opts: SerializerOptions): MediumDocument {
+		const medium = pick(doc, ['id', 'category', 'description', 'acknowledgements', 'created_at']) as MediumDocument;
 		if (this._populated(doc, '_file')) {
-			medium.file = state.serializers.File.detailed(ctx, doc._file as File, opts);
+			medium.file = state.serializers.File.detailed(ctx, doc._file as FileDocument, opts);
 		}
 		if (this._populated(doc, '_created_by')) {
-			medium.created_by = state.serializers.User.reduced(ctx, doc._created_by as User, opts);
+			medium.created_by = state.serializers.User.reduced(ctx, doc._created_by as UserDocument, opts);
 		}
 		if (this._populated(doc, '_ref.game')) {
-			medium.game = state.serializers.Game.simple(ctx, doc._ref.game as Game, opts);
+			medium.game = state.serializers.Game.simple(ctx, doc._ref.game as GameDocument, opts);
 		}
 		if (this._populated(doc, '_ref.release')) {
-			medium.release = state.serializers.Release.simple(ctx, doc._ref.release as Release, opts);
+			medium.release = state.serializers.Release.simple(ctx, doc._ref.release as ReleaseDocument, opts);
 		}
 		return medium;
 	}
 
 	/* istanbul ignore next */
-	protected _detailed(ctx: Context, doc: Medium, opts: SerializerOptions): Medium {
+	protected _detailed(ctx: Context, doc: MediumDocument, opts: SerializerOptions): MediumDocument {
 		return this._simple(ctx, doc, opts);
 	}
 }

@@ -26,7 +26,7 @@ import { isLength } from 'validator';
 import { fileReferencePlugin } from '../common/mongoose/file.reference.plugin';
 import { gameReferencePlugin } from '../common/mongoose/game.reference.plugin';
 import { prettyIdPlugin } from '../common/mongoose/pretty.id.plugin';
-import { Rom } from './rom';
+import { RomDocument } from './rom.document';
 
 //-----------------------------------------------------------------------------
 // SCHEMA
@@ -51,7 +51,7 @@ export const romFields = {
 	created_at: { type: Date, required: true },
 	_created_by: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 };
-export interface RomModel extends PrettyIdModel<Rom>, PaginateModel<Rom>, GameReferenceModel<Rom> {}
+export interface RomModel extends PrettyIdModel<RomDocument>, PaginateModel<RomDocument>, GameReferenceModel<RomDocument> {}
 export const romSchema = new Schema(romFields, { toObject: { virtuals: true, versionKey: false } });
 
 //-----------------------------------------------------------------------------

@@ -18,22 +18,22 @@
  */
 
 import { FileReferenceDocument, MetricsDocument, PrettyIdDocument, Schema, Types } from 'mongoose';
-import { Backglass } from '../backglasses/backglass';
+import { BackglassDocument } from '../backglasses/backglass.document';
 import { Mpu } from '../common/ipdb';
-import { File } from '../files/file';
-import { Medium } from '../media/medium';
-import { Release } from '../releases/release';
-import { User } from '../users/user';
+import { FileDocument } from '../files/file.document';
+import { MediumDocument } from '../media/medium.document';
+import { ReleaseDocument } from '../releases/release.doument';
+import { UserDocument } from '../users/user.document';
 
-export interface Game extends FileReferenceDocument, MetricsDocument, PrettyIdDocument {
+export interface GameDocument extends FileReferenceDocument, MetricsDocument, PrettyIdDocument {
 	id?: string;
 	title: string;
 	title_sortable?: string;
 	year: number;
 	manufacturer: string;
 	game_type: 'ss' | 'em' | 'pm' | 'og' | 'na';
-	_backglass?: File | Types.ObjectId;
-	_logo?: File | Types.ObjectId;
+	_backglass?: FileDocument | Types.ObjectId;
+	_logo?: FileDocument | Types.ObjectId;
 	short?: string[];
 	description?: string;
 	instructions?: string;
@@ -71,14 +71,14 @@ export interface Game extends FileReferenceDocument, MetricsDocument, PrettyIdDo
 	};
 	modified_at?: Date;
 	created_at?: Date;
-	_created_by?: User | Types.ObjectId;
+	_created_by?: UserDocument | Types.ObjectId;
 
 	// serialized
-	backglass?: File;
-	logo?: File;
-	releases?: Release[];
-	backglasses?: Backglass[];
-	media?: Medium[];
+	backglass?: FileDocument;
+	logo?: FileDocument;
+	releases?: ReleaseDocument[];
+	backglasses?: BackglassDocument[];
+	media?: MediumDocument[];
 
 	// generated
 	mpu?: Mpu;
@@ -88,7 +88,7 @@ export interface Game extends FileReferenceDocument, MetricsDocument, PrettyIdDo
 	/**
 	 * Checks whether the game as a restriction on the given model.
 	 *
-	 * @see [[GameDocument.isRestricted]] for implementation
+	 * @see [[Game.isRestricted]] for implementation
 	 * @param {'release' | 'backglass'} modelName
 	 * @return {boolean} true if restricted, false otherwise.
 	 */

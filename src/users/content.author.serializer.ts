@@ -21,13 +21,13 @@ import { Serializer, SerializerOptions } from '../common/serializer';
 import { Context } from '../common/typings/context';
 import { state } from '../state';
 import { ContentAuthor } from './content.author';
-import { User } from './user';
+import { UserDocument } from './user.document';
 
 export class ContentAuthorSerializer extends Serializer<ContentAuthor> {
 
 	protected _reduced(ctx: Context, doc: ContentAuthor, opts: SerializerOptions): ContentAuthor {
 		return {
-			user: state.serializers.User.reduced(ctx, doc._user as User, opts),
+			user: state.serializers.User.reduced(ctx, doc._user as UserDocument, opts),
 			roles: doc.roles,
 		} as ContentAuthor;
 	}
@@ -35,7 +35,7 @@ export class ContentAuthorSerializer extends Serializer<ContentAuthor> {
 	/* istanbul ignore next: Actually never used */
 	protected _simple(ctx: Context, doc: ContentAuthor, opts: SerializerOptions): ContentAuthor {
 		return {
-			user: state.serializers.User.simple(ctx, doc._user as User, opts),
+			user: state.serializers.User.simple(ctx, doc._user as UserDocument, opts),
 			roles: doc.roles,
 		} as ContentAuthor;
 	}

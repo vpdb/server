@@ -23,7 +23,7 @@ import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
-import { Star } from './star';
+import { StarDocument } from './star.document';
 import { starSchema } from './star.schema';
 
 export class StarEndPoint extends EndPoint {
@@ -35,6 +35,6 @@ export class StarEndPoint extends EndPoint {
 	}
 
 	public async register(app: Application): Promise<void> {
-		state.models.Star = mongoose.model<Star>('Star', starSchema);
+		state.models.Star = mongoose.model<StarDocument>('Star', starSchema);
 	}
 }

@@ -26,12 +26,12 @@ import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
 import { Context } from '../common/typings/context';
-import { File } from '../files/file';
+import { FileDocument } from '../files/file.document';
 import { FileUtil } from '../files/file.util';
 import { Metadata } from '../files/metadata/metadata';
 import { processorQueue } from '../files/processor/processor.queue';
 import { state } from '../state';
-import { Release } from './release';
+import { ReleaseDocument } from './release.doument';
 
 const existsAsync = promisify(exists);
 require('bluebird').promisifyAll(gm.prototype);
@@ -41,7 +41,7 @@ export abstract class ReleaseAbstractApi extends Api {
 	/**
 	 * Retrieves release details.
 	 * @param id Database ID of the release to fetch
-	 * @returns {Promise.<Release>}
+	 * @returns {Promise.<ReleaseDocument>}
 	 */
 	protected async getDetails(id: string) {
 		return this.populateAll(state.models.Release.findById(id)).exec();
@@ -50,10 +50,10 @@ export abstract class ReleaseAbstractApi extends Api {
 	/**
 	 * Adds population for release details.
 	 *
-	 * @param {module:mongoose.DocumentQuery<T | null, Release>} query
-	 * @returns {module:mongoose.DocumentQuery<T | null, Release>}
+	 * @param {module:mongoose.DocumentQuery<T | null, ReleaseDocument>} query
+	 * @returns {module:mongoose.DocumentQuery<T | null, ReleaseDocument>}
 	 */
-	protected populateAll<T>(query: DocumentQuery<T | null, Release>): DocumentQuery<T | null, Release> {
+	protected populateAll<T>(query: DocumentQuery<T | null, ReleaseDocument>): DocumentQuery<T | null, ReleaseDocument> {
 		return query
 			.populate({ path: '_game' })
 			.populate({ path: '_tags' })
@@ -191,7 +191,7 @@ export abstract class ReleaseAbstractApi extends Api {
 	 * @param file File
 	 * @returns {Promise.<string>} New location
 	 */
-	private async backupFile(file: File): Promise<string> {
+	private async backupFile(file: FileDocument): Promise<string> {
 		const backup = file.getPath(null, { tmpSuffix: '_original' });
 		if (!(await existsAsync(backup))) {
 			logger.info('[ReleaseApi.backupFile] Copying "%s" to "%s".', file.getPath(), backup);

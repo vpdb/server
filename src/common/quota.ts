@@ -18,11 +18,11 @@
  */
 
 import { isArray, isObject, isUndefined, sum } from 'lodash';
-import { File } from '../files/file';
 import { FileDocument } from '../files/file.document';
+import { File } from '../files/file';
 import { FileVariation } from '../files/file.variations';
 import { state } from '../state';
-import { User } from '../users/user';
+import { UserDocument } from '../users/user.document';
 import { ApiError } from './api.error';
 import { logger } from './logger';
 import { config } from './settings';
@@ -49,10 +49,10 @@ export class Quota {
 	/**
 	 * Returns the current rate limits for the given user.
 	 *
-	 * @param {User} user User
+	 * @param {UserDocument} user User
 	 * @return {Promise<UserQuota>} Remaining quota
 	 */
-	public async get(user: User): Promise<UserQuota> {
+	public async get(user: UserDocument): Promise<UserQuota> {
 		const plan = user.planConfig;
 		/* istanbul ignore if: That's a configuration error. */
 		if (!plan) {
@@ -97,10 +97,10 @@ export class Quota {
 	 * It also adds the rate limit headers to the request.
 	 *
 	 * @param {Context} ctx Koa context
-	 * @param {File[]} files File(s) to check for
+	 * @param {FileDocument[]} files File(s) to check for
 	 * @throws ApiError If not enough quota is left
 	 */
-	public async assert(ctx: Context, files: File | File[]): Promise<void> {
+	public async assert(ctx: Context, files: FileDocument | FileDocument[]): Promise<void> {
 
 		if (!isArray(files)) {
 			files = [files];
@@ -152,10 +152,10 @@ export class Quota {
 
 	/**
 	 * Sums up the const of a given list of files.
-	 * @param {File[]} files Files to calculate cost for
+	 * @param {FileDocument[]} files Files to calculate cost for
 	 * @return {number} Total cost
 	 */
-	public getTotalCost(files: File[]): number {
+	public getTotalCost(files: FileDocument[]): number {
 		let totalCost = 0;
 		for (const file of files) {
 			const cost = this.getCost(file);
@@ -171,11 +171,11 @@ export class Quota {
 	/**
 	 * Returns the cost of a given file and variation.
 	 *
-	 * @param {File} file Potentially dehydrated File
+	 * @param {FileDocument} file Potentially dehydrated File
 	 * @param {string|object} [variation] Optional variation
 	 * @returns {*}
 	 */
-	public getCost(file: File, variation: FileVariation = null): number {
+	public getCost(file: FileDocument, variation: FileVariation = null): number {
 
 		// if already set, return directly.
 		if (!variation && !isUndefined(file.cost)) {
@@ -238,13 +238,13 @@ export class Quota {
 
 			} else {
 				// warn if nothing is set, i.e the 'category' prop isn't defined but the original cost is still an object
-				logger.warn('[Quota.getCost] No cost defined for %s file (type is undefined).', file.file_type, FileDocument.getMimeCategory(file, variation));
+				logger.warn('[Quota.getCost] No cost defined for %s file (type is undefined).', file.file_type, File.getMimeCategory(file, variation));
 				file.cost = 0;
 				return 0;
 			}
 		}
 		// ORIGINAL file for a given mime type costs n credits. Example: { costs: { release: { category: { table: 1, '*': 0 } } } }
-		const costCategory = costCategoryObj[FileDocument.getMimeCategory(file, variation)];
+		const costCategory = costCategoryObj[File.getMimeCategory(file, variation)];
 		if (!isUndefined(costCategory)) {
 			file.cost = costCategory;
 			return costCategory;
@@ -253,7 +253,7 @@ export class Quota {
 			file.cost = costCategoryObj['*'];
 			return costCategoryObj['*'];
 		}
-		logger.warn('[Quota.getCost] No cost defined for %s file of type %s and no fallback given, returning 0.', file.file_type, FileDocument.getMimeCategory(file, variation));
+		logger.warn('[Quota.getCost] No cost defined for %s file of type %s and no fallback given, returning 0.', file.file_type, File.getMimeCategory(file, variation));
 		file.cost = 0;
 		return 0;
 	}
@@ -261,11 +261,11 @@ export class Quota {
 	/**
 	 * Consumes a quota and returns the user's updated quota config.
 	 *
-	 * @param {User} user User to consume quota for
+	 * @param {UserDocument} user User to consume quota for
 	 * @param {number} weight How much to consume
 	 * @return {Promise<UserQuota>} Updated quota after consumption
 	 */
-	private async consume(user: User, weight: number): Promise<UserQuota> {
+	private async consume(user: UserDocument, weight: number): Promise<UserQuota> {
 		const plan = user.planConfig;
 		/* istanbul ignore if: That's a configuration error. */
 		if (!plan) {

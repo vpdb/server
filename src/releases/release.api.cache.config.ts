@@ -18,37 +18,37 @@
  */
 
 import { CacheCounterConfig, CacheCounterValues } from '../common/api.cache';
-import { FileCounterType } from '../files/file';
-import { Release, ReleaseCounterType } from './release';
-import { ReleaseDocument } from './release.document';
+import { FileCounterType } from '../files/file.document';
+import { ReleaseDocument, ReleaseCounterType } from './release.doument';
+import { Release } from './release';
 
-export const releaseListCacheCounters: Array<CacheCounterConfig<Release[]>> = [{
+export const releaseListCacheCounters: Array<CacheCounterConfig<ReleaseDocument[]>> = [{
 	modelName: 'release',
 	counters: ['downloads', 'comments', 'stars', 'views'],
-	get: (releases: Release[], counter: ReleaseCounterType) => releases.reduce((acc: CacheCounterValues, reducedReleases) => {
+	get: (releases: ReleaseDocument[], counter: ReleaseCounterType) => releases.reduce((acc: CacheCounterValues, reducedReleases) => {
 		acc[reducedReleases.id] = reducedReleases.counter[counter]; return acc; }, {}),
-	set: (releases: Release[], counter: ReleaseCounterType, values: CacheCounterValues) => Object.keys(values).forEach(
+	set: (releases: ReleaseDocument[], counter: ReleaseCounterType, values: CacheCounterValues) => Object.keys(values).forEach(
 		id => releases.filter(game => game.id === id).forEach(game => game.counter[counter] = values[id])),
 }, {
 	modelName: 'file',
 	counters: ['downloads'],
-	get: (releases: Release[], counter: FileCounterType) => ReleaseDocument.getLinkedFiles(releases).reduce((acc: CacheCounterValues, file) => {
+	get: (releases: ReleaseDocument[], counter: FileCounterType) => Release.getLinkedFiles(releases).reduce((acc: CacheCounterValues, file) => {
 		acc[file.id] = file.counter[counter]; return acc; }, {}),
-	set: (releases: Release[], counter: FileCounterType, values: CacheCounterValues) =>
-		ReleaseDocument.getLinkedFiles(releases).forEach(file => file.counter[counter] = values[file.id]),
+	set: (releases: ReleaseDocument[], counter: FileCounterType, values: CacheCounterValues) =>
+		Release.getLinkedFiles(releases).forEach(file => file.counter[counter] = values[file.id]),
 }];
 
-export const releaseDetailsCacheCounters: Array<CacheCounterConfig<Release>> = [{
+export const releaseDetailsCacheCounters: Array<CacheCounterConfig<ReleaseDocument>> = [{
 	modelName: 'release',
 	counters: ['downloads', 'comments', 'stars', 'views'],
-	get: (release: Release, counter: ReleaseCounterType) => ({ [release.id]: release.counter[counter] }),
-	set: (release: Release, counter: ReleaseCounterType, values: CacheCounterValues) => release.counter[counter] = values[release.id],
-	incrementCounter: { counter: 'views', getId: (release: Release) => release.id },
+	get: (release: ReleaseDocument, counter: ReleaseCounterType) => ({ [release.id]: release.counter[counter] }),
+	set: (release: ReleaseDocument, counter: ReleaseCounterType, values: CacheCounterValues) => release.counter[counter] = values[release.id],
+	incrementCounter: { counter: 'views', getId: (release: ReleaseDocument) => release.id },
 }, {
 	modelName: 'file',
 	counters: ['downloads'],
-	get: (release: Release, counter: FileCounterType) => ReleaseDocument.getLinkedFiles(release).reduce((acc: CacheCounterValues, file) => {
+	get: (release: ReleaseDocument, counter: FileCounterType) => Release.getLinkedFiles(release).reduce((acc: CacheCounterValues, file) => {
 		acc[file.id] = file.counter[counter]; return acc; }, {}),
-	set: (release: Release, counter: FileCounterType, values: CacheCounterValues) =>
-		ReleaseDocument.getLinkedFiles(release).forEach(file => file.counter[counter] = values[file.id]),
+	set: (release: ReleaseDocument, counter: FileCounterType, values: CacheCounterValues) =>
+		Release.getLinkedFiles(release).forEach(file => file.counter[counter] = values[file.id]),
 }];

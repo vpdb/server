@@ -18,37 +18,37 @@
  */
 
 import { FileReferenceDocument, PrettyIdDocument, Schema, Types } from 'mongoose';
-import { Build } from '../../../builds/build';
-import { File } from '../../../files/file';
-import { User } from '../../../users/user';
+import { BuildDocument } from '../../../builds/build.document';
+import { FileDocument } from '../../../files/file.document';
+import { UserDocument } from '../../../users/user.document';
 
-export interface ReleaseVersionFile extends FileReferenceDocument, PrettyIdDocument {
+export interface ReleaseVersionFileDocument extends FileReferenceDocument, PrettyIdDocument {
 	// model
-	_file: File | Types.ObjectId;
+	_file: FileDocument | Types.ObjectId;
 	flavor: ReleaseFileFlavor;
 	validation: {
 		status: string; // todo type
 		message: string;
 		validated_at: Date;
-		_validated_by?: User | Types.ObjectId;
-		validated_by?: User;
+		_validated_by?: UserDocument | Types.ObjectId;
+		validated_by?: UserDocument;
 	};
-	_compatibility: Build[] | Types.ObjectId[];
-	_playfield_image?: File | Types.ObjectId;
-	_playfield_video?: File | Types.ObjectId;
+	_compatibility: BuildDocument[] | Types.ObjectId[];
+	_playfield_image?: FileDocument | Types.ObjectId;
+	_playfield_video?: FileDocument | Types.ObjectId;
 	released_at: Date | string;
 	counter: {
 		downloads: number;
 	};
 
 	// serialized
-	file: File;
-	compatibility?: Build[];
-	playfield_image?: File;
-	playfield_video?: File;
+	file: FileDocument;
+	compatibility?: BuildDocument[];
+	playfield_image?: FileDocument;
+	playfield_video?: FileDocument;
 	thumb: any; // todo type
 
-	getFileIds(files?: ReleaseVersionFile[]): string[];
+	getFileIds(files?: ReleaseVersionFileDocument[]): string[];
 	getPlayfieldImageIds(): string[];
 }
 

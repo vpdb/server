@@ -23,20 +23,20 @@ import { ipdb } from '../common/ipdb';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { config } from '../common/settings';
 import { Context } from '../common/typings/context';
-import { File } from '../files/file';
+import { FileDocument } from '../files/file.document';
 import { state } from '../state';
-import { Game, GameRestrictions } from './game';
+import { GameDocument, GameRestrictions } from './game.document';
 
-export class GameSerializer extends Serializer<Game> {
+export class GameSerializer extends Serializer<GameDocument> {
 
-	protected _reduced(ctx: Context, doc: Game, opts: SerializerOptions): Game {
+	protected _reduced(ctx: Context, doc: GameDocument, opts: SerializerOptions): GameDocument {
 
-		const game = pick(doc, ['id', 'title', 'manufacturer', 'year' ]) as Game;
+		const game = pick(doc, ['id', 'title', 'manufacturer', 'year' ]) as GameDocument;
 		game.ipdb = doc.ipdb;
 		return game;
 	}
 
-	protected _simple(ctx: Context, doc: Game, opts: SerializerOptions): Game {
+	protected _simple(ctx: Context, doc: GameDocument, opts: SerializerOptions): GameDocument {
 		const game = this._reduced(ctx, doc, opts);
 
 		game.game_type = doc.game_type;
@@ -65,18 +65,18 @@ export class GameSerializer extends Serializer<Game> {
 
 		// backglass
 		if (this._populated(doc, '_backglass')) {
-			game.backglass = state.serializers.File.simple(ctx, doc._backglass as File, opts);
+			game.backglass = state.serializers.File.simple(ctx, doc._backglass as FileDocument, opts);
 		}
 
 		// logo
 		if (this._populated(doc, '_logo')) {
-			game.logo = state.serializers.File.simple(ctx, doc._logo as File, opts);
+			game.logo = state.serializers.File.simple(ctx, doc._logo as FileDocument, opts);
 		}
 
 		return game;
 	}
 
-	protected _detailed(ctx: Context, doc: Game, opts: SerializerOptions): Game {
+	protected _detailed(ctx: Context, doc: GameDocument, opts: SerializerOptions): GameDocument {
 		const game = this._simple(ctx, doc, opts);
 		game.owner = ipdb.owners[doc.ipdb.mfg] || doc.manufacturer;
 		return game;

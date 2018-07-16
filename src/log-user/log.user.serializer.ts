@@ -22,33 +22,33 @@ import { pick } from 'lodash';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { Context } from '../common/typings/context';
 import { state } from '../state';
-import { User } from '../users/user';
-import { LogUser } from './log.user';
+import { UserDocument } from '../users/user.document';
+import { LogUserDocument } from './log.user.document';
 
-export class LogUserSerializer extends Serializer<LogUser> {
+export class LogUserSerializer extends Serializer<LogUserDocument> {
 
-	protected _reduced(ctx: Context, doc: LogUser, opts: SerializerOptions): LogUser {
+	protected _reduced(ctx: Context, doc: LogUserDocument, opts: SerializerOptions): LogUserDocument {
 		return this._simple(ctx, doc, opts);
 	}
 
-	protected _simple(ctx: Context, doc: LogUser, opts: SerializerOptions): LogUser {
-		const logUser = pick(doc, ['event', 'result', 'message', 'logged_at']) as LogUser;
+	protected _simple(ctx: Context, doc: LogUserDocument, opts: SerializerOptions): LogUserDocument {
+		const logUser = pick(doc, ['event', 'result', 'message', 'logged_at']) as LogUserDocument;
 		logUser.payload = doc.payload;
 
 		// actor
 		if (this._populated(doc, '_actor')) {
-			logUser.actor = state.serializers.User.reduced(ctx, doc._actor as User, opts);
+			logUser.actor = state.serializers.User.reduced(ctx, doc._actor as UserDocument, opts);
 		}
 
 		// creator
 		if (this._populated(doc, '_user')) {
-			logUser.user = state.serializers.User.reduced(ctx, doc._user as User, opts);
+			logUser.user = state.serializers.User.reduced(ctx, doc._user as UserDocument, opts);
 		}
 
 		return logUser;
 	}
 
-	protected _detailed(ctx: Context, doc: LogUser, opts: SerializerOptions): LogUser {
+	protected _detailed(ctx: Context, doc: LogUserDocument, opts: SerializerOptions): LogUserDocument {
 		const logUser = this._simple(ctx, doc, opts);
 		logUser.ip = doc.ip;
 		return logUser;

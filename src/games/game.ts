@@ -18,33 +18,33 @@
  */
 
 import { config } from '../common/settings';
-import { File } from '../files/file';
-import { ReleaseDocument } from '../releases/release.document';
-import { Game } from './game';
+import { FileDocument } from '../files/file.document';
+import { Release } from '../releases/release';
+import { GameDocument } from './game.document';
 
 /**
  * Contains the Game's instance methods so they can also be accessed
  * from dehydrated objects.
  */
-export class GameDocument {
+export class Game {
 
 	/**
-	 * @see [[Game.isRestricted]]
+	 * @see [[GameDocument.isRestricted]]
 	 */
-	public static isRestricted(game: Game, what: 'release' | 'backglass'): boolean {
+	public static isRestricted(game: GameDocument, what: 'release' | 'backglass'): boolean {
 		return game.ipdb.mpu && config.vpdb.restrictions[what].denyMpu.includes(game.ipdb.mpu);
 	}
 
 	/**
 	 * Returns all file object linked to a game.
 	 *
-	 * @param {Game} game
-	 * @returns {File[]} Linked files
+	 * @param {GameDocument} game
+	 * @returns {FileDocument[]} Linked files
 	 */
-	public static getLinkedFiles(game: Game): File[] {
-		const files: File[] = [game.backglass, game.logo];
+	public static getLinkedFiles(game: GameDocument): FileDocument[] {
+		const files: FileDocument[] = [game.backglass, game.logo];
 		if (game.releases && game.releases.length > 0) {
-			const [releaseFiles] = game.releases.map(rls => ReleaseDocument.getLinkedFiles(rls));
+			const [releaseFiles] = game.releases.map(rls => Release.getLinkedFiles(rls));
 			if (releaseFiles && releaseFiles.length > 0) {
 				files.push(...releaseFiles);
 			}

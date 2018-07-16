@@ -20,8 +20,8 @@
 import { assign, defaultsDeep, get, isArray, pick } from 'lodash';
 import { Document, ModeratedDocument, Types } from 'mongoose';
 
-import { File } from '../files/file';
-import { ReleaseVersionFile } from '../releases/version/file/release.version.file';
+import { FileDocument } from '../files/file.document';
+import { ReleaseVersionFileDocument } from '../releases/version/file/release.version.file.document';
 import { state } from '../state';
 import { Context } from './typings/context';
 import { Thumb } from './typings/serializers';
@@ -129,7 +129,7 @@ export abstract class Serializer<T extends Document | ModeratedDocument> {
 	 * @protected
 	 * @returns {{}|null}
 	 */
-	protected getFileThumb(ctx: Context, versionFile: ReleaseVersionFile, opts: SerializerOptions): Thumb {
+	protected getFileThumb(ctx: Context, versionFile: ReleaseVersionFileDocument, opts: SerializerOptions): Thumb {
 
 		if (!opts.thumbFormat) {
 			return undefined;
@@ -144,7 +144,7 @@ export abstract class Serializer<T extends Document | ModeratedDocument> {
 			thumbFields = [...thumbFields, 'mime_type', 'bytes', 'file_type'];
 		}
 
-		const playfieldImage = state.serializers.File.detailed(ctx, versionFile._playfield_image as File, opts);
+		const playfieldImage = state.serializers.File.detailed(ctx, versionFile._playfield_image as FileDocument, opts);
 
 		if (opts.thumbFormat === 'original') {
 			return assign(pick(playfieldImage, thumbFields), {

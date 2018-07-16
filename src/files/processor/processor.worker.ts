@@ -26,7 +26,7 @@ import { promisify } from 'util';
 import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
 import { state } from '../../state';
-import { File } from '../file';
+import { FileDocument } from '../file.document';
 import { FileUtil } from '../file.util';
 import { FileVariation } from '../file.variations';
 import { Metadata } from '../metadata/metadata';
@@ -50,7 +50,7 @@ export class ProcessorWorker {
 	 * @return {Promise<any>}
 	 */
 	public static async create(job: Job): Promise<any> {
-		let file: File;
+		let file: FileDocument;
 
 		// retrieve data from deserialized job
 		const data = job.data as JobData;
@@ -151,7 +151,7 @@ export class ProcessorWorker {
 	 * @return {Promise<any>}
 	 */
 	public static async optimize(job: Job): Promise<any> {
-		let file: File;
+		let file: FileDocument;
 
 		// retrieve data from deserialized job
 		const data = job.data as JobData;
@@ -228,10 +228,10 @@ export class ProcessorWorker {
 	 * If the given variation has dependent variations, this queues the them
 	 * now they are available.
 	 *
-	 * @param {File} file File
+	 * @param {FileDocument} file File
 	 * @param {FileVariation} createdVariation Created variation
 	 */
-	private static async continueCreation(file: File, createdVariation: FileVariation) {
+	private static async continueCreation(file: FileDocument, createdVariation: FileVariation) {
 
 		// send direct references to creation queue (with a copy)
 		const dependentVariations = file.getDirectVariationDependencies(createdVariation);
@@ -266,10 +266,10 @@ export class ProcessorWorker {
 	/**
 	 * Checks whether a file has been marked as deleted and processing should be stopped.
 	 *
-	 * @param {File} file File to check
+	 * @param {FileDocument} file File to check
 	 * @return {Promise<boolean>} True if the file was deleted, false otherwise.
 	 */
-	private static async isFileDeleted(file: File): Promise<boolean> {
+	private static async isFileDeleted(file: FileDocument): Promise<boolean> {
 		return !!(await state.redis.get('queue:delete:' + file.id));
 	}
 

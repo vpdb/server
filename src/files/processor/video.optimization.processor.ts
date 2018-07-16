@@ -20,7 +20,7 @@ import Ffmpeg from 'fluent-ffmpeg';
 import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
 import { config } from '../../common/settings';
-import { File } from '../file';
+import { FileDocument } from '../file.document';
 import { VideoFileVariation } from '../file.variations';
 import { VideoMetadata } from '../metadata/video.metadata';
 import { OptimizationProcessor } from './processor';
@@ -39,7 +39,7 @@ export class VideoOptimizationProcessor implements OptimizationProcessor<VideoFi
 		}
 	}
 
-	public canProcess(file: File, variation?: VideoFileVariation): boolean {
+	public canProcess(file: FileDocument, variation?: VideoFileVariation): boolean {
 		return !variation && file.getMimeCategory() === 'video';
 	}
 
@@ -47,7 +47,7 @@ export class VideoOptimizationProcessor implements OptimizationProcessor<VideoFi
 		return 500;
 	}
 
-	public async process(file: File, src: string, dest: string, variation?: VideoFileVariation): Promise<string> {
+	public async process(file: FileDocument, src: string, dest: string, variation?: VideoFileVariation): Promise<string> {
 		return new Promise<string>((resolve, reject) => {
 
 			logger.info('[VideoOptimizationProcessor] Starting video processing of %s', file.toShortString(variation));

@@ -23,19 +23,19 @@ import { createStream } from 'sax';
 
 import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
-import { File } from '../file';
 import { FileDocument } from '../file.document';
+import { File } from '../file';
 import { FileVariation } from '../file.variations';
 import { Metadata } from './metadata';
 
 export class Directb2sMetadata extends Metadata {
 
-	public isValid(file: File, variation?: FileVariation): boolean {
-		return FileDocument.getMimeType(file, variation) === 'application/x-directb2s';
+	public isValid(file: FileDocument, variation?: FileVariation): boolean {
+		return File.getMimeType(file, variation) === 'application/x-directb2s';
 	}
 
 	// TODO try https://github.com/nikku/saxen
-	public async getMetadata(file: File, path: string): Promise<{ [p: string]: any }> {
+	public async getMetadata(file: FileDocument, path: string): Promise<{ [p: string]: any }> {
 		const now = Date.now();
 		return new Promise((resolve, reject) => {
 			const metadata: any = {};

@@ -28,14 +28,14 @@ import { logger } from '../common/logger';
 import { mailer } from '../common/mailer';
 import { SerializerOptions } from '../common/serializer';
 import { Context } from '../common/typings/context';
-import { Game } from '../games/game';
+import { GameDocument } from '../games/game.document';
 import { LogEventUtil } from '../log-event/log.event.util';
 import { state } from '../state';
-import { User } from '../users/user';
+import { UserDocument } from '../users/user.document';
 import { ReleaseAbstractApi } from './release.abstract.api';
 import { flavors } from './release.flavors';
-import { ReleaseVersionFile } from './version/file/release.version.file';
-import { ReleaseVersion } from './version/release.version';
+import { ReleaseVersionFileDocument } from './version/file/release.version.file.document';
+import { ReleaseVersionDocument } from './version/release.version.document';
 
 export class ReleaseApi extends ReleaseAbstractApi {
 
@@ -52,11 +52,11 @@ export class ReleaseApi extends ReleaseAbstractApi {
 
 		// defaults
 		if (ctx.request.body.versions) {
-			ctx.request.body.versions.forEach((version: ReleaseVersion) => {
+			ctx.request.body.versions.forEach((version: ReleaseVersionDocument) => {
 				version.released_at = version.released_at || now.toISOString();
 				if (version.files) {
 					const releasedAt = version.released_at || now.toISOString();
-					version.files.forEach((file: ReleaseVersionFile) => {
+					version.files.forEach((file: ReleaseVersionFileDocument) => {
 						file.released_at = file.released_at || releasedAt;
 					});
 				}
@@ -90,19 +90,19 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		release = await release.populate('_game').execPopulate();
 
 		if (release.moderation.is_approved) {
-			await (release._game as Game).incrementCounter('releases');
+			await (release._game as GameDocument).incrementCounter('releases');
 			await mailer.releaseAutoApproved(ctx.state.user, release);
 		} else {
 			await mailer.releaseSubmitted(ctx.state.user, release);
 		}
-		await (release._game as Game).update({ modified_at: new Date() });
+		await (release._game as GameDocument).update({ modified_at: new Date() });
 
 		release = await this.getDetails(release._id);
 		this.success(ctx, state.serializers.Release.detailed(ctx, release), 201);
 
 		await LogEventUtil.log(ctx, 'create_release', true, {
 			release: state.serializers.Release.detailed(ctx, release, { thumbFormat: 'medium' }),
-			game: pick(state.serializers.Game.simple(ctx, release._game as Game), ['id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type']),
+			game: pick(state.serializers.Game.simple(ctx, release._game as GameDocument), ['id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type']),
 		}, {
 			release: release._id,
 			game: release._game._id,
@@ -110,8 +110,8 @@ export class ReleaseApi extends ReleaseAbstractApi {
 
 		// notify (co-)author(s)
 		for (const author of release.authors) {
-			if ((author._user as User).id !== ctx.state.user.id) {
-				await mailer.releaseAdded(ctx.state.user, author._user as User, release);
+			if ((author._user as UserDocument).id !== ctx.state.user.id) {
+				await mailer.releaseAdded(ctx.state.user, author._user as UserDocument, release);
 			}
 		}
 
@@ -491,10 +491,10 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		const moderationEvent = await state.models.Release.handleModeration(ctx, release);
 		switch (moderationEvent.event) {
 			case 'approved':
-				await mailer.releaseApproved(release._created_by as User, release, moderationEvent.message);
+				await mailer.releaseApproved(release._created_by as UserDocument, release, moderationEvent.message);
 				break;
 			case 'refused':
-				await mailer.releaseRefused(release._created_by as User, release, moderationEvent.message);
+				await mailer.releaseRefused(release._created_by as UserDocument, release, moderationEvent.message);
 				break;
 		}
 

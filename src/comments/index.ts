@@ -23,7 +23,7 @@ import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
-import { Comment } from './comment';
+import { CommentDocument } from './comment.document';
 import { CommentModel, commentSchema } from './comment.schema';
 import { CommentSerializer } from './comment.serializer';
 
@@ -40,7 +40,7 @@ export class CommentEndPoint extends EndPoint {
 	}
 
 	public async register(app: Application): Promise<void> {
-		state.models.Comment = mongoose.model<Comment, CommentModel>('Comment', commentSchema);
+		state.models.Comment = mongoose.model<CommentDocument, CommentModel>('Comment', commentSchema);
 		state.serializers.Comment = new CommentSerializer();
 	}
 }

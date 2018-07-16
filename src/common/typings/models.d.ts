@@ -18,13 +18,13 @@
  */
 
 import { Document, Model } from 'mongoose';
-import { Build } from '../../builds/build';
-import { GameRequest } from '../../game-requests/game.request';
-import { Rating } from '../../ratings/rating';
+import { BuildDocument } from '../../builds/build.document';
+import { GameRequestDocument } from '../../game-requests/game.request.document';
+import { RatingDocument } from '../../ratings/rating.document';
 import { TableBlock } from '../../releases/release.tableblock';
-import { Star } from '../../stars/star';
-import { Tag } from '../../tags/tag';
-import { Token } from '../../tokens/token';
+import { StarDocument } from '../../stars/star.document';
+import { TagDocument } from '../../tags/tag.document';
+import { TokenDocument } from '../../tokens/token.document';
 
 import { BackglassModel } from '../../backglasses/backglass.schema';
 import { CommentModel } from '../../comments/comment.schema';
@@ -41,23 +41,23 @@ import { UserModel } from '../../users/user.schema';
 
 export interface Models {
 	Backglass: BackglassModel;
-	Build: Model<Build>;
+	Build: Model<BuildDocument>;
 	Comment: CommentModel;
 	File: FileModel;
 	Game: GameModel;
-	GameRequest: Model<GameRequest>;
+	GameRequest: Model<GameRequestDocument>;
 	LogEvent: LogEventModel;
 	LogUser: LogUserModel;
 	Medium: MediumModel;
-	Rating: Model<Rating>;
+	Rating: Model<RatingDocument>;
 	Release: ReleaseModel;
 	ReleaseVersion: ReleaseVersionModel;
 	ReleaseVersionFile: ReleaseVersionFileModel;
 	Rom: RomModel;
 	TableBlock: Model<TableBlock>;
-	Tag: Model<Tag>;
-	Token: Model<Token>;
-	Star: Model<Star>;
+	Tag: Model<TagDocument>;
+	Token: Model<TokenDocument>;
+	Star: Model<StarDocument>;
 	User: UserModel;
 	[key: string]: Model<Document>;
 }

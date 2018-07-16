@@ -18,18 +18,23 @@
  */
 
 import { Document, Types } from 'mongoose';
-import { Game } from '../games/game';
-import { Release } from '../releases/release';
-import { User } from '../users/user';
+import { UserDocument } from '../users/user.document';
 
-export interface Rating extends Document {
+export interface BuildDocument extends Document {
 	id: string;
-	_from: User | Types.ObjectId;
-	_ref: {
-		game: Game | Types.ObjectId,
-		release: Release | Types.ObjectId,
-	};
-	value: number;
-	modified_at: Date;
+	platform: 'vp';
+	label: string;
+	major_version: string;
+	download_url: string;
+	support_url: string;
+	description: string;
+	built_at: Date;
+	type: 'release' | 'nightly' | 'experimental';
+	is_range: boolean;
+	is_active: boolean;
 	created_at: Date;
+	_created_by: Types.ObjectId | UserDocument;
+
+	// serialized
+	created_by: UserDocument;
 }

@@ -18,7 +18,7 @@
  */
 
 import { Document } from 'mongoose';
-import { Rating } from '../ratings/rating';
+import { RatingDocument } from '../ratings/rating.document';
 import { state } from '../state';
 import { apiCache } from './api.cache';
 import { logger } from './logger';
@@ -39,7 +39,7 @@ class Metrics {
 	 * @param {object} rating Rating object
 	 * @reuturn {Promise.<{}>} Result
 	 */
-	public async onRatingUpdated(modelName: string, entity: Document, rating: Rating) {
+	public async onRatingUpdated(modelName: string, entity: Document, rating: RatingDocument) {
 
 		const globalAtm = await this.getGlobalMean(modelName);
 		const summary = await this.updateEntityMetrics(modelName, entity, globalAtm);

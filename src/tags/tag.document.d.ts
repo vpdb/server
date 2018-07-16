@@ -18,19 +18,17 @@
  */
 
 import { Document, Types } from 'mongoose';
-import { User } from '../users/user';
+import { UserDocument } from '../users/user.document';
 
-export interface LogUser extends Document {
-	_user: User | Types.ObjectId;
-	_actor: User | Types.ObjectId;
-	event: string;
-	payload: { [key: string]: any };
-	result: 'success' | 'failure';
-	message: string;
-	ip: string;
-	logged_at: Date;
+export interface TagDocument extends Document {
+	// model
+	_id: string;
+	name: string;
+	description: string;
+	is_active: boolean;
+	created_at: Date;
+	_created_by?: UserDocument | Types.ObjectId;
 
-	// populated
-	user: User;
-	actor: User;
+	// serialized
+	created_by?: UserDocument;
 }

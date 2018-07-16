@@ -18,16 +18,16 @@
  */
 import { pick, sortBy, sumBy } from 'lodash';
 
-import { Build } from '../builds/build';
+import { BuildDocument } from '../builds/build.document';
 import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
 import { Context } from '../common/typings/context';
-import { Release } from '../releases/release';
+import { ReleaseDocument } from '../releases/release.doument';
 import { TableBlock, TableBlockBase, TableBlockMatch, TableBlockMatchResult } from '../releases/release.tableblock';
-import { ReleaseVersionFile } from '../releases/version/file/release.version.file';
-import { ReleaseVersion } from '../releases/version/release.version';
+import { ReleaseVersionFileDocument } from '../releases/version/file/release.version.file.document';
+import { ReleaseVersionDocument } from '../releases/version/release.version.document';
 import { state } from '../state';
-import { File } from './file';
+import { FileDocument } from './file.document';
 
 export class FileBlockmatchApi extends Api {
 
@@ -65,7 +65,7 @@ export class FileBlockmatchApi extends Api {
 		const blocks = await state.models.TableBlock.find({ _files: file._id }).exec();
 		// split blocks: { <file._id>: [ matched blocks ] }
 		blocks.forEach((block: TableBlock) => {
-			(block._files as File[]).forEach(f => {
+			(block._files as FileDocument[]).forEach(f => {
 				// don't match own id
 				if (f.equals(file._id)) {
 					return;
@@ -81,11 +81,11 @@ export class FileBlockmatchApi extends Api {
 		const matchedReleases = await state.models.Release.find({ 'versions.files._file': { $in: Array.from(matches.keys()) } }).populate(rlsFields.join(' ')).exec();
 
 		// map <file._id>: <release>
-		const releases = new Map<string, Release>();
+		const releases = new Map<string, ReleaseDocument>();
 		matchedReleases.forEach(rls => {
 			rls.versions.forEach(version => {
 				version.files.forEach(f => {
-					releases.set((f._file as File)._id.toString(), rls);
+					releases.set((f._file as FileDocument)._id.toString(), rls);
 				});
 			});
 		});
@@ -113,25 +113,25 @@ export class FileBlockmatchApi extends Api {
 	 * Searches a file with a given ID within a release and updates
 	 * a given object with release, game, version and file.
 	 * @param {Application.Context} ctx Koa context
-	 * @param {Release} release Release to search in
+	 * @param {ReleaseDocument} release Release to search in
 	 * @param {string} fileId File ID to search for  (database _id as string)
 	 * @param {object} base Object to be updated
 	 */
-	private populateBlockmatch<T extends TableBlockBase>(ctx: Context, release: Release, fileId: string, base: T = {} as T): T {
+	private populateBlockmatch<T extends TableBlockBase>(ctx: Context, release: ReleaseDocument, fileId: string, base: T = {} as T): T {
 		if (!release) {
 			return base;
 		}
 		const rls = state.serializers.Release.simple(ctx, release);
-		base.release = pick(rls, ['id', 'name', 'created_at', 'authors']) as Release;
+		base.release = pick(rls, ['id', 'name', 'created_at', 'authors']) as ReleaseDocument;
 		base.game = rls.game;
 		release.versions.forEach(version => {
 			version.files.forEach(versionFile => {
-				if ((versionFile._file as File)._id.toString() === fileId) {
-					base.version = pick(version.toObject(), ['version', 'released_at']) as ReleaseVersion;
+				if ((versionFile._file as FileDocument)._id.toString() === fileId) {
+					base.version = pick(version.toObject(), ['version', 'released_at']) as ReleaseVersionDocument;
 					const f = versionFile.toObject();
-					base.file = pick(f, ['released_at', 'flavor']) as ReleaseVersionFile;
-					base.file.compatibility = f._compatibility.map((c: Build) => pick(c, ['id', 'label']));
-					base.file.file = state.serializers.File.simple(ctx, versionFile._file as File);
+					base.file = pick(f, ['released_at', 'flavor']) as ReleaseVersionFileDocument;
+					base.file.compatibility = f._compatibility.map((c: BuildDocument) => pick(c, ['id', 'label']));
+					base.file.file = state.serializers.File.simple(ctx, versionFile._file as FileDocument);
 				}
 			});
 		});

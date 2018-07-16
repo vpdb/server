@@ -26,7 +26,7 @@ import { dirname } from 'path';
 import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
 import { state } from '../../state';
-import { File } from '../file';
+import { FileDocument } from '../file.document';
 import { FileUtil } from '../file.util';
 import { FileVariation } from '../file.variations';
 import { processorManager } from './processor.manager';
@@ -81,11 +81,11 @@ class ProcessorQueue {
 	 * Note that for creation queues, the source is copied to avoid file access
 	 * conflicts.
 	 *
-	 * @param {File} file File to be processed
+	 * @param {FileDocument} file File to be processed
 	 * @param {string} srcPath Path to source file
 	 * @return {Promise<void>}
 	 */
-	public async processFile(file: File, srcPath: string): Promise<void> {
+	public async processFile(file: FileDocument, srcPath: string): Promise<void> {
 
 		// match processors against file variations
 		let n = 0;
@@ -116,11 +116,11 @@ class ProcessorQueue {
 
 	/**
 	 * Stats a file and waits until it has been created.
-	 * @param {File} file
+	 * @param {FileDocument} file
 	 * @param {FileVariation | null} variation
 	 * @returns {Promise<Stats>}
 	 */
-	public async stats(file: File, variation: FileVariation | null): Promise<Stats> {
+	public async stats(file: FileDocument, variation: FileVariation | null): Promise<Stats> {
 		const path = file.getPath(variation);
 		let stats: Stats;
 		try {
@@ -144,11 +144,11 @@ class ProcessorQueue {
 	/**
 	 * Subscribes to the creation queue and returns when the variation has been created.
 	 *
-	 * @param {File} file File to match
+	 * @param {FileDocument} file File to match
 	 * @param {FileVariation} variation Variation to match. If none given, original is matched
 	 * @return {Promise<any>} Resolves with the last job's result or `null` if any actions where executed
 	 */
-	public async waitForVariationCreation(file: File, variation: FileVariation | null): Promise<any> {
+	public async waitForVariationCreation(file: FileDocument, variation: FileVariation | null): Promise<any> {
 
 		// fail fast if no jobs running
 		const hasJob = await this.hasRemainingCreationJob(file, variation);
@@ -216,10 +216,10 @@ class ProcessorQueue {
 	 * Removes all waiting jobs for a given file from all queues and deletes
 	 * the result of all currently active jobs for the given file.
 	 *
-	 * @param {File} file File to delete
+	 * @param {FileDocument} file File to delete
 	 * @return {Promise<void>}
 	 */
-	public async deleteProcessingFile(file: File): Promise<void> {
+	public async deleteProcessingFile(file: FileDocument): Promise<void> {
 		const redisLock = 'queue:delete:' + file.id;
 		const promises: Array<() => Bluebird<any> | Promise<any>> = [];
 		await state.redis.set(redisLock, '1');
@@ -272,10 +272,10 @@ class ProcessorQueue {
 	 * move the source of the original (or variation source) even if there are
 	 * active jobs.
 	 *
-	 * @param {File} file File with is_active set to true
+	 * @param {FileDocument} file File with is_active set to true
 	 * @returns {Promise<void>}
 	 */
-	public async activateFile(file: File): Promise<void> {
+	public async activateFile(file: FileDocument): Promise<void> {
 
 		const now = Date.now();
 
@@ -347,7 +347,7 @@ class ProcessorQueue {
 	 * @param {string} variation Variation
 	 * @return {Promise<boolean>} True if there is a non-finished job, false otherwise.
 	 */
-	private async hasRemainingCreationJob(file: File, variation: FileVariation): Promise<boolean> {
+	private async hasRemainingCreationJob(file: FileDocument, variation: FileVariation): Promise<boolean> {
 		const numJobs = await this.countRemaining([processorManager.getQueue('creation', file, variation)],
 			job => ProcessorQueue.isSame(job.data, file.id, variation.name));
 		return numJobs > 0;

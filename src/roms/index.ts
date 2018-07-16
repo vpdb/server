@@ -23,7 +23,7 @@ import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
-import { Rom } from './rom';
+import { RomDocument } from './rom.document';
 import { romApiRouter } from './rom.api.router';
 import { RomModel, romSchema } from './rom.schema';
 import { RomSerializer } from './rom.serializer';
@@ -37,7 +37,7 @@ export class RomApiEndPoint extends EndPoint {
 	}
 
 	public async register(app: Application): Promise<void> {
-		state.models.Rom = mongoose.model<Rom, RomModel>('Rom', romSchema);
+		state.models.Rom = mongoose.model<RomDocument, RomModel>('Rom', romSchema);
 		state.serializers.Rom = new RomSerializer();
 	}
 }

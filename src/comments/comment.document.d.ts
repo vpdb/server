@@ -17,24 +17,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document, Types } from 'mongoose';
-import { User } from '../users/user';
+import { Document, Schema, Types } from 'mongoose';
+import { ReleaseDocument } from '../releases/release.doument';
+import { UserDocument } from '../users/user.document';
 
-export interface Token extends Document {
+export interface CommentDocument extends Document {
 	id: string;
-	token: string;
-	label: string;
-	type: 'personal' | 'provider' | 'jwt-refreshed' | 'jwt';
-	scopes: string[];
-	provider: string;
-	is_active: boolean;
-	last_used_at: Date;
-	expires_at: Date;
+	_from: UserDocument | Types.ObjectId;
+	_ref: {
+		release: ReleaseDocument | Types.ObjectId;
+		release_moderation: ReleaseDocument | Types.ObjectId;
+	};
+	message: string;
+	ip: string;
 	created_at: Date;
-	_created_by: User | Types.ObjectId;
 
-	// generated
-	browser?: IUAParser.IResult;
-	for_user?: string;
-	for_path?: string;
+	// serialized
+	from?: UserDocument;
+	release?: ReleaseDocument;
 }

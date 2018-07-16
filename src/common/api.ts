@@ -21,7 +21,7 @@ import Router from 'koa-router';
 import { difference, extend, intersection, isObject, keys, map, pick, values } from 'lodash';
 import { format as formatUrl, parse as parseUrl } from 'url';
 import { state } from '../state';
-import { User } from '../users/user';
+import { UserDocument } from '../users/user.document';
 import { acl } from './acl';
 import { ApiError, ApiValidationError } from './api.error';
 import { logger } from './logger';
@@ -337,7 +337,7 @@ export abstract class Api {
 	 * @param planAttrs  Key/value pairs of plan options that must match, e.g. { enableAppTokens: false }
 	 * @throws {ApiError} If authorization failed.
 	 */
-	private async authorizeUser(ctx: Context, user: User, resource: string, permission: string, scopes: Scope[], planAttrs: { [key: string]: any }): Promise<void> {
+	private async authorizeUser(ctx: Context, user: UserDocument, resource: string, permission: string, scopes: Scope[], planAttrs: { [key: string]: any }): Promise<void> {
 
 		// check scopes
 		if (!scope.isValid(scopes, ctx.state.tokenScopes)) {

@@ -23,11 +23,11 @@ import { ApiError } from '../../../common/api.error';
 import { logger } from '../../../common/logger';
 import { mailer } from '../../../common/mailer';
 import { Context } from '../../../common/typings/context';
-import { File } from '../../../files/file';
-import { Game } from '../../../games/game';
+import { FileDocument } from '../../../files/file.document';
+import { GameDocument } from '../../../games/game.document';
 import { LogEventUtil } from '../../../log-event/log.event.util';
 import { state } from '../../../state';
-import { User } from '../../../users/user';
+import { UserDocument } from '../../../users/user.document';
 
 export class ReleaseVersionFileApi extends Api {
 
@@ -52,7 +52,7 @@ export class ReleaseVersionFileApi extends Api {
 		if (!version) {
 			throw new ApiError('No such version "%s" for release "%s".', ctx.params.version, ctx.params.id).status(404);
 		}
-		let versionFile = version.files.find(f => (f._file as File).id === ctx.params.file);
+		let versionFile = version.files.find(f => (f._file as FileDocument).id === ctx.params.file);
 		if (!versionFile) {
 			throw new ApiError('No file with ID "%s" for version "%s" of release "%s".', ctx.params.file, ctx.params.version, ctx.params.id).status(404);
 		}
@@ -108,7 +108,7 @@ export class ReleaseVersionFileApi extends Api {
 			.exec();
 
 		version = release.versions.find(v => v.version === ctx.params.version);
-		versionFile = version.files.find(f => (f._file as File).id === ctx.params.file);
+		versionFile = version.files.find(f => (f._file as FileDocument).id === ctx.params.file);
 
 		this.success(ctx, state.serializers.ReleaseVersionFile.detailed(ctx, versionFile).validation, 200);
 
@@ -118,6 +118,6 @@ export class ReleaseVersionFileApi extends Api {
 			{ release: release._id, game: release._game._id },
 		);
 
-		await mailer.releaseValidated(release._created_by as User, ctx.state.user, release._game as Game, release, state.serializers.ReleaseVersionFile.detailed(ctx, versionFile));
+		await mailer.releaseValidated(release._created_by as UserDocument, ctx.state.user, release._game as GameDocument, release, state.serializers.ReleaseVersionFile.detailed(ctx, versionFile));
 	}
 }

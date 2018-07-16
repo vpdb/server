@@ -21,23 +21,23 @@ import { compact, flatten, map } from 'lodash';
 import { ModeratedDocument, Types } from 'mongoose';
 
 import { isArray } from 'util';
-import { File } from '../files/file';
+import { FileDocument } from '../files/file.document';
 import { state } from '../state';
-import { User } from '../users/user';
-import { Release } from './release';
+import { UserDocument } from '../users/user.document';
+import { ReleaseDocument } from './release.doument';
 
-export class ReleaseDocument {
+export class Release {
 
 	/**
 	 * Updates game counters when moderation status of a release has changed.
 	 *
-	 * @see [[Release.moderationChanged]]
-	 * @param {Release} release Release
+	 * @see [[ReleaseDocument.moderationChanged]]
+	 * @param {ReleaseDocument} release Release
 	 * @param {{isApproved: boolean, isRefused: boolean}} previousModeration
 	 * @param {{isApproved: boolean, isRefused: boolean}} moderation
 	 * @returns {Promise<Game>} Updated game
 	 */
-	public static async moderationChanged(release: Release, previousModeration: { isApproved: boolean, isRefused: boolean }, moderation: { isApproved: boolean, isRefused: boolean }): Promise<ModeratedDocument> {
+	public static async moderationChanged(release: ReleaseDocument, previousModeration: { isApproved: boolean, isRefused: boolean }, moderation: { isApproved: boolean, isRefused: boolean }): Promise<ModeratedDocument> {
 		if (previousModeration.isApproved && !moderation.isApproved) {
 			return state.models.Game.update({ _id: release._game }, { $inc: { 'counter.releases': -1 } });
 		}
@@ -49,11 +49,11 @@ export class ReleaseDocument {
 	/**
 	 * Returns all file IDs from a populated release.
 	 *
-	 * @see [[Release.getFileIds]]
-	 * @param {Release} release Release
+	 * @see [[ReleaseDocument.getFileIds]]
+	 * @param {ReleaseDocument} release Release
 	 * @returns {string[]} File IDs
 	 */
-	public static getFileIds(release: Release): string[] {
+	public static getFileIds(release: ReleaseDocument): string[] {
 		const files = flatten(map(release.versions, 'files'));
 		const tableFileIds = map(files, '_file').map(file => file ? file._id.toString() : null);
 		const playfieldImageId = compact(map(files, '_playfield_image')).map(file => file._id.toString());
@@ -64,10 +64,10 @@ export class ReleaseDocument {
 	/**
 	 * Returns all playfield image IDs from a populated release.
 	 *
-	 * @param {Release} release
+	 * @param {ReleaseDocument} release
 	 * @returns {string[]} File IDs
 	 */
-	public static getPlayfieldImageIds(release: Release): string[] {
+	public static getPlayfieldImageIds(release: ReleaseDocument): string[] {
 		const files = flatten(map(release.versions, 'files'));
 		return compact(map(files, '_playfield_image')).map(file => file._id.toString());
 	}
@@ -75,11 +75,11 @@ export class ReleaseDocument {
 	/**
 	 * Checks if a release is created by given user.
 	 *
-	 * @param {Release} release Release to check.
-	 * @param {User} user User to check
+	 * @param {ReleaseDocument} release Release to check.
+	 * @param {UserDocument} user User to check
 	 * @returns {boolean} True if user is the release's creator, false otherwise.
 	 */
-	public static isCreatedBy(release: Release, user: User): boolean {
+	public static isCreatedBy(release: ReleaseDocument, user: UserDocument): boolean {
 		if (!user) {
 			return false;
 		}
@@ -93,13 +93,13 @@ export class ReleaseDocument {
 	/**
 	 * Returns all file object linked to a release.
 	 *
-	 * @param {Release} release Serialized release
-	 * @returns {File[]} Linked files
+	 * @param {ReleaseDocument} release Serialized release
+	 * @returns {FileDocument[]} Linked files
 	 */
-	public static getLinkedFiles(release: Release | Release[]): File[] {
-		let files: File[] = [];
+	public static getLinkedFiles(release: ReleaseDocument | ReleaseDocument[]): FileDocument[] {
+		let files: FileDocument[] = [];
 		if (isArray(release)) {
-			[ files ] = release.map(ReleaseDocument.getLinkedFiles);
+			[ files ] = release.map(Release.getLinkedFiles);
 			return files || [];
 		}
 		if (release.versions && release.versions.length > 0) {

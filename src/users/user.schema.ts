@@ -29,7 +29,7 @@ import { metricsPlugin } from '../common/mongoose/metrics.plugin';
 import { config } from '../common/settings';
 import { flavors } from '../releases/release.flavors';
 import { state } from '../state';
-import { User } from './user';
+import { UserDocument } from './user.document';
 
 const shortId = require('shortid32');
 
@@ -109,7 +109,7 @@ config.vpdb.passport.ipboard.forEach(ipbConfig => {
 	}
 });
 
-export interface UserModel extends MetricsModel<User> { }
+export interface UserModel extends MetricsModel<UserDocument> { }
 export const userSchema = new Schema(userFields, { toObject: { virtuals: true, versionKey: false } });
 userSchema.index({ name: 'text', username: 'text', email: 'text' });
 
@@ -147,31 +147,6 @@ userSchema.virtual('provider')
 	.get(function() {
 		return find(keys(this.providers), p => this.providers[p] && this.providers[p].id) || 'local';
 	});
-
-//-----------------------------------------------------------------------------
-// MIDDLEWARE
-//-----------------------------------------------------------------------------
-
-// UserSchema.pre('validate', function(next) {
-// 	const user = this.toJSON();
-// 	if (this.isNew && !this.name) {
-// 		if (user.username) {
-// 			this.name = user.username;
-// 		}
-// 		// if (user.providers && !_.isEmpty(user.providers.github)) {
-// 		// 	this.name = user.github.name ? user.providers.github.name : user.providers.github.login;
-// 		// }
-// 		// if (user.providers && !_.isEmpty(user.providers.google)) {
-// 		// 	this.name = user.google.name ? user.google.name : user.google.login;
-// 		// }
-// 		// config.vpdb.passport.ipboard.forEach(function(ipbConfig) {
-// 		// 	if (!_.isEmpty(user[ipbConfig.id])) {
-// 		// 		this.name = user[ipbConfig.id].displayName ? user[ipbConfig.id].displayName : user[ipbConfig.id].username;
-// 		// 	}
-// 		// }, this);
-// 	}
-// 	next();
-// });
 
 //-----------------------------------------------------------------------------
 // VALIDATIONS
@@ -371,7 +346,7 @@ userSchema.methods.hasRole = function(role: string | string[]): boolean {
 //-----------------------------------------------------------------------------
 // TRIGGERS
 //-----------------------------------------------------------------------------
-userSchema.post('remove', async (obj: User) => {
+userSchema.post('remove', async (obj: UserDocument) => {
 	await state.models.LogUser.remove({ _user: obj._id });
 	await state.models.Token.remove({ _created_by: obj._id });
 	await acl.removeUserRoles(obj.id, obj.roles);

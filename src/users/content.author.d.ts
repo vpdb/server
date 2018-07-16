@@ -18,13 +18,13 @@
  */
 
 import { Document, Types } from 'mongoose';
-import { User } from './user';
+import { UserDocument } from './user.document';
 
 export interface ContentAuthor extends Document {
 	/**
 	 * User from database, full object if populated or `ObjectId` otherwise.
 	 */
-	_user?: User | Types.ObjectId;
+	_user?: UserDocument | Types.ObjectId;
 	/**
 	 * Roles the user had during the development of the content.
 	 */
@@ -32,5 +32,5 @@ export interface ContentAuthor extends Document {
 	/**
 	 * Serialized user
 	 */
-	user?: User;
+	user?: UserDocument;
 }

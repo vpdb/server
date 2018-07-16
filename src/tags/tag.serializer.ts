@@ -21,26 +21,26 @@ import { pick } from 'lodash';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { Context } from '../common/typings/context';
 import { state } from '../state';
-import { User } from '../users/user';
-import { Tag } from './tag';
+import { UserDocument } from '../users/user.document';
+import { TagDocument } from './tag.document';
 
-export class TagSerializer extends Serializer<Tag> {
+export class TagSerializer extends Serializer<TagDocument> {
 
-	protected _reduced(ctx: Context, doc: Tag, opts: SerializerOptions): Tag {
-		return pick(doc, ['id']) as Tag;
+	protected _reduced(ctx: Context, doc: TagDocument, opts: SerializerOptions): TagDocument {
+		return pick(doc, ['id']) as TagDocument;
 	}
 
-	protected _simple(ctx: Context, doc: Tag, opts: SerializerOptions): Tag {
-		const tag = pick(doc, ['id', 'name', 'description']) as Tag;
+	protected _simple(ctx: Context, doc: TagDocument, opts: SerializerOptions): TagDocument {
+		const tag = pick(doc, ['id', 'name', 'description']) as TagDocument;
 		// created_by
 		if (this._populated(doc, '_created_by')) {
-			tag.created_by = state.serializers.User.reduced(ctx, tag._created_by as User, opts);
+			tag.created_by = state.serializers.User.reduced(ctx, tag._created_by as UserDocument, opts);
 		}
 		return tag;
 	}
 
 	/* istanbul ignore next */
-	protected _detailed(ctx: Context, doc: Tag, opts: SerializerOptions): Tag {
+	protected _detailed(ctx: Context, doc: TagDocument, opts: SerializerOptions): TagDocument {
 		return this._simple(ctx, doc, opts);
 	}
 }

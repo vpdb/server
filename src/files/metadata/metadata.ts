@@ -17,19 +17,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { File } from '../file';
+import { FileDocument } from '../file.document';
 import { FileVariation } from '../file.variations';
 
 export abstract class Metadata {
 
 	/**
 	 * Reads and returns metadata from the file.
-	 * @param {File} file
+	 * @param {FileDocument} file
 	 * @param {string} path
 	 * @param {FileVariation} variation
 	 * @returns {Promise<object | undefined>} Metadata or null if no metadata reader found.
 	 */
-	public static async readFrom(file: File, path: string, variation?: FileVariation): Promise<{ [key: string]: any } | undefined> {
+	public static async readFrom(file: FileDocument, path: string, variation?: FileVariation): Promise<{ [key: string]: any } | undefined> {
 		const reader = Metadata.getReader(file, variation);
 		if (reader === undefined) {
 			return undefined;
@@ -39,32 +39,32 @@ export abstract class Metadata {
 
 	/**
 	 * Returns the metadata reader for a given file and variation.
-	 * @param {File} file File
+	 * @param {FileDocument} file File
 	 * @param {FileVariation} [variation] Variation or null for original file.
 	 * @return {Metadata | undefined} Metadata reader
 	 */
-	public static getReader(file: File, variation?: FileVariation): Metadata {
+	public static getReader(file: FileDocument, variation?: FileVariation): Metadata {
 		return require('.').instances.find((m: Metadata) => m.isValid(file, variation));
 	}
 
 	/**
 	 * Checks if the metadata class can be applied to a given file.
 	 *
-	 * @param {File} file File to check
+	 * @param {FileDocument} file File to check
 	 * @param {FileVariation} [variation] Variation to check
 	 * @return {boolean}
 	 */
-	public abstract isValid(file: File, variation?: FileVariation): boolean;
+	public abstract isValid(file: FileDocument, variation?: FileVariation): boolean;
 
 	/**
 	 * Reads the metadata from the file.
 	 *
-	 * @param {File} file File to read
+	 * @param {FileDocument} file File to read
 	 * @param {string} path Path to file to read
 	 * @param {FileVariation} [variation] Variation of the file to read
 	 * @return Full metadata
 	 */
-	public abstract async getMetadata(file: File, path: string, variation?: FileVariation): Promise<{ [key: string]: any }>;
+	public abstract async getMetadata(file: FileDocument, path: string, variation?: FileVariation): Promise<{ [key: string]: any }>;
 
 	/**
 	 * This is what's returned in the detail view of the file

@@ -18,8 +18,8 @@
  */
 
 import Zip from 'adm-zip';
-import { File } from '../file';
 import { FileDocument } from '../file.document';
+import { File } from '../file';
 import { FileVariation } from '../file.variations';
 import { Metadata } from './metadata';
 
@@ -28,12 +28,12 @@ require('bluebird').promisifyAll(Unrar.prototype);
 
 export class ArchiveMetadata extends Metadata {
 
-	public isValid(file: File, variation?: FileVariation): boolean {
-		return FileDocument.getMimeCategory(file, variation) === 'archive';
+	public isValid(file: FileDocument, variation?: FileVariation): boolean {
+		return File.getMimeCategory(file, variation) === 'archive';
 	}
 
-	public async getMetadata(file: File, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
-		const mimeType = variation && variation.mimeType ? variation.mimeType : FileDocument.getMimeType(file);
+	public async getMetadata(file: FileDocument, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
+		const mimeType = variation && variation.mimeType ? variation.mimeType : File.getMimeType(file);
 		const type = mimeType.split('/')[1];
 		switch (type) {
 			case 'x-rar-compressed':

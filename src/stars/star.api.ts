@@ -26,7 +26,7 @@ import { ApiError } from '../common/api.error';
 import { Context } from '../common/typings/context';
 import { LogEventUtil } from '../log-event/log.event.util';
 import { state } from '../state';
-import { Star } from './star';
+import { StarDocument } from './star.document';
 
 export class StarApi extends Api {
 
@@ -106,7 +106,7 @@ export class StarApi extends Api {
 	 * @return {Promise<boolean>}
 	 * @private
 	 */
-	private async _view(ctx: Context, find: (ctx: Context) => Promise<[MetricsDocument, Star]>, titleAttr: string) {
+	private async _view(ctx: Context, find: (ctx: Context) => Promise<[MetricsDocument, StarDocument]>, titleAttr: string) {
 		const [entity, star] = await find(ctx);
 		if (star) {
 			return this.success(ctx, pick(star, ['created_at']));
@@ -122,7 +122,7 @@ export class StarApi extends Api {
 	 * @param {string} modelName Name of the model, e.g. "game"
 	 * @param {(ctx: Context) => Promise<[MetricsDocument, Star]>} find Find function
 	 */
-	private async _star(ctx: Context, modelName: string, find: (ctx: Context) => Promise<[MetricsDocument, Star]>) {
+	private async _star(ctx: Context, modelName: string, find: (ctx: Context) => Promise<[MetricsDocument, StarDocument]>) {
 
 		const [entity, duplicateStar] = await find(ctx);
 		if (duplicateStar) {
@@ -153,7 +153,7 @@ export class StarApi extends Api {
 	 * @param {string} modelName Name of the model, e.g. "game"
 	 * @param {(ctx: Context) => Promise<[MetricsDocument, Star]>} find Find function
 	 */
-	private async _unstar(ctx: Context, modelName: string, find: (ctx: Context) => Promise<[MetricsDocument, Star]>) {
+	private async _unstar(ctx: Context, modelName: string, find: (ctx: Context) => Promise<[MetricsDocument, StarDocument]>) {
 		const [entity, star] = await find(ctx);
 		if (!star) {
 			throw new ApiError('Not starred. You need to star something before you can unstar it.').warn().status(400);
@@ -177,7 +177,7 @@ export class StarApi extends Api {
 	 * @return {(ctx: Context) => Promise<[MetricsDocument, Star]>} Function returning Entity and star
 	 */
 	private find(model: Model<MetricsDocument>, modelName: string, populate?: string) {
-		return async (ctx: Context): Promise<[MetricsDocument, Star]> => {
+		return async (ctx: Context): Promise<[MetricsDocument, StarDocument]> => {
 			const query = model.findOne({ id: ctx.params.id });
 			if (populate) {
 				query.populate(populate);

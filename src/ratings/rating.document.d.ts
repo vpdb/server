@@ -17,22 +17,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document, Schema, Types } from 'mongoose';
-import { Release } from '../releases/release';
-import { User } from '../users/user';
+import { Document, Types } from 'mongoose';
+import { GameDocument } from '../games/game.document';
+import { ReleaseDocument } from '../releases/release.doument';
+import { UserDocument } from '../users/user.document';
 
-export interface Comment extends Document {
+export interface RatingDocument extends Document {
 	id: string;
-	_from: User | Types.ObjectId;
+	_from: UserDocument | Types.ObjectId;
 	_ref: {
-		release: Release | Types.ObjectId;
-		release_moderation: Release | Types.ObjectId;
+		game: GameDocument | Types.ObjectId,
+		release: ReleaseDocument | Types.ObjectId,
 	};
-	message: string;
-	ip: string;
+	value: number;
+	modified_at: Date;
 	created_at: Date;
-
-	// serialized
-	from?: User;
-	release?: Release;
 }

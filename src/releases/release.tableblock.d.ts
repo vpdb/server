@@ -18,18 +18,18 @@
  */
 
 import { Document, Types } from 'mongoose';
-import { File } from '../files/file';
-import { Game } from '../games/game';
-import { Release } from './release';
-import { ReleaseVersionFile } from './version/file/release.version.file';
-import { ReleaseVersion } from './version/release.version';
+import { FileDocument } from '../files/file.document';
+import { GameDocument } from '../games/game.document';
+import { ReleaseDocument } from './release.doument';
+import { ReleaseVersionFileDocument } from './version/file/release.version.file.document';
+import { ReleaseVersionDocument } from './version/release.version.document';
 
 export interface TableBlock extends Document {
 	hash: Buffer;
 	bytes: number;
 	type: 'image' | 'sound' | 'gameitem' | 'collection';
 	meta: any;
-	_files?: File[] | Types.ObjectId[];
+	_files?: FileDocument[] | Types.ObjectId[];
 }
 
 export interface TableBlockMatchResult extends TableBlockBase {
@@ -44,8 +44,8 @@ export interface TableBlockMatch extends TableBlockBase {
 }
 
 export interface TableBlockBase {
-	release?: Release;
-	game?: Game;
-	version?: ReleaseVersion;
-	file?: ReleaseVersionFile;
+	release?: ReleaseDocument;
+	game?: GameDocument;
+	version?: ReleaseVersionDocument;
+	file?: ReleaseVersionFileDocument;
 }

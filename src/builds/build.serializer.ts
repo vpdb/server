@@ -21,24 +21,24 @@ import { assign, pick } from 'lodash';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { Context } from '../common/typings/context';
 import { state } from '../state';
-import { User } from '../users/user';
-import { Build } from './build';
+import { UserDocument } from '../users/user.document';
+import { BuildDocument } from './build.document';
 
-export class BuildSerializer extends Serializer<Build> {
+export class BuildSerializer extends Serializer<BuildDocument> {
 
-	protected _reduced(ctx: Context, doc: Build, opts: SerializerOptions): Build {
-		return pick(doc, ['id']) as Build;
+	protected _reduced(ctx: Context, doc: BuildDocument, opts: SerializerOptions): BuildDocument {
+		return pick(doc, ['id']) as BuildDocument;
 	}
 
-	protected _simple(ctx: Context, doc: Build, opts: SerializerOptions): Build {
-		return pick(doc, ['id', 'label', 'platform', 'major_version', 'download_url', 'built_at', 'type', 'is_range']) as Build;
+	protected _simple(ctx: Context, doc: BuildDocument, opts: SerializerOptions): BuildDocument {
+		return pick(doc, ['id', 'label', 'platform', 'major_version', 'download_url', 'built_at', 'type', 'is_range']) as BuildDocument;
 	}
 
-	protected _detailed(ctx: Context, doc: Build, opts: SerializerOptions): Build {
+	protected _detailed(ctx: Context, doc: BuildDocument, opts: SerializerOptions): BuildDocument {
 		const build = this._simple(ctx, doc, opts);
 		assign(build, pick(doc, ['support_url', 'description', 'is_active']));
 		if (this._populated(doc, '_created_by')) {
-			build.created_by = state.serializers.User.reduced(ctx, doc._created_by as User, opts);
+			build.created_by = state.serializers.User.reduced(ctx, doc._created_by as UserDocument, opts);
 		}
 		return build;
 	}

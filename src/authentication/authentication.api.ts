@@ -28,7 +28,7 @@ import { config } from '../common/settings';
 import { Context } from '../common/typings/context';
 import { LogUserUtil } from '../log-user/log.user.util';
 import { state } from '../state';
-import { User } from '../users/user';
+import { UserDocument } from '../users/user.document';
 import { UserUtil } from '../users/user.util';
 import { AuthenticationUtil } from './authentication.util';
 
@@ -49,7 +49,7 @@ export class AuthenticationApi extends Api {
 		const backoffLockKey = 'auth_delay_time:' + ipAddress;
 
 		let how: 'password' | 'token';
-		let authenticatedUser: User;
+		let authenticatedUser: UserDocument;
 		try {
 
 			// check if there's a back-off delay
@@ -123,10 +123,10 @@ export class AuthenticationApi extends Api {
 	 * Makes sure the user is active and returns token and profile on success.
 	 *
 	 * @param {Context} ctx Koa context
-	 * @param {User} authenticatedUser Authenticated user
+	 * @param {UserDocument} authenticatedUser Authenticated user
 	 * @param {"password" | "token" | "oauth"} how Auth method
 	 */
-	protected async authenticateUser(ctx: Context, authenticatedUser: User, how: 'password' | 'token' | 'oauth'): Promise<boolean> {
+	protected async authenticateUser(ctx: Context, authenticatedUser: UserDocument, how: 'password' | 'token' | 'oauth'): Promise<boolean> {
 
 		await this.assertUserIsActive(ctx, authenticatedUser);
 
@@ -173,9 +173,9 @@ export class AuthenticationApi extends Api {
 	 * @param {string} strategy Name of the strategy (e.g. "github", "google", "ips")
 	 * @param {string | null} providerName For IPS we can have multiple configurations, (e.g. "gameex", "vpu", ...)
 	 * @param profile Profile retrieved from the provider
-	 * @return {Promise<User>} Authenticated user
+	 * @return {Promise<UserDocument>} Authenticated user
 	 */
-	protected async verifyCallbackOAuth(ctx: Context, strategy: string, providerName: string | null, profile: OAuthProfile): Promise<User> {
+	protected async verifyCallbackOAuth(ctx: Context, strategy: string, providerName: string | null, profile: OAuthProfile): Promise<UserDocument> {
 		const provider = providerName || strategy;
 		const logTag = providerName ? strategy + ':' + providerName : strategy;
 
@@ -203,9 +203,9 @@ export class AuthenticationApi extends Api {
 	 *
 	 * @param {Context} ctx Koa context
 	 * @throws {ApiError} If credentials provided but authentication failed.
-	 * @return {User | null} User if found and authenticated, null if no credentials provided.
+	 * @return {UserDocument | null} User if found and authenticated, null if no credentials provided.
 	 */
-	private async authenticateLocally(ctx: Context): Promise<User> {
+	private async authenticateLocally(ctx: Context): Promise<UserDocument> {
 		// try to authenticate with user/pass
 		if (!ctx.request.body.username || !ctx.request.body.password) {
 			return null;
@@ -236,7 +236,7 @@ export class AuthenticationApi extends Api {
 	 * no token is found at all.
 	 *
 	 * @param {Context} ctx Koa context
-	 * @return {Promise<User>} Authenticated user
+	 * @return {Promise<UserDocument>} Authenticated user
 	 * @throws {ApiError} When authentication failed or no login token was provided.
 	 */
 	private async authenticateWithToken(ctx: Context) {
@@ -264,7 +264,7 @@ export class AuthenticationApi extends Api {
 		if (token.type !== 'personal') {
 			/* istanbul ignore if */
 			if (config.vpdb.services.sqreen.enabled) {
-				require('sqreen').auth_track(false, { email: (token._created_by as User).email });
+				require('sqreen').auth_track(false, { email: (token._created_by as UserDocument).email });
 			}
 			throw new ApiError('Cannot use token of type "%s" for authentication (must be of type "personal").', token.type).status(401);
 		}
@@ -272,7 +272,7 @@ export class AuthenticationApi extends Api {
 		if (!scope.isIdentical(token.scopes, ['login'])) {
 			/* istanbul ignore if */
 			if (config.vpdb.services.sqreen.enabled) {
-				require('sqreen').auth_track(false, { email: (token._created_by as User).email });
+				require('sqreen').auth_track(false, { email: (token._created_by as UserDocument).email });
 			}
 			throw new ApiError('Token to exchange for JWT must exclusively be "login" ([ "' + token.scopes.join('", "') + '" ] given).').status(401);
 		}
@@ -280,7 +280,7 @@ export class AuthenticationApi extends Api {
 		if (token.expires_at.getTime() < Date.now()) {
 			/* istanbul ignore if */
 			if (config.vpdb.services.sqreen.enabled) {
-				require('sqreen').auth_track(false, { email: (token._created_by as User).email });
+				require('sqreen').auth_track(false, { email: (token._created_by as UserDocument).email });
 			}
 			throw new ApiError('Token has expired.').status(401);
 		}
@@ -288,23 +288,23 @@ export class AuthenticationApi extends Api {
 		if (!token.is_active) {
 			/* istanbul ignore if */
 			if (config.vpdb.services.sqreen.enabled) {
-				require('sqreen').auth_track(false, { email: (token._created_by as User).email });
+				require('sqreen').auth_track(false, { email: (token._created_by as UserDocument).email });
 			}
 			throw new ApiError('Token is inactive.').status(401);
 		}
 		await token.update({ last_used_at: new Date() });
-		return token._created_by as User;
+		return token._created_by as UserDocument;
 	}
 
 	/**
 	 * Asserts that the user is active, otherwise an exception is thrown.
 	 *
 	 * @param {Context} ctx Koa context
-	 * @param {User} user User to test
+	 * @param {UserDocument} user User to test
 	 * @throws {ApiError} When user is inactive
 	 * @return {Promise<void>}
 	 */
-	private async assertUserIsActive(ctx: Context, user: User): Promise<void> {
+	private async assertUserIsActive(ctx: Context, user: UserDocument): Promise<void> {
 		if (!user.is_active) {
 			/* istanbul ignore if */
 			if (config.vpdb.services.sqreen.enabled) {
@@ -393,9 +393,9 @@ export class AuthenticationApi extends Api {
 	 * @param {string} provider Provider to look for ID
 	 * @param {string} profileId Provider ID to look for
 	 * @param {string[]} emails Emails to look for
-	 * @returns {Promise<User[]>}
+	 * @returns {Promise<UserDocument[]>}
 	 */
-	private async findOtherUsers(ctx: Context, provider: string, profileId: string, emails: string[]): Promise<User[]> {
+	private async findOtherUsers(ctx: Context, provider: string, profileId: string, emails: string[]): Promise<UserDocument[]> {
 		const query = {
 			$or: [
 				{ ['providers.' + provider + '.id']: profileId },
@@ -415,13 +415,13 @@ export class AuthenticationApi extends Api {
 	 *  - If no user matched, returns `null`.
 	 *
 	 * @param {Context} ctx Koa context
-	 * @param {User[]} otherUsers Users matching either confirmed email or provider ID with the received profile
+	 * @param {UserDocument[]} otherUsers Users matching either confirmed email or provider ID with the received profile
 	 * @param {string} provider Provider ID
 	 * @param {string} profileId Received profile ID
 	 * @param {string[]} emails Received profile emails
-	 * @return {Promise<User | null>} Merged user or null if no other users provided and not logged.
+	 * @return {Promise<UserDocument | null>} Merged user or null if no other users provided and not logged.
 	 */
-	private async identifyUser(ctx: Context, otherUsers: User[], provider: string, profileId: string, emails: string[]): Promise<User | null> {
+	private async identifyUser(ctx: Context, otherUsers: UserDocument[], provider: string, profileId: string, emails: string[]): Promise<UserDocument | null> {
 
 		// if user is logged, it means we'll link the profile to the existing user.
 		if (ctx.state.user) {
@@ -460,13 +460,13 @@ export class AuthenticationApi extends Api {
 	 * Updates an existing user with an OAuth profile.
 	 *
 	 * @param {Context} ctx Koa context
-	 * @param {User} user User to update
+	 * @param {UserDocument} user User to update
 	 * @param {string} provider Provider ID
 	 * @param profile Profile
 	 * @param {string[]} emails Emails collected from profile
-	 * @return {Promise<User>} Updated user
+	 * @return {Promise<UserDocument>} Updated user
 	 */
-	private async updateOAuthUser(ctx: Context, user: User, provider: string, profile: OAuthProfile, emails: string[]): Promise<User> {
+	private async updateOAuthUser(ctx: Context, user: UserDocument, provider: string, profile: OAuthProfile, emails: string[]): Promise<UserDocument> {
 
 		/* istanbul ignore if */
 		if (config.vpdb.services.sqreen.enabled) {
@@ -518,9 +518,9 @@ export class AuthenticationApi extends Api {
 	 * @param {string} provider Provider ID
 	 * @param profile Received profile
 	 * @param {string[]} emails Emails collected from profile
-	 * @return {Promise<User>} Created user
+	 * @return {Promise<UserDocument>} Created user
 	 */
-	private async createOAuthUser(ctx: Context, provider: string, profile: OAuthProfile, emails: string[]): Promise<User> {
+	private async createOAuthUser(ctx: Context, provider: string, profile: OAuthProfile, emails: string[]): Promise<UserDocument> {
 		// compute username
 		let name: string;
 		if (!profile.displayName && !profile.username) {
@@ -532,7 +532,7 @@ export class AuthenticationApi extends Api {
 		name = UserUtil.removeDiacritics(name).replace(/[^0-9a-z ]+/gi, '');
 
 		// check if username doesn't conflict
-		let newUser: User;
+		let newUser: UserDocument;
 		const dupeNameUser = await state.models.User.findOne({ name }).exec();
 		if (dupeNameUser) {
 			name += Math.floor(Math.random() * 1000);
@@ -552,7 +552,7 @@ export class AuthenticationApi extends Api {
 					profile: profile._json,
 				},
 			},
-		} as User;
+		} as UserDocument;
 		// optional data
 		if (profile.photos && profile.photos.length > 0) {
 			newUser.thumb = profile.photos[0].value;

@@ -24,7 +24,7 @@ import mongoose from 'mongoose';
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
 import { initialTags } from './initial-data/tags';
-import { Tag } from './tag';
+import { TagDocument } from './tag.document';
 import { tagApiRouter } from './tag.api.router';
 import { tagSchema } from './tag.schema';
 import { TagSerializer } from './tag.serializer';
@@ -38,7 +38,7 @@ export class TagApiEndPoint extends EndPoint {
 	}
 
 	public async register(app: Application): Promise<void> {
-		state.models.Tag = mongoose.model<Tag>('Tag', tagSchema);
+		state.models.Tag = mongoose.model<TagDocument>('Tag', tagSchema);
 		state.serializers.Tag = new TagSerializer();
 
 		// import data

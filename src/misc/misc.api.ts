@@ -30,11 +30,11 @@ import { ipdb } from '../common/ipdb';
 import { logger } from '../common/logger';
 import { config } from '../common/settings';
 import { Context } from '../common/typings/context';
-import { File } from '../files/file';
+import { FileDocument } from '../files/file.document';
 import { processorQueue } from '../files/processor/processor.queue';
-import { Game } from '../games/game';
+import { GameDocument } from '../games/game.document';
 import { state } from '../state';
-import { User } from '../users/user';
+import { UserDocument } from '../users/user.document';
 
 const pak = require('../../package.json');
 
@@ -160,12 +160,12 @@ export class MiscApi extends Api {
 			.populate('authors._user')
 			.exec();
 		releases.forEach(release => {
-			const game = release._game as Game;
-			let fsImage: File;
-			let dtImage: File;
+			const game = release._game as GameDocument;
+			let fsImage: FileDocument;
+			let dtImage: FileDocument;
 			release.versions.forEach(version => {
 				version.files.forEach(file => {
-					const playfieldImage = file._playfield_image as File;
+					const playfieldImage = file._playfield_image as FileDocument;
 					if (playfieldImage.metadata.size.width > playfieldImage.metadata.size.height) {
 						dtImage = playfieldImage;
 					} else {
@@ -173,7 +173,7 @@ export class MiscApi extends Api {
 					}
 				});
 			});
-			const authors = release.authors.map(author => (author._user as User).name).join(', ');
+			const authors = release.authors.map(author => (author._user as UserDocument).name).join(', ');
 			const url = rootNode.ele('url');
 			url.ele('loc', webUrl + 'games/' + game.id + '/releases/' + release.id);
 			if (fsImage) {
@@ -197,7 +197,7 @@ export class MiscApi extends Api {
 
 			const media = await state.models.Medium.find({ '_ref.game': game._id }).populate({ path: '_file' }).exec();
 			for (const medium of media) {
-				const file = medium._file as File;
+				const file = medium._file as FileDocument;
 				switch (medium.category) {
 					case 'wheel_image': {
 						const img = url.ele('image:image');

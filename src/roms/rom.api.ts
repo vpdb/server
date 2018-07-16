@@ -26,10 +26,10 @@ import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
 import { Context } from '../common/typings/context';
-import { Game } from '../games/game';
+import { GameDocument } from '../games/game.document';
 import { LogEventUtil } from '../log-event/log.event.util';
 import { state } from '../state';
-import { Rom } from './rom';
+import { RomDocument } from './rom.document';
 
 export class RomApi extends Api {
 
@@ -63,9 +63,9 @@ export class RomApi extends Api {
 		const rom = extend(pick(ctx.request.body, validFields), {
 			_created_by: ctx.state.user._id,
 			created_at: new Date(),
-		}) as Rom;
+		}) as RomDocument;
 
-		let gameRef: Game;
+		let gameRef: GameDocument;
 		if (game) {
 			rom._game = game._id;
 			rom._ipdb_number = game.ipdb.number;
@@ -75,7 +75,7 @@ export class RomApi extends Api {
 			if (ctx.params.gameId) {
 				throw new ApiError('No such game with ID "%s"', ctx.params.gameId).status(404);
 			}
-			game = { ipdb: { number: ctx.request.body._ipdb_number } } as Game;
+			game = { ipdb: { number: ctx.request.body._ipdb_number } } as GameDocument;
 			rom._ipdb_number = ctx.request.body._ipdb_number;
 			gameRef = game;
 		}
@@ -123,7 +123,7 @@ export class RomApi extends Api {
 	public async list(ctx: Context) {
 
 		const pagination = this.pagination(ctx, 10, 50);
-		let game: Game;
+		let game: GameDocument;
 		let ipdbNumber: number;
 
 		// list roms of a game below /api/v1/games/{gameId}
@@ -159,7 +159,7 @@ export class RomApi extends Api {
 			}
 		}
 
-		let results: Rom[];
+		let results: RomDocument[];
 		let count: number;
 		if (!query) {
 			results = [];
@@ -197,7 +197,7 @@ export class RomApi extends Api {
 			throw new ApiError('No such ROM with ID "%s".', ctx.params.id).status(404);
 		}
 		return this.success(ctx, rom._game ?
-			assign(state.serializers.Rom.simple(ctx, rom), { game: state.serializers.Game.simple(ctx, rom._game as Game) }) :
+			assign(state.serializers.Rom.simple(ctx, rom), { game: state.serializers.Game.simple(ctx, rom._game as GameDocument) }) :
 			state.serializers.Rom.simple(ctx, rom));
 	}
 

@@ -23,7 +23,7 @@ import { PrettyIdModel, PrettyIdOptions, Schema } from 'mongoose';
 import { fileReferencePlugin } from '../../../common/mongoose/file.reference.plugin';
 import { prettyIdPlugin } from '../../../common/mongoose/pretty.id.plugin';
 import { flavors } from '../../release.flavors';
-import { ReleaseVersionFile } from './release.version.file';
+import { ReleaseVersionFileDocument } from './release.version.file.document';
 
 const validationStatusValues = ['verified', 'playable', 'broken'];
 
@@ -48,7 +48,7 @@ export const releaseVersionFileFields = {
 	},
 };
 
-export interface ReleaseVersionFileModel extends PrettyIdModel<ReleaseVersionFile> {}
+export interface ReleaseVersionFileModel extends PrettyIdModel<ReleaseVersionFileDocument> {}
 export const releaseVersionFileSchema = new Schema(releaseVersionFileFields, { toObject: { virtuals: true, versionKey: false } });
 
 releaseVersionFileSchema.plugin(fileReferencePlugin);

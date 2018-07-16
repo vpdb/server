@@ -17,31 +17,30 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { FileReferenceDocument, PrettyIdDocument } from 'mongoose';
-import { ReleaseVersionFile } from './file/release.version.file';
+import {
+	FileReferenceDocument,
+	GameReferenceDocument,
+	MetricsDocument,
+	ModeratedDocument,
+	PrettyIdDocument,
+	Types,
+} from 'mongoose';
+import { ContentAuthor } from '../users/content.author';
+import { UserDocument } from '../users/user.document';
+import { BackglassVersion } from './backglass.version';
 
-export interface ReleaseVersion extends FileReferenceDocument, PrettyIdDocument {
-	version: string;
-	released_at: Date | string;
-	changes: string;
-	files: ReleaseVersionFile[];
+export interface BackglassDocument extends ModeratedDocument, GameReferenceDocument, PrettyIdDocument, MetricsDocument, FileReferenceDocument {
+	id: string;
+	versions: BackglassVersion[];
+	description: { type: string };
+	authors: ContentAuthor[];
+	acknowledgements: string;
 	counter: {
-		downloads: number,
-		comments: number,
+		stars: number;
 	};
+	created_at: Date;
+	_created_by: UserDocument | Types.ObjectId;
 
-	/**
-	 * Returns all file IDs of the version files.
-	 *
-	 * @param {ReleaseVersionFile[]} [files] Subset of version files, all files if not set
-	 * @returns {string[]} File IDs
-	 */
-	getFileIds(files?: ReleaseVersionFile[]): string[];
-
-	/**
-	 * Returns all playfield image IDs of this release version.
-	 *
-	 * @returns {string[]} Playfield image IDs
-	 */
-	getPlayfieldImageIds(): string[];
+	// serialized
+	created_by: UserDocument;
 }

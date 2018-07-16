@@ -19,8 +19,8 @@
 import gm from 'gm';
 import { pick } from 'lodash';
 
-import { File } from '../file';
 import { FileDocument } from '../file.document';
+import { File } from '../file';
 import { FileVariation } from '../file.variations';
 import { Metadata } from './metadata';
 
@@ -28,11 +28,11 @@ require('bluebird').promisifyAll(gm.prototype);
 
 export class ImageMetadata extends Metadata {
 
-	public isValid(file: File, variation?: FileVariation): boolean {
-		return FileDocument.getMimeTypePrimary(file, variation) === 'image';
+	public isValid(file: FileDocument, variation?: FileVariation): boolean {
+		return File.getMimeTypePrimary(file, variation) === 'image';
 	}
 
-	public async getMetadata(file: File, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
+	public async getMetadata(file: FileDocument, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
 		return (gm(path) as any).identifyAsync();
 	}
 

@@ -23,7 +23,7 @@ import { uniq } from 'lodash';
 import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
 import { config } from '../../common/settings';
-import { File } from '../file';
+import { FileDocument } from '../file.document';
 import { mimeTypeCategories } from '../file.mimetypes';
 import { FileVariation } from '../file.variations';
 import { Directb2sOptimizationProcessor } from './directb2s.optimization.processor';
@@ -112,12 +112,12 @@ class ProcessorManager {
 	/**
 	 * Returns then creation processors for a given file variation.
 	 *
-	 * @param {File} file File to process
+	 * @param {FileDocument} file File to process
 	 * @param {FileVariation} srcVariation Source variation or null if original
 	 * @param {FileVariation} destVariation Destination variation
 	 * @return {CreationProcessor<any> | null} Processor instances or null if none available
 	 */
-	public getValidCreationProcessor(file: File, srcVariation: FileVariation, destVariation: FileVariation): CreationProcessor<any> | null {
+	public getValidCreationProcessor(file: FileDocument, srcVariation: FileVariation, destVariation: FileVariation): CreationProcessor<any> | null {
 		const processors: Array<CreationProcessor<any>> = [];
 		for (const processor of this.creationProcessors) {
 			if (processor.canProcess(file, srcVariation, destVariation)) {
@@ -141,11 +141,11 @@ class ProcessorManager {
 	/**
 	 * Returns the optimization processors for a given file variation.
 	 *
-	 * @param {File} file File to process
+	 * @param {FileDocument} file File to process
 	 * @param {FileVariation} [variation=null] Variation or null if original
 	 * @return {OptimizationProcessor<any>[]} Processor instances
 	 */
-	public getValidOptimizationProcessors(file: File, variation?: FileVariation): Array<OptimizationProcessor<any>> {
+	public getValidOptimizationProcessors(file: FileDocument, variation?: FileVariation): Array<OptimizationProcessor<any>> {
 		const processors: Array<OptimizationProcessor<any>> = [];
 		for (const processor of this.optimizationProcessors) {
 			if (processor.canProcess(file, variation)) {
@@ -159,21 +159,21 @@ class ProcessorManager {
 	 * Returns the queue for a given type and file variation.
 	 *
 	 * @param {ProcessorQueueType} type Queue type
-	 * @param {File} file File to be processed
+	 * @param {FileDocument} file File to be processed
 	 * @param {FileVariation} variation Variation to be processed
 	 * @return {Bull.Queue} Queue instance
 	 */
-	public getQueue(type: ProcessorQueueType, file: File, variation: FileVariation): Queue {
+	public getQueue(type: ProcessorQueueType, file: FileDocument, variation: FileVariation): Queue {
 		return this.queues.get(type).get(file.getMimeCategory(variation));
 	}
 
 	/**
 	 * Returns all queues as a flat array.
 	 *
-	 * @param {File} [file] If set, only return queues that match any of the file's variation (or the original)
+	 * @param {FileDocument} [file] If set, only return queues that match any of the file's variation (or the original)
 	 * @return {Bull.Queue[]} Queue instances
 	 */
-	public getQueues(file?: File) {
+	public getQueues(file?: FileDocument) {
 		if (!file) {
 			return this.allQueues;
 		}
@@ -217,12 +217,12 @@ class ProcessorManager {
 	 * @param {Processor<any>} processor Processor to use
 	 * @param {string} srcPath Path to source file
 	 * @param {string} destPath Path to destination file
-	 * @param {File} file File to process
+	 * @param {FileDocument} file File to process
 	 * @param {FileVariation} srcVariation Source variation
 	 * @param {FileVariation} destVariation Destination variation
 	 * @returns {Promise<Job>} Added Bull job
 	 */
-	public async queueCreation(processor: Processor<any>, file: File, srcPath: string, destPath: string, srcVariation: FileVariation, destVariation: FileVariation): Promise<Job> {
+	public async queueCreation(processor: Processor<any>, file: FileDocument, srcPath: string, destPath: string, srcVariation: FileVariation, destVariation: FileVariation): Promise<Job> {
 		const queue = this.queues.get('creation').get(file.getMimeCategory(destVariation));
 		const job = await queue.add({
 			fileId: file.id,
@@ -247,11 +247,11 @@ class ProcessorManager {
 	 * @param {Processor<any>} processor Processor to use
 	 * @param {string} srcPath Path to source file
 	 * @param {string} destPath Path to destination file
-	 * @param {File} file File to process
+	 * @param {FileDocument} file File to process
 	 * @param {FileVariation} variation Variation to optimize
 	 * @returns {Promise<Job>} Added Bull job
 	 */
-	public async queueOptimization(processor: Processor<any>, file: File, srcPath: string, destPath: string, variation?: FileVariation): Promise<Job> {
+	public async queueOptimization(processor: Processor<any>, file: FileDocument, srcPath: string, destPath: string, variation?: FileVariation): Promise<Job> {
 		const queue = this.queues.get('optimization').get(file.getMimeCategory(variation));
 		const job = await queue.add({
 			fileId: file.id,

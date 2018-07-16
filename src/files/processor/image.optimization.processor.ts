@@ -20,7 +20,7 @@
 import { createReadStream, createWriteStream } from 'fs';
 import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
-import { File } from '../file';
+import { FileDocument } from '../file.document';
 import { FileUtil } from '../file.util';
 import { FileVariation } from '../file.variations';
 import { OptimizationProcessor } from './processor';
@@ -32,7 +32,7 @@ export class ImageOptimizationProcessor implements OptimizationProcessor<FileVar
 
 	public name: string = 'image.optimization';
 
-	public canProcess(file: File, variation?: FileVariation): boolean {
+	public canProcess(file: FileDocument, variation?: FileVariation): boolean {
 		// currently only png files.
 		return file.getMimeType(variation) === 'image/png';
 	}
@@ -41,7 +41,7 @@ export class ImageOptimizationProcessor implements OptimizationProcessor<FileVar
 		return 500;
 	}
 
-	public async process(file: File, src: string, dest: string, variation?: FileVariation): Promise<string> {
+	public async process(file: FileDocument, src: string, dest: string, variation?: FileVariation): Promise<string> {
 
 		if (file.file_type === 'playfield') {
 			logger.info('[ImageOptimizationProcessor] Skipping (will process when orientation is set): %s', file.toDetailedString(variation));

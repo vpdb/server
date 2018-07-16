@@ -21,7 +21,7 @@ import { pick } from 'lodash';
 
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { Context } from '../common/typings/context';
-import { File } from '../files/file';
+import { FileDocument } from '../files/file.document';
 import { state } from '../state';
 import { BackglassVersion } from './backglass.version';
 
@@ -41,12 +41,12 @@ export class BackglassVersionSerializer extends Serializer<BackglassVersion> {
 	}
 
 	private _serialize(ctx: Context, doc: BackglassVersion, opts: SerializerOptions,
-					fileSerializer: (ctx: Context, doc: File, opts: SerializerOptions) => File): BackglassVersion {
+					fileSerializer: (ctx: Context, doc: FileDocument, opts: SerializerOptions) => FileDocument): BackglassVersion {
 
 		const backglassVersion = pick(doc, ['version', 'changes', 'released_at']) as BackglassVersion;
 		backglassVersion.counter = doc.counter;
 		if (this._populated(doc, '_file')) {
-			backglassVersion.file = fileSerializer(ctx, doc._file as File, opts);
+			backglassVersion.file = fileSerializer(ctx, doc._file as FileDocument, opts);
 		}
 		return backglassVersion;
 	}

@@ -24,7 +24,7 @@ import { Readable } from 'stream';
 import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
 import { XmlParser } from '../../common/xml.parser';
-import { File } from '../file';
+import { FileDocument } from '../file.document';
 import { mimeTypes } from '../file.mimetypes';
 import { BackglassVariation, FileVariation } from '../file.variations';
 import { CreationProcessor } from './processor';
@@ -37,7 +37,7 @@ export class Directb2sThumbProcessor implements CreationProcessor<BackglassVaria
 
 	public name: string = 'directb2s.thumb';
 
-	public canProcess(file: File, srcVariation: FileVariation, destVariation: FileVariation): boolean {
+	public canProcess(file: FileDocument, srcVariation: FileVariation, destVariation: FileVariation): boolean {
 		return file.getMimeType(srcVariation) === 'application/x-directb2s' && file.getMimeCategory(destVariation) === 'image';
 	}
 
@@ -45,7 +45,7 @@ export class Directb2sThumbProcessor implements CreationProcessor<BackglassVaria
 		return 200 + (variation && variation.priority ? variation.priority : 0);
 	}
 
-	public async process(file: File, src: string, dest: string, variation?: BackglassVariation): Promise<string> {
+	public async process(file: FileDocument, src: string, dest: string, variation?: BackglassVariation): Promise<string> {
 		const now = Date.now();
 		logger.debug('[Directb2sThumbProcessor] Starting processing %s at %s.', file.toShortString(variation), dest);
 		return new Promise<string>((resolve, reject) => {

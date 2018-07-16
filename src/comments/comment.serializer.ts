@@ -22,20 +22,20 @@ import { pick } from 'lodash';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { Context } from '../common/typings/context';
 import { state } from '../state';
-import { User } from '../users/user';
-import { Comment } from './comment';
+import { UserDocument } from '../users/user.document';
+import { CommentDocument } from './comment.document';
 
-export class CommentSerializer extends Serializer<Comment> {
+export class CommentSerializer extends Serializer<CommentDocument> {
 
 	/* istanbul ignore next */
-	protected _reduced(ctx: Context, doc: Comment, opts: SerializerOptions): Comment {
+	protected _reduced(ctx: Context, doc: CommentDocument, opts: SerializerOptions): CommentDocument {
 		return this._simple(ctx, doc, opts);
 	}
 
-	protected _simple(ctx: Context, doc: Comment, opts: SerializerOptions): Comment {
-		const comment = pick(doc, ['id', 'message', 'created_at']) as Comment;
+	protected _simple(ctx: Context, doc: CommentDocument, opts: SerializerOptions): CommentDocument {
+		const comment = pick(doc, ['id', 'message', 'created_at']) as CommentDocument;
 		if (this._populated(doc, '_from')) {
-			comment.from = state.serializers.User.reduced(ctx, doc._from as User, opts);
+			comment.from = state.serializers.User.reduced(ctx, doc._from as UserDocument, opts);
 		}
 		// if (this._populated(doc, '_ref.release')) {
 		// 	comment.release = state.serializers.Release.reduced(ctx, doc._ref.release as Release, opts);
@@ -44,7 +44,7 @@ export class CommentSerializer extends Serializer<Comment> {
 	}
 
 	/* istanbul ignore next */
-	protected _detailed(ctx: Context, doc: Comment, opts: SerializerOptions): Comment {
+	protected _detailed(ctx: Context, doc: CommentDocument, opts: SerializerOptions): CommentDocument {
 		return this._simple(ctx, doc, opts);
 	}
 }

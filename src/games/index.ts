@@ -23,7 +23,7 @@ import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
-import { Game } from './game';
+import { GameDocument } from './game.document';
 import { gameApiRouter } from './game.api.router';
 import { GameModel, gameSchema } from './game.schema';
 import { GameSerializer } from './game.serializer';
@@ -37,7 +37,7 @@ export class GamesApiEndPoint extends EndPoint {
 	}
 
 	public async register(app: Application): Promise<void> {
-		state.models.Game = mongoose.model<Game, GameModel>('Game', gameSchema);
+		state.models.Game = mongoose.model<GameDocument, GameModel>('Game', gameSchema);
 		state.serializers.Game = new GameSerializer();
 	}
 }

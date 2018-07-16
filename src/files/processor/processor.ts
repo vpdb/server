@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { File } from '../file';
+import { FileDocument } from '../file.document';
 import { FileVariation } from '../file.variations';
 
 /**
@@ -53,13 +53,13 @@ export interface Processor<V extends FileVariation> {
 	/**
 	 * Starts processing the file. This is executed in Bull's worker thread.
 	 *
-	 * @param {File} file File to process
+	 * @param {FileDocument} file File to process
 	 * @param {string} src Source path of the file
 	 * @param {string} dest Destination path
 	 * @param variation Variation to process
 	 * @returns {Promise<string>} Path to processed file
 	 */
-	process(file: File, src: string, dest: string, variation?: V): Promise<string>;
+	process(file: FileDocument, src: string, dest: string, variation?: V): Promise<string>;
 }
 
 export interface CreationProcessor<V extends FileVariation> extends Processor<V> {
@@ -68,12 +68,12 @@ export interface CreationProcessor<V extends FileVariation> extends Processor<V>
 	 * Checks whether the variation of the given file can be processed by this
 	 * processor.
 	 *
-	 * @param {File} file File to check
+	 * @param {FileDocument} file File to check
 	 * @param {FileVariation} srcVariation Variation of source file to process, original if null.
 	 * @param {FileVariation} destVariation Variation of destination file to process
 	 * @returns {boolean} True if it can be processed, false otherwise.
 	 */
-	canProcess(file: File, srcVariation: FileVariation, destVariation: FileVariation): boolean;
+	canProcess(file: FileDocument, srcVariation: FileVariation, destVariation: FileVariation): boolean;
 }
 
 export interface OptimizationProcessor<V extends FileVariation> extends Processor<V> {
@@ -82,9 +82,9 @@ export interface OptimizationProcessor<V extends FileVariation> extends Processo
 	 * Checks whether the variation of the given file can be processed by this
 	 * processor.
 	 *
-	 * @param {File} file File to check
+	 * @param {FileDocument} file File to check
 	 * @param {FileVariation} variation Variation to process, original if not set.
 	 * @returns {boolean} True if it can be processed, false otherwise.
 	 */
-	canProcess(file: File, variation?: FileVariation): boolean;
+	canProcess(file: FileDocument, variation?: FileVariation): boolean;
 }

@@ -17,27 +17,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { FileReferenceDocument, GameReferenceDocument, PrettyIdDocument, Types } from 'mongoose';
-import { File } from '../files/file';
-import { User } from '../users/user';
+import { Document, Types } from 'mongoose';
+import { BackglassDocument } from '../backglasses/backglass.document';
+import { GameDocument } from '../games/game.document';
+import { MediumDocument } from '../media/medium.document';
+import { ReleaseDocument } from '../releases/release.doument';
+import { UserDocument } from '../users/user.document';
 
-export interface Rom extends GameReferenceDocument, PrettyIdDocument, FileReferenceDocument {
-	id: string;
-	_file: File | Types.ObjectId;
-	_ipdb_number: number;
-	rom_files: Array<{
-		filename: string;
-		bytes: number;
-		crc: number;
-		modified_at: Date;
-	}>;
-	version: string;
-	languages: string[];
-	notes: string;
+export interface StarDocument extends Document {
+	_from: UserDocument | Types.ObjectId;
+	_ref: {
+		game: GameDocument | Types.ObjectId,
+		release: ReleaseDocument | Types.ObjectId,
+		user: UserDocument | Types.ObjectId,
+		medium: MediumDocument | Types.ObjectId,
+		backglass: BackglassDocument | Types.ObjectId,
+	};
+	type: 'game' | 'release' | 'user' | 'medium' | 'backglass';
 	created_at: Date;
-	_created_by: User | Types.ObjectId;
-
-	// serialized
-	file: File;
-	created_by: User;
 }

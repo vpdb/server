@@ -29,7 +29,7 @@ import { mailer } from '../common/mailer';
 import { Context } from '../common/typings/context';
 import { LogEventUtil } from '../log-event/log.event.util';
 import { state } from '../state';
-import { User } from '../users/user';
+import { UserDocument } from '../users/user.document';
 
 export class GameRequestApi extends Api {
 
@@ -140,7 +140,7 @@ export class GameRequestApi extends Api {
 		});
 
 		if (requestClosed) {
-			await mailer.gameRequestDenied(user as User, gameRequest.ipdb_title, gameRequest.message);
+			await mailer.gameRequestDenied(user as UserDocument, gameRequest.ipdb_title, gameRequest.message);
 		}
 		return this.success(ctx, state.serializers.GameRequest.simple(ctx, gameRequest), 200);
 	}

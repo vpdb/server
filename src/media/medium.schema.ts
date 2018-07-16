@@ -26,7 +26,7 @@ import { fileReferencePlugin } from '../common/mongoose/file.reference.plugin';
 import { metricsPlugin } from '../common/mongoose/metrics.plugin';
 import { prettyIdPlugin } from '../common/mongoose/pretty.id.plugin';
 import { state } from '../state';
-import { Medium } from './medium';
+import { MediumDocument } from './medium.document';
 import { mediumCategories } from './medium.category';
 
 const shortId = require('shortid32');
@@ -51,7 +51,7 @@ export const mediumFields = {
 	_created_by: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 };
 
-export interface MediumModel extends PrettyIdModel<Medium>, PaginateModel<Medium>, MetricsModel<Medium> { }
+export interface MediumModel extends PrettyIdModel<MediumDocument>, PaginateModel<MediumDocument>, MetricsModel<MediumDocument> { }
 export const mediumSchema = new Schema(mediumFields, { toObject: { virtuals: true, versionKey: false } });
 
 //-----------------------------------------------------------------------------

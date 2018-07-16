@@ -20,24 +20,24 @@
 import { assign, keys, sum, uniq, values } from 'lodash';
 import randomString from 'randomstring';
 
-import { Backglass } from '../backglasses/backglass';
+import { BackglassDocument } from '../backglasses/backglass.document';
 import { acl } from '../common/acl';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
 import { mailer } from '../common/mailer';
 import { config } from '../common/settings';
 import { Context } from '../common/typings/context';
-import { Rating } from '../ratings/rating';
-import { Release } from '../releases/release';
-import { ReleaseVersionFile } from '../releases/version/file/release.version.file';
-import { Star } from '../stars/star';
+import { RatingDocument } from '../ratings/rating.document';
+import { ReleaseDocument } from '../releases/release.doument';
+import { ReleaseVersionFileDocument } from '../releases/version/file/release.version.file.document';
+import { StarDocument } from '../stars/star.document';
 import { state } from '../state';
 import { ContentAuthor } from './content.author';
-import { User } from './user';
+import { UserDocument } from './user.document';
 
 export class UserUtil {
 
-	public static async createUser(ctx: Context, userObj: User, confirmUserEmail: boolean): Promise<User> {
+	public static async createUser(ctx: Context, userObj: UserDocument, confirmUserEmail: boolean): Promise<UserDocument> {
 
 		let user = new state.models.User(assign(userObj, {
 			created_at: new Date(),
@@ -74,11 +74,11 @@ export class UserUtil {
 	 * Tries to merge a bunch of users based on request parameters.
 	 *
 	 * @param {Application.Context} ctx Koa context
-	 * @param {User[]} mergeUsers Merge candidates
+	 * @param {UserDocument[]} mergeUsers Merge candidates
 	 * @param {string} explanation Explanation in case no user ID provided in request
-	 * @return {Promise<User>} Merged user on success, rejects on error
+	 * @return {Promise<UserDocument>} Merged user on success, rejects on error
 	 */
-	public static async tryMergeUsers(ctx: Context, mergeUsers: User[], explanation: string): Promise<User> {
+	public static async tryMergeUsers(ctx: Context, mergeUsers: UserDocument[], explanation: string): Promise<UserDocument> {
 		if (ctx.query.merged_user_id) {
 			const keepUser = mergeUsers.find(u => u.id === ctx.query.merged_user_id);
 			if (keepUser) {
@@ -103,12 +103,12 @@ export class UserUtil {
 	/**
 	 * Merges one user into another.
 	 * @param {Application.Context} ctx Koa context
-	 * @param {User} keepUser User to keep
-	 * @param {User} mergeUser User to merge into the other and then delete
+	 * @param {UserDocument} keepUser User to keep
+	 * @param {UserDocument} mergeUser User to merge into the other and then delete
 	 * @param {string} explanation Explanation to put into mail, if null no mail is sent.
-	 * @return {Promise<User>} Merged user
+	 * @return {Promise<UserDocument>} Merged user
 	 */
-	public static async mergeUsers(ctx: Context, keepUser: User, mergeUser: User, explanation: string): Promise<User> {
+	public static async mergeUsers(ctx: Context, keepUser: UserDocument, mergeUser: UserDocument, explanation: string): Promise<UserDocument> {
 
 		logger.info('[UserUtil.mergeUsers] Merging %s into %s...', mergeUser.id, keepUser.id);
 		if (keepUser.id === mergeUser.id) {
@@ -155,9 +155,9 @@ export class UserUtil {
 		const releasesByValidator = await state.models.Release.find({ 'versions.files.validation._validated_by': mergeUser._id.toString() }).exec();
 		logger.info('[UserUtil.mergeUsers] Merged %s author(s)', num);
 		num = 0;
-		await Promise.all(releasesByValidator.map((release: Release) => {
+		await Promise.all(releasesByValidator.map((release: ReleaseDocument) => {
 			release.versions.forEach(releaseVersion => {
-				releaseVersion.files.forEach((releaseFile: ReleaseVersionFile) => {
+				releaseVersion.files.forEach((releaseFile: ReleaseVersionFileDocument) => {
 					if (mergeUser._id.equals(releaseFile.validation._validated_by)) {
 						releaseFile.validation._validated_by = keepUser._id;
 						num++;
@@ -171,7 +171,7 @@ export class UserUtil {
 		logger.info('[UserUtil.mergeUsers] Merged %s release moderation(s)', num);
 		num = 0;
 		// 1.3 release moderation
-		await Promise.all(releasesByModeration.map((release: Release) => {
+		await Promise.all(releasesByModeration.map((release: ReleaseDocument) => {
 			release.moderation.history.forEach(historyItem => {
 				if (mergeUser._id.equals(historyItem._created_by)) {
 					historyItem._created_by = keepUser._id;
@@ -187,7 +187,7 @@ export class UserUtil {
 		num = 0;
 
 		// 1.4 backglass moderation
-		await Promise.all(backglasses.map((backglass: Backglass) => {
+		await Promise.all(backglasses.map((backglass: BackglassDocument) => {
 			backglass.moderation.history.forEach(historyItem => {
 				if (mergeUser._id.equals(historyItem._created_by)) {
 					historyItem._created_by = keepUser._id;
@@ -219,9 +219,9 @@ export class UserUtil {
 		Array.from(ratingMap.values()).filter(mappedRatings => mappedRatings.length > 1).forEach(dupeRatings => {
 			// update first
 			const first = dupeRatings.shift();
-			queries.push(first.update({ value: Math.round(sum(dupeRatings.map((r: Rating) => r.value)) / dupeRatings.length) }));
+			queries.push(first.update({ value: Math.round(sum(dupeRatings.map((r: RatingDocument) => r.value)) / dupeRatings.length) }));
 			// delete the rest
-			dupeRatings.forEach((r: Rating) => queries.push(r.remove()));
+			dupeRatings.forEach((r: RatingDocument) => queries.push(r.remove()));
 		});
 		await Promise.all(queries);
 
@@ -244,7 +244,7 @@ export class UserUtil {
 			// keep first
 			dupeStars.shift();
 			// delete the rest
-			dupeStars.forEach((s: Star) => queries.push(s.remove()));
+			dupeStars.forEach((s: StarDocument) => queries.push(s.remove()));
 		});
 		await Promise.all(queries);
 
@@ -302,10 +302,10 @@ export class UserUtil {
 	/**
 	 * Returns the ACLs for a given user.
 	 *
-	 * @param {User} user
+	 * @param {UserDocument} user
 	 * @returns {Promise<{permissions: string[]}>}
 	 */
-	public static async getACLs(user: User): Promise<{ permissions: string[]}> {
+	public static async getACLs(user: UserDocument): Promise<{ permissions: string[]}> {
 		const roles = await acl.userRoles(user.id);
 		const resources = await acl.whatResources(roles);
 		const permissions = await acl.allowedPermissions(user.id, keys(resources));

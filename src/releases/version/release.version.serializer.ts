@@ -23,23 +23,23 @@ import { Serializer, SerializerOptions } from '../../common/serializer';
 import { Context } from '../../common/typings/context';
 import { state } from '../../state';
 import { flavors } from '../release.flavors';
-import { ReleaseVersion } from './release.version';
+import { ReleaseVersionDocument } from './release.version.document';
 
 /* tslint:disable:member-ordering */
-export class ReleaseVersionSerializer extends Serializer<ReleaseVersion> {
+export class ReleaseVersionSerializer extends Serializer<ReleaseVersionDocument> {
 
-	protected _reduced(ctx: Context, doc: ReleaseVersion, opts: SerializerOptions): ReleaseVersion {
+	protected _reduced(ctx: Context, doc: ReleaseVersionDocument, opts: SerializerOptions): ReleaseVersionDocument {
 		return this._simple(ctx, doc, opts);
 	}
 
-	protected _simple(ctx: Context, doc: ReleaseVersion, opts: SerializerOptions): ReleaseVersion {
-		const version = pick(doc, ['version', 'released_at']) as ReleaseVersion;
+	protected _simple(ctx: Context, doc: ReleaseVersionDocument, opts: SerializerOptions): ReleaseVersionDocument {
+		const version = pick(doc, ['version', 'released_at']) as ReleaseVersionDocument;
 		version.files = doc.files.map(versionFile => state.serializers.ReleaseVersionFile.simple(ctx, versionFile, opts));
 		return version;
 	}
 
-	protected _detailed(ctx: Context, doc: ReleaseVersion, opts: SerializerOptions): ReleaseVersion {
-		const version = pick(doc, ['version', 'released_at', 'changes']) as ReleaseVersion;
+	protected _detailed(ctx: Context, doc: ReleaseVersionDocument, opts: SerializerOptions): ReleaseVersionDocument {
+		const version = pick(doc, ['version', 'released_at', 'changes']) as ReleaseVersionDocument;
 		version.counter = doc.counter;
 		version.files = doc.files.map(versionFile => state.serializers.ReleaseVersionFile.detailed(ctx, versionFile, opts));
 		return version;
@@ -50,11 +50,11 @@ export class ReleaseVersionSerializer extends Serializer<ReleaseVersion> {
 	 * flavor. Also removes empty versions.
 	 *
 	 * @param {Context} ctx Koa context
-	 * @param {ReleaseVersion[]} versions Versions to strip
+	 * @param {ReleaseVersionDocument[]} versions Versions to strip
 	 * @param {SerializerOptions} opts
-	 * @return {ReleaseVersion[]}
+	 * @return {ReleaseVersionDocument[]}
 	 */
-	public strip(ctx: Context, versions: ReleaseVersion[], opts: SerializerOptions) {
+	public strip(ctx: Context, versions: ReleaseVersionDocument[], opts: SerializerOptions) {
 		let i: number;
 		let j: number;
 		let flavorValues: string[];

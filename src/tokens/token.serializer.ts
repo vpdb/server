@@ -21,17 +21,17 @@ import { pick } from 'lodash';
 import UAParser from 'ua-parser-js';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { Context } from '../common/typings/context';
-import { Token } from './token';
+import { TokenDocument } from './token.document';
 
-export class TokenSerializer extends Serializer<Token> {
+export class TokenSerializer extends Serializer<TokenDocument> {
 
 	/* istanbul ignore next */
-	protected _reduced(ctx: Context, doc: Token, opts: SerializerOptions): Token {
+	protected _reduced(ctx: Context, doc: TokenDocument, opts: SerializerOptions): TokenDocument {
 		return this._simple(ctx, doc, opts);
 	}
 
-	protected _simple(ctx: Context, doc: Token, opts: SerializerOptions): Token {
-		const token = pick(doc, ['id', 'label', 'type', 'provider', 'is_active', 'last_used_at', 'expires_at', 'created_at']) as Token;
+	protected _simple(ctx: Context, doc: TokenDocument, opts: SerializerOptions): TokenDocument {
+		const token = pick(doc, ['id', 'label', 'type', 'provider', 'is_active', 'last_used_at', 'expires_at', 'created_at']) as TokenDocument;
 
 		token.scopes = doc.scopes;
 
@@ -43,7 +43,7 @@ export class TokenSerializer extends Serializer<Token> {
 		return token;
 	}
 
-	protected _detailed(ctx: Context, doc: Token, opts: SerializerOptions): Token {
+	protected _detailed(ctx: Context, doc: TokenDocument, opts: SerializerOptions): TokenDocument {
 		const token = this._simple(ctx, doc, opts);
 
 		// token

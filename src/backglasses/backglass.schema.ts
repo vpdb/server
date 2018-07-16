@@ -28,8 +28,8 @@ import { metricsPlugin } from '../common/mongoose/metrics.plugin';
 import { moderationPlugin } from '../common/mongoose/moderation.plugin';
 import { prettyIdPlugin } from '../common/mongoose/pretty.id.plugin';
 import { authorSchema } from '../users/content.author.schema';
-import { User } from '../users/user';
-import { Backglass } from './backglass';
+import { UserDocument } from '../users/user.document';
+import { BackglassDocument } from './backglass.document';
 import { backglassVersionSchema } from './backglass.version.schema';
 
 const shortId = require('shortid32');
@@ -50,7 +50,7 @@ export const backglassFields = {
 	created_at:   { type: Date, required: true },
 	_created_by:  { type: Schema.Types.ObjectId, ref: 'User', required: true },
 };
-export interface BackglassModel extends GameReferenceModel<Backglass>, PrettyIdModel<Backglass>, ModeratedModel<Backglass>, PaginateModel<Backglass>, MetricsModel<Backglass> {}
+export interface BackglassModel extends GameReferenceModel<BackglassDocument>, PrettyIdModel<BackglassDocument>, ModeratedModel<BackglassDocument>, PaginateModel<BackglassDocument>, MetricsModel<BackglassDocument> {}
 export const backglassSchema = new Schema(backglassFields, { toObject: { virtuals: true, versionKey: false } });
 
 //-----------------------------------------------------------------------------
@@ -66,17 +66,6 @@ backglassSchema.plugin(fileReferencePlugin);
 backglassSchema.plugin(paginatePlugin);
 backglassSchema.plugin(moderationPlugin);
 backglassSchema.plugin(metricsPlugin);
-
-//-----------------------------------------------------------------------------
-// METHODS
-//-----------------------------------------------------------------------------
-
-backglassSchema.methods.isCreatedBy = function(user: User): boolean {
-	if (!user) {
-		return false;
-	}
-	return this._created_by.equals(user._id);
-};
 
 //-----------------------------------------------------------------------------
 // VALIDATIONS

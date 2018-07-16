@@ -26,12 +26,12 @@ import { fileReferencePlugin } from '../common/mongoose/file.reference.plugin';
 import { metricsPlugin } from '../common/mongoose/metrics.plugin';
 import { prettyIdPlugin } from '../common/mongoose/pretty.id.plugin';
 import { sortableTitlePlugin } from '../common/mongoose/sortable.title.plugin';
-import { File } from '../files/file';
+import { FileDocument } from '../files/file.document';
 import { state } from '../state';
 
 import { isInteger, isString } from 'lodash';
-import { Game } from './game';
 import { GameDocument } from './game.document';
+import { Game } from './game';
 
 const gameTypes = ['ss', 'em', 'pm', 'og', 'na'];
 const maxAspectRatioDifference = 0.2;
@@ -99,7 +99,7 @@ export const gameFields = {
 	created_at: { type: Date, required: true },
 	_created_by: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
 };
-export interface GameModel extends PrettyIdModel<Game>, PaginateModel<Game> {}
+export interface GameModel extends PrettyIdModel<GameDocument>, PaginateModel<GameDocument> {}
 export const gameSchema = new Schema(gameFields, { toObject: { virtuals: true, versionKey: false } });
 
 //-----------------------------------------------------------------------------
@@ -136,7 +136,7 @@ gameSchema.path('game_type').validate(async function() {
 	return true;
 });
 
-gameSchema.path('_backglass').validate(async function(this: Document, backglass: File) {
+gameSchema.path('_backglass').validate(async function(this: Document, backglass: FileDocument) {
 	if (!backglass) {
 		return true;
 	}
@@ -163,7 +163,7 @@ gameSchema.path('_backglass').validate(async function(this: Document, backglass:
 //-----------------------------------------------------------------------------
 
 gameSchema.methods.isRestricted = function(what: 'release' | 'backglass'): boolean {
-	return GameDocument.isRestricted(this, what);
+	return Game.isRestricted(this, what);
 };
 
 //-----------------------------------------------------------------------------

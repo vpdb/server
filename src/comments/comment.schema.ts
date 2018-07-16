@@ -21,7 +21,7 @@ import { isString } from 'lodash';
 import { PaginateModel, Schema } from 'mongoose';
 import paginatePlugin = require('mongoose-paginate');
 import validator from 'validator';
-import { Comment } from './comment';
+import { CommentDocument } from './comment.document';
 
 const shortId = require('shortid32');
 
@@ -40,7 +40,7 @@ export const commentFields = {
 	created_at: { type: Date, required: true },
 };
 
-export interface CommentModel extends PaginateModel<Comment> {}
+export interface CommentModel extends PaginateModel<CommentDocument> {}
 export const commentSchema = new Schema(commentFields, { toObject: { virtuals: true, versionKey: false } });
 
 //-----------------------------------------------------------------------------

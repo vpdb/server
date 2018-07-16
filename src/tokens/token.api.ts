@@ -27,8 +27,8 @@ import { Scope, scope } from '../common/scope';
 import { config } from '../common/settings';
 import { Context } from '../common/typings/context';
 import { state } from '../state';
-import { User } from '../users/user';
-import { Token } from './token';
+import { UserDocument } from '../users/user.document';
+import { TokenDocument } from './token.document';
 
 const jwt = require('jwt-simple');
 
@@ -82,7 +82,7 @@ export class TokenApi extends Api {
 		}
 
 		// for provider tokens, check additional permissions.
-		let newToken: Token;
+		let newToken: TokenDocument;
 		if (ctx.request.body.type === 'provider') {
 			const granted = await acl.isAllowed(ctx.state.user.id, 'tokens', 'provider-token');
 			if (!granted) {
@@ -120,7 +120,7 @@ export class TokenApi extends Api {
 	public async view(ctx: Context) {
 
 		const token = ctx.params.id;
-		let tokenInfo: Token;
+		let tokenInfo: TokenDocument;
 
 		// app token?
 		if (/[0-9a-f]{32,}/i.test(token)) {
@@ -139,13 +139,13 @@ export class TokenApi extends Api {
 				created_at: appToken.created_at,
 				expires_at: appToken.expires_at,
 				is_active: appToken.is_active,
-			} as Token;
+			} as TokenDocument;
 
 			// additional props for provider token
 			if (appToken.type === 'provider') {
 				tokenInfo.provider = appToken.provider;
 			} else {
-				tokenInfo.for_user = (appToken._created_by as User).id;
+				tokenInfo.for_user = (appToken._created_by as UserDocument).id;
 			}
 
 		// Otherwise, assume it's a JWT.
@@ -164,7 +164,7 @@ export class TokenApi extends Api {
 				expires_at: new Date(decoded.exp),
 				is_active: true, // JTWs cannot be revoked, so they are always active
 				for_user: decoded.iss,
-			} as Token;
+			} as TokenDocument;
 
 			if (decoded.path) {
 				tokenInfo.for_path = decoded.path;

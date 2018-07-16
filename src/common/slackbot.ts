@@ -21,11 +21,11 @@ import { RTMClient, WebClient } from '@slack/client';
 import { MessageAttachment } from '@slack/client/dist/methods';
 import { RTMClientOptions } from '@slack/client/dist/RTMClient';
 
-import { LogEvent } from '../log-event/log.event';
-import { LogUser } from '../log-user/log.user';
+import { LogEventDocument } from '../log-event/log.event.document';
+import { LogUserDocument } from '../log-user/log.user.document';
 import { state } from '../state';
 import { ContentAuthor } from '../users/content.author';
-import { User } from '../users/user';
+import { UserDocument } from '../users/user.document';
 import { logger } from './logger';
 import { config, settings } from './settings';
 
@@ -54,12 +54,12 @@ export class SlackBot {
 		}
 	}
 
-	public async logEvent(log: LogEvent): Promise<void> {
+	public async logEvent(log: LogEventDocument): Promise<void> {
 		if (!this.enabled) {
 			return;
 		}
 		const msg: { msg: string, atts?: MessageAttachment[] } = { msg: '', atts: [] };
-		const actor = await state.models.User.findById((log._actor as User)._id || log._actor).exec();
+		const actor = await state.models.User.findById((log._actor as UserDocument)._id || log._actor).exec();
 		switch (log.event) {
 			case 'create_comment':
 				msg.msg = `Commented on *${log.payload.comment.release.name}* of ${log.payload.comment.release.game.title} (${log.payload.comment.release.game.manufacturer} ${log.payload.comment.release.game.year}):`;
@@ -199,12 +199,12 @@ export class SlackBot {
 		}
 	}
 
-	public async logUser(log: LogUser): Promise<void> {
+	public async logUser(log: LogUserDocument): Promise<void> {
 		if (!this.enabled) {
 			return;
 		}
-		const user = await state.models.User.findById((log._user as User)._id || log._user).exec();
-		const actor = await state.models.User.findById((log._actor as User)._id || log._actor).exec();
+		const user = await state.models.User.findById((log._user as UserDocument)._id || log._user).exec();
+		const actor = await state.models.User.findById((log._actor as UserDocument)._id || log._actor).exec();
 
 		const self = user.id === actor.id;
 		const msg: { msg: string, atts?: MessageAttachment[] } = { msg: '', atts: [] };

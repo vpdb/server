@@ -18,17 +18,17 @@
  */
 
 import { ModeratedDocument, Types } from 'mongoose';
-import { File } from '../files/file';
+import { FileDocument } from '../files/file.document';
 
 export interface BackglassVersion extends ModeratedDocument {
 	version: string;
 	changes: string;
-	_file: File | Types.ObjectId;
+	_file: FileDocument | Types.ObjectId;
 	released_at: Date;
 	counter: {
 		downloads: number;
 	};
 
 	// serialized
-	file: File;
+	file: FileDocument;
 }

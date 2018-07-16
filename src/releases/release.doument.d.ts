@@ -19,13 +19,13 @@
 
 import { FileReferenceDocument, GameReferenceDocument, MetricsDocument, ModeratedDocument, PrettyIdDocument, Types } from 'mongoose';
 import { Thumb } from '../common/typings/serializers';
-import { Tag } from '../tags/tag';
+import { TagDocument } from '../tags/tag.document';
 import { ContentAuthor } from '../users/content.author';
-import { User } from '../users/user';
-import { ReleaseFileFlavor } from './version/file/release.version.file';
-import { ReleaseVersion } from './version/release.version';
+import { UserDocument } from '../users/user.document';
+import { ReleaseFileFlavor } from './version/file/release.version.file.document';
+import { ReleaseVersionDocument } from './version/release.version.document';
 
-export interface Release extends ModeratedDocument, GameReferenceDocument, PrettyIdDocument, MetricsDocument, FileReferenceDocument {
+export interface ReleaseDocument extends ModeratedDocument, GameReferenceDocument, PrettyIdDocument, MetricsDocument, FileReferenceDocument {
 
 	// from model
 	id: string;
@@ -33,16 +33,16 @@ export interface Release extends ModeratedDocument, GameReferenceDocument, Prett
 	name_sortable: string;
 	license: 'by-sa' | 'by-nd';
 	description: string;
-	versions: ReleaseVersion[];
+	versions: ReleaseVersionDocument[];
 	authors: ContentAuthor[];
-	_tags: Tag[] | Types.ObjectId;
+	_tags: TagDocument[] | Types.ObjectId;
 	links: Array<{
 		label: string;
 		url: string
 	}>;
 	acknowledgements: string;
 	original_version: {
-		_ref: Release | Types.ObjectId;
+		_ref: ReleaseDocument | Types.ObjectId;
 		release: {
 			name: string;
 			url: string;
@@ -57,14 +57,14 @@ export interface Release extends ModeratedDocument, GameReferenceDocument, Prett
 		votes: number;
 		score: number;
 	};
-	_created_by: User | Types.ObjectId;
+	_created_by: UserDocument | Types.ObjectId;
 
 	// serialized
-	tags: Tag[];
+	tags: TagDocument[];
 	released_at: Date;
 	modified_at: Date;
 	created_at: Date;
-	created_by: User;
+	created_by: UserDocument;
 
 	// generated
 	thumb?: { image: Thumb, flavor: ReleaseFileFlavor };
@@ -78,19 +78,19 @@ export interface Release extends ModeratedDocument, GameReferenceDocument, Prett
 	};
 
 	/**
-	 * @see [[ReleaseDocument.getFileIds]]
+	 * @see [[Release.getFileIds]]
 	 */
 	getFileIds(): string[];
 
 	/**
-	 * @see [[ReleaseDocument.getPlayfieldImageIds]]
+	 * @see [[Release.getPlayfieldImageIds]]
 	 */
 	getPlayfieldImageIds(): string[];
 
 	/**
-	 * @see [[ReleaseDocument.isCreatedBy]]
+	 * @see [[Release.isCreatedBy]]
 	 */
-	isCreatedBy(user: User): boolean;
+	isCreatedBy(user: UserDocument): boolean;
 
 }
 

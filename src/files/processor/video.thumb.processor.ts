@@ -22,7 +22,7 @@ import Ffmpeg from 'fluent-ffmpeg';
 import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
 import { config } from '../../common/settings';
-import { File } from '../file';
+import { FileDocument } from '../file.document';
 import { FileVariation, VideoFileVariation } from '../file.variations';
 import { CreationProcessor } from './processor';
 
@@ -38,7 +38,7 @@ export class VideoThumbProcessor implements CreationProcessor<VideoFileVariation
 		}
 	}
 
-	public canProcess(file: File, srcVariation: FileVariation, destVariation: VideoFileVariation): boolean {
+	public canProcess(file: FileDocument, srcVariation: FileVariation, destVariation: VideoFileVariation): boolean {
 		return file.getMimeTypePrimary(srcVariation) === 'video' && file.getMimeTypePrimary(destVariation) === 'video';
 	}
 
@@ -46,7 +46,7 @@ export class VideoThumbProcessor implements CreationProcessor<VideoFileVariation
 		return 100 + (variation && variation.priority ? variation.priority : 0);
 	}
 
-	public async process(file: File, src: string, dest: string, variation?: VideoFileVariation): Promise<string> {
+	public async process(file: FileDocument, src: string, dest: string, variation?: VideoFileVariation): Promise<string> {
 		return new Promise<string>((resolve, reject) => {
 			logger.debug('[VideoScreenshotProcessor] Starting processing %s at %s.', file.toShortString(variation), dest);
 			const started = Date.now();

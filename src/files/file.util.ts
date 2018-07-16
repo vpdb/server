@@ -26,7 +26,7 @@ import chalk from 'chalk';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
 import { state } from '../state';
-import { File } from './file';
+import { FileDocument } from './file.document';
 import { Metadata } from './metadata/metadata';
 import { processorQueue } from './processor/processor.queue';
 
@@ -40,11 +40,11 @@ export class FileUtil {
 	/**
 	 * Creates a new file from a HTTP request stream.
 	 *
-	 * @param {File} fileData File
+	 * @param {FileDocument} fileData File
 	 * @param {Stream} readStream Binary stream of file content
-	 * @returns {Promise<File>}
+	 * @returns {Promise<FileDocument>}
 	 */
-	public static async create(fileData: File, readStream: Stream): Promise<File> {
+	public static async create(fileData: FileDocument, readStream: Stream): Promise<FileDocument> {
 
 		// instantiate file without persisting it yet
 		let file = new state.models.File(fileData);
@@ -169,7 +169,7 @@ export class FileUtil {
 	 *
 	 * @param file File to remove.
 	 */
-	public static async remove(file: File): Promise<void> {
+	public static async remove(file: FileDocument): Promise<void> {
 		// original
 		await FileUtil.removeFile(file.getPath(null, { tmpSuffix: '_original' }), file.toShortString());
 

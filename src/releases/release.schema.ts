@@ -34,9 +34,9 @@ import { releaseVersionSchema } from './version/release.version.schema';
 
 import { logger } from '../common/logger';
 import { state } from '../state';
-import { User } from '../users/user';
+import { UserDocument } from '../users/user.document';
+import { ReleaseDocument } from './release.doument';
 import { Release } from './release';
-import { ReleaseDocument } from './release.document';
 
 const shortId = require('shortid32');
 
@@ -87,7 +87,7 @@ export const releaseFields = {
 	_created_by:   { type: Schema.Types.ObjectId, required: true, ref: 'User' },
 };
 
-export interface ReleaseModel extends GameReferenceModel<Release>, PrettyIdModel<Release>, ModeratedModel<Release>, PaginateModel<Release>, MetricsModel<Release> { }
+export interface ReleaseModel extends GameReferenceModel<ReleaseDocument>, PrettyIdModel<ReleaseDocument>, ModeratedModel<ReleaseDocument>, PaginateModel<ReleaseDocument>, MetricsModel<ReleaseDocument> { }
 export const releaseSchema = new Schema(releaseFields, { toObject: { virtuals: true, versionKey: false } });
 
 //-----------------------------------------------------------------------------
@@ -122,22 +122,22 @@ releaseSchema.path('versions').validate(function() {
 // METHODS
 //-----------------------------------------------------------------------------
 releaseSchema.methods.moderationChanged = async function(previousModeration: { isApproved: boolean, isRefused: boolean }, moderation: { isApproved: boolean, isRefused: boolean }): Promise<ModeratedDocument> {
-	return ReleaseDocument.moderationChanged(this, previousModeration, moderation);
+	return Release.moderationChanged(this, previousModeration, moderation);
 };
 releaseSchema.methods.getFileIds = function(): string[] {
-	return ReleaseDocument.getFileIds(this);
+	return Release.getFileIds(this);
 };
 releaseSchema.methods.getPlayfieldImageIds = function(): string[] {
-	return ReleaseDocument.getPlayfieldImageIds(this);
+	return Release.getPlayfieldImageIds(this);
 };
-releaseSchema.methods.isCreatedBy = function(user: User): boolean {
-	return ReleaseDocument.isCreatedBy(this, user);
+releaseSchema.methods.isCreatedBy = function(user: UserDocument): boolean {
+	return Release.isCreatedBy(this, user);
 };
 
 //-----------------------------------------------------------------------------
 // TRIGGERS
 //-----------------------------------------------------------------------------
-releaseSchema.pre('remove', async function(this: Release) {
+releaseSchema.pre('remove', async function(this: ReleaseDocument) {
 
 	// remove linked comments
 	state.models.Comment.remove({ $or: [{ '_ref.release': this._id }, { '_ref.release_moderation': this._id }] }).exec();

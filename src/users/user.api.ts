@@ -28,7 +28,7 @@ import { config } from '../common/settings';
 import { Context } from '../common/typings/context';
 import { LogUserUtil } from '../log-user/log.user.util';
 import { state } from '../state';
-import { User } from './user';
+import { UserDocument } from './user.document';
 import { UserUtil } from './user.util';
 
 const randomString = require('randomstring');
@@ -45,7 +45,7 @@ export class UserApi extends Api {
 	 */
 	public async create(ctx: Context) {
 
-		const newUser: User = assignIn<User>(pick(ctx.request.body, 'username', 'password', 'email'), {
+		const newUser: UserDocument = assignIn<UserDocument>(pick(ctx.request.body, 'username', 'password', 'email'), {
 			is_local: true,
 			name: ctx.request.body.name || ctx.request.body.username,
 		});
@@ -200,7 +200,7 @@ export class UserApi extends Api {
 				},
 			};
 			isNew = true;
-			user = await UserUtil.createUser(ctx, newUser as User, false);
+			user = await UserUtil.createUser(ctx, newUser as UserDocument, false);
 		}
 
 		await LogUserUtil.success(ctx, user, 'provider_registration', { provider, email: user.email });
@@ -279,7 +279,7 @@ export class UserApi extends Api {
 	public async update(ctx: Context) {
 
 		const updatableFields = ['name', 'email', 'username', 'is_active', 'roles', '_plan'];
-		const user: User = await state.models.User.findOne({ id: ctx.params.id }).exec();
+		const user: UserDocument = await state.models.User.findOne({ id: ctx.params.id }).exec();
 		if (!user) {
 			throw new ApiError('No such user.').status(404);
 		}

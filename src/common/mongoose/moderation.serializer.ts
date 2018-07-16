@@ -21,7 +21,7 @@ import { isArray, pick } from 'lodash';
 import { ModerationData, ModerationDataEvent } from 'mongoose';
 
 import { state } from '../../state';
-import { User } from '../../users/user';
+import { UserDocument } from '../../users/user.document';
 import { Serializer, SerializerOptions } from '../serializer';
 import { Context } from '../typings/context';
 
@@ -50,7 +50,7 @@ export class ModerationSerializer extends Serializer<ModerationData> {
 				return {
 					event: h.event,
 					created_at: h.created_at,
-					created_by: state.serializers.User.reduced(ctx, h._created_by as User, opts) as User,
+					created_by: state.serializers.User.reduced(ctx, h._created_by as UserDocument, opts) as UserDocument,
 				} as ModerationDataEvent;
 			});
 		}

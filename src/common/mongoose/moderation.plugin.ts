@@ -22,7 +22,7 @@ import { Document, Model, ModeratedDocument, ModeratedModel, ModerationData, Mod
 
 import { LogEventUtil } from '../../log-event/log.event.util';
 import { state } from '../../state';
-import { User } from '../../users/user';
+import { UserDocument } from '../../users/user.document';
 import { acl } from '../acl';
 import { ApiError } from '../api.error';
 import { logger } from '../logger';
@@ -79,10 +79,10 @@ export function moderationPlugin(schema: Schema) {
 			return;
 		}
 		// check if _created_by is a contributor and auto-approve.
-		let user: User;
+		let user: UserDocument;
 		/* istanbul ignore if */
 		if (this.populated('_created_by')) {
-			user = this._created_by as User;
+			user = this._created_by as UserDocument;
 		} else {
 			user = await state.models.User.findOne({ _id: this._created_by }).exec();
 		}
@@ -294,11 +294,11 @@ export function moderationPlugin(schema: Schema) {
 
 	/**
 	 * Marks the entity as approved.
-	 * @param {User|ObjectId} user User who approved
+	 * @param {UserDocument|ObjectId} user User who approved
 	 * @param {string} [message] Optional message
 	 * @returns {Promise<ModerationDataEvent>} Created moderation event
 	 */
-	schema.methods.approve = async function(user: User, message: string): Promise<ModerationDataEvent> {
+	schema.methods.approve = async function(user: UserDocument, message: string): Promise<ModerationDataEvent> {
 		return await moderateEntity.bind(this)(
 			this.constructor.modelName,
 			user,
@@ -311,11 +311,11 @@ export function moderationPlugin(schema: Schema) {
 
 	/**
 	 * Marks the entity as refused.
-	 * @param {User|ObjectId} user User who refused
+	 * @param {UserDocument|ObjectId} user User who refused
 	 * @param {string} reason Reason why entity was refused
 	 * @returns {Promise<ModerationDataEvent>} Created moderation event
 	 */
-	schema.methods.refuse = async function(user: User, reason: string): Promise<ModerationDataEvent> {
+	schema.methods.refuse = async function(user: UserDocument, reason: string): Promise<ModerationDataEvent> {
 		return await moderateEntity.bind(this)(
 			this.constructor.modelName,
 			user,
@@ -328,11 +328,11 @@ export function moderationPlugin(schema: Schema) {
 
 	/**
 	 * Sets the entity back to moderated
-	 * @param {User|ObjectId} user User who reset to moderated
+	 * @param {UserDocument|ObjectId} user User who reset to moderated
 	 * @param {string} [message] Optional message
 	 * @returns {Promise<ModerationDataEvent>} Created moderation event
 	 */
-	schema.methods.moderate = async function(user: User, message: string): Promise<ModerationData> {
+	schema.methods.moderate = async function(user: UserDocument, message: string): Promise<ModerationData> {
 		return await moderateEntity.bind(this)(
 			this.constructor.modelName,
 			user,
@@ -348,14 +348,14 @@ export function moderationPlugin(schema: Schema) {
  * Sets the moderation status to a new value and adds it to the history.
  *
  * @param {string} modelName Name of the model
- * @param {User} user User performing the action
+ * @param {UserDocument} user User performing the action
  * @param {string} message Message from the user
  * @param {string} eventName Name of the event
  * @param {boolean} isApproved True if new status is approved
  * @param {boolean} isRefused True if new status is refused
  * @returns {Promise<ModerationDataEvent>} Created moderation event
  */
-async function moderateEntity(this: ModeratedDocument, modelName: string, user: User, message: string, eventName: string, isApproved: boolean, isRefused: boolean): Promise<ModerationDataEvent> {
+async function moderateEntity(this: ModeratedDocument, modelName: string, user: UserDocument, message: string, eventName: string, isApproved: boolean, isRefused: boolean): Promise<ModerationDataEvent> {
 
 	const model = state.getModel<ModeratedModel<ModeratedDocument>>(modelName);
 	const previousModeration = { isApproved: this.moderation.is_approved, isRefused: this.moderation.is_refused };
@@ -411,8 +411,8 @@ declare module 'mongoose' {
 	export interface ModeratedDocument extends Document {
 
 		moderation: ModerationData;
-		_created_by: User | Types.ObjectId;
-		created_by?: User;
+		_created_by: UserDocument | Types.ObjectId;
+		created_by?: UserDocument;
 
 		/**
 		 * Makes sure an API request has the permission to view the entity.
@@ -433,27 +433,27 @@ declare module 'mongoose' {
 
 		/**
 		 * Marks the entity as approved.
-		 * @param {User|ObjectId} user User who approved
+		 * @param {UserDocument|ObjectId} user User who approved
 		 * @param {string} [message] Optional message
 		 * @returns {Promise<ModerationDataEvent>} Created moderation event
 		 */
-		approve(user: User, message: string): Promise<ModerationDataEvent>;
+		approve(user: UserDocument, message: string): Promise<ModerationDataEvent>;
 
 		/**
 		 * Marks the entity as refused.
-		 * @param {User|ObjectId} user User who refused
+		 * @param {UserDocument|ObjectId} user User who refused
 		 * @param {string} reason Reason why entity was refused
 		 * @returns {Promise<ModerationDataEvent>} Created moderation event
 		 */
-		refuse(user: User, reason: string): Promise<ModerationDataEvent>;
+		refuse(user: UserDocument, reason: string): Promise<ModerationDataEvent>;
 
 		/**
 		 * Sets the entity back to moderated
-		 * @param {User|ObjectId} user User who reset to moderated
+		 * @param {UserDocument|ObjectId} user User who reset to moderated
 		 * @param {string} [message] Optional message
 		 * @returns {Promise<ModerationDataEvent>} Created moderation event
 		 */
-		moderate(user: User, message: string): Promise<ModerationDataEvent>;
+		moderate(user: UserDocument, message: string): Promise<ModerationDataEvent>;
 
 		/**
 		 * An optional hook executed when moderation changed.
@@ -476,8 +476,8 @@ declare module 'mongoose' {
 		event: 'approved' | 'refused' | 'pending';
 		message?: string;
 		created_at: Date;
-		_created_by?: User | Types.ObjectId;
-		created_by?: User;
+		_created_by?: UserDocument | Types.ObjectId;
+		created_by?: UserDocument;
 	}
 
 	// statics

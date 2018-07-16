@@ -21,8 +21,8 @@ import { MetricsModel, Schema } from 'mongoose';
 
 import { metricsPlugin } from '../common/mongoose/metrics.plugin';
 import { state } from '../state';
-import { File, FilePathOptions } from './file';
-import { FileDocument } from './file.document';
+import { FileDocument, FilePathOptions } from './file.document';
+import { File } from './file';
 import { mimeTypeNames } from './file.mimetypes';
 import { fileTypes } from './file.types';
 import { FileUtil } from './file.util';
@@ -63,7 +63,7 @@ export const fileFields = {
 	_created_by: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
 };
 
-export interface FileModel extends MetricsModel<File> {}
+export interface FileModel extends MetricsModel<FileDocument> {}
 export const fileSchema = new Schema(fileFields, { toObject: { virtuals: true, versionKey: false } });
 
 //-----------------------------------------------------------------------------
@@ -80,65 +80,65 @@ fileSchema.plugin(metricsPlugin);
  * Switches a files from inactive to active and moves it to the public folder
  * if necessary.
  *
- * @return {Promise<File>} Moved file
+ * @return {Promise<FileDocument>} Moved file
  */
-fileSchema.methods.switchToActive = async function(this: File): Promise<File> {
+fileSchema.methods.switchToActive = async function(this: FileDocument): Promise<FileDocument> {
 	this.is_active = true;
 	await this.save();
 	await processorQueue.activateFile(this);
 	return this;
 };
 
-fileSchema.methods.getPath = function(this: File, variation: FileVariation = null, opts: FilePathOptions = {}): string {
-	return FileDocument.getPath(this, variation, opts);
+fileSchema.methods.getPath = function(this: FileDocument, variation: FileVariation = null, opts: FilePathOptions = {}): string {
+	return File.getPath(this, variation, opts);
 };
-fileSchema.methods.getExt = function(this: File, variation: FileVariation = null): string {
-	return FileDocument.getExt(this, variation);
+fileSchema.methods.getExt = function(this: FileDocument, variation: FileVariation = null): string {
+	return File.getExt(this, variation);
 };
-fileSchema.methods.getUrl = function(this: File, variation: FileVariation = null): string {
-	return FileDocument.getUrl(this, variation);
+fileSchema.methods.getUrl = function(this: FileDocument, variation: FileVariation = null): string {
+	return File.getUrl(this, variation);
 };
-fileSchema.methods.isPublic = function(this: File, variation: FileVariation = null): boolean {
-	return FileDocument.isPublic(this, variation);
+fileSchema.methods.isPublic = function(this: FileDocument, variation: FileVariation = null): boolean {
+	return File.isPublic(this, variation);
 };
-fileSchema.methods.isFree = function(this: File, variation: FileVariation = null): boolean {
-	return FileDocument.isFree(this, variation);
+fileSchema.methods.isFree = function(this: FileDocument, variation: FileVariation = null): boolean {
+	return File.isFree(this, variation);
 };
-fileSchema.methods.getMimeType = function(this: File, variation?: FileVariation): string {
-	return FileDocument.getMimeType(this, variation);
+fileSchema.methods.getMimeType = function(this: FileDocument, variation?: FileVariation): string {
+	return File.getMimeType(this, variation);
 };
-fileSchema.methods.getMimeTypePrimary = function(this: File, variation: FileVariation = null): string {
-	return FileDocument.getMimeTypePrimary(this, variation);
+fileSchema.methods.getMimeTypePrimary = function(this: FileDocument, variation: FileVariation = null): string {
+	return File.getMimeTypePrimary(this, variation);
 };
-fileSchema.methods.getMimeSubtype = function(this: File, variation: FileVariation = null): string {
-	return FileDocument.getMimeSubtype(this, variation);
+fileSchema.methods.getMimeSubtype = function(this: FileDocument, variation: FileVariation = null): string {
+	return File.getMimeSubtype(this, variation);
 };
-fileSchema.methods.getMimeCategory = function(this: File, variation: FileVariation = null): string {
-	return FileDocument.getMimeCategory(this, variation);
+fileSchema.methods.getMimeCategory = function(this: FileDocument, variation: FileVariation = null): string {
+	return File.getMimeCategory(this, variation);
 };
-fileSchema.methods.toShortString = function(this: File, variation: FileVariation = null): string {
-	return FileDocument.toShortString(this, variation);
+fileSchema.methods.toShortString = function(this: FileDocument, variation: FileVariation = null): string {
+	return File.toShortString(this, variation);
 };
-fileSchema.methods.toDetailedString = function(this: File, variation?: FileVariation): string {
-	return FileDocument.toDetailedString(this, variation);
+fileSchema.methods.toDetailedString = function(this: FileDocument, variation?: FileVariation): string {
+	return File.toDetailedString(this, variation);
 };
-fileSchema.methods.getExistingVariations = function(this: File): FileVariation[] {
-	return FileDocument.getExistingVariations(this);
+fileSchema.methods.getExistingVariations = function(this: FileDocument): FileVariation[] {
+	return File.getExistingVariations(this);
 };
-fileSchema.methods.getVariations = function(this: File): FileVariation[] {
-	return FileDocument.getVariations(this);
+fileSchema.methods.getVariations = function(this: FileDocument): FileVariation[] {
+	return File.getVariations(this);
 };
-fileSchema.methods.getVariation = function(this: File, variationName: string): FileVariation | null {
-	return FileDocument.getVariation(this, variationName);
+fileSchema.methods.getVariation = function(this: FileDocument, variationName: string): FileVariation | null {
+	return File.getVariation(this, variationName);
 };
-fileSchema.methods.getDirectVariationDependencies = function(this: File, variation: FileVariation): FileVariation[] {
-	return FileDocument.getDirectVariationDependencies(this, variation);
+fileSchema.methods.getDirectVariationDependencies = function(this: FileDocument, variation: FileVariation): FileVariation[] {
+	return File.getDirectVariationDependencies(this, variation);
 };
 
 //-----------------------------------------------------------------------------
 // TRIGGERS
 //-----------------------------------------------------------------------------
-fileSchema.post('remove', async (obj: File) => {
+fileSchema.post('remove', async (obj: FileDocument) => {
 
 	// remove physical file
 	await FileUtil.remove(obj);

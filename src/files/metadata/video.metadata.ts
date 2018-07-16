@@ -20,8 +20,8 @@ import Ffmpeg from 'fluent-ffmpeg';
 import { pick } from 'lodash';
 
 import { config } from '../../common/settings';
-import { File } from '../file';
 import { FileDocument } from '../file.document';
+import { File } from '../file';
 import { FileVariation } from '../file.variations';
 import { Metadata } from './metadata';
 
@@ -37,11 +37,11 @@ export class VideoMetadata extends Metadata {
 		}
 	}
 
-	public isValid(file: File, variation?: FileVariation): boolean {
-		return FileDocument.getMimeCategory(file, variation) === 'video';
+	public isValid(file: FileDocument, variation?: FileVariation): boolean {
+		return File.getMimeCategory(file, variation) === 'video';
 	}
 
-	public async getMetadata(file: File, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
+	public async getMetadata(file: FileDocument, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
 		return ffmpeg.ffprobeAsync(path);
 	}
 

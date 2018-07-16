@@ -18,23 +18,19 @@
  */
 
 import { Document, Types } from 'mongoose';
-import { User } from '../users/user';
+import { UserDocument } from '../users/user.document';
 
-export interface Build extends Document {
-	id: string;
-	platform: 'vp';
-	label: string;
-	major_version: string;
-	download_url: string;
-	support_url: string;
-	description: string;
-	built_at: Date;
-	type: 'release' | 'nightly' | 'experimental';
-	is_range: boolean;
-	is_active: boolean;
-	created_at: Date;
-	_created_by: Types.ObjectId | User;
+export interface LogUserDocument extends Document {
+	_user: UserDocument | Types.ObjectId;
+	_actor: UserDocument | Types.ObjectId;
+	event: string;
+	payload: { [key: string]: any };
+	result: 'success' | 'failure';
+	message: string;
+	ip: string;
+	logged_at: Date;
 
-	// serialized
-	created_by: User;
+	// populated
+	user: UserDocument;
+	actor: UserDocument;
 }

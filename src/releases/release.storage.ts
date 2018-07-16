@@ -24,23 +24,23 @@ import { Types } from 'mongoose';
 import { basename, extname } from 'path';
 import unzip from 'unzip';
 
-import { Build } from '../builds/build';
+import { BuildDocument } from '../builds/build.document';
 import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
 import { quota } from '../common/quota';
 import { Context } from '../common/typings/context';
-import { File } from '../files/file';
+import { FileDocument } from '../files/file.document';
 import { fileTypes } from '../files/file.types';
 import { FileVariation } from '../files/file.variations';
 import { processorQueue } from '../files/processor/processor.queue';
-import { Game } from '../games/game';
+import { GameDocument } from '../games/game.document';
 import { state } from '../state';
-import { User, UserPreferences } from '../users/user';
-import { Release } from './release';
+import { UserDocument, UserPreferences } from '../users/user.document';
+import { ReleaseDocument } from './release.doument';
 import { flavors } from './release.flavors';
-import { ReleaseVersionFile } from './version/file/release.version.file';
-import { ReleaseVersion } from './version/release.version';
+import { ReleaseVersionFileDocument } from './version/file/release.version.file.document';
+import { ReleaseVersionDocument } from './version/release.version.document';
 
 const Unrar = require('unrar');
 
@@ -76,7 +76,7 @@ export class ReleaseStorage extends Api {
 	public async download(ctx: Context) {
 
 		const [release, requestedFiles] = await this.collectFiles(ctx, false);
-		const game = release._game as Game;
+		const game = release._game as GameDocument;
 
 		// create zip stream
 		const archive = archiver('zip');
@@ -246,9 +246,9 @@ export class ReleaseStorage extends Api {
 	 *
 	 * @param {Context} ctx Koa context
 	 * @param {boolean} dryRun If true, don't update counters and don't apply quota.
-	 * @returns {Promise<[Release, FileExtended[]]>} Release and collected files.
+	 * @returns {Promise<[ReleaseDocument, FileExtended[]]>} Release and collected files.
 	 */
-	private async collectFiles(ctx: Context, dryRun: boolean): Promise<[Release, FileExtended[]]> {
+	private async collectFiles(ctx: Context, dryRun: boolean): Promise<[ReleaseDocument, FileExtended[]]> {
 		let body: DownloadReleaseBody;
 		const counters: Array<() => Promise<any>> = [];
 		const requestedFiles: FileExtended[] = [];
@@ -295,7 +295,7 @@ export class ReleaseStorage extends Api {
 		release.versions.forEach(version => {
 
 			// check if there are requested table files for that version
-			if (!intersection(version.files.map(f => (f._file as File).id), requestedFileIds).length) {
+			if (!intersection(version.files.map(f => (f._file as FileDocument).id), requestedFileIds).length) {
 				return; // continue
 			}
 			version.files.forEach((versionFile, pos) => {
@@ -334,7 +334,7 @@ export class ReleaseStorage extends Api {
 		});
 
 		// count game download
-		counters.push(() => (release._game as Game).update({ $inc: { 'counter.downloads': numTables } }).exec());
+		counters.push(() => (release._game as GameDocument).update({ $inc: { 'counter.downloads': numTables } }).exec());
 
 		// add game media
 		if (isArray(body.game_media)) {
@@ -344,7 +344,7 @@ export class ReleaseStorage extends Api {
 					throw new ApiError('Medium with id %s is not part of the game\'s media.', mediaId).status(422);
 				}
 				requestedFiles.push(medium._file as FileExtended);
-				counters.push(() => (medium._file as File).incrementCounter('downloads'));
+				counters.push(() => (medium._file as FileDocument).incrementCounter('downloads'));
 			});
 		}
 
@@ -357,7 +357,7 @@ export class ReleaseStorage extends Api {
 					throw new ApiError('Could not find ROM with id %s for game.', romId).status(422);
 				}
 				requestedFiles.push(rom._file as FileExtended);
-				counters.push(() => (rom._file as File).incrementCounter('downloads'));
+				counters.push(() => (rom._file as FileDocument).incrementCounter('downloads'));
 			});
 		}
 
@@ -372,7 +372,7 @@ export class ReleaseStorage extends Api {
 			}
 			const file = sortBy(backglass.versions, v => -v.released_at)[0]._file;
 			requestedFiles.push(file as FileExtended);
-			counters.push(() => (file as File).incrementCounter('downloads'));
+			counters.push(() => (file as FileDocument).incrementCounter('downloads'));
 		}
 
 		if (!requestedFiles.length) {
@@ -404,20 +404,20 @@ export class ReleaseStorage extends Api {
 	 * @param releaseFiles List of already used file names, in order to avoid dupes
 	 * @returns {string} File name
 	 */
-	private getTableFilename(user: User, release: Release, file: FileExtended, releaseFiles: string[]): string {
+	private getTableFilename(user: UserDocument, release: ReleaseDocument, file: FileExtended, releaseFiles: string[]): string {
 
 		const userPrefs: UserPreferences = user.preferences || {} as UserPreferences;
 		const tableName = userPrefs.tablefile_name || '{game_title} ({game_manufacturer} {game_year})';
 		const flavorTags = userPrefs.flavor_tags || flavors.defaultFileTags();
 
-		const game = release._game as Game;
+		const game = release._game as GameDocument;
 		const data: { [key: string]: any } = {
 			game_title: game.title,
 			game_manufacturer: game.manufacturer,
 			game_year: game.year,
 			release_name: release.name,
 			release_version: file.release_version.version,
-			release_compatibility: (file.release_file._compatibility as Build[]).map(v => v.label).join(','),
+			release_compatibility: (file.release_file._compatibility as BuildDocument[]).map(v => v.label).join(','),
 			release_flavor_orientation: flavorTags.orientation[file.release_file.flavor.orientation],
 			release_flavor_lighting: flavorTags.lighting[file.release_file.flavor.lighting],
 			original_filename: basename(file.name).replace(/\.[^/.]+$/, ''),
@@ -450,11 +450,11 @@ export class ReleaseStorage extends Api {
 
 	/**
 	 * Streams the contents of a zip file into the current zip archive.
-	 * @param {File} file Zip file to stream (source)
+	 * @param {FileDocument} file Zip file to stream (source)
 	 * @param archive Destination
 	 * @returns {Promise}
 	 */
-	private async streamZipfile(file: File, archive: Archiver) {
+	private async streamZipfile(file: FileDocument, archive: Archiver) {
 		return new Promise(resolve => {
 			const rarFile = new Unrar(file.getPath());
 			file.metadata.entries.forEach((entry: any) => {
@@ -473,11 +473,11 @@ export class ReleaseStorage extends Api {
 
 	/**
 	 * Streams the contents of a rar file into the current zip archive.
-	 * @param {File} file RAR file to stream (source)
+	 * @param {FileDocument} file RAR file to stream (source)
 	 * @param archive Destination
 	 * @returns {Promise}
 	 */
-	private async streamRarfile(file: File, archive: Archiver) {
+	private async streamRarfile(file: FileDocument, archive: Archiver) {
 		return new Promise(resolve => {
 			createReadStream(file.getPath())
 				.pipe(unzip.Parse())
@@ -496,9 +496,9 @@ export class ReleaseStorage extends Api {
 	}
 }
 
-interface FileExtended extends File {
-	release_version?: ReleaseVersion;
-	release_file?: ReleaseVersionFile;
+interface FileExtended extends FileDocument {
+	release_version?: ReleaseVersionDocument;
+	release_file?: ReleaseVersionFileDocument;
 }
 
 interface DownloadReleaseBody {

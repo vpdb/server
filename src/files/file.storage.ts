@@ -27,7 +27,7 @@ import { logger } from '../common/logger';
 import { quota } from '../common/quota';
 import { Context } from '../common/typings/context';
 import { state } from '../state';
-import { File } from './file';
+import { FileDocument } from './file.document';
 import { fileTypes } from './file.types';
 import { FileUtil } from './file.util';
 import { processorQueue } from './processor/processor.queue';
@@ -64,7 +64,7 @@ export class FileStorage extends Api {
 		}
 
 		// stream either directly from req or use a multipart parser
-		let file: File;
+		let file: FileDocument;
 		if (/multipart\/form-data/i.test(ctx.get('content-type'))) {
 			file = await this.handleMultipartUpload(ctx);
 		} else {
@@ -116,9 +116,9 @@ export class FileStorage extends Api {
 	 * Handles uploaded data posted as-is with a content type
 	 * Correct file type is already asserted.
 	 * @param {Context} ctx Koa context
-	 * @return {Promise<File>}
+	 * @return {Promise<FileDocument>}
 	 */
-	private async handleRawUpload(ctx: Context): Promise<File> {
+	private async handleRawUpload(ctx: Context): Promise<FileDocument> {
 
 		// fail if wrong content type
 		if (!fileTypes.getMimeTypes(ctx.query.type).includes(ctx.get('content-type'))) {
@@ -148,16 +148,16 @@ export class FileStorage extends Api {
 			_created_by: ctx.state.user._id,
 		};
 
-		return FileUtil.create(fileData as File, ctx.req);
+		return FileUtil.create(fileData as FileDocument, ctx.req);
 	}
 
 	/**
 	 * Handles uploaded data posted as multipart.
 	 * Correct file type is already asserted.
 	 * @param {Application.Context} ctx Koa context
-	 * @returns {Promise<File>}
+	 * @returns {Promise<FileDocument>}
 	 */
-	private async handleMultipartUpload(ctx: Context): Promise<File> {
+	private async handleMultipartUpload(ctx: Context): Promise<FileDocument> {
 
 		// fail if no content type
 		if (!ctx.query.content_type) {
@@ -171,7 +171,7 @@ export class FileStorage extends Api {
 
 		let err: ApiError;
 		const busboy = new Busboy({ headers: ctx.request.headers });
-		const parseResult = new Promise<File>((resolve, reject) => {
+		const parseResult = new Promise<FileDocument>((resolve, reject) => {
 			let numFiles = 0;
 			busboy.on('file', (fieldname, stream, filename) => {
 				numFiles++;
@@ -190,7 +190,7 @@ export class FileStorage extends Api {
 					file_type: ctx.query.type,
 					_created_by: ctx.state.user._id,
 				};
-				FileUtil.create(fileData as File, stream)
+				FileUtil.create(fileData as FileDocument, stream)
 					.then(file => resolve(file))
 					.catch(reject);
 			});
@@ -215,9 +215,9 @@ export class FileStorage extends Api {
 	 * Retrieves a storage item and does all checks but the quota check.
 	 *
 	 * @param {Context} ctx Koa context
-	 * @returns {Promise<[File, boolean]>} File and true if free
+	 * @returns {Promise<[FileDocument, boolean]>} File and true if free
 	 */
-	private async find(ctx: Context): Promise<[File, boolean]> {
+	private async find(ctx: Context): Promise<[FileDocument, boolean]> {
 
 		const file = await state.models.File.findOne({ id: ctx.params.id }).exec();
 		if (!file) {
@@ -268,11 +268,11 @@ export class FileStorage extends Api {
 	 * For wait-while-processing logic see explanations below.
 	 *
 	 * @param {Context} ctx Koa context
-	 * @param {File} file File to serve
+	 * @param {FileDocument} file File to serve
 	 * @param {string} variationName Name of the variation to serve
 	 * @param {boolean} [headOnly=false] If set, only send the headers but no content (for `HEAD` requests)
 	 */
-	private async serve(ctx: Context, file: File, variationName: string, headOnly = false) {
+	private async serve(ctx: Context, file: FileDocument, variationName: string, headOnly = false) {
 
 		const now = Date.now();
 

@@ -19,7 +19,7 @@
 
 import { PaginateModel, Schema } from 'mongoose';
 import paginatePlugin = require('mongoose-paginate');
-import { LogUser } from './log.user';
+import { LogUserDocument } from './log.user.document';
 
 //-----------------------------------------------------------------------------
 // SCHEMA
@@ -35,7 +35,7 @@ const fields = {
 	logged_at: { type: Date, required: true },
 };
 
-export interface LogUserModel extends PaginateModel<LogUser> { }
+export interface LogUserModel extends PaginateModel<LogUserDocument> { }
 export const logUserSchema = new Schema(fields, { toObject: { virtuals: true, versionKey: false } });
 
 //-----------------------------------------------------------------------------

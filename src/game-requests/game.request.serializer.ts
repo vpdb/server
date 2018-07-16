@@ -21,33 +21,33 @@ import { pick } from 'lodash';
 
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { Context } from '../common/typings/context';
-import { Game } from '../games/game';
+import { GameDocument } from '../games/game.document';
 import { state } from '../state';
-import { User } from '../users/user';
-import { GameRequest } from './game.request';
+import { UserDocument } from '../users/user.document';
+import { GameRequestDocument } from './game.request.document';
 
-export class GameRequestSerializer extends Serializer<GameRequest> {
+export class GameRequestSerializer extends Serializer<GameRequestDocument> {
 
-	protected _reduced(ctx: Context, doc: GameRequest, opts: SerializerOptions): GameRequest {
+	protected _reduced(ctx: Context, doc: GameRequestDocument, opts: SerializerOptions): GameRequestDocument {
 		return undefined;
 	}
 
-	protected _simple(ctx: Context, doc: GameRequest, opts: SerializerOptions): GameRequest {
-		const gameRequest = pick(doc, ['id', 'title', 'notes', 'ipdb_number', 'ipdb_title', 'is_closed', 'message', 'created_at']) as GameRequest;
+	protected _simple(ctx: Context, doc: GameRequestDocument, opts: SerializerOptions): GameRequestDocument {
+		const gameRequest = pick(doc, ['id', 'title', 'notes', 'ipdb_number', 'ipdb_title', 'is_closed', 'message', 'created_at']) as GameRequestDocument;
 
 		// game
 		if (this._populated(doc, '_game')) {
-			gameRequest.game = state.serializers.Game.reduced(ctx, doc._game as Game, opts);
+			gameRequest.game = state.serializers.Game.reduced(ctx, doc._game as GameDocument, opts);
 		}
 		return gameRequest;
 	}
 
-	protected _detailed(ctx: Context, doc: GameRequest, opts: SerializerOptions): GameRequest {
+	protected _detailed(ctx: Context, doc: GameRequestDocument, opts: SerializerOptions): GameRequestDocument {
 		const gameRequest = this._simple(ctx, doc, opts);
 
 		// creator
 		if (this._populated(doc, '_created_by')) {
-			gameRequest.created_by = state.serializers.User.reduced(ctx, doc._created_by as User, opts);
+			gameRequest.created_by = state.serializers.User.reduced(ctx, doc._created_by as UserDocument, opts);
 		}
 		return gameRequest;
 	}

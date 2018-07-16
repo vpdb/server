@@ -23,7 +23,7 @@ import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
-import { LogEvent } from './log.event';
+import { LogEventDocument } from './log.event.document';
 import { logEventApiRouter } from './log.event.api.router';
 import { logEventSchema } from './log.event.schema';
 import { LogEventSerializer } from './log.event.serializer';
@@ -37,7 +37,7 @@ export class LogEventEndPoint extends EndPoint {
 	}
 
 	public async register(app: Application): Promise<void> {
-		state.models.LogEvent = mongoose.model<LogEvent>('LogEvent', logEventSchema);
+		state.models.LogEvent = mongoose.model<LogEventDocument>('LogEvent', logEventSchema);
 		state.serializers.LogEvent = new LogEventSerializer();
 	}
 }

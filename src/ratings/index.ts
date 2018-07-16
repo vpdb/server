@@ -23,7 +23,7 @@ import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
-import { Rating } from './rating';
+import { RatingDocument } from './rating.document';
 import { ratingSchema } from './rating.schema';
 
 export class RatingEndPoint extends EndPoint {
@@ -35,6 +35,6 @@ export class RatingEndPoint extends EndPoint {
 	}
 
 	public async register(app: Application): Promise<void> {
-		state.models.Rating = mongoose.model<Rating>('Rating', ratingSchema);
+		state.models.Rating = mongoose.model<RatingDocument>('Rating', ratingSchema);
 	}
 }

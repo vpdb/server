@@ -19,48 +19,48 @@
  */
 import { isEmpty, pick } from 'lodash';
 
-import { Backglass } from '../backglasses/backglass';
+import { BackglassDocument } from '../backglasses/backglass.document';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { Context } from '../common/typings/context';
-import { GameRequest } from '../game-requests/game.request';
-import { Game } from '../games/game';
-import { Release } from '../releases/release';
+import { GameRequestDocument } from '../game-requests/game.request.document';
+import { GameDocument } from '../games/game.document';
+import { ReleaseDocument } from '../releases/release.doument';
 import { state } from '../state';
-import { User } from '../users/user';
-import { LogEvent } from './log.event';
+import { UserDocument } from '../users/user.document';
+import { LogEventDocument } from './log.event.document';
 
-export class LogEventSerializer extends Serializer<LogEvent> {
+export class LogEventSerializer extends Serializer<LogEventDocument> {
 
-	protected _reduced(ctx: Context, doc: LogEvent, opts: SerializerOptions): LogEvent {
-		const logEvent = pick(doc, ['event', 'is_public', 'logged_at']) as LogEvent;
+	protected _reduced(ctx: Context, doc: LogEventDocument, opts: SerializerOptions): LogEventDocument {
+		const logEvent = pick(doc, ['event', 'is_public', 'logged_at']) as LogEventDocument;
 		logEvent.payload = doc.payload;
 		return logEvent;
 	}
 
-	protected _simple(ctx: Context, doc: LogEvent, opts: SerializerOptions): LogEvent {
+	protected _simple(ctx: Context, doc: LogEventDocument, opts: SerializerOptions): LogEventDocument {
 		const logEvent = this._reduced(ctx, doc, opts);
 
 		// actor
 		if (this._populated(doc, '_actor')) {
-			logEvent.actor = state.serializers.User.reduced(ctx, doc._actor as User, opts);
+			logEvent.actor = state.serializers.User.reduced(ctx, doc._actor as UserDocument, opts);
 		}
 
 		// references
 		logEvent.ref = {};
 		if (this._populated(doc, '_ref.game')) {
-			logEvent.ref.game = state.serializers.Game.reduced(ctx, doc._ref.game as Game, opts);
+			logEvent.ref.game = state.serializers.Game.reduced(ctx, doc._ref.game as GameDocument, opts);
 		}
 		if (this._populated(doc, '_ref.release')) {
-			logEvent.ref.release = state.serializers.Release.reduced(ctx, doc._ref.release as Release, opts);
+			logEvent.ref.release = state.serializers.Release.reduced(ctx, doc._ref.release as ReleaseDocument, opts);
 		}
 		if (this._populated(doc, '_ref.backglass')) {
-			logEvent.ref.backglass = state.serializers.Backglass.reduced(ctx, doc._ref.backglass as Backglass, opts);
+			logEvent.ref.backglass = state.serializers.Backglass.reduced(ctx, doc._ref.backglass as BackglassDocument, opts);
 		}
 		if (this._populated(doc, '_ref.user')) {
-			logEvent.ref.user = state.serializers.User.reduced(ctx, doc._ref.user as User, opts);
+			logEvent.ref.user = state.serializers.User.reduced(ctx, doc._ref.user as UserDocument, opts);
 		}
 		if (this._populated(doc, '_ref.game_request')) {
-			logEvent.ref.game_request = state.serializers.GameRequest.reduced(ctx, doc._ref.game_request as GameRequest, opts);
+			logEvent.ref.game_request = state.serializers.GameRequest.reduced(ctx, doc._ref.game_request as GameRequestDocument, opts);
 		}
 		if (isEmpty(logEvent.ref)) {
 			delete logEvent.ref;
@@ -69,7 +69,7 @@ export class LogEventSerializer extends Serializer<LogEvent> {
 		return logEvent;
 	}
 
-	protected _detailed(ctx: Context, doc: LogEvent, opts: SerializerOptions): LogEvent {
+	protected _detailed(ctx: Context, doc: LogEventDocument, opts: SerializerOptions): LogEventDocument {
 		const logEvent = this._simple(ctx, doc, opts);
 		logEvent.ip = doc.ip;
 		return logEvent;

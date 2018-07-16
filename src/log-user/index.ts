@@ -23,7 +23,7 @@ import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
-import { LogUser } from './log.user';
+import { LogUserDocument } from './log.user.document';
 import { logUserSchema } from './log.user.schema';
 import { LogUserSerializer } from './log.user.serializer';
 
@@ -36,7 +36,7 @@ export class LogUserEndPoint extends EndPoint {
 	}
 
 	public async register(app: Application): Promise<void> {
-		state.models.LogUser = mongoose.model<LogUser>('LogUser', logUserSchema);
+		state.models.LogUser = mongoose.model<LogUserDocument>('LogUser', logUserSchema);
 		state.serializers.LogUser = new LogUserSerializer();
 	}
 }

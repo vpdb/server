@@ -26,14 +26,14 @@ import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
 import { mailer } from '../../common/mailer';
 import { Context } from '../../common/typings/context';
-import { File } from '../../files/file';
-import { Game } from '../../games/game';
+import { FileDocument } from '../../files/file.document';
+import { GameDocument } from '../../games/game.document';
 import { LogEventUtil } from '../../log-event/log.event.util';
 import { state } from '../../state';
-import { User } from '../../users/user';
+import { UserDocument } from '../../users/user.document';
 import { ReleaseAbstractApi } from '../release.abstract.api';
-import { ReleaseVersionFile } from './file/release.version.file';
-import { ReleaseVersion } from './release.version';
+import { ReleaseVersionFileDocument } from './file/release.version.file.document';
+import { ReleaseVersionDocument } from './release.version.document';
 
 /* tslint:disable:no-unsafe-finally */
 export class ReleaseVersionApi extends ReleaseAbstractApi {
@@ -69,7 +69,7 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 		}
 
 		// set defaults
-		const versionObj = defaults(ctx.request.body, { released_at: now }) as ReleaseVersion;
+		const versionObj = defaults(ctx.request.body, { released_at: now }) as ReleaseVersionDocument;
 		if (versionObj.files) {
 			versionObj.files.forEach(file => {
 				defaults(file, { released_at: now });
@@ -136,7 +136,7 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 		// log event
 		await LogEventUtil.log(ctx, 'create_release_version', true, {
 			release: pick(state.serializers.Release.detailed(ctx, release, { thumbFormat: 'medium' }), ['id', 'name', 'authors', 'versions']),
-			game: pick(state.serializers.Game.simple(ctx, release._game as Game), ['id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type']),
+			game: pick(state.serializers.Game.simple(ctx, release._game as GameDocument), ['id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type']),
 		}, {
 			release: release._id,
 			game: release._game._id,
@@ -144,8 +144,8 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 
 		// notify (co-)author(s)
 		for (const author of release.authors) {
-			if ((author._user as User).id !== ctx.state.user.id) {
-				await mailer.releaseVersionAdded(ctx.state.user, author._user as User, release, newVersion);
+			if ((author._user as UserDocument).id !== ctx.state.user.id) {
+				await mailer.releaseVersionAdded(ctx.state.user, author._user as UserDocument, release, newVersion);
 			}
 		}
 	}
@@ -199,13 +199,13 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 		const versionToUpdate = releaseToUpdate.versions.find(v => v.version === ctx.params.version);
 		const oldVersion = cloneDeep(versionToUpdate);
 
-		const newFiles: ReleaseVersionFile[] = [];
+		const newFiles: ReleaseVersionFileDocument[] = [];
 		logger.info('[ReleaseApi.updateVersion] %s', inspect(ctx.request.body, { depth: null }));
 
 		for (const fileObj of (ctx.request.body.files || [])) {
 
 			// check if file reference is already part of this version
-			const existingVersionFile = version.files.find(f => (f._file as File).id === fileObj._file);
+			const existingVersionFile = version.files.find(f => (f._file as FileDocument).id === fileObj._file);
 			if (existingVersionFile) {
 				const versionFileToUpdate = versionToUpdate.files.find(f => f._id.equals(existingVersionFile._id));
 				await versionFileToUpdate.updateInstance(pick(fileObj, updatableFileFields));
@@ -270,9 +270,9 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 
 		// notify (co-)author(s)
 		for (const author of release.authors) {
-			if ((author._user as User).id !== ctx.state.user.id) {
+			if ((author._user as UserDocument).id !== ctx.state.user.id) {
 				for (const versionFile of newFiles) {
-					await mailer.releaseFileAdded(ctx.state.user, author._user as User, release, version, versionFile);
+					await mailer.releaseFileAdded(ctx.state.user, author._user as UserDocument, release, version, versionFile);
 				}
 			}
 		}

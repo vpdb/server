@@ -23,7 +23,7 @@ import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
-import { Medium } from './medium';
+import { MediumDocument } from './medium.document';
 import { mediumApiRouter } from './medium.api.router';
 import { MediumModel, mediumSchema } from './medium.schema';
 import { MediumSerializer } from './medium.serializer';
@@ -37,7 +37,7 @@ export class MediaApiEndPoint extends EndPoint {
 	}
 
 	public async register(app: Application): Promise<void> {
-		state.models.Medium = mongoose.model<Medium, MediumModel>('Medium', mediumSchema);
+		state.models.Medium = mongoose.model<MediumDocument, MediumModel>('Medium', mediumSchema);
 		state.serializers.Medium = new MediumSerializer();
 	}
 }

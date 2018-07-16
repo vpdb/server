@@ -18,8 +18,8 @@
  */
 
 import { Context as KoaContext } from 'koa';
-import { Token } from '../../tokens/token';
-import { User } from '../../users/user';
+import { TokenDocument } from '../../tokens/token.document';
+import { UserDocument } from '../../users/user.document';
 import { ApiError } from '../api.error';
 
 export interface Context extends KoaContext {
@@ -28,12 +28,12 @@ export interface Context extends KoaContext {
 		/**
 		 * The currently logged user or null if not authenticated.
 		 */
-		user: User;
+		user: UserDocument;
 
 		/**
 		 * If logged with an app token, this is it
 		 */
-		appToken: Token;
+		appToken: TokenDocument;
 
 		/**
 		 * The type of the token used for authentication.

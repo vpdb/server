@@ -25,9 +25,9 @@ import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
 import { Context } from '../common/typings/context';
-import { Game } from '../games/game';
+import { GameDocument } from '../games/game.document';
 import { state } from '../state';
-import { LogEvent } from './log.event';
+import { LogEventDocument } from './log.event.document';
 
 export class LogEventApi extends Api {
 
@@ -140,7 +140,7 @@ export class LogEventApi extends Api {
 			}
 			logger.info('[LogEventApi.list] Events query: %s', inspect(query, { depth: null }));
 
-			let docs: LogEvent[] = [];
+			let docs: LogEventDocument[] = [];
 			let count = 0;
 
 			// don't bother querying if a previous selection came up empty

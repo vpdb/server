@@ -22,11 +22,11 @@ import { PrettyIdModel, Schema, Types } from 'mongoose';
 import { fileReferencePlugin } from '../../common/mongoose/file.reference.plugin';
 import { prettyIdPlugin } from '../../common/mongoose/pretty.id.plugin';
 import { state } from '../../state';
-import { Release } from '../release';
-import { ReleaseFileFlavor, ReleaseVersionFile } from './file/release.version.file';
+import { ReleaseDocument } from '../release.doument';
+import { ReleaseFileFlavor, ReleaseVersionFileDocument } from './file/release.version.file.document';
 import { releaseVersionFileFields, releaseVersionFileSchema } from './file/release.version.file.schema';
-import { ReleaseVersion } from './release.version';
 import { ReleaseVersionDocument } from './release.version.document';
+import { ReleaseVersion } from './release.version';
 
 export const releaseVersionFields = {
 	version: { type: String, required: 'Version must be provided.' },
@@ -43,7 +43,7 @@ export const releaseVersionFields = {
 	},
 };
 
-export interface ReleaseVersionModel extends PrettyIdModel<ReleaseVersion> {}
+export interface ReleaseVersionModel extends PrettyIdModel<ReleaseVersionDocument> {}
 export const releaseVersionSchema = new Schema(releaseVersionFields, { toObject: { virtuals: true, versionKey: false } });
 
 releaseVersionSchema.plugin(fileReferencePlugin);
@@ -55,7 +55,7 @@ releaseVersionSchema.plugin(prettyIdPlugin, { model: 'ReleaseVersion' });
  * Note that individual files cannot be updated; they can only be added or
  * removed. Thus, we base the file index (i) on new items only.
  */
-releaseVersionSchema.path('files').validate(async function(files: ReleaseVersionFile[]) {
+releaseVersionSchema.path('files').validate(async function(files: ReleaseVersionFileDocument[]) {
 
 	// ignore if no files set
 	if (!isArray(files) || files.length === 0) {
@@ -63,7 +63,7 @@ releaseVersionSchema.path('files').validate(async function(files: ReleaseVersion
 	}
 
 	let hasTableFile = false;
-	const tableFiles: Array<{ file: ReleaseVersionFile, index: number }> = [];
+	const tableFiles: Array<{ file: ReleaseVersionFileDocument, index: number }> = [];
 
 	let index = 0; // when updating a version, ignore existing files, so increment only if new
 	for (const f of files) {
@@ -131,7 +131,7 @@ releaseVersionSchema.path('files').validate(async function(files: ReleaseVersion
  * @param {int} index Index of the file in the request body
  * @returns {Promise<boolean>} Promise resolving in true if the file was a table file or false otherwise
  */
-async function validateFile(release: Release, tableFile: ReleaseVersionFile, index: number): Promise<boolean> {
+async function validateFile(release: ReleaseDocument, tableFile: ReleaseVersionFileDocument, index: number): Promise<boolean> {
 
 	if (!tableFile._file) {
 		return Promise.resolve(false);
@@ -242,10 +242,10 @@ function nonEmptyArray(value: any[]) {
 	return isArray(value) && value.length > 0;
 }
 
-releaseVersionSchema.methods.getFileIds = function(this: ReleaseVersion, files?: ReleaseVersionFile[]): string[] {
-	return ReleaseVersionDocument.getFileIds(this, files);
+releaseVersionSchema.methods.getFileIds = function(this: ReleaseVersionDocument, files?: ReleaseVersionFileDocument[]): string[] {
+	return ReleaseVersion.getFileIds(this, files);
 };
 
-releaseVersionSchema.methods.getPlayfieldImageIds = function(this: ReleaseVersion): string[] {
-	return ReleaseVersionDocument.getPlayfieldImageIds(this.files);
+releaseVersionSchema.methods.getPlayfieldImageIds = function(this: ReleaseVersionDocument): string[] {
+	return ReleaseVersion.getPlayfieldImageIds(this.files);
 };

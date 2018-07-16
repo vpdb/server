@@ -23,19 +23,19 @@ import { logger } from '../common/logger';
 import { slackbot } from '../common/slackbot';
 import { Context } from '../common/typings/context';
 import { state } from '../state';
-import { User } from '../users/user';
+import { UserDocument } from '../users/user.document';
 
 export class LogUserUtil {
 
-	public static async success(ctx: Context, user: User, event: string, payload?: { [key: string]: any }, actor?: User): Promise<void> {
+	public static async success(ctx: Context, user: UserDocument, event: string, payload?: { [key: string]: any }, actor?: UserDocument): Promise<void> {
 		await LogUserUtil.log(ctx, user, 'success', event, payload, actor, undefined);
 	}
 
-	public static async failure(ctx: Context, user: User, event: string, payload: { [key: string]: any }, actor: User, message: string): Promise<void> {
+	public static async failure(ctx: Context, user: UserDocument, event: string, payload: { [key: string]: any }, actor: UserDocument, message: string): Promise<void> {
 		await LogUserUtil.log(ctx, user, 'failure', event, payload, actor, message);
 	}
 
-	public static async successDiff(ctx: Context, user: User, event: string, obj1: { [key: string]: any }, obj2: { [key: string]: any }, actor?: User) {
+	public static async successDiff(ctx: Context, user: UserDocument, event: string, obj1: { [key: string]: any }, obj2: { [key: string]: any }, actor?: UserDocument) {
 		const diff = LogUserUtil.diff(obj1, obj2);
 		if (diff && !isEmpty(diff.new)) {
 			await LogUserUtil.success(ctx, user, event, diff, actor);
@@ -52,7 +52,7 @@ export class LogUserUtil {
 		}, { old: {}, new: {} });
 	}
 
-	private static async log(ctx: Context, user: User, result: 'success' | 'failure', event: string, payload: { [key: string]: any }, actor: User, message: string): Promise<void> {
+	private static async log(ctx: Context, user: UserDocument, result: 'success' | 'failure', event: string, payload: { [key: string]: any }, actor: UserDocument, message: string): Promise<void> {
 		actor = actor || user;
 		const log = new state.models.LogUser({
 			_user: user._id || user,

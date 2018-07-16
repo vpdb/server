@@ -23,17 +23,17 @@ import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
-import { Release } from './release';
+import { ReleaseDocument } from './release.doument';
 import { releaseApiRouter } from './release.api.router';
 import { ReleaseModel, releaseSchema } from './release.schema';
 import { ReleaseSerializer } from './release.serializer';
 import { releaseStorageRouter } from './release.storage.router';
 import { TableBlock } from './release.tableblock';
 import { tableBlockSchema } from './release.tableblock.schema';
-import { ReleaseVersionFile } from './version/file/release.version.file';
+import { ReleaseVersionFileDocument } from './version/file/release.version.file.document';
 import { ReleaseVersionFileModel, releaseVersionFileSchema } from './version/file/release.version.file.schema';
 import { ReleaseVersionFileSerializer } from './version/file/release.version.file.serializer';
-import { ReleaseVersion } from './version/release.version';
+import { ReleaseVersionDocument } from './version/release.version.document';
 import { ReleaseVersionModel, releaseVersionSchema } from './version/release.version.schema';
 import { ReleaseVersionSerializer } from './version/release.version.serializer';
 
@@ -46,9 +46,9 @@ export class ReleaseEndPoint extends EndPoint {
 	}
 
 	public async register(app: Application): Promise<void> {
-		state.models.Release = mongoose.model<Release>('Release', releaseSchema) as ReleaseModel;
-		state.models.ReleaseVersion = mongoose.model<ReleaseVersion, ReleaseVersionModel>('ReleaseVersion', releaseVersionSchema);
-		state.models.ReleaseVersionFile = mongoose.model<ReleaseVersionFile, ReleaseVersionFileModel>('ReleaseVersionFile', releaseVersionFileSchema);
+		state.models.Release = mongoose.model<ReleaseDocument>('Release', releaseSchema) as ReleaseModel;
+		state.models.ReleaseVersion = mongoose.model<ReleaseVersionDocument, ReleaseVersionModel>('ReleaseVersion', releaseVersionSchema);
+		state.models.ReleaseVersionFile = mongoose.model<ReleaseVersionFileDocument, ReleaseVersionFileModel>('ReleaseVersionFile', releaseVersionFileSchema);
 		state.serializers.Release = new ReleaseSerializer();
 		state.serializers.ReleaseVersion = new ReleaseVersionSerializer();
 		state.serializers.ReleaseVersionFile = new ReleaseVersionFileSerializer();

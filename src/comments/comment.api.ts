@@ -24,10 +24,10 @@ import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
 import { mailer } from '../common/mailer';
 import { Context } from '../common/typings/context';
-import { Game } from '../games/game';
+import { GameDocument } from '../games/game.document';
 import { LogEventUtil } from '../log-event/log.event.util';
 import { state } from '../state';
-import { User } from '../users/user';
+import { UserDocument } from '../users/user.document';
 
 export class CommentApi extends Api {
 
@@ -47,7 +47,7 @@ export class CommentApi extends Api {
 		if (!release) {
 			throw new ApiError('No such release with ID "%s"', ctx.params.id).status(404);
 		}
-		const game = release._game as Game;
+		const game = release._game as GameDocument;
 		if (game.isRestricted('release')) {
 			throw new ApiError('No such release with ID "%s"', ctx.params.id).status(404);
 		}
@@ -80,8 +80,8 @@ export class CommentApi extends Api {
 		await apiCache.invalidateReleaseComment(release);
 
 		// notify release creator (only if not the same user)
-		if ((release._created_by as User).id !== ctx.state.user.id) {
-			await mailer.releaseCommented(release._created_by as User, ctx.state.user, game, release, ctx.request.body.message);
+		if ((release._created_by as UserDocument).id !== ctx.state.user.id) {
+			await mailer.releaseCommented(release._created_by as UserDocument, ctx.state.user, game, release, ctx.request.body.message);
 		}
 	}
 

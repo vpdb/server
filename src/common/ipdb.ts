@@ -21,7 +21,7 @@ import axios from 'axios';
 import ent from 'ent';
 import { isUndefined } from 'lodash';
 
-import { Game } from '../games/game';
+import { GameDocument } from '../games/game.document';
 import { ApiError } from './api.error';
 import { logger } from './logger';
 
@@ -124,7 +124,7 @@ class Ipdb {
 		};
 
 		const titleMatch = body.match(/<a name="(\d+)">([^<]+)/i);
-		const game: Game = { ipdb: {} } as Game;
+		const game: GameDocument = { ipdb: {} } as GameDocument;
 
 		/* istanbul ignore else */
 		if (titleMatch) {

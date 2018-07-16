@@ -24,7 +24,7 @@ import { promisify } from 'util';
 import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
 import { XmlParser } from '../../common/xml.parser';
-import { File } from '../file';
+import { FileDocument } from '../file.document';
 import { BackglassVariation, FileVariation } from '../file.variations';
 import { OptimizationProcessor } from './processor';
 
@@ -36,7 +36,7 @@ export class Directb2sOptimizationProcessor implements OptimizationProcessor<Bac
 
 	public name: string = 'directb2s.optimization';
 
-	public canProcess(file: File, variation?: FileVariation): boolean {
+	public canProcess(file: FileDocument, variation?: FileVariation): boolean {
 		return file.getMimeType(variation) === 'application/x-directb2s';
 	}
 
@@ -44,7 +44,7 @@ export class Directb2sOptimizationProcessor implements OptimizationProcessor<Bac
 		return 600 + (variation && variation.priority ? variation.priority : 0);
 	}
 
-	public async process(file: File, src: string, dest: string, variation?: BackglassVariation): Promise<string> {
+	public async process(file: FileDocument, src: string, dest: string, variation?: BackglassVariation): Promise<string> {
 
 		logger.debug('[Directb2sOptimizationProcessor] Starting processing %s at %s.', file.toShortString(variation), dest);
 

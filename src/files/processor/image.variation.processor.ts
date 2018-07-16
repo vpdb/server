@@ -21,7 +21,7 @@ import { createWriteStream } from 'fs';
 import gm from 'gm';
 
 import { logger } from '../../common/logger';
-import { File } from '../file';
+import { FileDocument } from '../file.document';
 import { FileUtil } from '../file.util';
 import { FileVariation, ImageFileVariation } from '../file.variations';
 import { CreationProcessor } from './processor';
@@ -32,7 +32,7 @@ export class ImageVariationProcessor implements CreationProcessor<ImageFileVaria
 
 	public name: string = 'image.variation';
 
-	public canProcess(file: File, srcVariation: FileVariation, destVariation: FileVariation): boolean {
+	public canProcess(file: FileDocument, srcVariation: FileVariation, destVariation: FileVariation): boolean {
 		return file.getMimeTypePrimary(srcVariation) === 'image' && file.getMimeTypePrimary(srcVariation) === 'image';
 	}
 
@@ -40,7 +40,7 @@ export class ImageVariationProcessor implements CreationProcessor<ImageFileVaria
 		return 100 + (variation && variation.priority ? variation.priority : 0);
 	}
 
-	public async process(file: File, src: string, dest: string, variation?: ImageFileVariation): Promise<string> {
+	public async process(file: FileDocument, src: string, dest: string, variation?: ImageFileVariation): Promise<string> {
 
 		logger.debug('[ImageVariationProcessor] Start: %s from %s to %s', file.toDetailedString(variation), FileUtil.log(src), FileUtil.log(dest));
 
@@ -86,7 +86,7 @@ export class ImageVariationProcessor implements CreationProcessor<ImageFileVaria
 		logger.debug('[ImageVariationProcessor] Saving: %s to %s', file.toDetailedString(variation), FileUtil.log(dest));
 		//await (img as any).writeAsync(dest);
 
-		await new Promise<File>((resolve, reject) => {
+		await new Promise<FileDocument>((resolve, reject) => {
 			const writeStream = createWriteStream(dest);
 			// setup success handler
 			writeStream.on('finish', () => {

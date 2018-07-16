@@ -19,7 +19,7 @@
 
 import { PaginateModel, Schema } from 'mongoose';
 import paginatePlugin = require('mongoose-paginate');
-import { LogEvent } from './log.event';
+import { LogEventDocument } from './log.event.document';
 
 // also update slackbot when adding new events
 const events = [
@@ -55,7 +55,7 @@ export const logEventFields = {
 	ip: { type: String, required: true },
 	logged_at: { type: Date, required: true },
 };
-export interface LogEventModel extends PaginateModel<LogEvent> { }
+export interface LogEventModel extends PaginateModel<LogEventDocument> { }
 export const logEventSchema = new Schema(logEventFields, { toObject: { virtuals: true, versionKey: false } });
 
 //-----------------------------------------------------------------------------

@@ -18,21 +18,23 @@
  */
 
 import { Document, Types } from 'mongoose';
-import { Backglass } from '../backglasses/backglass';
-import { Game } from '../games/game';
-import { Medium } from '../media/medium';
-import { Release } from '../releases/release';
-import { User } from '../users/user';
+import { UserDocument } from '../users/user.document';
 
-export interface Star extends Document {
-	_from: User | Types.ObjectId;
-	_ref: {
-		game: Game | Types.ObjectId,
-		release: Release | Types.ObjectId,
-		user: User | Types.ObjectId,
-		medium: Medium | Types.ObjectId,
-		backglass: Backglass | Types.ObjectId,
-	};
-	type: 'game' | 'release' | 'user' | 'medium' | 'backglass';
+export interface TokenDocument extends Document {
+	id: string;
+	token: string;
+	label: string;
+	type: 'personal' | 'provider' | 'jwt-refreshed' | 'jwt';
+	scopes: string[];
+	provider: string;
+	is_active: boolean;
+	last_used_at: Date;
+	expires_at: Date;
 	created_at: Date;
+	_created_by: UserDocument | Types.ObjectId;
+
+	// generated
+	browser?: IUAParser.IResult;
+	for_user?: string;
+	for_path?: string;
 }

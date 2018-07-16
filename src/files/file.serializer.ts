@@ -21,39 +21,39 @@ import { assign, pick } from 'lodash';
 import { quota } from '../common/quota';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { Context } from '../common/typings/context';
-import { File } from './file';
 import { FileDocument } from './file.document';
+import { File } from './file';
 import { Metadata } from './metadata/metadata';
 
-export class FileSerializer extends Serializer<File> {
+export class FileSerializer extends Serializer<FileDocument> {
 
-	protected _reduced(ctx: Context, doc: File, opts: SerializerOptions): File {
-		return pick(doc, ['id', 'name', 'bytes', 'mime_type']) as File;
+	protected _reduced(ctx: Context, doc: FileDocument, opts: SerializerOptions): FileDocument {
+		return pick(doc, ['id', 'name', 'bytes', 'mime_type']) as FileDocument;
 	}
 
-	protected _simple(ctx: Context, doc: File, opts: SerializerOptions): File {
+	protected _simple(ctx: Context, doc: FileDocument, opts: SerializerOptions): FileDocument {
 		const file = this._reduced(ctx, doc, opts);
 		const cost = quota.getCost(doc);
 		file.bytes = doc.bytes;
 		file.cost = cost > 0 ? cost : undefined;
-		file.url = FileDocument.getUrl(doc);
-		file.is_protected = FileDocument.isPublic(doc) ? undefined : true;
+		file.url = File.getUrl(doc);
+		file.is_protected = File.isPublic(doc) ? undefined : true;
 		file.counter = doc.counter;
 
 		// file variations
 		file.variations = {};
-		FileDocument.getVariations(doc).forEach(variation => {
+		File.getVariations(doc).forEach(variation => {
 			const fileCost = quota.getCost(doc, variation);
 			file.variations[variation.name] = doc.variations ? doc.variations[variation.name] || {} : {};
-			file.variations[variation.name].url = FileDocument.getUrl(doc, variation);
-			file.variations[variation.name].is_protected = FileDocument.isPublic(doc, variation) ? undefined : true;
+			file.variations[variation.name].url = File.getUrl(doc, variation);
+			file.variations[variation.name].is_protected = File.isPublic(doc, variation) ? undefined : true;
 			file.variations[variation.name].fileCost = fileCost > 0 ? fileCost : undefined;
 		});
 
 		return file;
 	}
 
-	protected _detailed(ctx: Context, doc: File, opts: SerializerOptions): File {
+	protected _detailed(ctx: Context, doc: FileDocument, opts: SerializerOptions): FileDocument {
 		const file = this._simple(ctx, doc, opts);
 		assign(file, pick(doc, ['is_active', 'created_at', 'file_type' ]));
 

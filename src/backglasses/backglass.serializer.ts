@@ -21,45 +21,45 @@ import { pick } from 'lodash';
 
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { Context } from '../common/typings/context';
-import { Game } from '../games/game';
+import { GameDocument } from '../games/game.document';
 import { state } from '../state';
-import { User } from '../users/user';
-import { Backglass } from './backglass';
+import { UserDocument } from '../users/user.document';
+import { BackglassDocument } from './backglass.document';
 import { BackglassVersion } from './backglass.version';
 
-export class BackglassSerializer extends Serializer<Backglass> {
+export class BackglassSerializer extends Serializer<BackglassDocument> {
 
-	protected _reduced(ctx: Context, doc: Backglass, opts: SerializerOptions): Backglass {
+	protected _reduced(ctx: Context, doc: BackglassDocument, opts: SerializerOptions): BackglassDocument {
 		return this._serialize(ctx, doc, opts, state.serializers.BackglassVersion.reduced.bind(state.serializers.BackglassVersion));
 	}
 
-	protected _simple(ctx: Context, doc: Backglass, opts: SerializerOptions): Backglass {
+	protected _simple(ctx: Context, doc: BackglassDocument, opts: SerializerOptions): BackglassDocument {
 		return this._serialize(ctx, doc, opts, state.serializers.BackglassVersion.simple.bind(state.serializers.BackglassVersion));
 	}
 
-	protected _detailed(ctx: Context, doc: Backglass, opts: SerializerOptions): Backglass {
+	protected _detailed(ctx: Context, doc: BackglassDocument, opts: SerializerOptions): BackglassDocument {
 		const backglass = this._serialize(ctx, doc, opts, state.serializers.BackglassVersion.simple.bind(state.serializers.BackglassVersion));
 
 		// creator
 		if (this._populated(doc, '_created_by')) {
-			backglass.created_by = state.serializers.User.reduced(ctx, doc._created_by as User, opts);
+			backglass.created_by = state.serializers.User.reduced(ctx, doc._created_by as UserDocument, opts);
 		}
 
 		return backglass;
 	}
 
-	private _serialize(ctx: Context, doc: Backglass, opts: SerializerOptions,
-			versionSerializer: (ctx: Context, doc: BackglassVersion, opts: SerializerOptions) => BackglassVersion): Backglass {
+	private _serialize(ctx: Context, doc: BackglassDocument, opts: SerializerOptions,
+					   versionSerializer: (ctx: Context, doc: BackglassVersion, opts: SerializerOptions) => BackglassVersion): BackglassDocument {
 
 		// primitive fields
-		const backglass = pick(doc, ['id', 'description', 'acknowledgements', 'created_at']) as Backglass;
+		const backglass = pick(doc, ['id', 'description', 'acknowledgements', 'created_at']) as BackglassDocument;
 
 		// versions
 		backglass.versions = doc.versions.map(version => versionSerializer(ctx, version, opts));
 
 		// game
 		if (this._populated(doc, '_game')) {
-			backglass.game = state.serializers.Game.reduced(ctx, doc._game as Game, opts);
+			backglass.game = state.serializers.Game.reduced(ctx, doc._game as GameDocument, opts);
 		}
 
 		// authors

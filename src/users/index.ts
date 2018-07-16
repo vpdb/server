@@ -24,7 +24,7 @@ import mongoose from 'mongoose';
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
 import { ContentAuthorSerializer } from './content.author.serializer';
-import { User } from './user';
+import { UserDocument } from './user.document';
 import { userApiRouter } from './user.api.router';
 import { UserModel, userSchema } from './user.schema';
 import { UserSerializer } from './user.serializer';
@@ -38,7 +38,7 @@ export class UserEndPoint extends EndPoint {
 	}
 
 	public async register(app: Application): Promise<void> {
-		state.models.User = mongoose.model<User, UserModel>('User', userSchema);
+		state.models.User = mongoose.model<UserDocument, UserModel>('User', userSchema);
 		state.serializers.User = new UserSerializer();
 		state.serializers.ContentAuthor = new ContentAuthorSerializer();
 	}

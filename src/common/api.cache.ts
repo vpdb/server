@@ -22,9 +22,9 @@ import { get, intersection, isObject } from 'lodash';
 import pathToRegexp from 'path-to-regexp';
 
 import { MetricsDocument, MetricsModel } from 'mongoose';
-import { Release } from '../releases/release';
+import { ReleaseDocument } from '../releases/release.doument';
 import { state } from '../state';
-import { User } from '../users/user';
+import { UserDocument } from '../users/user.document';
 import { logger } from './logger';
 import { Context } from './typings/context';
 
@@ -155,10 +155,10 @@ class ApiCache {
 	 * Invalidates caches depending on a star.
 	 *
 	 * @param {string} modelName Name of the model, e.g. "game"
-	 * @param {User} user User who starred the entity
+	 * @param {UserDocument} user User who starred the entity
 	 * @param entity Starred entity
 	 */
-	public async invalidateStarredEntity(modelName: string, entity: any, user: User) {
+	public async invalidateStarredEntity(modelName: string, entity: any, user: UserDocument) {
 		const tags: CacheInvalidationTag[][] = [];
 
 		/** list endpoints that include the user's starred status in the payload */
@@ -173,7 +173,7 @@ class ApiCache {
 		await this.invalidate(...tags);
 	}
 
-	public async invalidateRelease(release?: Release) {
+	public async invalidateRelease(release?: ReleaseDocument) {
 		if (release) {
 			await this.invalidateEntity('release', release.id);
 		} else {
@@ -181,7 +181,7 @@ class ApiCache {
 		}
 	}
 
-	public async invalidateReleaseComment(release: Release) {
+	public async invalidateReleaseComment(release: ReleaseDocument) {
 		await this.invalidate([{ entities: { releaseComment: release.id } }]);
 	}
 
@@ -431,7 +431,7 @@ class ApiCache {
 		return this.redisRefPrefix + 'entity:' + modelName + ':' + entityId;
 	}
 
-	private getUserKey(user: User): string {
+	private getUserKey(user: UserDocument): string {
 		return this.redisRefPrefix + 'user:' + user.id;
 	}
 
@@ -498,7 +498,7 @@ export interface CacheInvalidationTag {
 	 * Invalidate user-specific caches.
 	 * All caches for that user will be invalidated.
 	 */
-	user?: User;
+	user?: UserDocument;
 }
 
 /**

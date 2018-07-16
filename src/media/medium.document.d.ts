@@ -19,19 +19,19 @@
 
 import { FileReferenceDocument, MetricsDocument, PrettyIdDocument, Types } from 'mongoose';
 
-import { File } from '../files/file';
-import { Game } from '../games/game';
-import { Release } from '../releases/release';
-import { User } from '../users/user';
+import { FileDocument } from '../files/file.document';
+import { GameDocument } from '../games/game.document';
+import { ReleaseDocument } from '../releases/release.doument';
+import { UserDocument } from '../users/user.document';
 
-export interface Medium extends PrettyIdDocument, FileReferenceDocument, MetricsDocument {
+export interface MediumDocument extends PrettyIdDocument, FileReferenceDocument, MetricsDocument {
 
 	// from model
 	id: string;
-	_file: File | Types.ObjectId;
+	_file: FileDocument | Types.ObjectId;
 	_ref: {
-		game?: Game | Types.ObjectId;
-		release?: Release | Types.ObjectId;
+		game?: GameDocument | Types.ObjectId;
+		release?: ReleaseDocument | Types.ObjectId;
 	};
 	category: string;
 	description: string;
@@ -40,11 +40,11 @@ export interface Medium extends PrettyIdDocument, FileReferenceDocument, Metrics
 		stars: number;
 	};
 	created_at: Date;
-	_created_by: User | Types.ObjectId;
+	_created_by: UserDocument | Types.ObjectId;
 
 	// serialized
-	file?: File;
-	release?: Release;
-	game?: Game;
-	created_by?: User;
+	file?: FileDocument;
+	release?: ReleaseDocument;
+	game?: GameDocument;
+	created_by?: UserDocument;
 }

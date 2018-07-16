@@ -17,22 +17,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 import { Document, Types } from 'mongoose';
-import { Backglass } from '../backglasses/backglass';
-import { Build } from '../builds/build';
-import { GameRequest } from '../game-requests/game.request';
-import { Game } from '../games/game';
-import { Release } from '../releases/release';
-import { User } from '../users/user';
+import { BackglassDocument } from '../backglasses/backglass.document';
+import { BuildDocument } from '../builds/build.document';
+import { GameRequestDocument } from '../game-requests/game.request.document';
+import { GameDocument } from '../games/game.document';
+import { ReleaseDocument } from '../releases/release.doument';
+import { UserDocument } from '../users/user.document';
 
-export interface LogEvent extends Document {
-	_actor: User | Types.ObjectId;
+export interface LogEventDocument extends Document {
+	_actor: UserDocument | Types.ObjectId;
 	_ref: {
-		game?: Game | Types.ObjectId;
-		release?: Release | Types.ObjectId;
-		backglass?: Backglass | Types.ObjectId;
-		user?: User | Types.ObjectId;
-		game_request?: GameRequest | Types.ObjectId;
-		build?: Build | Types.ObjectId;
+		game?: GameDocument | Types.ObjectId;
+		release?: ReleaseDocument | Types.ObjectId;
+		backglass?: BackglassDocument | Types.ObjectId;
+		user?: UserDocument | Types.ObjectId;
+		game_request?: GameRequestDocument | Types.ObjectId;
+		build?: BuildDocument | Types.ObjectId;
 	};
 	event: string;
 	payload: any;
@@ -41,13 +41,13 @@ export interface LogEvent extends Document {
 	logged_at: Date;
 
 	// serialized
-	actor: User;
+	actor: UserDocument;
 	ref?: {
-		game?: Game;
-		release?: Release;
-		backglass?: Backglass;
-		user?: User;
-		game_request?: GameRequest;
-		build?: Build;
+		game?: GameDocument;
+		release?: ReleaseDocument;
+		backglass?: BackglassDocument;
+		user?: UserDocument;
+		game_request?: GameRequestDocument;
+		build?: BuildDocument;
 	};
 }

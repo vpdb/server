@@ -23,7 +23,7 @@ import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
-import { Token } from './token';
+import { TokenDocument } from './token.document';
 import { tokenApiRouter } from './token.api.router';
 import { tokenSchema } from './token.schema';
 import { TokenSerializer } from './token.serializer';
@@ -37,7 +37,7 @@ export class TokenEndPoint extends EndPoint {
 	}
 
 	public async register(app: Application): Promise<void> {
-		state.models.Token = mongoose.model<Token>('Token', tokenSchema);
+		state.models.Token = mongoose.model<TokenDocument>('Token', tokenSchema);
 		state.serializers.Token = new TokenSerializer();
 	}
 }

@@ -23,7 +23,7 @@ import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
-import { Build } from './build';
+import { BuildDocument } from './build.document';
 import { buildApiRouter } from './build.router';
 import { buildSchema } from './build.schema';
 import { BuildSerializer } from './build.serializer';
@@ -42,7 +42,7 @@ export class BuildApiEndPoint extends EndPoint {
 	}
 
 	public async register(app: Application): Promise<void> {
-		state.models.Build = mongoose.model<Build>('Build', buildSchema);
+		state.models.Build = mongoose.model<BuildDocument>('Build', buildSchema);
 		state.serializers.Build = new BuildSerializer();
 		await this.importData(state.models.Build, initialBuilds);
 	}

@@ -22,55 +22,55 @@ import { assign, compact, flatten, intersection, isArray, isUndefined, orderBy, 
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { Context } from '../common/typings/context';
 import { Thumb } from '../common/typings/serializers';
-import { File } from '../files/file';
 import { FileDocument } from '../files/file.document';
-import { Game } from '../games/game';
+import { File } from '../files/file';
+import { GameDocument } from '../games/game.document';
 import { state } from '../state';
-import { Tag } from '../tags/tag';
-import { User } from '../users/user';
-import { Release } from './release';
+import { TagDocument } from '../tags/tag.document';
+import { UserDocument } from '../users/user.document';
+import { ReleaseDocument } from './release.doument';
 import { flavors } from './release.flavors';
-import { ReleaseFileFlavor, ReleaseVersionFile } from './version/file/release.version.file';
-import { ReleaseVersion } from './version/release.version';
+import { ReleaseFileFlavor, ReleaseVersionFileDocument } from './version/file/release.version.file.document';
+import { ReleaseVersionDocument } from './version/release.version.document';
 
-export class ReleaseSerializer extends Serializer<Release> {
+export class ReleaseSerializer extends Serializer<ReleaseDocument> {
 
-	protected _reduced(ctx: Context, doc: Release, opts: SerializerOptions): Release {
+	protected _reduced(ctx: Context, doc: ReleaseDocument, opts: SerializerOptions): ReleaseDocument {
 		return this._simple(ctx, doc, opts);
 	}
 
-	protected _simple(ctx: Context, doc: Release, opts: SerializerOptions): Release {
+	protected _simple(ctx: Context, doc: ReleaseDocument, opts: SerializerOptions): ReleaseDocument {
 		return this.serializeRelease(ctx, doc, opts, state.serializers.ReleaseVersion.simple.bind(state.serializers.ReleaseVersion), true);
 	}
 
-	protected _detailed(ctx: Context, doc: Release, opts: SerializerOptions): Release {
+	protected _detailed(ctx: Context, doc: ReleaseDocument, opts: SerializerOptions): ReleaseDocument {
 		return this.serializeRelease(ctx, doc, opts, state.serializers.ReleaseVersion.detailed.bind(state.serializers.ReleaseVersion), false,
 			['description', 'acknowledgements', 'license', 'modified_at']);
 	}
 
-	private serializeRelease(ctx: Context, doc: Release, opts: SerializerOptions,
-				versionSerializer: (ctx: Context, doc: ReleaseVersion, opts: SerializerOptions) => ReleaseVersion,
-				stripVersions: boolean,
-				additionalFields: string[] = []): Release {
+	private serializeRelease(ctx: Context, doc: ReleaseDocument, opts: SerializerOptions,
+							 versionSerializer: (ctx: Context, doc: ReleaseVersionDocument, opts: SerializerOptions) => ReleaseVersionDocument,
+							 stripVersions: boolean,
+							 additionalFields: string[] = []): ReleaseDocument {
 
 		const requestedFields = intersection(['description'], (ctx.query.include_fields || '').split(','));
 		additionalFields = additionalFields || [];
 		const fields = ['id', 'name', 'created_at', 'released_at', 'rating', ...additionalFields, ...requestedFields];
 
 		// primitive fields
-		const release = pick(doc, fields) as Release;
+		const release = pick(doc, fields) as ReleaseDocument;
 
 		release.metrics = doc.metrics;
 		release.counter = doc.counter;
 
 		// game
 		if (this._populated(doc, '_game')) {
-			release.game = state.serializers.Game.reduced(ctx, (doc._game as Game), opts);
+			release.game = state.serializers.Game.reduced(ctx, (doc._game as GameDocument), opts);
 		}
 
 		// tags
 		if (this._populated(doc, '_tags')) {
-			release.tags = (doc._tags as Tag[]).map(tag => state.serializers.Tag.simple(ctx, tag, opts));
+			release.tags = (doc._tags as TagDocument[]).map(tag => state.serializers.Tag.simple(ctx, tag, opts));
 		}
 
 		// links
@@ -82,7 +82,7 @@ export class ReleaseSerializer extends Serializer<Release> {
 
 		// creator
 		if (this._populated(doc, '_created_by')) {
-			release.created_by = state.serializers.User.reduced(ctx, doc._created_by as User, opts);
+			release.created_by = state.serializers.User.reduced(ctx, doc._created_by as UserDocument, opts);
 		}
 
 		// authors
@@ -122,11 +122,11 @@ export class ReleaseSerializer extends Serializer<Release> {
 	 * the best match.
 	 *
 	 * @param {Context} ctx Koa context
-	 * @param {ReleaseVersion[]} versions Version documents
+	 * @param {ReleaseVersionDocument[]} versions Version documents
 	 * @param {SerializerOptions} opts thumbFlavor: "orientation:fs,lighting:day", thumbFormat: variation name or "original"
 	 * @return {{image: Thumb, flavor: ReleaseFileFlavor}}
 	 */
-	public findThumb(ctx: Context, versions: ReleaseVersion[], opts: SerializerOptions): { image: Thumb, flavor: ReleaseFileFlavor } {
+	public findThumb(ctx: Context, versions: ReleaseVersionDocument[], opts: SerializerOptions): { image: Thumb, flavor: ReleaseFileFlavor } {
 
 		opts.thumbFormat = opts.thumbFormat || 'original';
 
@@ -141,12 +141,12 @@ export class ReleaseSerializer extends Serializer<Release> {
 
 		// get all table files
 		const releaseVersionTableFiles = flatten(versions.map(v => v.files))
-			.filter(file => FileDocument.getMimeCategory(file._file as File) === 'table');
+			.filter(file => File.getMimeCategory(file._file as FileDocument) === 'table');
 
 		// console.log('flavorParams: %j, flavorDefaults: %j', flavorParams, flavorDefaults);
 
 		// assign weights to each file depending on parameters
-		const filesByWeight: Array<{ file: ReleaseVersionFile, weight: number }> = orderBy(releaseVersionTableFiles.map(file => {
+		const filesByWeight: Array<{ file: ReleaseVersionFileDocument, weight: number }> = orderBy(releaseVersionTableFiles.map(file => {
 
 			/** @type {{ lighting:string, orientation:string }} */
 			const fileFlavor = file.flavor;
@@ -193,14 +193,14 @@ export class ReleaseSerializer extends Serializer<Release> {
 	 * Returns the default thumb of a file.
 	 *
 	 * @param {Context} ctx
-	 * @param {ReleaseVersionFile} versionFileDoc
+	 * @param {ReleaseVersionFileDocument} versionFileDoc
 	 * @param {SerializerOptions} opts
 	 * @return {Thumb}
 	 */
-	private getDefaultThumb(ctx: Context, versionFileDoc: ReleaseVersionFile, opts: SerializerOptions): Thumb {
+	private getDefaultThumb(ctx: Context, versionFileDoc: ReleaseVersionFileDocument, opts: SerializerOptions): Thumb {
 
 		const playfieldImage = this._populated(versionFileDoc, '_playfield_image')
-			? state.serializers.File.detailed(ctx, versionFileDoc._playfield_image as File, opts)
+			? state.serializers.File.detailed(ctx, versionFileDoc._playfield_image as FileDocument, opts)
 			: null;
 		if (!playfieldImage || !playfieldImage.metadata) {
 			return null;

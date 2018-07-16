@@ -28,11 +28,11 @@ import { logger } from '../common/logger';
 import { mailer } from '../common/mailer';
 import { SerializerOptions } from '../common/serializer';
 import { Context } from '../common/typings/context';
-import { Game } from '../games/game';
+import { GameDocument } from '../games/game.document';
 import { LogEventUtil } from '../log-event/log.event.util';
 import { state } from '../state';
-import { User } from '../users/user';
-import { Backglass } from './backglass';
+import { UserDocument } from '../users/user.document';
+import { BackglassDocument } from './backglass.document';
 
 export class BackglassApi extends Api {
 
@@ -103,7 +103,7 @@ export class BackglassApi extends Api {
 		// event log
 		await LogEventUtil.log(ctx, 'create_backglass', true, {
 			backglass: state.serializers.Backglass.detailed(ctx, populatedBackglass),
-			game: state.serializers.Game.reduced(ctx, populatedBackglass._game as Game),
+			game: state.serializers.Game.reduced(ctx, populatedBackglass._game as GameDocument),
 		}, {
 			backglass: populatedBackglass._id,
 			game: populatedBackglass._game._id,
@@ -152,7 +152,7 @@ export class BackglassApi extends Api {
 			const invalidFields = difference(submittedFields, updatableFields);
 			throw new ApiError('Invalid field%s: ["%s"]. Allowed fields: ["%s"]', invalidFields.length === 1 ? '' : 's', invalidFields.join('", "'), updatableFields.join('", "')).status(400).log();
 		}
-		const oldBackglass = cloneDeep(backglass) as Backglass;
+		const oldBackglass = cloneDeep(backglass) as BackglassDocument;
 
 		// apply changes
 		backglass = await backglass.updateInstance(ctx.request.body);
@@ -187,7 +187,7 @@ export class BackglassApi extends Api {
 		const pagination = this.pagination(ctx, 10, 30);
 		const serializerOpts: SerializerOptions = {};
 		const populate = ['authors._user', 'versions._file'];
-		let game: Game;
+		let game: GameDocument;
 		// list roms of a game below /api/v1/games/{gameId}
 		if (ctx.params.gameId) {
 			game = await state.models.Game.findOne({ id: ctx.params.gameId }).exec();
@@ -258,7 +258,7 @@ export class BackglassApi extends Api {
 		if (populated !== false) {
 			serializerOpts.includedFields = ['moderation'];
 		}
-		return this.success(ctx, state.serializers.Backglass.detailed(ctx, populated as Backglass, serializerOpts));
+		return this.success(ctx, state.serializers.Backglass.detailed(ctx, populated as BackglassDocument, serializerOpts));
 	}
 
 	/**
@@ -289,7 +289,7 @@ export class BackglassApi extends Api {
 		// event log
 		await LogEventUtil.log(ctx, 'delete_backglass', false, {
 			backglass: pick(state.serializers.Backglass.detailed(ctx, backglass), ['id', 'authors', 'versions']),
-			game: state.serializers.Game.simple(ctx, backglass._game as Game),
+			game: state.serializers.Game.simple(ctx, backglass._game as GameDocument),
 		}, {
 			backglass: backglass._id,
 			game: backglass._game._id,
@@ -314,10 +314,10 @@ export class BackglassApi extends Api {
 		const moderationEvent = await state.models.Backglass.handleModeration(ctx, backglass);
 		switch (moderationEvent.event) {
 			case 'approved':
-				await mailer.backglassApproved(backglass._created_by as User, backglass, moderationEvent.message);
+				await mailer.backglassApproved(backglass._created_by as UserDocument, backglass, moderationEvent.message);
 				break;
 			case 'refused':
-				await mailer.backglassRefused(backglass._created_by as User, backglass, moderationEvent.message);
+				await mailer.backglassRefused(backglass._created_by as UserDocument, backglass, moderationEvent.message);
 				break;
 		}
 		backglass = await state.models.Backglass.findById(backglass._id)

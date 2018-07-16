@@ -23,7 +23,7 @@ import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
-import { File } from './file';
+import { FileDocument } from './file.document';
 import { fileApiRouter } from './file.api.router';
 import { FileModel, fileSchema } from './file.schema';
 import { FileSerializer } from './file.serializer';
@@ -38,7 +38,7 @@ export class FilesApiEndPoint extends EndPoint {
 	}
 
 	public async register(app: Application): Promise<void> {
-		state.models.File = mongoose.model<File, FileModel>('File', fileSchema);
+		state.models.File = mongoose.model<FileDocument, FileModel>('File', fileSchema);
 		state.serializers.File = new FileSerializer();
 	}
 }

@@ -20,19 +20,19 @@
 import { encode as jwtEncode } from 'jwt-simple';
 import { parse } from 'url';
 import { config } from '../common/settings';
-import { User } from '../users/user';
+import { UserDocument } from '../users/user.document';
 
 export class AuthenticationUtil {
 
 	/**
 	 * Creates a JSON Web Token for a given user and time.
 	 *
-	 * @param {User} user User to issue for
+	 * @param {UserDocument} user User to issue for
 	 * @param {Date} now Current time
 	 * @param {boolean} isRefreshToken If set, mark the token as refresh token (can't be used for creating login tokens)
 	 * @returns {string} JSON Web Token for the API
 	 */
-	public static generateApiToken(user: User, now: Date, isRefreshToken: boolean) {
+	public static generateApiToken(user: UserDocument, now: Date, isRefreshToken: boolean) {
 		return jwtEncode({
 			iss: user.id,
 			iat: now,
@@ -48,12 +48,12 @@ export class AuthenticationUtil {
 	 * Media tokens are only valid for a given path and HTTP method and time out
 	 * much faster (default 1 minute).
 	 *
-	 * @param {User} user User to issue for
+	 * @param {UserDocument} user User to issue for
 	 * @param {Date} now Current time
 	 * @param {string} path Path the token will be valid for
 	 * @returns {string} JSON Web Token for a storage item
 	 */
-	public static generateStorageToken(user: User, now: Date, path: string): string {
+	public static generateStorageToken(user: UserDocument, now: Date, path: string): string {
 		if (!path.startsWith('/')) {
 			path = AuthenticationUtil.urlPath(path);
 		}

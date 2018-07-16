@@ -209,14 +209,9 @@ export class BackglassApi extends Api {
 		}
 
 		// validate moderation field
-		if (this.getRequestedFields(ctx).includes('moderation')) {
-			if (!ctx.state.user) {
-				throw new ApiError('You must be logged in order to fetch moderation fields.').status(403);
-			}
-			const isModerator = await acl.isAllowed(ctx.state.user.id, 'backglasses', 'moderate');
-			if (!isModerator) {
-				throw new ApiError('You must be moderator in order to fetch moderation fields.').status(403);
-			}
+		const fields = this.getRequestedFields(ctx);
+		if (fields.includes('moderation')) {
+			await state.models.Backglass.assertModerationField(ctx);
 			serializerOpts.includedFields = ['moderation'];
 		}
 		query = await state.models.Backglass.applyRestrictions(ctx, await state.models.Backglass.handleModerationQuery(ctx, query));

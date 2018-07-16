@@ -213,6 +213,21 @@ export function moderationPlugin(schema: Schema) {
 	};
 
 	/**
+	 * Makes sure the request has the right to retrieve the moderation field.
+	 * @param {Context} ctx Koa context
+	 */
+	schema.statics.assertModerationField = async function(ctx: Context): Promise<void> {
+		const resource = modelResourceMap[this.modelName];
+		if (!ctx.state.user) {
+			throw new ApiError('You must be logged in order to fetch moderation fields.').status(403);
+		}
+		const isModerator = await acl.isAllowed(ctx.state.user.id, resource, 'moderate');
+		if (!isModerator) {
+			throw new ApiError('You must be moderator in order to fetch moderation fields.').status(403);
+		}
+	};
+
+	/**
 	 * Returns the query used for listing only approved entities.
 	 * @param {T} query
 	 * @returns {T}
@@ -221,7 +236,6 @@ export function moderationPlugin(schema: Schema) {
 
 	/**
 	 * Makes sure an API request has the permission to view the entity.
-	 *
 	 * @param {Application.Context} ctx Koa context
 	 * @returns {Promise<ModeratedDocument>} This entity
 	 */
@@ -268,15 +282,10 @@ export function moderationPlugin(schema: Schema) {
 	schema.methods.populateModeration = async function(this: ModeratedDocument, ctx: Context, includedFields: string[]): Promise<ModeratedDocument | false> {
 
 		const modelName = (this.constructor as any).modelName;
+		const model = state.getModel<ModeratedModel<ModeratedDocument>>(modelName);
 		const resource: string = modelResourceMap[modelName];
 		if (includedFields.includes('moderation')) {
-			if (!ctx.state.user) {
-				throw new ApiError('You must be logged in order to fetch moderation fields.').status(403);
-			}
-			const isModerator = await acl.isAllowed(ctx.state.user.id, resource, 'moderate');
-			if (!isModerator) {
-				throw new ApiError('You must be moderator in order to fetch moderation fields.').status(403);
-			}
+			await model.assertModerationField(ctx);
 			return this.populate('moderation.history._created_by').execPopulate();
 
 		} else {
@@ -498,6 +507,12 @@ declare module 'mongoose' {
 		 * @return {Promise<ModerationDataEvent>} Created moderation event
 		 */
 		handleModeration(ctx: Context, entity: ModeratedDocument): Promise<ModerationDataEvent>;
+
+		/**
+		 * Makes sure the request has the right to retrieve the moderation field.
+		 * @param {Context} ctx Koa context
+		 */
+		assertModerationField(ctx: Context): Promise<void>;
 
 		/**
 		 * Returns the query used for listing only approved entities.

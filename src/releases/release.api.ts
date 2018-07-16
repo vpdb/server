@@ -194,17 +194,11 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		const pagination = this.pagination(ctx, 12, 60);
 		let starredReleaseIds: string[] = null;
 		let titleRegex: RegExp = null;
-		const fields = ctx.query && ctx.query.fields ? ctx.query.fields.split(',') : [];
+		const fields = this.getRequestedFields(ctx);
 		const serializerOpts = this.parseQueryThumbOptions(ctx);
 
 		if (fields.includes('moderation')) {
-			if (!ctx.state.user) {
-				throw new ApiError('You must be logged in order to fetch moderation fields.').status(403);
-			}
-			const isModerator = await acl.isAllowed(ctx.state.user.id, 'releases', 'moderate');
-			if (!isModerator) {
-				throw new ApiError('You must be moderator in order to fetch moderation fields.').status(403);
-			}
+			await state.models.Release.assertModerationField(ctx);
 			serializerOpts.includedFields = ['moderation'];
 		}
 

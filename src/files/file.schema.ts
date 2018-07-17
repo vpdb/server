@@ -21,8 +21,8 @@ import { MetricsModel, Schema } from 'mongoose';
 
 import { metricsPlugin } from '../common/mongoose/metrics.plugin';
 import { state } from '../state';
-import { FileDocument, FilePathOptions } from './file.document';
 import { File } from './file';
+import { FileDocument, FilePathOptions } from './file.document';
 import { mimeTypeNames } from './file.mimetypes';
 import { fileTypes } from './file.types';
 import { FileUtil } from './file.util';

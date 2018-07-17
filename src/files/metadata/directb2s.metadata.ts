@@ -23,8 +23,8 @@ import { createStream } from 'sax';
 
 import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
-import { FileDocument } from '../file.document';
 import { File } from '../file';
+import { FileDocument } from '../file.document';
 import { FileVariation } from '../file.variations';
 import { Metadata } from './metadata';
 

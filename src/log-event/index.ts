@@ -23,8 +23,8 @@ import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
-import { LogEventDocument } from './log.event.document';
 import { logEventApiRouter } from './log.event.api.router';
+import { LogEventDocument } from './log.event.document';
 import { logEventSchema } from './log.event.schema';
 import { LogEventSerializer } from './log.event.serializer';
 

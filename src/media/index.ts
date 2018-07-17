@@ -23,8 +23,8 @@ import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
-import { MediumDocument } from './medium.document';
 import { mediumApiRouter } from './medium.api.router';
+import { MediumDocument } from './medium.document';
 import { MediumModel, mediumSchema } from './medium.schema';
 import { MediumSerializer } from './medium.serializer';
 

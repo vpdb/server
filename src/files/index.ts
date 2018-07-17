@@ -23,8 +23,8 @@ import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
-import { FileDocument } from './file.document';
 import { fileApiRouter } from './file.api.router';
+import { FileDocument } from './file.document';
 import { FileModel, fileSchema } from './file.schema';
 import { FileSerializer } from './file.serializer';
 import { fileStorageRouterProtected, fileStorageRouterPublic } from './file.storage.router';

@@ -18,8 +18,8 @@
  */
 
 import { isArray, isObject, isUndefined, sum } from 'lodash';
-import { FileDocument } from '../files/file.document';
 import { File } from '../files/file';
+import { FileDocument } from '../files/file.document';
 import { FileVariation } from '../files/file.variations';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';

@@ -23,8 +23,8 @@ import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
-import { TokenDocument } from './token.document';
 import { tokenApiRouter } from './token.api.router';
+import { TokenDocument } from './token.document';
 import { tokenSchema } from './token.schema';
 import { TokenSerializer } from './token.serializer';
 

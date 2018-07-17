@@ -23,8 +23,8 @@ import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
-import { RomDocument } from './rom.document';
 import { romApiRouter } from './rom.api.router';
+import { RomDocument } from './rom.document';
 import { RomModel, romSchema } from './rom.schema';
 import { RomSerializer } from './rom.serializer';
 

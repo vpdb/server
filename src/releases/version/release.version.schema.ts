@@ -25,8 +25,8 @@ import { state } from '../../state';
 import { ReleaseDocument } from '../release.doument';
 import { ReleaseFileFlavor, ReleaseVersionFileDocument } from './file/release.version.file.document';
 import { releaseVersionFileFields, releaseVersionFileSchema } from './file/release.version.file.schema';
-import { ReleaseVersionDocument } from './release.version.document';
 import { ReleaseVersion } from './release.version';
+import { ReleaseVersionDocument } from './release.version.document';
 
 export const releaseVersionFields = {
 	version: { type: String, required: 'Version must be provided.' },

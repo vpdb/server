@@ -35,8 +35,8 @@ import { releaseVersionSchema } from './version/release.version.schema';
 import { logger } from '../common/logger';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
-import { ReleaseDocument } from './release.doument';
 import { Release } from './release';
+import { ReleaseDocument } from './release.doument';
 
 const shortId = require('shortid32');
 

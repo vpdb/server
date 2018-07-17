@@ -23,8 +23,8 @@ import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
-import { GameRequestDocument } from './game.request.document';
 import { gameRequestRouter } from './game.request.api.router';
+import { GameRequestDocument } from './game.request.document';
 import { gameRequestSchema } from './game.request.schema';
 import { GameRequestSerializer } from './game.request.serializer';
 

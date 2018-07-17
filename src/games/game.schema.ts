@@ -30,8 +30,8 @@ import { FileDocument } from '../files/file.document';
 import { state } from '../state';
 
 import { isInteger, isString } from 'lodash';
-import { GameDocument } from './game.document';
 import { Game } from './game';
+import { GameDocument } from './game.document';
 
 const gameTypes = ['ss', 'em', 'pm', 'og', 'na'];
 const maxAspectRatioDifference = 0.2;

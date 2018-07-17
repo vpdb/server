@@ -19,12 +19,12 @@
 
 import Application = require('koa');
 import Router from 'koa-router';
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
-import { BackglassDocument } from './backglass.document';
 import { backglassApiRouter } from './backglass.api.router';
+import { BackglassDocument } from './backglass.document';
 import { BackglassModel, backglassSchema } from './backglass.schema';
 import { BackglassSerializer } from './backglass.serializer';
 import { BackglassVersionSerializer } from './backglass.version.serializer';

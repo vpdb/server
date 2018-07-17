@@ -21,8 +21,8 @@ import { assign, pick } from 'lodash';
 import { quota } from '../common/quota';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { Context } from '../common/typings/context';
-import { FileDocument } from './file.document';
 import { File } from './file';
+import { FileDocument } from './file.document';
 import { Metadata } from './metadata/metadata';
 
 export class FileSerializer extends Serializer<FileDocument> {

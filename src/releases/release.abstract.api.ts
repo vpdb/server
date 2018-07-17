@@ -22,6 +22,7 @@ import gm from 'gm';
 import { DocumentQuery } from 'mongoose';
 import { promisify } from 'util';
 
+import { acl } from '../common/acl';
 import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
@@ -32,7 +33,6 @@ import { Metadata } from '../files/metadata/metadata';
 import { processorQueue } from '../files/processor/processor.queue';
 import { state } from '../state';
 import { ReleaseDocument } from './release.doument';
-import { acl } from '../common/acl';
 
 const existsAsync = promisify(exists);
 require('bluebird').promisifyAll(gm.prototype);

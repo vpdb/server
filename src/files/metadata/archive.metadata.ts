@@ -18,8 +18,8 @@
  */
 
 import Zip from 'adm-zip';
-import { FileDocument } from '../file.document';
 import { File } from '../file';
+import { FileDocument } from '../file.document';
 import { FileVariation } from '../file.variations';
 import { Metadata } from './metadata';
 

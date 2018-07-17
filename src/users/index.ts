@@ -24,8 +24,8 @@ import mongoose from 'mongoose';
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
 import { ContentAuthorSerializer } from './content.author.serializer';
-import { UserDocument } from './user.document';
 import { userApiRouter } from './user.api.router';
+import { UserDocument } from './user.document';
 import { UserModel, userSchema } from './user.schema';
 import { UserSerializer } from './user.serializer';
 

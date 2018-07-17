@@ -23,8 +23,8 @@ import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
-import { GameDocument } from './game.document';
 import { gameApiRouter } from './game.api.router';
+import { GameDocument } from './game.document';
 import { GameModel, gameSchema } from './game.schema';
 import { GameSerializer } from './game.serializer';
 

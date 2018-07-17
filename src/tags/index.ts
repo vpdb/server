@@ -24,8 +24,8 @@ import mongoose from 'mongoose';
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
 import { initialTags } from './initial-data/tags';
-import { TagDocument } from './tag.document';
 import { tagApiRouter } from './tag.api.router';
+import { TagDocument } from './tag.document';
 import { tagSchema } from './tag.schema';
 import { TagSerializer } from './tag.serializer';
 

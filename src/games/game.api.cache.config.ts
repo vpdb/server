@@ -19,8 +19,8 @@
 import { CacheCounterConfig, CacheCounterValues } from '../common/api.cache';
 import { FileCounterType } from '../files/file.document';
 import { ReleaseCounterType } from '../releases/release.doument';
-import { GameDocument, GameCounterType } from './game.document';
 import { Game } from './game';
+import { GameCounterType, GameDocument } from './game.document';
 
 export const gameListCacheCounters: Array<CacheCounterConfig<GameDocument[]>> = [{
 	modelName: 'game',

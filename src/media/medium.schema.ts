@@ -26,8 +26,8 @@ import { fileReferencePlugin } from '../common/mongoose/file.reference.plugin';
 import { metricsPlugin } from '../common/mongoose/metrics.plugin';
 import { prettyIdPlugin } from '../common/mongoose/pretty.id.plugin';
 import { state } from '../state';
-import { MediumDocument } from './medium.document';
 import { mediumCategories } from './medium.category';
+import { MediumDocument } from './medium.document';
 
 const shortId = require('shortid32');
 

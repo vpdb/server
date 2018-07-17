@@ -33,7 +33,7 @@ import { LogEventUtil } from '../log-event/log.event.util';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
 import { ReleaseAbstractApi } from './release.abstract.api';
-import { flavors } from './release.flavors';
+import { ReleaseListQueryBuilder } from './release.list.query.builder';
 import { ReleaseVersionFileDocument } from './version/file/release.version.file.document';
 import { ReleaseVersionDocument } from './version/release.version.document';
 
@@ -193,68 +193,12 @@ export class ReleaseApi extends ReleaseAbstractApi {
 
 		const pagination = this.pagination(ctx, 12, 60);
 		let starredReleaseIds: string[] = null;
-		let titleRegex: RegExp = null;
 		const fields = this.getRequestedFields(ctx);
 		const serializerOpts = this.parseQueryThumbOptions(ctx);
 
 		if (fields.includes('moderation')) {
 			await state.models.Release.assertModerationField(ctx);
 			serializerOpts.includedFields = ['moderation'];
-		}
-
-		// moderation && restricted games
-		const query = await state.models.Release.applyRestrictions(ctx, await state.models.Release.handleModerationQuery(ctx, []));
-
-		// filter by tag
-		if (ctx.query.tags) {
-			const tags = ctx.query.tags.split(',');
-			// all tags must be matched
-			for (const tag of tags) {
-				query.push({ _tags: { $in: [tag] } });
-			}
-		}
-
-		// filter by release id
-		if (ctx.query.ids) {
-			const ids = ctx.query.ids.split(',');
-			query.push({ id: { $in: ids } });
-		}
-
-		// filter by query
-		if (ctx.query.q) {
-
-			if (ctx.query.q.trim().length < 3) {
-				throw new ApiError('Query must contain at least two characters.').status(400);
-			}
-
-			// sanitize and build regex
-			const titleQuery = ctx.query.q.trim().replace(/[^a-z0-9-]+/gi, '');
-			titleRegex = new RegExp(titleQuery.split('').join('.*?'), 'i');
-			const idQuery = ctx.query.q.trim().replace(/[^a-z0-9-]+/gi, ''); // TODO tune
-			const q = {
-				'counter.releases': { $gt: 0 },
-				$or: [{ title: titleRegex }, { id: idQuery }],
-			};
-			const games = await state.models.Game.find(q, '_id').exec();
-			const gameIds = games.map(g => g._id);
-			if (gameIds.length > 0) {
-				query.push({ $or: [{ name: titleRegex }, { _game: { $in: gameIds } }] });
-			} else {
-				query.push({ name: titleRegex });
-			}
-		}
-
-		// todo filter by user id
-
-		// filter by provider user id
-		if (ctx.query.provider_user) {
-			if (ctx.state.tokenType !== 'provider') {
-				throw new ApiError('Must be authenticated with provider token in order to filter by provider user ID.').status(400);
-			}
-			const user = await state.models.User.findOne({ ['providers.' + ctx.state.tokenProvider + '.id']: String(ctx.query.provider_user) });
-			if (user) {
-				query.push({ 'authors._user': user._id.toString() });
-			}
 		}
 
 		// user starred status
@@ -266,69 +210,23 @@ export class ReleaseApi extends ReleaseAbstractApi {
 			starredReleaseIds = starsResult.map(s => s._ref.release.toString());
 		}
 
-		// starred filter
-		if (!isUndefined(ctx.query.starred)) {
+		// moderation && restricted games
+		let query = await state.models.Release.applyRestrictions(ctx, await state.models.Release.handleModerationQuery(ctx, []));
 
-			if (!ctx.state.user) {
-				throw new ApiError('Must be logged when listing starred releases.').status(401);
-			}
-			if (ctx.query.starred === 'false') {
-				query.push({ _id: { $nin: starredReleaseIds } });
-			} else {
-				query.push({ _id: { $in: starredReleaseIds } });
-			}
-		}
+		// filters
+		const qb = new ReleaseListQueryBuilder();
+		qb.filterByTag(ctx.query.tags);
+		qb.filterByReleaseIds(ctx.query.ids);
+		qb.filterByValidationStatus(ctx.query.validation);
+		qb.filterByFlavor(ctx.query.flavor);
+		await qb.filterByQuery(ctx.query.q);
+		await qb.filterByProviderUser(ctx.query.provider_user, ctx.state.tokenType, ctx.state.tokenProvider);
+		await qb.filterByStarred(ctx.query.starred, ctx.state.user, starredReleaseIds);
+		await qb.filterByCompatibility(ctx.query.builds);
+		await qb.filterByFileSize(parseInt(ctx.query.filesize, 10), parseInt(ctx.query.threshold, 10));
+		// todo filter by user id
 
-		// compat filter
-		if (!isUndefined(ctx.query.builds)) {
-			const buildIds = ctx.query.builds.split(',');
-			const builds = await state.models.Build.find({ id: { $in: buildIds } }).exec();
-			query.push({ 'versions.files._compatibility': { $in: builds.map(b => b._id) } });
-		}
-
-		// validation filter
-		const validationStatusValues = ['verified', 'playable', 'broken'];
-		if (!isUndefined(ctx.query.validation)) {
-			if (validationStatusValues.includes(ctx.query.validation)) {
-				query.push({ 'versions.files.validation.status': ctx.query.validation });
-			}
-			if (ctx.query.validation === 'none') {
-				query.push({ 'versions.files.validation': { $exists: false } });
-			}
-		}
-
-		// file size filter
-		const fileSize = parseInt(ctx.query.filesize, 10);
-		if (fileSize) {
-			const threshold = parseInt(ctx.query.threshold, 10);
-			const q: any = { file_type: 'release' };
-			if (threshold) {
-				q.bytes = { $gt: fileSize - threshold, $lt: fileSize + threshold };
-			} else {
-				q.bytes = fileSize;
-			}
-			const files = await state.models.File.find(q).exec();
-			if (files && files.length > 0) {
-				serializerOpts.fileIds = files.map(f => f.id);
-				query.push({ 'versions.files._file': { $in: files.map(f => f._id) } });
-			} else {
-				query.push({ _id: null }); // no result
-			}
-		}
-
-		// flavor filters
-		if (!isUndefined(ctx.query.flavor)) {
-			ctx.query.flavor.split(',').forEach((f: string) => {
-				const [key, val] = f.split(':');
-				if (flavors.values[key]) {
-					query.push({ ['versions.files.flavor.' + key]: { $in: ['any', val] } });
-				}
-			});
-			// also return the same thumb if not specified otherwise.
-			if (!serializerOpts.thumbFlavor) {
-				serializerOpts.thumbFlavor = ctx.query.flavor;
-			}
-		}
+		query = [...query, ...qb.getQuery()];
 
 		const sort = this.sortParams(ctx, { released_at: 1 }, {
 			released_at: '-released_at',
@@ -356,7 +254,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 			if (starredReleaseIds) {
 				serializerOpts.starred = starredReleaseIds.includes(release._id.toString());
 			}
-			release = state.serializers.Release.simple(ctx, release, serializerOpts);
+			release = state.serializers.Release.simple(ctx, release, Object.assign({}, qb.getSerializerOpts(), serializerOpts));
 
 			// if flavor specified, filter returned files to match filter
 			if (!isUndefined(ctx.query.flavor)) {

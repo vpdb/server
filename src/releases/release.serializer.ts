@@ -22,8 +22,8 @@ import { assign, compact, flatten, intersection, isArray, isUndefined, orderBy, 
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { Context } from '../common/typings/context';
 import { Thumb } from '../common/typings/serializers';
-import { FileDocument } from '../files/file.document';
 import { File } from '../files/file';
+import { FileDocument } from '../files/file.document';
 import { GameDocument } from '../games/game.document';
 import { state } from '../state';
 import { TagDocument } from '../tags/tag.document';
@@ -49,9 +49,9 @@ export class ReleaseSerializer extends Serializer<ReleaseDocument> {
 	}
 
 	private serializeRelease(ctx: Context, doc: ReleaseDocument, opts: SerializerOptions,
-							 versionSerializer: (ctx: Context, doc: ReleaseVersionDocument, opts: SerializerOptions) => ReleaseVersionDocument,
-							 stripVersions: boolean,
-							 additionalFields: string[] = []): ReleaseDocument {
+							versionSerializer: (ctx: Context, doc: ReleaseVersionDocument, opts: SerializerOptions) => ReleaseVersionDocument,
+							stripVersions: boolean,
+							additionalFields: string[] = []): ReleaseDocument {
 
 		const requestedFields = intersection(['description'], (ctx.query.include_fields || '').split(','));
 		additionalFields = additionalFields || [];

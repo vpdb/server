@@ -1,0 +1,9 @@
+.idea/**
+config/**
+data/**
+deploy/**
+doc/**
+src/**/*.js
+src_/**
+test/**
+typings/**

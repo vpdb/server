@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { FileReferenceDocument, PrettyIdDocument, Schema, Types } from 'mongoose';
+import { FileReferenceDocument, PrettyIdDocument, Types } from 'mongoose';
 import { BuildDocument } from '../../../builds/build.document';
 import { FileDocument } from '../../../files/file.document';
 import { UserDocument } from '../../../users/user.document';

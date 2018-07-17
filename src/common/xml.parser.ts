@@ -20,7 +20,6 @@
 import { EventEmitter } from 'events';
 import { createReadStream, ReadStream } from 'fs';
 import sax = require('sax');
-import { logger } from './logger';
 
 (sax as any).MAX_BUFFER_LENGTH = 64 * 1024 * 1024;
 

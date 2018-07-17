@@ -22,7 +22,6 @@ import { AuthenticationUtil, Jwt } from '../../authentication/authentication.uti
 import { state } from '../../state';
 import { UserDocument } from '../../users/user.document';
 import { ApiError } from '../api.error';
-import { Scope } from '../scope';
 import { config, settings } from '../settings';
 import { Context } from '../typings/context';
 

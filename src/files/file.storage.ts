@@ -18,7 +18,7 @@
  */
 
 import Busboy from 'busboy';
-import { createReadStream, stat, Stats } from 'fs';
+import { createReadStream, stat} from 'fs';
 import { promisify } from 'util';
 
 import { Api } from '../common/api';

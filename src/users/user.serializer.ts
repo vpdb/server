@@ -18,7 +18,7 @@
  */
 
 import { createHash } from 'crypto';
-import { assign, find, isEmpty, keys, mapValues, pick, pickBy, uniq } from 'lodash';
+import { assign, find, isEmpty, mapValues, pick, pickBy, uniq } from 'lodash';
 import { Serializer, SerializerOptions } from '../common/serializer';
 import { config } from '../common/settings';
 import { Context } from '../common/typings/context';

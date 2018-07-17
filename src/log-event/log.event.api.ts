@@ -25,7 +25,6 @@ import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
 import { Context } from '../common/typings/context';
-import { GameDocument } from '../games/game.document';
 import { state } from '../state';
 import { LogEventDocument } from './log.event.document';
 

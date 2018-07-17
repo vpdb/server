@@ -28,7 +28,6 @@ import { metricsPlugin } from '../common/mongoose/metrics.plugin';
 import { moderationPlugin } from '../common/mongoose/moderation.plugin';
 import { prettyIdPlugin } from '../common/mongoose/pretty.id.plugin';
 import { authorSchema } from '../users/content.author.schema';
-import { UserDocument } from '../users/user.document';
 import { BackglassDocument } from './backglass.document';
 import { backglassVersionSchema } from './backglass.version.schema';
 

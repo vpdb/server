@@ -20,7 +20,7 @@
 import Zip from 'adm-zip'; // todo migrate to unzip
 import { assign, extend, pick } from 'lodash';
 
-import { Schema, Types } from 'mongoose';
+import { Types } from 'mongoose';
 import { acl } from '../common/acl';
 import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';

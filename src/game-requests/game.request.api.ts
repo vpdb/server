@@ -18,7 +18,7 @@
  */
 
 import { assign, pick } from 'lodash';
-import { Schema, Types } from 'mongoose';
+import { Types } from 'mongoose';
 
 import { acl } from '../common/acl';
 import { Api } from '../common/api';

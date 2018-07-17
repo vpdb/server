@@ -22,7 +22,6 @@ import gm from 'gm';
 import { DocumentQuery } from 'mongoose';
 import { promisify } from 'util';
 
-import { acl } from '../common/acl';
 import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';

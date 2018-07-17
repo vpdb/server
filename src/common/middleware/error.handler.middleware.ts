@@ -18,7 +18,7 @@
  */
 
 import chalk from 'chalk';
-import { assign, keys, values } from 'lodash';
+import { assign, keys} from 'lodash';
 
 import { Error } from 'tslint/lib/error';
 import { ApiError, ApiValidationError } from '../api.error';

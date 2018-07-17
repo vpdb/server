@@ -140,7 +140,7 @@ releaseSchema.methods.isCreatedBy = function(user: UserDocument): boolean {
 releaseSchema.pre('remove', async function(this: ReleaseDocument) {
 
 	// remove linked comments
-	state.models.Comment.remove({ $or: [{ '_ref.release': this._id }, { '_ref.release_moderation': this._id }] }).exec();
+	await state.models.Comment.remove({ $or: [{ '_ref.release': this._id }, { '_ref.release_moderation': this._id }] }).exec();
 
 	// remove table blocks
 	const fileIds: string[] = [];

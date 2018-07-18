@@ -286,6 +286,7 @@ describe('The VPDB `Backglass` API', function() {
 								hlp.expectStatus(err, res, 201);
 								hlp.doomBackglass('member', res.body.id);
 								backglass = res.body;
+								delete backglass.versions[0].file.bytes;
 								done();
 							});
 					});
@@ -325,6 +326,7 @@ describe('The VPDB `Backglass` API', function() {
 				.send({})
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 200);
+					delete res.body.versions[0].file.bytes;
 					expect(res.body).to.eql(backglass);
 					done();
 				});
@@ -337,6 +339,7 @@ describe('The VPDB `Backglass` API', function() {
 				.send({})
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 200);
+					delete res.body.versions[0].file.bytes;
 					expect(res.body).to.eql(backglass);
 					done();
 				});
@@ -362,6 +365,7 @@ describe('The VPDB `Backglass` API', function() {
 				.send({})
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 200);
+					delete res.body.versions[0].file.bytes;
 					expect(res.body).to.eql(backglass);
 					done();
 				});

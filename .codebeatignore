@@ -3,6 +3,7 @@ config/**
 data/**
 deploy/**
 doc/**
+scripts/**
 src/**/*.js
 src_/**
 test/**

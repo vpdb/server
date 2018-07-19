@@ -24,13 +24,16 @@ repo_checkout_branch ${DIRNAME} ${BRANCH}
 # 2. install node packages
 npm_install_copy ${DIRNAME}
 
-# 3. change symlink
+# 3. compile to javascript
+build ${DIRNAME}
+
+# 4. change symlink
 repo_link ${DIRNAME}
 
-# 4. reload node cluster
+# 5. reload node cluster
 node_cluster_reload
 
-# 5. cleanup old deployment
+# 6. cleanup old deployment
 repo_cleanup "[a-z0-9_\\\\-]-[a-f0-9]{10}"
 
 echo ==================================================================

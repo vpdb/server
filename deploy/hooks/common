@@ -94,45 +94,38 @@ npm_install_copy() {
 	test $? -eq 0 || rollback_abort $1 "Failed to run npm install. Manually fix and relaunch deployment.".
 }
 
+build() {
+	echo "Compiling into ${DEPLOY_ROOT}/${DEPLOY_ENV}/$1/build..."
+	cd ${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
+	npm run build
+	test $? -eq 0 || rollback_abort $1 "Failed to build. Manually fix and relaunch deployment.".
+}
+
 repo_link() {
 	local dest=${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
 	local newSettings=${DEPLOY_ROOT}/${DEPLOY_ENV}/config/${1}.js
 	local currentSettings=${DEPLOY_ROOT}/${DEPLOY_ENV}/settings.js
-	local patchedSettings=${DEPLOY_ROOT}/${DEPLOY_ENV}/settings-patched.js
+	cd ${dest}
 
 	if [ ! -f "$newSettings" ]; then
 		echo Copying settings...
-
-		if [ -f "$patchedSettings" ]; then
-			echo "Copying ${patchedSettings} instead of ${currentSettings}."
-			cp ${patchedSettings} ${newSettings}
-			test $? -eq 0 || rollback_abort $1 "Unable to copy settings from ${patchedSettings} to ${newSettings}. Please fix and manually relaunch deployment."
-		else
-			cp ${currentSettings} ${newSettings}
-			test $? -eq 0 || rollback_abort $1 "Unable to copy settings from ${currentSettings} to ${newSettings}. Please fix and manually relaunch deployment."
-		fi
+		cp ${currentSettings} ${newSettings}
+		test $? -eq 0 || rollback_abort $1 "Unable to copy settings from ${currentSettings} to ${newSettings}. Please fix and manually relaunch deployment."
 	else
 		echo "Settings file already found at ${newSettings}"
 	fi
-	ln -sfn ${newSettings} ${patchedSettings}
-
-
-	echo Migrating settings...
-	APP_SETTINGS=${newSettings} node ${dest}/src/config/migrate.js
-	test $? -eq 0 || rollback_abort $1 "New @important config settings. Please fix settings at ${patchedSettings} and manually finish deployment."
 
 	echo Validating settings...
-	APP_SETTINGS=${newSettings} node ${dest}/src/config/validate.js
+	APP_SETTINGS=${newSettings} node -r ts-node/register scripts/validate-settings.ts
 	test $? -eq 0 || rollback_abort $1 "Setting validation failed. Please fix settings at ${patchedSettings} and manually finish deployment."
 
 	echo Swapping settings...
 	ln -sfn ${newSettings} ${currentSettings}
 	test $? -eq 0 || rollback_abort $1 "Error linking new settings. Please fix and manually finish deployment."
-	rm ${patchedSettings}
 
 	echo Running migration scripts...
 	cd ${dest}
-	APP_SETTINGS=${currentSettings} APP_NAME=${DEPLOY_ENV} NODE_ENV=production node ${dest}/src/scripts/migrate.js --from=${DEPLOY_ROOT}/${DEPLOY_ENV}/current
+	APP_SETTINGS=${currentSettings} APP_NAME=${DEPLOY_ENV} NODE_ENV=production node -r ts-node/register scripts/migrate.ts --from=${DEPLOY_ROOT}/${DEPLOY_ENV}/current
 	test $? -eq 0 || abort $1 "Migration failed. Fix and redeploy."
 
 	echo Swapping code...

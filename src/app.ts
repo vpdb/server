@@ -20,32 +20,12 @@
 import mongoose from 'mongoose';
 
 import { init as initAcls } from './common/acl';
-import { EndPoint } from './common/api.endpoint';
+import { endPoints } from './common/api.endpoints';
 import { logger } from './common/logger';
+import { ModerationSerializer } from './common/mongoose/moderation.serializer';
 import { config, settings } from './common/settings';
 import { server } from './server';
-
-import { AuthenticationEndPoint, AuthenticationStorageEndPoint } from './authentication';
-import { BackglassEndPoint } from './backglasses';
-import { BuildApiEndPoint } from './builds';
-import { CommentEndPoint } from './comments';
-import { ModerationSerializer } from './common/mongoose/moderation.serializer';
-import { FilesApiEndPoint, FilesProtectedStorageEndPoint, FilesPublicStorageEndPoint } from './files';
-import { GameRequestApiEndPoint } from './game-requests';
-import { GamesApiEndPoint } from './games';
-import { LogEventEndPoint } from './log-event';
-import { LogUserEndPoint } from './log-user';
-import { MediaApiEndPoint } from './media';
-import { MiscEndPoint } from './misc';
-import { ProfileEndPoint } from './profile';
-import { RatingEndPoint } from './ratings';
-import { ReleaseEndPoint, ReleaseStorageEndPoint } from './releases';
-import { RomApiEndPoint } from './roms';
-import { StarEndPoint } from './stars';
 import { state } from './state';
-import { TagApiEndPoint } from './tags';
-import { TokenEndPoint } from './tokens';
-import { UserEndPoint } from './users';
 
 const shortId = require('shortid32');
 shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
@@ -62,32 +42,6 @@ shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 		if (!settings.validate()) {
 			throw new Error('Settings validation failed.');
 		}
-
-		const endPoints: EndPoint[] = [
-			new AuthenticationEndPoint(),
-			new AuthenticationStorageEndPoint(),
-			new BackglassEndPoint(),
-			new BuildApiEndPoint(),
-			new CommentEndPoint(),
-			new FilesApiEndPoint(),
-			new FilesPublicStorageEndPoint(),
-			new FilesProtectedStorageEndPoint(),
-			new GamesApiEndPoint(),
-			new GameRequestApiEndPoint(),
-			new LogEventEndPoint(),
-			new LogUserEndPoint(),
-			new MediaApiEndPoint(),
-			new MiscEndPoint(),
-			new ProfileEndPoint(),
-			new RatingEndPoint(),
-			new ReleaseEndPoint(),
-			new ReleaseStorageEndPoint(),
-			new RomApiEndPoint(),
-			new StarEndPoint(),
-			new TagApiEndPoint(),
-			new TokenEndPoint(),
-			new UserEndPoint(),
-		];
 
 		// bootstrap models
 		logger.info('[app] Connecting to MongoDB...');

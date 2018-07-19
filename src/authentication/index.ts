@@ -19,8 +19,6 @@
 
 import Router from 'koa-router';
 import { EndPoint } from '../common/api.endpoint';
-
-import Application = require('koa');
 import { authenticationApiRouter } from './authentication.api.router';
 import { authenticationStorageRouter } from './authentication.storage.router';
 
@@ -35,10 +33,6 @@ export class AuthenticationEndPoint extends EndPoint {
 	public getRouter(): Router {
 		return authenticationApiRouter;
 	}
-
-	public async register(app: Application): Promise<void> {
-		// nothing to initialize
-	}
 }
 
 export class AuthenticationStorageEndPoint extends EndPoint {
@@ -51,9 +45,5 @@ export class AuthenticationStorageEndPoint extends EndPoint {
 
 	public getRouter(): Router {
 		return authenticationStorageRouter;
-	}
-
-	public async register(app: Application): Promise<void> {
-		// nothing to register
 	}
 }

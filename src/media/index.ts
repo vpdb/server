@@ -17,7 +17,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import Application = require('koa');
 import Router from 'koa-router';
 import mongoose from 'mongoose';
 
@@ -36,8 +35,13 @@ export class MediaApiEndPoint extends EndPoint {
 		return mediumApiRouter;
 	}
 
-	public async register(app: Application): Promise<void> {
+	public registerModel(): EndPoint {
 		state.models.Medium = mongoose.model<MediumDocument, MediumModel>('Medium', mediumSchema);
+		return this;
+	}
+
+	public registerSerializer(): EndPoint {
 		state.serializers.Medium = new MediumSerializer();
+		return this;
 	}
 }

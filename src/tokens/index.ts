@@ -17,7 +17,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import Application = require('koa');
 import Router from 'koa-router';
 import mongoose from 'mongoose';
 
@@ -36,8 +35,13 @@ export class TokenEndPoint extends EndPoint {
 		return tokenApiRouter;
 	}
 
-	public async register(app: Application): Promise<void> {
+	public registerModel(): EndPoint {
 		state.models.Token = mongoose.model<TokenDocument>('Token', tokenSchema);
+		return this;
+	}
+
+	public registerSerializer(): EndPoint {
 		state.serializers.Token = new TokenSerializer();
+		return this;
 	}
 }

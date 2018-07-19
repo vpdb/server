@@ -17,7 +17,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import Application = require('koa');
 import Router from 'koa-router';
 import { EndPoint } from '../common/api.endpoint';
 import { miscApiRouter } from './misc.api.router';
@@ -28,9 +27,5 @@ export class MiscEndPoint extends EndPoint {
 
 	public getRouter(): Router {
 		return miscApiRouter;
-	}
-
-	public async register(app: Application): Promise<void> {
-		// nothing to register
 	}
 }

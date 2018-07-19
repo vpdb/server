@@ -36,8 +36,13 @@ export class GamesApiEndPoint extends EndPoint {
 		return gameApiRouter;
 	}
 
-	public async register(app: Application): Promise<void> {
+	public registerModel(): EndPoint {
 		state.models.Game = mongoose.model<GameDocument, GameModel>('Game', gameSchema);
+		return this;
+	}
+
+	public registerSerializer(): EndPoint {
 		state.serializers.Game = new GameSerializer();
+		return this;
 	}
 }

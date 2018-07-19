@@ -76,8 +76,13 @@ export class Server {
 			});
 		}
 
-		// register app (set models and serializer)
-		await endPoint.register(this.app);
+		// register model and serializer
+		endPoint
+			.registerModel()
+			.registerSerializer();
+
+		// import data
+		await endPoint.import();
 	}
 
 	public postRegister() {

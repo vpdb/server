@@ -17,7 +17,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import Application = require('koa');
 import Router from 'koa-router';
 import mongoose from 'mongoose';
 
@@ -41,9 +40,14 @@ export class BackglassEndPoint extends EndPoint {
 		return backglassApiRouter;
 	}
 
-	public async register(app: Application): Promise<void> {
+	public registerModel(): EndPoint {
 		state.models.Backglass = mongoose.model<BackglassDocument, BackglassModel>('Backglass', backglassSchema);
+		return this;
+	}
+
+	public registerSerializer(): EndPoint {
 		state.serializers.Backglass = new BackglassSerializer();
 		state.serializers.BackglassVersion = new BackglassVersionSerializer();
+		return this;
 	}
 }

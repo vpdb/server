@@ -17,10 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import Application = require('koa');
 import Router from 'koa-router';
 import { Document, Model } from 'mongoose';
-
 import { logger } from './logger';
 
 /**
@@ -45,11 +43,17 @@ export abstract class EndPoint {
 	 */
 	public abstract getRouter(): Router;
 
-	/**
-	 * Registers the end point with the application.
-	 * @param {Application} app Koa application
-	 */
-	public abstract register(app: Application): Promise<void>;
+	public registerModel(): EndPoint {
+		return this;
+	}
+
+	public registerSerializer(): EndPoint {
+		return this;
+	}
+
+	public async import(): Promise<void> {
+		return Promise.resolve();
+	}
 
 	/**
 	 * Bulk-imports data.

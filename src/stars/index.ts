@@ -17,7 +17,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import Application = require('koa');
 import Router from 'koa-router';
 import mongoose from 'mongoose';
 
@@ -34,7 +33,8 @@ export class StarEndPoint extends EndPoint {
 		return null;
 	}
 
-	public async register(app: Application): Promise<void> {
+	public registerModel(): EndPoint {
 		state.models.Star = mongoose.model<StarDocument>('Star', starSchema);
+		return this;
 	}
 }

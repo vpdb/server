@@ -17,7 +17,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import Application = require('koa');
 import Router from 'koa-router';
 import mongoose from 'mongoose';
 
@@ -45,14 +44,19 @@ export class ReleaseEndPoint extends EndPoint {
 		return releaseApiRouter;
 	}
 
-	public async register(app: Application): Promise<void> {
+	public registerModel(): EndPoint {
 		state.models.Release = mongoose.model<ReleaseDocument>('Release', releaseSchema) as ReleaseModel;
 		state.models.ReleaseVersion = mongoose.model<ReleaseVersionDocument, ReleaseVersionModel>('ReleaseVersion', releaseVersionSchema);
 		state.models.ReleaseVersionFile = mongoose.model<ReleaseVersionFileDocument, ReleaseVersionFileModel>('ReleaseVersionFile', releaseVersionFileSchema);
+		state.models.TableBlock = mongoose.model<TableBlock>('TableBlock', tableBlockSchema);
+		return this;
+	}
+
+	public registerSerializer(): EndPoint {
 		state.serializers.Release = new ReleaseSerializer();
 		state.serializers.ReleaseVersion = new ReleaseVersionSerializer();
 		state.serializers.ReleaseVersionFile = new ReleaseVersionFileSerializer();
-		state.models.TableBlock = mongoose.model<TableBlock>('TableBlock', tableBlockSchema);
+		return this;
 	}
 }
 
@@ -62,9 +66,5 @@ export class ReleaseStorageEndPoint extends EndPoint {
 
 	public getRouter(): Router {
 		return releaseStorageRouter;
-	}
-
-	public async register(app: Application): Promise<void> {
-		// nothing to register
 	}
 }

@@ -103,7 +103,6 @@ export class UserApi extends Api {
 	 */
 	public async createOrUpdate(ctx: Context) {
 
-		let name: string;
 		let provider: string;
 		let isNew: boolean;
 
@@ -139,7 +138,6 @@ export class UserApi extends Api {
 		if (err) {
 			throw err;
 		}
-		name = UserUtil.removeDiacritics(ctx.request.body.username).replace(/[^0-9a-z ]+/gi, '');
 
 		// create query condition
 		const query = {
@@ -151,56 +149,13 @@ export class UserApi extends Api {
 		};
 		const existingUser = await state.models.User.findOne(query).exec();
 
-		let user;
+		let user: UserDocument;
 		if (existingUser) {
-			if (!existingUser.providers || !existingUser.providers[provider]) {
-				existingUser.providers = existingUser.providers || {};
-				existingUser.providers[provider] = {
-					id: String(ctx.request.body.provider_id),
-					name: ctx.request.body.username || (ctx.request.body.email ? ctx.request.body.email.substr(0, ctx.request.body.email.indexOf('@')) : undefined),
-					emails: [ctx.request.body.email],
-					created_at: new Date(),
-					modified_at: new Date(),
-					profile: ctx.request.body.provider_profile,
-				};
-				await LogUserUtil.success(ctx, existingUser, 'provider_add', {
-					provider,
-					profile: ctx.request.body.provider_profile,
-				});
-			} else {
-				existingUser.providers[provider].modified_at = new Date();
-				await LogUserUtil.success(ctx, existingUser, 'provider_update', { provider });
-			}
-			existingUser.emails = uniq([existingUser.email, ...existingUser.emails, ctx.request.body.email]);
+			user = await this.updateProviderUser(ctx, existingUser, provider);
 			isNew = false;
-			user = await existingUser.save();
-
 		} else {
-
-			// check if username doesn't conflict
-			let newUser;
-			const originalName = name;
-			const dupeNameUser = await state.models.User.findOne({ name }).exec();
-			if (dupeNameUser) {
-				name += Math.floor(Math.random() * 1000);
-			}
-			newUser = {
-				is_local: false,
-				name,
-				email: ctx.request.body.email,
-				emails: [ctx.request.body.email],
-				providers: {
-					[provider]: {
-						id: String(ctx.request.body.provider_id),
-						name: originalName,
-						emails: [ctx.request.body.email],
-						created_at: new Date(),
-						profile: ctx.request.body.provider_profile,
-					},
-				},
-			};
+			user = await this.createProviderUser(ctx, provider);
 			isNew = true;
-			user = await UserUtil.createUser(ctx, newUser as UserDocument, false);
 		}
 
 		await LogUserUtil.success(ctx, user, 'provider_registration', { provider, email: user.email });
@@ -428,5 +383,55 @@ export class UserApi extends Api {
 		await mailer.registrationConfirmation(user);
 
 		return this.success(ctx, null, 200);
+	}
+
+	private async updateProviderUser(ctx: Context, existingUser: UserDocument, provider: string): Promise<UserDocument> {
+		if (!existingUser.providers || !existingUser.providers[provider]) {
+			existingUser.providers = existingUser.providers || {};
+			existingUser.providers[provider] = {
+				id: String(ctx.request.body.provider_id),
+				name: ctx.request.body.username || (ctx.request.body.email ? ctx.request.body.email.substr(0, ctx.request.body.email.indexOf('@')) : undefined),
+				emails: [ctx.request.body.email],
+				created_at: new Date(),
+				modified_at: new Date(),
+				profile: ctx.request.body.provider_profile,
+			};
+			await LogUserUtil.success(ctx, existingUser, 'provider_add', {
+				provider,
+				profile: ctx.request.body.provider_profile,
+			});
+		} else {
+			existingUser.providers[provider].modified_at = new Date();
+			await LogUserUtil.success(ctx, existingUser, 'provider_update', { provider });
+		}
+		existingUser.emails = uniq([existingUser.email, ...existingUser.emails, ctx.request.body.email]);
+		return existingUser.save();
+	}
+
+	private async createProviderUser(ctx: Context, provider: string): Promise<UserDocument> {
+		// check if username doesn't conflict
+		let newUser;
+		let name = UserUtil.removeDiacritics(ctx.request.body.username).replace(/[^0-9a-z ]+/gi, '');
+		const originalName = name;
+		const dupeNameUser = await state.models.User.findOne({ name }).exec();
+		if (dupeNameUser) {
+			name += Math.floor(Math.random() * 1000);
+		}
+		newUser = {
+			is_local: false,
+			name,
+			email: ctx.request.body.email,
+			emails: [ctx.request.body.email],
+			providers: {
+				[provider]: {
+					id: String(ctx.request.body.provider_id),
+					name: originalName,
+					emails: [ctx.request.body.email],
+					created_at: new Date(),
+					profile: ctx.request.body.provider_profile,
+				},
+			},
+		};
+		return UserUtil.createUser(ctx, newUser as UserDocument, false);
 	}
 }

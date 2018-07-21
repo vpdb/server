@@ -44,10 +44,8 @@ describe('The VPDB restriction feature', function() {
 			}, function() {
 				hlp.game.createGame('moderator', request, { ipdb: { number: 99999, mpu: 9999 } }, function(game) {
 					restrictedGame = game;
-					hlp.doomGame('moderator', game.id);
 					hlp.game.createGame('moderator', request, function(game) {
 						legalGame = game;
-						hlp.doomGame('moderator', game.id);
 						hlp.release.createReleaseForGame('owner', request, restrictedGame, function(release) {
 							restrictedRelease = release;
 							hlp.doomRelease('owner', release.id);
@@ -211,10 +209,8 @@ describe('The VPDB restriction feature', function() {
 			}, function() {
 				hlp.game.createGame('moderator', request, { ipdb: { number: 99999, mpu: 9999 } }, function(game) {
 					restrictedGame = game;
-					hlp.doomGame('moderator', game.id);
 					hlp.game.createGame('moderator', request, function(game) {
 						legalGame = game;
-						hlp.doomGame('moderator', game.id);
 						hlp.file.createDirectB2S('owner', request, function(b2s) {
 							request.post('/api/v1/backglasses').as('owner').send({
 									_game: restrictedGame.id,
@@ -368,10 +364,8 @@ describe('The VPDB restriction feature', function() {
 			}, function() {
 				hlp.game.createGame('moderator', request, { ipdb: { number: 99999, mpu: 9999 } }, function(game) {
 					restrictedGame = game;
-					hlp.doomGame('moderator', game.id);
 					hlp.game.createGame('moderator', request, function(game) {
 						legalGame = game;
-						hlp.doomGame('moderator', game.id);
 						hlp.file.createRom('owner', request, function(file) {
 							request.post('/api/v1/games/' + legalGame.id + '/roms').as('owner').send({
 								id: 'legalRom',

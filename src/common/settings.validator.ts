@@ -496,7 +496,7 @@ function checkProtocol(protocol: any) {
 }
 
 function checkPath(path: any) {
-	if (!isString(path) || path[0] !== '/') {
+	if (!isString(path) || (path.length > 0 && path[0] !== '/')) {
 		return 'Path must start with "/".';
 	}
 }

@@ -90,9 +90,14 @@ export class Server {
 	}
 
 	public start() {
-		this.app.listen(config.vpdb.api.port);
-		logger.info('[Server.start] Storage ready at %s', settings.storageProtectedUri());
-		logger.info('[Server.start] API ready at %s', settings.apiUri());
+		/* istanbul ignore if  */
+		if (!process.env.PORT) {
+			throw new Error('Environment variable `PORT` not found, server cannot start on unknown port.');
+		}
+		this.app.listen(process.env.PORT);
+		logger.info('[Server.start] Public storage ready at %s', settings.storagePublicUri());
+		logger.info('[Server.start] Protected storage ready at %s', settings.storageProtectedUri());
+		logger.info('[Server.start] API ready at %s', settings.apiExternalUri());
 	}
 }
 

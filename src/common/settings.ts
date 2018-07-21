@@ -149,20 +149,29 @@ export class Settings {
 	}
 
 	/**
+	 * Returns the external path of an API resource
+	 * @param {string} path Path of the resource
+	 * @returns {string} External path
+	 */
+	public apiExternalPath(path = '') {
+		return this.current.vpdb.api.pathname + (path || '');
+	}
+
+	/**
 	 * Returns the internal path of an API resource
 	 * @param {string} path Path of the resource
 	 * @returns {string} Internal path
 	 */
-	public apiPath(path = '') {
+	public apiInternalPath(path = '') {
 		return (this.current.vpdb.api.prefix || '') + this.current.vpdb.api.pathname + (path || '');
 	}
 
 	/**
-	 * Returns the external URL of the API
+	 * Returns the internal URL of the API
 	 * @returns {string} External URL
 	 */
-	public apiUri(path = '') {
-		return this.apiHost() + this.apiPath(path);
+	public apiExternalUri(path = '') {
+		return this.apiHost() + this.apiExternalPath(path);
 	}
 
 	/**

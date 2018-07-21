@@ -18,11 +18,11 @@
 		"url": "https://github.com/vpdb/server/issues"
 	},
 	"scripts": {
-		"start": "node src/app.js",
+		"start": "node -r ts-node/register src/app",
 		"serve:dev": "nodemon --config deploy/nodemon/dev.json --inspect -r ts-node/register src/app",
 		"serve:test": "nyc node build/app",
 		"serve:test:debug": "node --inspect -r ts-node/register src/app",
-		"serve:protractor": "cross-env NODE_ENV=test APP_SETTINGS=src/config/settings-protractor.js PORT=7357 APP_NAME=local run-s test:dropdbs start",
+		"serve:protractor": "cross-env NODE_ENV=test APP_SETTINGS=config/settings.protractor.js PORT=7357 APP_NAME=local run-s test:dropdbs start",
 		"build": "rimraf build && tsc",
 		"lint": "tslint src/**/*.ts",
 		"test:dropdbs": "node deploy/tools/dropdb",

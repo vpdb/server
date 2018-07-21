@@ -20,7 +20,7 @@
 /* tslint:disable:no-console */
 import { readdirSync } from 'fs';
 import { padStart, reverse } from 'lodash';
-import * as mongoose from 'mongoose';
+import mongoose from 'mongoose';
 import Git, { Commit } from 'nodegit';
 import { default as path, resolve as resolvePath } from 'path';
 import { argv } from 'yargs';

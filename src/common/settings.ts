@@ -42,6 +42,7 @@ export class Settings {
 		if (!existsSync(filePath)) {
 			throw new Error('Cannot find settings at "' + filePath + '". Copy src/config/settings-dist.js to server/config/settings.js or point `APP_SETTINGS` environment variable to correct path (CWD = ' + process.cwd() + ').');
 		}
+		logger.info('[Settings] Loading from %s', filePath);
 		this.filePath = filePath;
 		this.current = require(this.filePath);
 	}

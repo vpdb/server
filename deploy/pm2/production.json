@@ -2,7 +2,7 @@
 	"apps": [
 		{
 			"name": "production",
-			"script": "app.js",
+			"script": "build/app.js",
 			"watch": false,
 			"merge_logs": true,
 			"cwd": "/var/www/production/current",

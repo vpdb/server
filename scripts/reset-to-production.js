@@ -82,7 +82,7 @@ Promise.try(() => {
 	// retrieve primary version
 	const p = config.primary.api;
 	console.log('=== Retrieving build number at %s...', config.primary.api.hostname);
-	return axios({ method: 'get', url: `${p.protocol}://${p.hostname}:${p.port}${p.pathname}/` });
+	return axios({ method: 'get', url: `${p.protocol}://${p.hostname}:${p.port}${p.pathname}/v1` });
 
 }).then(function(response) {
 

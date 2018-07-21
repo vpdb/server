@@ -138,8 +138,8 @@ export abstract class Api {
 	public storageRouter(useProtected: boolean) {
 		const storageConfig = useProtected ? config.vpdb.storage.protected.api : config.vpdb.storage.public.api;
 		/* istanbul ignore else: test server uses a prefix */
-		if (storageConfig.pathname) {
-			return new Router({ prefix: storageConfig.pathname });
+		if (storageConfig.prefix || storageConfig.pathname) {
+			return new Router({ prefix: (storageConfig.prefix || '') + (storageConfig.pathname || '') });
 
 		} else {
 			return new Router();

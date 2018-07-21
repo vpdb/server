@@ -123,8 +123,8 @@ export abstract class Api {
 	 */
 	public apiRouter() {
 		/* istanbul ignore else: test server uses a prefix */
-		if (config.vpdb.api.pathname) {
-			return new Router({ prefix: config.vpdb.api.pathname });
+		if (config.vpdb.api.prefix || config.vpdb.api.pathname) {
+			return new Router({ prefix: (config.vpdb.api.prefix || '') + (config.vpdb.api.pathname || '') });
 
 		} else {
 			return new Router();

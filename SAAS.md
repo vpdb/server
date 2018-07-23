@@ -2,6 +2,11 @@
 
 VPDB uses a couple of services.
 
+## Raygun
+
+[Raygun](https://raygun.com/) is a crash reporter. It is configured in the 
+settings, more precisely at `vpdb.services.raygun`.
+
 ## Sqreen
 
 [Sqreen](https://www.sqreen.io) provides several security-related features.  

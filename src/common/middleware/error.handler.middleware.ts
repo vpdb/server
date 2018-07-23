@@ -20,10 +20,20 @@
 import chalk from 'chalk';
 import { assign, keys} from 'lodash';
 
-import { Error } from 'tslint/lib/error';
+import { IncomingMessage } from 'http';
 import { ApiError, ApiValidationError } from '../api.error';
 import { logger } from '../logger';
+import { config } from '../settings';
 import { Context } from '../typings/context';
+
+// initialize raygun
+let raygunClient: any = null;
+if (config.vpdb.services.raygun.enabled) {
+	logger.info('[koaErrorHandler] Setting up Raygun...');
+	const raygun = require('raygun');
+	raygunClient = new raygun.Client().init({ apiKey: config.vpdb.services.raygun.apiKey });
+	raygunClient.setVersion(require('../../../package.json').version.substr(1));
+}
 
 /**
  * Gracefully handles errors.
@@ -69,7 +79,7 @@ export function koaErrorHandler() {
 			}
 
 			if (sendError) {
-				reportError(err as Error);
+				reportError(ctx, err as Error);
 			}
 		}
 	};
@@ -100,6 +110,32 @@ function requestLog(ctx: Context) {
 	return err;
 }
 
-function reportError(err: Error) {
-	// TODO: send to raygun
+function reportError(ctx: Context, err: Error) {
+	if (raygunClient) {
+		reportRaygun(ctx, err);
+	}
+}
+
+function reportRaygun(ctx: Context, err: Error) {
+	if (ctx.state.user) {
+		raygunClient.user = () => {
+			return {
+				identifier: ctx.state.user.name || ctx.state.user.username,
+				email: ctx.state.user.email,
+				fullName: ctx.state.user.username,
+			};
+		};
+	} else {
+		raygunClient.user = () => {
+			return {};
+		};
+	}
+	const customData = {};
+	raygunClient.send(err, customData, (response: IncomingMessage) => {
+		if (response.statusCode === 202) {
+			logger.info('[koaErrorHandler] Report sent to Raygun.');
+		} else {
+			logger.error('[koaErrorHandler] Error sending report sent to Raygun (%s)', response.statusCode);
+		}
+	}, ctx.req, [ config.vpdb.name ]);
 }

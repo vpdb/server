@@ -48,10 +48,8 @@ describe('The VPDB restriction feature', function() {
 						legalGame = game;
 						hlp.release.createReleaseForGame('owner', request, restrictedGame, function(release) {
 							restrictedRelease = release;
-							hlp.doomRelease('owner', release.id);
 							hlp.release.createReleaseForGame('owner', request, legalGame, function(release) {
 								legalRelease = release;
-								hlp.doomRelease('owner', release.id);
 								done();
 							});
 						});

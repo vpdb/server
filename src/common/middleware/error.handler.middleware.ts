@@ -137,5 +137,5 @@ function reportRaygun(ctx: Context, err: Error) {
 		} else {
 			logger.error('[koaErrorHandler] Error sending report sent to Raygun (%s)', response.statusCode);
 		}
-	}, ctx.req, [ config.vpdb.services.raygun.tag ]);
+	}, ctx.request, [ config.vpdb.services.raygun.tag ]);
 }

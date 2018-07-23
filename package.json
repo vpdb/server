@@ -121,7 +121,7 @@
 		"@types/lodash": "4.14.112",
 		"@types/logform": "1.2.0",
 		"@types/mocha": "5.2.5",
-		"@types/mongoose": "5.2.0",
+		"@types/mongoose": "5.2.1",
 		"@types/mongoose-paginate": "5.0.6",
 		"@types/mongoose-unique-validator": "1.0.1",
 		"@types/nodegit": "0.22.3",

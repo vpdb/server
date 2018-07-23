@@ -134,7 +134,7 @@
 		"@types/unzip": "0.1.1",
 		"@types/validator": "9.4.1",
 		"@types/xmlbuilder": "0.0.32",
-		"@types/yargs": "11.1.0",
+		"@types/yargs": "11.1.1",
 		"async": "2.6.1",
 		"cross-env": "5.2.0",
 		"expect.js": "0.3.1",

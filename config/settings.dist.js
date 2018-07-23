@@ -513,14 +513,6 @@ module.exports = {
 			raygun: {
 				enabled: false,
 				apiKey: ''
-			},
-
-			/**
-			 * App security
-			 */
-			sqreen: {
-				enabled: false,
-				token: ''
 			}
 		}
 	},

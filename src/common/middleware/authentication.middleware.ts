@@ -57,7 +57,7 @@ export function koaAuth() {
 
 			// log to sqreen
 			/* istanbul ignore if */
-			if (config.vpdb.services.sqreen.enabled) {
+			if (process.env.SQREEN_ENABLED) {
 				require('sqreen').identify(ctx.req, { email: user.email });
 			}
 

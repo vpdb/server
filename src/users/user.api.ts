@@ -68,7 +68,7 @@ export class UserApi extends Api {
 		const confirmUserEmail = config.vpdb.email.confirmUserEmail && !skipEmailConfirmation;
 		user = await UserUtil.createUser(ctx, newUser, confirmUserEmail);
 
-		if (config.vpdb.services.sqreen.enabled) {
+		if (process.env.SQREEN_ENABLED) {
 			require('sqreen').signup_track({ email: user.email });
 		}
 

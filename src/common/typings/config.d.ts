@@ -434,15 +434,7 @@ export interface VpdbConfig {
 			raygun: {
 				enabled: boolean,
 				apiKey: string,
-			},
-
-			/**
-			 * App security
-			 */
-			sqreen: {
-				enabled: boolean,
-				token: string,
-			},
+			};
 		},
 	};
 

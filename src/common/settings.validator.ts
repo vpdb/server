@@ -421,19 +421,7 @@ export const setttingValidations = {
 						return 'API key must be a string';
 					}
 				},
-			},
-			sqreen: {
-				enabled: (isEnabled: any) => {
-					if (!isBoolean(isEnabled)) {
-						return 'Enabled flag must be either true or false';
-					}
-				},
-				token: (token: any) => {
-					if (!isString(token)) {
-						return 'Token must be a string';
-					}
-				},
-			},
+			}
 		},
 	},
 };

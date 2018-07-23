@@ -17,6 +17,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+if (process.env.SQREEN_ENABLED) {
+	require('sqreen');
+}
 import mongoose from 'mongoose';
 
 import { init as initAcls } from './common/acl';

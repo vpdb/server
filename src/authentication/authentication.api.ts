@@ -138,7 +138,7 @@ export class AuthenticationApi extends Api {
 		await LogUserUtil.success(ctx, authenticatedUser, 'authenticate', { provider: 'local', how });
 		logger.info('[AuthenticationApi.authenticate] User <%s> successfully authenticated using %s.', authenticatedUser.email, how);
 		/* istanbul ignore if */
-		if (config.vpdb.services.sqreen.enabled) {
+		if (process.env.SQREEN_ENABLED) {
 			require('sqreen').auth_track(true, { email: authenticatedUser.email });
 		}
 		const acls = await UserUtil.getACLs(authenticatedUser);
@@ -149,7 +149,7 @@ export class AuthenticationApi extends Api {
 		};
 
 		/* istanbul ignore if */
-		if (config.vpdb.services.sqreen.enabled) {
+		if (process.env.SQREEN_ENABLED) {
 			require('sqreen').auth_track(true, { email: authenticatedUser.email });
 		}
 		return this.success(ctx, response, 200);
@@ -219,7 +219,7 @@ export class AuthenticationApi extends Api {
 		if (localUser) {
 			await LogUserUtil.failure(ctx, localUser, 'authenticate', { provider: 'local' }, null, 'Invalid password.');
 			/* istanbul ignore if */
-			if (config.vpdb.services.sqreen.enabled) {
+			if (process.env.SQREEN_ENABLED) {
 				require('sqreen').auth_track(false, { username: ctx.request.body.username });
 			}
 		} // don't bother logging unknown user names
@@ -263,7 +263,7 @@ export class AuthenticationApi extends Api {
 		// fail if invalid type
 		if (token.type !== 'personal') {
 			/* istanbul ignore if */
-			if (config.vpdb.services.sqreen.enabled) {
+			if (process.env.SQREEN_ENABLED) {
 				require('sqreen').auth_track(false, { email: (token._created_by as UserDocument).email });
 			}
 			throw new ApiError('Cannot use token of type "%s" for authentication (must be of type "personal").', token.type).status(401);
@@ -271,7 +271,7 @@ export class AuthenticationApi extends Api {
 		// fail if not login token
 		if (!scope.isIdentical(token.scopes, ['login'])) {
 			/* istanbul ignore if */
-			if (config.vpdb.services.sqreen.enabled) {
+			if (process.env.SQREEN_ENABLED) {
 				require('sqreen').auth_track(false, { email: (token._created_by as UserDocument).email });
 			}
 			throw new ApiError('Token to exchange for JWT must exclusively be "login" ([ "' + token.scopes.join('", "') + '" ] given).').status(401);
@@ -279,7 +279,7 @@ export class AuthenticationApi extends Api {
 		// fail if token expired
 		if (token.expires_at.getTime() < Date.now()) {
 			/* istanbul ignore if */
-			if (config.vpdb.services.sqreen.enabled) {
+			if (process.env.SQREEN_ENABLED) {
 				require('sqreen').auth_track(false, { email: (token._created_by as UserDocument).email });
 			}
 			throw new ApiError('Token has expired.').status(401);
@@ -287,7 +287,7 @@ export class AuthenticationApi extends Api {
 		// fail if token inactive
 		if (!token.is_active) {
 			/* istanbul ignore if */
-			if (config.vpdb.services.sqreen.enabled) {
+			if (process.env.SQREEN_ENABLED) {
 				require('sqreen').auth_track(false, { email: (token._created_by as UserDocument).email });
 			}
 			throw new ApiError('Token is inactive.').status(401);
@@ -307,7 +307,7 @@ export class AuthenticationApi extends Api {
 	private async assertUserIsActive(ctx: Context, user: UserDocument): Promise<void> {
 		if (!user.is_active) {
 			/* istanbul ignore if */
-			if (config.vpdb.services.sqreen.enabled) {
+			if (process.env.SQREEN_ENABLED) {
 				require('sqreen').auth_track(false, { email: user.email });
 			}
 			if (user.email_status && user.email_status.code === 'pending_registration') {
@@ -469,7 +469,7 @@ export class AuthenticationApi extends Api {
 	private async updateOAuthUser(ctx: Context, user: UserDocument, provider: string, profile: OAuthProfile, emails: string[]): Promise<UserDocument> {
 
 		/* istanbul ignore if */
-		if (config.vpdb.services.sqreen.enabled) {
+		if (process.env.SQREEN_ENABLED) {
 			require('sqreen').auth_track(true, { email: user.email });
 		}
 		if (!user.providers || !user.providers[provider]) {
@@ -566,7 +566,7 @@ export class AuthenticationApi extends Api {
 		newUser = await UserUtil.createUser(ctx, newUser, false);
 
 		/* istanbul ignore if */
-		if (config.vpdb.services.sqreen.enabled) {
+		if (process.env.SQREEN_ENABLED) {
 			require('sqreen').signup_track({ email: newUser.email });
 		}
 

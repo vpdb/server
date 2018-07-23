@@ -21,7 +21,7 @@ import { existsSync } from 'fs';
 import { isArray, isFunction, isObject, isUndefined, keys } from 'lodash';
 import { isAbsolute, resolve } from 'path';
 import { logger } from './logger';
-import { setttingValidations } from './settings.validator';
+import { settingValidations } from './settings.validator';
 import { VpdbConfig } from './typings/config';
 
 export class Settings {
@@ -54,7 +54,7 @@ export class Settings {
 	 */
 	public validate() {
 		logger.info('[Settings.validate] Validating settings at %s', this.filePath);
-		return this._validate(setttingValidations, this.current, '');
+		return this._validate(settingValidations, this.current, '');
 	}
 
 	/**

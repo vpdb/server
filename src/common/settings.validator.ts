@@ -24,7 +24,7 @@ import { isEmail, isLength } from 'validator';
 import { fileTypes } from '../files/file.types';
 import { VpdbConfig } from './typings/config';
 
-export const setttingValidations = {
+export const settingValidations = {
 	vpdb: {
 		name: (name: any) => {
 			if (!isLength(name, 1)) {

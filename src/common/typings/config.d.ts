@@ -434,6 +434,7 @@ export interface VpdbConfig {
 			raygun: {
 				enabled: boolean,
 				apiKey: string,
+				tag: string,
 			};
 		},
 	};

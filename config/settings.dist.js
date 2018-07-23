@@ -512,7 +512,8 @@ module.exports = {
 			 */
 			raygun: {
 				enabled: false,
-				apiKey: ''
+				apiKey: '',
+				tag: ''
 			}
 		}
 	},

@@ -421,7 +421,12 @@ export const settingValidations = {
 						return 'API key must be a string';
 					}
 				},
-			}
+				tag: (apiKey: any) => {
+					if (!isString(apiKey)) {
+						return 'Raygun tag must be a string';
+					}
+				},
+			},
 		},
 	},
 };

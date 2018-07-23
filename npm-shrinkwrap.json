@@ -265,9 +265,9 @@
 			}
 		},
 		"@types/bull": {
-			"version": "3.3.14",
-			"resolved": "https://registry.npmjs.org/@types/bull/-/bull-3.3.14.tgz",
-			"integrity": "sha512-xjfMwQSR/2yhtccpnpGRm7SuLxnxThrbnut7cCY3hzKx9cPSQ8okt0hv7QTXQgFGzmSQg2qlcqRonKRLix5w4g==",
+			"version": "3.3.15",
+			"resolved": "https://registry.npmjs.org/@types/bull/-/bull-3.3.15.tgz",
+			"integrity": "sha512-rdFt0hZouT4O1D08c/DS7veTP1MMwjSXd3ZWiiLdQ28p8z+9s6sqz/qwujOYtMCyEWjvRPT27W6wP8JEpirGeA==",
 			"dev": true,
 			"requires": {
 				"@types/bluebird": "*",
@@ -1515,9 +1515,9 @@
 			"integrity": "sha1-Jw8HbFpywC9bZaR9+Uxf46J4iS8="
 		},
 		"bull": {
-			"version": "3.4.3",
-			"resolved": "https://registry.npmjs.org/bull/-/bull-3.4.3.tgz",
-			"integrity": "sha512-KluylHw0yz0AMQ272oVpfAhdyfrS1piL0j6Dppn91mK8oCbSadm2vCpb90DZsPAEVxD7kgjA+KFivGsqBP91Fw==",
+			"version": "3.4.4",
+			"resolved": "https://registry.npmjs.org/bull/-/bull-3.4.4.tgz",
+			"integrity": "sha512-44Kwpqu/8IhCIq8zrSszbvuUGpTOMp5qNWuOkTJAwQXZyYRZ0XAAEqUyFP61CULDFKQ5+m6Xs+VMvhtY73hGiA==",
 			"requires": {
 				"bluebird": "^3.5.0",
 				"cron-parser": "^2.5.0",

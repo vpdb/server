@@ -436,6 +436,15 @@ export interface VpdbConfig {
 				apiKey: string,
 				tag: string,
 			};
+
+			/**
+			 * Crash reporting
+			 */
+			rollbar: {
+				enabled: boolean,
+				apiKey: string,
+				environment: string,
+			};
 		},
 	};
 

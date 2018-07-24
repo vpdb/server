@@ -70,7 +70,8 @@ module.exports = {
 			ipboard: [{ enabled: true, id: 'ipbtest', name: 'Test', icon: '', baseURL: 'https://vpdb.io/forums/index.php', clientID: 'TEST_CLIENT_ID', clientSecret: 'TEST_CLIENT_SECRET', version: 3 }]
 		},
 		services: {
-			raygun: { enabled: false, apiKey: '', tag: '' }
+			raygun: { enabled: false, apiKey: '', tag: '' },
+			rollbar: { enabled: false, apiKey: '', environment: '' },
 		}
 	},
 	webapp: { ga: { enabled: false, id: '' } }

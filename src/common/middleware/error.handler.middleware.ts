@@ -22,17 +22,39 @@ import { assign, keys} from 'lodash';
 
 import { IncomingMessage } from 'http';
 import { ApiError, ApiValidationError } from '../api.error';
+import { gitInfo } from '../gitinfo';
 import { logger } from '../logger';
 import { config } from '../settings';
 import { Context } from '../typings/context';
 
+const appVersion = require('../../../package.json').version;
+
 // initialize raygun
 let raygunClient: any = null;
+/* istanbul ignore if: no crash reporters when testing */
 if (config.vpdb.services.raygun.enabled) {
 	logger.info('[koaErrorHandler] Setting up Raygun...');
 	const raygun = require('raygun');
 	raygunClient = new raygun.Client().init({ apiKey: config.vpdb.services.raygun.apiKey });
-	raygunClient.setVersion(require('../../../package.json').version.substr(1));
+	raygunClient.setVersion(appVersion.substr(1));
+}
+
+// initialize rollbar
+let rollbar: any = null;
+/* istanbul ignore if: no crash reporters when testing */
+if (config.vpdb.services.rollbar.enabled) {
+	const Rollbar = require('rollbar');
+	rollbar = new Rollbar({
+		accessToken: config.vpdb.services.rollbar.apiKey,
+		captureUncaught: true,
+		captureUnhandledRejections: true,
+		environment: config.vpdb.services.rollbar.environment,
+		version: appVersion,
+		codeVersion: gitInfo.hasInfo() ? gitInfo.getLastCommit().SHA : undefined,
+		captureEmail: true,
+		captureUsername: true,
+		captureIp: true,
+	});
 }
 
 /**
@@ -111,11 +133,17 @@ function requestLog(ctx: Context) {
 }
 
 function reportError(ctx: Context, err: Error) {
+	/* istanbul ignore if: no crash reporters when testing */
 	if (raygunClient) {
 		reportRaygun(ctx, err);
 	}
+	/* istanbul ignore if: no crash reporters when testing */
+	if (rollbar) {
+		reportRollbar(ctx, err);
+	}
 }
 
+/* istanbul ignore next: no crash reporters when testing */
 function reportRaygun(ctx: Context, err: Error) {
 	if (ctx.state.user) {
 		raygunClient.user = () => {
@@ -138,4 +166,19 @@ function reportRaygun(ctx: Context, err: Error) {
 			logger.error('[koaErrorHandler] Error sending report sent to Raygun (%s)', response.statusCode);
 		}
 	}, ctx.request, [ config.vpdb.services.raygun.tag ]);
+}
+
+/* istanbul ignore next: no crash reporters when testing */
+function reportRollbar(ctx: Context, err: Error) {
+	let request: any;
+	if (ctx.state.user) {
+		request = Object.assign({}, ctx.request, { user: {
+				id: ctx.state.user.id,
+				email: ctx.state.user.email,
+				username: ctx.state.user.name || ctx.state.user.username,
+			} });
+	} else {
+		request = Object.assign({}, ctx.request);
+	}
+	rollbar.error(err, request);
 }

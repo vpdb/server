@@ -7,6 +7,11 @@ VPDB uses a couple of services.
 [Raygun](https://raygun.com/) is a crash reporter. It is configured in the 
 settings, more precisely at `vpdb.services.raygun`.
 
+## Rollbar
+
+[Rollbar](https://rollbar.com) is another crash reporter. Like Raygun, it's configured in the
+settings at `vpdb.services.rollbar`.
+
 ## Sqreen
 
 [Sqreen](https://www.sqreen.io) provides several security-related features.  

@@ -514,6 +514,15 @@ module.exports = {
 				enabled: false,
 				apiKey: '',
 				tag: ''
+			},
+
+			/**
+			 * Crash reporting
+			 */
+			rollbar: {
+				enabled: false,
+				apiKey: '',
+				environment: ''
 			}
 		}
 	},

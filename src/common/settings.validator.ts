@@ -427,6 +427,23 @@ export const settingValidations = {
 					}
 				},
 			},
+			rollbar: {
+				enabled: (isEnabled: any) => {
+					if (!isBoolean(isEnabled)) {
+						return 'Enabled flag must be either true or false';
+					}
+				},
+				apiKey: (apiKey: any) => {
+					if (!isString(apiKey)) {
+						return 'API key must be a string';
+					}
+				},
+				environment: (apiKey: any) => {
+					if (!isString(apiKey)) {
+						return 'Rollbar environment must be a string';
+					}
+				},
+			},
 		},
 	},
 };

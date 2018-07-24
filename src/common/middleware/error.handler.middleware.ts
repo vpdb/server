@@ -19,6 +19,7 @@
 
 import chalk from 'chalk';
 import { assign, keys} from 'lodash';
+import { isObject } from 'util';
 
 import { IncomingMessage } from 'http';
 import { ApiError, ApiValidationError } from '../api.error';
@@ -49,8 +50,7 @@ if (config.vpdb.services.rollbar.enabled) {
 		captureUncaught: true,
 		captureUnhandledRejections: true,
 		environment: config.vpdb.services.rollbar.environment,
-		version: appVersion,
-		codeVersion: gitInfo.hasInfo() ? gitInfo.getLastCommit().SHA : undefined,
+		codeVersion: gitInfo.hasInfo() ? gitInfo.getLastCommit().SHA : appVersion,
 		captureEmail: true,
 		captureUsername: true,
 		captureIp: true,
@@ -170,15 +170,20 @@ function reportRaygun(ctx: Context, err: Error) {
 
 /* istanbul ignore next: no crash reporters when testing */
 function reportRollbar(ctx: Context, err: Error) {
-	let request: any;
+	const request: any = {
+		headers: ctx.request.headers,
+		protocol: ctx.request.protocol,
+		url: ctx.request.url,
+		method: ctx.request.method,
+		body: isObject(ctx.request.body) ? JSON.stringify(ctx.request.body) : ctx.request.body,
+		user_ip: ctx.request.get('x-forwarded-for') || ctx.ip || '0.0.0.0',
+	};
 	if (ctx.state.user) {
-		request = Object.assign({}, ctx.request, { user: {
-				id: ctx.state.user.id,
-				email: ctx.state.user.email,
-				username: ctx.state.user.name || ctx.state.user.username,
-			} });
-	} else {
-		request = Object.assign({}, ctx.request);
+		request.user = {
+			id: ctx.state.user.id,
+			email: ctx.state.user.email,
+			username: ctx.state.user.name || ctx.state.user.username,
+		};
 	}
 	rollbar.error(err, request);
 }

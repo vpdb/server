@@ -26,7 +26,8 @@ module.exports = {
 			level: 'info',
 			console: { access: true,  app: true },
 			file: { access: null, app: null },
-			papertrail: { access: false, app: false, options: { } }
+			papertrail: { access: false, app: false, options: { } },
+			logdna: { access: false, app: false, apiKey: '', env: '', hostname: '' },
 		},
 		skipImageOptimizations: true,
 		quota: {

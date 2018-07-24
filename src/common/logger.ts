@@ -20,13 +20,17 @@
 import chalk from 'chalk';
 import hasAnsi from 'has-ansi';
 import { format as logFormat } from 'logform';
+import { resolve } from 'path';
 import { format as sprintf } from 'util';
 import winston from 'winston';
 
-export class Logger {
-	private logger: any;
+import { LogdnaTransport } from './logger.logdna.transport';
+import { config } from './settings';
 
-	constructor() {
+class Logger {
+	private logger: winston.Logger;
+
+	constructor(type: 'app' | 'access') {
 		const alignedWithColorsAndTime = logFormat.combine(
 			logFormat.colorize(),
 			logFormat.timestamp(),
@@ -35,11 +39,17 @@ export class Logger {
 		);
 		this.logger = winston.createLogger({
 			format: alignedWithColorsAndTime,
-			transports: [
-				new winston.transports.Console(),
-			],
-			level: process.env.LOGLEVEL || 'silly',
+			transports: [],
+			level: config.vpdb.logging.level,
 		});
+
+		if (type === 'app') {
+			this.setupAppLogger();
+		}
+
+		if (type === 'access') {
+			this.setupAccessLogger();
+		}
 	}
 
 	public wtf(format: any, ...param: any[]) {
@@ -84,6 +94,52 @@ export class Logger {
 		});
 	}
 
+	private setupAppLogger(): void {
+		if (config.vpdb.logging.console.app) {
+			this.logger.add(new winston.transports.Console());
+		}
+		/* istanbul ignore next */
+		if (config.vpdb.logging.file.app) {
+			const logPath = resolve(config.vpdb.logging.file.app);
+			this.logger.add(new winston.transports.File({
+				filename: logPath,               // The filename of the logfile to write output to.
+				maxsize: 1000000,                // Max size in bytes of the logfile, if the size is exceeded then a new file is created.
+				maxFiles: 10,                    // Limit the number of files created when the size of the logfile is exceeded.
+			}));
+		}
+		/* istanbul ignore next */
+		if (config.vpdb.logging.logdna.app) {
+			this.logger.add(new LogdnaTransport(config.vpdb.logging.logdna.apiKey, {
+				app: 'vpdb-app',
+				env: config.vpdb.logging.logdna.env,
+				hostname: config.vpdb.logging.logdna.hostname,
+			}));
+		}
+	}
+
+	private setupAccessLogger(): void {
+		if (config.vpdb.logging.console.access) {
+			this.logger.add(new winston.transports.Console());
+		}
+		/* istanbul ignore next */
+		if (config.vpdb.logging.file.access) {
+			const logPath = resolve(config.vpdb.logging.file.app);
+			this.logger.add(new winston.transports.File({
+				filename: logPath,               // The filename of the logfile to write output to.
+				maxsize: 1000000,                // Max size in bytes of the logfile, if the size is exceeded then a new file is created.
+				maxFiles: 10,                    // Limit the number of files created when the size of the logfile is exceeded.
+			}));
+		}
+		/* istanbul ignore next */
+		if (config.vpdb.logging.logdna.access) {
+			this.logger.add(new LogdnaTransport(config.vpdb.logging.logdna.apiKey, {
+				app: 'vpdb-access',
+				env: config.vpdb.logging.logdna.env,
+				hostname: config.vpdb.logging.logdna.hostname,
+			}));
+		}
+	}
+
 	private colorMessage(message: string, prefixColor: any, messageColor?: any): string {
 		if (hasAnsi(message)) {
 			return message;
@@ -105,4 +161,5 @@ export class Logger {
 	}
 }
 
-export const logger = new Logger();
+export const logger = new Logger('app');
+export const accessLogger = new Logger('access');

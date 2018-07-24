@@ -70,6 +70,7 @@
 		"koa-router": "7.4.0",
 		"koa-send": "5.0.0",
 		"lodash": "4.17.10",
+		"logdna": "2.0.4",
 		"logform": "1.9.1",
 		"mongoose": "5.2.4",
 		"mongoose-paginate": "5.0.3",
@@ -172,6 +173,7 @@
 			"build/files/processor/processor.js",
 			"build/common/settings.validator.js",
 			"build/common/middleware/website.middleware.js",
+			"build/common/logger.logdna.transport.js",
 			"build/authentication/strategies/**"
 		],
 		"reporter": [

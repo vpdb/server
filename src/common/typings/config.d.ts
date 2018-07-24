@@ -252,6 +252,37 @@ export interface VpdbConfig {
 				},
 			},
 
+			/**
+			 * Sends logs to LogDNA
+			 */
+			logdna: {
+
+				/**
+				 * Whether to send HTTP access log to LogDNA
+				 */
+				access: boolean,
+
+				/**
+				 * Whether to send application log to LogDNA
+				 */
+				app: boolean,
+
+				/**
+				 * The Ingestion Key
+				 */
+				apiKey: string,
+
+				/**
+				 * The environment passed along for each line
+				 */
+				env: string,
+
+				/**
+				 * The hostname passed along
+				 */
+				hostname: string,
+			}
+
 			slack: {
 				enabled: boolean,
 				token: string,

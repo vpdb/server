@@ -235,6 +235,37 @@ module.exports = {
 				}
 			},
 
+			/**
+			 * Sends logs to LogDNA
+			 */
+			logdna: {
+
+				/**
+				 * Whether to send HTTP access log to LogDNA
+				 */
+				access: false,
+
+				/**
+				 * Whether to send application log to LogDNA
+				 */
+				app: false,
+
+				/**
+				 * The Ingestion Key
+				 */
+				apiKey: '',
+
+				/**
+				 * The environment passed along for each line
+				 */
+				env: '',
+
+				/**
+				 * The hostname passed along
+				 */
+				hostname: '',
+			},
+
 			slack: {
 				enabled: false,
 				token: '',

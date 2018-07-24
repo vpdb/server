@@ -20,7 +20,6 @@
 import { existsSync } from 'fs';
 import { isArray, isFunction, isObject, isUndefined, keys } from 'lodash';
 import { isAbsolute, resolve } from 'path';
-import { logger } from './logger';
 import { settingValidations } from './settings.validator';
 import { VpdbConfig } from './typings/config';
 
@@ -28,12 +27,13 @@ export class Settings {
 
 	public readonly current: VpdbConfig;
 	private readonly filePath: string;
+	private readonly logger = require('winston');
 
 	constructor() {
 		/* istanbul ignore if */
 		if (!process.env.APP_SETTINGS) {
 			const e = new Error('Settings location not found. Please set the `APP_SETTINGS` environment variable to your configuration file and retry.');
-			logger.error(e.stack);
+			this.logger.error(e.stack);
 			throw e;
 		}
 		const filePath = isAbsolute(process.env.APP_SETTINGS) ? process.env.APP_SETTINGS : resolve(process.cwd(), process.env.APP_SETTINGS);
@@ -42,7 +42,7 @@ export class Settings {
 		if (!existsSync(filePath)) {
 			throw new Error('Cannot find settings at "' + filePath + '". Copy src/config/settings-dist.js to server/config/settings.js or point `APP_SETTINGS` environment variable to correct path (CWD = ' + process.cwd() + ').');
 		}
-		logger.info('[Settings] Loading from %s', filePath);
+		this.logger.info('[Settings] Loading from %s', filePath);
 		this.filePath = filePath;
 		this.current = require(this.filePath);
 	}
@@ -53,7 +53,7 @@ export class Settings {
 	 * @return {boolean} true if passes, false otherwise.
 	 */
 	public validate() {
-		logger.info('[Settings.validate] Validating settings at %s', this.filePath);
+		this.logger.info('[Settings.validate] Validating settings at %s', this.filePath);
 		return this._validate(settingValidations, this.current, '');
 	}
 
@@ -79,12 +79,12 @@ export class Settings {
 			// validation function
 			if (isFunction(validation[s])) {
 				if (isUndefined(setting[s]) && setting.enabled !== false) {
-					logger.error('[Settings.validate] %s [KO]: Setting is missing.', p);
+					this.logger.error('[Settings.validate] %s [KO]: Setting is missing.', p);
 					success = false;
 				} else {
 					validationError = validation[s](setting[s], setting, this.current);
 					if (!validationError) {
-						logger.info('[Settings.validate] %s [OK]', p);
+						this.logger.info('[Settings.validate] %s [OK]', p);
 					} else {
 						if (isArray(validationError)) {
 							for (j = 0; j < validationError.length; j++) {
@@ -98,7 +98,7 @@ export class Settings {
 				}
 			} else if (validation[s].__array) {
 				if (!isArray(setting[s])) {
-					logger.error('[Settings.validate] %s [KO]: Setting must be an array.', p);
+					this.logger.error('[Settings.validate] %s [KO]: Setting must be an array.', p);
 					success = false;
 				} else {
 					for (i = 0; i < setting[s].length; i++) {
@@ -111,7 +111,7 @@ export class Settings {
 			} else if (validation[s] && isObject(validation[s])) {
 
 				if (isUndefined(setting[s])) {
-					logger.error('[Settings.validate] %s [KO]: Setting block is missing.', p);
+					this.logger.error('[Settings.validate] %s [KO]: Setting block is missing.', p);
 					success = false;
 
 				} else if (!this._validate(validation[s], setting[s], path + '.' + s)) {
@@ -122,7 +122,7 @@ export class Settings {
 
 		}
 		if (success && !path) {
-			logger.info('[Settings.validate] Congrats, your settings look splendid!');
+			this.logger.info('[Settings.validate] Congrats, your settings look splendid!');
 		}
 		return success;
 	}
@@ -132,9 +132,9 @@ export class Settings {
 		setting = !isUndefined(error.setting) ? error.setting : setting;
 		const s = isObject(setting) ? JSON.stringify(setting) : setting;
 		if (isObject(error)) {
-			logger.error('[Settings.validate] %s.%s [KO]: %s (%s).', p, error.path, error.message, s);
+			this.logger.error('[Settings.validate] %s.%s [KO]: %s (%s).', p, error.path, error.message, s);
 		} else {
-			logger.error('[Settings.validate] %s [KO]: %s (%s).', p, error, s);
+			this.logger.error('[Settings.validate] %s [KO]: %s (%s).', p, error, s);
 		}
 	}
 

@@ -20,7 +20,7 @@
 import bytes = require('bytes');
 import chalk, { Chalk, ColorSupport } from 'chalk';
 
-import { logger } from '../logger';
+import { accessLogger } from '../logger';
 import { Context } from '../typings/context';
 
 const Counter = require('passthrough-counter');
@@ -128,8 +128,8 @@ function log(ctx: Context, start: number, len: number, err: any = null, event: s
 	const logMethod = methodStyle[ctx.method] || methodStyle.GET;
 
 	if (statusCode >= 500 && statusCode < 600) {
-		logger.error('[%s] %s%s %s %sms - %s', logUserIp, upstream, logStatus(' ' + statusCode + ' '), logMethod(ctx.method + ' ' + ctx.originalUrl), Date.now() - start, length);
+		accessLogger.error('[%s] %s%s %s %sms - %s', logUserIp, upstream, logStatus(' ' + statusCode + ' '), logMethod(ctx.method + ' ' + ctx.originalUrl), Date.now() - start, length);
 	} else {
-		logger.info('[%s] %s%s %s %sms - %s%s', logUserIp, upstream, logStatus(' ' + statusCode + ' '), logMethod(ctx.method + ' ' + ctx.originalUrl), Date.now() - start, length, cache);
+		accessLogger.info('[%s] %s%s %s %sms - %s%s', logUserIp, upstream, logStatus(' ' + statusCode + ' '), logMethod(ctx.method + ' ' + ctx.originalUrl), Date.now() - start, length, cache);
 	}
 }

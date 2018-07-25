@@ -107,15 +107,15 @@ export async function init(): Promise<void> {
 	await acl.addRoleParents('release-contributor', ['member']);
 	await acl.addRoleParents('backglass-contributor', ['member']);
 
-	logger.info('[acl.init] Added permissions to roles.');
+	logger.info(null, '[acl.init] Added permissions to roles.');
 	const users = await state.models.User.find({}).lean().exec();
-	logger.info('[acl.init] Applying ACLs to %d users...', users.length);
+	logger.info(null, '[acl.init] Applying ACLs to %d users...', users.length);
 
 	/* istanbul ignore next: No initial users when testing */
 	for (const user of users) {
 		await acl.addUserRoles(user.id, user.roles);
 	}
-	logger.info('[acl.init] ACLs applied.');
+	logger.info(null, '[acl.init] ACLs applied.');
 }
 
 export const roles: Role[] = [

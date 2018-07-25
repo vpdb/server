@@ -17,6 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { RequestState } from '../../common/typings/context';
 import { FileDocument } from '../file.document';
 import { FileVariation } from '../file.variations';
 
@@ -53,13 +54,14 @@ export interface Processor<V extends FileVariation> {
 	/**
 	 * Starts processing the file. This is executed in Bull's worker thread.
 	 *
+	 * @param requestState State for logging
 	 * @param {FileDocument} file File to process
 	 * @param {string} src Source path of the file
 	 * @param {string} dest Destination path
 	 * @param variation Variation to process
 	 * @returns {Promise<string>} Path to processed file
 	 */
-	process(file: FileDocument, src: string, dest: string, variation?: V): Promise<string>;
+	process(requestState: RequestState, file: FileDocument, src: string, dest: string, variation?: V): Promise<string>;
 }
 
 export interface CreationProcessor<V extends FileVariation> extends Processor<V> {

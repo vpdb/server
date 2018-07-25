@@ -27,7 +27,7 @@ import { ApiError } from './api.error';
 import { logger } from './logger';
 import { config } from './settings';
 import { VpdbPlanCategoryCost, VpdbPlanCost, VpdbQuotaConfig } from './typings/config';
-import { Context } from './typings/context';
+import { Context, RequestState } from './typings/context';
 
 export class Quota {
 
@@ -49,10 +49,11 @@ export class Quota {
 	/**
 	 * Returns the current rate limits for the given user.
 	 *
+	 * @param requestState Request state
 	 * @param {UserDocument} user User
 	 * @return {Promise<UserQuota>} Remaining quota
 	 */
-	public async get(user: UserDocument): Promise<UserQuota> {
+	public async get(requestState: RequestState, user: UserDocument): Promise<UserQuota> {
 		const plan = user.planConfig;
 		/* istanbul ignore if: That's a configuration error. */
 		if (!plan) {
@@ -74,13 +75,13 @@ export class Quota {
 		if (range.length === 0) {
 			remaining = plan.credits;
 			reset = period / 1000;
-			logger.info('[Quota.get] No active period, full credits apply.');
+			logger.info(requestState, '[Quota.get] No active period, full credits apply.');
 		} else {
 			const count = sum(range.map((m: string) => JSON.parse(m).w));
 			const oldest = JSON.parse(range[0]).t;
 			remaining = count < plan.credits ? plan.credits - count : 0;
 			reset = Math.ceil((oldest + period) / 1000);
-			logger.info('[Quota.get] Active period started %ss ago, %s credits remaining.', (now - oldest) / 1000, remaining);
+			logger.info(requestState, '[Quota.get] Active period started %ss ago, %s credits remaining.', (now - oldest) / 1000, remaining);
 		}
 
 		return {
@@ -117,21 +118,21 @@ export class Quota {
 			this.setHeader(ctx, { limit: 0, remaining: 0, reset: 0, period: 0, unlimited: true });
 			return;
 		}
-		const totalCost = this.getTotalCost(files);
+		const totalCost = this.getTotalCost(ctx.state, files);
 
 		// don't even check quota if weight is 0
 		if (totalCost === 0) {
 			return;
 		}
 
-		let userQuota = await this.get(ctx.state.user);
+		let userQuota = await this.get(ctx.state, ctx.state.user);
 		if (userQuota.remaining < totalCost) {
 			this.setHeader(ctx, userQuota);
 			throw new ApiError('No more quota left, requested %s of %s available. Try again in %ss.',
 				totalCost, userQuota.remaining, userQuota.reset).status(403);
 		}
 
-		userQuota = await this.consume(ctx.state.user, totalCost);
+		userQuota = await this.consume(ctx.state, ctx.state.user, totalCost);
 		this.setHeader(ctx, userQuota);
 	}
 
@@ -152,13 +153,14 @@ export class Quota {
 
 	/**
 	 * Sums up the const of a given list of files.
+	 * @param requestState For logging
 	 * @param {FileDocument[]} files Files to calculate cost for
 	 * @return {number} Total cost
 	 */
-	public getTotalCost(files: FileDocument[]): number {
+	public getTotalCost(requestState: RequestState, files: FileDocument[]): number {
 		let totalCost = 0;
 		for (const file of files) {
-			const cost = this.getCost(file);
+			const cost = this.getCost(requestState, file);
 			// a free file
 			if (cost === 0) {
 				continue;
@@ -171,11 +173,12 @@ export class Quota {
 	/**
 	 * Returns the cost of a given file and variation.
 	 *
+	 * @param requestState For logging
 	 * @param {FileDocument} file Potentially dehydrated File
 	 * @param {string|object} [variation] Optional variation
 	 * @returns {*}
 	 */
-	public getCost(file: FileDocument, variation: FileVariation = null): number {
+	public getCost(requestState: RequestState, file: FileDocument, variation: FileVariation = null): number {
 
 		// if already set, return directly.
 		if (!variation && !isUndefined(file.cost)) {
@@ -187,14 +190,14 @@ export class Quota {
 
 		/* istanbul ignore if: Should not happen if configured correctly */
 		if (!file.file_type) {
-			logger.error(require('util').inspect(file));
+			logger.error(requestState, require('util').inspect(file));
 			throw new ApiError('File object must be populated when retrieving costs.');
 		}
 		const cost = this.config.costs[file.file_type];
 
 		// undefined file_types are free
 		if (isUndefined(cost)) {
-			logger.warn('[Quota.getCost] Undefined cost for file_type "%s".', file.file_type);
+			logger.warn(requestState, '[Quota.getCost] Undefined cost for file_type "%s".', file.file_type);
 			file.cost = 0;
 			return 0;
 		}
@@ -211,11 +214,11 @@ export class Quota {
 				if (!isUndefined(costObj.variation)) {
 					variationCost = costObj.variation;
 				} else {
-					logger.warn('[Quota.getCost] No cost defined for %s file of variation %s and no fallback given, returning 0.', file.file_type, variation.name);
+					logger.warn(requestState, '[Quota.getCost] No cost defined for %s file of variation %s and no fallback given, returning 0.', file.file_type, variation.name);
 					variationCost = 0;
 				}
 			} else {
-				logger.warn('[Quota.getCost] No cost defined for %s file of any variation returning default cost %s.', file.file_type, cost);
+				logger.warn(requestState, '[Quota.getCost] No cost defined for %s file of any variation returning default cost %s.', file.file_type, cost);
 				variationCost = cost as number;
 			}
 			// save this for next time
@@ -238,7 +241,7 @@ export class Quota {
 
 			} else {
 				// warn if nothing is set, i.e the 'category' prop isn't defined but the original cost is still an object
-				logger.warn('[Quota.getCost] No cost defined for %s file (type is undefined).', file.file_type, File.getMimeCategory(file, variation));
+				logger.warn(requestState, '[Quota.getCost] No cost defined for %s file (type is undefined).', file.file_type, File.getMimeCategory(file, variation));
 				file.cost = 0;
 				return 0;
 			}
@@ -253,7 +256,7 @@ export class Quota {
 			file.cost = costCategoryObj['*'];
 			return costCategoryObj['*'];
 		}
-		logger.warn('[Quota.getCost] No cost defined for %s file of type %s and no fallback given, returning 0.', file.file_type, File.getMimeCategory(file, variation));
+		logger.warn(requestState, '[Quota.getCost] No cost defined for %s file of type %s and no fallback given, returning 0.', file.file_type, File.getMimeCategory(file, variation));
 		file.cost = 0;
 		return 0;
 	}
@@ -261,11 +264,12 @@ export class Quota {
 	/**
 	 * Consumes a quota and returns the user's updated quota config.
 	 *
+	 * @param requestState For logging
 	 * @param {UserDocument} user User to consume quota for
 	 * @param {number} weight How much to consume
 	 * @return {Promise<UserQuota>} Updated quota after consumption
 	 */
-	private async consume(user: UserDocument, weight: number): Promise<UserQuota> {
+	private async consume(requestState: RequestState, user: UserDocument, weight: number): Promise<UserQuota> {
 		const plan = user.planConfig;
 		/* istanbul ignore if: That's a configuration error. */
 		if (!plan) {
@@ -289,10 +293,10 @@ export class Quota {
 		if (all.length === 1) {
 			await state.redis.pexpire(key, period);
 			oldest = now;
-			logger.info('[Quota.consume] New period starting with %s remaining credits after consuming %s.', plan.credits - count, weight);
+			logger.info(requestState, '[Quota.consume] New period starting with %s remaining credits after consuming %s.', plan.credits - count, weight);
 		} else {
 			oldest = JSON.parse(all[0]).t;
-			logger.info('[Quota.consume] Existing period updated with %s remaining credits after consuming %s.', plan.credits - count, weight);
+			logger.info(requestState, '[Quota.consume] Existing period updated with %s remaining credits after consuming %s.', plan.credits - count, weight);
 		}
 		return {
 			limit: plan.credits,

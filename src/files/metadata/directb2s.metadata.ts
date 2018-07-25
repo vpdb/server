@@ -27,6 +27,7 @@ import { File } from '../file';
 import { FileDocument } from '../file.document';
 import { FileVariation } from '../file.variations';
 import { Metadata } from './metadata';
+import { RequestState } from '../../common/typings/context';
 
 export class Directb2sMetadata extends Metadata {
 
@@ -35,7 +36,7 @@ export class Directb2sMetadata extends Metadata {
 	}
 
 	// TODO try https://github.com/nikku/saxen
-	public async getMetadata(file: FileDocument, path: string): Promise<{ [p: string]: any }> {
+	public async getMetadata(requestState: RequestState, file: FileDocument, path: string): Promise<{ [p: string]: any }> {
 		const now = Date.now();
 		return new Promise((resolve, reject) => {
 			const metadata: any = {};
@@ -55,7 +56,7 @@ export class Directb2sMetadata extends Metadata {
 				}
 			});
 			saxStream.on('end', () => {
-				logger.info('[Directb2sMetadata] Retrieved metadata in %sms.', Date.now() - now);
+				logger.info(requestState, '[Directb2sMetadata] Retrieved metadata in %sms.', Date.now() - now);
 				resolve(metadata);
 			});
 			createReadStream(path).on('error', this.error(reject, 'Error reading file at ' + path))

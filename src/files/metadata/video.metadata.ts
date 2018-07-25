@@ -24,6 +24,7 @@ import { File } from '../file';
 import { FileDocument } from '../file.document';
 import { FileVariation } from '../file.variations';
 import { Metadata } from './metadata';
+import { RequestState } from '../../common/typings/context';
 
 const ffmpeg = require('bluebird').promisifyAll(Ffmpeg);
 
@@ -41,7 +42,7 @@ export class VideoMetadata extends Metadata {
 		return File.getMimeCategory(file, variation) === 'video';
 	}
 
-	public async getMetadata(file: FileDocument, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
+	public async getMetadata(requestState: RequestState, file: FileDocument, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
 		return ffmpeg.ffprobeAsync(path);
 	}
 

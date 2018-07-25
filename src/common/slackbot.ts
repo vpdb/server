@@ -48,7 +48,7 @@ export class SlackBot {
 			this.web = new WebClient(this.config.token);
 			this.rtm = new RTMClient(this.config.token, { logLevel: 'info', mrkdwn: true } as RTMClientOptions);
 			this.rtm.on('authenticated', rtmStartData => {
-				logger.info(`[SlackBot] Logged in as ${rtmStartData.self.name} of team ${rtmStartData.team.name}, but not yet connected to a channel.`);
+				logger.info(null, `[SlackBot] Logged in as ${rtmStartData.self.name} of team ${rtmStartData.team.name}, but not yet connected to a channel.`);
 			});
 			this.rtm.start({});
 		}

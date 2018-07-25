@@ -46,7 +46,7 @@ export class GitHubStrategy extends Strategy {
 	constructor(redirectUri: string) {
 		super();
 		this.redirectUri = redirectUri;
-		logger.info('[GitHubStrategy] Instantiated with redirection URL %s', redirectUri);
+		logger.info(null, '[GitHubStrategy] Instantiated with redirection URL %s', redirectUri);
 	}
 
 	protected getAuthUrl(): string {

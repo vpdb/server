@@ -22,13 +22,11 @@
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 2.3
 
-/// <reference types="bluebird" />
 /// <reference types="node"/>
-/// <reference types="express"/>
 
+import Promise = require('bluebird');
+import express = require('express');
 import http = require('http');
-import Promise = require("bluebird");
-import express = require("express");
 
 type strings = string|string[];
 type Value = string|number;
@@ -40,10 +38,10 @@ type AllowedCallback = (err: Error, allowed: boolean) => any;
 type GetUserId = (req: http.IncomingMessage, res: http.ServerResponse) => Value;
 
 interface AclStatic {
+	memoryBackend: MemoryBackendStatic;
 	new (backend: Backend<any>, logger: Logger, options: Option): Acl;
 	new (backend: Backend<any>, logger: Logger): Acl;
 	new (backend: Backend<any>): Acl;
-	memoryBackend: MemoryBackendStatic;
 }
 
 interface Logger {
@@ -118,7 +116,7 @@ interface Acl {
 		 * @param {AclSet | AclSet[]} aclSets Array with objects expressing what permissions to give.
 		 */
 		(aclSets: AclSet | AclSet[]): Promise<void>;
-	}
+	};
 	/**
 	 * Remove permissions from the given roles owned by the given role.
 	 * Note: we loose atomicity when removing empty role_resources.
@@ -168,7 +166,7 @@ interface Acl {
 		 * @param {AnyCallback} cb Callback called with the result.
 		 */
 		(roles: strings, permissions: strings, cb?: AnyCallback): Promise<any>;
-	}
+	};
 	permittedResources: (roles: strings, permissions: strings, cb?: Function) => Promise<void>;
 	/**
 	 * Middleware for express.

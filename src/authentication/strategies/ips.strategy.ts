@@ -55,7 +55,7 @@ export class IpsStrategy extends Strategy {
 		this.config = config;
 		this.client = Axios.create({ baseURL: this.config.baseURL, validateStatus: status => status < 500 });
 
-		logger.info('[IpsStrategy] Instantiated %s v%s with redirection URL %s', this.providerName, this.config.version, redirectUri);
+		logger.info(null, '[IpsStrategy] Instantiated %s v%s with redirection URL %s', this.providerName, this.config.version, redirectUri);
 	}
 
 	protected getAuthUrl(): string {

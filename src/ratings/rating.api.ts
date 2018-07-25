@@ -198,16 +198,16 @@ export class RatingApi extends Api {
 	 * @return {Promise<boolean>}
 	 */
 	private async updateRatedEntity(ctx: Context, modelName: string, entity: any, rating: RatingDocument, status: number) {
-		const result = await metrics.onRatingUpdated(modelName, entity, rating);
+		const result = await metrics.onRatingUpdated(ctx.state, modelName, entity, rating);
 
 		// if not 201, add modified date
 		if (status === 200) {
 			result.modified_at = rating.modified_at;
-			logger.info('[RatingApi.updateRatedEntity] User <%s> updated rating for %s %s to %s.', ctx.state.user, modelName, entity.id, rating.value);
+			logger.info(ctx.state, '[RatingApi.updateRatedEntity] User <%s> updated rating for %s %s to %s.', ctx.state.user, modelName, entity.id, rating.value);
 		} else if (rating) {
-			logger.info('[RatingApi.updateRatedEntity] User <%s> added new rating for %s %s with %s.', ctx.state.user, modelName, entity.id, rating.value);
+			logger.info(ctx.state, '[RatingApi.updateRatedEntity] User <%s> added new rating for %s %s with %s.', ctx.state.user, modelName, entity.id, rating.value);
 		} else {
-			logger.info('[RatingApi.updateRatedEntity] User <%s> removed rating for %s %s.', ctx.state.user, modelName, entity.id);
+			logger.info(ctx.state, '[RatingApi.updateRatedEntity] User <%s> removed rating for %s %s.', ctx.state.user, modelName, entity.id);
 		}
 
 		this.success(ctx, result, status);
@@ -219,7 +219,7 @@ export class RatingApi extends Api {
 		}
 
 		// invalidate cache
-		await apiCache.invalidateEntity(modelName, entity.id);
+		await apiCache.invalidateEntity(ctx.state, modelName, entity.id);
 	}
 
 	/**

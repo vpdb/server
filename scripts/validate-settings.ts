@@ -22,6 +22,6 @@ import { settings } from '../src/common/settings';
 
 const valid = settings.validate();
 if (!valid) {
-	logger.error('[settings] Validation failed!');
+	logger.error(null, '[settings] Validation failed!');
 }
 process.exit(valid ? 0 : 1);

@@ -21,6 +21,7 @@ import { differenceWith, uniqWith } from 'lodash';
 import { Types } from 'mongoose';
 
 import { logger } from '../../common/logger';
+import { RequestState } from '../../common/typings/context';
 import { visualPinballTable } from '../../common/visualpinball.table';
 import { TableBlock } from '../../releases/release.tableblock';
 import { state } from '../../state';
@@ -40,10 +41,10 @@ export class VptBlockindexProcessor implements OptimizationProcessor<ImageFileVa
 		return 700 + (variation && variation.priority ? variation.priority : 0);
 	}
 
-	public async process(file: FileDocument, src: string, dest: string, variation?: ImageFileVariation): Promise<string> {
+	public async process(requestState: RequestState, file: FileDocument, src: string, dest: string, variation?: ImageFileVariation): Promise<string> {
 
 		// retrieve unique blocks from file
-		let fileBlocks = await visualPinballTable.analyzeFile(src);
+		let fileBlocks = await visualPinballTable.analyzeFile(requestState, src);
 		fileBlocks = uniqWith(fileBlocks, VptBlockindexProcessor.blockCompare);
 
 		// retrieve identical blocks from database
@@ -67,7 +68,7 @@ export class VptBlockindexProcessor implements OptimizationProcessor<ImageFileVa
 			await block.save();
 			numUpdated++;
 		}
-		logger.info('[VptBlockindexProcessor.process]: Added %s and updated %s table blocks.', numAdded, numUpdated);
+		logger.info(requestState, '[VptBlockindexProcessor.process]: Added %s and updated %s table blocks.', numAdded, numUpdated);
 		return null;
 	}
 

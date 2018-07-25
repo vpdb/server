@@ -23,37 +23,38 @@ import { UserDocument } from '../../users/user.document';
 import { ApiError } from '../api.error';
 
 export interface Context extends KoaContext {
+	state: RequestState;
+}
 
-	state: {
-		/**
-		 * The currently logged user or null if not authenticated.
-		 */
-		user: UserDocument;
+export interface RequestState {
+	/**
+	 * The currently logged user or null if not authenticated.
+	 */
+	user: UserDocument;
 
-		/**
-		 * If logged with an app token, this is it
-		 */
-		appToken: TokenDocument;
+	/**
+	 * If logged with an app token, this is it
+	 */
+	appToken: TokenDocument;
 
-		/**
-		 * The type of the token used for authentication.
-		 * One of: [ `jwt-refreshed`, `jwt`, `application` ]
-		 */
-		tokenType: string;
+	/**
+	 * The type of the token used for authentication.
+	 * One of: [ `jwt-refreshed`, `jwt`, `application` ]
+	 */
+	tokenType: string;
 
-		/**
-		 * Scopes of the token
-		 */
-		tokenScopes: string[];
+	/**
+	 * Scopes of the token
+	 */
+	tokenScopes: string[];
 
-		/**
-		 * If app token, the name of the auth provider, e.g. "github", "google".
-		 */
-		tokenProvider: string;
+	/**
+	 * If app token, the name of the auth provider, e.g. "github", "google".
+	 */
+	tokenProvider: string;
 
-		/**
-		 * Set when authentication failed.
-		 */
-		authError: ApiError;
-	};
+	/**
+	 * Set when authentication failed.
+	 */
+	authError: ApiError;
 }

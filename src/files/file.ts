@@ -21,6 +21,7 @@ import chalk from 'chalk';
 import { resolve } from 'path';
 import { quota } from '../common/quota';
 import { config, settings } from '../common/settings';
+import { RequestState } from '../common/typings/context';
 import { FileDocument, FilePathOptions } from './file.document';
 import { mimeTypes } from './file.mimetypes';
 import { fileTypes } from './file.types';
@@ -38,13 +39,14 @@ export class File {
 	 * Note that this is to *construct* the file name, and doesn't mean that the
 	 * file actually exists at the given location.
 	 *
+	 * @param requestState For logging
 	 * @param {FileDocument} file Potentially dehydrated file
 	 * @param {FileVariation} [variation] File variation or null for original file
 	 * @param {FilePathOptions} opts Path options
 	 * @return {string} Absolute path to storage
 	 */
-	public static getPath(file: FileDocument, variation: FileVariation = null, opts: FilePathOptions = {}): string {
-		const baseDir = File.isPublic(file, variation) && !opts.forceProtected ? config.vpdb.storage.public.path : config.vpdb.storage.protected.path;
+	public static getPath(requestState: RequestState, file: FileDocument, variation: FileVariation = null, opts: FilePathOptions = {}): string {
+		const baseDir = File.isPublic(requestState, file, variation) && !opts.forceProtected ? config.vpdb.storage.public.path : config.vpdb.storage.protected.path;
 		const suffix = opts.tmpSuffix || '';
 		return variation ?
 			resolve(baseDir, variation.name, file.id) + suffix + File.getExt(file, variation) :
@@ -69,12 +71,13 @@ export class File {
 	 * Typically a release file is protected during release upload and becomes
 	 * public only after submission.
 	 *
+	 * @param requestState For logging
 	 * @param {FileDocument} file Potentially dehydrated file
 	 * @param {FileVariation} [variation] File variation or null for original file
 	 * @return {string}
 	 */
-	public static getUrl(file: FileDocument, variation: FileVariation = null): string {
-		const storageUri = File.isPublic(file, variation) ? settings.storagePublicUri.bind(settings) : settings.storageProtectedUri.bind(settings);
+	public static getUrl(requestState: RequestState, file: FileDocument, variation: FileVariation = null): string {
+		const storageUri = File.isPublic(requestState, file, variation) ? settings.storagePublicUri.bind(settings) : settings.storageProtectedUri.bind(settings);
 		return variation ?
 			storageUri('/files/' + variation.name + '/' + file.id + File.getExt(file, variation)) :
 			storageUri('/files/' + file.id + File.getExt(file, variation));
@@ -83,23 +86,25 @@ export class File {
 	/**
 	 * Returns true if the file is public (as in accessible without being authenticated), false otherwise.
 	 *
+	 * @param requestState For logging
 	 * @param {FileDocument} file Potentially dehydrated file
 	 * @param {FileVariation} [variation] File variation or null for original file
 	 * @return {boolean}
 	 */
-	public static isPublic(file: FileDocument, variation: FileVariation = null): boolean {
-		return file.is_active && quota.getCost(file, variation) === -1;
+	public static isPublic(requestState: RequestState, file: FileDocument, variation: FileVariation = null): boolean {
+		return file.is_active && quota.getCost(requestState, file, variation) === -1;
 	}
 
 	/**
 	 *  Returns true if the file is free (as in doesn't cost any credit), false otherwise.
 	 *
+	 * @param requestState For logging
 	 * @param {FileDocument} file Potentially dehydrated file
 	 * @param {FileVariation} [variation] File variation or null for original file
 	 * @return {boolean} True if free, false otherwise.
 	 */
-	public static isFree(file: FileDocument, variation: FileVariation = null): boolean {
-		return quota.getCost(file, variation) <= 0;
+	public static isFree(requestState: RequestState, file: FileDocument, variation: FileVariation = null): boolean {
+		return quota.getCost(requestState, file, variation) <= 0;
 	}
 
 	/**

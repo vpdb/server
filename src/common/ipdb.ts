@@ -24,16 +24,18 @@ import { isUndefined } from 'lodash';
 import { GameDocument } from '../games/game.document';
 import { ApiError } from './api.error';
 import { logger } from './logger';
+import { RequestState } from './typings/context';
 
 class Ipdb {
 
 	/**
 	 * Returns structured data from IPDB for a given IPDB number.
+	 * @param requestState Request state for logger
 	 * @param {number} ipdbNo IPDB number
 	 * @param {{ offline: boolean }} [opts] `offline` - if set, use local index instead of IPDB live query.
 	 * @return Promise
 	 */
-	public async details(ipdbNo: number, opts: { offline?: boolean }) {
+	public async details(requestState: RequestState, ipdbNo: number, opts: { offline?: boolean }) {
 
 		opts = opts || {};
 		/* istanbul ignore if: we test online! */
@@ -42,7 +44,7 @@ class Ipdb {
 		}
 
 		const url = 'http://www.ipdb.org/machine.cgi?id=' + ipdbNo;
-		logger.info('[ipdb] Fetching %s', url);
+		logger.info(requestState, '[ipdb] Fetching %s', url);
 		try {
 			const response = await axios.get(url, { timeout: 30000 });
 			return this.parseDetails(response.data);
@@ -50,7 +52,7 @@ class Ipdb {
 		} catch (err) {
 			/* istanbul ignore next: that would be a failed test */
 			if (err.response) {
-				logger.error('[ipdb] Wrong response code, got %s instead of 200. Body: %s', err.response.status, err.response.data);
+				logger.error(requestState, '[ipdb] Wrong response code, got %s instead of 200. Body: %s', err.response.status, err.response.data);
 				return this.localDetails(ipdbNo, new ApiError('Wrong response data from IPDB.').log());
 
 			} else {

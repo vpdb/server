@@ -26,7 +26,7 @@ import { ReleaseDocument } from '../releases/release.doument';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
 import { logger } from './logger';
-import { Context } from './typings/context';
+import { Context, RequestState } from './typings/context';
 
 /**
  * An in-memory cache using Redis.
@@ -140,15 +140,16 @@ class ApiCache {
 	/**
 	 * Clears all caches listing the given entity and the entity's details.
 	 *
+	 * @param requestState For logging
 	 * @param {string} modelName Name of the model, e.g. "game"
 	 * @param {string} entityId ID of the entity
 	 */
-	public async invalidateEntity(modelName: string, entityId: string) {
+	public async invalidateEntity(requestState: RequestState, modelName: string, entityId: string) {
 		const tag: CacheInvalidationTag = { entities: { [modelName]: entityId } };
 		if (this.endpoints.has(modelName)) {
 			tag.path = this.endpoints.get(modelName);
 		}
-		await this.invalidate([tag]);
+		await this.invalidate(requestState, [tag]);
 	}
 
 	/**
@@ -158,7 +159,7 @@ class ApiCache {
 	 * @param {UserDocument} user User who starred the entity
 	 * @param entity Starred entity
 	 */
-	public async invalidateStarredEntity(modelName: string, entity: any, user: UserDocument) {
+	public async invalidateStarredEntity(requestState: RequestState, modelName: string, entity: any, user: UserDocument) {
 		const tags: CacheInvalidationTag[][] = [];
 
 		/** list endpoints that include the user's starred status in the payload */
@@ -170,36 +171,37 @@ class ApiCache {
 		if (entity._game && entity._game.id) {
 			tags.push([{ path: '/v1/games/' + entity._game.id }, { user }]);
 		}
-		await this.invalidate(...tags);
+		await this.invalidate(requestState, ...tags);
 	}
 
-	public async invalidateRelease(release?: ReleaseDocument) {
+	public async invalidateRelease(requestState: RequestState, release?: ReleaseDocument) {
 		if (release) {
-			await this.invalidateEntity('release', release.id);
+			await this.invalidateEntity(requestState, 'release', release.id);
 		} else {
-			await this.invalidate([{ resources: ['release'] }]);
+			await this.invalidate(requestState, [{ resources: ['release'] }]);
 		}
 	}
 
-	public async invalidateReleaseComment(release: ReleaseDocument) {
-		await this.invalidate([{ entities: { releaseComment: release.id } }]);
+	public async invalidateReleaseComment(requestState: RequestState, release: ReleaseDocument) {
+		await this.invalidate(requestState, [{ entities: { releaseComment: release.id } }]);
 	}
 
 	/**
 	 * Invalidates all caches containing an entity type.
 	 *
+	 * @param requestState For logging
 	 * @param {string} modelName Name of the model, e.g. "game"
 	 */
-	public async invalidateAllEntities(modelName: string) {
+	public async invalidateAllEntities(requestState: RequestState, modelName: string) {
 
 		// 1. invalidate tagged resources
-		await this.invalidate([{ resources: [modelName] }]);
+		await this.invalidate(requestState, [{ resources: [modelName] }]);
 
 		// 2. invalidate entities
 		const entityRefs = await state.redis.keys(this.getEntityKey(modelName, '*'));
 		if (entityRefs.length > 0) {
 			const keys = await state.redis.sunion(...entityRefs);
-			logger.verbose('[ApiCache.invalidateAllEntities] Clearing: %s', keys.join(', '));
+			logger.verbose(requestState, '[ApiCache.invalidateAllEntities] Clearing: %s', keys.join(', '));
 			await state.redis.del(keys);
 		}
 	}
@@ -228,13 +230,14 @@ class ApiCache {
 	 *    invalidates all `/v1/games` caches for user foo as well as all `/v1/bar`
 	 *    caches for everyone.
 	 *
+	 * @param requestState For logging
 	 * @param {CacheInvalidationTag[][]} tagLists
 	 * @return {Promise<number>}
 	 */
-	private async invalidate(...tagLists: CacheInvalidationTag[][]): Promise<number> {
+	private async invalidate(requestState: RequestState, ...tagLists: CacheInvalidationTag[][]): Promise<number> {
 
 		if (!tagLists || tagLists.length === 0) {
-			logger.debug('[Cache.invalidate]: Nothing to invalidate.');
+			logger.debug(requestState, '[Cache.invalidate]: Nothing to invalidate.');
 			return;
 		}
 
@@ -278,7 +281,7 @@ class ApiCache {
 			// logger.verbose('invalidationKeys = new Set(%s | %s)', Array.from(invalidationKeys).join(','), intersection(...keys).join(','));
 			invalidationKeys = new Set([...invalidationKeys, ...intersection(...keys)]); // redis could do this too using SUNIONSTORE to temp sets and INTER them
 		}
-		logger.debug('[ApiCache.invalidate]: Invalidating caches: (%s).',
+		logger.debug(requestState, '[ApiCache.invalidate]: Invalidating caches: (%s).',
 			'(' + allRefs.map(r => '(' + r.map(s => s.join(' || ')).join(') && (') + ')').join(') || (') + ')');
 
 		let n = 0;
@@ -287,7 +290,7 @@ class ApiCache {
 			await state.redis.del(key);
 			n++;
 		}
-		logger.debug('[ApiCache.invalidate]: Cleared %s caches in %sms.', n, Date.now() - now);
+		logger.debug(requestState, '[ApiCache.invalidate]: Cleared %s caches in %sms.', n, Date.now() - now);
 		return n;
 	}
 
@@ -374,7 +377,7 @@ class ApiCache {
 			}
 		}
 		await Promise.all(refs.map(ref => ref()));
-		logger.debug('[Cache] No hit, saved as "%s" with references [ %s ] and %s counters in %sms.',
+		logger.debug(ctx.state, '[Cache] No hit, saved as "%s" with references [ %s ] and %s counters in %sms.',
 			key, refKeys.join(', '), numCounters, Date.now() - now);
 	}
 

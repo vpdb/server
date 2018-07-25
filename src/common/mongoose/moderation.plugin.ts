@@ -94,7 +94,7 @@ export function moderationPlugin(schema: Schema) {
 		}
 		const autoApprove = await acl.isAllowed(user.id, resource, 'auto-approve');
 		if (autoApprove) {
-			logger.info('[moderationPlugin] Auto-approving %s "%s" for user <%s>.', (this.constructor as any).modelName, this.id, user.email);
+			logger.info(null, '[moderationPlugin] Auto-approving %s "%s" for user <%s>.', (this.constructor as any).modelName, this.id, user.email);
 			const now = new Date();
 			this.moderation = {
 				is_approved: true,
@@ -135,7 +135,7 @@ export function moderationPlugin(schema: Schema) {
 		const resource = modelResourceMap[this.modelName];
 		/* istanbul ignore if: configuration error */
 		if (!resource) {
-			logger.info(this);
+			logger.info(ctx.state, this);
 			throw new Error('Tried to check moderation permission for unmapped entity "' + this.modelName + '".');
 		}
 

@@ -80,7 +80,7 @@ export class UserApi extends Api {
 
 		// user validated and created. time to send the activation email.
 		if (config.vpdb.email.confirmUserEmail) {
-			await mailer.registrationConfirmation(user);
+			await mailer.registrationConfirmation(ctx.state, user);
 		}
 
 		// return result now and send email afterwards
@@ -260,7 +260,7 @@ export class UserApi extends Api {
 		// if caller is not root..
 		if (!includes(callerRoles, 'root')) {
 
-			logger.info('[UserApi.update] Checking for privilege escalation. Added roles: [%s], Removed roles: [%s].', addedRoles.join(' '), removedRoles.join(' '));
+			logger.info(ctx.state, '[UserApi.update] Checking for privilege escalation. Added roles: [%s], Removed roles: [%s].', addedRoles.join(' '), removedRoles.join(' '));
 
 			// if user to be updated is already root or admin, deny (unless it's the same user).
 			if (!user._id.equals(ctx.state.user._id) && (includes(currentUserRoles, 'root') || includes(currentUserRoles, 'admin'))) {
@@ -298,21 +298,21 @@ export class UserApi extends Api {
 		await user.save();
 
 		await LogUserUtil.successDiff(ctx, ctx.state.user, 'update', pick(user.toObject(), updatableFields), updatedUser, ctx.state.user);
-		logger.info('[UserApi.update] Success!');
+		logger.info(ctx.state, '[UserApi.update] Success!');
 
 		// 5. update ACLs if roles changed
 		if (removedRoles.length > 0) {
-			logger.info('[UserApi.update] Updating ACLs: Removing roles [%s] from user <%s>.', removedRoles.join(' '), user.email);
+			logger.info(ctx.state, '[UserApi.update] Updating ACLs: Removing roles [%s] from user <%s>.', removedRoles.join(' '), user.email);
 			await acl.removeUserRoles(user.id, removedRoles);
 		}
 		if (addedRoles.length > 0) {
-			logger.info('[UserApi.update] Updating ACLs: Adding roles [%s] to user <%s>.', addedRoles.join(' '), user.email);
+			logger.info(ctx.state, '[UserApi.update] Updating ACLs: Adding roles [%s] to user <%s>.', addedRoles.join(' '), user.email);
 			await acl.addUserRoles(user.id, addedRoles);
 		}
 
 		// 6. if changer is not changed user, mark user as dirty
 		if (!ctx.state.user._id.equals(user._id)) {
-			logger.info('[UserApi.update] Marking user <%s> as dirty.', user.email);
+			logger.info(ctx.state, '[UserApi.update] Marking user <%s> as dirty.', user.email);
 			await state.redis.set('dirty_user_' + user.id, String(new Date().getTime()));
 			await state.redis.expire('dirty_user_' + user.id, 10000);
 		}
@@ -351,7 +351,7 @@ export class UserApi extends Api {
 		await acl.removeUserRoles(user.id, user.roles);
 		await user.remove();
 
-		logger.info('[UserApi.delete] User <%s> successfully deleted.', user.email);
+		logger.info(ctx.state, '[UserApi.delete] User <%s> successfully deleted.', user.email);
 		return this.success(ctx, null, 204);
 	}
 
@@ -380,7 +380,7 @@ export class UserApi extends Api {
 		user.email_status.expires_at = new Date(new Date().getTime() + 86400000); // 1d valid
 
 		await user.save();
-		await mailer.registrationConfirmation(user);
+		await mailer.registrationConfirmation(ctx.state, user);
 
 		return this.success(ctx, null, 200);
 	}

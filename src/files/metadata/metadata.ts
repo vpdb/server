@@ -17,6 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { RequestState } from '../../common/typings/context';
 import { FileDocument } from '../file.document';
 import { FileVariation } from '../file.variations';
 
@@ -24,17 +25,18 @@ export abstract class Metadata {
 
 	/**
 	 * Reads and returns metadata from the file.
+	 * @param requestState For logging
 	 * @param {FileDocument} file
 	 * @param {string} path
 	 * @param {FileVariation} variation
 	 * @returns {Promise<object | undefined>} Metadata or null if no metadata reader found.
 	 */
-	public static async readFrom(file: FileDocument, path: string, variation?: FileVariation): Promise<{ [key: string]: any } | undefined> {
+	public static async readFrom(requestState: RequestState, file: FileDocument, path: string, variation?: FileVariation): Promise<{ [key: string]: any } | undefined> {
 		const reader = Metadata.getReader(file, variation);
 		if (reader === undefined) {
 			return undefined;
 		}
-		return Metadata.sanitizeObject(await reader.getMetadata(file, path, variation));
+		return Metadata.sanitizeObject(await reader.getMetadata(requestState, file, path, variation));
 	}
 
 	/**
@@ -59,12 +61,13 @@ export abstract class Metadata {
 	/**
 	 * Reads the metadata from the file.
 	 *
+	 * @param requestState
 	 * @param {FileDocument} file File to read
 	 * @param {string} path Path to file to read
 	 * @param {FileVariation} [variation] Variation of the file to read
 	 * @return Full metadata
 	 */
-	public abstract async getMetadata(file: FileDocument, path: string, variation?: FileVariation): Promise<{ [key: string]: any }>;
+	public abstract async getMetadata(requestState: RequestState, file: FileDocument, path: string, variation?: FileVariation): Promise<{ [key: string]: any }>;
 
 	/**
 	 * This is what's returned in the detail view of the file

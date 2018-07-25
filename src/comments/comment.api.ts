@@ -60,7 +60,7 @@ export class CommentApi extends Api {
 		});
 		await comment.save();
 
-		logger.info('[CommentApi.createForRelease] User <%s> commented on release "%s" (%s).', ctx.state.user.email, release.id, release.name);
+		logger.info(ctx.state, '[CommentApi.createForRelease] User <%s> commented on release "%s" (%s).', ctx.state.user.email, release.id, release.name);
 
 		const updates: Array<() => Promise<any>> = [];
 		updates.push(() => release.incrementCounter('comments'));
@@ -77,11 +77,11 @@ export class CommentApi extends Api {
 		this.success(ctx, state.serializers.Comment.simple(ctx, comment), 201);
 
 		// invalidate cache
-		await apiCache.invalidateReleaseComment(release);
+		await apiCache.invalidateReleaseComment(ctx.state, release);
 
 		// notify release creator (only if not the same user)
 		if ((release._created_by as UserDocument).id !== ctx.state.user.id) {
-			await mailer.releaseCommented(release._created_by as UserDocument, ctx.state.user, game, release, ctx.request.body.message);
+			await mailer.releaseCommented(ctx.state, release._created_by as UserDocument, ctx.state.user, game, release, ctx.request.body.message);
 		}
 	}
 
@@ -121,12 +121,12 @@ export class CommentApi extends Api {
 		});
 		await comment.save();
 
-		logger.info('[CommentApi.createForReleaseModeration] User <%s> commented on release moderation "%s" (%s).', ctx.state.user.email, release.id, release.name);
+		logger.info(ctx.state, '[CommentApi.createForReleaseModeration] User <%s> commented on release moderation "%s" (%s).', ctx.state.user.email, release.id, release.name);
 		comment = await state.models.Comment.findById(comment._id).populate('_from').exec();
 		this.success(ctx, state.serializers.Comment.simple(ctx, comment), 201);
 
 		// notify
-		await mailer.releaseModerationCommented(ctx.state.user, release, ctx.request.body.message);
+		await mailer.releaseModerationCommented(ctx.state, ctx.state.user, release, ctx.request.body.message);
 
 	}
 

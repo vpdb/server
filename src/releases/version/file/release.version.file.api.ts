@@ -96,9 +96,9 @@ export class ReleaseVersionFileApi extends Api {
 		}
 
 		// invalidate cache
-		await apiCache.invalidateRelease(releaseToUpdate);
+		await apiCache.invalidateRelease(ctx.state, releaseToUpdate);
 
-		logger.info('[ReleaseApi.validateFile] Updated file validation status.');
+		logger.info(ctx.state, '[ReleaseApi.validateFile] Updated file validation status.');
 
 		release = await state.models.Release.findOne({ id: ctx.params.id })
 			.populate({ path: '_created_by' })
@@ -118,6 +118,6 @@ export class ReleaseVersionFileApi extends Api {
 			{ release: release._id, game: release._game._id },
 		);
 
-		await mailer.releaseValidated(release._created_by as UserDocument, ctx.state.user, release._game as GameDocument, release, state.serializers.ReleaseVersionFile.detailed(ctx, versionFile));
+		await mailer.releaseValidated(ctx.state, release._created_by as UserDocument, ctx.state.user, release._game as GameDocument, release, state.serializers.ReleaseVersionFile.detailed(ctx, versionFile));
 	}
 }

@@ -25,6 +25,7 @@ import { promisify } from 'util';
 
 import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
+import { RequestState } from '../../common/typings/context';
 import { state } from '../../state';
 import { FileDocument } from '../file.document';
 import { FileUtil } from '../file.util';
@@ -56,10 +57,11 @@ export class ProcessorWorker {
 		const data = job.data as JobData;
 		const srcPath = data.srcPath;
 		const destPath = data.destPath;
+		const requestState = data.requestState;
 
 		file = await state.models.File.findOne({ id: data.fileId }).exec();
 		if (!file) {
-			logger.warn('[ProcessorWorker.create] [%s | #%s] skip: File "%s" has been removed from DB, ignoring.',
+			logger.warn(requestState, '[ProcessorWorker.create] [%s | #%s] skip: File "%s" has been removed from DB, ignoring.',
 				data.processor, job.id, data.fileId);
 			return null;
 		}
@@ -75,21 +77,21 @@ export class ProcessorWorker {
 			if (!(await existsAsync(dirname(destPath)))) {
 				await FileUtil.mkdirp(dirname(destPath));
 			}
-			logger.debug('[ProcessorWorker.create] [%s | #%s] start: %s from %s to %s',
+			logger.debug(requestState, '[ProcessorWorker.create] [%s | #%s] start: %s from %s to %s',
 				data.processor, job.id, file.toDetailedString(variation), FileUtil.log(srcPath), FileUtil.log(destPath));
 
 			// run processor
-			await processor.process(file, srcPath, destPath, variation);
-			logger.debug('[ProcessorWorker.create] [%s | #%s] end: %s from %s to %s',
+			await processor.process(requestState, file, srcPath, destPath, variation);
+			logger.debug(requestState, '[ProcessorWorker.create] [%s | #%s] end: %s from %s to %s',
 				data.processor, job.id, file.toDetailedString(variation), FileUtil.log(srcPath), FileUtil.log(destPath));
 
 			// clean up source
-			logger.debug('[ProcessorWorker.create] Cleaning up variation source at %s', FileUtil.log(srcPath));
+			logger.debug(requestState, '[ProcessorWorker.create] Cleaning up variation source at %s', FileUtil.log(srcPath));
 			await unlinkAsync(srcPath);
 
 			// update metadata
 			const metadataReader = Metadata.getReader(file, variation);
-			const metadata = await metadataReader.getMetadata(file, destPath, variation);
+			const metadata = await metadataReader.getMetadata(requestState, file, destPath, variation);
 			const fileData: any = {};
 			fileData['variations.' + variation.name] = assign(metadataReader.serializeVariation(metadata), {
 				bytes: (await statAsync(destPath)).size,
@@ -99,26 +101,26 @@ export class ProcessorWorker {
 
 			// abort if deleted
 			if (await ProcessorWorker.isFileDeleted(file)) {
-				logger.debug('[ProcessorWorker.create] Removing created file due to deletion %s', FileUtil.log(destPath));
+				logger.debug(requestState, '[ProcessorWorker.create] Removing created file due to deletion %s', FileUtil.log(destPath));
 				await unlinkAsync(destPath);
 				return null;
 			}
 
 			// rename
-			const newPath = await ProcessorWorker.isFileRenamed(file.getPath(variation), 'create');
-			const finalPath = newPath || file.getPath(variation);
+			const newPath = await ProcessorWorker.isFileRenamed(requestState, file.getPath(requestState, variation), 'create');
+			const finalPath = newPath || file.getPath(requestState, variation);
 			if (!(await existsAsync(dirname(finalPath)))) {
 				await FileUtil.mkdirp(dirname(finalPath));
 			}
 			await renameAsync(destPath, finalPath);
-			logger.debug('[ProcessorWorker.create] [%s | #%s] done: %s at %s', data.processor, job.id, file.toDetailedString(variation), FileUtil.log(finalPath));
+			logger.debug(requestState, '[ProcessorWorker.create] [%s | #%s] done: %s at %s', data.processor, job.id, file.toDetailedString(variation), FileUtil.log(finalPath));
 
 			// continue with dependents (and fresh data)
 			file = await state.models.File.findOne({ id: data.fileId }).exec();
 			if (!file) {
 				return null;
 			}
-			await ProcessorWorker.continueCreation(file, variation);
+			await ProcessorWorker.continueCreation(requestState, file, variation);
 
 			return finalPath;
 
@@ -131,9 +133,9 @@ export class ProcessorWorker {
 
 			// nothing to return here because it's in the background.
 			if (err.isApiError) {
-				logger.error(err.print());
+				logger.error(requestState, err.print());
 			} else {
-				logger.error('[ProcessorWorker.create] Error while processing %s with %s:\n\n%s\n\n', file ? file.toDetailedString(variation) : 'null', job.data.processor, ApiError.colorStackTrace(err));
+				logger.error(requestState, '[ProcessorWorker.create] Error while processing %s with %s:\n\n%s\n\n', file ? file.toDetailedString(variation) : 'null', job.data.processor, ApiError.colorStackTrace(err));
 			}
 			// TODO log to raygun
 		}
@@ -157,10 +159,11 @@ export class ProcessorWorker {
 		const data = job.data as JobData;
 		const srcPath = data.srcPath;
 		const destPath = data.destPath;
+		const requestState = data.requestState;
 
 		file = await state.models.File.findOne({ id: data.fileId }).exec();
 		if (!file) {
-			logger.warn('[ProcessorWorker.optimize] [%s | #%s] skip: File "%s" has been removed from DB, ignoring.',
+			logger.warn(requestState, '[ProcessorWorker.optimize] [%s | #%s] skip: File "%s" has been removed from DB, ignoring.',
 				data.processor, job.id, data.fileId);
 			return null;
 		}
@@ -173,15 +176,15 @@ export class ProcessorWorker {
 			if (!(await existsAsync(dirname(destPath)))) {
 				await FileUtil.mkdirp(dirname(destPath));
 			}
-			logger.debug('[ProcessorWorker.optimize] [%s | #%s] start: %s at %s',
+			logger.debug(requestState, '[ProcessorWorker.optimize] [%s | #%s] start: %s at %s',
 				data.processor, job.id, file.toDetailedString(variation), FileUtil.log(destPath));
 
 			// run processor
-			await processor.process(file, srcPath, destPath, variation);
+			await processor.process(requestState, file, srcPath, destPath, variation);
 
 			// update metadata
 			const metadataReader = Metadata.getReader(file, variation);
-			const metadata = await metadataReader.getMetadata(file, destPath, variation);
+			const metadata = await metadataReader.getMetadata(requestState, file, destPath, variation);
 			const fileData: any = {};
 			if (variation) {
 				fileData['variations.' + variation.name] = assign(metadataReader.serializeVariation(metadata), {
@@ -189,32 +192,32 @@ export class ProcessorWorker {
 					mime_type: variation.mimeType,
 				});
 			} else {
-				fileData.metadata = await Metadata.readFrom(file, destPath);
+				fileData.metadata = await Metadata.readFrom(requestState, file, destPath);
 				fileData.bytes = (await statAsync(destPath)).size;
 			}
 			await state.models.File.findByIdAndUpdate(file._id, { $set: fileData }, { new: true }).exec();
 
 			// abort if deleted
 			if (await ProcessorWorker.isFileDeleted(file)) {
-				logger.debug('[ProcessorWorker.optimize] Removing created file due to deletion %s', FileUtil.log(destPath));
+				logger.debug(requestState, '[ProcessorWorker.optimize] Removing created file due to deletion %s', FileUtil.log(destPath));
 				await unlinkAsync(destPath);
 				return null;
 			}
 
 			// rename
-			const newPath = await ProcessorWorker.isFileRenamed(file.getPath(variation), 'optimize');
-			const finalPath = newPath || file.getPath(variation);
+			const newPath = await ProcessorWorker.isFileRenamed(requestState, file.getPath(requestState, variation), 'optimize');
+			const finalPath = newPath || file.getPath(requestState, variation);
 			await renameAsync(destPath, finalPath); // overwrites destination
-			logger.debug('[ProcessorWorker.optimize] [%s | #%s] done: %s at %s', data.processor, job.id, file.toDetailedString(variation), FileUtil.log(finalPath));
+			logger.debug(requestState, '[ProcessorWorker.optimize] [%s | #%s] done: %s at %s', data.processor, job.id, file.toDetailedString(variation), FileUtil.log(finalPath));
 
 			return finalPath;
 
 		} catch (err) {
 			// nothing to return here because it's in the background.
 			if (err.isApiError) {
-				logger.error(err.print());
+				logger.error(requestState, err.print());
 			} else {
-				logger.error('[ProcessorWorker.optimize] Error while processing %s with %s:\n\n%s\n\n', file ? file.toDetailedString(variation) : 'null', job.data.processor, ApiError.colorStackTrace(err));
+				logger.error(requestState, '[ProcessorWorker.optimize] Error while processing %s with %s:\n\n%s\n\n', file ? file.toDetailedString(variation) : 'null', job.data.processor, ApiError.colorStackTrace(err));
 			}
 			// TODO log to raygun
 		}
@@ -228,27 +231,28 @@ export class ProcessorWorker {
 	 * If the given variation has dependent variations, this queues the them
 	 * now they are available.
 	 *
+	 * @param requestState For logging
 	 * @param {FileDocument} file File
 	 * @param {FileVariation} createdVariation Created variation
 	 */
-	private static async continueCreation(file: FileDocument, createdVariation: FileVariation) {
+	private static async continueCreation(requestState: RequestState, file: FileDocument, createdVariation: FileVariation) {
 
 		// send direct references to creation queue (with a copy)
 		const dependentVariations = file.getDirectVariationDependencies(createdVariation);
 		for (const dependentVariation of dependentVariations) {
-			const processor = processorManager.getValidCreationProcessor(file, createdVariation, dependentVariation);
+			const processor = processorManager.getValidCreationProcessor(requestState, file, createdVariation, dependentVariation);
 			if (processor) {
-				const srcPath = file.getPath(createdVariation, { tmpSuffix: '_' + dependentVariation.name + '.source' });
-				const destPath = file.getPath(dependentVariation, { tmpSuffix: '_' + processor.name + '.processing' });
-				await FileUtil.cp(file.getPath(createdVariation), srcPath);
-				await processorManager.queueCreation(processor, file, srcPath, destPath, createdVariation, dependentVariation);
+				const srcPath = file.getPath(requestState, createdVariation, { tmpSuffix: '_' + dependentVariation.name + '.source' });
+				const destPath = file.getPath(requestState, dependentVariation, { tmpSuffix: '_' + processor.name + '.processing' });
+				await FileUtil.cp(file.getPath(requestState, createdVariation), srcPath);
+				await processorManager.queueCreation(requestState, processor, file, srcPath, destPath, createdVariation, dependentVariation);
 			} else {
-				logger.error('[ProcessorWorker.continueCreation] Cannot find a processor for %s which is dependent on %s.',
+				logger.error(requestState, '[ProcessorWorker.continueCreation] Cannot find a processor for %s which is dependent on %s.',
 					file.toShortString(dependentVariation), file.toShortString(createdVariation));
 			}
 		}
 		if (dependentVariations.length) {
-			logger.debug('[ProcessorWorker.continueCreation] Found [ %s ] as direct references for %s, passed them to creation processors.',
+			logger.debug(requestState, '[ProcessorWorker.continueCreation] Found [ %s ] as direct references for %s, passed them to creation processors.',
 				dependentVariations.map(v => v.name).join(', '), file.toShortString(createdVariation));
 		}
 
@@ -256,10 +260,11 @@ export class ProcessorWorker {
 		let n = 0;
 		for (const processor of processorManager.getValidOptimizationProcessors(file, createdVariation)) {
 			n++;
-			const destPath = file.getPath(createdVariation, { tmpSuffix: '_' + processor.name + '.processing' });
-			await processorManager.queueOptimization(processor, file, file.getPath(createdVariation), destPath, createdVariation);
+			const destPath = file.getPath(requestState, createdVariation, { tmpSuffix: '_' + processor.name + '.processing' });
+			const srcPath = file.getPath(requestState, createdVariation);
+			await processorManager.queueOptimization(requestState, processor, file, srcPath, destPath, createdVariation);
 		}
-		logger.debug('[ProcessorWorker.continueCreation] Passed %s to optimization %s processor(s).',
+		logger.debug(requestState, '[ProcessorWorker.continueCreation] Passed %s to optimization %s processor(s).',
 			file.toShortString(createdVariation), n);
 	}
 
@@ -277,14 +282,15 @@ export class ProcessorWorker {
 	 * Checks whether a file has been renamed ("activated") in order to write
 	 * the file to the correct destination.
 	 *
+	 * @param requestState For logging
 	 * @param {string} path Original path of the file
 	 * @param {string} what Calling function for logging purpose
 	 * @return {Promise<string | null>} Path to new destination or null if no rename
 	 */
-	private static async isFileRenamed(path: string, what: string): Promise<string | null> {
+	private static async isFileRenamed(requestState: RequestState, path: string, what: string): Promise<string | null> {
 		const newPath = await state.redis.get('queue:rename:' + path);
 		if (newPath) {
-			logger.info('[ProcessorWorker.%s] Activation rename from %s to %s', what, FileUtil.log(path), FileUtil.log(newPath));
+			logger.info(requestState, '[ProcessorWorker.%s] Activation rename from %s to %s', what, FileUtil.log(path), FileUtil.log(newPath));
 			return newPath;
 		}
 		return null;

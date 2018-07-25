@@ -22,6 +22,7 @@ import Ffmpeg from 'fluent-ffmpeg';
 import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
 import { config } from '../../common/settings';
+import { RequestState } from '../../common/typings/context';
 import { FileDocument } from '../file.document';
 import { FileVariation, VideoFileVariation } from '../file.variations';
 import { CreationProcessor } from './processor';
@@ -46,28 +47,28 @@ export class VideoScreenshotProcessor implements CreationProcessor<VideoFileVari
 		return 100 + (variation && variation.priority ? variation.priority : 0);
 	}
 
-	public async process(file: FileDocument, src: string, dest: string, variation?: VideoFileVariation): Promise<string> {
+	public async process(requestState: RequestState, file: FileDocument, src: string, dest: string, variation?: VideoFileVariation): Promise<string> {
 		return new Promise<string>((resolve, reject) => {
-			logger.debug('[VideoScreenshotProcessor] Starting processing %s at %s.', file.toShortString(variation), dest);
+			logger.debug(requestState, '[VideoScreenshotProcessor] Starting processing %s at %s.', file.toShortString(variation), dest);
 			const started = Date.now();
 			ffmpeg(src)
 				.noAudio()
 				.frames(1)
 				.seek(variation.position || '0:01')
 				.on('start', (commandLine: string) => {
-					logger.debug('[VideoScreenshotProcessor] > %s', commandLine);
+					logger.debug(requestState, '[VideoScreenshotProcessor] > %s', commandLine);
 				})
 				.on('error', (err: Error, stdout: string, stderr: string) => {
-					logger.error('[VideoScreenshotProcessor] %s', err);
-					logger.error('[VideoScreenshotProcessor] [ffmpeg|stdout] %s', stdout);
-					logger.error('[VideoScreenshotProcessor] [ffmpeg|stderr] %s', stderr);
+					logger.error(requestState, '[VideoScreenshotProcessor] %s', err);
+					logger.error(requestState, '[VideoScreenshotProcessor] [ffmpeg|stdout] %s', stdout);
+					logger.error(requestState, '[VideoScreenshotProcessor] [ffmpeg|stderr] %s', stderr);
 					reject(new ApiError('Error processing video').log(err));
 				})
 				.on('progress', (progress: { percent: number, currentKbps: number }) => {
-					logger.debug('[VideoScreenshotProcessor] Processing: %s% at %skbps', progress.percent, progress.currentKbps);
+					logger.debug(requestState, '[VideoScreenshotProcessor] Processing: %s% at %skbps', progress.percent, progress.currentKbps);
 				})
 				.on('end', () => {
-					logger.debug('[VideoScreenshotProcessor] Transcoding succeeded after %dms, written to %s', Date.now() - started, dest);
+					logger.debug(requestState, '[VideoScreenshotProcessor] Transcoding succeeded after %dms, written to %s', Date.now() - started, dest);
 					resolve(dest);
 				})
 				.save(dest);

@@ -26,6 +26,7 @@ import winston from 'winston';
 
 import { LogdnaTransport } from './logger.logdna.transport';
 import { config } from './settings';
+import { RequestState } from './typings/context';
 
 class Logger {
 	private logger: winston.Logger;
@@ -52,42 +53,42 @@ class Logger {
 		}
 	}
 
-	public wtf(format: any, ...param: any[]) {
+	public wtf(state: RequestState | null, format: any, ...param: any[]) {
 		this.logger.log({
 			level: 'info',
 			message: this.colorMessage(sprintf.apply(null, arguments), chalk.bgBlack.redBright, chalk.bgRedBright.whiteBright),
 		});
 	}
 
-	public error(format: any, ...param: any[]) {
+	public error(state: RequestState | null, format: any, ...param: any[]) {
 		this.logger.log({
 			level: 'error',
 			message: this.colorMessage(sprintf.apply(null, arguments), chalk.bgBlack.redBright, chalk.whiteBright),
 		});
 	}
 
-	public warn(format: any, ...param: any[]) {
+	public warn(state: RequestState | null, format: any, ...param: any[]) {
 		this.logger.log({
 			level: 'warn',
 			message: this.colorMessage(sprintf.apply(null, arguments), chalk.bgBlack.yellowBright, chalk.whiteBright),
 		});
 	}
 
-	public info(format: any, ...param: any[]) {
+	public info(state: RequestState | null, format: any, ...param: any[]) {
 		this.logger.log({
 			level: 'info',
 			message: this.colorMessage(sprintf.apply(null, arguments), null, chalk.white),
 		});
 	}
 
-	public verbose(format: any, ...param: any[]) {
+	public verbose(state: RequestState | null, format: any, ...param: any[]) {
 		this.logger.log({
 			level: 'verbose',
 			message: this.colorMessage(sprintf.apply(null, arguments), chalk.bgBlack.gray, chalk.gray),
 		});
 	}
 
-	public debug(format: any, ...param: any[]) {
+	public debug(state: RequestState | null, format: any, ...param: any[]) {
 		this.logger.log({
 			level: 'debug',
 			message: this.colorMessage(sprintf.apply(null, arguments), chalk.bgBlack.gray, chalk.gray),

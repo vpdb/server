@@ -42,14 +42,14 @@ class GitInfo {
 						lastCommitMessage: commit.message(),
 						lastCommitAuthor: commit.author().name,
 					};
-					logger.info('[git] Successfully read git config from %s.', repoRoot);
+					logger.info(null, '[git] Successfully read git config from %s.', repoRoot);
 				} catch (err) {
 					/* istanbul ignore next: we assume node-git is working */
-					logger.warn('[git] Unable to retrieve git info from %s (%s)', repoRoot, err.message);
+					logger.warn(null, '[git] Unable to retrieve git info from %s (%s)', repoRoot, err.message);
 				}
 			} catch (err) {
 				/* istanbul ignore next: we assume node-git is working */
-				logger.warn('[GitInfo] Error loading library.');
+				logger.warn(null, '[GitInfo] Error loading library.');
 			}
 		})();
 	}

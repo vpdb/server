@@ -53,7 +53,7 @@ export class FileApi extends Api {
 		}
 		await file.remove();
 
-		logger.info('[FileApi.del] File "%s" (%s) successfully removed.', file.name, file.id);
+		logger.info(ctx.state, '[FileApi.del] File "%s" (%s) successfully removed.', file.name, file.id);
 		return this.success(ctx, null, 204);
 	}
 

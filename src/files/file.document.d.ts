@@ -18,6 +18,7 @@
  */
 
 import { MetricsDocument, Types } from 'mongoose';
+import { RequestState } from '../common/typings/context';
 import { UserDocument } from '../users/user.document';
 import { FileVariation } from './file.variations';
 
@@ -49,11 +50,12 @@ export interface FileDocument extends MetricsDocument {
 	 * file actually exists at the given location.
 	 *
 	 * @see [[File.getPath]] for implementation
+	 * @param requestState For logging
 	 * @param {FileVariation} [variation] If set, return given file variation.
 	 * @param {FilePathOptions} [opts] Path options
 	 * @return {string} Absolute path to storage
 	 */
-	getPath(variation?: FileVariation, opts?: FilePathOptions): string;
+	getPath(requestState: RequestState, variation?: FileVariation, opts?: FilePathOptions): string;
 
 	/**
 	 * Returns the file extension, inclusively the dot.
@@ -81,19 +83,21 @@ export interface FileDocument extends MetricsDocument {
 	 * Returns true if the file is public (as in accessible without being authenticated), false otherwise.
 	 *
 	 * @see [[File.isPublic]] for implementation
+	 * @param requestState For logging
 	 * @param {FileVariation} [variation] File variation or null for original file
 	 * @return {boolean}
 	 */
-	isPublic(variation?: FileVariation): boolean;
+	isPublic(requestState: RequestState, variation?: FileVariation): boolean;
 
 	/**
 	 *  Returns true if the file is free (as in doesn't cost any credit), false otherwise.
 	 *
 	 * @see [[File.isFree]] for implementation
+	 * @param requestState For logging
 	 * @param {FileVariation} [variation] File variation or null for original file
 	 * @return {boolean} True if free, false otherwise.
 	 */
-	isFree(variation?: FileVariation): boolean;
+	isFree(requestState: RequestState, variation?: FileVariation): boolean;
 
 	/**
 	 * Returns the MIME type for a given variation (or for the main file if not specified).
@@ -137,7 +141,7 @@ export interface FileDocument extends MetricsDocument {
 	 * This is the only method implemented directly in the schema.
 	 * @return {Promise<File>} Moved file
 	 */
-	switchToActive(): Promise<FileDocument>;
+	switchToActive(requestState: RequestState): Promise<FileDocument>;
 
 	/**
 	 * Returns all variations that are stored in the database for this file.

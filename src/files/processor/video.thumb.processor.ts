@@ -25,6 +25,7 @@ import { config } from '../../common/settings';
 import { FileDocument } from '../file.document';
 import { FileVariation, VideoFileVariation } from '../file.variations';
 import { CreationProcessor } from './processor';
+import { RequestState } from '../../common/typings/context';
 
 const ffmpeg = require('bluebird').promisifyAll(Ffmpeg);
 
@@ -46,27 +47,27 @@ export class VideoThumbProcessor implements CreationProcessor<VideoFileVariation
 		return 100 + (variation && variation.priority ? variation.priority : 0);
 	}
 
-	public async process(file: FileDocument, src: string, dest: string, variation?: VideoFileVariation): Promise<string> {
+	public async process(requestState: RequestState, file: FileDocument, src: string, dest: string, variation?: VideoFileVariation): Promise<string> {
 		return new Promise<string>((resolve, reject) => {
-			logger.debug('[VideoScreenshotProcessor] Starting processing %s at %s.', file.toShortString(variation), dest);
+			logger.debug(requestState, '[VideoScreenshotProcessor] Starting processing %s at %s.', file.toShortString(variation), dest);
 			const started = Date.now();
 			const proc = ffmpeg(src)
 				.noAudio()
 				.videoCodec('libx264')
 				.on('start', (commandLine: string) => {
-					logger.debug('[VideoThumbProcessor] > %s', commandLine);
+					logger.debug(requestState, '[VideoThumbProcessor] > %s', commandLine);
 				})
 				.on('error', (err: Error, stdout: string, stderr: string) => {
-					logger.error('[VideoThumbProcessor] %s', err);
-					logger.error('[VideoThumbProcessor] [ffmpeg|stdout] %s', stdout);
-					logger.error('[VideoThumbProcessor] [ffmpeg|stderr] %s', stderr);
+					logger.error(requestState, '[VideoThumbProcessor] %s', err);
+					logger.error(requestState, '[VideoThumbProcessor] [ffmpeg|stdout] %s', stdout);
+					logger.error(requestState, '[VideoThumbProcessor] [ffmpeg|stderr] %s', stderr);
 					reject(new ApiError('Error processing video').log(err));
 				})
 				.on('progress', (progress: { percent: number, currentKbps: number }) => {
-					logger.debug('[VideoThumbProcessor] Processing: %s% at %skbps', progress.percent, progress.currentKbps);
+					logger.debug(requestState, '[VideoThumbProcessor] Processing: %s% at %skbps', progress.percent, progress.currentKbps);
 				})
 				.on('end', () => {
-					logger.debug('[VideoThumbProcessor] Transcoding succeeded after %dms, written to %s', new Date().getTime() - started, dest);
+					logger.debug(requestState, '[VideoThumbProcessor] Transcoding succeeded after %dms, written to %s', new Date().getTime() - started, dest);
 					resolve(dest);
 				});
 

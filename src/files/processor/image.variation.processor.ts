@@ -21,6 +21,7 @@ import { createWriteStream } from 'fs';
 import gm from 'gm';
 
 import { logger } from '../../common/logger';
+import { RequestState } from '../../common/typings/context';
 import { FileDocument } from '../file.document';
 import { FileUtil } from '../file.util';
 import { FileVariation, ImageFileVariation } from '../file.variations';
@@ -40,9 +41,9 @@ export class ImageVariationProcessor implements CreationProcessor<ImageFileVaria
 		return 100 + (variation && variation.priority ? variation.priority : 0);
 	}
 
-	public async process(file: FileDocument, src: string, dest: string, variation?: ImageFileVariation): Promise<string> {
+	public async process(requestState: RequestState, file: FileDocument, src: string, dest: string, variation?: ImageFileVariation): Promise<string> {
 
-		logger.debug('[ImageVariationProcessor] Start: %s from %s to %s', file.toDetailedString(variation), FileUtil.log(src), FileUtil.log(dest));
+		logger.debug(requestState, '[ImageVariationProcessor] Start: %s from %s to %s', file.toDetailedString(variation), FileUtil.log(src), FileUtil.log(dest));
 
 		// do the processing
 		const img = gm(src);
@@ -83,7 +84,7 @@ export class ImageVariationProcessor implements CreationProcessor<ImageFileVaria
 		}
 		img.setFormat(file.getMimeSubtype(variation));
 
-		logger.debug('[ImageVariationProcessor] Saving: %s to %s', file.toDetailedString(variation), FileUtil.log(dest));
+		logger.debug(requestState, '[ImageVariationProcessor] Saving: %s to %s', file.toDetailedString(variation), FileUtil.log(dest));
 		//await (img as any).writeAsync(dest);
 
 		await new Promise<FileDocument>((resolve, reject) => {
@@ -95,7 +96,7 @@ export class ImageVariationProcessor implements CreationProcessor<ImageFileVaria
 			writeStream.on('error', reject);
 			img.stream().on('error', reject).pipe(writeStream).on('error', reject);
 		});
-		logger.debug('[ImageVariationProcessor] Done: %s at %s', file.toDetailedString(variation), FileUtil.log(dest));
+		logger.debug(requestState, '[ImageVariationProcessor] Done: %s at %s', file.toDetailedString(variation), FileUtil.log(dest));
 		return dest;
 	}
 }

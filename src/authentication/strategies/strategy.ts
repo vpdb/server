@@ -57,7 +57,7 @@ export abstract class Strategy extends AuthenticationApi {
 		}
 		const profile = await this.getProfile(ctx);
 		const user = await this.verifyCallbackOAuth(ctx, this.name, this.providerName, this.normalizeProfile(profile));
-		logger.info('[Strategy.authenticate] Successfully authenticated with user <%s>.', user.email);
+		logger.info(ctx.state, '[Strategy.authenticate] Successfully authenticated with user <%s>.', user.email);
 
 		return this.authenticateUser(ctx, user, 'oauth');
 	}

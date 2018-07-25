@@ -85,7 +85,7 @@ export class BuildApi extends Api {
 		await build.save();
 		const newBuild = await state.models.Build.findById(build._id).populate('_created_by').exec();
 
-		logger.info('[BuildApi.create] Build "%s" successfully updated.', newBuild.id);
+		logger.info(ctx.state, '[BuildApi.create] Build "%s" successfully updated.', newBuild.id);
 		this.success(ctx, state.serializers.Build.detailed(ctx, newBuild), 200);
 
 		// log event
@@ -125,7 +125,7 @@ export class BuildApi extends Api {
 		newBuild._created_by = ctx.state.user._id;
 		await newBuild.save();
 
-		logger.info('[BuildApi.create] Build "%s" successfully created.', newBuild.label);
+		logger.info(ctx.state, '[BuildApi.create] Build "%s" successfully created.', newBuild.label);
 		this.success(ctx, state.serializers.Build.simple(ctx, newBuild), 201);
 
 		// log event
@@ -160,7 +160,7 @@ export class BuildApi extends Api {
 		}
 		await build.remove();
 
-		logger.info('[BuildApi.delete] Build "%s" (%s) successfully deleted.', build.label, build.id);
+		logger.info(ctx.state, '[BuildApi.delete] Build "%s" (%s) successfully deleted.', build.label, build.id);
 		this.success(ctx, null, 204);
 
 		// log event

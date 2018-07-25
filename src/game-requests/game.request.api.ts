@@ -73,7 +73,7 @@ export class GameRequestApi extends Api {
 		// fetch details
 		let ipdbData;
 		try {
-			ipdbData = await ipdb.details(ipdbNumber, { offline: ctx.query.ipdb_dryrun });
+			ipdbData = await ipdb.details(ctx.state, ipdbNumber, { offline: ctx.query.ipdb_dryrun });
 		} catch (err) {
 			throw new ApiError('Error retrieving data from IPDB').validationError('ipdb_number', err.message, ipdbNumber);
 		}
@@ -140,7 +140,7 @@ export class GameRequestApi extends Api {
 		});
 
 		if (requestClosed) {
-			await mailer.gameRequestDenied(user as UserDocument, gameRequest.ipdb_title, gameRequest.message);
+			await mailer.gameRequestDenied(ctx.state, user as UserDocument, gameRequest.ipdb_title, gameRequest.message);
 		}
 		return this.success(ctx, state.serializers.GameRequest.simple(ctx, gameRequest), 200);
 	}
@@ -191,7 +191,7 @@ export class GameRequestApi extends Api {
 		}
 		// remove from db
 		await gameRequest.remove();
-		logger.info('[GameRequestApi.del] Game Request "%s" successfully deleted.', gameRequest.id);
+		logger.info(ctx.state, '[GameRequestApi.del] Game Request "%s" successfully deleted.', gameRequest.id);
 
 		await LogEventUtil.log(ctx, 'delete_game_request', false, {
 			game_request: pick(state.serializers.GameRequest.simple(ctx, gameRequest), ['id', 'title', 'ipdb_number', 'ipdb_title']),

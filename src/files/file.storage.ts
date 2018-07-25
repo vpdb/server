@@ -18,8 +18,7 @@
  */
 
 import Busboy from 'busboy';
-import { createReadStream, stat} from 'fs';
-import { promisify } from 'util';
+import { createReadStream } from 'fs';
 
 import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
@@ -31,8 +30,6 @@ import { FileDocument } from './file.document';
 import { fileTypes } from './file.types';
 import { FileUtil } from './file.util';
 import { processorQueue } from './processor/processor.queue';
-
-const statAsync = promisify(stat);
 
 /**
  * This deals with uploading and downloading files.
@@ -137,7 +134,7 @@ export class FileStorage extends Api {
 		const filename = ctx.get('content-disposition').match(/filename=([^;]+)/i)[1].replace(/(^"|^'|"$|'$)/g, '');
 
 		// create file
-		logger.info('[FileStorage.handleRawUpload] Starting file upload of "%s"...', filename);
+		logger.info(ctx.state, '[FileStorage.handleRawUpload] Starting file upload of "%s"...', filename);
 		const fileData = {
 			name: filename,
 			bytes: ctx.get('content-length') || 0,
@@ -148,7 +145,7 @@ export class FileStorage extends Api {
 			_created_by: ctx.state.user._id,
 		};
 
-		return FileUtil.create(fileData as FileDocument, ctx.req);
+		return FileUtil.create(ctx.state, fileData as FileDocument, ctx.req);
 	}
 
 	/**
@@ -180,7 +177,7 @@ export class FileStorage extends Api {
 					stream.resume();
 					return;
 				}
-				logger.info('[FileStorage.handleMultipartUpload] Starting file (multipart) upload of "%s"', filename);
+				logger.info(ctx.state, '[FileStorage.handleMultipartUpload] Starting file (multipart) upload of "%s"', filename);
 				const fileData = {
 					name: filename,
 					bytes: 0,
@@ -190,7 +187,7 @@ export class FileStorage extends Api {
 					file_type: ctx.query.type,
 					_created_by: ctx.state.user._id,
 				};
-				FileUtil.create(fileData as FileDocument, stream)
+				FileUtil.create(ctx.state, fileData as FileDocument, stream)
 					.then(file => resolve(file))
 					.catch(reject);
 			});
@@ -204,7 +201,7 @@ export class FileStorage extends Api {
 
 		const results = await Promise.all([parseResult, parseMultipart]);
 		if (err) {
-			logger.warn('[FileApi.handleMultipartUpload] Removing %s', results[0].toShortString());
+			logger.warn(ctx.state, '[FileApi.handleMultipartUpload] Removing %s', results[0].toShortString());
 			await results[0].remove();
 			throw err;
 		}
@@ -225,7 +222,7 @@ export class FileStorage extends Api {
 		}
 
 		const variation = file.getVariation(ctx.params.variation);
-		const isPublic = file.isPublic(variation);
+		const isPublic = file.isPublic(ctx.state, variation);
 
 		// validate variation
 		if (ctx.params.variation && !variation) {
@@ -249,7 +246,7 @@ export class FileStorage extends Api {
 		}
 
 		// now, if it's free, serve it for free
-		if (file.isFree(variation) && ctx.state.user) {
+		if (file.isFree(ctx.state, variation) && ctx.state.user) {
 			return [file, true];
 		}
 
@@ -277,8 +274,8 @@ export class FileStorage extends Api {
 		const now = Date.now();
 
 		const variation = file.getVariation(variationName);
-		const path = file.getPath(variation);
-		const stats = await processorQueue.stats(file, variation);
+		const path = file.getPath(ctx.state, variation);
+		const stats = await processorQueue.stats(ctx.state, file, variation);
 
 		// Now serve the file!
 		// -------------------
@@ -292,7 +289,7 @@ export class FileStorage extends Api {
 
 		// only return the header if request was HEAD
 		if (headOnly) {
-			const q = await quota.get(ctx.state.user);
+			const q = await quota.get(ctx.state, ctx.state.user);
 			quota.setHeader(ctx, q);
 			return this.success(ctx, null, 200, {
 				headers: {
@@ -303,7 +300,7 @@ export class FileStorage extends Api {
 			});
 		}
 
-		logger.info('[FileStorage.serve] Started serving %s.', file.toShortString());
+		logger.info(ctx.state, '[FileStorage.serve] Started serving %s.', file.toShortString());
 		await new Promise((resolve, reject) => {
 			// create read stream
 			let readStream;
@@ -311,7 +308,7 @@ export class FileStorage extends Api {
 
 			// configure stream
 			readStream.on('error', /* istanbul ignore next */ err => {
-				logger.error('[FileStorage.serve] Error before streaming %s from storage: %s', file.toShortString(variation), err);
+				logger.error(ctx.state, '[FileStorage.serve] Error before streaming %s from storage: %s', file.toShortString(variation), err);
 				reject(err);
 			});
 			readStream.on('close', resolve);
@@ -328,19 +325,19 @@ export class FileStorage extends Api {
 			ctx.status = 200;
 			readStream.pipe(ctx.res)
 				.on('error', /* istanbul ignore next */  (err: Error) => {
-					logger.error('[FileStorage.serve] Error while streaming %s from storage: %s', file.toShortString(variation), err);
+					logger.error(ctx.state, '[FileStorage.serve] Error while streaming %s from storage: %s', file.toShortString(variation), err);
 					reject(err);
 				});
 		});
 
-		logger.verbose('[FileStorage.serve] File %s successfully served to <%s> in %sms.', file.toShortString(variation), ctx.state.user ? ctx.state.user.email : 'anonymous', Date.now() - now);
+		logger.verbose(ctx.state, '[FileStorage.serve] File %s successfully served to <%s> in %sms.', file.toShortString(variation), ctx.state.user ? ctx.state.user.email : 'anonymous', Date.now() - now);
 
 		// for the file, only count original downloads
 		if (!variationName) {
 			await file.incrementCounter('downloads');
 		}
 		// for the user, count all non-free downloads
-		if (!file.isFree(variation)) {
+		if (!file.isFree(ctx.state, variation)) {
 			await ctx.state.user.incrementCounter('downloads');
 		}
 		return true;

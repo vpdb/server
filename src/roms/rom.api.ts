@@ -79,13 +79,13 @@ export class RomApi extends Api {
 			rom._ipdb_number = ctx.request.body._ipdb_number;
 			gameRef = game;
 		}
-		let newRom = await state.models.Rom.getInstance(rom);
+		let newRom = await state.models.Rom.getInstance(ctx.state, rom);
 		await newRom.validate();
 
 		const file = await state.models.File.findById(newRom._file).exec();
 		try {
 			newRom.rom_files = [];
-			const zip = new Zip(file.getPath());
+			const zip = new Zip(file.getPath(ctx.state));
 			zip.getEntries().forEach(zipEntry => {
 				if (zipEntry.isDirectory) {
 					return;
@@ -102,7 +102,7 @@ export class RomApi extends Api {
 			throw new ApiError('Invalid zip archive: %s', err.message).log(err).status(422);
 		}
 		newRom = await newRom.save();
-		logger.info('[RomApi.create] Rom "%s" successfully added.', newRom.id);
+		logger.info(ctx.state, '[RomApi.create] Rom "%s" successfully added.', newRom.id);
 		await newRom.activateFiles();
 
 		await LogEventUtil.log(ctx, 'upload_rom', true, {
@@ -224,7 +224,7 @@ export class RomApi extends Api {
 
 		// remove from db
 		await rom.remove();
-		logger.info('[RomApi.del] ROM "%s" successfully deleted.', rom.id);
+		logger.info(ctx.state, '[RomApi.del] ROM "%s" successfully deleted.', rom.id);
 		return this.success(ctx, null, 204);
 	}
 }

@@ -23,6 +23,7 @@ import { state } from '../state';
 import { apiCache } from './api.cache';
 import { logger } from './logger';
 import { config } from './settings';
+import { RequestState } from './typings/context';
 
 class Metrics {
 
@@ -34,15 +35,16 @@ class Metrics {
 	 * If needed, runs through other ratings as well, if global arithmetic mean
 	 * changed.
 	 *
+	 * @param requestState
 	 * @param {string} modelName Reference to model, e.g. "release"
 	 * @param {object} entity Object that received the vote
 	 * @param {object} rating Rating object
 	 * @reuturn {Promise.<{}>} Result
 	 */
-	public async onRatingUpdated(modelName: string, entity: Document, rating: RatingDocument) {
+	public async onRatingUpdated(requestState: RequestState, modelName: string, entity: Document, rating: RatingDocument) {
 
-		const globalAtm = await this.getGlobalMean(modelName);
-		const summary = await this.updateEntityMetrics(modelName, entity, globalAtm);
+		const globalAtm = await this.getGlobalMean(requestState, modelName);
+		const summary = await this.updateEntityMetrics(requestState, modelName, entity, globalAtm);
 		const atm = parseInt(await state.redis.get(this.redisAtmKey), 10);
 		const precision = 100;
 		if (!atm) {
@@ -50,9 +52,9 @@ class Metrics {
 			await this.updateGlobalMean(globalAtm);
 
 		} else if (Math.round(atm * precision) !== Math.round(globalAtm * precision)) {
-			logger.info('[Metrics.onRatingUpdated] Global mean of %ss changed from %s to %s, re-calculating bayesian estimates.', modelName, Math.round(atm * precision) / precision, Math.round(globalAtm * precision) / precision);
-			await this.updateAllEntities(modelName, globalAtm);
-			await apiCache.invalidateAllEntities(modelName);
+			logger.info(requestState, '[Metrics.onRatingUpdated] Global mean of %ss changed from %s to %s, re-calculating bayesian estimates.', modelName, Math.round(atm * precision) / precision, Math.round(globalAtm * precision) / precision);
+			await this.updateAllEntities(requestState, modelName, globalAtm);
+			await apiCache.invalidateAllEntities(requestState, modelName);
 		}
 		return {
 			value: rating ? rating.value : 0,
@@ -70,7 +72,7 @@ class Metrics {
 	 * @param {number} atm Arithmetic total mean
 	 * @return Promise<{ average: number, votes: number, score: number }>
 	 */
-	private async updateEntityMetrics(modelName: string, entity: Document, atm: number): Promise<{ average: number, votes: number, score: number }> {
+	private async updateEntityMetrics(requestState: RequestState, modelName: string, entity: Document, atm: number): Promise<{ average: number, votes: number, score: number }> {
 
 		/*
 		 * Bayesian estimate:
@@ -108,12 +110,12 @@ class Metrics {
 		await entity.update({ rating: entityMetrics });
 
 		// invalidate cache
-		await apiCache.invalidateEntity(modelName, entity.id);
+		await apiCache.invalidateEntity(requestState, modelName, entity.id);
 
 		return entityMetrics;
 	}
 
-	private async getGlobalMean(modelName: string): Promise<number> {
+	private async getGlobalMean(requestState: RequestState, modelName: string): Promise<number> {
 
 		/* istanbul ignore if: don't calculate if we use a hard-coded mean anyway. */
 		if (config.vpdb.metrics.bayesianEstimate.globalMean !== null) {
@@ -125,7 +127,7 @@ class Metrics {
 		if (results.length === 1) {
 			return results[0].sum / results[0].count;
 		} else {
-			logger.warn('[Metrics.getGlobalMean] No entities found for %s, returning 0.', modelName);
+			logger.warn(requestState, '[Metrics.getGlobalMean] No entities found for %s, returning 0.', modelName);
 			return 0;
 		}
 
@@ -135,7 +137,7 @@ class Metrics {
 		return state.redis.set(this.redisAtmKey, atm);
 	}
 
-	private async updateAllEntities(modelName: string, atm: number) {
+	private async updateAllEntities(requestState: RequestState, modelName: string, atm: number) {
 
 		await this.updateGlobalMean(atm);
 		const model = state.getModel(modelName);
@@ -147,10 +149,10 @@ class Metrics {
 
 		// update all entities that have at least one rating
 		const entities = await model.find({ 'rating.votes': { $gt: 0 } }).exec();
-		logger.info('[Metrics.updateAllEntities] Updating metrics for %d %ss...', entities.length, modelName);
+		logger.info(requestState, '[Metrics.updateAllEntities] Updating metrics for %d %ss...', entities.length, modelName);
 
 		for (const entity of entities) {
-			await this.updateEntityMetrics(modelName, entity, atm);
+			await this.updateEntityMetrics(requestState, modelName, entity, atm);
 		}
 	}
 

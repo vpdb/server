@@ -64,7 +64,7 @@ export class MiscApi extends Api {
 	 * @param {Context} ctx Koa context
 	 */
 	public async ipdbDetails(ctx: Context) {
-		const game = await ipdb.details(ctx.params.id, { offline: ctx.query.dryrun });
+		const game = await ipdb.details(ctx.state, ctx.params.id, { offline: ctx.query.dryrun });
 		return this.success(ctx, game);
 	}
 
@@ -114,7 +114,7 @@ export class MiscApi extends Api {
 	public async invalidateCache(ctx: Context) {
 		const now = Date.now();
 		const num = await apiCache.invalidateAll();
-		logger.info('[MiscApi.invalidateCache] Cleared %s caches in %sms.', num, Date.now() - now);
+		logger.info(ctx.state, '[MiscApi.invalidateCache] Cleared %s caches in %sms.', num, Date.now() - now);
 		return this.success(ctx, { cleared: num }, 204);
 	}
 
@@ -231,9 +231,9 @@ export class MiscApi extends Api {
 		this.success(ctx, { result: 'shutting down.' }, 200);
 
 		// wait for jobs to finish
-		processorQueue.waitForLastJob().then(() => {
+		processorQueue.waitForLastJob(ctx.state).then(() => {
 			// and off we go.
-			logger.wtf('[MiscApi] Shutting down.');
+			logger.wtf(ctx.state, '[MiscApi] Shutting down.');
 			setTimeout(() => process.exit(0), 500);
 		});
 	}

@@ -23,6 +23,7 @@ import { Readable } from 'stream';
 
 import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
+import { RequestState } from '../../common/typings/context';
 import { XmlParser } from '../../common/xml.parser';
 import { FileDocument } from '../file.document';
 import { mimeTypes } from '../file.mimetypes';
@@ -45,12 +46,12 @@ export class Directb2sThumbProcessor implements CreationProcessor<BackglassVaria
 		return 200 + (variation && variation.priority ? variation.priority : 0);
 	}
 
-	public async process(file: FileDocument, src: string, dest: string, variation?: BackglassVariation): Promise<string> {
+	public async process(requestState: RequestState, file: FileDocument, src: string, dest: string, variation?: BackglassVariation): Promise<string> {
 		const now = Date.now();
-		logger.debug('[Directb2sThumbProcessor] Starting processing %s at %s.', file.toShortString(variation), dest);
+		logger.debug(requestState, '[Directb2sThumbProcessor] Starting processing %s at %s.', file.toShortString(variation), dest);
 		return new Promise<string>((resolve, reject) => {
 
-			logger.debug('[Directb2sThumbProcessor] Reading DirectB2S Backglass from %s', src);
+			logger.debug(requestState, '[Directb2sThumbProcessor] Reading DirectB2S Backglass from %s', src);
 			const parser = new XmlParser(src);
 			let currentTag: string;
 			let backglassFound = false;
@@ -60,7 +61,7 @@ export class Directb2sThumbProcessor implements CreationProcessor<BackglassVaria
 			parser.on('attribute', attr => {
 				if (currentTag === 'BackglassImage' && attr.name === 'Value' && !backglassFound) {
 					backglassFound = true;
-					logger.debug('[Directb2sThumbProcessor] Found backglass image, pausing XML parser...');
+					logger.debug(requestState, '[Directb2sThumbProcessor] Found backglass image, pausing XML parser...');
 					parser.pause();
 					const source = new Readable();
 					source._read = () => {
@@ -83,8 +84,8 @@ export class Directb2sThumbProcessor implements CreationProcessor<BackglassVaria
 
 						if (variation.cutGrill && file.metadata.grill_height && size) {
 							img.crop(size.width, size.height - file.metadata.grill_height, 0, 0);
-							logger.info(size);
-							logger.info('[Directb2sThumbProcessor] Cutting off grill for variation %s, new height = ', file.toShortString(variation), size.height - file.metadata.grill_height);
+							logger.info(requestState, size);
+							logger.info(requestState, '[Directb2sThumbProcessor] Cutting off grill for variation %s, new height = ', file.toShortString(variation), size.height - file.metadata.grill_height);
 						}
 
 						if (variation.width && variation.height) {
@@ -103,7 +104,7 @@ export class Directb2sThumbProcessor implements CreationProcessor<BackglassVaria
 
 						// setup success handler
 						writeStream.on('finish', () => {
-							logger.info('[Directb2sThumbProcessor] Saved extracted backglass to "%s" (%sms).', dest, Date.now() - now);
+							logger.info(requestState, '[Directb2sThumbProcessor] Saved extracted backglass to "%s" (%sms).', dest, Date.now() - now);
 							parser.resume();
 						});
 						writeStream.on('error', this.error(reject, 'Error writing stream to ' + dest));

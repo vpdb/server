@@ -37,12 +37,12 @@ export class MediumApi extends Api {
 	public async create(ctx: Context) {
 
 		const now = new Date();
-		const medium = await state.models.Medium.getInstance(extend(ctx.request.body, {
+		const medium = await state.models.Medium.getInstance(ctx.state, extend(ctx.request.body, {
 			_created_by: ctx.state.user._id,
 			created_at: now,
 		}));
 		await medium.save();
-		logger.info('[MediumApi.create] Medium "%s" successfully created.', medium.id);
+		logger.info(ctx.state, '[MediumApi.create] Medium "%s" successfully created.', medium.id);
 		await medium.activateFiles();
 		const populatedMedium = await state.models.Medium.findById(medium._id)
 			.populate({ path: '_ref.game' })
@@ -94,7 +94,7 @@ export class MediumApi extends Api {
 		// remove from db
 		await medium.remove();
 
-		logger.info('[MediumApi.del] Medium "%s" successfully deleted.', medium.id);
+		logger.info(ctx.state, '[MediumApi.del] Medium "%s" successfully deleted.', medium.id);
 		return this.success(ctx, null, 204);
 	}
 }

@@ -68,7 +68,7 @@ export class LogUserUtil {
 			await log.save();
 			await slackbot.logUser(log);
 		} catch (err) {
-			logger.error('[LogUserUtil] Error saving log for "%s": %s', event, err.message, err);
+			logger.error(ctx.state, '[LogUserUtil] Error saving log for "%s": %s', event, err.message, err);
 		}
 	}
 }

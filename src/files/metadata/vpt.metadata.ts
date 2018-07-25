@@ -18,6 +18,7 @@
  */
 import { extend, omit } from 'lodash';
 
+import { RequestState } from '../../common/typings/context';
 import { visualPinballTable } from '../../common/visualpinball.table';
 import { File } from '../file';
 import { FileDocument } from '../file.document';
@@ -31,9 +32,9 @@ export class VptMetadata extends Metadata {
 			.includes(File.getMimeType(file, variation));
 	}
 
-	public async getMetadata(file: FileDocument, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
-		const script = await visualPinballTable.readScriptFromTable(path);
-		const props = await visualPinballTable.getTableInfo(path);
+	public async getMetadata(requestState: RequestState, file: FileDocument, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
+		const script = await visualPinballTable.readScriptFromTable(requestState, path);
+		const props = await visualPinballTable.getTableInfo(requestState, path);
 		extend(props, { table_script: script.code });
 		return props;
 	}

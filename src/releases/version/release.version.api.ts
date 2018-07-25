@@ -77,12 +77,12 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 		}
 
 		// create instance
-		logger.info('[ReleaseApi.addVersion] body: %s', inspect(versionObj, { depth: null }));
-		const newVersion = await state.models.ReleaseVersion.getInstance(versionObj);
+		logger.info(ctx.state, '[ReleaseApi.addVersion] body: %s', inspect(versionObj, { depth: null }));
+		const newVersion = await state.models.ReleaseVersion.getInstance(ctx.state, versionObj);
 
 		await this.preProcess(ctx, newVersion.getFileIds());
 
-		logger.info('[ReleaseApi.addVersion] model: %s', inspect(newVersion, { depth: null }));
+		logger.info(ctx.state, '[ReleaseApi.addVersion] model: %s', inspect(newVersion, { depth: null }));
 
 		let validationErr: any;
 		try {
@@ -113,25 +113,25 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 		release.released_at = release.versions[0].released_at as Date;
 		release.modified_at = now;
 
-		logger.info('[ReleaseApi.addVersion] Validations passed, adding new version to release.');
+		logger.info(ctx.state, '[ReleaseApi.addVersion] Validations passed, adding new version to release.');
 		release = await release.save();
 
-		await this.postProcess(newVersion.getPlayfieldImageIds());
+		await this.postProcess(ctx.state, newVersion.getPlayfieldImageIds());
 
-		logger.info('[ReleaseApi.create] Added version "%s" to release "%s".', newVersion.version, release.name);
+		logger.info(ctx.state, '[ReleaseApi.create] Added version "%s" to release "%s".', newVersion.version, release.name);
 		// set media to active
 		await release.activateFiles();
 
 		// game modification date
 		await state.models.Game.update({ _id: release._game.toString() }, { modified_at: now });
 
-		logger.info('[ReleaseApi.create] All referenced files activated, returning object to client.');
+		logger.info(ctx.state, '[ReleaseApi.create] All referenced files activated, returning object to client.');
 		release = await this.getDetails(release._id);
 
 		this.success(ctx, state.serializers.Release.detailed(ctx, release).versions.filter(v => v.version === newVersion.version)[0], 201);
 
 		// invalidate cache
-		await apiCache.invalidateRelease(release);
+		await apiCache.invalidateRelease(ctx.state, release);
 
 		// log event
 		await LogEventUtil.log(ctx, 'create_release_version', true, {
@@ -145,7 +145,7 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 		// notify (co-)author(s)
 		for (const author of release.authors) {
 			if ((author._user as UserDocument).id !== ctx.state.user.id) {
-				await mailer.releaseVersionAdded(ctx.state.user, author._user as UserDocument, release, newVersion);
+				await mailer.releaseVersionAdded(ctx.state, ctx.state.user, author._user as UserDocument, release, newVersion);
 			}
 		}
 	}
@@ -200,7 +200,7 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 		const oldVersion = cloneDeep(versionToUpdate);
 
 		const newFiles: ReleaseVersionFileDocument[] = [];
-		logger.info('[ReleaseApi.updateVersion] %s', inspect(ctx.request.body, { depth: null }));
+		logger.info(ctx.state, '[ReleaseApi.updateVersion] %s', inspect(ctx.request.body, { depth: null }));
 
 		for (const fileObj of (ctx.request.body.files || [])) {
 
@@ -208,11 +208,11 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 			const existingVersionFile = version.files.find(f => (f._file as FileDocument).id === fileObj._file);
 			if (existingVersionFile) {
 				const versionFileToUpdate = versionToUpdate.files.find(f => f._id.equals(existingVersionFile._id));
-				await versionFileToUpdate.updateInstance(pick(fileObj, updatableFileFields));
+				await versionFileToUpdate.updateInstance(ctx.state, pick(fileObj, updatableFileFields));
 
 			} else {
 				defaults(fileObj, { released_at: now });
-				const newVersionFile = await state.models.ReleaseVersionFile.getInstance(fileObj);
+				const newVersionFile = await state.models.ReleaseVersionFile.getInstance(ctx.state, fileObj);
 				versionToUpdate.files.push(newVersionFile);
 				newFiles.push(newVersionFile);
 			}
@@ -230,21 +230,21 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 			throw err;
 		}
 
-		logger.info('[ReleaseApi.updateVersion] Validations passed, updating version.');
+		logger.info(ctx.state, '[ReleaseApi.updateVersion] Validations passed, updating version.');
 
 		releaseToUpdate.versions = orderBy(releaseToUpdate.versions, ['released_at'], ['desc']);
 		releaseToUpdate.released_at = releaseToUpdate.versions[0].released_at as Date;
 		releaseToUpdate.modified_at = now;
 		release = await releaseToUpdate.save();
 
-		await this.postProcess(versionToUpdate.getPlayfieldImageIds());
+		await this.postProcess(ctx.state, versionToUpdate.getPlayfieldImageIds());
 
 		if (newFiles.length > 0) {
-			logger.info('[ReleaseApi.updateVersion] Added new file(s) to version "%s" of release "%s".', version.version, release.name);
+			logger.info(ctx.state, '[ReleaseApi.updateVersion] Added new file(s) to version "%s" of release "%s".', version.version, release.name);
 		}
 		const activatedFiles = await release.activateFiles();
 
-		logger.info('[ReleaseApi.updateVersion] Activated files [ %s ], returning object to client.', activatedFiles.join(', '));
+		logger.info(ctx.state, '[ReleaseApi.updateVersion] Activated files [ %s ], returning object to client.', activatedFiles.join(', '));
 		await state.models.Game.update({ _id: release._game.toString() }, { modified_at: new Date() });
 
 		release = await state.models.Release.findOne({ id: ctx.params.id })
@@ -260,7 +260,7 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 		this.success(ctx, version, 200);
 
 		// invalidate cache
-		await apiCache.invalidateRelease(release);
+		await apiCache.invalidateRelease(ctx.state, release);
 
 		// log event
 		await LogEventUtil.log(ctx, 'update_release_version', false,
@@ -272,7 +272,7 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 		for (const author of release.authors) {
 			if ((author._user as UserDocument).id !== ctx.state.user.id) {
 				for (const versionFile of newFiles) {
-					await mailer.releaseFileAdded(ctx.state.user, author._user as UserDocument, release, version, versionFile);
+					await mailer.releaseFileAdded(ctx.state, ctx.state.user, author._user as UserDocument, release, version, versionFile);
 				}
 			}
 		}

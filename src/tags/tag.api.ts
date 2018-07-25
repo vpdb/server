@@ -64,7 +64,7 @@ export class TagApi extends Api {
 			_created_by: ctx.state.user._id,
 		}));
 		await newTag.save();
-		logger.info('[TagApi.create] Tag "%s" successfully created.', newTag.name);
+		logger.info(ctx.state, '[TagApi.create] Tag "%s" successfully created.', newTag.name);
 		return this.success(ctx, state.serializers.Tag.simple(ctx, newTag), 201);
 	}
 
@@ -91,7 +91,7 @@ export class TagApi extends Api {
 		// todo check if there are references
 		await tag.remove();
 
-		logger.info('[TagApi.del] Tag "%s" (%s) successfully deleted.', tag.name, tag._id);
+		logger.info(ctx.state, '[TagApi.del] Tag "%s" (%s) successfully deleted.', tag.name, tag._id);
 		return this.success(ctx, null, 204);
 	}
 }

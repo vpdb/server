@@ -20,6 +20,7 @@
 import { assign, get, includes, isString, keys, mapValues, omitBy, pickBy, set } from 'lodash';
 import mongoose, { Document, PrettyIdDocument, PrettyIdOptions, Schema } from 'mongoose';
 import { logger } from '../logger';
+import { RequestState } from '../typings/context';
 import { explodePaths, traversePaths } from './util';
 
 /**
@@ -52,9 +53,9 @@ export function prettyIdPlugin(schema: Schema, options: PrettyIdOptions = {}) {
 		return includes(options.ignore, path.replace(/\.0$/g, ''));
 	});
 
-	schema.statics.getInstance = async (obj: object) => {
+	schema.statics.getInstance = async (requestState: RequestState, obj: object) => {
 
-		const invalidations = await replaceIds(obj, paths, options);
+		const invalidations = await replaceIds(requestState, obj, paths, options);
 		const Model = mongoose.model(options.model);
 		const model = new Model(obj);
 		//var model = this.model(this.constructor.modelName);
@@ -67,9 +68,9 @@ export function prettyIdPlugin(schema: Schema, options: PrettyIdOptions = {}) {
 
 	};
 
-	schema.methods.updateInstance = async function<T extends Document>(this: T, obj: object): Promise<T> {
+	schema.methods.updateInstance = async function<T extends Document>(this: T, requestState: RequestState, obj: object): Promise<T> {
 
-		const invalidations = await replaceIds(obj, paths, options);
+		const invalidations = await replaceIds(requestState, obj, paths, options);
 		assign(this, obj);
 
 		// for invalid IDs, invalidate instantly so we can provide which value is wrong.
@@ -84,12 +85,13 @@ export function prettyIdPlugin(schema: Schema, options: PrettyIdOptions = {}) {
 /**
  * Replaces pretty IDs with MongoDB IDs.
  *
+ * @param requestState
  * @param obj
  * @param paths
  * @param options
  * @returns {Promise.<Array>} Promise returning an array of invalidations.
  */
-async function replaceIds(obj: object, paths: { [key: string]: any }, options: PrettyIdOptions): Promise<Array<{ path: string, message: string, value: any }>> {
+async function replaceIds(requestState: RequestState, obj: object, paths: { [key: string]: any }, options: PrettyIdOptions): Promise<Array<{ path: string, message: string, value: any }>> {
 
 	const Model = mongoose.model(options.model);
 	const invalidations: Array<{ path: string, message: string, value: any }> = [];
@@ -115,7 +117,7 @@ async function replaceIds(obj: object, paths: { [key: string]: any }, options: P
 		const refObj = await RefModel.findOne({ id: prettyId }).exec();
 
 		if (!refObj) {
-			logger.warn('[prettyIdPlugin] %s ID "%s" not found in database for field %s.', refModelName, prettyId, objPath);
+			logger.warn(requestState, '[prettyIdPlugin] %s ID "%s" not found in database for field %s.', refModelName, prettyId, objPath);
 			invalidations.push({
 				path: objPath,
 				message: 'No such ' + refModelName.toLowerCase() + ' with ID "' + prettyId + '".',
@@ -163,10 +165,11 @@ declare module 'mongoose' {
 		/**
 		 * Updates the Mongoose document with IDs received in the API and invalidates them.
 		 *
+		 * @param requestState For logging
 		 * @param {Object} obj Object received
-		 * @returns {Promise<T extends module:mongoose.Document>} Updated document with IDs converted from pretty to Mongoose.
+		 * @returns {Promise<T extends Document>} Updated document with IDs converted from pretty to Mongoose.
 		 */
-		updateInstance<T extends Document>(this: T, obj: object): Promise<T>;
+		updateInstance<T extends Document>(this: T, requestState: RequestState, obj: object): Promise<T>;
 	}
 
 	// statics
@@ -175,10 +178,11 @@ declare module 'mongoose' {
 		 * Replaces API IDs with database IDs and returns a new instance of the
 		 * configured model.
 		 *
+		 * @param requestState For logging
 		 * @param {Object} obj Object received
-		 * @returns {Promise<T extends module:mongoose.PrettyIdDocument>} IDs converted from pretty to Mongoose.
+		 * @returns {Promise<T extends PrettyIdDocument>} IDs converted from pretty to Mongoose.
 		 */
-		getInstance(obj: object): Promise<T>;
+		getInstance(requestState: RequestState, obj: object): Promise<T>;
 	}
 
 	// options

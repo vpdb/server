@@ -20,6 +20,7 @@
 import { MetricsModel, Schema } from 'mongoose';
 
 import { metricsPlugin } from '../common/mongoose/metrics.plugin';
+import { RequestState } from '../common/typings/context';
 import { state } from '../state';
 import { File } from './file';
 import { FileDocument, FilePathOptions } from './file.document';
@@ -82,27 +83,27 @@ fileSchema.plugin(metricsPlugin);
  *
  * @return {Promise<FileDocument>} Moved file
  */
-fileSchema.methods.switchToActive = async function(this: FileDocument): Promise<FileDocument> {
+fileSchema.methods.switchToActive = async function(this: FileDocument, requestState: RequestState): Promise<FileDocument> {
 	this.is_active = true;
 	await this.save();
-	await processorQueue.activateFile(this);
+	await processorQueue.activateFile(requestState, this);
 	return this;
 };
 
-fileSchema.methods.getPath = function(this: FileDocument, variation: FileVariation = null, opts: FilePathOptions = {}): string {
-	return File.getPath(this, variation, opts);
+fileSchema.methods.getPath = function(this: FileDocument, requestState: RequestState, variation: FileVariation = null, opts: FilePathOptions = {}): string {
+	return File.getPath(requestState, this, variation, opts);
 };
 fileSchema.methods.getExt = function(this: FileDocument, variation: FileVariation = null): string {
 	return File.getExt(this, variation);
 };
-fileSchema.methods.getUrl = function(this: FileDocument, variation: FileVariation = null): string {
-	return File.getUrl(this, variation);
+fileSchema.methods.getUrl = function(this: FileDocument, requestState: RequestState, variation: FileVariation = null): string {
+	return File.getUrl(requestState, this, variation);
 };
-fileSchema.methods.isPublic = function(this: FileDocument, variation: FileVariation = null): boolean {
-	return File.isPublic(this, variation);
+fileSchema.methods.isPublic = function(this: FileDocument, requestState: RequestState, variation: FileVariation = null): boolean {
+	return File.isPublic(requestState, this, variation);
 };
-fileSchema.methods.isFree = function(this: FileDocument, variation: FileVariation = null): boolean {
-	return File.isFree(this, variation);
+fileSchema.methods.isFree = function(this: FileDocument, requestState: RequestState, variation: FileVariation = null): boolean {
+	return File.isFree(requestState, this, variation);
 };
 fileSchema.methods.getMimeType = function(this: FileDocument, variation?: FileVariation): string {
 	return File.getMimeType(this, variation);
@@ -141,10 +142,10 @@ fileSchema.methods.getDirectVariationDependencies = function(this: FileDocument,
 fileSchema.post('remove', async (obj: FileDocument) => {
 
 	// remove physical file
-	await FileUtil.remove(obj);
+	await FileUtil.remove(null, obj);
 
 	// remove eventually processing files
-	await processorQueue.deleteProcessingFile(obj);
+	await processorQueue.deleteProcessingFile(null, obj);
 
 	// remove table blocks
 	await state.models.TableBlock.update(

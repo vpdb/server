@@ -24,6 +24,7 @@ import { OleCompoundDoc, Storage } from 'ole-doc';
 import { createHash } from 'crypto';
 import { TableBlock } from '../releases/release.tableblock';
 import { logger } from './logger';
+import { RequestState } from './typings/context';
 
 const OleDoc = require('ole-doc').OleCompoundDoc;
 const bindexOf = require('buffer-indexof');
@@ -33,10 +34,11 @@ class VisualPinballTable {
 	/**
 	 * Extracts the table script from a given .vpt file.
 	 *
+	 * @param requestState For logging
 	 * @param {string} tablePath Path to the .vpt file. File must exist.
 	 * @return {Promise} Table script
 	 */
-	public async readScriptFromTable(tablePath: string): Promise<{ code: string, head: Buffer, tail: Buffer }> {
+	public async readScriptFromTable(requestState: RequestState, tablePath: string): Promise<{ code: string, head: Buffer, tail: Buffer }> {
 		const now = Date.now();
 		/* istanbul ignore if */
 		if (!existsSync(tablePath)) {
@@ -49,7 +51,7 @@ class VisualPinballTable {
 
 		const codeStart: number = bindexOf(buf, new Buffer('04000000434F4445', 'hex')); // 0x04000000 "CODE"
 		const codeEnd: number = bindexOf(buf, new Buffer('04000000454E4442', 'hex'));   // 0x04000000 "ENDB"
-		logger.info('[VisualPinballTable.readScriptFromTable] Found GameData for "%s" in %d ms.', tablePath, Date.now() - now);
+		logger.info(requestState, '[VisualPinballTable.readScriptFromTable] Found GameData for "%s" in %d ms.', tablePath, Date.now() - now);
 		/* istanbul ignore if */
 		if (codeStart < 0 || codeEnd < 0) {
 			throw new Error('Cannot find CODE part in BIFF structure.');
@@ -64,10 +66,11 @@ class VisualPinballTable {
 	/**
 	 * Returns all TableInfo fields of the table file.
 	 *
+	 * @param requestState For logging
 	 * @param {string} tablePath Path to the .vpt file. File must exist.
 	 * @return {Promise<object>} Table properties
 	 */
-	public async getTableInfo(tablePath: string): Promise<{ [key: string]: string }> {
+	public async getTableInfo(requestState: RequestState, tablePath: string): Promise<{ [key: string]: string }> {
 
 		/* istanbul ignore if */
 		if (!existsSync(tablePath)) {
@@ -78,7 +81,7 @@ class VisualPinballTable {
 		const storage = doc.storage('TableInfo');
 		const props: { [key: string]: string } = {};
 		if (!storage) {
-			logger.warn('[VisualPinballTable.getTableInfo] Storage "TableInfo" not found in "%s".', tablePath);
+			logger.warn(requestState, '[VisualPinballTable.getTableInfo] Storage "TableInfo" not found in "%s".', tablePath);
 			return props;
 		}
 		const streams: { [key: string]: string } = {
@@ -100,7 +103,7 @@ class VisualPinballTable {
 					props[propKey] = buf.toString().replace(/\0/g, '');
 				}
 			} catch (err) {
-				logger.warn('[VisualPinballTable.getTableInfo] %s', err.message);
+				logger.warn(requestState, '[VisualPinballTable.getTableInfo] %s', err.message);
 			}
 		}
 		return props;
@@ -113,12 +116,13 @@ class VisualPinballTable {
 	 * elements in the database. There are additional attributes like size
 	 * and metadata.
 	 *
+	 * @param requestState For logging
 	 * @param {string} tablePath Path to table file
 	 * @return {Promise<TableBlock[]>}
 	 */
-	public async analyzeFile(tablePath: string): Promise<TableBlock[]> {
+	public async analyzeFile(requestState: RequestState, tablePath: string): Promise<TableBlock[]> {
 		const started = Date.now();
-		logger.info('[VisualPinballTable.analyzeFile] Analyzing %s..', tablePath);
+		logger.info(requestState, '[VisualPinballTable.analyzeFile] Analyzing %s..', tablePath);
 		const doc = await this.readDoc(tablePath);
 		const storage = doc.storage('GameStg');
 		const gameDataStream = await this.readStream(storage, 'GameData');
@@ -131,7 +135,7 @@ class VisualPinballTable {
 			const data = await this.readStream(storage, streamName);
 			const blocks = this.parseBiff(data);
 			const [parsedData, meta] = this.parseImage(blocks, streamName);
-			const tableBlock = this.analyzeBlock(parsedData || data, 'image', meta);
+			const tableBlock = this.analyzeBlock(requestState, parsedData || data, 'image', meta);
 			if (tableBlock) {
 				tableBlocks.push(tableBlock);
 			}
@@ -141,7 +145,7 @@ class VisualPinballTable {
 			const data = await this.readStream(storage, streamName);
 			const blocks = this.parseUntaggedBiff(data);
 			const [parsedData, meta] = await this.parseSound(blocks, streamName);
-			const tableBlock = this.analyzeBlock(parsedData || data, 'sound', meta);
+			const tableBlock = this.analyzeBlock(requestState, parsedData || data, 'sound', meta);
 			if (tableBlock) {
 				tableBlocks.push(tableBlock);
 			}
@@ -152,7 +156,7 @@ class VisualPinballTable {
 			const data = await this.readStream(storage, streamName);
 			const blocks = await this.parseBiff(data, 4);
 			const meta = await this.parseGameItem(blocks, streamName);
-			const tableBlock = this.analyzeBlock(data, 'gameitem', meta);
+			const tableBlock = this.analyzeBlock(requestState, data, 'gameitem', meta);
 			if (tableBlock) {
 				tableBlocks.push(tableBlock);
 			}
@@ -163,17 +167,17 @@ class VisualPinballTable {
 			const data = await this.readStream(storage, streamName);
 			const blocks = await this.parseBiff(data);
 			const meta = await this.parseCollection(blocks, streamName);
-			const tableBlock = this.analyzeBlock(data, 'collection', meta);
+			const tableBlock = this.analyzeBlock(requestState, data, 'collection', meta);
 			if (tableBlock) {
 				tableBlocks.push(tableBlock);
 			}
 		}
 
-		logger.info('[VisualPinballTable.analyzeFile] Found %d items in table file in %sms:', tableBlocks.length, new Date().getTime() - started);
-		logger.info('        - %d textures.', gameData.numTextures);
-		logger.info('        - %d sounds.', gameData.numSounds);
-		logger.info('        - %d game items.', gameData.numGameItems);
-		logger.info('        - %d collections.', gameData.numCollections);
+		logger.info(requestState, '[VisualPinballTable.analyzeFile] Found %d items in table file in %sms:', tableBlocks.length, new Date().getTime() - started);
+		logger.info(requestState, '        - %d textures.', gameData.numTextures);
+		logger.info(requestState, '        - %d sounds.', gameData.numSounds);
+		logger.info(requestState, '        - %d game items.', gameData.numGameItems);
+		logger.info(requestState, '        - %d collections.', gameData.numCollections);
 		return tableBlocks;
 	}
 
@@ -475,14 +479,15 @@ class VisualPinballTable {
 	/**
 	 * Returns block data for saving to the database.
 	 *
+	 * @param requestState For logging
 	 * @param {Buffer} data Data to hash
 	 * @param {string} type Item type (image, sound, gameitem, collection)
 	 * @param meta Parsed metadata
 	 * @return {TableBlock}
 	 */
-	private analyzeBlock(data: Buffer, type: string, meta: any): TableBlock {
+	private analyzeBlock(requestState: RequestState, data: Buffer, type: string, meta: any): TableBlock {
 		if (!data) {
-			logger.error('[VisualPinballTable.analyzeBlock] Ignoring empty data for %s.', meta.stream);
+			logger.error(requestState, '[VisualPinballTable.analyzeBlock] Ignoring empty data for %s.', meta.stream);
 			return null;
 		}
 		return {

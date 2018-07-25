@@ -137,7 +137,7 @@ export class LogEventApi extends Api {
 				}
 				query.push({ _actor: user._id });
 			}
-			logger.info('[LogEventApi.list] Events query: %s', inspect(query, { depth: null }));
+			logger.info(ctx.state, '[LogEventApi.list] Events query: %s', inspect(query, { depth: null }));
 
 			let docs: LogEventDocument[] = [];
 			let count = 0;

@@ -47,7 +47,7 @@ export class BackglassApi extends Api {
 
 		const now = new Date();
 
-		const backglass = await state.models.Backglass.getInstance(extend(ctx.request.body, {
+		const backglass = await state.models.Backglass.getInstance(ctx.state, extend(ctx.request.body, {
 			_created_by: ctx.state.user._id,
 			created_at: now,
 		}));
@@ -76,14 +76,14 @@ export class BackglassApi extends Api {
 					backglassFile = file;
 					const rom = await state.models.Rom.findOne({ id: file.metadata.gamename }).exec();
 					if (rom) {
-						logger.info('[ctrl|backglass] Linking backglass to same game %s as rom "%s".', rom._game, backglassFile.metadata.gamename);
+						logger.info(ctx.state, '[ctrl|backglass] Linking backglass to same game %s as rom "%s".', rom._game, backglassFile.metadata.gamename);
 						backglass._game = rom._game;
 					}
 				}
 			}
 		}
 		await backglass.save();
-		logger.info('[BackglassApi.create] Backglass "%s" successfully created.', backglass.id);
+		logger.info(ctx.state, '[BackglassApi.create] Backglass "%s" successfully created.', backglass.id);
 		await backglass.activateFiles();
 
 		const populatedBackglass = await state.models.Backglass.findById(backglass._id)
@@ -95,9 +95,9 @@ export class BackglassApi extends Api {
 
 		// send moderation mail
 		if (populatedBackglass.moderation.is_approved) {
-			await mailer.backglassAutoApproved(ctx.state.user, populatedBackglass);
+			await mailer.backglassAutoApproved(ctx.state, ctx.state.user, populatedBackglass);
 		} else {
-			await mailer.backglassSubmitted(ctx.state.user, populatedBackglass);
+			await mailer.backglassSubmitted(ctx.state, ctx.state.user, populatedBackglass);
 		}
 
 		// event log
@@ -155,7 +155,7 @@ export class BackglassApi extends Api {
 		const oldBackglass = cloneDeep(backglass) as BackglassDocument;
 
 		// apply changes
-		backglass = await backglass.updateInstance(ctx.request.body);
+		backglass = await backglass.updateInstance(ctx.state, ctx.request.body);
 
 		// validate and save
 		await backglass.save();
@@ -216,7 +216,7 @@ export class BackglassApi extends Api {
 		}
 		query = await state.models.Backglass.applyRestrictions(ctx, await state.models.Backglass.handleModerationQuery(ctx, query));
 
-		logger.info('[BackglassApi.list] query: %s', inspect(query, { depth: null }));
+		logger.info(ctx.state, '[BackglassApi.list] query: %s', inspect(query, { depth: null }));
 
 		const result = await state.models.Backglass.paginate(query, {
 			page: pagination.page,
@@ -279,7 +279,7 @@ export class BackglassApi extends Api {
 		}
 		// remove from db
 		await backglass.remove();
-		logger.info('[BackglassApi.delete] Backglass "%s" successfully deleted.', backglass.id);
+		logger.info(ctx.state, '[BackglassApi.delete] Backglass "%s" successfully deleted.', backglass.id);
 
 		// event log
 		await LogEventUtil.log(ctx, 'delete_backglass', false, {
@@ -309,10 +309,10 @@ export class BackglassApi extends Api {
 		const moderationEvent = await state.models.Backglass.handleModeration(ctx, backglass);
 		switch (moderationEvent.event) {
 			case 'approved':
-				await mailer.backglassApproved(backglass._created_by as UserDocument, backglass, moderationEvent.message);
+				await mailer.backglassApproved(ctx.state, backglass._created_by as UserDocument, backglass, moderationEvent.message);
 				break;
 			case 'refused':
-				await mailer.backglassRefused(backglass._created_by as UserDocument, backglass, moderationEvent.message);
+				await mailer.backglassRefused(ctx.state, backglass._created_by as UserDocument, backglass, moderationEvent.message);
 				break;
 		}
 		backglass = await state.models.Backglass.findById(backglass._id)

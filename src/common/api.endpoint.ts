@@ -65,10 +65,10 @@ export abstract class EndPoint {
 		const count = await model.count({});
 		/* istanbul ignore if: Database is always empty before running tests. */
 		if (count) {
-			logger.info('[EndPoint.importData] Skipping data population for model "%s", collection is not empty.', model.modelName);
+			logger.info(null, '[EndPoint.importData] Skipping data population for model "%s", collection is not empty.', model.modelName);
 			return;
 		}
-		logger.info('[EndPoint.importData] Inserting %d rows into collection "%s"..', data.length, model.modelName);
+		logger.info(null, '[EndPoint.importData] Inserting %d rows into collection "%s"..', data.length, model.modelName);
 		await model.collection.insertMany(data);
 	}
 }

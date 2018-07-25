@@ -63,8 +63,8 @@ export class ReleaseApi extends ReleaseAbstractApi {
 			});
 		}
 
-		logger.info('[ReleaseApi.create] Body: %s', inspect(ctx.request.body, { depth: null }));
-		const newRelease = await state.models.Release.getInstance(extend(ctx.request.body, {
+		logger.info(ctx.state, '[ReleaseApi.create] Body: %s', inspect(ctx.request.body, { depth: null }));
+		const newRelease = await state.models.Release.getInstance(ctx.state, extend(ctx.request.body, {
 			_created_by: ctx.state.user._id,
 			modified_at: now,
 			created_at: now,
@@ -74,26 +74,26 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		await this.preProcess(ctx, newRelease.getFileIds());
 		await release.validate();
 
-		logger.info('[ReleaseApi.create] Validations passed.');
+		logger.info(ctx.state, '[ReleaseApi.create] Validations passed.');
 		release.versions = orderBy(release.versions, ['released_at'], ['desc']);
 		release.released_at = release.versions[0].released_at as Date;
 		await release.save();
 
-		await this.postProcess(release.getPlayfieldImageIds());
+		await this.postProcess(ctx.state, release.getPlayfieldImageIds());
 
-		logger.info('[ReleaseApi.create] Release "%s" created.', release.name);
+		logger.info(ctx.state, '[ReleaseApi.create] Release "%s" created.', release.name);
 		await release.activateFiles();
 
-		logger.info('[ReleaseApi.create] All referenced files activated, returning object to client.');
+		logger.info(ctx.state, '[ReleaseApi.create] All referenced files activated, returning object to client.');
 
 		// update counters and date
 		release = await release.populate('_game').execPopulate();
 
 		if (release.moderation.is_approved) {
 			await (release._game as GameDocument).incrementCounter('releases');
-			await mailer.releaseAutoApproved(ctx.state.user, release);
+			await mailer.releaseAutoApproved(ctx.state, ctx.state.user, release);
 		} else {
-			await mailer.releaseSubmitted(ctx.state.user, release);
+			await mailer.releaseSubmitted(ctx.state, ctx.state.user, release);
 		}
 		await (release._game as GameDocument).update({ modified_at: new Date() });
 
@@ -111,12 +111,12 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		// notify (co-)author(s)
 		for (const author of release.authors) {
 			if ((author._user as UserDocument).id !== ctx.state.user.id) {
-				await mailer.releaseAdded(ctx.state.user, author._user as UserDocument, release);
+				await mailer.releaseAdded(ctx.state, ctx.state.user, author._user as UserDocument, release);
 			}
 		}
 
 		// invalidate cache
-		await apiCache.invalidateRelease(release);
+		await apiCache.invalidateRelease(ctx.state, release);
 	}
 
 	/**
@@ -164,7 +164,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		const oldRelease = cloneDeep(release);
 
 		// apply changes
-		release = await release.updateInstance(ctx.request.body);
+		release = await release.updateInstance(ctx.state, ctx.request.body);
 
 		// validate and save
 		release = await release.save();
@@ -174,7 +174,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		this.success(ctx, state.serializers.Release.detailed(ctx, release), 200);
 
 		// invalidate cache
-		await apiCache.invalidateRelease(release);
+		await apiCache.invalidateRelease(ctx.state, release);
 
 		// log event
 		await LogEventUtil.log(ctx, 'update_release', false,
@@ -241,7 +241,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 			'versions.files._compatibility', 'authors._user'];
 
 		const searchQuery = this.searchQuery(query);
-		logger.info('[ReleaseApi.list] query: %j, sort: %j', searchQuery, sort);
+		logger.info(ctx.state, '[ReleaseApi.list] query: %j, sort: %j', searchQuery, sort);
 
 		const results = await state.models.Release.paginate(searchQuery, {
 			page: pagination.page,
@@ -351,9 +351,9 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		await release.remove();
 
 		// invalidate cache
-		await apiCache.invalidateRelease();
+		await apiCache.invalidateRelease(ctx.state);
 
-		logger.info('[ReleaseApi.delete] Release "%s" (%s) successfully deleted.', release.name, release.id);
+		logger.info(ctx.state, '[ReleaseApi.delete] Release "%s" (%s) successfully deleted.', release.name, release.id);
 
 		// log event
 		await LogEventUtil.log(ctx, 'delete_release', false,
@@ -383,10 +383,10 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		const moderationEvent = await state.models.Release.handleModeration(ctx, release);
 		switch (moderationEvent.event) {
 			case 'approved':
-				await mailer.releaseApproved(release._created_by as UserDocument, release, moderationEvent.message);
+				await mailer.releaseApproved(ctx.state, release._created_by as UserDocument, release, moderationEvent.message);
 				break;
 			case 'refused':
-				await mailer.releaseRefused(release._created_by as UserDocument, release, moderationEvent.message);
+				await mailer.releaseRefused(ctx.state, release._created_by as UserDocument, release, moderationEvent.message);
 				break;
 		}
 

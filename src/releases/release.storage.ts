@@ -29,7 +29,7 @@ import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
 import { quota } from '../common/quota';
-import { Context } from '../common/typings/context';
+import { Context, RequestState } from '../common/typings/context';
 import { FileDocument } from '../files/file.document';
 import { fileTypes } from '../files/file.types';
 import { FileVariation } from '../files/file.variations';
@@ -142,11 +142,11 @@ export class ReleaseStorage extends Api {
 						case 'archive':
 							if (file.metadata && isArray(file.metadata.entries)) {
 								if (/rar/i.test(file.getMimeSubtype())) {
-									await this.streamZipfile(file, archive);
+									await this.streamZipfile(ctx.state, file, archive);
 									continue;
 								}
 								if (/zip/i.test(file.getMimeSubtype())) {
-									await this.streamRarfile(file, archive);
+									await this.streamRarfile(ctx.state, file, archive);
 									continue;
 								}
 							}
@@ -169,11 +169,11 @@ export class ReleaseStorage extends Api {
 
 			// wait until created
 			if (variation) {
-				await processorQueue.stats(file, variation);
+				await processorQueue.stats(ctx.state, file, variation);
 			}
 
 			// now stream it
-			archive.append(createReadStream(file.getPath(variation)), {
+			archive.append(createReadStream(file.getPath(ctx.state, variation)), {
 				name,
 				date: file.created_at,
 			});
@@ -186,7 +186,7 @@ export class ReleaseStorage extends Api {
 			archive.append(release.acknowledgements, { name: 'CREDITS.txt' });
 		}
 		archive.finalize();
-		logger.info('[ReleaseStorage.download] Archive successfully created.');
+		logger.info(ctx.state, '[ReleaseStorage.download] Archive successfully created.');
 	}
 
 	/**
@@ -264,7 +264,7 @@ export class ReleaseStorage extends Api {
 		body = body || ctx.request.body;
 		requestedFileIds = body.files;
 
-		logger.info('[ReleaseStorage.collectFiles] RELEASE: %s', JSON.stringify(body));
+		logger.info(ctx.state, '[ReleaseStorage.collectFiles] RELEASE: %s', JSON.stringify(body));
 		if (!body || !isArray(body.files) || !body.files.length) {
 			throw new ApiError('You need to provide which files you want to include in the download.').status(422);
 		}
@@ -385,8 +385,8 @@ export class ReleaseStorage extends Api {
 			await Promise.all(counters.map(p => p()));
 
 		} else {
-			const q = await quota.get(ctx.state.user);
-			if (!q.unlimited && quota.getTotalCost(requestedFiles) > q.remaining) {
+			const q = await quota.get(ctx.state, ctx.state.user);
+			if (!q.unlimited && quota.getTotalCost(ctx.state, requestedFiles) > q.remaining) {
 				throw new ApiError('Not enough quota left.').status(403);
 			}
 		}
@@ -450,13 +450,14 @@ export class ReleaseStorage extends Api {
 
 	/**
 	 * Streams the contents of a zip file into the current zip archive.
+	 * @param requestState For logging
 	 * @param {FileDocument} file Zip file to stream (source)
 	 * @param archive Destination
 	 * @returns {Promise}
 	 */
-	private async streamZipfile(file: FileDocument, archive: Archiver) {
+	private async streamZipfile(requestState: RequestState, file: FileDocument, archive: Archiver) {
 		return new Promise(resolve => {
-			const rarFile = new Unrar(file.getPath());
+			const rarFile = new Unrar(file.getPath(requestState));
 			file.metadata.entries.forEach((entry: any) => {
 				const stream = rarFile.stream(entry.filename);
 				archive.append(stream, {
@@ -464,7 +465,7 @@ export class ReleaseStorage extends Api {
 					date: entry.modified_at,
 				});
 				stream.on('error', (err: Error) => {
-					logger.info('Error extracting file %s from rar: %s', entry.filename, err);
+					logger.info(requestState, 'Error extracting file %s from rar: %s', entry.filename, err);
 				});
 				stream.on('close', resolve);
 			});
@@ -473,13 +474,14 @@ export class ReleaseStorage extends Api {
 
 	/**
 	 * Streams the contents of a rar file into the current zip archive.
+	 * @param requestState For logging
 	 * @param {FileDocument} file RAR file to stream (source)
 	 * @param archive Destination
 	 * @returns {Promise}
 	 */
-	private async streamRarfile(file: FileDocument, archive: Archiver) {
+	private async streamRarfile(requestState: RequestState, file: FileDocument, archive: Archiver) {
 		return new Promise(resolve => {
-			createReadStream(file.getPath())
+			createReadStream(file.getPath(requestState))
 				.pipe(unzip.Parse())
 				.on('entry', entry => {
 					if (entry.type === 'File') {
@@ -490,7 +492,7 @@ export class ReleaseStorage extends Api {
 						entry.autodrain();
 					}
 				})
-				.on('error', (err: Error) => logger.info('Error extracting from zip: %s', err.message))
+				.on('error', (err: Error) => logger.info(requestState, 'Error extracting from zip: %s', err.message))
 				.on('close', resolve);
 		});
 	}

@@ -23,6 +23,7 @@ import { uniq } from 'lodash';
 import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
 import { config } from '../../common/settings';
+import { RequestState } from '../../common/typings/context';
 import { FileDocument } from '../file.document';
 import { mimeTypeCategories } from '../file.mimetypes';
 import { FileVariation } from '../file.variations';
@@ -112,12 +113,13 @@ class ProcessorManager {
 	/**
 	 * Returns then creation processors for a given file variation.
 	 *
+	 * @param requestState For logging
 	 * @param {FileDocument} file File to process
 	 * @param {FileVariation} srcVariation Source variation or null if original
 	 * @param {FileVariation} destVariation Destination variation
 	 * @return {CreationProcessor<any> | null} Processor instances or null if none available
 	 */
-	public getValidCreationProcessor(file: FileDocument, srcVariation: FileVariation, destVariation: FileVariation): CreationProcessor<any> | null {
+	public getValidCreationProcessor(requestState: RequestState, file: FileDocument, srcVariation: FileVariation, destVariation: FileVariation): CreationProcessor<any> | null {
 		const processors: Array<CreationProcessor<any>> = [];
 		for (const processor of this.creationProcessors) {
 			if (processor.canProcess(file, srcVariation, destVariation)) {
@@ -126,7 +128,7 @@ class ProcessorManager {
 		}
 		/* istanbul ignore if: Configuration error */
 		if (processors.length === 0) {
-			logger.warn('[ProcessorManager.getValidCreationProcessor] No creation processor found for %s to %s.',
+			logger.warn(requestState, '[ProcessorManager.getValidCreationProcessor] No creation processor found for %s to %s.',
 				file.toDetailedString(srcVariation), file.toDetailedString(destVariation));
 			return null;
 		}
@@ -214,6 +216,7 @@ class ProcessorManager {
 	/**
 	 * Adds a file to the creation queue for processing.
 	 *
+	 * @param requestState For logging
 	 * @param {Processor<any>} processor Processor to use
 	 * @param {string} srcPath Path to source file
 	 * @param {string} destPath Path to destination file
@@ -222,13 +225,14 @@ class ProcessorManager {
 	 * @param {FileVariation} destVariation Destination variation
 	 * @returns {Promise<Job>} Added Bull job
 	 */
-	public async queueCreation(processor: Processor<any>, file: FileDocument, srcPath: string, destPath: string, srcVariation: FileVariation, destVariation: FileVariation): Promise<Job> {
+	public async queueCreation(requestState: RequestState, processor: Processor<any>, file: FileDocument, srcPath: string, destPath: string, srcVariation: FileVariation, destVariation: FileVariation): Promise<Job> {
 		const queue = this.queues.get('creation').get(file.getMimeCategory(destVariation));
 		const job = await queue.add({
 			fileId: file.id,
 			processor: processor.name,
 			srcPath,
 			destPath,
+			requestState,
 			srcVariation: srcVariation ? srcVariation.name : undefined,
 			destVariation: destVariation.name,
 		} as JobData, {
@@ -236,7 +240,7 @@ class ProcessorManager {
 			// removeOnComplete: true,
 			// removeOnFail: true
 		} as JobOptions);
-		logger.debug('[ProcessorManager.queueCreation] Added %s based on %s to creation queue with processor %s (%s).',
+		logger.debug(requestState, '[ProcessorManager.queueCreation] Added %s based on %s to creation queue with processor %s (%s).',
 			file.toDetailedString(destVariation), file.toDetailedString(srcVariation), processor.name, job.id);
 		return job;
 	}
@@ -244,6 +248,7 @@ class ProcessorManager {
 	/**
 	 * Adds a file to the optimization queue for processing.
 	 *
+	 * @param requestState For logging
 	 * @param {Processor<any>} processor Processor to use
 	 * @param {string} srcPath Path to source file
 	 * @param {string} destPath Path to destination file
@@ -251,13 +256,14 @@ class ProcessorManager {
 	 * @param {FileVariation} variation Variation to optimize
 	 * @returns {Promise<Job>} Added Bull job
 	 */
-	public async queueOptimization(processor: Processor<any>, file: FileDocument, srcPath: string, destPath: string, variation?: FileVariation): Promise<Job> {
+	public async queueOptimization(requestState: RequestState, processor: Processor<any>, file: FileDocument, srcPath: string, destPath: string, variation?: FileVariation): Promise<Job> {
 		const queue = this.queues.get('optimization').get(file.getMimeCategory(variation));
 		const job = await queue.add({
 			fileId: file.id,
 			processor: processor.name,
 			srcPath,
 			destPath,
+			requestState,
 			srcVariation: variation ? variation.name : undefined,
 			destVariation: variation ? variation.name : undefined,
 		} as JobData, {
@@ -265,7 +271,7 @@ class ProcessorManager {
 			// removeOnComplete: true,
 			// removeOnFail: true
 		} as JobOptions);
-		logger.debug('[ProcessorManager.queueOptimization] Added %s to optimization queue with processor %s (%s).',
+		logger.debug(requestState, '[ProcessorManager.queueOptimization] Added %s to optimization queue with processor %s (%s).',
 			file.toDetailedString(variation), processor.name, job.id);
 		return job;
 	}

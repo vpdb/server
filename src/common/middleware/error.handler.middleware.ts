@@ -34,7 +34,7 @@ const appVersion = require('../../../package.json').version;
 let raygunClient: any = null;
 /* istanbul ignore if: no crash reporters when testing */
 if (config.vpdb.services.raygun.enabled) {
-	logger.info('[koaErrorHandler] Setting up Raygun...');
+	logger.info(null, '[koaErrorHandler] Setting up Raygun...');
 	const raygun = require('raygun');
 	raygunClient = new raygun.Client().init({ apiKey: config.vpdb.services.raygun.apiKey });
 	raygunClient.setVersion(appVersion.substr(1));
@@ -88,15 +88,15 @@ export function koaErrorHandler() {
 			// log
 			let sendError: boolean;
 			if (err.isApiError) {
-				(err as ApiError).print('\n\n' + chalk.magenta(requestLog(ctx)));
+				(err as ApiError).print(ctx, '\n\n' + chalk.magenta(requestLog(ctx)));
 				sendError = (err as ApiError).sendError();
 
 			} else if (err.name === 'ValidationError') {
-				new ApiError('Validation failed.').validationErrors(getValidationErrors(err)).warn().print('\n\n' + chalk.magenta(requestLog(ctx)));
+				new ApiError('Validation failed.').validationErrors(getValidationErrors(err)).warn().print(ctx, '\n\n' + chalk.magenta(requestLog(ctx)));
 				sendError = false;
 
 			} else {
-				logger.error('\n\n' + ApiError.colorStackTrace(err) + '\n\n' + chalk.magenta(requestLog(ctx)) + '\n');
+				logger.error(ctx.state, '\n\n' + ApiError.colorStackTrace(err) + '\n\n' + chalk.magenta(requestLog(ctx)) + '\n');
 				sendError = true;
 			}
 
@@ -161,9 +161,9 @@ function reportRaygun(ctx: Context, err: Error) {
 	const customData = {};
 	raygunClient.send(err, customData, (response: IncomingMessage) => {
 		if (response.statusCode === 202) {
-			logger.info('[koaErrorHandler] Report sent to Raygun.');
+			logger.info(ctx.state, '[koaErrorHandler] Report sent to Raygun.');
 		} else {
-			logger.error('[koaErrorHandler] Error sending report sent to Raygun (%s)', response.statusCode);
+			logger.error(ctx.state, '[koaErrorHandler] Error sending report sent to Raygun (%s)', response.statusCode);
 		}
 	}, ctx.request, [ config.vpdb.services.raygun.tag ]);
 }

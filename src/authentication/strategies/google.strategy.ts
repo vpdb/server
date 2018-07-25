@@ -40,7 +40,7 @@ export class GoogleStrategy extends Strategy {
 			config.vpdb.passport.github.clientSecret,
 			redirectUri,
 		);
-		logger.info('[GoogleStrategy] Instantiated with redirection URL %s', redirectUri);
+		logger.info(null, '[GoogleStrategy] Instantiated with redirection URL %s', redirectUri);
 	}
 
 	protected getAuthUrl(): string {

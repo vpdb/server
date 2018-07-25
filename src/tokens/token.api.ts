@@ -107,7 +107,7 @@ export class TokenApi extends Api {
 		}
 		await newToken.save();
 
-		logger.info('[TokenApi.create] Token "%s" successfully created.', newToken.label);
+		logger.info(ctx.state, '[TokenApi.create] Token "%s" successfully created.', newToken.label);
 		return this.success(ctx, state.serializers.Token.detailed(ctx, newToken), 201);
 	}
 
@@ -226,7 +226,7 @@ export class TokenApi extends Api {
 		}
 		extend(token, pick(ctx.request.body, updatableFields));
 		await token.save();
-		logger.info('[TokenApi.update] Token "%s" successfully updated.', token.label);
+		logger.info(ctx.state, '[TokenApi.update] Token "%s" successfully updated.', token.label);
 		return this.success(ctx, state.serializers.Token.simple(ctx, token), 200);
 	}
 

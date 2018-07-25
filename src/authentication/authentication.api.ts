@@ -88,7 +88,7 @@ export class AuthenticationApi extends Api {
 
 			// check how log to wait
 			const wait = backoffDelay[Math.min(num, backoffDelay.length) - 1];
-			logger.info('[AuthenticationApi.authenticate] Increasing back-off time to %s for try number %d.', wait, num);
+			logger.info(ctx.state, '[AuthenticationApi.authenticate] Increasing back-off time to %s for try number %d.', wait, num);
 
 			// if there's a wait, set the lock and expire it to wait time
 			if (wait > 0) {
@@ -114,7 +114,7 @@ export class AuthenticationApi extends Api {
 		const strategy = ctx.request.body.provider as string;
 		const profile = ctx.request.body.profile as OAuthProfile;
 		const user = await this.verifyCallbackOAuth(ctx, strategy, null, profile);
-		logger.info('[AuthenticationApi.mockOAuth] Successfully authenticated with user <%s>.', user.email);
+		logger.info(ctx.state, '[AuthenticationApi.mockOAuth] Successfully authenticated with user <%s>.', user.email);
 
 		return this.authenticateUser(ctx, user, 'oauth');
 	}
@@ -136,7 +136,7 @@ export class AuthenticationApi extends Api {
 		const token = AuthenticationUtil.generateApiToken(authenticatedUser, now, how !== 'password' && how !== 'oauth');
 
 		await LogUserUtil.success(ctx, authenticatedUser, 'authenticate', { provider: 'local', how });
-		logger.info('[AuthenticationApi.authenticate] User <%s> successfully authenticated using %s.', authenticatedUser.email, how);
+		logger.info(ctx.state, '[AuthenticationApi.authenticate] User <%s> successfully authenticated using %s.', authenticatedUser.email, how);
 		/* istanbul ignore if */
 		if (process.env.SQREEN_ENABLED) {
 			require('sqreen').auth_track(true, { email: authenticatedUser.email });
@@ -338,15 +338,15 @@ export class AuthenticationApi extends Api {
 	 */
 	private getEmailsFromProfile(ctx: Context, provider: string, logTag: string, profile: OAuthProfile): string[] {
 		if (!profile) {
-			logger.warn('[AuthenticationApi.getEmailsFromProfile|%s] No profile data received.', logTag);
+			logger.warn(ctx.state, '[AuthenticationApi.getEmailsFromProfile|%s] No profile data received.', logTag);
 			throw new ApiError('No profile received from %s.', logTag);
 		}
 		if (!isArray(profile.emails) || !profile.emails.length) {
-			logger.warn('[AuthenticationApi.getEmailsFromProfile|%s] Profile data does not contain any email address: %s', logTag, JSON.stringify(profile));
+			logger.warn(ctx.state, '[AuthenticationApi.getEmailsFromProfile|%s] Profile data does not contain any email address: %s', logTag, JSON.stringify(profile));
 			throw new ApiError('Received profile from %s does not contain any email address.', logTag);
 		}
 		if (!profile.id) {
-			logger.warn('[AuthenticationApi.getEmailsFromProfile|%s] Profile data does not contain any user ID: %s', logTag, JSON.stringify(profile));
+			logger.warn(ctx.state, '[AuthenticationApi.getEmailsFromProfile|%s] Profile data does not contain any user ID: %s', logTag, JSON.stringify(profile));
 			throw new ApiError('Received profile from %s does not contain user id.', logTag);
 		}
 
@@ -379,7 +379,7 @@ export class AuthenticationApi extends Api {
 			'email_status.code': 'pending_registration',
 		});
 		for (const user of pendingUsers) {
-			logger.warn('[AuthenticationApi.removePendingUsers] Deleting local user %s with pending registration (match by [ %s ]).', user.toString(), emails.join(', '));
+			logger.warn(ctx.state, '[AuthenticationApi.removePendingUsers] Deleting local user %s with pending registration (match by [ %s ]).', user.toString(), emails.join(', '));
 			await user.remove();
 		}
 	}
@@ -403,7 +403,7 @@ export class AuthenticationApi extends Api {
 				{ validated_emails: { $in: emails } },  // emails the user manually validated during sign-up or email change
 			],
 		};
-		logger.info('[AuthenticationApi.findOtherUsers] Checking for existing user: %s', JSON.stringify(query));
+		logger.info(ctx.state, '[AuthenticationApi.findOtherUsers] Checking for existing user: %s', JSON.stringify(query));
 		return state.models.User.find(query).exec();
 	}
 
@@ -447,7 +447,7 @@ export class AuthenticationApi extends Api {
 			} else {
 				// otherwise, try to merge.
 				// this can be more than 2 even, e.g. if three local accounts were registered and the oauth profile contains all of them emails
-				logger.info('[AuthenticationApi.identifyUser] Got %s matches for user: [ %s ] with %s ID %s and emails [ %s ].',
+				logger.info(ctx.state, '[AuthenticationApi.identifyUser] Got %s matches for user: [ %s ] with %s ID %s and emails [ %s ].',
 					otherUsers.length, otherUsers.map(u => u.id).join(', '), provider, profileId, emails.join(', '));
 
 				const explanation = `The email address we've received from the OAuth provider you've just logged was already in our database. This can happen when you change the email address at the provider's to one you've already used at VPDB under a different account.`;
@@ -486,7 +486,7 @@ export class AuthenticationApi extends Api {
 				provider,
 				profile: profile._json,
 			});
-			logger.info('[AuthenticationApi.updateOAuthUser] Adding profile from %s to user.', provider, emails[0]);
+			logger.info(ctx.state, '[AuthenticationApi.updateOAuthUser] Adding profile from %s to user.', provider, emails[0]);
 
 		} else {
 			user.providers[provider].id = String(profile.id);
@@ -495,7 +495,7 @@ export class AuthenticationApi extends Api {
 			user.providers[provider].modified_at = new Date();
 			user.providers[provider].profile = profile._json;
 			await LogUserUtil.success(ctx, user, 'authenticate', { provider });
-			logger.info('[AuthenticationApi.updateOAuthUser] Returning user %s', emails[0]);
+			logger.info(ctx.state, '[AuthenticationApi.updateOAuthUser] Returning user %s', emails[0]);
 		}
 
 		// update profile data on separate field
@@ -524,7 +524,7 @@ export class AuthenticationApi extends Api {
 		// compute username
 		let name: string;
 		if (!profile.displayName && !profile.username) {
-			logger.warn('[AuthenticationApi.createOAuthUser] Profile data does contain neither display name nor username: %s', JSON.stringify(profile));
+			logger.warn(ctx.state, '[AuthenticationApi.createOAuthUser] Profile data does contain neither display name nor username: %s', JSON.stringify(profile));
 			name = profile.emails[0].value.substr(0, profile.emails[0].value.indexOf('@'));
 		} else {
 			name = profile.displayName || profile.username;
@@ -561,7 +561,7 @@ export class AuthenticationApi extends Api {
 		newUser.providers[provider].profile = profile._json; // save original data to separate field
 		newUser.emails = uniq(emails);
 
-		logger.info('[AuthenticationApi.createOAuthUser] Creating new user.');
+		logger.info(ctx.state, '[AuthenticationApi.createOAuthUser] Creating new user.');
 
 		newUser = await UserUtil.createUser(ctx, newUser, false);
 
@@ -574,8 +574,8 @@ export class AuthenticationApi extends Api {
 			provider,
 			email: newUser.email,
 		});
-		logger.info('[AuthenticationApi.createOAuthUser] New user <%s> created.', newUser.email);
-		await mailer.welcomeOAuth(newUser);
+		logger.info(ctx.state, '[AuthenticationApi.createOAuthUser] New user <%s> created.', newUser.email);
+		await mailer.welcomeOAuth(ctx.state, newUser);
 
 		return newUser;
 	}

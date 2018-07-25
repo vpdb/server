@@ -55,7 +55,7 @@ export class Server {
 
 		/* istanbul ignore next: host website at the same time, currently used for website CI */
 		if (process.env.WEBAPP && existsSync(process.env.WEBAPP)) {
-			logger.warn('[Server] Statically hosting website at %s', process.env.WEBAPP);
+			logger.warn(null, '[Server] Statically hosting website at %s', process.env.WEBAPP);
 			this.app.use(koaWebsiteHandler(process.env.WEBAPP));
 		}
 	}
@@ -72,7 +72,7 @@ export class Server {
 			const methods: Map<string, string[]> = new Map<string, string[]>();
 			router.stack.forEach(layer => methods.set(layer.path, [ ...methods.get(layer.path) || [], ...layer.methods ]));
 			uniq(router.stack.map(layer => layer.path)).sort().forEach(path => {
-				logger.info('  %s (%s)', path, methods.get(path).join(','));
+				logger.info(null, '  %s (%s)', path, methods.get(path).join(','));
 			});
 		}
 
@@ -95,9 +95,9 @@ export class Server {
 			throw new Error('Environment variable `PORT` not found, server cannot start on unknown port.');
 		}
 		this.app.listen(process.env.PORT);
-		logger.info('[Server.start] Public storage ready at %s', settings.storagePublicUri());
-		logger.info('[Server.start] Protected storage ready at %s', settings.storageProtectedUri());
-		logger.info('[Server.start] API ready at %s', settings.apiExternalUri());
+		logger.info(null, '[Server.start] Public storage ready at %s', settings.storagePublicUri());
+		logger.info(null, '[Server.start] Protected storage ready at %s', settings.storageProtectedUri());
+		logger.info(null, '[Server.start] API ready at %s', settings.apiExternalUri());
 	}
 }
 

@@ -18,6 +18,7 @@
  */
 
 import Zip from 'adm-zip';
+import { RequestState } from '../../common/typings/context';
 import { File } from '../file';
 import { FileDocument } from '../file.document';
 import { FileVariation } from '../file.variations';
@@ -32,7 +33,7 @@ export class ArchiveMetadata extends Metadata {
 		return File.getMimeCategory(file, variation) === 'archive';
 	}
 
-	public async getMetadata(file: FileDocument, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
+	public async getMetadata(requestState: RequestState, file: FileDocument, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
 		const mimeType = variation && variation.mimeType ? variation.mimeType : File.getMimeType(file);
 		const type = mimeType.split('/')[1];
 		switch (type) {

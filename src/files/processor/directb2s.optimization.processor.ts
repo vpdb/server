@@ -23,6 +23,7 @@ import { promisify } from 'util';
 
 import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
+import { RequestState } from '../../common/typings/context';
 import { XmlParser } from '../../common/xml.parser';
 import { FileDocument } from '../file.document';
 import { BackglassVariation, FileVariation } from '../file.variations';
@@ -44,9 +45,9 @@ export class Directb2sOptimizationProcessor implements OptimizationProcessor<Bac
 		return 600 + (variation && variation.priority ? variation.priority : 0);
 	}
 
-	public async process(file: FileDocument, src: string, dest: string, variation?: BackglassVariation): Promise<string> {
+	public async process(requestState: RequestState, file: FileDocument, src: string, dest: string, variation?: BackglassVariation): Promise<string> {
 
-		logger.debug('[Directb2sOptimizationProcessor] Starting processing %s at %s.', file.toShortString(variation), dest);
+		logger.debug(requestState, '[Directb2sOptimizationProcessor] Starting processing %s at %s.', file.toShortString(variation), dest);
 
 		const now = new Date().getTime();
 		const originalSize = (await statAsync(src)).size;
@@ -83,7 +84,7 @@ export class Directb2sOptimizationProcessor implements OptimizationProcessor<Bac
 
 					/* istanbul ignore next */
 					const handleError = (err: Error) => {
-						logger.error('[Directb2sOptimizationProcessor] %s', err.message);
+						logger.error(requestState, '[Directb2sOptimizationProcessor] %s', err.message);
 						if (!started) {
 							write(' ' + attr.name + '="');
 							write(this.escape(attr.value));
@@ -140,7 +141,7 @@ export class Directb2sOptimizationProcessor implements OptimizationProcessor<Bac
 					out.end();
 					statAsync(dest).then(s => {
 						const crushedSize = s.size;
-						logger.debug('[Directb2sOptimizationProcessor] Optimized "%s" in %sms (crushed down to %s%%).', dest, new Date().getTime() - now, Math.round(crushedSize / originalSize * 100));
+						logger.debug(requestState, '[Directb2sOptimizationProcessor] Optimized "%s" in %sms (crushed down to %s%%).', dest, new Date().getTime() - now, Math.round(crushedSize / originalSize * 100));
 						resolve();
 					});
 				}

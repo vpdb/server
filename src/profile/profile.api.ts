@@ -44,7 +44,7 @@ export class ProfileApi extends Api {
 	public async view(ctx: Context) {
 
 		const acls = await this.getACLs(ctx.state.user);
-		const q = await quota.get(ctx.state.user);
+		const q = await quota.get(ctx.state, ctx.state.user);
 		return this.success(ctx, assign(state.serializers.User.detailed(ctx, ctx.state.user), acls, { quota: q }), 200);
 	}
 
@@ -99,7 +99,7 @@ export class ProfileApi extends Api {
 					await LogUserUtil.success(ctx, updatedUser, 'change_password');
 				} else {
 					errors.push({ message: 'Invalid password.', path: 'current_password' });
-					logger.warn('[ProfileApi.update] User <%s> provided wrong current password while changing.', currentUser.email);
+					logger.warn(ctx.state, '[ProfileApi.update] User <%s> provided wrong current password while changing.', currentUser.email);
 				}
 			}
 		}
@@ -175,7 +175,7 @@ export class ProfileApi extends Api {
 						old: { email: currentUser.email },
 						new: { email: updatedUser.email_status.value },
 					});
-					await mailer.emailUpdateConfirmation(updatedUser);
+					await mailer.emailUpdateConfirmation(ctx.state, updatedUser);
 				}
 			}
 
@@ -187,7 +187,7 @@ export class ProfileApi extends Api {
 
 			// so IF we really are pending, simply set back the status to "confirmed".
 			if (currentUser.email_status && currentUser.email_status.code === 'pending_update') {
-				logger.warn('[ProfileApi.update] Canceling email confirmation with token "%s" for user <%s> -> <%s> (%s).', currentUser.email_status.token, currentUser.email, currentUser.email_status.value, currentUser.id);
+				logger.warn(ctx.state, '[ProfileApi.update] Canceling email confirmation with token "%s" for user <%s> -> <%s> (%s).', currentUser.email_status.token, currentUser.email, currentUser.email_status.value, currentUser.id);
 				await LogUserUtil.success(ctx, updatedUser, 'cancel_email_update', {
 					email: currentUser.email,
 					email_canceled: currentUser.email_status.value,
@@ -202,9 +202,9 @@ export class ProfileApi extends Api {
 		// log
 		if (ctx.request.body.password) {
 			if (ctx.request.body.username) {
-				logger.info('[ProfileApi.update] Successfully added local credentials with username "%s" to user <%s> (%s).', user.username, user.email, user.id);
+				logger.info(ctx.state, '[ProfileApi.update] Successfully added local credentials with username "%s" to user <%s> (%s).', user.username, user.email, user.id);
 			} else {
-				logger.info('[ProfileApi.update] Successfully changed password of user "%s".', user.username);
+				logger.info(ctx.state, '[ProfileApi.update] Successfully changed password of user "%s".', user.username);
 			}
 		}
 		ctx.state.user = user;
@@ -243,7 +243,7 @@ export class ProfileApi extends Api {
 		}
 
 		const emailToConfirm = user.email_status.value;
-		logger.info('[ProfileApi.confirm] Email %s confirmed.', emailToConfirm);
+		logger.info(ctx.state, '[ProfileApi.confirm] Email %s confirmed.', emailToConfirm);
 
 		// now we have a valid user that is either pending registration or update.
 		// BUT meanwhile there might have been an oauth account creation with the same email,
@@ -263,7 +263,7 @@ export class ProfileApi extends Api {
 			// "pending_registration" are the only accounts where "email" is not confirmed ("pending_update" doesn't update "email").
 			// these can be deleted because they don't have anything merge-worthy (given it's an email confirmation, we already have local credentials).
 			if (otherUser.email_status && otherUser.email_status.code === 'pending_registration') {
-				logger.info('[ProfileApi.confirm] Deleting pending registration user with same email <%s>.', otherUser.email);
+				logger.info(ctx.state, '[ProfileApi.confirm] Deleting pending registration user with same email <%s>.', otherUser.email);
 				await otherUser.remove();
 				delCounter++;
 
@@ -272,7 +272,7 @@ export class ProfileApi extends Api {
 				mergeUsers.push(otherUser);
 			}
 		}
-		logger.info('[ProfileApi.confirm] Found %s confirmed and %s unconfirmed dupe users for %s.', mergeUsers.length, delCounter, user.email);
+		logger.info(ctx.state, '[ProfileApi.confirm] Found %s confirmed and %s unconfirmed dupe users for %s.', mergeUsers.length, delCounter, user.email);
 
 		// auto-merge if only one user without credentials
 		if (mergeUsers.length === 1 && !mergeUsers[0].is_local) {
@@ -289,12 +289,12 @@ export class ProfileApi extends Api {
 		const currentCode = user.email_status.code;
 		if (currentCode === 'pending_registration') {
 			user.is_active = true;
-			logger.info('[ProfileApi.confirm] User email <%s> for pending registration confirmed.', user.email);
+			logger.info(ctx.state, '[ProfileApi.confirm] User email <%s> for pending registration confirmed.', user.email);
 			successMsg = 'Email successfully validated. You may login now.';
 			logEvent = 'registration_email_confirmed';
 
 		} else {
-			logger.info('[ProfileApi.confirm] User email <%s> confirmed.', emailToConfirm);
+			logger.info(ctx.state, '[ProfileApi.confirm] User email <%s> confirmed.', emailToConfirm);
 			user.email = emailToConfirm;
 			successMsg = 'Email validated and updated.';
 			logEvent = 'email_confirmed';
@@ -308,7 +308,7 @@ export class ProfileApi extends Api {
 		await LogUserUtil.success(ctx, user, logEvent, { email: user.email });
 
 		if (logEvent === 'registration_email_confirmed' && config.vpdb.email.confirmUserEmail) {
-			await mailer.welcomeLocal(user);
+			await mailer.welcomeLocal(ctx.state, user);
 		}
 
 		return this.success(ctx, {

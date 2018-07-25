@@ -22,6 +22,7 @@ import { Document, FileReferenceDocument, FileReferenceOptions, Schema } from 'm
 import { logger } from '../logger';
 
 import { state } from '../../state';
+import { RequestState } from '../typings/context';
 import { explodePaths, traversePaths } from './util';
 
 /**
@@ -31,8 +32,8 @@ import { explodePaths, traversePaths } from './util';
  * - Add method for activating all referenced files
  * - Remove all referenced files when entity is deleted.
  *
- * @param {module:mongoose.Schema} schema
- * @param {module:mongoose.FileReferenceOptions} options
+ * @param {Schema} schema
+ * @param {FileReferenceOptions} options
  */
 export function fileReferencePlugin(schema: Schema, options: FileReferenceOptions = {}) {
 
@@ -72,7 +73,7 @@ export function fileReferencePlugin(schema: Schema, options: FileReferenceOption
 	 *
 	 * @returns {Promise.<String[]>} File IDs that have been activated.
 	 */
-	schema.methods.activateFiles = async function(): Promise<string[]> {
+	schema.methods.activateFiles = async function(requestState: RequestState): Promise<string[]> {
 		const ids: string[] = [];
 		const objPaths = keys(explodePaths(this, fileRefs));
 		objPaths.forEach(path => {
@@ -83,7 +84,7 @@ export function fileReferencePlugin(schema: Schema, options: FileReferenceOption
 		});
 		const files = await state.models.File.find({ _id: { $in: ids }, is_active: false }).exec();
 		for (const file of files) {
-			await file.switchToActive();
+			await file.switchToActive(requestState);
 		}
 		await this.populate(objPaths.join(' ')).execPopulate();
 		return files.map(f => f.id);
@@ -106,7 +107,7 @@ export function fileReferencePlugin(schema: Schema, options: FileReferenceOption
 
 		// remove file references from db
 		for (const file of files) {
-			logger.debug('[fileReferencePlugin] Removing referenced file %s', file.toDetailedString());
+			logger.debug(null, '[fileReferencePlugin] Removing referenced file %s', file.toDetailedString());
 			await file.remove();
 		}
 	});

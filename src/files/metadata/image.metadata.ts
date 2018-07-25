@@ -23,6 +23,7 @@ import { File } from '../file';
 import { FileDocument } from '../file.document';
 import { FileVariation } from '../file.variations';
 import { Metadata } from './metadata';
+import { RequestState } from '../../common/typings/context';
 
 require('bluebird').promisifyAll(gm.prototype);
 
@@ -32,7 +33,7 @@ export class ImageMetadata extends Metadata {
 		return File.getMimeTypePrimary(file, variation) === 'image';
 	}
 
-	public async getMetadata(file: FileDocument, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
+	public async getMetadata(requestState: RequestState, file: FileDocument, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
 		return (gm(path) as any).identifyAsync();
 	}
 

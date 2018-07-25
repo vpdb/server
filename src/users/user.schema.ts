@@ -137,7 +137,7 @@ userSchema.virtual('planConfig')
 	.get(function() {
 		let plan = find(config.vpdb.quota.plans, p => p.id === this._plan);
 		if (!plan) {
-			logger.warn('[User.planConfig] Cannot find plan "%s" for user "%s" in server config.', this._plan, this.email);
+			logger.warn(null, '[User.planConfig] Cannot find plan "%s" for user "%s" in server config.', this._plan, this.email);
 			plan = find(config.vpdb.quota.plans, p => p.id === config.vpdb.quota.defaultPlan);
 		}
 		return plan;

@@ -40,7 +40,7 @@ import { logger } from '../common/logger';
 import { mailer } from '../common/mailer';
 import { SerializerOptions } from '../common/serializer';
 import { config } from '../common/settings';
-import { Context } from '../common/typings/context';
+import { Context, RequestState } from '../common/typings/context';
 import { FileDocument } from '../files/file.document';
 import { FileUtil } from '../files/file.util';
 import { GameRequestDocument } from '../game-requests/game.request.document';
@@ -74,26 +74,26 @@ export class GameApi extends Api {
 	 */
 	public async create(ctx: Context) {
 
-		const game = await state.models.Game.getInstance(assign(ctx.request.body, {
+		const game = await state.models.Game.getInstance(ctx.state, assign(ctx.request.body, {
 			_created_by: ctx.state.user._id,
 			created_at: new Date(),
 		})) as GameDocument;
 
-		logger.info('[GameApi.create] %s', inspect(ctx.request.body));
+		logger.info(ctx.state, '[GameApi.create] %s', inspect(ctx.request.body));
 		await game.validate();
 
-		logger.info('[GameApi.create] Validations passed.');
+		logger.info(ctx.state, '[GameApi.create] Validations passed.');
 		await game.save();
 
-		logger.info('[GameApi.create] Game "%s" created.', game.title);
+		logger.info(ctx.state, '[GameApi.create] Game "%s" created.', game.title);
 		await game.activateFiles();
 
-		logger.info('[GameApi.create] Files activated.');
+		logger.info(ctx.state, '[GameApi.create] Files activated.');
 
 		// link roms if available
 		if (game.ipdb && game.ipdb.number) {
 			const roms = await state.models.Rom.find({ _ipdb_number: game.ipdb.number }).exec();
-			logger.info('[api|game:create] Linking %d ROMs to created game %s.', roms.length, game._id);
+			logger.info(ctx.state, '[api|game:create] Linking %d ROMs to created game %s.', roms.length, game._id);
 			for (const rom of roms) {
 				rom._game = game._id.toString();
 				await rom.save();
@@ -115,7 +115,7 @@ export class GameApi extends Api {
 				.exec();
 		}
 		if (gameRequest) {
-			await mailer.gameRequestProcessed(gameRequest._created_by as UserDocument, game);
+			await mailer.gameRequestProcessed(ctx.state, gameRequest._created_by as UserDocument, game);
 			gameRequest.is_closed = true;
 			gameRequest._game = game._id;
 			await gameRequest.save();
@@ -132,12 +132,12 @@ export class GameApi extends Api {
 		// copy backglass and logo to media
 		try {
 			await Promise.all([
-				this.copyMedia(ctx.state.user, game, game._backglass as FileDocument, 'backglass_image', bg => bg.metadata.size.width * bg.metadata.size.height > 647000),  // > 900x720
-				this.copyMedia(ctx.state.user, game, game._logo as FileDocument, 'wheel_image'),
+				this.copyMedia(ctx.state, ctx.state.user, game, game._backglass as FileDocument, 'backglass_image', bg => bg.metadata.size.width * bg.metadata.size.height > 647000),  // > 900x720
+				this.copyMedia(ctx.state, ctx.state.user, game, game._logo as FileDocument, 'wheel_image'),
 			]);
 		} catch (err) {
-			logger.error('[api|game:create] Error while copying media: %s', err.message);
-			logger.error(err);
+			logger.error(ctx.state, '[api|game:create] Error while copying media: %s', err.message);
+			logger.error(ctx.state, err);
 		}
 		await LogEventUtil.log(ctx, 'create_game', true, { game: omit(state.serializers.Game.simple(ctx, game), ['rating', 'counter']) }, { game: game._id });
 		return this.success(ctx, state.serializers.Game.detailed(ctx, game), 201);
@@ -185,31 +185,31 @@ export class GameApi extends Api {
 		ctx.request.body._logo = newMediaLogo;
 
 		// apply changes
-		game = await game.updateInstance(ctx.request.body) as GameDocument;
+		game = await game.updateInstance(ctx.state, ctx.request.body) as GameDocument;
 
 		// validate and save
 		await game.save();
 
-		logger.info('[GameApi.update] Game "%s" updated.', game.title);
+		logger.info(ctx.state, '[GameApi.update] Game "%s" updated.', game.title);
 		const activatedFileIds = await game.activateFiles();
 
-		logger.info('[GameApi.update] Activated %s new file%s.', activatedFileIds.length, activatedFileIds.length === 1 ? '' : 's');
+		logger.info(ctx.state, '[GameApi.update] Activated %s new file%s.', activatedFileIds.length, activatedFileIds.length === 1 ? '' : 's');
 
 		// copy to media and delete old media if changed
 		try {
 			if (oldMediaBackglass !== newMediaBackglass) {
-				await this.copyMedia(ctx.state.user, game, game._backglass as FileDocument, 'backglass_image', bg => bg.metadata.size.width * bg.metadata.size.height > 647000);  // > 900x720
+				await this.copyMedia(ctx.state, ctx.state.user, game, game._backglass as FileDocument, 'backglass_image', bg => bg.metadata.size.width * bg.metadata.size.height > 647000);  // > 900x720
 				await oldMediaBackglassObj.remove();
 			}
 			if (oldMediaLogo !== newMediaLogo) {
-				await this.copyMedia(ctx.state.user, game, game._logo as FileDocument, 'wheel_image');
+				await this.copyMedia(ctx.state, ctx.state.user, game, game._logo as FileDocument, 'wheel_image');
 				if (oldMediaLogoObj) {
 					await oldMediaLogoObj.remove();
 				}
 			}
 		} catch (err) {
-			logger.error('[api|game:update] Error while copying and cleaning media: %s', err.message);
-			logger.error(err);
+			logger.error(ctx.state, '[api|game:update] Error while copying and cleaning media: %s', err.message);
+			logger.error(ctx.state, err);
 		}
 		await LogEventUtil.log(ctx, 'update_game', false, LogEventUtil.diff(oldGame, body), { game: game._id });
 		return this.success(ctx, state.serializers.Game.detailed(ctx, game), 200);
@@ -243,7 +243,7 @@ export class GameApi extends Api {
 		}
 		await game.remove();
 
-		logger.info('[GameApi.del] Game "%s" (%s) successfully deleted.', game.title, game.id);
+		logger.info(ctx.state, '[GameApi.del] Game "%s" (%s) successfully deleted.', game.title, game.id);
 
 		// log event
 		await LogEventUtil.log(ctx, 'delete_game', false, { game: omit(state.serializers.Game.simple(ctx, game), ['rating', 'counter']) }, { game: game._id });
@@ -343,7 +343,7 @@ export class GameApi extends Api {
 		});
 
 		const q = this.searchQuery(query);
-		logger.info('[GameApi.list] query: %s, sort: %j', inspect(q, { depth: null }), inspect(sort));
+		logger.info(ctx.state, '[GameApi.list] query: %s, sort: %j', inspect(q, { depth: null }), inspect(sort));
 
 		const result = await state.models.Game.paginate(q, {
 			page: pagination.page,
@@ -453,13 +453,14 @@ export class GameApi extends Api {
 	/**
 	 * Copies a given file to a given media type.
 	 *
+	 * @param requestState For logging
 	 * @param {UserDocument} user Creator of the media
 	 * @param {GameDocument} game Game the media will be linked to
 	 * @param {FileDocument} file File to be copied
 	 * @param {string} category Media category
 	 * @param {function} [check] Function called with file parameter. Media gets discarded if false is returned.
 	 */
-	private async copyMedia(user: UserDocument, game: GameDocument, file: FileDocument, category: string, check?: (file: FileDocument) => boolean): Promise<string[]> {
+	private async copyMedia(requestState: RequestState, user: UserDocument, game: GameDocument, file: FileDocument, category: string, check?: (file: FileDocument) => boolean): Promise<string[]> {
 
 		check = check || (() => true);
 		if (file && check(file)) {
@@ -469,8 +470,8 @@ export class GameApi extends Api {
 				_created_by: user,
 				variations: {},
 			}) as FileDocument;
-			const copiedFile = await FileUtil.create(fileToCopy, createReadStream(file.getPath()));
-			logger.info('[GameApi.copyMedia] Copied file "%s" to "%s".', file.id, copiedFile.id);
+			const copiedFile = await FileUtil.create(requestState, fileToCopy, createReadStream(file.getPath(requestState)));
+			logger.info(requestState, '[GameApi.copyMedia] Copied file "%s" to "%s".', file.id, copiedFile.id);
 			let medium = new state.models.Medium({
 				_file: copiedFile._id,
 				_ref: { game: game._id },
@@ -479,7 +480,7 @@ export class GameApi extends Api {
 				_created_by: user,
 			});
 			medium = await medium.save();
-			logger.info('[GameApi.copyMedia] Copied %s as media to %s.', category, medium.id);
+			logger.info(requestState, '[GameApi.copyMedia] Copied %s as media to %s.', category, medium.id);
 			return medium.activateFiles();
 		}
 	}

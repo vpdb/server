@@ -25,7 +25,7 @@ import { promisify } from 'util';
 import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
-import { Context } from '../common/typings/context';
+import { Context, RequestState } from '../common/typings/context';
 import { FileDocument } from '../files/file.document';
 import { FileUtil } from '../files/file.util';
 import { Metadata } from '../files/metadata/metadata';
@@ -97,7 +97,7 @@ export abstract class ReleaseAbstractApi extends Api {
 				if (!['playfield', 'playfield-fs', 'playfield-ws'].includes(file.file_type)) {
 					throw new ApiError('Can only rotate playfield images, got "%s".', file.file_type).status(400);
 				}
-				const src = await this.backupFile(file);
+				const src = await this.backupFile(ctx.state, file);
 
 				// do the actual rotation
 				if (rotation.angle !== 0) {
@@ -105,15 +105,15 @@ export abstract class ReleaseAbstractApi extends Api {
 					file.preprocessed.rotation = file.preprocessed.rotation || 0;
 					file.preprocessed.unvalidatedRotation = (file.preprocessed.rotation + rotation.angle + 360) % 360;
 
-					logger.info('[ReleaseApi.preprocess] Rotating file "%s" %s° (was %s° before, plus %s°).', file.getPath(), file.preprocessed.unvalidatedRotation, file.preprocessed.rotation, rotation.angle);
+					logger.info(ctx.state, '[ReleaseApi.preprocess] Rotating file "%s" %s° (was %s° before, plus %s°).', file.getPath(ctx.state), file.preprocessed.unvalidatedRotation, file.preprocessed.rotation, rotation.angle);
 
 					const img = gm(src);
 					img.rotate('black', -file.preprocessed.unvalidatedRotation);
-					await (img as any).writeAsync(file.getPath());
+					await (img as any).writeAsync(file.getPath(ctx.state));
 				}
 
 				// update metadata
-				const metadata = await Metadata.readFrom(file, file.getPath());
+				const metadata = await Metadata.readFrom(ctx.state, file, file.getPath(ctx.state));
 				await state.models.File.findByIdAndUpdate(file._id, {
 					metadata,
 					file_type: 'playfield-' + (metadata.size.width > metadata.size.height ? 'ws' : 'fs'),
@@ -142,17 +142,17 @@ export abstract class ReleaseAbstractApi extends Api {
 				if (!file) {
 					throw new ApiError('Cannot rollback non-existing file "%s".', rotation.file).status(404);
 				}
-				const src = await this.backupFile(file);
+				const src = await this.backupFile(ctx.state, file);
 
 				// do the actual rotation
 				if (rotation.angle !== 0) {
 					delete file.preprocessed.unvalidatedRotation;
-					logger.info('[ReleaseApi.rollbackPreprocess] Rolling back rotated file "%s" to %s°.', file.getPath(), file.preprocessed.rotation);
-					await (gm(src).rotate('black', file.preprocessed.rotation) as any).writeAsync(file.getPath());
+					logger.info(ctx.state, '[ReleaseApi.rollbackPreprocess] Rolling back rotated file "%s" to %s°.', file.getPath(ctx.state), file.preprocessed.rotation);
+					await (gm(src).rotate('black', file.preprocessed.rotation) as any).writeAsync(file.getPath(ctx.state));
 				}
 
 				// update metadata
-				const metadata = await Metadata.readFrom(file, file.getPath());
+				const metadata = await Metadata.readFrom(ctx.state, file, file.getPath(ctx.state));
 				await state.models.File.findByIdAndUpdate(file._id, {
 					metadata,
 					file_type: file.file_type,
@@ -166,21 +166,23 @@ export abstract class ReleaseAbstractApi extends Api {
 	 * Runs post-processing on stuff that was pre-processed earlier (and probably
 	 * needs to be post-processed again).
 	 *
+	 * @param requestState
 	 * @param {string[]} fileIds Database IDs of the files to re-process.
 	 * @returns {Promise}
 	 */
-	protected async postProcess(fileIds: string[]) {
-		logger.info('[ReleaseApi.postprocess] Post-processing files [ %s ]', fileIds.join(', '));
+	protected async postProcess(requestState: RequestState, fileIds: string[]) {
+		logger.info(requestState, '[ReleaseApi.postprocess] Post-processing files [ %s ]', fileIds.join(', '));
 		for (const id of fileIds) {
 			const file = await state.models.File.findById(id).exec();
 			// so now we're here and unvalidatedRotation is now validated.
 			if (file.preprocessed && file.preprocessed.unvalidatedRotation) {
-				logger.info('[ReleaseApi.postprocess] Validation passed, setting rotation to %s°', file.preprocessed.unvalidatedRotation);
+				logger.info(requestState, '[ReleaseApi.postprocess] Validation passed, setting rotation to %s°', file.preprocessed.unvalidatedRotation);
 				await state.models.File.update({ _id: file._id }, {
 					preprocessed: { rotation: file.preprocessed.unvalidatedRotation },
 				});
 			}
-			await processorQueue.processFile(file, file.getPath(null, { tmpSuffix: '_original' }));
+			const protectedPath = file.getPath(requestState, null, { tmpSuffix: '_original' });
+			await processorQueue.processFile(requestState, file, protectedPath);
 		}
 	}
 
@@ -188,14 +190,15 @@ export abstract class ReleaseAbstractApi extends Api {
 	 * Copies a file to a backup location (if not already done) and returns
 	 * the file name of the location.
 	 *
+	 * @param requestState
 	 * @param file File
 	 * @returns {Promise.<string>} New location
 	 */
-	private async backupFile(file: FileDocument): Promise<string> {
-		const backup = file.getPath(null, { tmpSuffix: '_original' });
+	private async backupFile(requestState: RequestState, file: FileDocument): Promise<string> {
+		const backup = file.getPath(requestState, null, { tmpSuffix: '_original' });
 		if (!(await existsAsync(backup))) {
-			logger.info('[ReleaseApi.backupFile] Copying "%s" to "%s".', file.getPath(), backup);
-			await FileUtil.cp(file.getPath(), backup);
+			logger.info(requestState, '[ReleaseApi.backupFile] Copying "%s" to "%s".', file.getPath(requestState), backup);
+			await FileUtil.cp(file.getPath(requestState), backup);
 		}
 		return backup;
 	}

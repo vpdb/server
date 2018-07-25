@@ -39,7 +39,7 @@ shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 //   - https://gist.github.com/brennanMKE/ee8ea002d305d4539ef6
 (async () => {
 	try {
-		logger.info('[app] Starting up...');
+		logger.info(null, '[app] Starting up...');
 
 		// validate settings
 		if (!settings.validate()) {
@@ -47,12 +47,12 @@ shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 		}
 
 		// bootstrap models
-		logger.info('[app] Connecting to MongoDB...');
+		logger.info(null, '[app] Connecting to MongoDB...');
 		await mongoose.connect(config.vpdb.db, { useNewUrlParser: true });
 
 		// bootstrap endpoints
 		for (const endPoint of endPoints) {
-			logger.info('[app] Registering %s:', endPoint.name);
+			logger.info(null, '[app] Registering %s:', endPoint.name);
 			await server.register(endPoint);
 		}
 
@@ -69,6 +69,6 @@ shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 
 	} catch (err) {
 		/* istanbul ignore next */
-		logger.error(err);
+		logger.error(null, err);
 	}
 })();

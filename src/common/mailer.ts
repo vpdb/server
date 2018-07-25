@@ -35,14 +35,15 @@ import { ContentAuthor } from '../users/content.author';
 import { UserDocument } from '../users/user.document';
 import { logger } from './logger';
 import { config, settings } from './settings';
+import { RequestState } from './typings/context';
 
 const readFileAsync = promisify(readFile);
 const templatesDir = resolve(__dirname, './email-templates');
 
 class Mailer {
 
-	public async registrationConfirmation(user: UserDocument): Promise<SentMessageInfo> {
-		return this.sendEmail(user, 'Please confirm your email', 'registration-confirmation', {
+	public async registrationConfirmation(requestState: RequestState, user: UserDocument): Promise<SentMessageInfo> {
+		return this.sendEmail(requestState, user, 'Please confirm your email', 'registration-confirmation', {
 			user,
 			site: settings.webUri(),
 			confirmationUrl: settings.webUri('/confirm/' + user.email_status.token),
@@ -50,8 +51,8 @@ class Mailer {
 		});
 	}
 
-	public async emailUpdateConfirmation(user: UserDocument): Promise<SentMessageInfo> {
-		return this.sendEmail(user, 'Please confirm your email', 'email-update-confirmation', {
+	public async emailUpdateConfirmation(requestState: RequestState, user: UserDocument): Promise<SentMessageInfo> {
+		return this.sendEmail(requestState, user, 'Please confirm your email', 'email-update-confirmation', {
 			user,
 			site: settings.webUri(),
 			confirmationUrl: settings.webUri('/confirm/' + user.email_status.token),
@@ -59,24 +60,24 @@ class Mailer {
 		});
 	}
 
-	public async welcomeLocal(user: UserDocument): Promise<SentMessageInfo> {
-		return this.sendEmail(user, 'Welcome to the VPDB!', 'welcome-local', { user });
+	public async welcomeLocal(requestState: RequestState, user: UserDocument): Promise<SentMessageInfo> {
+		return this.sendEmail(requestState, user, 'Welcome to the VPDB!', 'welcome-local', { user });
 	}
 
-	public async welcomeOAuth(user: UserDocument): Promise<SentMessageInfo> {
+	public async welcomeOAuth(requestState: RequestState, user: UserDocument): Promise<SentMessageInfo> {
 		const strategyNames: { [key: string]: string } = {
 			github: 'GitHub',
 			google: 'Google',
 			gameex: 'GameEx',
 		};
-		return this.sendEmail(user, 'Welcome to the VPDB!', 'welcome-oauth', {
+		return this.sendEmail(requestState, user, 'Welcome to the VPDB!', 'welcome-oauth', {
 			user,
 			profileUrl: settings.webUri('/profile/settings'),
 			strategy: strategyNames[user.provider] || upperFirst(user.provider),
 		});
 	}
 
-	public async releaseAutoApproved(user: UserDocument, release: ReleaseDocument): Promise<SentMessageInfo[]> {
+	public async releaseAutoApproved(requestState: RequestState, user: UserDocument, release: ReleaseDocument): Promise<SentMessageInfo[]> {
 		const game = release._game as GameDocument;
 		const moderators = await state.models.User.find({
 			roles: { $in: ['moderator', 'root'] },
@@ -84,7 +85,7 @@ class Mailer {
 		}).exec();
 		const results: SentMessageInfo[] = [];
 		for (const moderator of moderators) {
-			const result = await this.sendEmail(moderator, 'A new release has been auto-approved for ' + game.title, 'moderator-release-auto-approved', {
+			const result = await this.sendEmail(requestState, moderator, 'A new release has been auto-approved for ' + game.title, 'moderator-release-auto-approved', {
 				user,
 				moderator,
 				release,
@@ -96,11 +97,11 @@ class Mailer {
 		return results;
 	}
 
-	public async releaseSubmitted(user: UserDocument, release: ReleaseDocument): Promise<SentMessageInfo[]> {
+	public async releaseSubmitted(requestState: RequestState, user: UserDocument, release: ReleaseDocument): Promise<SentMessageInfo[]> {
 		const game = release._game as GameDocument;
 		const results: SentMessageInfo[] = [];
 		// send to submitter
-		let result = await this.sendEmail(user, 'Your release for ' + game.title + ' has been submitted', 'release-submitted', {
+		let result = await this.sendEmail(requestState, user, 'Your release for ' + game.title + ' has been submitted', 'release-submitted', {
 			user,
 			previewUrl: settings.webUri('/games/' + game.id + '/releases/' + release.id),
 
@@ -113,7 +114,7 @@ class Mailer {
 		}).exec();
 
 		for (const moderator of moderators) {
-			result = await this.sendEmail(moderator, 'A new release has been submitted for ' + game.title, 'moderator-release-submitted', {
+			result = await this.sendEmail(requestState, moderator, 'A new release has been submitted for ' + game.title, 'moderator-release-submitted', {
 				user,
 				moderator,
 				release,
@@ -125,9 +126,9 @@ class Mailer {
 		return results;
 	}
 
-	public async releaseApproved(user: UserDocument, release: ReleaseDocument, message: string): Promise<SentMessageInfo> {
+	public async releaseApproved(requestState: RequestState, user: UserDocument, release: ReleaseDocument, message: string): Promise<SentMessageInfo> {
 		const game = release._game as GameDocument;
-		return this.sendEmail(user, 'Your release for ' + game.title + ' has been approved!', 'release-approved', {
+		return this.sendEmail(requestState, user, 'Your release for ' + game.title + ' has been approved!', 'release-approved', {
 			user,
 			release,
 			game: release._game,
@@ -136,8 +137,8 @@ class Mailer {
 		}, 'notify_release_moderation_status');
 	}
 
-	public async releaseRefused(user: UserDocument, release: ReleaseDocument, message: string): Promise<SentMessageInfo> {
-		return this.sendEmail(user, 'There was a problem with the release you\'ve uploaded to VPDB', 'release-refused', {
+	public async releaseRefused(requestState: RequestState, user: UserDocument, release: ReleaseDocument, message: string): Promise<SentMessageInfo> {
+		return this.sendEmail(requestState, user, 'There was a problem with the release you\'ve uploaded to VPDB', 'release-refused', {
 			user,
 			release,
 			game: release._game,
@@ -145,10 +146,10 @@ class Mailer {
 		}, 'notify_release_moderation_status');
 	}
 
-	public async releaseAdded(uploader: UserDocument, author: UserDocument, release: ReleaseDocument): Promise<SentMessageInfo> {
+	public async releaseAdded(requestState: RequestState, uploader: UserDocument, author: UserDocument, release: ReleaseDocument): Promise<SentMessageInfo> {
 		const game = release._game as GameDocument;
 		const authorType = this.isUploaderAuthor(uploader, release.authors) ? 'co-author' : 'author';
-		return this.sendEmail(author, 'A new release for ' + game.title + ' has been uploaded', 'release-author-new-release', {
+		return this.sendEmail(requestState, author, 'A new release for ' + game.title + ' has been uploaded', 'release-author-new-release', {
 			user: author,
 			uploader,
 			release,
@@ -158,9 +159,9 @@ class Mailer {
 		});
 	}
 
-	public async releaseVersionAdded(uploader: UserDocument, author: UserDocument, release: ReleaseDocument, version: ReleaseVersionDocument): Promise<SentMessageInfo> {
+	public async releaseVersionAdded(requestState: RequestState, uploader: UserDocument, author: UserDocument, release: ReleaseDocument, version: ReleaseVersionDocument): Promise<SentMessageInfo> {
 		const game = release._game as GameDocument;
-		return this.sendEmail(author, 'A new version for "' + release.name + '" of ' + game.title + ' has been uploaded', 'release-author-new-version', {
+		return this.sendEmail(requestState, author, 'A new version for "' + release.name + '" of ' + game.title + ' has been uploaded', 'release-author-new-version', {
 			user: author,
 			uploader,
 			release,
@@ -171,10 +172,10 @@ class Mailer {
 		});
 	}
 
-	public async releaseFileAdded(uploader: UserDocument, author: UserDocument, release: ReleaseDocument, version: ReleaseVersionDocument, versionFile: ReleaseVersionFileDocument): Promise<SentMessageInfo> {
+	public async releaseFileAdded(requestState: RequestState, uploader: UserDocument, author: UserDocument, release: ReleaseDocument, version: ReleaseVersionDocument, versionFile: ReleaseVersionFileDocument): Promise<SentMessageInfo> {
 		const game = release._game as GameDocument;
 		const file = await state.models.File.findById(versionFile._file).exec();
-		return this.sendEmail(author, 'A new file for v' + version.version + ' of "' + release.name + '" of ' + game.title + ' has been uploaded', 'release-author-new-file', {
+		return this.sendEmail(requestState, author, 'A new file for v' + version.version + ' of "' + release.name + '" of ' + game.title + ' has been uploaded', 'release-author-new-file', {
 			user: author,
 			uploader,
 			release,
@@ -186,10 +187,10 @@ class Mailer {
 		});
 	}
 
-	public async backglassSubmitted(user: UserDocument, backglass: BackglassDocument): Promise<SentMessageInfo[]> {
+	public async backglassSubmitted(requestState: RequestState, user: UserDocument, backglass: BackglassDocument): Promise<SentMessageInfo[]> {
 		const game = backglass._game as GameDocument;
 		const results: SentMessageInfo[] = [];
-		let result = await this.sendEmail(user, 'Your backglass for ' + game.title + ' has been submitted', 'backglass-submitted', {
+		let result = await this.sendEmail(requestState, user, 'Your backglass for ' + game.title + ' has been submitted', 'backglass-submitted', {
 			user,
 			backglass,
 		}, 'notify_backglass_moderation_status');
@@ -200,7 +201,7 @@ class Mailer {
 			id: { $ne: user.id },
 		}).exec();
 		for (const moderator of moderators) {
-			result = await this.sendEmail(moderator, 'A new backglass has been submitted for ' + game.title, 'moderator-backglass-submitted', {
+			result = await this.sendEmail(requestState, moderator, 'A new backglass has been submitted for ' + game.title, 'moderator-backglass-submitted', {
 				user,
 				moderator,
 				game: backglass._game,
@@ -211,13 +212,13 @@ class Mailer {
 		return results;
 	}
 
-	public async backglassAutoApproved(user: UserDocument, backglass: BackglassDocument): Promise<SentMessageInfo[]> {
+	public async backglassAutoApproved(requestState: RequestState, user: UserDocument, backglass: BackglassDocument): Promise<SentMessageInfo[]> {
 		const results: SentMessageInfo[] = [];
 		const game = backglass._game as GameDocument;
 		const moderators = await state.models.User.find({ roles: { $in: ['moderator', 'root'] }, id: { $ne: user.id } });
 		let result: SentMessageInfo;
 		for (const moderator of moderators) {
-			result = await this.sendEmail(moderator, 'A new backglass has been auto-approved for ' + game.title, 'moderator-backglass-auto-approved', {
+			result = await this.sendEmail(requestState, moderator, 'A new backglass has been auto-approved for ' + game.title, 'moderator-backglass-auto-approved', {
 				user,
 				moderator,
 				game: backglass._game,
@@ -228,9 +229,9 @@ class Mailer {
 		return results;
 	}
 
-	public async backglassApproved(user: UserDocument, backglass: BackglassDocument, message: string): Promise<SentMessageInfo> {
+	public async backglassApproved(requestState: RequestState, user: UserDocument, backglass: BackglassDocument, message: string): Promise<SentMessageInfo> {
 		const game = backglass._game as GameDocument;
-		return this.sendEmail(user, 'Your backglass for ' + game.title + ' has been approved!', 'backglass-approved', {
+		return this.sendEmail(requestState, user, 'Your backglass for ' + game.title + ' has been approved!', 'backglass-approved', {
 			user,
 			message: this.wrapMessage(message),
 			game: backglass._game,
@@ -238,32 +239,32 @@ class Mailer {
 		}, 'notify_backglass_moderation_status');
 	}
 
-	public async backglassRefused(user: UserDocument, backglass: BackglassDocument, message: string): Promise<SentMessageInfo> {
-		return this.sendEmail(user, 'There was a problem with the backglass you\'ve uploaded to VPDB', 'backglass-refused', {
+	public async backglassRefused(requestState: RequestState, user: UserDocument, backglass: BackglassDocument, message: string): Promise<SentMessageInfo> {
+		return this.sendEmail(requestState, user, 'There was a problem with the backglass you\'ve uploaded to VPDB', 'backglass-refused', {
 			user,
 			game: backglass._game,
 			message: this.wrapMessage(message),
 		}, 'notify_backglass_moderation_status');
 	}
 
-	public async gameRequestProcessed(user: UserDocument, game: GameDocument): Promise<SentMessageInfo> {
-		return this.sendEmail(user, '"' + game.title + '" has been added to VPDB!', 'game-request-processed', {
+	public async gameRequestProcessed(requestState: RequestState, user: UserDocument, game: GameDocument): Promise<SentMessageInfo> {
+		return this.sendEmail(requestState, user, '"' + game.title + '" has been added to VPDB!', 'game-request-processed', {
 			user,
 			game,
 			url: settings.webUri('/games/' + game.id),
 		}, 'notify_game_requests');
 	}
 
-	public async gameRequestDenied(user: UserDocument, gameTitle: string, message: string): Promise<SentMessageInfo> {
-		return this.sendEmail(user, 'About "' + gameTitle + '" you wanted to be added to VPDB...', 'game-request-denied', {
+	public async gameRequestDenied(requestState: RequestState, user: UserDocument, gameTitle: string, message: string): Promise<SentMessageInfo> {
+		return this.sendEmail(requestState, user, 'About "' + gameTitle + '" you wanted to be added to VPDB...', 'game-request-denied', {
 			user,
 			gameTitle,
 			message: this.wrapMessage(message),
 		}, 'notify_game_requests');
 	}
 
-	public async releaseCommented(user: UserDocument, commentor: UserDocument, game: GameDocument, release: ReleaseDocument, message: string): Promise<SentMessageInfo> {
-		return this.sendEmail(user, 'New reply to your "' + release.name + '" of ' + game.title, 'release-commented', {
+	public async releaseCommented(requestState: RequestState, user: UserDocument, commentor: UserDocument, game: GameDocument, release: ReleaseDocument, message: string): Promise<SentMessageInfo> {
+		return this.sendEmail(requestState, user, 'New reply to your "' + release.name + '" of ' + game.title, 'release-commented', {
 			user,
 			release,
 			game,
@@ -274,7 +275,7 @@ class Mailer {
 		}, 'notify_created_release_comments');
 	}
 
-	public async releaseValidated(user: UserDocument, moderator: UserDocument, game: GameDocument, release: ReleaseDocument, file: ReleaseVersionFileDocument): Promise<SentMessageInfo> {
+	public async releaseValidated(requestState: RequestState, user: UserDocument, moderator: UserDocument, game: GameDocument, release: ReleaseDocument, file: ReleaseVersionFileDocument): Promise<SentMessageInfo> {
 		const data = {
 			user,
 			moderator,
@@ -286,15 +287,15 @@ class Mailer {
 		};
 		switch (file.validation.status) {
 			case 'verified':
-				return this.sendEmail(user, 'Congrats, "' + file.file.name + '" has been validated!', 'validation-release-verified', data, 'notify_release_validation_status');
+				return this.sendEmail(requestState, user, 'Congrats, "' + file.file.name + '" has been validated!', 'validation-release-verified', data, 'notify_release_validation_status');
 			case 'playable':
-				return this.sendEmail(user, 'Your file "' + file.file.name + '" has been validated.', 'validation-release-playable', data, 'notify_release_validation_status');
+				return this.sendEmail(requestState, user, 'Your file "' + file.file.name + '" has been validated.', 'validation-release-playable', data, 'notify_release_validation_status');
 			case 'broken':
-				return this.sendEmail(user, 'There is an issue with "' + file.file.name + '".', 'validation-release-broken', data, 'notify_release_validation_status');
+				return this.sendEmail(requestState, user, 'There is an issue with "' + file.file.name + '".', 'validation-release-broken', data, 'notify_release_validation_status');
 		}
 	}
 
-	public async releaseModerationCommented(user: UserDocument, release: ReleaseDocument, message: string): Promise<SentMessageInfo[]> {
+	public async releaseModerationCommented(requestState: RequestState, user: UserDocument, release: ReleaseDocument, message: string): Promise<SentMessageInfo[]> {
 		const results: SentMessageInfo[] = [];
 		const moderators = await state.models.User.find({ roles: { $in: ['moderator', 'root'] } }).exec();
 		const comments = await state.models.Comment.find({ '_ref.release_moderation': release._id }).populate('_from').exec();
@@ -312,7 +313,7 @@ class Mailer {
 				'New comment on "' + release.name + '" of ' + game.title :
 				'Comment about your submitted "' + release.name + '" of ' + game.title;
 
-			const result = await this.sendEmail(dest, subject, 'release-moderation-commented', {
+			const result = await this.sendEmail(requestState, dest, subject, 'release-moderation-commented', {
 				user: dest,
 				who: isSenderMod ? 'Moderator' : 'Uploader',
 				what: isSenderMod ? (isDestMod ? (release._created_by as UserDocument).name + '\'s' : 'your') : 'his',
@@ -327,18 +328,18 @@ class Mailer {
 		return results;
 	}
 
-	public async userMergedKept(userKept: UserDocument, userMerged: UserDocument, message: string): Promise<SentMessageInfo> {
+	public async userMergedKept(requestState: RequestState, userKept: UserDocument, userMerged: UserDocument, message: string): Promise<SentMessageInfo> {
 		const subject = 'Another VPDB account has been merged into yours';
-		return this.sendEmail(userKept, subject, 'user-merged-kept', {
+		return this.sendEmail(requestState, userKept, subject, 'user-merged-kept', {
 			user: userKept,
 			userDeleted: userMerged,
 			message,
 		});
 	}
 
-	public async userMergedDeleted(userKept: UserDocument, userMerged: UserDocument, message: string): Promise<SentMessageInfo> {
+	public async userMergedDeleted(requestState: RequestState, userKept: UserDocument, userMerged: UserDocument, message: string): Promise<SentMessageInfo> {
 		const subject = 'Your VPDB account has been merged into another one';
-		return this.sendEmail(userKept, subject, 'user-merged-deleted', {
+		return this.sendEmail(requestState, userKept, subject, 'user-merged-deleted', {
 			user: userMerged,
 			userKept,
 			message,
@@ -348,6 +349,7 @@ class Mailer {
 	/**
 	 * Sends an email.
 	 *
+	 * @param requestState
 	 * @param {UserDocument} user Recipient
 	 * @param {string} subject Subject of the email
 	 * @param {string} template Name of the Handlebars template, without path or extension
@@ -355,11 +357,11 @@ class Mailer {
 	 * @param {string} [enabledFlag] If set, user profile must have this preference set to true
 	 * @return Promise<SentMessageInfo>
 	 */
-	private async sendEmail(user: UserDocument, subject: string, template: string, templateData: object, enabledFlag: string = null): Promise<SentMessageInfo> {
+	private async sendEmail(requestState: RequestState, user: UserDocument, subject: string, template: string, templateData: object, enabledFlag: string = null): Promise<SentMessageInfo> {
 
 		const what = template.replace(/-/g, ' ');
 		if (!this.emailEnabled(user, enabledFlag)) {
-			logger.info('[mailer.sendEmail] NOT sending %s email to <%s>.', what, user.email);
+			logger.info(requestState, '[mailer.sendEmail] NOT sending %s email to <%s>.', what, user.email);
 			return;
 		}
 
@@ -377,13 +379,13 @@ class Mailer {
 
 		// create reusable transporter object using the default SMTP transport
 		const transport = nodemailer.createTransport(config.vpdb.email.nodemailer);
-		logger.info('[mailer.sendEmail] Sending %s email to <%s>...', what, (email.to as Address).address);
+		logger.info(requestState, '[mailer.sendEmail] Sending %s email to <%s>...', what, (email.to as Address).address);
 		const status = await transport.sendMail(email);
 
 		if (status.messageId) {
-			logger.info('[mailer.sendEmail] Successfully sent %s mail to <%s> with message ID "%s" (%s).', what, (email.to as Address).address, status.messageId, status.response);
+			logger.info(requestState, '[mailer.sendEmail] Successfully sent %s mail to <%s> with message ID "%s" (%s).', what, (email.to as Address).address, status.messageId, status.response);
 		} else {
-			logger.info('[mailer.sendEmail] Failed sending %s mail to <%s>: %s.', what, (email.to as Address).address, status.response);
+			logger.info(requestState, '[mailer.sendEmail] Failed sending %s mail to <%s>: %s.', what, (email.to as Address).address, status.response);
 		}
 		return status;
 	}

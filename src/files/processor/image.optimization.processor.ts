@@ -20,6 +20,7 @@
 import { createReadStream, createWriteStream } from 'fs';
 import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
+import { RequestState } from '../../common/typings/context';
 import { FileDocument } from '../file.document';
 import { FileUtil } from '../file.util';
 import { FileVariation } from '../file.variations';
@@ -41,10 +42,10 @@ export class ImageOptimizationProcessor implements OptimizationProcessor<FileVar
 		return 500;
 	}
 
-	public async process(file: FileDocument, src: string, dest: string, variation?: FileVariation): Promise<string> {
+	public async process(requestState: RequestState, file: FileDocument, src: string, dest: string, variation?: FileVariation): Promise<string> {
 
 		if (file.file_type === 'playfield') {
-			logger.info('[ImageOptimizationProcessor] Skipping (will process when orientation is set): %s', file.toDetailedString(variation));
+			logger.info(requestState, '[ImageOptimizationProcessor] Skipping (will process when orientation is set): %s', file.toDetailedString(variation));
 			return dest;
 		}
 
@@ -58,7 +59,7 @@ export class ImageOptimizationProcessor implements OptimizationProcessor<FileVar
 
 			// setup success handler
 			writeStream.on('finish', () => {
-				logger.debug('[ImageOptimizationProcessor] Done: %s', file.toDetailedString(variation));
+				logger.debug(requestState, '[ImageOptimizationProcessor] Done: %s', file.toDetailedString(variation));
 				resolve(dest);
 			});
 			writeStream.on('error', reject);
@@ -72,7 +73,7 @@ export class ImageOptimizationProcessor implements OptimizationProcessor<FileVar
 			};
 
 			// do the processing
-			logger.debug('[ImageOptimizationProcessor] Start: %s from %s to %s', file.toDetailedString(variation), FileUtil.log(src), FileUtil.log(dest));
+			logger.debug(requestState, '[ImageOptimizationProcessor] Start: %s from %s to %s', file.toDetailedString(variation), FileUtil.log(src), FileUtil.log(dest));
 			createReadStream(src).on('error', handleErr('reading'))
 				.pipe(quanter).on('error', handleErr('quanter'))
 				.pipe(optimizer).on('error', handleErr('optimizer'))

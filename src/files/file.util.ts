@@ -25,6 +25,7 @@ import { promisify } from 'util';
 import chalk from 'chalk';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
+import { RequestState } from '../common/typings/context';
 import { state } from '../state';
 import { FileDocument } from './file.document';
 import { Metadata } from './metadata/metadata';
@@ -40,15 +41,16 @@ export class FileUtil {
 	/**
 	 * Creates a new file from a HTTP request stream.
 	 *
+	 * @param requestState For logging
 	 * @param {FileDocument} fileData File
 	 * @param {Stream} readStream Binary stream of file content
 	 * @returns {Promise<FileDocument>}
 	 */
-	public static async create(fileData: FileDocument, readStream: Stream): Promise<FileDocument> {
+	public static async create(requestState: RequestState, fileData: FileDocument, readStream: Stream): Promise<FileDocument> {
 
 		// instantiate file without persisting it yet
 		let file = new state.models.File(fileData);
-		const path = file.getPath(null, { tmpSuffix: '_original' });
+		const path = file.getPath(requestState, null, { tmpSuffix: '_original' });
 
 		// create destination folder if necessary
 		if (!(await existsAsync(dirname(path)))) {
@@ -67,16 +69,16 @@ export class FileUtil {
 		const stats = await statAsync(path);
 		file.bytes = stats.size;
 
-		logger.info('[FileUtil.create] Saved %s bytes of %s to %s', file.bytes, file.toDetailedString(), path);
+		logger.info(requestState, '[FileUtil.create] Saved %s bytes of %s to %s', file.bytes, file.toDetailedString(), path);
 
 		try {
-			logger.info('[FileUtil.create] Retrieving metadata for %s', file.toDetailedString());
-			const metadata = await Metadata.readFrom(file, path);
+			logger.info(requestState, '[FileUtil.create] Retrieving metadata for %s', file.toDetailedString());
+			const metadata = await Metadata.readFrom(requestState, file, path);
 			if (metadata) {
 				file.metadata = metadata;
 				await state.models.File.findByIdAndUpdate(file._id, { metadata }).exec();
 			} else {
-				logger.warn('[FileUtil.create] No metadata reader matched for %s, cannot validate integrity!', file.toDetailedString());
+				logger.warn(requestState, '[FileUtil.create] No metadata reader matched for %s, cannot validate integrity!', file.toDetailedString());
 			}
 
 			// here metadata is okay, so let's store it in the database.
@@ -84,27 +86,27 @@ export class FileUtil {
 
 		} catch (err) {
 			try {
-				logger.warn('[FileUtil.create] Metadata parsing failed: %s', err.message);
+				logger.warn(requestState, '[FileUtil.create] Metadata parsing failed: %s', err.message);
 				//await unlinkAsync(path);
 			} catch (err) {
 				/* istanbul ignore next */
-				logger.error('[FileUtil.create] Error removing file at %s: %s', path, err.message);
+				logger.error(requestState, '[FileUtil.create] Error removing file at %s: %s', path, err.message);
 			}
 			try {
 				await unlinkAsync(path);
 			} catch (err) {
 				/* istanbul ignore next */
-				logger.warn('[FileUtil.create] Could not delete file after metadata failed: %s', err.message);
+				logger.warn(requestState, '[FileUtil.create] Could not delete file after metadata failed: %s', err.message);
 			}
 			throw new ApiError('Metadata parsing failed for type "%s": %s', file.mime_type, err.message).log(err).warn().status(400);
 		}
 
 		// copy to final destination
-		await FileUtil.cp(path, file.getPath());
+		await FileUtil.cp(path, file.getPath(requestState));
 
 		// start processing
-		logger.info('[FileUtil.create] Adding file %s to processor queue', file.toShortString());
-		await processorQueue.processFile(file, path);
+		logger.info(requestState, '[FileUtil.create] Adding file %s to processor queue', file.toShortString());
+		await processorQueue.processFile(requestState, file, path);
 
 		return file;
 	}
@@ -167,18 +169,22 @@ export class FileUtil {
 	 * Removes a file and all its variations from storage. On error, a warning
 	 * is printed but nothing else done.
 	 *
+	 * @param requestState For logging
 	 * @param file File to remove.
 	 */
-	public static async remove(file: FileDocument): Promise<void> {
+	public static async remove(requestState: RequestState, file: FileDocument): Promise<void> {
 		// original
-		await FileUtil.removeFile(file.getPath(null, { tmpSuffix: '_original' }), file.toShortString());
+		const originalFile = file.getPath(requestState, null, { tmpSuffix: '_original' });
+		await FileUtil.removeFile(requestState, originalFile, file.toShortString());
 
 		// processed
-		await FileUtil.removeFile(file.getPath(), file.toShortString());
+		const processedFile = file.getPath(requestState);
+		await FileUtil.removeFile(requestState, processedFile, file.toShortString());
 
 		// variations
 		for (const variation of file.getExistingVariations()) {
-			await this.removeFile(file.getPath(variation), file.toShortString(variation));
+			const variationFile = file.getPath(requestState, variation);
+			await this.removeFile(requestState, variationFile, file.toShortString(variation));
 		}
 	}
 
@@ -193,17 +199,18 @@ export class FileUtil {
 	/**
 	 * Physically removes a file and prints a warning when failed.
 	 *
+	 * @param requestState For logging
 	 * @param {string} path Path to file
 	 * @param {string} what What to print
 	 */
-	private static async removeFile(path: string, what: string): Promise<void> {
+	private static async removeFile(requestState: RequestState, path: string, what: string): Promise<void> {
 		if (await existsAsync(path)) {
-			logger.verbose('[FileUtil.removeFile] Removing %s at %s..', what, path);
+			logger.verbose(requestState, '[FileUtil.removeFile] Removing %s at %s..', what, path);
 			try {
 				await unlinkAsync(path);
 			} catch (err) {
 				/* istanbul ignore next */
-				logger.warn('[FileUtil.removeFile] Could not remove %s: %s', what, err.message);
+				logger.warn(requestState, '[FileUtil.removeFile] Could not remove %s: %s', what, err.message);
 			}
 		}
 	}

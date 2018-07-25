@@ -57,4 +57,9 @@ export interface RequestState {
 	 * Set when authentication failed.
 	 */
 	authError: ApiError;
+
+	/**
+	 * A unique request ID
+	 */
+	requestId: string;
 }

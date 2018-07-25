@@ -24,14 +24,16 @@ import { resolve } from 'path';
 import { format as sprintf } from 'util';
 import winston from 'winston';
 
-import { LogdnaTransport } from './logger.logdna.transport';
 import { config } from './settings';
 import { RequestState } from './typings/context';
 
+const LogDna = require('logdna');
+
 class Logger {
 	private logger: winston.Logger;
+	private readonly logDnaLogger: any;
 
-	constructor(type: 'app' | 'access') {
+	constructor(private type: LogType) {
 		const alignedWithColorsAndTime = logFormat.combine(
 			logFormat.colorize(),
 			logFormat.timestamp(),
@@ -44,6 +46,16 @@ class Logger {
 			level: config.vpdb.logging.level,
 		});
 
+		/* istanbul ignore next */
+		if (config.vpdb.logging.logdna.apiKey) {
+			this.logDnaLogger = LogDna.createLogger(config.vpdb.logging.logdna.apiKey, {
+				app: 'vpdb',
+				env: config.vpdb.logging.logdna.env,
+				hostname: config.vpdb.logging.logdna.hostname,
+				index_meta: true,
+			});
+		}
+
 		if (type === 'app') {
 			this.setupAppLogger();
 		}
@@ -54,45 +66,51 @@ class Logger {
 	}
 
 	public wtf(state: RequestState | null, format: any, ...param: any[]) {
-		this.logger.log({
-			level: 'info',
-			message: this.colorMessage(sprintf.apply(null, arguments), chalk.bgBlack.redBright, chalk.bgRedBright.whiteBright),
-		});
+		const message = this.colorMessage(sprintf.apply(null, Array.from(arguments).splice(1)),
+			chalk.bgBlack.redBright, chalk.bgRedBright.whiteBright);
+		this.log(state, 'wtf', message);
 	}
 
 	public error(state: RequestState | null, format: any, ...param: any[]) {
-		this.logger.log({
-			level: 'error',
-			message: this.colorMessage(sprintf.apply(null, arguments), chalk.bgBlack.redBright, chalk.whiteBright),
-		});
+		const message = this.colorMessage(sprintf.apply(null, Array.from(arguments).splice(1)),
+			chalk.bgBlack.redBright, chalk.whiteBright);
+		this.log(state, 'error', message);
 	}
 
 	public warn(state: RequestState | null, format: any, ...param: any[]) {
-		this.logger.log({
-			level: 'warn',
-			message: this.colorMessage(sprintf.apply(null, arguments), chalk.bgBlack.yellowBright, chalk.whiteBright),
-		});
+		const message = this.colorMessage(sprintf.apply(null, Array.from(arguments).splice(1)),
+			chalk.bgBlack.yellowBright, chalk.whiteBright);
+		this.log(state, 'warn', message);
 	}
 
 	public info(state: RequestState | null, format: any, ...param: any[]) {
-		this.logger.log({
-			level: 'info',
-			message: this.colorMessage(sprintf.apply(null, arguments), null, chalk.white),
-		});
+		const message = this.colorMessage(sprintf.apply(null, Array.from(arguments).splice(1)),
+			null, chalk.white);
+		this.log(state, 'info', message);
 	}
 
 	public verbose(state: RequestState | null, format: any, ...param: any[]) {
-		this.logger.log({
-			level: 'verbose',
-			message: this.colorMessage(sprintf.apply(null, arguments), chalk.bgBlack.gray, chalk.gray),
-		});
+		const message = this.colorMessage(sprintf.apply(null, Array.from(arguments).splice(1)),
+			chalk.bgBlack.gray, chalk.gray);
+		this.log(state, 'verbose', message);
 	}
 
 	public debug(state: RequestState | null, format: any, ...param: any[]) {
-		this.logger.log({
-			level: 'debug',
-			message: this.colorMessage(sprintf.apply(null, arguments), chalk.bgBlack.gray, chalk.gray),
-		});
+		const message = this.colorMessage(sprintf.apply(null, Array.from(arguments).splice(1)),
+			chalk.bgBlack.gray, chalk.gray);
+		this.log(state, 'debug', message);
+	}
+
+	private log(state: RequestState | null, level: string, message: string) {
+		this.logger.log({ level, message });
+		/* istanbul ignore if */
+		if (this.logDnaLogger) {
+			this.logDnaLogger.log(message, {
+				timestamp: Date.now(),
+				level: this.getLogDnaLevel(level),
+				meta: this.getMeta(state),
+			});
+		}
 	}
 
 	private setupAppLogger(): void {
@@ -108,14 +126,6 @@ class Logger {
 				maxFiles: 10,                    // Limit the number of files created when the size of the logfile is exceeded.
 			}));
 		}
-		/* istanbul ignore next */
-		if (config.vpdb.logging.logdna.app) {
-			this.logger.add(new LogdnaTransport(config.vpdb.logging.logdna.apiKey, {
-				app: 'vpdb-app',
-				env: config.vpdb.logging.logdna.env,
-				hostname: config.vpdb.logging.logdna.hostname,
-			}));
-		}
 	}
 
 	private setupAccessLogger(): void {
@@ -129,14 +139,6 @@ class Logger {
 				filename: logPath,               // The filename of the logfile to write output to.
 				maxsize: 1000000,                // Max size in bytes of the logfile, if the size is exceeded then a new file is created.
 				maxFiles: 10,                    // Limit the number of files created when the size of the logfile is exceeded.
-			}));
-		}
-		/* istanbul ignore next */
-		if (config.vpdb.logging.logdna.access) {
-			this.logger.add(new LogdnaTransport(config.vpdb.logging.logdna.apiKey, {
-				app: 'vpdb-access',
-				env: config.vpdb.logging.logdna.env,
-				hostname: config.vpdb.logging.logdna.hostname,
 			}));
 		}
 	}
@@ -160,7 +162,24 @@ class Logger {
 		}
 		return messageColor ? messageColor(message) : message;
 	}
+
+	private getMeta(state: RequestState) {
+		return Object.assign({}, state, { type: this.type });
+	}
+
+	private getLogDnaLevel(level: string): string {
+		const map: Map<string, string> = new Map([
+			['info', 'info'],
+			['error', 'error'],
+			['warn', 'warn'],
+			['verbose', 'debug'],
+			['debug', 'debug'],
+			['wtf', 'fatal'],
+		]);
+		return map.get(level) || 'info';
+	}
 }
 
+type LogType = 'app' | 'access';
 export const logger = new Logger('app');
 export const accessLogger = new Logger('access');

@@ -19,6 +19,7 @@
 
 import bytes = require('bytes');
 import chalk, { Chalk, ColorSupport } from 'chalk';
+import randomString from 'randomstring';
 
 import { accessLogger } from '../logger';
 import { Context } from '../typings/context';
@@ -55,6 +56,7 @@ export function koaLogger() {
 
 	return async (ctx: Context, next: () => Promise<any>) => {
 		const start = Date.now();
+		ctx.state.requestId = randomString.generate(10);
 		try {
 			await next();
 		} catch (err) {

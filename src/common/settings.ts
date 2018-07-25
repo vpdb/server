@@ -19,7 +19,10 @@
 
 import { existsSync } from 'fs';
 import { isArray, isFunction, isObject, isUndefined, keys } from 'lodash';
+import { format as logFormat } from 'logform';
 import { isAbsolute, resolve } from 'path';
+import winston from 'winston';
+
 import { settingValidations } from './settings.validator';
 import { VpdbConfig } from './typings/config';
 
@@ -27,7 +30,11 @@ export class Settings {
 
 	public readonly current: VpdbConfig;
 	private readonly filePath: string;
-	private readonly logger = require('winston');
+	private readonly logger = winston.createLogger({
+		format: logFormat.combine(logFormat.colorize(), logFormat.timestamp(), logFormat.printf(info => `${info.timestamp} ${info.level}: ${info.message}`)),
+		transports: [ new winston.transports.Console() ],
+		level: 'silly',
+	});
 
 	constructor() {
 		/* istanbul ignore if */
@@ -42,7 +49,7 @@ export class Settings {
 		if (!existsSync(filePath)) {
 			throw new Error('Cannot find settings at "' + filePath + '". Copy src/config/settings-dist.js to server/config/settings.js or point `APP_SETTINGS` environment variable to correct path (CWD = ' + process.cwd() + ').');
 		}
-		this.logger.info('[Settings] Loading from %s', filePath);
+		this.logger.info(`[Settings] Loading from ${filePath}`);
 		this.filePath = filePath;
 		this.current = require(this.filePath);
 	}
@@ -53,7 +60,7 @@ export class Settings {
 	 * @return {boolean} true if passes, false otherwise.
 	 */
 	public validate() {
-		this.logger.info('[Settings.validate] Validating settings at %s', this.filePath);
+		this.logger.info(`[Settings.validate] Validating settings at ${this.filePath}`);
 		return this._validate(settingValidations, this.current, '');
 	}
 
@@ -79,12 +86,12 @@ export class Settings {
 			// validation function
 			if (isFunction(validation[s])) {
 				if (isUndefined(setting[s]) && setting.enabled !== false) {
-					this.logger.error('[Settings.validate] %s [KO]: Setting is missing.', p);
+					this.logger.error(`[Settings.validate] ${p} [KO]: Setting is missing.`);
 					success = false;
 				} else {
 					validationError = validation[s](setting[s], setting, this.current);
 					if (!validationError) {
-						this.logger.info('[Settings.validate] %s [OK]', p);
+						this.logger.info(`[Settings.validate] ${p} [OK]`);
 					} else {
 						if (isArray(validationError)) {
 							for (j = 0; j < validationError.length; j++) {
@@ -98,7 +105,7 @@ export class Settings {
 				}
 			} else if (validation[s].__array) {
 				if (!isArray(setting[s])) {
-					this.logger.error('[Settings.validate] %s [KO]: Setting must be an array.', p);
+					this.logger.error(`[Settings.validate] ${p} [KO]: Setting must be an array.`);
 					success = false;
 				} else {
 					for (i = 0; i < setting[s].length; i++) {
@@ -111,7 +118,7 @@ export class Settings {
 			} else if (validation[s] && isObject(validation[s])) {
 
 				if (isUndefined(setting[s])) {
-					this.logger.error('[Settings.validate] %s [KO]: Setting block is missing.', p);
+					this.logger.error(`[Settings.validate] ${p} [KO]: Setting block is missing.`);
 					success = false;
 
 				} else if (!this._validate(validation[s], setting[s], path + '.' + s)) {
@@ -122,7 +129,7 @@ export class Settings {
 
 		}
 		if (success && !path) {
-			this.logger.info('[Settings.validate] Congrats, your settings look splendid!');
+			this.logger.info(`[Settings.validate] Congrats, your settings look splendid!`);
 		}
 		return success;
 	}
@@ -132,9 +139,9 @@ export class Settings {
 		setting = !isUndefined(error.setting) ? error.setting : setting;
 		const s = isObject(setting) ? JSON.stringify(setting) : setting;
 		if (isObject(error)) {
-			this.logger.error('[Settings.validate] %s.%s [KO]: %s (%s).', p, error.path, error.message, s);
+			this.logger.error(`[Settings.validate] ${p}.${error.path} [KO]: ${error.message} (${s}).`);
 		} else {
-			this.logger.error('[Settings.validate] %s [KO]: %s (%s).', p, error, s);
+			this.logger.error(`[Settings.validate] ${p} [KO]: ${error} (${s}).`);
 		}
 	}
 

@@ -92,13 +92,13 @@ class Logger {
 
 	public verbose(requestState: RequestState | null, format: any, ...param: any[]) {
 		const message = this.colorMessage(sprintf.apply(null, Array.from(arguments).splice(1)),
-			chalk.bgBlack.gray, chalk.gray);
+			null, chalk.gray);
 		this.log(requestState, 'verbose', message);
 	}
 
 	public debug(requestState: RequestState | null, format: any, ...param: any[]) {
 		const message = this.colorMessage(sprintf.apply(null, Array.from(arguments).splice(1)),
-			chalk.bgBlack.gray, chalk.gray);
+			null, chalk.gray);
 		this.log(requestState, 'debug', message);
 	}
 

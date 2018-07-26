@@ -154,6 +154,23 @@ export const settingValidations = {
 					}
 				},
 			},
+			logdna: {
+				apiKey: (str: any) => {
+					if (!isString(str)) {
+						return 'API Key must be a string.';
+					}
+				},
+				env:  (str: any) => {
+					if (!isString(str)) {
+						return 'Environment must be a string.';
+					}
+				},
+				hostname:  (str: any) => {
+					if (!isString(str)) {
+						return 'Hostname must be a string.';
+					}
+				},
+			},
 		},
 		email: {
 			confirmUserEmail: (bool: any) => {

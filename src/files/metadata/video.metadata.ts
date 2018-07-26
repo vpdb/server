@@ -20,11 +20,11 @@ import Ffmpeg from 'fluent-ffmpeg';
 import { pick } from 'lodash';
 
 import { config } from '../../common/settings';
+import { RequestState } from '../../common/typings/context';
 import { File } from '../file';
 import { FileDocument } from '../file.document';
 import { FileVariation } from '../file.variations';
 import { Metadata } from './metadata';
-import { RequestState } from '../../common/typings/context';
 
 const ffmpeg = require('bluebird').promisifyAll(Ffmpeg);
 

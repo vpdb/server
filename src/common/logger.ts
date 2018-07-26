@@ -165,13 +165,13 @@ class Logger {
 	}
 
 	private getMeta(requestState: RequestState) {
-		return {
+		return requestState ? {
 			requestId: requestState.requestId,
 			user: state.serializers.User.detailed({ state: requestState } as Context, requestState.user),
 			tokenType: requestState.tokenType,
 			tokenProvider: requestState.tokenProvider,
 			logType: this.type,
-		};
+		} : { logType: this.type };
 	}
 
 	private getLogDnaLevel(level: string): string {

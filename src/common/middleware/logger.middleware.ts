@@ -56,7 +56,10 @@ export function koaLogger() {
 
 	return async (ctx: Context, next: () => Promise<any>) => {
 		const start = Date.now();
-		ctx.state.requestId = randomString.generate(10);
+		ctx.state.request = {
+			id: randomString.generate(10),
+			ip: ctx.request.get('x-forwarded-for') || ctx.ip || undefined,
+		};
 		try {
 			await next();
 		} catch (err) {
@@ -102,7 +105,7 @@ function log(ctx: Context, start: number, len: number, err: any = null, event: s
 	const statusCode = err
 		? (err.statusCode || err.status || 500)
 		: (ctx.status || 404);
-	let length;
+	let length: string;
 	if ([204, 205, 304].includes(statusCode)) {
 		length = '';
 	} else if (len == null) {
@@ -129,7 +132,8 @@ function log(ctx: Context, start: number, len: number, err: any = null, event: s
 	const logStatus = statusStyle[Math.floor(statusCode / 100) * 100] || statusStyle[100];
 	const logMethod = methodStyle[ctx.method] || methodStyle.GET;
 	const duration = Date.now() - start;
-	ctx.state.requestDuration = duration;
+	ctx.state.request.duration = duration;
+	ctx.state.request.size = len;
 
 	if (statusCode >= 500 && statusCode < 600) {
 		accessLogger.error(ctx.state, '[%s] %s%s %s %sms - %s', logUserIp, upstream, logStatus(' ' + statusCode + ' '), logMethod(ctx.method + ' ' + ctx.originalUrl), duration, length);

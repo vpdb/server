@@ -61,10 +61,26 @@ export interface RequestState {
 	/**
 	 * A unique request ID
 	 */
-	requestId: string;
+	request: {
 
-	/**
-	 * Request duration in ms
-	 */
-	requestDuration?: number;
+		/**
+		 * A random ID for a HTTP request.
+		 */
+		id: string;
+
+		/**
+		 * Request duration in ms
+		 */
+		duration?: number;
+
+		/**
+		 * Response size in bytes
+		 */
+		size?: number;
+
+		/**
+		 * Client IP address
+		 */
+		ip: string;
+	};
 }

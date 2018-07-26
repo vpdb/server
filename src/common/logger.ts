@@ -166,8 +166,7 @@ class Logger {
 
 	private getMeta(requestState: RequestState) {
 		return requestState ? {
-			requestId: requestState.requestId,
-			requestDuration: requestState.requestDuration,
+			request: requestState.request,
 			user: requestState.user ? {
 				id: requestState.user.id,
 				email: requestState.user.email,

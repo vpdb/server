@@ -241,16 +241,6 @@ module.exports = {
 			logdna: {
 
 				/**
-				 * Whether to send HTTP access log to LogDNA
-				 */
-				access: false,
-
-				/**
-				 * Whether to send application log to LogDNA
-				 */
-				app: false,
-
-				/**
 				 * The Ingestion Key
 				 */
 				apiKey: '',

@@ -258,16 +258,6 @@ export interface VpdbConfig {
 			logdna: {
 
 				/**
-				 * Whether to send HTTP access log to LogDNA
-				 */
-				access: boolean,
-
-				/**
-				 * Whether to send application log to LogDNA
-				 */
-				app: boolean,
-
-				/**
 				 * The Ingestion Key
 				 */
 				apiKey: string,

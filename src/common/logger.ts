@@ -24,8 +24,9 @@ import { resolve } from 'path';
 import { format as sprintf } from 'util';
 import winston from 'winston';
 
+import { state } from '../state';
 import { config } from './settings';
-import { RequestState } from './typings/context';
+import { Context, RequestState } from './typings/context';
 
 const LogDna = require('logdna');
 
@@ -65,50 +66,50 @@ class Logger {
 		}
 	}
 
-	public wtf(state: RequestState | null, format: any, ...param: any[]) {
+	public wtf(requestState: RequestState | null, format: any, ...param: any[]) {
 		const message = this.colorMessage(sprintf.apply(null, Array.from(arguments).splice(1)),
 			chalk.bgBlack.redBright, chalk.bgRedBright.whiteBright);
-		this.log(state, 'wtf', message);
+		this.log(requestState, 'wtf', message);
 	}
 
-	public error(state: RequestState | null, format: any, ...param: any[]) {
+	public error(requestState: RequestState | null, format: any, ...param: any[]) {
 		const message = this.colorMessage(sprintf.apply(null, Array.from(arguments).splice(1)),
 			chalk.bgBlack.redBright, chalk.whiteBright);
-		this.log(state, 'error', message);
+		this.log(requestState, 'error', message);
 	}
 
-	public warn(state: RequestState | null, format: any, ...param: any[]) {
+	public warn(requestState: RequestState | null, format: any, ...param: any[]) {
 		const message = this.colorMessage(sprintf.apply(null, Array.from(arguments).splice(1)),
 			chalk.bgBlack.yellowBright, chalk.whiteBright);
-		this.log(state, 'warn', message);
+		this.log(requestState, 'warn', message);
 	}
 
-	public info(state: RequestState | null, format: any, ...param: any[]) {
+	public info(requestState: RequestState | null, format: any, ...param: any[]) {
 		const message = this.colorMessage(sprintf.apply(null, Array.from(arguments).splice(1)),
 			null, chalk.white);
-		this.log(state, 'info', message);
+		this.log(requestState, 'info', message);
 	}
 
-	public verbose(state: RequestState | null, format: any, ...param: any[]) {
+	public verbose(requestState: RequestState | null, format: any, ...param: any[]) {
 		const message = this.colorMessage(sprintf.apply(null, Array.from(arguments).splice(1)),
 			chalk.bgBlack.gray, chalk.gray);
-		this.log(state, 'verbose', message);
+		this.log(requestState, 'verbose', message);
 	}
 
-	public debug(state: RequestState | null, format: any, ...param: any[]) {
+	public debug(requestState: RequestState | null, format: any, ...param: any[]) {
 		const message = this.colorMessage(sprintf.apply(null, Array.from(arguments).splice(1)),
 			chalk.bgBlack.gray, chalk.gray);
-		this.log(state, 'debug', message);
+		this.log(requestState, 'debug', message);
 	}
 
-	private log(state: RequestState | null, level: string, message: string) {
-		this.logger.log({ level, message });
+	private log(requestState: RequestState | null, level: string, message: string) {
+		this.logger.log({ level: this.getWinstonLevel(level), message });
 		/* istanbul ignore if */
 		if (this.logDnaLogger) {
 			this.logDnaLogger.log(message, {
 				timestamp: Date.now(),
 				level: this.getLogDnaLevel(level),
-				meta: this.getMeta(state),
+				meta: this.getMeta(requestState),
 			});
 		}
 	}
@@ -163,8 +164,14 @@ class Logger {
 		return messageColor ? messageColor(message) : message;
 	}
 
-	private getMeta(state: RequestState) {
-		return Object.assign({}, state, { type: this.type });
+	private getMeta(requestState: RequestState) {
+		return {
+			requestId: requestState.requestId,
+			user: state.serializers.User.detailed({ state: requestState } as Context, requestState.user),
+			tokenType: requestState.tokenType,
+			tokenProvider: requestState.tokenProvider,
+			logType: this.type,
+		};
 	}
 
 	private getLogDnaLevel(level: string): string {
@@ -175,6 +182,18 @@ class Logger {
 			['verbose', 'debug'],
 			['debug', 'debug'],
 			['wtf', 'fatal'],
+		]);
+		return map.get(level) || 'info';
+	}
+
+	private getWinstonLevel(level: string): string {
+		const map: Map<string, string> = new Map([
+			['info', 'info'],
+			['error', 'error'],
+			['warn', 'warn'],
+			['verbose', 'verbose'],
+			['debug', 'debug'],
+			['wtf', 'error'],
 		]);
 		return map.get(level) || 'info';
 	}

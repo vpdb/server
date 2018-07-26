@@ -19,11 +19,11 @@
 import gm from 'gm';
 import { pick } from 'lodash';
 
+import { RequestState } from '../../common/typings/context';
 import { File } from '../file';
 import { FileDocument } from '../file.document';
 import { FileVariation } from '../file.variations';
 import { Metadata } from './metadata';
-import { RequestState } from '../../common/typings/context';
 
 require('bluebird').promisifyAll(gm.prototype);
 

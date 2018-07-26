@@ -23,11 +23,11 @@ import { createStream } from 'sax';
 
 import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
+import { RequestState } from '../../common/typings/context';
 import { File } from '../file';
 import { FileDocument } from '../file.document';
 import { FileVariation } from '../file.variations';
 import { Metadata } from './metadata';
-import { RequestState } from '../../common/typings/context';
 
 export class Directb2sMetadata extends Metadata {
 

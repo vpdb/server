@@ -22,10 +22,10 @@ import Ffmpeg from 'fluent-ffmpeg';
 import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
 import { config } from '../../common/settings';
+import { RequestState } from '../../common/typings/context';
 import { FileDocument } from '../file.document';
 import { FileVariation, VideoFileVariation } from '../file.variations';
 import { CreationProcessor } from './processor';
-import { RequestState } from '../../common/typings/context';
 
 const ffmpeg = require('bluebird').promisifyAll(Ffmpeg);
 

@@ -128,10 +128,12 @@ function log(ctx: Context, start: number, len: number, err: any = null, event: s
 
 	const logStatus = statusStyle[Math.floor(statusCode / 100) * 100] || statusStyle[100];
 	const logMethod = methodStyle[ctx.method] || methodStyle.GET;
+	const duration = Date.now() - start;
+	ctx.state.requestDuration = duration;
 
 	if (statusCode >= 500 && statusCode < 600) {
-		accessLogger.error(ctx.state, '[%s] %s%s %s %sms - %s', logUserIp, upstream, logStatus(' ' + statusCode + ' '), logMethod(ctx.method + ' ' + ctx.originalUrl), Date.now() - start, length);
+		accessLogger.error(ctx.state, '[%s] %s%s %s %sms - %s', logUserIp, upstream, logStatus(' ' + statusCode + ' '), logMethod(ctx.method + ' ' + ctx.originalUrl), duration, length);
 	} else {
-		accessLogger.info(ctx.state, '[%s] %s%s %s %sms - %s%s', logUserIp, upstream, logStatus(' ' + statusCode + ' '), logMethod(ctx.method + ' ' + ctx.originalUrl), Date.now() - start, length, cache);
+		accessLogger.info(ctx.state, '[%s] %s%s %s %sms - %s%s', logUserIp, upstream, logStatus(' ' + statusCode + ' '), logMethod(ctx.method + ' ' + ctx.originalUrl), duration, length, cache);
 	}
 }

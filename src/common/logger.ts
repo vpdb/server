@@ -167,6 +167,7 @@ class Logger {
 	private getMeta(requestState: RequestState) {
 		return requestState ? {
 			requestId: requestState.requestId,
+			requestDuration: requestState.requestDuration,
 			user: state.serializers.User.detailed({ state: requestState } as Context, requestState.user),
 			tokenType: requestState.tokenType,
 			tokenProvider: requestState.tokenProvider,

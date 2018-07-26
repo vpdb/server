@@ -36,13 +36,13 @@ const statusStyle: { [key: number]: Chalk & { supportsColor: ColorSupport } } = 
 
 const methodStyle: { [key: string]: Chalk & { supportsColor: ColorSupport } } = {
 	GET: chalk.white.bgBlue,
-	HEAD: chalk.white.bgWhite,
+	HEAD: chalk.white.bgBlack,
 	POST: chalk.white.bgGreen,
 	PUT: chalk.white.bgYellow,
 	DELETE: chalk.white.bgRed,
-	CONNECT: chalk.white.bgWhite,
-	OPTIONS: chalk.white.bgWhite,
-	TRACE: chalk.white.bgWhite,
+	CONNECT: chalk.white.bgBlack,
+	OPTIONS: chalk.white.bgBlack,
+	TRACE: chalk.white.bgBlack,
 	PATCH: chalk.white.bgCyan,
 };
 

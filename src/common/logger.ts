@@ -24,9 +24,8 @@ import { resolve } from 'path';
 import { format as sprintf } from 'util';
 import winston from 'winston';
 
-import { state } from '../state';
 import { config } from './settings';
-import { Context, RequestState } from './typings/context';
+import { RequestState } from './typings/context';
 
 const LogDna = require('logdna');
 
@@ -106,11 +105,12 @@ class Logger {
 		this.logger.log({ level: this.getWinstonLevel(level), message });
 		/* istanbul ignore if */
 		if (this.logDnaLogger) {
-			this.logDnaLogger.log(message, {
+			const opts = {
 				timestamp: Date.now(),
 				level: this.getLogDnaLevel(level),
 				meta: this.getMeta(requestState),
-			});
+			};
+			this.logDnaLogger.log(message, opts);
 		}
 	}
 
@@ -168,7 +168,11 @@ class Logger {
 		return requestState ? {
 			requestId: requestState.requestId,
 			requestDuration: requestState.requestDuration,
-			user: state.serializers.User.detailed({ state: requestState } as Context, requestState.user),
+			user: requestState.user ? {
+				id: requestState.user.id,
+				email: requestState.user.email,
+				name: requestState.user.name,
+			} : undefined,
 			tokenType: requestState.tokenType,
 			tokenProvider: requestState.tokenProvider,
 			logType: this.type,

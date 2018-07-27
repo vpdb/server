@@ -164,6 +164,7 @@ class Logger {
 		return messageColor ? messageColor(message) : message;
 	}
 
+	/* istanbul ignore next */
 	private getMeta(requestState: RequestState) {
 		return requestState ? {
 			request: requestState.request,

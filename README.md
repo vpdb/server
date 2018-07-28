@@ -78,7 +78,7 @@ Code is also run through Code Climate, with the following result: [![Code Climat
 * To Mukuste. He gave the community such a nice momentum and I thought I could add a little bit to it.
 * To Tom for his support of this project.
 
-<a href=" https://www.jetbrains.com/idea/"><img src="https://raw.githubusercontent.com/vpdb/server/master/assets/intellij-logo-text.svg?sanitize=true" alt="IntelliJ IDEA" width="250"></a>
+<a title="IntelliJ IDEA" href="https://www.jetbrains.com/idea/"><img src="https://raw.githubusercontent.com/vpdb/server/master/assets/intellij-logo-text.svg?sanitize=true" alt="IntelliJ IDEA" width="250"></a>
 
 Thanks also to JetBrains for their awesome IDE and support of the Open Source Community!
 

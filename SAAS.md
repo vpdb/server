@@ -12,6 +12,12 @@ settings, more precisely at `vpdb.services.raygun`.
 [Rollbar](https://rollbar.com) is another crash reporter. Like Raygun, it's configured in the
 settings at `vpdb.services.rollbar`.
 
+## LogDNA
+
+[LogDNA](https://logdna.com/) is a log management platform. VPDB sends structured logs,
+which makes it possible to filter by request, user, or IP. LogDNA is enabled in the settings
+under `vpdb.logging.logdna`.
+
 ## Sqreen
 
 [Sqreen](https://www.sqreen.io) provides several security-related features.  

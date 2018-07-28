@@ -89,7 +89,7 @@ export abstract class Serializer<T extends Document | ModeratedDocument> {
 		if (isArray(obj) && obj.length > 0) {
 			obj = obj[0];
 		}
-		return !(obj instanceof Types.ObjectId);
+		return obj && !(obj instanceof Types.ObjectId);
 	}
 
 	protected _defaultOpts(opts: SerializerOptions): SerializerOptions {

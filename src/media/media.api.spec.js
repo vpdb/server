@@ -267,7 +267,7 @@ describe('The VPDB `Media` API', function() {
 		});
 
 		it('should fail for an invalid game', function(done) {
-			request.get('/api/v1/games/sabbelnich/media').save('games/list-media').end(hlp.status(404, 'unknown game', done));
+			request.get('/api/v1/games/sabbelnich/media').end(hlp.status(404, 'unknown game', done));
 		});
 
 		it('should list media under the game', function(done) {

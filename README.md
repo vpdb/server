@@ -91,7 +91,7 @@ Finally, big shouts to Sqreen for their excellent security services protecting o
 
 GPLv2, see [LICENSE](LICENSE).
 
-[text-logo]: https://github.com/vpdb/server/raw/master/doc/text-logo.png
+[text-logo]: https://raw.githubusercontent.com/vpdb/server/master/assets/vpdb-logo-text.svg
 [travis-image]: https://img.shields.io/travis/vpdb/server.svg?style=flat-square
 [travis-url]: https://travis-ci.org/vpdb/server
 [coveralls-image]: https://img.shields.io/coveralls/vpdb/backend.svg?style=flat-square
@@ -102,5 +102,5 @@ GPLv2, see [LICENSE](LICENSE).
 [codeship-url]: https://www.codeship.io/projects/159851
 [codeclimate-image]: http://img.shields.io/codeclimate/github/vpdb/backend.svg?style=flat-square
 [codeclimate-url]: https://codeclimate.com/github/vpdb/backend
-[idea-image]: https://raw.githubusercontent.com/vpdb/backend/master/doc/logo_IntelliJIDEA.png
+[idea-image]: https://raw.githubusercontent.com/vpdb/server/master/assets/intellij-logo-text.svg
 [idea-url]: https://www.jetbrains.com/idea/

@@ -63,7 +63,7 @@ export class LogEventSerializer extends Serializer<LogEventDocument> {
 			logEvent.ref.game_request = state.serializers.GameRequest.reduced(ctx, doc._ref.game_request as GameRequestDocument, opts);
 		}
 		if (isEmpty(logEvent.ref)) {
-			delete logEvent.ref;
+			logEvent.ref = undefined;
 		}
 
 		return logEvent;

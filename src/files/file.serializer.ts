@@ -46,6 +46,7 @@ export class FileSerializer extends Serializer<FileDocument> {
 			const fileCost = quota.getCost(ctx.state, doc, variation);
 			file.variations[variation.name] = doc.variations ? doc.variations[variation.name] || {} : {};
 			file.variations[variation.name].url = File.getUrl(ctx.state, doc, variation);
+			file.variations[variation.name].mime_type = File.getMimeType(doc, variation);
 			file.variations[variation.name].is_protected = File.isPublic(ctx.state, doc, variation) ? undefined : true;
 			file.variations[variation.name].fileCost = fileCost > 0 ? fileCost : undefined;
 		});

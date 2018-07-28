@@ -98,7 +98,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		await (release._game as GameDocument).update({ modified_at: new Date() });
 
 		release = await this.getDetails(release._id);
-		this.success(ctx, state.serializers.Release.detailed(ctx, release), 201);
+		this.success(ctx, state.serializers.Release.detailed(ctx, release, { fields: [ 'is_active' ]}), 201);
 
 		await LogEventUtil.log(ctx, 'create_release', true, {
 			release: state.serializers.Release.detailed(ctx, release, { thumbFormat: 'medium' }),

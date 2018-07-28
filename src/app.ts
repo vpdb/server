@@ -27,6 +27,7 @@ import { endPoints } from './common/api.endpoints';
 import { logger } from './common/logger';
 import { ModerationSerializer } from './common/mongoose/moderation.serializer';
 import { config, settings } from './common/settings';
+import { FileUtil } from './files/file.util';
 import { server } from './server';
 import { state } from './state';
 
@@ -63,6 +64,10 @@ shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 
 		// setup ACLs
 		await initAcls();
+
+		// cleanup inactive storage
+		logger.info(null, '[app] Cleaning up inactive storage files older than one week.');
+		await FileUtil.cleanup(3600000 * 24 * 7);
 
 		// go!
 		server.start();

@@ -27,6 +27,7 @@ import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
 import { RequestState } from '../common/typings/context';
 import { state } from '../state';
+import { UserDocument } from '../users/user.document';
 import { FileDocument } from './file.document';
 import { Metadata } from './metadata/metadata';
 import { processorQueue } from './processor/processor.queue';
@@ -163,6 +164,21 @@ export class FileUtil {
 			wr.end();
 			throw error;
 		});
+	}
+
+	/**
+	 * Removes inactive files that have passed the grace period
+	 *
+	 * @param {number} gracePeriod Grace period in milliseconds
+	 * @returns {Promise<void>}
+	 */
+	public static async cleanup(gracePeriod: number = 0): Promise<void> {
+		const condition = { is_active: false, created_at: { $lt: new Date(Date.now() - gracePeriod) } };
+		const files = await state.models.File.find(condition).populate('_created_by').exec();
+		for (const file of files) {
+			logger.info(null, '[storage] Cleanup: Removing inactive file "%s" by <%s> (%s).', file.name, file._created_by ? (file._created_by as UserDocument).email : 'unknown', file.id);
+			await file.remove();
+		}
 	}
 
 	/**

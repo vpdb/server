@@ -34,6 +34,7 @@
 		"test:serve": "cross-env NODE_ENV=test APP_SETTINGS=config/settings.test.js PORT=7357 APP_NAME=local ENABLE_KILL_SWITCH=1 LOGLEVEL=info run-s build test:dropdbs test:rimraf serve:test",
 		"test:serve:debug": "cross-env NODE_ENV=test APP_SETTINGS=config/settings.test.js PORT=7357 APP_NAME=local run-s test:dropdbs serve:test:debug",
 		"test:ci": "run-p test:serve test:run",
+		"update-top-100": "node -r ts-node/register scripts/update-top-100.ts",
 		"snyk-protect": "snyk protect",
 		"prepare": "npm run snyk-protect"
 	},
@@ -107,6 +108,7 @@
 		"@types/busboy": "0.2.3",
 		"@types/bytes": "3.0.0",
 		"@types/chalk": "2.2.0",
+		"@types/cheerio": "0.22.8",
 		"@types/ent": "2.2.1",
 		"@types/expect.js": "0.3.29",
 		"@types/faker": "4.1.2",
@@ -139,6 +141,7 @@
 		"@types/xmlbuilder": "0.0.32",
 		"@types/yargs": "11.1.1",
 		"async": "2.6.1",
+		"cheerio": "1.0.0-rc.2",
 		"cross-env": "5.2.0",
 		"expect.js": "0.3.1",
 		"faker": "4.1.0",

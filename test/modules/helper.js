@@ -746,10 +746,10 @@ exports._createUser = function(request, name, config) {
 
 function appendError(err, res) {
 	let msg = err.message;
-	if (res.error) {
+	if (res && res.error) {
 		msg += ': ' + res.error;
 	}
-	if (res.body && res.body.error) {
+	if (res && res.body && res.body.error) {
 		msg += ': ' + res.body.error;
 	}
 	return new Error(msg);

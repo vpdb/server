@@ -71,7 +71,6 @@ describe('The VPDB `user` API', () => {
 
 			it('with minimal infos as member', async () => {
 				res = await api.as('member')
-					.saveResponse('users/search-as-admin')
 					.withQuery({ q: api.getUser('member').name.substr(0, 3) })
 					.get('/v1/users')
 					.then(res => res.expectStatus(200));

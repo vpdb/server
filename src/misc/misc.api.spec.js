@@ -51,6 +51,7 @@ describe('The VPDB API', () => {
 
 	it('should list all plans', async () => {
 		res = await api
+			.saveResponse('plans/list')
 			.get('/v1/plans')
 			.then(res => res.expectStatus(200));
 		expect(res.data.length).to.be(4);

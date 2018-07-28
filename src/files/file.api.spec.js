@@ -64,7 +64,6 @@ describe('The VPDB `file` API', () => {
 			expect(img.name).to.be('backglass.png');
 			expect(img.mime_type).to.be('image/png');
 			expect(img.is_protected).to.be(true);
-			expect(img.is_active).to.be(true);
 			expect(img.variations.full.url).to.be.ok();
 			expect(img.variations.medium.url).to.be.ok();
 			expect(img.variations['medium-2x'].url).to.be.ok();

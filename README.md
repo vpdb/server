@@ -1,4 +1,4 @@
-![vpdb][text-logo]
+<img src="https://raw.githubusercontent.com/vpdb/server/master/assets/vpdb-logo-text.svg?sanitize=true" alt="VPDB" width="250">
 
 *A database for Virtual Pinball tables.*
 
@@ -78,7 +78,7 @@ Code is also run through Code Climate, with the following result: [![Code Climat
 * To Mukuste. He gave the community such a nice momentum and I thought I could add a little bit to it.
 * To Tom for his support of this project.
 
-[![IntelliJ IDEA][idea-image]][idea-url]
+<a href=" https://www.jetbrains.com/idea/"><img src="https://raw.githubusercontent.com/vpdb/server/master/assets/intellij-logo-text.svg?sanitize=true" alt="IntelliJ IDEA" width="250"></a>
 
 Thanks also to JetBrains for their awesome IDE and support of the Open Source Community!
 
@@ -91,7 +91,6 @@ Finally, big shouts to Sqreen for their excellent security services protecting o
 
 GPLv2, see [LICENSE](LICENSE).
 
-[text-logo]: https://raw.githubusercontent.com/vpdb/server/master/assets/vpdb-logo-text.svg?sanitize=true
 [travis-image]: https://img.shields.io/travis/vpdb/server.svg?style=flat-square
 [travis-url]: https://travis-ci.org/vpdb/server
 [coveralls-image]: https://img.shields.io/coveralls/vpdb/backend.svg?style=flat-square
@@ -102,5 +101,3 @@ GPLv2, see [LICENSE](LICENSE).
 [codeship-url]: https://www.codeship.io/projects/159851
 [codeclimate-image]: http://img.shields.io/codeclimate/github/vpdb/backend.svg?style=flat-square
 [codeclimate-url]: https://codeclimate.com/github/vpdb/backend
-[idea-image]: https://raw.githubusercontent.com/vpdb/server/master/assets/intellij-logo-text.svg?sanitize=true
-[idea-url]: https://www.jetbrains.com/idea/

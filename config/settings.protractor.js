@@ -1,5 +1,7 @@
 /**
  * Test server configuration file.
+ *
+ * This is used when running tests locally with `npm run serve:protractor`.
  */
 module.exports = {
 

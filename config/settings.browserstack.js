@@ -1,5 +1,7 @@
 /**
  * Test server configuration file.
+ *
+ * This is used when running on Codeship with Browserstack
  */
 module.exports = {
 

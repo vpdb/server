@@ -90,6 +90,7 @@ describe('The VPDB `Release` API', function() {
 				request
 					.post('/api/v1/releases')
 					.as('member')
+					.saveResponse({ path: 'releases/create' })
 					.send({ versions: [ {
 						files: [
 							{ _file: vptfile.id },
@@ -372,7 +373,6 @@ describe('The VPDB `Release` API', function() {
 					hlp.file.createPlayfields(user, request, 'fs', 2, function(playfieldImages) {
 						request
 							.post('/api/v1/releases')
-							.save({ path: 'releases/create'})
 							.as(user)
 							.send({
 								name: 'release',

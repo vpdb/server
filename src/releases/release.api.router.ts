@@ -65,6 +65,6 @@ releaseApiRouter.get('/v1/releases/:id/moderate/comments',  api.auth(commentApi.
 
 releaseApiRouter.get('/v1/releases/:id/events', eventApi.list({ byRelease: true }).bind(eventApi));
 
-apiCache.enable(releaseApiRouter, '/v1/releases', { resources: [ 'release', 'user' ] }, releaseListCacheCounters);
+apiCache.enable(releaseApiRouter, '/v1/releases', { resources: [ 'user' ] }, releaseListCacheCounters);
 apiCache.enable(releaseApiRouter, '/v1/releases/:id',  { resources: [ 'user' ], entities: { release: 'id' } }, releaseDetailsCacheCounters);
 //apiCache.enable(this._router, '/v1/releases/:id/comments', { entities: { release: 'id' } });

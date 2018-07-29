@@ -347,11 +347,11 @@ export class ReleaseApi extends ReleaseAbstractApi {
 			throw new ApiError('Permission denied, must be owner.').status(403);
 		}
 
+		// invalidate cache
+		await apiCache.invalidateRelease(ctx.state, release);
+
 		// remove from db
 		await release.remove();
-
-		// invalidate cache
-		await apiCache.invalidateRelease(ctx.state);
 
 		logger.info(ctx.state, '[ReleaseApi.delete] Release "%s" (%s) successfully deleted.', release.name, release.id);
 

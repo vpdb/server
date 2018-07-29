@@ -18,10 +18,11 @@
  */
 
 import Router, { IRouterOptions } from 'koa-router';
-import { get, intersection, isObject, capitalize } from 'lodash';
+import { capitalize, get, intersection, isObject } from 'lodash';
 import pathToRegexp from 'path-to-regexp';
 
 import { MetricsDocument, MetricsModel } from 'mongoose';
+import { GameDocument } from '../games/game.document';
 import { ReleaseDocument } from '../releases/release.doument';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
@@ -124,6 +125,48 @@ class ApiCache {
 	}
 
 	/**
+	 * Clears all caches listing the given entity and the entity's details.
+	 *
+	 * @param requestState For logging
+	 * @param {string} modelName Name of the model, e.g. "game"
+	 * @param {string} entityId ID of the entity
+	 */
+	public async invalidateDirtyEntity(requestState: RequestState, modelName: string, entityId: string) {
+		const tag: CacheInvalidationTag = { entities: { [modelName]: entityId } };
+		if (this.endpoints.has(modelName)) {
+			tag.path = this.endpoints.get(modelName);
+		}
+		await this.invalidate(requestState, [tag]);
+	}
+
+	/**
+	 * A game has been added, updated or deleted. Invalidates game details
+	 * and game lists.
+	 *
+	 * @param requestState For logging
+	 * @param game Changed, added or removed game
+	 */
+	public async invalidateGame(requestState: RequestState, game: GameDocument) {
+		await this.invalidateDirtyEntity(requestState, 'game', game.id);
+	}
+
+	/**
+	 * A release has been added, updated or deleted. Invalidates release details,
+	 * release lists and the release's game.
+	 *
+	 * @param requestState For logging
+	 * @param release Changed, added or removed release
+	 */
+	public async invalidateRelease(requestState: RequestState, release: ReleaseDocument) {
+		await this.invalidateDirtyEntity(requestState, 'release', release.id);
+		await this.invalidate(requestState, [{ entities: { game: (release._game as GameDocument).id } }]);
+	}
+
+	public async invalidateReleaseComment(requestState: RequestState, release: ReleaseDocument) {
+		await this.invalidate(requestState, [{ entities: { releaseComment: release.id } }]);
+	}
+
+	/**
 	 * Updates a counter cache.
 	 *
 	 * @param {string} modelName Name of the model, e.g. "game"
@@ -141,22 +184,7 @@ class ApiCache {
 	}
 
 	/**
-	 * Clears all caches listing the given entity and the entity's details.
-	 *
-	 * @param requestState For logging
-	 * @param {string} modelName Name of the model, e.g. "game"
-	 * @param {string} entityId ID of the entity
-	 */
-	public async invalidateEntity(requestState: RequestState, modelName: string, entityId: string) {
-		const tag: CacheInvalidationTag = { entities: { [modelName]: entityId } };
-		if (this.endpoints.has(modelName)) {
-			tag.path = this.endpoints.get(modelName);
-		}
-		await this.invalidate(requestState, [tag]);
-	}
-
-	/**
-	 * Invalidates caches depending on a star.
+	 * Invalidates caches for a user after (un)starring.
 	 *
 	 * @param requestState For logging
 	 * @param {string} modelName Name of the model, e.g. "game"
@@ -176,18 +204,6 @@ class ApiCache {
 			tags.push([{ path: '/v1/games/' + entity._game.id }, { user }]);
 		}
 		await this.invalidate(requestState, ...tags);
-	}
-
-	public async invalidateRelease(requestState: RequestState, release?: ReleaseDocument) {
-		if (release) {
-			await this.invalidateEntity(requestState, 'release', release.id);
-		} else {
-			await this.invalidate(requestState, [{ resources: ['release'] }]);
-		}
-	}
-
-	public async invalidateReleaseComment(requestState: RequestState, release: ReleaseDocument) {
-		await this.invalidate(requestState, [{ entities: { releaseComment: release.id } }]);
 	}
 
 	/**
@@ -290,7 +306,6 @@ class ApiCache {
 
 		let n = 0;
 		for (const key of invalidationKeys) {
-			// logger.wtf('DEL %s', key);
 			await state.redis.del(key);
 			n++;
 		}
@@ -352,8 +367,8 @@ class ApiCache {
 		// reference children
 		if (cacheRoute.config.children) {
 			body = isObject(ctx.response.body) ? ctx.response.body : JSON.parse(ctx.response.body);
-			for (const entity of get(body, cacheRoute.config.children.entityField)) {
-				const refKey = this.getEntityKey(cacheRoute.config.children.modelName, get(entity, cacheRoute.config.children.idField));
+			for (const child of get(body, cacheRoute.config.children.entityField)) {
+				const refKey = this.getEntityKey(cacheRoute.config.children.modelName, get(child, cacheRoute.config.children.idField));
 				refs.push(() => state.redis.sadd(refKey, key));
 				refKeys.push(refKey);
 			}
@@ -485,61 +500,94 @@ interface CacheRoute<T> {
 }
 
 /**
- * Defines which caches to invalidate.
+ * Defines which caches to clear *when invalidating*.
  *
  * If multiple properties are set, all of them are applied (logical `or`).
  */
 export interface CacheInvalidationTag {
+
 	/**
-	 * Invalidate one or multiple resources.
-	 * All caches tagged with any of the provided resources will be invalidated.
+	 * This is the broadest tag. It means that every cache containing the tag
+	 * will be invalidated. For example, if a user is updated, every cache
+	 * containing the "user" resource tag will be invalidated, independently if
+	 * the cache actually contains the updated user.
 	 */
 	resources?: string[];
+
 	/**
-	 * Invalidates a specific path defined by {@link ApiCache.enable}.
-	 * Placeholders are replaced with values.
+	 * Invalidates a specific route defined by {@link ApiCache.enable}, i.e.
+	 * all caches for that route independently of the query parameters. It's
+	 * used for list or detail views. TODO really detail views as well?
 	 */
 	path?: string;
+
 	/**
-	 * Invalidate a specific entity.
-	 * The key is the entity's name and the value its parsed ID.
-	 * All caches tagged with the entity and ID will be invalidated.
+	 * This is the most specific tag. It invalidates only caches that concern
+	 * one specific entity, i.e. the detail view or the detail view of its
+	 * parent.
+	 *
+	 * The key is the entity's model name and the value its ID. For example, to
+	 * invalidate release with ID "1234", you would use:
+	 *
+	 * 		`{ entities: release: '1234' }`
 	 */
 	entities?: { [key: string]: string; };
+
 	/**
-	 * Invalidate user-specific caches.
-	 * All caches for that user will be invalidated.
+	 * Invalidates all caches produced by a user. Note it's not about actual
+	 * user data in the response body, but *who* requested it.
+	 *
+	 * This is typically applied to resources containing user-specific data such
+	 * as the release list containing starred status of each release.
 	 */
 	user?: UserDocument;
 }
 
 /**
- * Defines how to invalidate a given route.
+ * Defines how a given route is invalidated *when setting up the route*.
  */
 export interface CacheInvalidationConfig {
+
 	/**
-	 * Reference one or multiple resources.
-	 *
-	 * Only routes that contain arbitrary instances of the entity are listed
-	 * here, like lists that can be sorted. For routes returning one specific
-	 * instance, use {@link resources} and for entities *linked* to a
-	 * specific object, use {@link children}.
-	 *
-	 * Multiple resources are needed if a resource is dependent on another
-	 * resource, e.g. the games resource which also includes releases and
-	 * users.
+	 * Configures a route to tag its caches with one or more resource keys.
+	 * See {@link CacheInvalidationTag.resources} how they are invalidated.
 	 */
 	resources?: string[];
 
 	/**
-	 * Reference a specific entity.
-	 * The key is the entity's model name and the value how it's parsed from
-	 * the URL (e.g. `:id` becomes `id`).
+	 * Configures a route to tags its caches with a specific entity. See
+	 * {@link CacheInvalidationTag.entities} how they are invalidated.
+	 *
+	 * The key is the entity's model name and the value the name of the path
+	 * parameter of the route. For example, to configure release details, you
+	 * would use:
+	 *
+	 * 		`{ entities: { release: 'id' }}`
+	 *
+	 * Because `id` (from `/v1/releases/:id`) is the parameter name of the
+	 * release ID, and "release" the name of the model.
 	 */
 	entities?: { [key: string]: string; };
 
 	/**
-	 * References child objects.
+	 * Configures a route to tag its caches as parent of a list of different
+	 * entity types. This makes the parent invalidate when any child matches
+	 * {@link CacheInvalidationTag.entities}.
+	 *
+	 * For example, a game can define that it contains children of type
+	 * `release`, that they are listed under the game's `releases` field and
+	 * that each release ID can be found as `id` in each child. This
+	 * configuration would look like that:
+	 *
+	 * 		`{ children: { modelName: 'release', entityField: 'releases', idField: 'id' } }`
+	 *
+	 * That means that if any of the children gets invalidated, the parent gets
+	 * invalidated as well.
+	 *
+	 * Note this works only if a child was attached to its parent at the moment
+	 * of caching, for created children, the parent must be invalidated
+	 * separately.
+	 * @deprecated: Change to individual occurences, such as users, builds, tags, etc
 	 */
 	children?: {
 		/**
@@ -562,7 +610,7 @@ export interface CacheInvalidationConfig {
 /**
  * Defines how to handle counters for a given model within a response body.
  *
- * Counter caching works like that:
+ * This is now counter caching works:
  *
  * On miss,
  *   1. Response body is computed

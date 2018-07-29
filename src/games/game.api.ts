@@ -49,6 +49,7 @@ import { ReleaseDocument } from '../releases/release.doument';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
 import { GameDocument } from './game.document';
+import { apiCache } from '../common/api.cache';
 
 const generate = require('project-name-generator');
 
@@ -87,6 +88,9 @@ export class GameApi extends Api {
 
 		logger.info(ctx.state, '[GameApi.create] Game "%s" created.', game.title);
 		await game.activateFiles();
+
+		// invalidate cache
+		await apiCache.invalidateGame(ctx.state, game);
 
 		logger.info(ctx.state, '[GameApi.create] Files activated.');
 
@@ -194,6 +198,9 @@ export class GameApi extends Api {
 		const activatedFileIds = await game.activateFiles();
 
 		logger.info(ctx.state, '[GameApi.update] Activated %s new file%s.', activatedFileIds.length, activatedFileIds.length === 1 ? '' : 's');
+
+		// invalidate cache
+		await apiCache.invalidateGame(ctx.state, game);
 
 		// copy to media and delete old media if changed
 		try {

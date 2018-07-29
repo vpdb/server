@@ -65,13 +65,6 @@ describe('The VPDB API cache', () => {
 			expect(res.data.counter.views).to.be(views + 1);
 		});
 
-		it('should cache game details but update view counter', async () => {
-			res = await api.get('/v1/games/' + release.game.id).then(res => res.expectHeader('x-cache-api', 'miss'));
-			const views = res.data.counter.views;
-			res = await api.get('/v1/games/' + release.game.id).then(res => res.expectHeader('x-cache-api', 'hit'));
-			expect(res.data.counter.views).to.be(views + 1);
-		});
-
 		it('should cache game list for same user', async () => {
 			await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'miss'));
 			await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'hit'));
@@ -177,47 +170,6 @@ describe('The VPDB API cache', () => {
 			await api.get(url).then(res => res.expectHeader('x-cache-api', 'hit'));
 		});
 
-	});
-
-	describe('when starring a game', () => {
-
-		const user = 'member';
-
-		// remove star
-		afterEach(async () => await api.as(user).del('/v1/games/' + release.game.id + '/star').then(res => res.expectStatus(204)));
-
-		it('should cache game list but update star counter', async () => {
-
-			// first, it's a miss
-			res = await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'miss'));
-			await api.as(user).get('/v1/games').then(res => res.expectHeader('x-cache-api', 'miss'));
-			const numStars = res.data.find(g => g.id === release.game.id).counter.stars;
-
-			// star
-			await api.as(user).post('/v1/games/' + release.game.id + '/star', {}).then(res => res.expectStatus(201));
-
-			// assert hit
-			res = await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'hit'));
-			expect(res.data.find(g => g.id === release.game.id).counter.stars).to.be(numStars + 1);
-			res = await api.as(user).get('/v1/games').then(res => res.expectHeader('x-cache-api', 'hit'));
-			expect(res.data.find(g => g.id === release.game.id).counter.stars).to.be(numStars + 1);
-		});
-
-		it('should cache game details but update star counter', async () => {
-			const url = '/v1/games/' + release.game.id;
-
-			// first, it's a miss
-			res = await api.get(url).then(res => res.expectHeader('x-cache-api', 'miss'));
-			await api.get(url).then(res => res.expectHeader('x-cache-api', 'hit'));
-			const numStars = res.data.counter.stars;
-
-			// star
-			await api.as(user).post(url + '/star', {}).then(res => res.expectStatus(201));
-
-			// assert hit
-			res = await api.get(url).then(res => res.expectHeader('x-cache-api', 'hit'));
-			expect(res.data.counter.stars).to.be(numStars + 1);
-		});
 	});
 
 	describe('when rating a release', () => {

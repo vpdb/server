@@ -290,6 +290,7 @@ export class ReleaseStorage extends Api {
 
 		// count release and user download
 		counters.push(() => release.incrementCounter('downloads'));
+		counters.push(() => (release._game as GameDocument).incrementCounter('downloads'));
 		counters.push(() => ctx.state.user.incrementCounter('downloads'));
 
 		release.versions.forEach(version => {

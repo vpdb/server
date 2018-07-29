@@ -18,7 +18,7 @@
  */
 
 import Router, { IRouterOptions } from 'koa-router';
-import { get, intersection, isObject } from 'lodash';
+import { get, intersection, isObject, capitalize } from 'lodash';
 import pathToRegexp from 'path-to-regexp';
 
 import { MetricsDocument, MetricsModel } from 'mongoose';
@@ -103,9 +103,12 @@ class ApiCache {
 
 			const response = await this.updateCounters(cacheRoute, hit);
 			ctx.status = response.status;
-			ctx.set('X-Cache-Api', 'HIT');
-			// todo add auth headers such as x-token-refresh
 
+			// set headers
+			for (const header of Object.keys(response.headers)) {
+				ctx.set(header.split('-').map(capitalize).join('-'), response.headers[header]);
+			}
+			ctx.set('X-Cache-Api', 'HIT');
 			ctx.response.body = response.body;
 
 		} else {
@@ -155,6 +158,7 @@ class ApiCache {
 	/**
 	 * Invalidates caches depending on a star.
 	 *
+	 * @param requestState For logging
 	 * @param {string} modelName Name of the model, e.g. "game"
 	 * @param {UserDocument} user User who starred the entity
 	 * @param entity Starred entity
@@ -309,9 +313,14 @@ class ApiCache {
 		const refKeys: string[] = [];
 		const response: CacheResponse = {
 			status: ctx.status,
-			headers: ctx.headers,
+			headers: ctx.response.headers,
 			body: ctx.response.body,
 		};
+
+		// remove irrelevant headers
+		for (const header of ['x-cache-api', 'x-token-refresh', 'x-user-dirty', 'access-control-allow-origin', 'vary']) {
+			delete response.headers[header];
+		}
 
 		// set the cache todo set ttl to user caches
 		await state.redis.set(key, JSON.stringify(response));

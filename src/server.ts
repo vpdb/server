@@ -49,7 +49,7 @@ export class Server {
 		this.app.use(koaErrorHandler());
 		this.app.use(koaRestHandler());
 		this.app.use(koaAuth());
-		this.app.use(koaCors());
+		this.app.use(koaCors({ exposeHeaders, maxAge: 600, credentials: true }));
 		this.app.use(koaJson({ pretty: false, param: 'pretty' }));
 		this.app.use(apiCache.middleware.bind(apiCache));
 
@@ -100,5 +100,21 @@ export class Server {
 		logger.info(null, '[Server.start] API ready at %s', settings.apiExternalUri());
 	}
 }
+
+const exposeHeaders = [
+	'Cache-Control',
+	'Content-Disposition',
+	'Link',
+	'X-App-Sha',
+	'X-Cache-Api',
+	'X-List-Count',
+	'X-List-Page',
+	'X-List-Size',
+	'X-RateLimit-Limit',
+	'X-RateLimit-Remaining',
+	'X-RateLimit-Reset',
+	'X-Token-Refresh',
+	'X-User-Dirty',
+];
 
 export const server = new Server();

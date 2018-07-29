@@ -22,7 +22,7 @@ import { BuildDocument } from '../builds/build.document';
 import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
 import { Context } from '../common/typings/context';
-import { ReleaseDocument } from '../releases/release.doument';
+import { ReleaseDocument } from '../releases/release.document';
 import { TableBlock, TableBlockBase, TableBlockMatch, TableBlockMatchResult } from '../releases/release.tableblock';
 import { ReleaseVersionFileDocument } from '../releases/version/file/release.version.file.document';
 import { ReleaseVersionDocument } from '../releases/version/release.version.document';

@@ -20,7 +20,7 @@
 import { CacheCounterConfig, CacheCounterValues } from '../common/api.cache';
 import { FileCounterType } from '../files/file.document';
 import { Release } from './release';
-import { ReleaseCounterType, ReleaseDocument } from './release.doument';
+import { ReleaseCounterType, ReleaseDocument } from './release.document';
 
 export const releaseListCacheCounters: Array<CacheCounterConfig<ReleaseDocument[]>> = [{
 	modelName: 'release',

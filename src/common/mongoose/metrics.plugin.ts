@@ -27,13 +27,12 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 	 * Increments a counter.
 	 *
 	 * @param {string} counterName Property to increment, e.g. 'view'
-	 * @param {boolean} [decrement] If set to true, decrement instead counter instead of increment.
+	 * @param {number} [value=1] How much to increment. Use a negative value for decrement
 	 * @returns {Promise}
 	 */
-	schema.methods.incrementCounter = async function(counterName: string, decrement: boolean = false): Promise<T> {
-		const incr = decrement ? -1 : 1;
+	schema.methods.incrementCounter = async function(counterName: string, value: number = 1): Promise<T> {
 		const q: any = {
-			$inc: { ['counter.' + counterName]: incr },
+			$inc: { ['counter.' + counterName]: value },
 		};
 
 		if (options.hotness) {
@@ -44,16 +43,14 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 				Object.keys(hotness).forEach(variable => {
 					const factor = hotness[variable];
 					if (this.counter[variable]) {
-						score += factor * (this.counter[variable] + (variable === counterName ? incr : 0));
+						score += factor * (this.counter[variable] + (variable === counterName ? value : 0));
 					}
 				});
 				q.metrics[metric] = Math.log(Math.max(score, 1));
 			});
 		}
-
 		// update cache
-		await apiCache.incrementCounter(this.constructor.modelName.toLowerCase(), this.id, counterName, decrement);
-
+		await apiCache.incrementCounter(this.constructor.modelName.toLowerCase(), this.id, counterName, value);
 		// update db
 		return this.update(q);
 	};
@@ -64,16 +61,13 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 	 *
 	 * @param {string} entityId ID of the entity to update
 	 * @param {string} counterName Name of the counter, e.g. "views"
-	 * @param {boolean} decrement If set, decrement instead of increment.
+	 * @param {number} [value=1] How much to increment. Use a negative value for decrement
 	 */
-	schema.statics.incrementCounter = async function(this: ModelProperties, entityId: string, counterName: string, decrement: boolean = false): Promise<void> {
-		const incr = decrement ? -1 : 1;
-
+	schema.statics.incrementCounter = async function(this: ModelProperties, entityId: string, counterName: string, value: number = 1): Promise<void> {
 		// update cache
-		await apiCache.incrementCounter(this.modelName.toLowerCase(), entityId, counterName, decrement);
-
+		await apiCache.incrementCounter(this.modelName.toLowerCase(), entityId, counterName, value);
 		// update db
-		await state.getModel(this.modelName).findOneAndUpdate({ id: entityId }, { $inc: { ['counter.' + counterName]: incr } }).exec();
+		await state.getModel(this.modelName).findOneAndUpdate({ id: entityId }, { $inc: { ['counter.' + counterName]: value } }).exec();
 	};
 }
 
@@ -91,10 +85,10 @@ declare module 'mongoose' {
 		 * Increments a counter.
 		 *
 		 * @param {string} counterName Property to increment
-		 * @param {boolean} [decrement=false] If set to true, decrement instead counter instead of increment.
-		 * @returns {Promise}
+		 * @param {number} [value=1] How much to increment. Use a negative value for decrement
+		 * @returns {Promise<MetricsDocument>} Updated document
 		 */
-		incrementCounter(counterName: string, decrement?: boolean): Promise<MetricsDocument>;
+		incrementCounter(counterName: string, value?: number): Promise<MetricsDocument>;
 	}
 
 	// statics
@@ -105,9 +99,9 @@ declare module 'mongoose' {
 		 *
 		 * @param {string} entityId ID of the entity to update
 		 * @param {string} counterName Name of the counter, e.g. "views"
-		 * @param {boolean} decrement If set, decrement instead of increment.
+		 * @param {number} [value=1] How much to increment. Use a negative value for decrement
 		 */
-		incrementCounter(entityId: string, counterName: string, decrement?: boolean): Promise<void>;
+		incrementCounter(entityId: string, counterName: string, value?: number): Promise<void>;
 	}
 
 	// plugin options

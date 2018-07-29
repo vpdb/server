@@ -27,7 +27,7 @@ import { resolve } from 'path';
 import { promisify } from 'util';
 import { BackglassDocument } from '../backglasses/backglass.document';
 import { GameDocument } from '../games/game.document';
-import { ReleaseDocument } from '../releases/release.doument';
+import { ReleaseDocument } from '../releases/release.document';
 import { ReleaseVersionFileDocument } from '../releases/version/file/release.version.file.document';
 import { ReleaseVersionDocument } from '../releases/version/release.version.document';
 import { state } from '../state';

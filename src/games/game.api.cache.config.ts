@@ -18,7 +18,7 @@
  */
 import { CacheCounterConfig, CacheCounterValues } from '../common/api.cache';
 import { FileCounterType } from '../files/file.document';
-import { ReleaseCounterType } from '../releases/release.doument';
+import { ReleaseCounterType } from '../releases/release.document';
 import { Game } from './game';
 import { GameCounterType, GameDocument } from './game.document';
 

@@ -22,7 +22,7 @@ import { BackglassDocument } from '../backglasses/backglass.document';
 import { Mpu } from '../common/ipdb';
 import { FileDocument } from '../files/file.document';
 import { MediumDocument } from '../media/medium.document';
-import { ReleaseDocument } from '../releases/release.doument';
+import { ReleaseDocument } from '../releases/release.document';
 import { UserDocument } from '../users/user.document';
 
 export interface GameDocument extends FileReferenceDocument, MetricsDocument, PrettyIdDocument {

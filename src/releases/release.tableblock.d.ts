@@ -20,7 +20,7 @@
 import { Document, Types } from 'mongoose';
 import { FileDocument } from '../files/file.document';
 import { GameDocument } from '../games/game.document';
-import { ReleaseDocument } from './release.doument';
+import { ReleaseDocument } from './release.document';
 import { ReleaseVersionFileDocument } from './version/file/release.version.file.document';
 import { ReleaseVersionDocument } from './version/release.version.document';
 

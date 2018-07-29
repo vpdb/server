@@ -23,7 +23,7 @@ import mongoose from 'mongoose';
 import { EndPoint } from '../common/api.endpoint';
 import { state } from '../state';
 import { releaseApiRouter } from './release.api.router';
-import { ReleaseDocument } from './release.doument';
+import { ReleaseDocument } from './release.document';
 import { ReleaseModel, releaseSchema } from './release.schema';
 import { ReleaseSerializer } from './release.serializer';
 import { releaseStorageRouter } from './release.storage.router';

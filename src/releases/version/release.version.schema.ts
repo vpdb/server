@@ -22,7 +22,7 @@ import { PrettyIdModel, Schema, Types } from 'mongoose';
 import { fileReferencePlugin } from '../../common/mongoose/file.reference.plugin';
 import { prettyIdPlugin } from '../../common/mongoose/pretty.id.plugin';
 import { state } from '../../state';
-import { ReleaseDocument } from '../release.doument';
+import { ReleaseDocument } from '../release.document';
 import { ReleaseFileFlavor, ReleaseVersionFileDocument } from './file/release.version.file.document';
 import { releaseVersionFileFields, releaseVersionFileSchema } from './file/release.version.file.schema';
 import { ReleaseVersion } from './release.version';

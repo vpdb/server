@@ -159,7 +159,7 @@ export class StarApi extends Api {
 			throw new ApiError('Not starred. You need to star something before you can unstar it.').warn().status(400);
 		}
 		await star.remove();
-		await entity.incrementCounter('stars', true);
+		await entity.incrementCounter('stars', -1);
 		await LogEventUtil.log(ctx, 'unstar_' + modelName, true, this.logPayload(entity, modelName), this.logRefs(star, entity, modelName));
 
 		// invalidate cache for user

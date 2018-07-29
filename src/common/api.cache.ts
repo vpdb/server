@@ -23,7 +23,7 @@ import pathToRegexp from 'path-to-regexp';
 
 import { MetricsDocument, MetricsModel } from 'mongoose';
 import { GameDocument } from '../games/game.document';
-import { ReleaseDocument } from '../releases/release.doument';
+import { ReleaseDocument } from '../releases/release.document';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
 import { logger } from './logger';
@@ -172,14 +172,14 @@ class ApiCache {
 	 * @param {string} modelName Name of the model, e.g. "game"
 	 * @param {string} entityId ID of the entity to update
 	 * @param {string} counterName Name of the counter, e.g. 'view'.
-	 * @param {boolean} decrement If true, don't increment but decrement.
+	 * @param {number} [value=1] How much to increment. Use a negative value for decrement
 	 */
-	public async incrementCounter(modelName: string, entityId: string, counterName: string, decrement: boolean) {
+	public async incrementCounter(modelName: string, entityId: string, counterName: string, value: number = 1) {
 		const key = this.getCounterKey(modelName, entityId, counterName);
-		if (decrement) {
-			await state.redis.decr(key);
+		if (value > 0) {
+			await state.redis.incrby(key, value);
 		} else {
-			await state.redis.incr(key);
+			await state.redis.decrby(key, -value);
 		}
 	}
 

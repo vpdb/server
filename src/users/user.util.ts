@@ -28,7 +28,7 @@ import { mailer } from '../common/mailer';
 import { config } from '../common/settings';
 import { Context } from '../common/typings/context';
 import { RatingDocument } from '../ratings/rating.document';
-import { ReleaseDocument } from '../releases/release.doument';
+import { ReleaseDocument } from '../releases/release.document';
 import { ReleaseVersionFileDocument } from '../releases/version/file/release.version.file.document';
 import { StarDocument } from '../stars/star.document';
 import { state } from '../state';

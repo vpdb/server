@@ -22,7 +22,7 @@ import { Serializer, SerializerOptions } from '../common/serializer';
 import { Context } from '../common/typings/context';
 import { FileDocument } from '../files/file.document';
 import { GameDocument } from '../games/game.document';
-import { ReleaseDocument } from '../releases/release.doument';
+import { ReleaseDocument } from '../releases/release.document';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
 import { MediumDocument } from './medium.document';

@@ -37,7 +37,7 @@ import { processorQueue } from '../files/processor/processor.queue';
 import { GameDocument } from '../games/game.document';
 import { state } from '../state';
 import { UserDocument, UserPreferences } from '../users/user.document';
-import { ReleaseDocument } from './release.doument';
+import { ReleaseDocument } from './release.document';
 import { flavors } from './release.flavors';
 import { ReleaseVersionFileDocument } from './version/file/release.version.file.document';
 import { ReleaseVersionDocument } from './version/release.version.document';
@@ -290,7 +290,6 @@ export class ReleaseStorage extends Api {
 
 		// count release and user download
 		counters.push(() => release.incrementCounter('downloads'));
-		counters.push(() => (release._game as GameDocument).incrementCounter('downloads'));
 		counters.push(() => ctx.state.user.incrementCounter('downloads'));
 
 		release.versions.forEach(version => {
@@ -330,12 +329,12 @@ export class ReleaseStorage extends Api {
 				counters.push(() => file.incrementCounter('downloads'));
 			});
 
-			// count release download
+			// count version download
 			counters.push(() => state.models.Release.update({ 'versions._id': version._id }, { $inc: { 'versions.$.counter.downloads': 1 } }).exec());
 		});
 
 		// count game download
-		counters.push(() => (release._game as GameDocument).update({ $inc: { 'counter.downloads': numTables } }).exec());
+		counters.push(() => (release._game as GameDocument).incrementCounter('downloads', numTables));
 
 		// add game media
 		if (isArray(body.game_media)) {

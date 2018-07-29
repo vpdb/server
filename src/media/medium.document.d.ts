@@ -21,7 +21,7 @@ import { FileReferenceDocument, MetricsDocument, PrettyIdDocument, Types } from 
 
 import { FileDocument } from '../files/file.document';
 import { GameDocument } from '../games/game.document';
-import { ReleaseDocument } from '../releases/release.doument';
+import { ReleaseDocument } from '../releases/release.document';
 import { UserDocument } from '../users/user.document';
 
 export interface MediumDocument extends PrettyIdDocument, FileReferenceDocument, MetricsDocument {

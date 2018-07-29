@@ -19,7 +19,7 @@
 
 import { Document, Types } from 'mongoose';
 import { GameDocument } from '../games/game.document';
-import { ReleaseDocument } from '../releases/release.doument';
+import { ReleaseDocument } from '../releases/release.document';
 import { UserDocument } from '../users/user.document';
 
 export interface RatingDocument extends Document {

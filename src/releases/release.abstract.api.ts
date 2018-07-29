@@ -31,7 +31,7 @@ import { FileUtil } from '../files/file.util';
 import { Metadata } from '../files/metadata/metadata';
 import { processorQueue } from '../files/processor/processor.queue';
 import { state } from '../state';
-import { ReleaseDocument } from './release.doument';
+import { ReleaseDocument } from './release.document';
 
 const existsAsync = promisify(exists);
 require('bluebird').promisifyAll(gm.prototype);

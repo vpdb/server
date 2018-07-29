@@ -28,7 +28,7 @@ import { GameDocument } from '../games/game.document';
 import { state } from '../state';
 import { TagDocument } from '../tags/tag.document';
 import { UserDocument } from '../users/user.document';
-import { ReleaseDocument } from './release.doument';
+import { ReleaseDocument } from './release.document';
 import { flavors } from './release.flavors';
 import { ReleaseFileFlavor, ReleaseVersionFileDocument } from './version/file/release.version.file.document';
 import { ReleaseVersionDocument } from './version/release.version.document';

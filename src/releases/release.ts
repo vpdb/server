@@ -24,7 +24,7 @@ import { isArray } from 'util';
 import { FileDocument } from '../files/file.document';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
-import { ReleaseDocument } from './release.doument';
+import { ReleaseDocument } from './release.document';
 
 export class Release {
 

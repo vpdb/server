@@ -45,7 +45,7 @@ import { FileDocument } from '../files/file.document';
 import { FileUtil } from '../files/file.util';
 import { GameRequestDocument } from '../game-requests/game.request.document';
 import { LogEventUtil } from '../log-event/log.event.util';
-import { ReleaseDocument } from '../releases/release.doument';
+import { ReleaseDocument } from '../releases/release.document';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
 import { GameDocument } from './game.document';

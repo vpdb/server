@@ -18,7 +18,7 @@
  */
 
 import { Document, Types } from 'mongoose';
-import { ReleaseDocument } from '../releases/release.doument';
+import { ReleaseDocument } from '../releases/release.document';
 import { UserDocument } from '../users/user.document';
 
 export interface CommentDocument extends Document {

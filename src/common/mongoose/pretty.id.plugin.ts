@@ -196,6 +196,6 @@ declare module 'mongoose' {
 		 */
 		ignore?: string[];
 
-		validations?: Array<{ path: string, mimeType: string, message: string, fileType: string }>;
+		validations?: Array<{ path: string, mimeType?: string, message: string, fileType?: string }>;
 	}
 }

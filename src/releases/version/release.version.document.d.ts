@@ -25,10 +25,7 @@ export interface ReleaseVersionDocument extends FileReferenceDocument, PrettyIdD
 	released_at: Date | string;
 	changes: string;
 	files: ReleaseVersionFileDocument[];
-	counter: {
-		downloads: number,
-		comments: number,
-	};
+	counter: { [T in ReleaseVersionCounterType]: number; };
 
 	/**
 	 * Returns all file IDs of the version files.
@@ -45,3 +42,5 @@ export interface ReleaseVersionDocument extends FileReferenceDocument, PrettyIdD
 	 */
 	getPlayfieldImageIds(): string[];
 }
+
+export type ReleaseVersionCounterType = 'downloads' | 'comments';

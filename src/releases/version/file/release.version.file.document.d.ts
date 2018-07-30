@@ -21,6 +21,7 @@ import { FileReferenceDocument, MetricsDocument, PrettyIdDocument, Types } from 
 import { BuildDocument } from '../../../builds/build.document';
 import { FileDocument } from '../../../files/file.document';
 import { UserDocument } from '../../../users/user.document';
+import { ReleaseVersionCounterType } from '../release.version.document';
 
 export interface ReleaseVersionFileDocument extends FileReferenceDocument, PrettyIdDocument, MetricsDocument {
 	// model
@@ -37,9 +38,7 @@ export interface ReleaseVersionFileDocument extends FileReferenceDocument, Prett
 	_playfield_image?: FileDocument | Types.ObjectId;
 	_playfield_video?: FileDocument | Types.ObjectId;
 	released_at: Date | string;
-	counter: {
-		downloads: number;
-	};
+	counter: { [T in ReleaseVersionFileCounterType]: number; };
 
 	// serialized
 	file: FileDocument;
@@ -57,3 +56,5 @@ export interface ReleaseFileFlavor {
 	lighting?: string; // todo type
 	[key: string]: string;
 }
+
+export type ReleaseVersionFileCounterType = 'downloads';

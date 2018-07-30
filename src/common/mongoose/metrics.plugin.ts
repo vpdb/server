@@ -17,11 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document, MetricsDocument, MetricsOptions, Model, ModelProperties, MongooseDocument, Schema } from 'mongoose';
+import { Document, MetricsDocument, MetricsOptions, Model, ModelProperties, Schema } from 'mongoose';
 import { state } from '../../state';
 import { apiCache } from '../api.cache';
 
 export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
+
+	const getId = options.getId || (doc => doc.id);
 
 	/**
 	 * Increments a counter.
@@ -30,11 +32,10 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 	 * @param {number} [value=1] How much to increment. Use a negative value for decrement
 	 * @returns {Promise}
 	 */
-	schema.methods.incrementCounter = async function(counterName: string, value: number = 1): Promise<T> {
+	schema.methods.incrementCounter = async function(counterName: string, value: number = 1): Promise<void> {
 		const q: any = {
 			$inc: { [fieldCounterPath(this, counterName)]: value },
 		};
-
 		if (options.hotness) {
 			q.metrics = q.metrics || {};
 			Object.keys(options.hotness).forEach(metric => {
@@ -49,17 +50,13 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 				q.metrics[metric] = Math.log(Math.max(score, 1));
 			});
 		}
+
 		// update cache
-		await apiCache.incrementCounter(fieldPath(this), this.id, counterName, value);
+		await apiCache.incrementCounter(fieldPath(this), getId(this), counterName, value);
 
-		const conditions = { [queryPath(this)]: this._id };
-		await getModel(this).update(conditions, q);
-		//state.models.Release.update({ 'versions._id': version._id }, { $inc: { 'versions.$.counter.downloads': 1 } }).exec());
-		//state.models.Release.update({ 'versions._id': version._id }, { $inc: { ['versions.$.files.$.counter.downloads']: 1 } }).exec());
-
-		return this;
 		// update db
-		//return this.update(q);
+		const condition = queryCondition(this);
+		await getModel(this).update(condition, q).exec();
 	};
 
 	/**
@@ -78,6 +75,12 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 	};
 }
 
+/**
+ * Returns entity name along with the path where the embedded element is located, if any.
+ * @param doc Document
+ * @param {string} [path]='' Current path while transversing
+ * @return {string} Field path, e.g. `release.versions.files` for a ReleaseVersionFileDocument
+ */
 function fieldPath(doc: any, path: string = ''): string {
 	if (doc.__parent) {
 		path = '.' + doc.__parentArray._path + path;
@@ -86,36 +89,53 @@ function fieldPath(doc: any, path: string = ''): string {
 	return doc.constructor.modelName.toLowerCase() + path;
 }
 
-function queryPath(doc: any, path: string = ''): string {
+/**
+ * Returns the query retrieving the entity (and embedded doc, if any).
+ * @param doc Document
+ * @param {string} [path]='' Current path while transversing
+ * @param {ObjectId} [id] Sub-document ID
+ * @return {string} Query condition, e.g. `{ _id: "5b60261f687fc336902ffe2d", versions.files._id: "5b60261f687fc336902ffe2f" }`
+ */
+function queryCondition(doc: any, path: string = '', id: any = null): any {
 	if (doc.__parent) {
 		path = '.' + doc.__parentArray._path + path;
-		return queryPath(doc.__parent, path);
+		return queryCondition(doc.__parent, path, id || doc._id);
 	}
-	return path.substr(1) + '._id';
+	const condition: any = { _id: doc._id };
+	if (path) {
+		condition[path.substr(1) + '._id'] = id;
+	}
+	return condition;
 }
 
-
-function fieldCounterPath(doc: any, counterName: string, path: string = ''): string {
+/**
+ * Returns the path to update for the query.
+ * @param doc Document or sub-document
+ * @param {string} counterName Name of the counter to update
+ * @param {string} [path] Current path while transversing
+ * @param {string} [separator] Current separator, since we use ".$." at the end and ".$[]." otherwise
+ * @return {string} Path to the counter, e.g. "versions.$[].files.$.counter.downloads"
+ */
+function fieldCounterPath(doc: any, counterName: string, path: string = '', separator = ''): string {
 	if (doc.__parent) {
-		const separator = doc.__parentArray._schema.$isMongooseDocumentArray ? '.$.' : '.';
+		const isArray = doc.__parentArray._schema.$isMongooseDocumentArray;
+		separator = isArray ? (separator || '.$.') : '.';
 		path = doc.__parentArray._path + separator + path;
-		return fieldCounterPath(doc.__parent, counterName, path);
+		return fieldCounterPath(doc.__parent, counterName, path, '.$[].');
 	}
 	return path + 'counter.' + counterName;
 }
 
+/**
+ * Returns the model of the top-most parent of the document.
+ * @param doc Document
+ * @return {M}
+ */
 function getModel<M extends Model<Document> = Model<Document>>(doc: any): M {
 	if (doc.__parent) {
 		return getModel(doc.__parent);
 	}
 	return state.getModel(doc.constructor.modelName);
-}
-
-function getEntity(doc: any): Document {
-	if (doc.__parent) {
-		return getEntity(doc.__parent);
-	}
-	return doc;
 }
 
 declare module 'mongoose' {
@@ -135,7 +155,7 @@ declare module 'mongoose' {
 		 * @param {number} [value=1] How much to increment. Use a negative value for decrement
 		 * @returns {Promise<MetricsDocument>} Updated document
 		 */
-		incrementCounter(counterName: string, value?: number): Promise<MetricsDocument>;
+		incrementCounter(counterName: string, value?: number): Promise<void>;
 	}
 
 	// statics
@@ -156,5 +176,11 @@ declare module 'mongoose' {
 		hotness?: {
 			[key: string]: { [key: string]: number },
 		};
+		/**
+		 * Returns the ID under which the counter is saved to the cache.
+		 * @param {Document} obj The potentially embedded document
+		 * @return {string} Value of the ID(s)
+		 */
+		getId?: (obj: Document) => string;
 	}
 }

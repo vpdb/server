@@ -17,12 +17,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { FileReferenceDocument, PrettyIdDocument, Types } from 'mongoose';
+import { FileReferenceDocument, MetricsDocument, PrettyIdDocument, Types } from 'mongoose';
 import { BuildDocument } from '../../../builds/build.document';
 import { FileDocument } from '../../../files/file.document';
 import { UserDocument } from '../../../users/user.document';
 
-export interface ReleaseVersionFileDocument extends FileReferenceDocument, PrettyIdDocument {
+export interface ReleaseVersionFileDocument extends FileReferenceDocument, PrettyIdDocument, MetricsDocument {
 	// model
 	_file: FileDocument | Types.ObjectId;
 	flavor: ReleaseFileFlavor;

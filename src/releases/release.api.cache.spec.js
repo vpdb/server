@@ -27,7 +27,7 @@ const ReleaseHelper = require('../../test/modules/release.helper');
 const api = new ApiClient();
 const releaseHelper = new ReleaseHelper(api);
 
-describe('The VPDB API cache', () => {
+describe('The release cache', () => {
 
 	let res;
 	let release, otherRelease;
@@ -45,7 +45,7 @@ describe('The VPDB API cache', () => {
 	afterEach(async () => await api.as('admin').del('/v1/cache').then(res => res.expectStatus(204)));
 	after(async () => await api.teardown());
 
-	describe('when accessing a cache-enabled route', () => {
+	describe('when viewing releases', () => {
 
 		it('should cache release list for same user', async () => {
 			await api.get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
@@ -65,10 +65,6 @@ describe('The VPDB API cache', () => {
 			expect(res.data.counter.views).to.be(views + 1);
 		});
 
-		it('should cache game list for same user', async () => {
-			await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'miss'));
-			await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'hit'));
-		});
 	});
 
 	describe('when starring a release', () => {

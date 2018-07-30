@@ -587,7 +587,6 @@ export interface CacheInvalidationConfig {
 	 * Note this works only if a child was attached to its parent at the moment
 	 * of caching, for created children, the parent must be invalidated
 	 * separately.
-	 * @deprecated: Change to individual occurences, such as users, builds, tags, etc
 	 */
 	children?: {
 		/**

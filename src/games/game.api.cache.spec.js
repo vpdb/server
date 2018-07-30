@@ -41,13 +41,18 @@ describe('The game cache', () => {
 	afterEach(async () => await api.as('admin').del('/v1/cache').then(res => res.expectStatus(204)));
 	after(async () => await api.teardown());
 
-	describe('when viewing a game', () => {
+	describe('when viewing games', () => {
 
 		it('should cache details but update view counter', async () => {
 			res = await api.get('/v1/games/' + existingGame.id).then(res => res.expectHeader('x-cache-api', 'miss'));
 			const views = res.data.counter.views;
 			res = await api.get('/v1/games/' + existingGame.id).then(res => res.expectHeader('x-cache-api', 'hit'));
 			expect(res.data.counter.views).to.be(views + 1);
+		});
+
+		it('should cache game list for same user', async () => {
+			await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'hit'));
 		});
 
 	});

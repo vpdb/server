@@ -54,4 +54,4 @@ export const releaseVersionFileSchema = new Schema(releaseVersionFileFields, { t
 
 releaseVersionFileSchema.plugin(fileReferencePlugin);
 releaseVersionFileSchema.plugin(prettyIdPlugin, { model: 'ReleaseVersionFile' } as PrettyIdOptions);
-releaseVersionFileSchema.plugin(metricsPlugin);
+releaseVersionFileSchema.plugin(metricsPlugin, { getId: ((doc: any) => [ doc.__parent.__parent.id, doc._file.id ].join(',')) });

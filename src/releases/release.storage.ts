@@ -89,7 +89,7 @@ export class ReleaseStorage extends Api {
 		ctx.respond = false;
 		ctx.status = 200;
 		ctx.set('Content-Type', 'application/zip');
-		ctx.set('Content-Disposition', 'attachment; filename="' + gameName + '.zip"'); // todo add release name and authors to zip filename
+		ctx.set('Content-Disposition', 'attachment; filename="' + encodeURIComponent(gameName) + '.zip"'); // todo add release name and authors to zip filename
 		archive.pipe(ctx.res);
 
 		// add tables to stream

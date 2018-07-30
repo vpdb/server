@@ -25,6 +25,7 @@ import { FileDocument } from '../files/file.document';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
 import { ReleaseDocument } from './release.document';
+import { ReleaseVersionFileDocument } from './version/file/release.version.file.document';
 
 export class Release {
 
@@ -91,7 +92,7 @@ export class Release {
 	}
 
 	/**
-	 * Returns all file object linked to a release.
+	 * Returns all file objects linked to a release.
 	 *
 	 * @param {ReleaseDocument} release Serialized release
 	 * @returns {FileDocument[]} Linked files
@@ -111,5 +112,28 @@ export class Release {
 			});
 		}
 		return files.filter(f => !!f);
+	}
+
+	/**
+	 * Returns all release version file objects linked to a release.
+	 *
+	 * @param {ReleaseDocument} release Serialized release
+	 * @returns {ReleaseVersionFileDocument[]} Linked release version files
+	 */
+	public static getLinkedReleaseFiles(release: ReleaseDocument | ReleaseDocument[]): ReleaseVersionFileDocument[] {
+		let releaseVersionFiles: ReleaseVersionFileDocument[] = [];
+		if (isArray(release)) {
+			[ releaseVersionFiles ] = release.map(Release.getLinkedReleaseFiles);
+			return releaseVersionFiles || [];
+		}
+		if (release.versions && release.versions.length > 0) {
+			[releaseVersionFiles] = release.versions.map(v => {
+				if (v.files && v.files.length > 0) {
+					return v.files;
+				}
+				return [];
+			});
+		}
+		return releaseVersionFiles.filter(f => !!f);
 	}
 }

@@ -237,25 +237,5 @@ describe('The release cache', () => {
 			expect(res.data.versions[0].files[0].counter.downloads).to.be(versionFileCounter + 1);
 			expect(res.data.versions[0].files[0].file.counter.downloads).to.be(fileCounter + 1);
 		});
-
-		it.skip('should cache game list but update download counter', async () => {
-
-			// create release and cache list
-			const release = await api.releaseHelper.createRelease('moderator');
-			res = await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'miss'));
-			const numDownloads = res.data.find(g => g.id === release.game.id).counter.downloads;
-
-			// download release
-			await api.onStorage()
-				.as('moderator')
-				.withHeader('Accept', 'application/zip')
-				.post('/v1/releases/' + release.id, { files: [release.versions[0].files[0].file.id] })
-				.then(res => res.expectStatus(200));
-
-			// it's a hit but counter is updated
-			res = await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'hit'));
-			expect(res.data.find(g => g.id === release.game.id).counter.downloads).to.be(numDownloads + 1);
-		});
-
 	});
 });

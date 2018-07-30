@@ -414,10 +414,10 @@ class ApiCache {
 		if (cacheRoute.counters) {
 			const refs: Array<{ counter: CacheCounterConfig<any>, key: string, id: string, c: string }> = [];
 			for (const counter of cacheRoute.counters) {
-				for (const c of counter.counters) {
-					const counters = counter.get(body, c);
+				for (const counterName of counter.counters) {
+					const counters = counter.get(body, counterName);
 					for (const id of Object.keys(counters)) {
-						refs.push({ key: this.getCounterKey(counter.modelName, id, c), id, c, counter });
+						refs.push({ key: this.getCounterKey(counter.modelName, id, counterName), id, c: counterName, counter });
 					}
 				}
 				// update db of view counter

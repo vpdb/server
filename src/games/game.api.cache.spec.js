@@ -106,7 +106,7 @@ describe('The game cache', () => {
 			// assert hit
 			res = await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'hit'));
 			expect(res.data.find(g => g.id === existingGame.id).counter.stars).to.be(numStars + 1);
-			res = await api.as(user).debug().get('/v1/games').then(res => res.expectHeader('x-cache-api', 'hit'));
+			res = await api.as(user).get('/v1/games').then(res => res.expectHeader('x-cache-api', 'hit'));
 			expect(res.data.find(g => g.id === existingGame.id).counter.stars).to.be(numStars + 1);
 		});
 
@@ -155,7 +155,7 @@ describe('The game cache', () => {
 			let release = await api.releaseHelper.createReleaseForGame('moderator', game);
 
 			// miss, because now the game contains the full release as well
-			res = await api.debug().get('/v1/games/' + game.id).then(res => res.expectHeader('x-cache-api', 'miss'));
+			res = await api.get('/v1/games/' + game.id).then(res => res.expectHeader('x-cache-api', 'miss'));
 			expect(res.data.counter.releases).to.be(numReleases + 1);
 			expect(res.data.releases.find(r => r.id === release.id)).to.be.ok();
 		});

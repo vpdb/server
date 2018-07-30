@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { MetricsDocument, MetricsOptions, ModelProperties, Schema } from 'mongoose';
+import { Document, MetricsDocument, MetricsOptions, Model, ModelProperties, MongooseDocument, Schema } from 'mongoose';
 import { state } from '../../state';
 import { apiCache } from '../api.cache';
 
@@ -32,7 +32,7 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 	 */
 	schema.methods.incrementCounter = async function(counterName: string, value: number = 1): Promise<T> {
 		const q: any = {
-			$inc: { ['counter.' + counterName]: value },
+			$inc: { [fieldCounterPath(this, counterName)]: value },
 		};
 
 		if (options.hotness) {
@@ -50,9 +50,16 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 			});
 		}
 		// update cache
-		await apiCache.incrementCounter(this.constructor.modelName.toLowerCase(), this.id, counterName, value);
+		await apiCache.incrementCounter(fieldPath(this), this.id, counterName, value);
+
+		const conditions = { [queryPath(this)]: this._id };
+		await getModel(this).update(conditions, q);
+		//state.models.Release.update({ 'versions._id': version._id }, { $inc: { 'versions.$.counter.downloads': 1 } }).exec());
+		//state.models.Release.update({ 'versions._id': version._id }, { $inc: { ['versions.$.files.$.counter.downloads']: 1 } }).exec());
+
+		return this;
 		// update db
-		return this.update(q);
+		//return this.update(q);
 	};
 
 	/**
@@ -69,6 +76,46 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 		// update db
 		await state.getModel(this.modelName).findOneAndUpdate({ id: entityId }, { $inc: { ['counter.' + counterName]: value } }).exec();
 	};
+}
+
+function fieldPath(doc: any, path: string = ''): string {
+	if (doc.__parent) {
+		path = '.' + doc.__parentArray._path + path;
+		return fieldPath(doc.__parent, path);
+	}
+	return doc.constructor.modelName.toLowerCase() + path;
+}
+
+function queryPath(doc: any, path: string = ''): string {
+	if (doc.__parent) {
+		path = '.' + doc.__parentArray._path + path;
+		return queryPath(doc.__parent, path);
+	}
+	return path.substr(1) + '._id';
+}
+
+
+function fieldCounterPath(doc: any, counterName: string, path: string = ''): string {
+	if (doc.__parent) {
+		const separator = doc.__parentArray._schema.$isMongooseDocumentArray ? '.$.' : '.';
+		path = doc.__parentArray._path + separator + path;
+		return fieldCounterPath(doc.__parent, counterName, path);
+	}
+	return path + 'counter.' + counterName;
+}
+
+function getModel<M extends Model<Document> = Model<Document>>(doc: any): M {
+	if (doc.__parent) {
+		return getModel(doc.__parent);
+	}
+	return state.getModel(doc.constructor.modelName);
+}
+
+function getEntity(doc: any): Document {
+	if (doc.__parent) {
+		return getEntity(doc.__parent);
+	}
+	return doc;
 }
 
 declare module 'mongoose' {

@@ -306,9 +306,6 @@ export class ReleaseStorage extends Api {
 				if (file.getMimeCategory() === 'table') {
 					if (requestedFileIds.includes(file.id)) {
 						requestedFiles.push(file);
-
-						// count downloaded flavor
-						counters.push(() => state.models.Release.update({ 'versions._id': version._id }, { $inc: { ['versions.$.files.' + pos + '.counter.downloads']: 1 } }).exec());
 						numTables++;
 
 						// add media if checked
@@ -318,6 +315,9 @@ export class ReleaseStorage extends Api {
 						if (body.media && body.media.playfield_video && versionFile._playfield_video) {
 							requestedFiles.push(versionFile._playfield_video as FileExtended);
 						}
+
+						// count version file download
+						counters.push(() => versionFile.incrementCounter('downloads'));
 					}
 
 				} else {
@@ -330,7 +330,7 @@ export class ReleaseStorage extends Api {
 			});
 
 			// count version download
-			counters.push(() => state.models.Release.update({ 'versions._id': version._id }, { $inc: { 'versions.$.counter.downloads': 1 } }).exec());
+			counters.push(() => version.incrementCounter('downloads'));
 		});
 
 		// count game download

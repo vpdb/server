@@ -18,9 +18,10 @@
  */
 
 import { keys } from 'lodash';
-import { PrettyIdModel, PrettyIdOptions, Schema } from 'mongoose';
+import { MetricsModel, PrettyIdModel, PrettyIdOptions, Schema } from 'mongoose';
 
 import { fileReferencePlugin } from '../../../common/mongoose/file.reference.plugin';
+import { metricsPlugin } from '../../../common/mongoose/metrics.plugin';
 import { prettyIdPlugin } from '../../../common/mongoose/pretty.id.plugin';
 import { flavors } from '../../release.flavors';
 import { ReleaseVersionFileDocument } from './release.version.file.document';
@@ -48,8 +49,9 @@ export const releaseVersionFileFields = {
 	},
 };
 
-export interface ReleaseVersionFileModel extends PrettyIdModel<ReleaseVersionFileDocument> {}
+export interface ReleaseVersionFileModel extends PrettyIdModel<ReleaseVersionFileDocument>, MetricsModel<ReleaseVersionFileDocument> {}
 export const releaseVersionFileSchema = new Schema(releaseVersionFileFields, { toObject: { virtuals: true, versionKey: false } });
 
 releaseVersionFileSchema.plugin(fileReferencePlugin);
 releaseVersionFileSchema.plugin(prettyIdPlugin, { model: 'ReleaseVersionFile' } as PrettyIdOptions);
+releaseVersionFileSchema.plugin(metricsPlugin);

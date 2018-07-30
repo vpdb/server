@@ -17,10 +17,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { FileReferenceDocument, PrettyIdDocument } from 'mongoose';
+import { FileReferenceDocument, MetricsDocument, PrettyIdDocument } from 'mongoose';
 import { ReleaseVersionFileDocument } from './file/release.version.file.document';
 
-export interface ReleaseVersionDocument extends FileReferenceDocument, PrettyIdDocument {
+export interface ReleaseVersionDocument extends FileReferenceDocument, PrettyIdDocument, MetricsDocument {
 	version: string;
 	released_at: Date | string;
 	changes: string;

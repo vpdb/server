@@ -17,9 +17,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 import { filter, isArray, isEqual, keys, map, uniq } from 'lodash';
-import { PrettyIdModel, Schema, Types } from 'mongoose';
+import { MetricsModel, PrettyIdModel, Schema, Types } from 'mongoose';
 
 import { fileReferencePlugin } from '../../common/mongoose/file.reference.plugin';
+import { metricsPlugin } from '../../common/mongoose/metrics.plugin';
 import { prettyIdPlugin } from '../../common/mongoose/pretty.id.plugin';
 import { state } from '../../state';
 import { ReleaseDocument } from '../release.document';
@@ -43,11 +44,12 @@ export const releaseVersionFields = {
 	},
 };
 
-export interface ReleaseVersionModel extends PrettyIdModel<ReleaseVersionDocument> {}
+export interface ReleaseVersionModel extends PrettyIdModel<ReleaseVersionDocument>, MetricsModel<ReleaseVersionDocument> {}
 export const releaseVersionSchema = new Schema(releaseVersionFields, { toObject: { virtuals: true, versionKey: false } });
 
 releaseVersionSchema.plugin(fileReferencePlugin);
 releaseVersionSchema.plugin(prettyIdPlugin, { model: 'ReleaseVersion' });
+releaseVersionSchema.plugin(metricsPlugin);
 
 /**
  * Validates files.

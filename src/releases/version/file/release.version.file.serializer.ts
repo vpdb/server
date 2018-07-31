@@ -44,6 +44,7 @@ export class ReleaseVersionFileSerializer extends Serializer<ReleaseVersionFileD
 		if (doc._playfield_video && this._populated(doc, '_playfield_video')) {
 			versionFile.playfield_video = state.serializers.File.detailed(ctx, doc._playfield_video as FileDocument, opts);
 		}
+		versionFile.counter = doc.counter;
 		return versionFile;
 	}
 

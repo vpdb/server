@@ -66,7 +66,7 @@ class Metrics {
 	/**
 	 * Re-calculates metrics for a given entity.
 	 *
-	 * @private
+	 * @param requestState For logging
 	 * @param {string} modelName Reference to model
 	 * @param {object} entity Object that received the vote
 	 * @param {number} atm Arithmetic total mean

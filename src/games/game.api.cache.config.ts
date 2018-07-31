@@ -18,18 +18,12 @@
  */
 import { CacheCounterConfig, CacheCounterValues } from '../common/api.cache';
 import { FileCounterType } from '../files/file.document';
+import { Release } from '../releases/release';
 import { ReleaseCounterType } from '../releases/release.document';
+import { ReleaseVersionFileCounterType } from '../releases/version/file/release.version.file.document';
+import { ReleaseVersionCounterType } from '../releases/version/release.version.document';
 import { Game } from './game';
 import { GameCounterType, GameDocument } from './game.document';
-
-export const gameListCacheCounters: Array<CacheCounterConfig<GameDocument[]>> = [{
-	modelName: 'game',
-	counters: ['releases', 'views', 'downloads', 'comments', 'stars'],
-	get: (games: GameDocument[], counter: GameCounterType) => games.reduce((acc: CacheCounterValues, game) => {
-		acc[game.id] = game.counter[counter]; return acc; }, {}),
-	set: (games: GameDocument[], counter: GameCounterType, values: CacheCounterValues) => Object.keys(values).forEach(
-		id => games.filter(game => game.id === id).forEach(game => game.counter[counter] = values[id])),
-}];
 
 export const gameDetailsCacheCounters: Array<CacheCounterConfig<GameDocument>> = [{
 	modelName: 'game',
@@ -42,8 +36,27 @@ export const gameDetailsCacheCounters: Array<CacheCounterConfig<GameDocument>> =
 	counters: ['downloads', 'comments', 'stars', 'views'],
 	get: (game: GameDocument, counter: ReleaseCounterType) => game.releases.reduce((acc: CacheCounterValues, rls) => {
 		acc[rls.id] = rls.counter[counter]; return acc; }, {}),
-	set: (game: GameDocument, counter: ReleaseCounterType, values: CacheCounterValues) => Object.keys(values).forEach(
-		id => game.releases.filter(rls => rls.id === id).forEach(rls => rls.counter[counter] = values[id])),
+	set: (game: GameDocument, counter: ReleaseCounterType, values: CacheCounterValues) => Object.keys(values)
+		.forEach(id => game.releases.find(rls => rls.id === id).counter[counter] = values[id]),
+}, {
+	modelName: 'release.versions',
+	counters: ['downloads', 'comments'],
+	get: (game: GameDocument, counter: ReleaseVersionCounterType) => game.releases.reduce((acc: CacheCounterValues, release) => {
+		release.versions.forEach(version => acc[`${release.id},${version.version}`] = version.counter[counter]);
+		return acc; }, {}),
+	set: (game: GameDocument, counter: ReleaseVersionCounterType, values: CacheCounterValues) => Object.keys(values)
+		.forEach(id => game.releases
+			.find(rls => rls.id === id.split(',')[0]).versions
+				.find(version => version.version === id.split(',')[1]).counter[counter] = values[id]),
+}, {
+	modelName: 'release.versions.files',
+	counters: ['downloads'],
+	get: (game: GameDocument, counter: ReleaseVersionFileCounterType) => game.releases.reduce((acc: CacheCounterValues, release) => {
+		Release.getLinkedReleaseFiles(release).forEach(versionFile => acc[[release.id, versionFile.file.id].join(',')] = versionFile.counter[counter]);
+		return acc; }, {}),
+	set: (game: GameDocument, counter: ReleaseVersionFileCounterType, values: CacheCounterValues) => Object.keys(values)
+		.forEach(id => Release.getLinkedReleaseFiles(game.releases.find(rls => rls.id === id.split(',')[0]))
+			.find(versionFile => versionFile.file.id === id.split(',')[1]).counter[counter] = values[id]),
 }, {
 	modelName: 'file',
 	counters: ['downloads'],
@@ -51,4 +64,13 @@ export const gameDetailsCacheCounters: Array<CacheCounterConfig<GameDocument>> =
 		acc[file.id] = file.counter[counter]; return acc; }, {}),
 	set: (game: GameDocument, counter: FileCounterType, values: CacheCounterValues) =>
 		Game.getLinkedFiles(game).forEach(file => file.counter[counter] = values[file.id]),
+}];
+
+export const gameListCacheCounters: Array<CacheCounterConfig<GameDocument[]>> = [{
+	modelName: 'game',
+	counters: ['releases', 'views', 'downloads', 'comments', 'stars'],
+	get: (games: GameDocument[], counter: GameCounterType) => games.reduce((acc: CacheCounterValues, game) => {
+		acc[game.id] = game.counter[counter]; return acc; }, {}),
+	set: (games: GameDocument[], counter: GameCounterType, values: CacheCounterValues) => Object.keys(values).forEach(
+		id => games.find(game => game.id === id).counter[counter] = values[id]),
 }];

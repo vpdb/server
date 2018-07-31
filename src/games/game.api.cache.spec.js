@@ -187,12 +187,17 @@ describe('The game cache', () => {
 			expect(res.data.find(g => g.id === release.game.id).counter.downloads).to.be(numDownloads + 1);
 		});
 
-		it('should cache game details but update download counter', async () => {
+		it('should cache game details but update download counters', async () => {
 
 			// create release and cache details
 			const release = await api.releaseHelper.createRelease('moderator');
 			res = await api.get('/v1/games/' + release.game.id).then(res => res.expectHeader('x-cache-api', 'miss'));
-			const numDownloads = res.data.counter.downloads;
+			let game = res.data;
+			const gameCounter = game.counter.downloads;
+			const releaseCounter = game.releases[0].counter.downloads;
+			const versionCounter = game.releases[0].versions[0].counter.downloads;
+			const versionFileCounter = game.releases[0].versions[0].files[0].counter.downloads;
+			const fileCounter = game.releases[0].versions[0].files[0].file.counter.downloads;
 
 			// download release
 			await api.onStorage()
@@ -203,7 +208,12 @@ describe('The game cache', () => {
 
 			// it's a hit but counter is updated
 			res = await api.get('/v1/games/' + release.game.id).then(res => res.expectHeader('x-cache-api', 'hit'));
-			expect(res.data.counter.downloads).to.be(numDownloads + 1);
+			game = res.data;
+			expect(game.counter.downloads).to.be(gameCounter + 1);
+			expect(game.releases[0].counter.downloads).to.be(releaseCounter + 1);
+			expect(game.releases[0].versions[0].counter.downloads).to.be(versionCounter + 1);
+			expect(game.releases[0].versions[0].files[0].counter.downloads).to.be(versionFileCounter + 1);
+			expect(game.releases[0].versions[0].files[0].file.counter.downloads).to.be(fileCounter + 1);
 		});
 	});
 

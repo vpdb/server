@@ -36,7 +36,7 @@ module.exports = {
 			nodemailer: {}
 		},
 		logging: {
-			level: 'info',
+			level: process.env.LOGLEVEL || 'info',
 			console: { access: true,  app: true },
 			file: { access: null, app: null },
 			papertrail: { access: false, app: false, options: { } },

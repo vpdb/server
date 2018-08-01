@@ -226,3 +226,5 @@ export interface SerializerOptions {
 	starredReleaseIds?: string[];
 	fields?: string[];
 }
+
+export type SerializerLevel =  'reduced' | 'simple' | 'detailed';

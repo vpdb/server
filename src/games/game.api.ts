@@ -35,6 +35,7 @@ import { inspect } from 'util';
 
 import { acl } from '../common/acl';
 import { Api } from '../common/api';
+import { apiCache } from '../common/api.cache';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
 import { mailer } from '../common/mailer';
@@ -49,7 +50,6 @@ import { ReleaseDocument } from '../releases/release.document';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
 import { GameDocument } from './game.document';
-import { apiCache } from '../common/api.cache';
 
 const generate = require('project-name-generator');
 
@@ -97,7 +97,7 @@ export class GameApi extends Api {
 		// link roms if available
 		if (game.ipdb && game.ipdb.number) {
 			const roms = await state.models.Rom.find({ _ipdb_number: game.ipdb.number }).exec();
-			logger.info(ctx.state, '[api|game:create] Linking %d ROMs to created game %s.', roms.length, game._id);
+			logger.info(ctx.state, '[GameApi.create] Linking %d ROMs to created game %s.', roms.length, game._id);
 			for (const rom of roms) {
 				rom._game = game._id.toString();
 				await rom.save();

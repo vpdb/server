@@ -18,7 +18,7 @@
  */
 
 import { CommentApi } from '../comments/comment.api';
-import { apiCache } from '../common/api.cache';
+import { apiCache, CacheReferenceConfig } from '../common/api.cache';
 import { Scope } from '../common/scope';
 import { LogEventApi } from '../log-event/log.event.api';
 import { RatingApi } from '../ratings/rating.api';
@@ -65,6 +65,15 @@ releaseApiRouter.get('/v1/releases/:id/moderate/comments',  api.auth(commentApi.
 
 releaseApiRouter.get('/v1/releases/:id/events', eventApi.list({ byRelease: true }).bind(eventApi));
 
-apiCache.enable(releaseApiRouter, '/v1/releases', { resources: [ 'user' ] }, releaseListCacheCounters);
-apiCache.enable(releaseApiRouter, '/v1/releases/:id',  { resources: [ 'user' ], entities: { release: 'id' } }, releaseDetailsCacheCounters);
+const releaseEntities: CacheReferenceConfig[] = [
+	{ modelName: 'release', path: 'id', level: 'detailed' },
+	{ modelName: 'game', path: 'game.id', level: 'reduced' },
+	{ modelName: 'user', path: 'created_by.id', level: 'reduced' },
+	{ modelName: 'user', path: 'authors.user.id', level: 'reduced' },
+	{ modelName: 'user', path: 'versions.files.validation.validated_by.id', level: 'reduced' },
+	{ modelName: 'build', path: 'versions.files.compatibility.id', level: 'simple' },
+	{ modelName: 'tag', path: 'tags.id', level: 'simple' },
+];
+apiCache.enable(releaseApiRouter, '/v1/releases', releaseEntities, releaseListCacheCounters);
+apiCache.enable(releaseApiRouter, '/v1/releases/:id', releaseEntities, releaseDetailsCacheCounters);
 //apiCache.enable(this._router, '/v1/releases/:id/comments', { entities: { release: 'id' } });

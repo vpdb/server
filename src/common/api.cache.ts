@@ -27,7 +27,7 @@ import { ReleaseDocument } from '../releases/release.document';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
 import { logger } from './logger';
-import { SerializerLevel } from './serializer';
+import { SerializerLevel, SerializerReference } from './serializer';
 import { Context, RequestState } from './typings/context';
 
 /**
@@ -72,7 +72,7 @@ class ApiCache {
 	 * @param {CacheInvalidationTag} entities Which entities the route contains.
 	 * @param {CacheCounterConfig} counters Counter config, see {@link CacheCounterConfig}.
 	 */
-	public enable<T>(router: Router, path: string, entities: CacheReferenceConfig[], counters?: Array<CacheCounterConfig<T>>) {
+	public enable<T>(router: Router, path: string, entities: SerializerReference[], counters?: Array<CacheCounterConfig<T>>) {
 		const opts = (router as any).opts as IRouterOptions;
 		this.cacheRoutes.push({ path, regex: pathToRegexp(opts.prefix + path), entities, counters });
 	}
@@ -450,7 +450,7 @@ class ApiCache {
 	}
 
 	private getEntityKey(modelName: string, serializerLevel: string, entityId: string = ''): string {
-		return this.redisRefPrefix + 'entity:' + modelName + ':' + serializerLevel + (entityId ? ':' + entityId : '');
+		return this.redisRefPrefix + 'entity:' + modelName.toLowerCase() + ':' + serializerLevel + (entityId ? ':' + entityId : '');
 	}
 
 	private getUserKey(user: UserDocument): string {
@@ -490,7 +490,7 @@ class ApiCache {
 interface CacheRoute<T> {
 	regex: RegExp;
 	path: string;
-	entities: CacheReferenceConfig[];
+	entities: SerializerReference[];
 	counters: Array<CacheCounterConfig<T>>;
 }
 
@@ -533,12 +533,6 @@ export interface CacheInvalidationTag {
 export interface CacheReferenceTag {
 	modelName: string;
 	entityId: string;
-	level: SerializerLevel;
-}
-
-export interface CacheReferenceConfig {
-	modelName: string;
-	path: string;
 	level: SerializerLevel;
 }
 

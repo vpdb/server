@@ -18,7 +18,7 @@
  */
 
 import { pick } from 'lodash';
-import { Serializer, SerializerOptions } from '../common/serializer';
+import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { Context } from '../common/typings/context';
 import { FileDocument } from '../files/file.document';
 import { GameDocument } from '../games/game.document';
@@ -28,6 +28,27 @@ import { UserDocument } from '../users/user.document';
 import { MediumDocument } from './medium.document';
 
 export class MediumSerializer extends Serializer<MediumDocument> {
+
+	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
+		reduced: [
+			{ path: 'file', modelName: 'File', level: 'detailed' },
+			{ path: 'created_by', modelName: 'User', level: 'reduced' },
+			{ path: 'game', modelName: 'Game', level: 'simple' },
+			{ path: 'release', modelName: 'Release', level: 'simple' },
+		],
+		simple: [
+			{ path: 'file', modelName: 'File', level: 'detailed' },
+			{ path: 'created_by', modelName: 'User', level: 'reduced' },
+			{ path: 'game', modelName: 'Game', level: 'simple' },
+			{ path: 'release', modelName: 'Release', level: 'simple' },
+		],
+		detailed: [
+			{ path: 'file', modelName: 'File', level: 'detailed' },
+			{ path: 'created_by', modelName: 'User', level: 'reduced' },
+			{ path: 'game', modelName: 'Game', level: 'simple' },
+			{ path: 'release', modelName: 'Release', level: 'simple' },
+		],
+	};
 
 	/* istanbul ignore next */
 	protected _reduced(ctx: Context, doc: MediumDocument, opts: SerializerOptions): MediumDocument {

@@ -20,7 +20,7 @@
 import { isEmpty, pick } from 'lodash';
 
 import { BackglassDocument } from '../backglasses/backglass.document';
-import { Serializer, SerializerOptions } from '../common/serializer';
+import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { Context } from '../common/typings/context';
 import { GameRequestDocument } from '../game-requests/game.request.document';
 import { GameDocument } from '../games/game.document';
@@ -30,6 +30,12 @@ import { UserDocument } from '../users/user.document';
 import { LogEventDocument } from './log.event.document';
 
 export class LogEventSerializer extends Serializer<LogEventDocument> {
+
+	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
+		reduced: [],
+		simple: [],
+		detailed: [],
+	};
 
 	protected _reduced(ctx: Context, doc: LogEventDocument, opts: SerializerOptions): LogEventDocument {
 		const logEvent = pick(doc, ['event', 'is_public', 'logged_at']) as LogEventDocument;

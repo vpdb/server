@@ -18,7 +18,7 @@
  */
 
 import { BuildDocument } from '../../../builds/build.document';
-import { Serializer, SerializerOptions } from '../../../common/serializer';
+import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../../../common/serializer';
 import { Context } from '../../../common/typings/context';
 import { FileDocument } from '../../../files/file.document';
 import { state } from '../../../state';
@@ -26,6 +26,22 @@ import { UserDocument } from '../../../users/user.document';
 import { ReleaseVersionFileDocument } from './release.version.file.document';
 
 export class ReleaseVersionFileSerializer extends Serializer<ReleaseVersionFileDocument> {
+
+	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
+		reduced: [],
+		simple: [
+			{ path: 'file', modelName: 'File', level: 'simple' },
+			{ path: 'validation.validated_by', modelName: 'User', level: 'reduced' },
+			{ path: 'compatibility', modelName: 'Build', level: 'reduced' },
+		],
+		detailed: [
+			{ path: 'file', modelName: 'File', level: 'detailed' },
+			{ path: 'playfield_image', modelName: 'File', level: 'detailed' },
+			{ path: 'playfield_video', modelName: 'File', level: 'detailed' },
+			{ path: 'compatibility', modelName: 'Build', level: 'simple' },
+			{ path: 'validation.validated_by', modelName: 'User', level: 'reduced' },
+		],
+	};
 
 	protected _reduced(ctx: Context, doc: ReleaseVersionFileDocument, opts: SerializerOptions): ReleaseVersionFileDocument {
 		return undefined;

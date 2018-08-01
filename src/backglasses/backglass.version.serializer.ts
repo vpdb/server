@@ -19,13 +19,19 @@
 
 import { pick } from 'lodash';
 
-import { Serializer, SerializerOptions } from '../common/serializer';
+import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { Context } from '../common/typings/context';
 import { FileDocument } from '../files/file.document';
 import { state } from '../state';
 import { BackglassVersion } from './backglass.version';
 
 export class BackglassVersionSerializer extends Serializer<BackglassVersion> {
+
+	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
+		reduced: [ { path: 'file', modelName: 'File', level: 'reduced' } ],
+		simple: [ { path: 'file', modelName: 'File', level: 'simple' } ],
+		detailed: [ { path: 'file', modelName: 'File', level: 'simple' } ],
+	};
 
 	protected _reduced(ctx: Context, doc: BackglassVersion, opts: SerializerOptions): BackglassVersion {
 		return this._serialize(ctx, doc, opts, state.serializers.File.reduced.bind(state.serializers.File));

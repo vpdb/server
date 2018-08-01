@@ -60,17 +60,17 @@ gameApiRouter.get('/v1/games/:gameId/media', mediumApi.list.bind(mediumApi));
 gameApiRouter.get('/v1/games/:id/events', eventsApi.list({ byGame: true }).bind(eventsApi));
 gameApiRouter.get('/v1/games/:id/release-name', api.auth(api.releaseName.bind(api), 'releases', 'add', [ Scope.ALL, Scope.CREATE ]));
 
-apiCache.enable(gameApiRouter, '/v1/games', [ { modelName: 'game', path: 'id', level: 'simple' } ], gameListCacheCounters);
+apiCache.enable(gameApiRouter, '/v1/games', [ { modelName: 'Game', path: 'id', level: 'simple' } ], gameListCacheCounters);
 apiCache.enable(gameApiRouter, '/v1/games/:id', [
-	{ modelName: 'game', path: 'id', level: 'detailed' },
-	{ modelName: 'release', path: 'releases.id', level: 'detailed' },
-	{ modelName: 'backglass', path: 'backglasses.id', level: 'simple' },
-	{ modelName: 'user', path: 'releases.created_by.id', level: 'reduced' },
-	{ modelName: 'user', path: 'releases.authors.user.id', level: 'reduced' },
-	{ modelName: 'user', path: 'backglasses.created_by.id', level: 'reduced' },
-	{ modelName: 'user', path: 'backglasses.authors.user.id', level: 'reduced' },
-	{ modelName: 'build', path: 'releases.versions.files.compatibility.id', level: 'simple' },
-	{ modelName: 'tag:', path: 'releases.tags.id', level: 'simple' },
+	{ modelName: 'Game', path: 'id', level: 'detailed' },
+	{ modelName: 'Release', path: 'releases.id', level: 'detailed' },
+	{ modelName: 'Backglass', path: 'backglasses.id', level: 'simple' },
+	{ modelName: 'User', path: 'releases.created_by.id', level: 'reduced' },
+	{ modelName: 'User', path: 'releases.authors.user.id', level: 'reduced' },
+	{ modelName: 'User', path: 'backglasses.created_by.id', level: 'reduced' },
+	{ modelName: 'User', path: 'backglasses.authors.user.id', level: 'reduced' },
+	{ modelName: 'Build', path: 'releases.versions.files.compatibility.id', level: 'simple' },
+	{ modelName: 'Tag', path: 'releases.tags.id', level: 'simple' },
 ], gameDetailsCacheCounters);
 
 //apiCache.enable(gameApiRouter, '/v1/games/:gameId/backglasses', { resources: ['backglass', 'user'] });

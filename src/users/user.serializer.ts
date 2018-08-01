@@ -19,12 +19,18 @@
 
 import { createHash } from 'crypto';
 import { assign, find, isEmpty, mapValues, pick, pickBy, uniq } from 'lodash';
-import { Serializer, SerializerOptions } from '../common/serializer';
+import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { config } from '../common/settings';
 import { Context } from '../common/typings/context';
 import { UserDocument } from './user.document';
 
 export class UserSerializer extends Serializer<UserDocument> {
+
+	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
+		reduced: [],
+		simple: [],
+		detailed: [],
+	};
 
 	/**
 	 * User info in other data.

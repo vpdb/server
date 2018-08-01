@@ -19,7 +19,7 @@
 
 import { pick } from 'lodash';
 
-import { Serializer, SerializerOptions } from '../common/serializer';
+import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { Context } from '../common/typings/context';
 import { GameDocument } from '../games/game.document';
 import { state } from '../state';
@@ -28,6 +28,25 @@ import { BackglassDocument } from './backglass.document';
 import { BackglassVersion } from './backglass.version';
 
 export class BackglassSerializer extends Serializer<BackglassDocument> {
+
+	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
+		reduced: [
+			{ path: 'game', modelName: 'Game', level: 'reduced' },
+			{ path: 'authors', modelName: 'ContentAuthor', level: 'reduced' },
+			{ path: 'versions', modelName: 'BackglassVersion', level: 'reduced' },
+		],
+		simple: [
+			{ path: 'game', modelName: 'Game', level: 'reduced' },
+			{ path: 'authors', modelName: 'ContentAuthor', level: 'reduced' },
+			{ path: 'versions', modelName: 'BackglassVersion', level: 'simple' },
+		],
+		detailed: [
+			{ path: 'game', modelName: 'Game', level: 'reduced' },
+			{ path: 'authors', modelName: 'ContentAuthor', level: 'reduced' },
+			{ path: 'versions', modelName: 'BackglassVersion', level: 'simple' },
+			{ path: 'created_by', modelName: 'User', level: 'reduced' },
+		],
+	};
 
 	protected _reduced(ctx: Context, doc: BackglassDocument, opts: SerializerOptions): BackglassDocument {
 		return this._serialize(ctx, doc, opts, state.serializers.BackglassVersion.reduced.bind(state.serializers.BackglassVersion));

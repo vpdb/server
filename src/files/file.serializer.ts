@@ -19,13 +19,19 @@
 
 import { assign, pick } from 'lodash';
 import { quota } from '../common/quota';
-import { Serializer, SerializerOptions } from '../common/serializer';
+import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { Context } from '../common/typings/context';
 import { File } from './file';
 import { FileDocument } from './file.document';
 import { Metadata } from './metadata/metadata';
 
 export class FileSerializer extends Serializer<FileDocument> {
+
+	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
+		reduced: [],
+		simple: [],
+		detailed: [],
+	};
 
 	protected _reduced(ctx: Context, doc: FileDocument, opts: SerializerOptions): FileDocument {
 		return pick(doc, ['id', 'name', 'bytes', 'mime_type']) as FileDocument;

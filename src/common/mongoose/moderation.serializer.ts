@@ -22,10 +22,16 @@ import { ModerationData, ModerationDataEvent } from 'mongoose';
 
 import { state } from '../../state';
 import { UserDocument } from '../../users/user.document';
-import { Serializer, SerializerOptions } from '../serializer';
+import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../serializer';
 import { Context } from '../typings/context';
 
 export class ModerationSerializer extends Serializer<ModerationData> {
+
+	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
+		reduced: [],
+		simple: [],
+		detailed: [{ path: 'history.created_by', modelName: 'User', level: 'reduced' }],
+	};
 
 	/* istanbul ignore next */
 	protected _detailed(ctx: Context, doc: ModerationData, opts: SerializerOptions): ModerationData {

@@ -19,13 +19,19 @@
 
 import { pick } from 'lodash';
 
-import { Serializer, SerializerOptions } from '../common/serializer';
+import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { Context } from '../common/typings/context';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
 import { CommentDocument } from './comment.document';
 
 export class CommentSerializer extends Serializer<CommentDocument> {
+
+	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
+		reduced: [ { path: 'from', modelName: 'User', level: 'reduced' } ],
+		simple: [ { path: 'from', modelName: 'User', level: 'reduced' } ],
+		detailed: [ { path: 'from', modelName: 'User', level: 'reduced' } ],
+	};
 
 	/* istanbul ignore next */
 	protected _reduced(ctx: Context, doc: CommentDocument, opts: SerializerOptions): CommentDocument {

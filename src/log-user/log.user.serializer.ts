@@ -19,13 +19,19 @@
 
 import { pick } from 'lodash';
 
-import { Serializer, SerializerOptions } from '../common/serializer';
+import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { Context } from '../common/typings/context';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
 import { LogUserDocument } from './log.user.document';
 
 export class LogUserSerializer extends Serializer<LogUserDocument> {
+
+	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
+		reduced: [],
+		simple: [],
+		detailed: [],
+	};
 
 	protected _reduced(ctx: Context, doc: LogUserDocument, opts: SerializerOptions): LogUserDocument {
 		return this._simple(ctx, doc, opts);

@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { assign, defaultsDeep, get, isArray, pick } from 'lodash';
+import { assign, defaultsDeep, get, isArray, isObject, pick } from 'lodash';
 import { Document, ModeratedDocument, Types } from 'mongoose';
 
 import { FileDocument } from '../files/file.document';
@@ -85,10 +85,7 @@ export abstract class Serializer<T extends Document | ModeratedDocument> {
 		if (doc.populated && doc.populated(field)) {
 			return true;
 		}
-		let obj = get(doc, field);
-		if (isArray(obj) && obj.length > 0) {
-			obj = obj[0];
-		}
+		const obj = this.getFirstInPath(doc, field);
 		return obj && !(obj instanceof Types.ObjectId);
 	}
 
@@ -163,6 +160,23 @@ export abstract class Serializer<T extends Document | ModeratedDocument> {
 			return undefined;
 		}
 		return this._post(ctx, doc, serializer(ctx, doc, this._defaultOpts(opts)), this._defaultOpts(opts));
+	}
+
+	private getFirstInPath(doc: any, path: string): any {
+		if (!path) {
+			return doc;
+		}
+		if (!doc) {
+			return undefined;
+		}
+		if (isArray(doc)) {
+			return doc.length > 0 ? this.getFirstInPath(doc[0], path) : undefined;
+		}
+		const field = path.substr(0, path.indexOf('.') > 0 ? path.indexOf('.') : path.length);
+		if (isObject(doc[field])) {
+			return this.getFirstInPath(doc[field], path.substr((path.indexOf('.') > 0 ? path.indexOf('.') : path.length) + 1));
+		}
+		return doc[field];
 	}
 
 	/**

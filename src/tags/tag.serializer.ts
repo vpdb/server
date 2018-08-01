@@ -18,13 +18,19 @@
  */
 
 import { pick } from 'lodash';
-import { Serializer, SerializerOptions } from '../common/serializer';
+import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { Context } from '../common/typings/context';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
 import { TagDocument } from './tag.document';
 
 export class TagSerializer extends Serializer<TagDocument> {
+
+	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
+		reduced: [],
+		simple: [],
+		detailed: [{ path: 'history.created_by', modelName: 'User', level: 'reduced' }],
+	};
 
 	protected _reduced(ctx: Context, doc: TagDocument, opts: SerializerOptions): TagDocument {
 		return pick(doc, ['id']) as TagDocument;

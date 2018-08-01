@@ -19,7 +19,7 @@
 
 import { compact, includes, isArray, pick } from 'lodash';
 
-import { Serializer, SerializerOptions } from '../../common/serializer';
+import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../../common/serializer';
 import { Context } from '../../common/typings/context';
 import { state } from '../../state';
 import { flavors } from '../release.flavors';
@@ -27,6 +27,18 @@ import { ReleaseVersionDocument } from './release.version.document';
 
 /* tslint:disable:member-ordering */
 export class ReleaseVersionSerializer extends Serializer<ReleaseVersionDocument> {
+
+	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
+		reduced: [
+			{ path: 'files', modelName: 'ReleaseVersionFile', level: 'simple' },
+		],
+		simple: [
+			{ path: 'files', modelName: 'ReleaseVersionFile', level: 'simple' },
+		],
+		detailed: [
+			{ path: 'files', modelName: 'ReleaseVersionFile', level: 'detailed' },
+		],
+	};
 
 	protected _reduced(ctx: Context, doc: ReleaseVersionDocument, opts: SerializerOptions): ReleaseVersionDocument {
 		return this._simple(ctx, doc, opts);

@@ -19,11 +19,17 @@
 
 import { pick } from 'lodash';
 import UAParser from 'ua-parser-js';
-import { Serializer, SerializerOptions } from '../common/serializer';
+import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { Context } from '../common/typings/context';
 import { TokenDocument } from './token.document';
 
 export class TokenSerializer extends Serializer<TokenDocument> {
+
+	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
+		reduced: [],
+		simple: [],
+		detailed: [{ path: 'history.created_by', modelName: 'User', level: 'reduced' }],
+	};
 
 	/* istanbul ignore next */
 	protected _reduced(ctx: Context, doc: TokenDocument, opts: SerializerOptions): TokenDocument {

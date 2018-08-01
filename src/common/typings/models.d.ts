@@ -61,3 +61,7 @@ export interface Models {
 	User: UserModel;
 	[key: string]: Model<Document>;
 }
+
+export type ModelName = 'Backglass' | 'BackglassVersion' | 'Build' | 'Comment' | 'ContentAuthor' | 'File' | 'Game' | 'GameRequest' |
+	'LogEvent' | 'LogUser' | 'Medium' | 'Rating' | 'Release' | 'ReleaseVersion' | 'ReleaseVersionFile' |
+	'Rom' | 'TableBlock' | 'Tag' | 'Token' | 'Star' | 'User';

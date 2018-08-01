@@ -36,6 +36,7 @@ import { TokenSerializer } from '../../tokens/token.serializer';
 import { ContentAuthorSerializer } from '../../users/content.author.serializer';
 import { UserSerializer } from '../../users/user.serializer';
 import { ModerationSerializer } from '../mongoose/moderation.serializer';
+import { Serializer } from '../serializer';
 
 export interface Serializers {
 	Backglass: BackglassSerializer;
@@ -57,6 +58,7 @@ export interface Serializers {
 	Tag: TagSerializer;
 	Token: TokenSerializer;
 	User: UserSerializer;
+	[key: string]: Serializer<any>;
 }
 
 export interface Thumb {

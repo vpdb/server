@@ -20,7 +20,7 @@
 import { isEmpty, pick } from 'lodash';
 
 import { ipdb } from '../common/ipdb';
-import { Serializer, SerializerOptions } from '../common/serializer';
+import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { config } from '../common/settings';
 import { Context } from '../common/typings/context';
 import { FileDocument } from '../files/file.document';
@@ -28,6 +28,21 @@ import { state } from '../state';
 import { GameDocument, GameRestrictions } from './game.document';
 
 export class GameSerializer extends Serializer<GameDocument> {
+
+	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
+		reduced: [],
+		simple: [
+			{ path: 'backglass', modelName: 'File', level: 'simple' },
+			{ path: 'logo', modelName: 'File', level: 'simple' },
+		],
+		detailed: [
+			{ path: 'backglass', modelName: 'File', level: 'simple' },
+			{ path: 'logo', modelName: 'File', level: 'simple' },
+			{ path: 'releases', modelName: 'Release', level: 'detailed' },
+			{ path: 'backglasses', modelName: 'Backglass', level: 'simple' },
+			{ path: 'media', modelName: 'Medium', level: 'simple' },
+		],
+	};
 
 	protected _reduced(ctx: Context, doc: GameDocument, opts: SerializerOptions): GameDocument {
 

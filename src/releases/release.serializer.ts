@@ -19,7 +19,7 @@
 
 import { assign, compact, flatten, intersection, isArray, isUndefined, orderBy, pick, uniq } from 'lodash';
 
-import { Serializer, SerializerOptions } from '../common/serializer';
+import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { Context } from '../common/typings/context';
 import { Thumb } from '../common/typings/serializers';
 import { File } from '../files/file';
@@ -34,6 +34,30 @@ import { ReleaseFileFlavor, ReleaseVersionFileDocument } from './version/file/re
 import { ReleaseVersionDocument } from './version/release.version.document';
 
 export class ReleaseSerializer extends Serializer<ReleaseDocument> {
+
+	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
+		reduced: [
+			{ path: 'game', modelName: 'Game', level: 'reduced' },
+			{ path: 'tags', modelName: 'Tag', level: 'simple' },
+			{ path: 'created_by', modelName: 'User', level: 'reduced' },
+			{ path: 'authors', modelName: 'ContentAuthor', level: 'reduced' },
+			{ path: 'versions', modelName: 'ReleaseVersion', level: 'simple' },
+		],
+		simple: [
+			{ path: 'game', modelName: 'Game', level: 'reduced' },
+			{ path: 'tags', modelName: 'Tag', level: 'simple' },
+			{ path: 'created_by', modelName: 'User', level: 'reduced' },
+			{ path: 'authors', modelName: 'ContentAuthor', level: 'reduced' },
+			{ path: 'versions', modelName: 'ReleaseVersion', level: 'simple' },
+		],
+		detailed: [
+			{ path: 'game', modelName: 'Game', level: 'reduced' },
+			{ path: 'tags', modelName: 'Tag', level: 'simple' },
+			{ path: 'created_by', modelName: 'User', level: 'reduced' },
+			{ path: 'authors', modelName: 'ContentAuthor', level: 'reduced' },
+			{ path: 'versions', modelName: 'ReleaseVersion', level: 'detailed' },
+		],
+	};
 
 	protected _reduced(ctx: Context, doc: ReleaseDocument, opts: SerializerOptions): ReleaseDocument {
 		return this._simple(ctx, doc, opts);

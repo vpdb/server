@@ -17,16 +17,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { assign, defaultsDeep, get, isArray, isObject, pick } from 'lodash';
+import { assign, defaultsDeep, isArray, isObject, pick } from 'lodash';
 import { Document, ModeratedDocument, Types } from 'mongoose';
 
 import { FileDocument } from '../files/file.document';
 import { ReleaseVersionFileDocument } from '../releases/version/file/release.version.file.document';
 import { state } from '../state';
 import { Context } from './typings/context';
+import { ModelName } from './typings/models';
 import { Thumb } from './typings/serializers';
 
 export abstract class Serializer<T extends Document | ModeratedDocument> {
+
+	public abstract readonly references: { [level in SerializerLevel]: SerializerReference[] };
 
 	/**
 	 * Returns the reduced version of the object.
@@ -227,4 +230,11 @@ export interface SerializerOptions {
 	fields?: string[];
 }
 
-export type SerializerLevel =  'reduced' | 'simple' | 'detailed';
+export type SerializerLevel = 'reduced' | 'simple' | 'detailed';
+
+export interface SerializerReference {
+	modelName: ModelName;
+	path: string;
+	level: SerializerLevel;
+	idField?: string;
+}

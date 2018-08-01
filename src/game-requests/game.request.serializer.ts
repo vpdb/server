@@ -19,7 +19,7 @@
 
 import { pick } from 'lodash';
 
-import { Serializer, SerializerOptions } from '../common/serializer';
+import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { Context } from '../common/typings/context';
 import { GameDocument } from '../games/game.document';
 import { state } from '../state';
@@ -27,6 +27,12 @@ import { UserDocument } from '../users/user.document';
 import { GameRequestDocument } from './game.request.document';
 
 export class GameRequestSerializer extends Serializer<GameRequestDocument> {
+
+	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
+		reduced: [],
+		simple: [{ path: 'game', modelName: 'Game', level: 'reduced' }],
+		detailed: [{ path: 'game', modelName: 'Game', level: 'reduced' }],
+	};
 
 	protected _reduced(ctx: Context, doc: GameRequestDocument, opts: SerializerOptions): GameRequestDocument {
 		return undefined;

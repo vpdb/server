@@ -18,13 +18,19 @@
  */
 
 import { assign, pick } from 'lodash';
-import { Serializer, SerializerOptions } from '../common/serializer';
+import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { Context } from '../common/typings/context';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
 import { BuildDocument } from './build.document';
 
 export class BuildSerializer extends Serializer<BuildDocument> {
+
+	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
+		reduced: [],
+		simple: [],
+		detailed: [],
+	};
 
 	protected _reduced(ctx: Context, doc: BuildDocument, opts: SerializerOptions): BuildDocument {
 		return pick(doc, ['id']) as BuildDocument;

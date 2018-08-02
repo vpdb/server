@@ -29,6 +29,7 @@ import { UserDocument } from '../users/user.document';
 import { logger } from './logger';
 import { SerializerLevel, SerializerReference } from './serializer';
 import { Context, RequestState } from './typings/context';
+import { inspect } from 'util';
 
 /**
  * An in-memory cache using Redis.
@@ -73,6 +74,7 @@ class ApiCache {
 	 * @param {CacheCounterConfig} counters Counter config, see {@link CacheCounterConfig}.
 	 */
 	public enable<T>(router: Router, path: string, entities: SerializerReference[], counters?: Array<CacheCounterConfig<T>>) {
+		logger.debug(null, '[ApiCache.enable]: %s\n%s', path, inspect(entities, { depth : Infinity, colors: true, breakLength: 120 }));
 		const opts = (router as any).opts as IRouterOptions;
 		this.cacheRoutes.push({ path, regex: pathToRegexp(opts.prefix + path), entities, counters });
 	}

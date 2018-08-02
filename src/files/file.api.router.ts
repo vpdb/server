@@ -41,4 +41,3 @@ export class FileApiRouter implements ApiRouter {
 		return this.router;
 	}
 }
-

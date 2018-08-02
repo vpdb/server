@@ -17,16 +17,29 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import * as Router from 'koa-router';
+import { ApiRouter } from '../common/api.router';
 import { Scope } from '../common/scope';
 import { RomApi } from './rom.api';
 
-const api = new RomApi();
-export const romApiRouter = api.apiRouter();
+export class RomApiRouter implements ApiRouter {
 
-romApiRouter.get('/v1/roms',       api.list.bind(api));
-romApiRouter.post('/v1/roms',       api.auth(api.create.bind(api), 'roms', 'add', [ Scope.ALL , Scope.CREATE ]));
-romApiRouter.get('/v1/roms/:id',   api.view.bind(api));
-romApiRouter.delete('/v1/roms/:id', api.auth(api.del.bind(api), 'roms', 'delete-own', [ Scope.ALL , Scope.CREATE ]));
+	private readonly router: Router;
 
-romApiRouter.get('/v1/games/:gameId/roms', api.list.bind(api));
-romApiRouter.post('/v1/games/:gameId/roms', api.auth(api.create.bind(api), 'roms', 'add', [ Scope.ALL , Scope.CREATE ]));
+	constructor() {
+		const api = new RomApi();
+		this.router = api.apiRouter();
+
+		this.router.get('/v1/roms',       api.list.bind(api));
+		this.router.post('/v1/roms',       api.auth(api.create.bind(api), 'roms', 'add', [ Scope.ALL , Scope.CREATE ]));
+		this.router.get('/v1/roms/:id',   api.view.bind(api));
+		this.router.delete('/v1/roms/:id', api.auth(api.del.bind(api), 'roms', 'delete-own', [ Scope.ALL , Scope.CREATE ]));
+
+		this.router.get('/v1/games/:gameId/roms', api.list.bind(api));
+		this.router.post('/v1/games/:gameId/roms', api.auth(api.create.bind(api), 'roms', 'add', [ Scope.ALL , Scope.CREATE ]));
+	}
+
+	public getRouter(): Router {
+		return this.router;
+	}
+}

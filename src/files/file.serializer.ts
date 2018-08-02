@@ -21,12 +21,14 @@ import { assign, pick } from 'lodash';
 import { quota } from '../common/quota';
 import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { Context } from '../common/typings/context';
+import { ModelName } from '../common/typings/models';
 import { File } from './file';
 import { FileDocument } from './file.document';
 import { Metadata } from './metadata/metadata';
 
 export class FileSerializer extends Serializer<FileDocument> {
 
+	public readonly modelName: ModelName = 'File';
 	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
 		reduced: [],
 		simple: [],

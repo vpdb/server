@@ -17,21 +17,34 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import * as Router from 'koa-router';
+import { ApiRouter } from '../common/api.router';
 import { Scope } from '../common/scope';
 import { MiscApi } from './misc.api';
 
-const api = new MiscApi();
-export const miscApiRouter = api.apiRouter();
+export class MiscApiRouter implements ApiRouter {
 
-miscApiRouter.get('/v1/sitemap', api.sitemap.bind(api)); // TODO add api cache
-miscApiRouter.get('/v1/ping',    api.ping.bind(api));
-miscApiRouter.get('/v1/plans',   api.plans.bind(api));
-miscApiRouter.get('/v1/roles',    api.auth(api.roles.bind(api), 'roles', 'list', [ Scope.ALL ]));
-miscApiRouter.get('/v1/ipdb/:id', api.auth(api.ipdbDetails.bind(api), 'ipdb', 'view', [ Scope.ALL ]));
-miscApiRouter.delete('/v1/cache', api.auth(api.invalidateCache.bind(api), 'cache', 'delete', [ Scope.ALL ]));
+	private readonly router: Router;
 
-if (process.env.ENABLE_KILL_SWITCH) {
-	miscApiRouter.post('/v1/kill',     api.kill.bind(api));
+	constructor() {
+		const api = new MiscApi();
+		this.router = api.apiRouter();
+
+		this.router.get('/v1/sitemap', api.sitemap.bind(api)); // TODO add api cache
+		this.router.get('/v1/ping',    api.ping.bind(api));
+		this.router.get('/v1/plans',   api.plans.bind(api));
+		this.router.get('/v1/roles',    api.auth(api.roles.bind(api), 'roles', 'list', [ Scope.ALL ]));
+		this.router.get('/v1/ipdb/:id', api.auth(api.ipdbDetails.bind(api), 'ipdb', 'view', [ Scope.ALL ]));
+		this.router.delete('/v1/cache', api.auth(api.invalidateCache.bind(api), 'cache', 'delete', [ Scope.ALL ]));
+
+		if (process.env.ENABLE_KILL_SWITCH) {
+			this.router.post('/v1/kill',     api.kill.bind(api));
+		}
+		this.router.get('index', '/v1', api.index.bind(api));
+		this.router.redirect('/', 'index');
+	}
+
+	public getRouter(): Router {
+		return this.router;
+	}
 }
-miscApiRouter.get('index', '/v1', api.index.bind(api));
-miscApiRouter.redirect('/', 'index');

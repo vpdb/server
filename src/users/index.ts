@@ -17,13 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import Router from 'koa-router';
 import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
+import { ApiRouter } from '../common/api.router';
 import { state } from '../state';
 import { ContentAuthorSerializer } from './content.author.serializer';
-import { userApiRouter } from './user.api.router';
+import { UserApiRouter } from './user.api.router';
 import { UserDocument } from './user.document';
 import { UserModel, userSchema } from './user.schema';
 import { UserSerializer } from './user.serializer';
@@ -31,9 +31,10 @@ import { UserSerializer } from './user.serializer';
 export class UserEndPoint extends EndPoint {
 
 	public readonly name: string = 'User API';
+	private readonly router = new UserApiRouter();
 
-	public getRouter(): Router {
-		return userApiRouter;
+	public getRouter(): ApiRouter {
+		return this.router;
 	}
 
 	public registerModel(): EndPoint {

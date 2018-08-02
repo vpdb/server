@@ -21,6 +21,7 @@ import { pick } from 'lodash';
 
 import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { Context } from '../common/typings/context';
+import { ModelName } from '../common/typings/models';
 import { GameDocument } from '../games/game.document';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
@@ -29,6 +30,7 @@ import { BackglassVersion } from './backglass.version';
 
 export class BackglassSerializer extends Serializer<BackglassDocument> {
 
+	public readonly modelName: ModelName = 'Backglass';
 	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
 		reduced: [
 			{ path: 'game', modelName: 'Game', level: 'reduced' },

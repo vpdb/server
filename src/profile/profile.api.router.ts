@@ -17,25 +17,40 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import * as Router from 'koa-router';
+import { ApiRouter } from '../common/api.router';
 import { Scope } from '../common/scope';
 import { LogEventApi } from '../log-event/log.event.api';
 import { LogUserApi } from '../log-user/log.user.api';
 import { ProfileApi } from './profile.api';
 
-const api = new ProfileApi();
-const logApi = new LogUserApi();
-const eventsApi = new LogEventApi();
-export const profileApiRouter = api.apiRouter();
+export class ProfileApiRouter implements ApiRouter {
 
-profileApiRouter.get('/v1/profile',               api.auth(api.view.bind(api), 'user', 'view', [ Scope.ALL, Scope.COMMUNITY ]));
-profileApiRouter.patch('/v1/profile',             api.auth(api.update.bind(api), 'user', 'update', [ Scope.ALL ]));
-profileApiRouter.get('/v1/profile/logs',          api.auth(logApi.list.bind(api), 'user', 'view', [ Scope.ALL ]));
-profileApiRouter.get('/v1/profile/events',        api.auth(eventsApi.list({ loggedUser: true }).bind(eventsApi), 'user', 'view', [ Scope.ALL ]));
-profileApiRouter.get('/v1/profile/confirm/:tkn', api.confirm.bind(api));
+	private readonly router: Router;
 
-// deprecated, remove when clients are updated.
-profileApiRouter.get('/v1/user',               api.auth(api.view.bind(api), 'user', 'view', [ Scope.ALL, Scope.COMMUNITY ]));
-profileApiRouter.patch('/v1/user',             api.auth(api.update.bind(api), 'user', 'update', [ Scope.ALL ]));
-profileApiRouter.get('/v1/user/logs',          api.auth(logApi.list.bind(api), 'user', 'view', [ Scope.ALL ]));
-profileApiRouter.get('/v1/user/events',        api.auth(eventsApi.list({ loggedUser: true }).bind(eventsApi), 'user', 'view', [ Scope.ALL ]));
-profileApiRouter.get('/v1/user/confirm/:tkn', api.confirm.bind(api));
+	constructor() {
+		const api = new ProfileApi();
+		this.router = api.apiRouter();
+
+		this.router.get('/v1/profile',               api.auth(api.view.bind(api), 'user', 'view', [ Scope.ALL, Scope.COMMUNITY ]));
+		this.router.patch('/v1/profile',             api.auth(api.update.bind(api), 'user', 'update', [ Scope.ALL ]));
+		this.router.get('/v1/profile/confirm/:tkn', api.confirm.bind(api));
+
+		const logApi = new LogUserApi();
+		this.router.get('/v1/profile/logs',          api.auth(logApi.list.bind(api), 'user', 'view', [ Scope.ALL ]));
+
+		const eventsApi = new LogEventApi();
+		this.router.get('/v1/profile/events',        api.auth(eventsApi.list({ loggedUser: true }).bind(eventsApi), 'user', 'view', [ Scope.ALL ]));
+
+		// deprecated, remove when clients are updated.
+		this.router.get('/v1/user',               api.auth(api.view.bind(api), 'user', 'view', [ Scope.ALL, Scope.COMMUNITY ]));
+		this.router.patch('/v1/user',             api.auth(api.update.bind(api), 'user', 'update', [ Scope.ALL ]));
+		this.router.get('/v1/user/logs',          api.auth(logApi.list.bind(api), 'user', 'view', [ Scope.ALL ]));
+		this.router.get('/v1/user/events',        api.auth(eventsApi.list({ loggedUser: true }).bind(eventsApi), 'user', 'view', [ Scope.ALL ]));
+		this.router.get('/v1/user/confirm/:tkn', api.confirm.bind(api));
+	}
+
+	public getRouter(): Router {
+		return this.router;
+	}
+}

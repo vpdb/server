@@ -20,6 +20,7 @@
 import { pick } from 'lodash';
 import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { Context } from '../common/typings/context';
+import { ModelName } from '../common/typings/models';
 import { FileDocument } from '../files/file.document';
 import { GameDocument } from '../games/game.document';
 import { ReleaseDocument } from '../releases/release.document';
@@ -29,6 +30,7 @@ import { MediumDocument } from './medium.document';
 
 export class MediumSerializer extends Serializer<MediumDocument> {
 
+	public readonly modelName: ModelName = 'Medium';
 	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
 		reduced: [
 			{ path: 'file', modelName: 'File', level: 'detailed' },

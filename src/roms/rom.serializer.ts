@@ -20,6 +20,7 @@
 import { pick } from 'lodash';
 import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { Context } from '../common/typings/context';
+import { ModelName } from '../common/typings/models';
 import { FileDocument } from '../files/file.document';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
@@ -27,6 +28,7 @@ import { RomDocument } from './rom.document';
 
 export class RomSerializer extends Serializer<RomDocument> {
 
+	public readonly modelName: ModelName = 'Rom';
 	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
 		reduced: [
 			{ path: 'file', modelName: 'File', level: 'simple' },

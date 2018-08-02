@@ -65,13 +65,13 @@ export class Server {
 		// routes
 		const router = endPoint.getRouter();
 		if (router) {
-			this.app.use(router.routes());
-			this.app.use(router.allowedMethods());
+			this.app.use(router.getRouter().routes());
+			this.app.use(router.getRouter().allowedMethods());
 
 			// pretty print registered paths with methods
 			const methods: Map<string, string[]> = new Map<string, string[]>();
-			router.stack.forEach(layer => methods.set(layer.path, [ ...methods.get(layer.path) || [], ...layer.methods ]));
-			uniq(router.stack.map(layer => layer.path)).sort().forEach(path => {
+			router.getRouter().stack.forEach(layer => methods.set(layer.path, [ ...methods.get(layer.path) || [], ...layer.methods ]));
+			uniq(router.getRouter().stack.map(layer => layer.path)).sort().forEach(path => {
 				logger.info(null, '  %s (%s)', path, methods.get(path).join(','));
 			});
 		}
@@ -85,7 +85,10 @@ export class Server {
 		await endPoint.import();
 	}
 
-	public postRegister() {
+	public postRegister(endPoints: EndPoint[]) {
+		for (const endPoint of endPoints.filter(e => !!e.getRouter() && !!e.getRouter().setupCache)) {
+			endPoint.getRouter().setupCache();
+		}
 		this.app.use(koa404Handler());
 	}
 

@@ -60,7 +60,7 @@ shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 		// global serializers
 		state.serializers.Moderation = new ModerationSerializer();
 
-		server.postRegister();
+		server.postRegister(endPoints);
 
 		// setup ACLs
 		await initAcls();

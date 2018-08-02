@@ -17,16 +17,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import Router from 'koa-router';
 import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
+import { ApiRouter } from '../common/api.router';
 import { state } from '../state';
-import { releaseApiRouter } from './release.api.router';
+import { ReleaseApiRouter } from './release.api.router';
 import { ReleaseDocument } from './release.document';
 import { ReleaseModel, releaseSchema } from './release.schema';
 import { ReleaseSerializer } from './release.serializer';
-import { releaseStorageRouter } from './release.storage.router';
+import { ReleaseStorageRouter } from './release.storage.router';
 import { TableBlock } from './release.tableblock';
 import { tableBlockSchema } from './release.tableblock.schema';
 import { ReleaseVersionFileDocument } from './version/file/release.version.file.document';
@@ -39,9 +39,10 @@ import { ReleaseVersionSerializer } from './version/release.version.serializer';
 export class ReleaseEndPoint extends EndPoint {
 
 	public readonly name: string = 'Release API';
+	private readonly router = new ReleaseApiRouter();
 
-	public getRouter(): Router {
-		return releaseApiRouter;
+	public getRouter(): ApiRouter {
+		return this.router;
 	}
 
 	public registerModel(): EndPoint {
@@ -63,8 +64,9 @@ export class ReleaseEndPoint extends EndPoint {
 export class ReleaseStorageEndPoint extends EndPoint {
 
 	public readonly name: string = 'Release storage API';
+	private readonly router = new ReleaseStorageRouter();
 
-	public getRouter(): Router {
-		return releaseStorageRouter;
+	public getRouter(): ApiRouter {
+		return this.router;
 	}
 }

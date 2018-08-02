@@ -20,12 +20,14 @@
 import { pick } from 'lodash';
 import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { Context } from '../common/typings/context';
+import { ModelName } from '../common/typings/models';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
 import { TagDocument } from './tag.document';
 
 export class TagSerializer extends Serializer<TagDocument> {
 
+	public readonly modelName: ModelName = 'Tag';
 	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
 		reduced: [],
 		simple: [],

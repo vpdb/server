@@ -22,6 +22,7 @@ import { isEmpty, pick } from 'lodash';
 import { BackglassDocument } from '../backglasses/backglass.document';
 import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { Context } from '../common/typings/context';
+import { ModelName } from '../common/typings/models';
 import { GameRequestDocument } from '../game-requests/game.request.document';
 import { GameDocument } from '../games/game.document';
 import { ReleaseDocument } from '../releases/release.document';
@@ -31,6 +32,7 @@ import { LogEventDocument } from './log.event.document';
 
 export class LogEventSerializer extends Serializer<LogEventDocument> {
 
+	public readonly modelName: ModelName = 'LogEvent';
 	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
 		reduced: [],
 		simple: [],

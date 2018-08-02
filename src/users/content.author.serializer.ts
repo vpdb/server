@@ -19,12 +19,14 @@
 
 import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { Context } from '../common/typings/context';
+import { ModelName } from '../common/typings/models';
 import { state } from '../state';
 import { ContentAuthor } from './content.author';
 import { UserDocument } from './user.document';
 
 export class ContentAuthorSerializer extends Serializer<ContentAuthor> {
 
+	public readonly modelName: ModelName = null;
 	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
 		reduced: [ { path: 'user', modelName: 'User', level: 'reduced' } ],
 		simple: [ { path: 'user', modelName: 'User', level: 'simple' } ],

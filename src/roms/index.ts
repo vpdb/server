@@ -17,12 +17,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import Router from 'koa-router';
 import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
+import { ApiRouter } from '../common/api.router';
 import { state } from '../state';
-import { romApiRouter } from './rom.api.router';
+import { RomApiRouter } from './rom.api.router';
 import { RomDocument } from './rom.document';
 import { RomModel, romSchema } from './rom.schema';
 import { RomSerializer } from './rom.serializer';
@@ -30,9 +30,10 @@ import { RomSerializer } from './rom.serializer';
 export class RomApiEndPoint extends EndPoint {
 
 	public readonly name: string = 'Rom API';
+	private readonly router = new RomApiRouter();
 
-	public getRouter(): Router {
-		return romApiRouter;
+	public getRouter(): ApiRouter {
+		return this.router;
 	}
 
 	public registerModel(): EndPoint {

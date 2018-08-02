@@ -17,14 +17,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import * as Router from 'koa-router';
+import { ApiRouter } from '../common/api.router';
 import { Scope } from '../common/scope';
 import { BuildApi } from './build.api';
 
-const api = new BuildApi();
-export const buildApiRouter = api.apiRouter();
+export class BuildApiRouter implements ApiRouter {
 
-buildApiRouter.get('/v1/builds',       api.list.bind(api));
-buildApiRouter.post('/v1/builds',       api.auth(api.create.bind(api), 'builds', 'add', [ Scope.ALL, Scope.CREATE ]));
-buildApiRouter.get('/v1/builds/:id',   api.view.bind(api));
-buildApiRouter.patch('/v1/builds/:id',  api.auth(api.update.bind(api), 'builds', 'update', [ Scope.ALL, Scope.CREATE ]));
-buildApiRouter.delete('/v1/builds/:id', api.auth(api.del.bind(api), 'builds', 'delete-own', [ Scope.ALL, Scope.CREATE ]));
+	private readonly router: Router;
+
+	constructor() {
+		const api = new BuildApi();
+		this.router = api.apiRouter();
+
+		this.router.get('/v1/builds',       api.list.bind(api));
+		this.router.post('/v1/builds',       api.auth(api.create.bind(api), 'builds', 'add', [ Scope.ALL, Scope.CREATE ]));
+		this.router.get('/v1/builds/:id',   api.view.bind(api));
+		this.router.patch('/v1/builds/:id',  api.auth(api.update.bind(api), 'builds', 'update', [ Scope.ALL, Scope.CREATE ]));
+		this.router.delete('/v1/builds/:id', api.auth(api.del.bind(api), 'builds', 'delete-own', [ Scope.ALL, Scope.CREATE ]));
+	}
+
+	public getRouter(): Router {
+		return this.router;
+	}
+}

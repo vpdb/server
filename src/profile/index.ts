@@ -17,16 +17,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import Router from 'koa-router';
-
 import { EndPoint } from '../common/api.endpoint';
-import { profileApiRouter } from './profile.api.router';
+import { ApiRouter } from '../common/api.router';
+import { ProfileApiRouter } from './profile.api.router';
 
 export class ProfileEndPoint extends EndPoint {
 
 	public readonly name: string = 'User Profile API';
+	private readonly router = new ProfileApiRouter();
 
-	public getRouter(): Router {
-		return profileApiRouter;
+	public getRouter(): ApiRouter {
+		return this.router;
 	}
 }

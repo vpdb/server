@@ -21,10 +21,12 @@ import { pick } from 'lodash';
 import UAParser from 'ua-parser-js';
 import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { Context } from '../common/typings/context';
+import { ModelName } from '../common/typings/models';
 import { TokenDocument } from './token.document';
 
 export class TokenSerializer extends Serializer<TokenDocument> {
 
+	public readonly modelName: ModelName = 'Token';
 	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
 		reduced: [],
 		simple: [],

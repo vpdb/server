@@ -219,7 +219,7 @@ export class RatingApi extends Api {
 		}
 
 		// invalidate cache
-		await apiCache.invalidateDirtyEntity(ctx.state, modelName, entity.id);
+		await apiCache.invalidateEntity(ctx.state, modelName, entity.id);
 	}
 
 	/**

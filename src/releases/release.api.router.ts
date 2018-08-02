@@ -84,8 +84,8 @@ export class ReleaseApiRouter implements ApiRouter {
 		const detailedEntities = state.serializers.Release.getReferences('detailed',
 			['ContentAuthor', 'ReleaseVersion', 'ReleaseVersionFile', 'File' ]);
 
-		apiCache.enable(this.router, '/v1/releases', simpleEntities, releaseListCacheCounters);
-		apiCache.enable(this.router, '/v1/releases/:id', detailedEntities, releaseDetailsCacheCounters);
+		apiCache.enable(this.router, '/v1/releases', { entities: simpleEntities, counters: releaseListCacheCounters, listModel: 'release' });
+		apiCache.enable(this.router, '/v1/releases/:id', {entities: detailedEntities, counters: releaseDetailsCacheCounters });
 		//apiCache.enable(this.router, '/v1/releases/:id/comments', { entities: { release: 'id' } });
 	}
 }

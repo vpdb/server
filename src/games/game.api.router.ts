@@ -82,11 +82,6 @@ export class GameApiRouter implements ApiRouter {
 		apiCache.enable(this.router, '/v1/games', simpleEntities, gameListCacheCounters);
 		apiCache.enable(this.router, '/v1/games/:id', detailedEntities, gameDetailsCacheCounters);
 
-		// noinspection TsLint
-		console.log('================================= GAMES');
-		// noinspection TsLint
-		console.log(require('util').inspect(detailedEntities, { depth : Infinity, colors: true, breakLength: 120 }));
-
 		//apiCache.enable(gameApiRouter, '/v1/games/:gameId/backglasses', { resources: ['backglass', 'user'] });
 		//apiCache.enable(gameApiRouter, '/v1/games/:gameId/media', { resources: ['medium', 'user'] });
 		//apiCache.enable(gameApiRouter, '/v1/games/:id/events', { resources: ['log_event'] });

@@ -35,18 +35,17 @@ import { Context, RequestState } from './typings/context';
  * An in-memory cache using Redis.
  *
  * It's used as a middleware in Koa. Routes must enable caching explicitly.
- * Invalidation is done with tags.
+ *
+ * For a cached response, we keep references to all model instances of the
+ * response body so we can invalidate it when any of the instances changes. In
+ * the reference, the verbosity (i.e. the serializer level) is included, so we
+ * can invalidate only a given level.
+ *
+ * A route can be tagged as listing a given model and all of its caches will be
+ * invalidated whenever a instance of that model is added, removed or updated.
  *
  * Counters are cached separately. That means viewing, downloading etc doesn't
  * invalidate the cache. See {@link CacheCounterConfig} for more details.
- *
- * Procedure when adding a cache to a route:
- *   1. Go through all end points performing a *write* operation.
- *   2. Check if the route is affected by the operation. Also make sure to
- *      check nested entities, e.g. updating a release invalidates the game
- *      details as well.
- *   3. If that's the case, make sure the route's matched when invalidating
- *      the end point.
  */
 class ApiCache {
 
@@ -62,8 +61,8 @@ class ApiCache {
 	 * The config defines how caches on that route are tagged for invalidation.
 	 *
 	 * @param {Router} router Router, needed to retrieve the path prefix
-	 * @param {string} path Path of the route (same passed to the router).
-	 * @param config Invalidation config for the given path
+	 * @param {string} path Path of the route (same string as given to the router).
+	 * @param config Invalidation config for the route
 	 */
 	public enable<T>(router: Router, path: string, config: CacheInvalidationConfig<T>) {
 		logger.debug(null, '[ApiCache.enable]: %s\n%s', path, inspect(config.entities, { depth : Infinity, colors: true, breakLength: 120 }));
@@ -96,19 +95,21 @@ class ApiCache {
 		const hit = await state.redis.get(key);
 
 		if (hit) {
-
 			const response = await this.updateCounters(cacheRoute, hit);
+
+			// set cached status code
 			ctx.status = response.status;
 
-			// set headers
+			// set cached headers
 			for (const header of Object.keys(response.headers)) {
 				ctx.set(header.split('-').map(capitalize).join('-'), response.headers[header]);
 			}
 			ctx.set('X-Cache-Api', 'HIT');
+
+			// set cached body
 			ctx.response.body = response.body;
 
 		} else {
-
 			ctx.set('X-Cache-Api', 'MISS');
 			await next();
 
@@ -120,12 +121,12 @@ class ApiCache {
 	}
 
 	/**
-	 * Clears all caches that contain the given entity at the given level.
+	 * Invalidates all caches that contain the given model instance at the given level.
 	 *
 	 * @param requestState For logging
 	 * @param {string} modelName Name of the model, e.g. "game"
-	 * @param {string} entityId ID of the entity
-	 * @param [level] Serialized level, or nothing for all levels
+	 * @param {string} entityId ID of the instance
+	 * @param [level] Verbosity level of serializer, or nothing for all levels
 	 */
 	public async invalidateEntity(requestState: RequestState, modelName: string, entityId: string, level?: CacheSerializerLevel) {
 		const tags: CacheInvalidationTag[][] = [];
@@ -137,22 +138,42 @@ class ApiCache {
 		await this.invalidate(requestState, ...tags);
 	}
 
+	/**
+	 * Invalidates all caches tagged as listing a given model.
+	 * @param {RequestState} requestState For logging
+	 * @param {string} modelName Name of the model, e.g. "game"
+	 */
 	public async invalidateList(requestState: RequestState, modelName: string) {
 		await this.invalidate(requestState, [ { list: modelName }]);
 	}
 
+	/**
+	 * Invalidates caches when creating a new game.
+	 * @param {RequestState} requestState For logging
+	 */
 	public async invalidateCreatedGame(requestState: RequestState) {
 		await this.invalidateList(requestState, 'game');
 	}
 
+	/**
+	 * Invalidates caches when updating an existing game.
+	 * @param {RequestState} requestState For logging
+	 * @param {GameDocument} game Updated game
+	 * @param {CacheSerializerLevel} level Level should be specified when only attributes are updated that don't concern all levels
+	 */
 	public async invalidateUpdatedGame(requestState: RequestState, game: GameDocument, level?: CacheSerializerLevel) {
 		await this.invalidateList(requestState, 'game');
 		await this.invalidateEntity(requestState, 'game', game.id, level);
 	}
 
-	public async invalidateDeletedGame(requestState: RequestState, game: GameDocument, level?: CacheSerializerLevel) {
+	/**
+	 * Invalidates caches after deleting a game.
+	 * @param {RequestState} requestState For logging
+	 * @param {GameDocument} game Deleted game
+	 */
+	public async invalidateDeletedGame(requestState: RequestState, game: GameDocument) {
 		await this.invalidateList(requestState, 'game');
-		await this.invalidateEntity(requestState, 'game', game.id, level);
+		await this.invalidateEntity(requestState, 'game', game.id);
 	}
 
 	/**
@@ -166,12 +187,23 @@ class ApiCache {
 		await this.invalidateEntity(requestState, 'game', (release._game as GameDocument).id, 'detailed');
 	}
 
+	/**
+	 * A release has been updated.
+	 * @param {RequestState} requestState For logging
+	 * @param {ReleaseDocument} release Updated release
+	 * @param {SerializerLevel} level Level should be specified when only attributes are updated that don't concern all levels
+	 */
 	public async invalidateUpdatedRelease(requestState: RequestState, release: ReleaseDocument, level?: SerializerLevel) {
 		await this.invalidateList(requestState, 'release');
 		await this.invalidateEntity(requestState, 'release', release.id, level);
 		await this.invalidateEntity(requestState, 'game', (release._game as GameDocument).id, 'detailed');
 	}
 
+	/**
+	 * A release has been deleted.
+	 * @param {RequestState} requestState For logging
+	 * @param {ReleaseDocument} release Deleted release
+	 */
 	public async invalidateDeletedRelease(requestState: RequestState, release: ReleaseDocument) {
 		await this.invalidateList(requestState, 'release');
 		await this.invalidateEntity(requestState, 'release', release.id);
@@ -414,6 +446,13 @@ class ApiCache {
 		return [ value ];
 	}
 
+	/**
+	 * Updates the counters from an existing cache.
+	 *
+	 * @param {CacheRoute<any>} cacheRoute Route configuration containing the counter config
+	 * @param {string} cacheHit Response retrieved from cache
+	 * @return {Promise<CacheResponse>} Response with updated counters
+	 */
 	private async updateCounters(cacheRoute: CacheRoute<any>, cacheHit: string): Promise<CacheResponse> {
 
 		const response = JSON.parse(cacheHit) as CacheResponse;
@@ -505,15 +544,8 @@ class ApiCache {
 }
 
 /**
- * Defines how to invalidate cached responses from a given route.
+ * Configures how to reference caches for a given route.
  */
-interface CacheRoute<T> {
-	regex: RegExp;
-	entities: SerializerReference[];
-	listModel?: string;
-	counters: Array<CacheCounterConfig<T>>;
-}
-
 export interface CacheInvalidationConfig<T> {
 	entities: SerializerReference[];
 	listModel?: string;
@@ -555,6 +587,9 @@ export interface CacheInvalidationTag {
 	user?: UserDocument;
 }
 
+/**
+ * References an instance of a given model to one or more serializer levels.
+ */
 export interface CacheEntityReference {
 	modelName: string;
 	entityId: string;
@@ -562,9 +597,9 @@ export interface CacheEntityReference {
 }
 
 /**
- * Defines how to handle counters for a given model within a response body.
+ * Defines how to handle counters for a given model within the response body.
  *
- * This is now counter caching works:
+ * This is how counter caching works:
  *
  * On miss,
  *   1. Response body is computed
@@ -647,6 +682,10 @@ export interface CacheCounterConfig<T> {
 export interface CacheCounterValues { [key: string]: number; }
 
 export type CacheSerializerLevel = SerializerLevel | SerializerLevel[] | undefined;
+
+interface CacheRoute<T> extends CacheInvalidationConfig<T> {
+	regex: RegExp;
+}
 
 interface CacheResponse {
 	status: number;

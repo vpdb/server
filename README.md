@@ -9,7 +9,7 @@
 ## What is it?
 
 VPDB is an open platform where people can share their digital recreations of virtual pinball tables and everything else 
-around virtual pinball. This is the server part of the platform, a.k.a the API. If you're looking for the web application,
+around virtual pinball. This is the server side of the platform, a.k.a the API. If you're looking for the web application,
 it's [here](https://github.com/vpdb/website). 
 
 ## Stack
@@ -24,7 +24,7 @@ handled by [Redis](http://redis.io/).
   [OptiPNG](http://optipng.sourceforge.net/), [FFmpeg](https://www.ffmpeg.org/) and [Unrar](http://rarsoft.com/) and 
   make sure that the binaries are in your `PATH`.
 * Install [MongoDB](http://www.mongodb.org/downloads) and [Redis](http://redis.io/). *Windows*: Get binary 
-  [here](https://github.com/MSOpenTech/redis/tree/2.8/bin/release), extract it to somewhere, open an admin shell and 
+  [here](https://github.com/MicrosoftArchive/redis/releases), extract it to somewhere, open an admin shell and 
   run `redis-server --service-install redis.windows.conf --loglevel verbose --maxheap 500m` for a local dev setup.
 
 Install Node.js 8+ and Git, then open a command line and type:
@@ -34,23 +34,23 @@ Install Node.js 8+ and Git, then open a command line and type:
 	npm install
 	npm run serve:dev
 
-That's it, the API should now be available. Retrieve tags:
+That's it, the API should now be available. Retrieve current version:
 
-	curl http://localhost:3000/api/v1/tags
+	curl http://localhost:3000/api/v1
 
 For more detailed instructions, check out the [Installation Guide](INSTALL.md).
 
 ## Cool Stuff
 
 - Data Structure
-- Processors
+- [Processors](https://github.com/vpdb/server/tree/master/src/files/processor)
 - Table Blocks
-- Realtime
-- Caching
+- [Realtime](https://github.com/vpdb/server/tree/master/src/clients)
+- [Caching](https://github.com/vpdb/server/blob/master/src/common/api.cache.ts#L34)
 
 ### Tests
 
-There are 1000+ automated integration tests. It's best to use two terminals to run them:
+There are 1200+ automated integration tests. It's best to use two terminals to run them:
 
 - `npm run test:serve` - Runs the server in test mode
 - `npm run test:run` - Runs the tests

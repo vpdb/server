@@ -188,7 +188,7 @@ export class GameApi extends Api {
 
 		// invalidate cache
 		if (!this.hasFieldsModified(ctx.request.body, oldGame, [ 'title', 'manufacturer', 'year'])) {
-			await apiCache.invalidateUpdatedGame(ctx.state, game, 'reduced');
+			await apiCache.invalidateUpdatedGame(ctx.state, game, ['simple', 'detailed']);
 		} else {
 			await apiCache.invalidateUpdatedGame(ctx.state, game);
 		}

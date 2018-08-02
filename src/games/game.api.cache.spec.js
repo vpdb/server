@@ -89,6 +89,31 @@ describe('The game cache', () => {
 			expect(res.data.find(g => g.id === game.id)).to.be.ok();
 			expect(res.data.find(g => g.id === game.id).title).to.be(gameTitle);
 		});
+
+		it('should invalidate release details when updating the title', async () => {
+			const gameTitle = 'updated game title';
+			const game = await api.gameHelper.createGame('moderator');
+			const release = await api.releaseHelper.createReleaseForGame('moderator', game);
+			await api.get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'hit'));
+			await api.as('moderator').patch('/v1/games/' + game.id, { title: gameTitle })
+				.then(res => res.expectStatus(200));
+
+			res = await api.get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'miss'));
+			expect(res.data.game.title).to.be(gameTitle);
+		});
+
+		it('should not invalidate release details when updating the description', async () => {
+			const gameDescription = 'updated game description';
+			const game = await api.gameHelper.createGame('moderator');
+			const release = await api.releaseHelper.createReleaseForGame('moderator', game);
+			await api.get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'hit'));
+			await api.as('moderator').patch('/v1/games/' + game.id, { description: gameDescription })
+				.then(res => res.expectStatus(200));
+
+			res = await api.get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'hit'));
+		});
 	});
 
 	describe('when starring a game', () => {

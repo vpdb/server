@@ -127,16 +127,12 @@ class ApiCache {
 	 * @param {string} entityId ID of the entity
 	 * @param [level] Serialized level, or nothing for all levels
 	 */
-	public async invalidateEntity(requestState: RequestState, modelName: string, entityId: string, level?: SerializerLevel) {
+	public async invalidateEntity(requestState: RequestState, modelName: string, entityId: string, level?: CacheSerializerLevel) {
 		const tags: CacheInvalidationTag[][] = [];
-		if (level) {
-			logger.info(requestState, '[ApiCache.invalidateEntity] Invalidating %s with ID %s at %s', modelName, entityId, level);
-			tags.push([{ entities: [ { modelName, entityId, level }] }]);
-		} else {
-			logger.info(requestState, '[ApiCache.invalidateEntity] Invalidating %s with ID %s at all levels', modelName, entityId);
-			for (const l of ['reduced', 'simple', 'detailed'] as SerializerLevel[]) {
-				tags.push([{ entities: [ { modelName, entityId, level: l }] }]);
-			}
+		const levels = this.getLevel(level);
+		logger.info(requestState, '[ApiCache.invalidateEntity] Invalidating %s with ID %s for level%s %s.', modelName, entityId, levels.length === 1 ? '' : 's', levels.join(', '));
+		for (const l of levels) {
+			tags.push([{ entities: [{ modelName, entityId, level: l }] }]);
 		}
 		await this.invalidate(requestState, ...tags);
 	}
@@ -149,12 +145,12 @@ class ApiCache {
 		await this.invalidateList(requestState, 'game');
 	}
 
-	public async invalidateUpdatedGame(requestState: RequestState, game: GameDocument, level?: SerializerLevel) {
+	public async invalidateUpdatedGame(requestState: RequestState, game: GameDocument, level?: CacheSerializerLevel) {
 		await this.invalidateList(requestState, 'game');
 		await this.invalidateEntity(requestState, 'game', game.id, level);
 	}
 
-	public async invalidateDeletedGame(requestState: RequestState, game: GameDocument, level?: SerializerLevel) {
+	public async invalidateDeletedGame(requestState: RequestState, game: GameDocument, level?: CacheSerializerLevel) {
 		await this.invalidateList(requestState, 'game');
 		await this.invalidateEntity(requestState, 'game', game.id, level);
 	}
@@ -479,6 +475,16 @@ class ApiCache {
 		return Object.keys(ctx.query).sort().map(key => key + '=' + ctx.query[key]).join('&');
 	}
 
+	private getLevel(level: CacheSerializerLevel): SerializerLevel[] {
+		if (isArray(level)) {
+			return level;
+		}
+		if (level) {
+			return [level as SerializerLevel];
+		}
+		return ['reduced', 'simple', 'detailed'];
+	}
+
 	/**
 	 * Clears
 	 * @see https://github.com/galanonym/redis-delete-wildcard/blob/master/index.js
@@ -639,6 +645,8 @@ export interface CacheCounterConfig<T> {
 	};
 }
 export interface CacheCounterValues { [key: string]: number; }
+
+export type CacheSerializerLevel = SerializerLevel | SerializerLevel[] | undefined;
 
 interface CacheResponse {
 	status: number;

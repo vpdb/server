@@ -56,13 +56,6 @@ class ApiCache {
 
 	private readonly cacheRoutes: Array<CacheRoute<any>> = [];
 
-	private readonly endpoints: Map<string, string> = new Map([
-		['release', '/v1/releases'],
-		['game', '/v1/games'],
-		['backglass', '/v1/backglasses'],
-		['medium', '/v1/media'],
-	]);
-
 	/**
 	 * Enables caching for the given route.
 	 *
@@ -464,10 +457,6 @@ class ApiCache {
 	private getCacheKey(ctx: Context): string {
 		const normalizedQuery = this.normalizeQuery(ctx);
 		return this.redisCachePrefix + (ctx.state.user ? ctx.state.user.id + ':' : '') + ctx.request.path + (normalizedQuery ? '?' : '') + normalizedQuery;
-	}
-
-	private getPathKey(path: string): string {
-		return this.redisRefPrefix + 'path:' + path;
 	}
 
 	private getEntityKey(modelName: string, serializerLevel: string, entityId: string = ''): string {

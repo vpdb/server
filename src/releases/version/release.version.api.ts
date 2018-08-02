@@ -131,7 +131,7 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 		this.success(ctx, state.serializers.Release.detailed(ctx, release).versions.filter(v => v.version === newVersion.version)[0], 201);
 
 		// invalidate cache
-		await apiCache.invalidateRelease(ctx.state, release);
+		await apiCache.invalidateUpdatedRelease(ctx.state, release, 'detailed');
 
 		// log event
 		await LogEventUtil.log(ctx, 'create_release_version', true, {
@@ -260,7 +260,7 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 		this.success(ctx, version, 200);
 
 		// invalidate cache
-		await apiCache.invalidateRelease(ctx.state, release);
+		await apiCache.invalidateUpdatedRelease(ctx.state, release, 'detailed');
 
 		// log event
 		await LogEventUtil.log(ctx, 'update_release_version', false,

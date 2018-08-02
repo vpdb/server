@@ -116,7 +116,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		}
 
 		// invalidate cache
-		await apiCache.invalidateRelease(ctx.state, release);
+		await apiCache.invalidateCreatedRelease(ctx.state, release);
 	}
 
 	/**
@@ -174,7 +174,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		this.success(ctx, state.serializers.Release.detailed(ctx, release), 200);
 
 		// invalidate cache
-		await apiCache.invalidateRelease(ctx.state, release);
+		await apiCache.invalidateUpdatedRelease(ctx.state, release);
 
 		// log event
 		await LogEventUtil.log(ctx, 'update_release', false,
@@ -348,7 +348,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		}
 
 		// invalidate cache
-		await apiCache.invalidateRelease(ctx.state, release);
+		await apiCache.invalidateDeletedRelease(ctx.state, release);
 
 		// remove from db
 		await release.remove();

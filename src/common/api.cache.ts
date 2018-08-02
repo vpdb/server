@@ -22,6 +22,7 @@ import { capitalize, intersection, isArray, isObject } from 'lodash';
 import pathToRegexp from 'path-to-regexp';
 
 import { MetricsDocument, MetricsModel } from 'mongoose';
+import { inspect } from 'util';
 import { GameDocument } from '../games/game.document';
 import { ReleaseDocument } from '../releases/release.document';
 import { state } from '../state';
@@ -29,7 +30,6 @@ import { UserDocument } from '../users/user.document';
 import { logger } from './logger';
 import { SerializerLevel, SerializerReference } from './serializer';
 import { Context, RequestState } from './typings/context';
-import { inspect } from 'util';
 
 /**
  * An in-memory cache using Redis.
@@ -68,15 +68,14 @@ class ApiCache {
 	 *
 	 * The config defines how caches on that route are tagged for invalidation.
 	 *
-	 * @param {Router} router Router
+	 * @param {Router} router Router, needed to retrieve the path prefix
 	 * @param {string} path Path of the route (same passed to the router).
-	 * @param {CacheInvalidationTag} entities Which entities the route contains.
-	 * @param {CacheCounterConfig} counters Counter config, see {@link CacheCounterConfig}.
+	 * @param config Invalidation config for the given path
 	 */
-	public enable<T>(router: Router, path: string, entities: SerializerReference[], counters?: Array<CacheCounterConfig<T>>) {
-		logger.debug(null, '[ApiCache.enable]: %s\n%s', path, inspect(entities, { depth : Infinity, colors: true, breakLength: 120 }));
+	public enable<T>(router: Router, path: string, config: CacheInvalidationConfig<T>) {
+		logger.debug(null, '[ApiCache.enable]: %s\n%s', path, inspect(config.entities, { depth : Infinity, colors: true, breakLength: 120 }));
 		const opts = (router as any).opts as IRouterOptions;
-		this.cacheRoutes.push({ path, regex: pathToRegexp(opts.prefix + path), entities, counters });
+		this.cacheRoutes.push({ regex: pathToRegexp(opts.prefix + path), entities: config.entities, listModel: config.listModel, counters: config.counters });
 	}
 
 	/**
@@ -128,30 +127,43 @@ class ApiCache {
 	}
 
 	/**
-	 * Clears all caches listing the given entity and the entity's details.
+	 * Clears all caches that contain the given entity at the given level.
 	 *
 	 * @param requestState For logging
 	 * @param {string} modelName Name of the model, e.g. "game"
 	 * @param {string} entityId ID of the entity
+	 * @param [level] Serialized level, or nothing for all levels
 	 */
-	public async invalidateDirtyEntity(requestState: RequestState, modelName: string, entityId: string) {
-		logger.info(requestState, '[ApiCache.invalidateDirtyEntity] Invalidating %s with ID %s', modelName, entityId);
-		const tag: CacheInvalidationTag = { entities: [ { modelName, entityId, level: 'detailed' }] };
-		if (this.endpoints.has(modelName)) {
-			tag.path = this.endpoints.get(modelName);
+	public async invalidateEntity(requestState: RequestState, modelName: string, entityId: string, level?: SerializerLevel) {
+		const tags: CacheInvalidationTag[][] = [];
+		if (level) {
+			logger.info(requestState, '[ApiCache.invalidateEntity] Invalidating %s with ID %s at %s', modelName, entityId, level);
+			tags.push([{ entities: [ { modelName, entityId, level }] }]);
+		} else {
+			logger.info(requestState, '[ApiCache.invalidateEntity] Invalidating %s with ID %s at all levels', modelName, entityId);
+			for (const l of ['reduced', 'simple', 'detailed'] as SerializerLevel[]) {
+				tags.push([{ entities: [ { modelName, entityId, level: l }] }]);
+			}
 		}
-		await this.invalidate(requestState, [tag]);
+		await this.invalidate(requestState, ...tags);
 	}
 
-	/**
-	 * A game has been added, updated or deleted. Invalidates game details
-	 * and game lists.
-	 *
-	 * @param requestState For logging
-	 * @param game Changed, added or removed game
-	 */
-	public async invalidateGame(requestState: RequestState, game: GameDocument) {
-		await this.invalidateDirtyEntity(requestState, 'game', game.id);
+	public async invalidateList(requestState: RequestState, modelName: string) {
+		await this.invalidate(requestState, [ { list: modelName }]);
+	}
+
+	public async invalidateCreatedGame(requestState: RequestState) {
+		await this.invalidateList(requestState, 'game');
+	}
+
+	public async invalidateUpdatedGame(requestState: RequestState, game: GameDocument, level?: SerializerLevel) {
+		await this.invalidateList(requestState, 'game');
+		await this.invalidateEntity(requestState, 'game', game.id, level);
+	}
+
+	public async invalidateDeletedGame(requestState: RequestState, game: GameDocument, level?: SerializerLevel) {
+		await this.invalidateList(requestState, 'game');
+		await this.invalidateEntity(requestState, 'game', game.id, level);
 	}
 
 	/**
@@ -161,15 +173,20 @@ class ApiCache {
 	 * @param requestState For logging
 	 * @param release Changed, added or removed release
 	 */
-	public async invalidateRelease(requestState: RequestState, release: ReleaseDocument) {
-		await this.invalidateDirtyEntity(requestState, 'release', release.id);
-		await this.invalidate(requestState, [{
-			entities: [{
-				modelName: 'game',
-				entityId: (release._game as GameDocument).id,
-				level: 'detailed',
-			}],
-		}]);
+	public async invalidateCreatedRelease(requestState: RequestState, release: ReleaseDocument) {
+		await this.invalidateEntity(requestState, 'game', (release._game as GameDocument).id, 'detailed');
+	}
+
+	public async invalidateUpdatedRelease(requestState: RequestState, release: ReleaseDocument, level?: SerializerLevel) {
+		await this.invalidateList(requestState, 'release');
+		await this.invalidateEntity(requestState, 'release', release.id, level);
+		await this.invalidateEntity(requestState, 'game', (release._game as GameDocument).id, 'detailed');
+	}
+
+	public async invalidateDeletedRelease(requestState: RequestState, release: ReleaseDocument) {
+		await this.invalidateList(requestState, 'release');
+		await this.invalidateEntity(requestState, 'release', release.id);
+		await this.invalidateEntity(requestState, 'game', (release._game as GameDocument).id, 'detailed');
 	}
 
 	public async invalidateReleaseComment(requestState: RequestState, release: ReleaseDocument) {
@@ -204,14 +221,14 @@ class ApiCache {
 	public async invalidateStarredEntity(requestState: RequestState, modelName: string, entity: any, user: UserDocument) {
 		const tags: CacheInvalidationTag[][] = [];
 
-		/** list endpoints that include the user's starred status in the payload */
+		/** endpoints that include the user's starred status in the payload */
 		const modelsListingStar = ['release'];
 
-		if (modelsListingStar.includes(modelName) && this.endpoints.has(modelName)) {
-			tags.push([{ path: this.endpoints.get(modelName) }, { user }]);
+		if (modelsListingStar.includes(modelName)) {
+			tags.push([{ list: modelName }, { user }]);
 		}
 		if (entity._game && entity._game.id) {
-			tags.push([{ path: '/v1/games/' + entity._game.id }, { user }]);
+			tags.push([{ entities: [{ modelName: 'game', entityId: entity._game.id, level: 'detailed' }] }, { user }]);
 		}
 		await this.invalidate(requestState, ...tags);
 	}
@@ -279,9 +296,10 @@ class ApiCache {
 				const refs: string[] = [];
 
 				// path
-				if (tag.path) {
-					refs.push(this.getPathKey(tag.path));
+				if (tag.list) {
+					refs.push(this.getListModelKey(tag.list));
 				}
+
 				// entities
 				if (tag.entities) {
 					for (const entity of tag.entities) {
@@ -340,12 +358,6 @@ class ApiCache {
 		// set the cache todo set ttl to user caches
 		await state.redis.set(key, JSON.stringify(response));
 
-		// reference path
-		const toPath = pathToRegexp.compile(cacheRoute.path);
-		const pathRefKey = this.getPathKey(toPath(ctx.params));
-		refs.push(() => state.redis.sadd(pathRefKey, key));
-		refKeys.push(pathRefKey);
-
 		// reference entities
 		for (const entity of cacheRoute.entities) {
 			const ids = this.getIdsFromBody(body, entity.path);
@@ -354,6 +366,13 @@ class ApiCache {
 				refs.push(() => state.redis.sadd(refKey, key));
 				refKeys.push(refKey);
 			}
+		}
+
+		// reference list model
+		if (cacheRoute.listModel) {
+			const refKey = this.getListModelKey(cacheRoute.listModel);
+			refs.push(() => state.redis.sadd(refKey, key));
+			refKeys.push(refKey);
 		}
 
 		// reference user
@@ -459,6 +478,10 @@ class ApiCache {
 		return this.redisRefPrefix + 'user:' + user.id;
 	}
 
+	private getListModelKey(modelName: string): string {
+		return this.redisRefPrefix + 'list:' + modelName.toLowerCase();
+	}
+
 	private getCounterKey(entity: string, entityId: string, counter: string) {
 		return this.redisCounterPrefix + entity + ':' + counter + ':' + entityId;
 	}
@@ -491,9 +514,15 @@ class ApiCache {
  */
 interface CacheRoute<T> {
 	regex: RegExp;
-	path: string;
 	entities: SerializerReference[];
+	listModel?: string;
 	counters: Array<CacheCounterConfig<T>>;
+}
+
+export interface CacheInvalidationConfig<T> {
+	entities: SerializerReference[];
+	listModel?: string;
+	counters?: Array<CacheCounterConfig<T>>;
 }
 
 /**
@@ -504,23 +533,22 @@ interface CacheRoute<T> {
 export interface CacheInvalidationTag {
 
 	/**
-	 * Invalidates a specific route defined by {@link ApiCache.enable}, i.e.
-	 * all caches for that route independently of the query parameters. It's
-	 * used for list or detail views. TODO really detail views as well?
+	 * Invalidates all caches containing a given instance of a given model that
+	 * was serialized with a given level (reduced, simple or detailed).
 	 */
-	path?: string;
+	entities?: CacheEntityReference[];
 
 	/**
-	 * This is the most specific tag. It invalidates only caches that concern
-	 * one specific entity, i.e. the detail view or the detail view of its
-	 * parent.
+	 * Invalidates all caches that list a given model type.
 	 *
-	 * The key is the entity's model name and the value its ID. For example, to
-	 * invalidate release with ID "1234", you would use:
+	 * This is typically called when a new entity is added and thus all
+	 * resources listing that entity should therefore be invalidated.
 	 *
-	 * 		`{ entities: release: '1234' }`
+	 * Note that this shouldn't applied when adding or referencing a new
+	 * entity to a given parent, because in this case the parent's reference
+	 * through {@link entities} will invalidate it.
 	 */
-	entities?: CacheReferenceTag[];
+	list?: string;
 
 	/**
 	 * Invalidates all caches produced by a user. Note it's not about actual
@@ -532,7 +560,7 @@ export interface CacheInvalidationTag {
 	user?: UserDocument;
 }
 
-export interface CacheReferenceTag {
+export interface CacheEntityReference {
 	modelName: string;
 	entityId: string;
 	level: SerializerLevel;

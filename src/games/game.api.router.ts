@@ -74,13 +74,13 @@ export class GameApiRouter implements ApiRouter {
 
 	public setupCache() {
 		const simpleEntities = state.serializers.Game.getReferences('simple',
-			['ContentAuthor', 'ReleaseVersion', 'ReleaseVersionFile', 'File' ]);
+			['ContentAuthor', 'ReleaseVersion', 'ReleaseVersionFile', 'File']);
 		const detailedEntities = state.serializers.Game.getReferences('detailed',
-			['ContentAuthor', 'ReleaseVersion', 'ReleaseVersionFile', 'File' ],
+			['ContentAuthor', 'ReleaseVersion', 'ReleaseVersionFile', 'File'],
 			['releases.game', 'backglasses.game', 'media.game', 'media.release']);
 
-		apiCache.enable(this.router, '/v1/games', simpleEntities, gameListCacheCounters);
-		apiCache.enable(this.router, '/v1/games/:id', detailedEntities, gameDetailsCacheCounters);
+		apiCache.enable(this.router, '/v1/games', { entities: simpleEntities, counters: gameListCacheCounters, listModel: 'game' });
+		apiCache.enable(this.router, '/v1/games/:id', { entities: detailedEntities, counters: gameDetailsCacheCounters });
 
 		//apiCache.enable(gameApiRouter, '/v1/games/:gameId/backglasses', { resources: ['backglass', 'user'] });
 		//apiCache.enable(gameApiRouter, '/v1/games/:gameId/media', { resources: ['medium', 'user'] });

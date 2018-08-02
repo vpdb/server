@@ -96,7 +96,7 @@ export class ReleaseVersionFileApi extends Api {
 		}
 
 		// invalidate cache
-		await apiCache.invalidateRelease(ctx.state, releaseToUpdate);
+		await apiCache.invalidateUpdatedRelease(ctx.state, releaseToUpdate, 'detailed');
 
 		logger.info(ctx.state, '[ReleaseApi.validateFile] Updated file validation status.');
 

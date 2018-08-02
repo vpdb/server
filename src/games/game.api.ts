@@ -18,19 +18,7 @@
  */
 
 import { createReadStream } from 'fs';
-import {
-	assign,
-	cloneDeep,
-	difference,
-	intersection,
-	isEmpty,
-	keys,
-	omit,
-	pick,
-	sum,
-	upperFirst,
-	values,
-} from 'lodash';
+import { assign, cloneDeep, difference, intersection, isEmpty, keys, omit, pick, sum, upperFirst, values } from 'lodash';
 import { inspect } from 'util';
 
 import { acl } from '../common/acl';
@@ -88,11 +76,10 @@ export class GameApi extends Api {
 
 		logger.info(ctx.state, '[GameApi.create] Game "%s" created.', game.title);
 		await game.activateFiles();
+		logger.info(ctx.state, '[GameApi.create] Files activated.');
 
 		// invalidate cache
-		await apiCache.invalidateGame(ctx.state, game);
-
-		logger.info(ctx.state, '[GameApi.create] Files activated.');
+		await apiCache.invalidateCreatedGame(ctx.state);
 
 		// link roms if available
 		if (game.ipdb && game.ipdb.number) {
@@ -193,14 +180,18 @@ export class GameApi extends Api {
 
 		// validate and save
 		await game.save();
-
 		logger.info(ctx.state, '[GameApi.update] Game "%s" updated.', game.title);
-		const activatedFileIds = await game.activateFiles();
 
+		// activate files
+		const activatedFileIds = await game.activateFiles();
 		logger.info(ctx.state, '[GameApi.update] Activated %s new file%s.', activatedFileIds.length, activatedFileIds.length === 1 ? '' : 's');
 
 		// invalidate cache
-		await apiCache.invalidateGame(ctx.state, game);
+		if (!this.hasFieldsModified(ctx.request.body, oldGame, [ 'title', 'manufacturer', 'year'])) {
+			await apiCache.invalidateUpdatedGame(ctx.state, game, 'reduced');
+		} else {
+			await apiCache.invalidateUpdatedGame(ctx.state, game);
+		}
 
 		// copy to media and delete old media if changed
 		try {
@@ -251,6 +242,8 @@ export class GameApi extends Api {
 		await game.remove();
 
 		logger.info(ctx.state, '[GameApi.del] Game "%s" (%s) successfully deleted.', game.title, game.id);
+
+		await apiCache.invalidateDeletedGame(ctx.state, game);
 
 		// log event
 		await LogEventUtil.log(ctx, 'delete_game', false, { game: omit(state.serializers.Game.simple(ctx, game), ['rating', 'counter']) }, { game: game._id });

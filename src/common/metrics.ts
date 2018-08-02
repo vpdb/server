@@ -110,7 +110,7 @@ class Metrics {
 		await entity.update({ rating: entityMetrics });
 
 		// invalidate cache
-		await apiCache.invalidateDirtyEntity(requestState, modelName, entity.id);
+		await apiCache.invalidateEntity(requestState, modelName, entity.id);
 
 		return entityMetrics;
 	}

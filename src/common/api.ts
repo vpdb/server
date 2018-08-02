@@ -18,7 +18,7 @@
  */
 
 import Router from 'koa-router';
-import { difference, extend, intersection, isObject, keys, map, pick, values } from 'lodash';
+import { difference, extend, intersection, isObject, keys, map, pick, uniq, values } from 'lodash';
 import { format as formatUrl, parse as parseUrl } from 'url';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
@@ -277,35 +277,17 @@ export abstract class Api {
 	 * @returns False if everything is okay, a list of validation errors otherwise.
 	 */
 	protected checkReadOnlyFields(newObj: { [key: string]: any }, oldObj: { [key: string]: any }, allowedFields: string[]): ApiValidationError[] | boolean {
-		const errors: ApiValidationError[] = [];
-		difference(keys(newObj), allowedFields).forEach(field => {
-			let newVal: any;
-			let oldVal: any;
-
-			// for dates we want to compare the time stamp
-			if (oldObj[field] instanceof Date) {
-				newVal = newObj[field] ? new Date(newObj[field]).getTime() : undefined;
-				oldVal = oldObj[field] ? new Date(oldObj[field]).getTime() : undefined;
-
-				// for objects, serialize first.
-			} else if (isObject(oldObj[field])) {
-				newVal = newObj[field] ? JSON.stringify(newObj[field]) : undefined;
-				oldVal = oldObj[field] ? JSON.stringify(pick(oldObj[field], keys(newObj[field] || {}))) : undefined;
-
-				// otherwise, take raw values.
-			} else {
-				newVal = newObj[field];
-				oldVal = oldObj[field];
-			}
-			if (newVal && newVal !== oldVal) {
-				errors.push({
-					message: 'This field is read-only and cannot be changed.',
-					path: field,
-					value: newObj[field],
-				});
-			}
+		const modifiedFields = this.getModifiedFields(newObj, oldObj, difference(keys(newObj), allowedFields));
+		if (modifiedFields.length === 0) {
+			return false;
+		}
+		return modifiedFields.map(field => {
+			return {
+				message: 'This field is read-only and cannot be changed.',
+				path: field,
+				value: newObj[field],
+			};
 		});
-		return errors.length ? errors : false;
 	}
 
 	/**
@@ -324,6 +306,44 @@ export abstract class Api {
 				updatableFields.join('", "'),
 			).status(400);
 		}
+	}
+
+	protected hasFieldsModified(newObj: { [key: string]: any }, oldObj: { [key: string]: any }, fields: string[]) {
+		for (const modifiedField of this.getModifiedFields(newObj, oldObj, keys(newObj))) {
+			if (fields.includes(modifiedField)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private getModifiedFields(newObj: { [key: string]: any }, oldObj: { [key: string]: any }, fields?: string[]): string[] {
+		const modifiedFields: string[] = [];
+		fields = fields || uniq([...keys(newObj), ...keys(oldObj)]);
+		fields.forEach(field => {
+			let newVal: any;
+			let oldVal: any;
+
+			// for dates we want to compare the time stamp
+			if (oldObj[field] instanceof Date) {
+				newVal = newObj[field] ? new Date(newObj[field]).getTime() : undefined;
+				oldVal = oldObj[field] ? new Date(oldObj[field]).getTime() : undefined;
+
+			// for objects, serialize first.
+			} else if (isObject(oldObj[field])) {
+				newVal = newObj[field] ? JSON.stringify(newObj[field]) : undefined;
+				oldVal = oldObj[field] ? JSON.stringify(pick(oldObj[field], keys(newObj[field] || {}))) : undefined;
+
+			// otherwise, take raw values.
+			} else {
+				newVal = newObj[field];
+				oldVal = oldObj[field];
+			}
+			if (newVal && newVal !== oldVal) {
+				modifiedFields.push(field);
+			}
+		});
+		return modifiedFields;
 	}
 
 	/**

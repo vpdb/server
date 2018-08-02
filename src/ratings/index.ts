@@ -17,10 +17,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import Router from 'koa-router';
 import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
+import { ApiRouter } from '../common/api.router';
 import { state } from '../state';
 import { RatingDocument } from './rating.document';
 import { ratingSchema } from './rating.schema';
@@ -29,7 +29,7 @@ export class RatingEndPoint extends EndPoint {
 
 	public readonly name: string = 'Ratings API';
 
-	public getRouter(): Router {
+	public getRouter(): ApiRouter {
 		return null;
 	}
 

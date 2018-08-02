@@ -17,14 +17,28 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import Router = require('koa-router');
+import { ApiRouter } from '../common/api.router';
 import { Scope } from '../common/scope';
 import { FileApi } from './file.api';
 import { FileBlockmatchApi } from './file.blockmatch.api';
 
-const api = new FileApi();
-const blockmatchApi = new FileBlockmatchApi();
-export const fileApiRouter = api.apiRouter();
+export class FileApiRouter implements ApiRouter {
 
-fileApiRouter.get('/v1/files/:id',           api.view.bind(api));
-fileApiRouter.del('/v1/files/:id',            api.auth(api.del.bind(api), 'files', 'delete-own', [ Scope.ALL, Scope.CREATE ]));
-fileApiRouter.get('/v1/files/:id/blockmatch', api.auth(blockmatchApi.blockmatch.bind(blockmatchApi), 'files', 'blockmatch', [ Scope.ALL, Scope.CREATE ]));
+	private readonly router: Router;
+
+	constructor() {
+		const api = new FileApi();
+		const blockmatchApi = new FileBlockmatchApi();
+		this.router = api.apiRouter();
+
+		this.router.get('/v1/files/:id',           api.view.bind(api));
+		this.router.del('/v1/files/:id',            api.auth(api.del.bind(api), 'files', 'delete-own', [ Scope.ALL, Scope.CREATE ]));
+		this.router.get('/v1/files/:id/blockmatch', api.auth(blockmatchApi.blockmatch.bind(blockmatchApi), 'files', 'blockmatch', [ Scope.ALL, Scope.CREATE ]));
+	}
+
+	public getRouter(): Router {
+		return this.router;
+	}
+}
+

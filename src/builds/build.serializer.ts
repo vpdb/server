@@ -20,12 +20,14 @@
 import { assign, pick } from 'lodash';
 import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { Context } from '../common/typings/context';
+import { ModelName } from '../common/typings/models';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
 import { BuildDocument } from './build.document';
 
 export class BuildSerializer extends Serializer<BuildDocument> {
 
+	public readonly modelName: ModelName = 'Build';
 	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
 		reduced: [],
 		simple: [],

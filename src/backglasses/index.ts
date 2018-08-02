@@ -17,12 +17,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import Router from 'koa-router';
 import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
+import { ApiRouter } from '../common/api.router';
 import { state } from '../state';
-import { backglassApiRouter } from './backglass.api.router';
+import { BackglassApiRouter } from './backglass.api.router';
 import { BackglassDocument } from './backglass.document';
 import { BackglassModel, backglassSchema } from './backglass.schema';
 import { BackglassSerializer } from './backglass.serializer';
@@ -31,13 +31,10 @@ import { BackglassVersionSerializer } from './backglass.version.serializer';
 export class BackglassEndPoint extends EndPoint {
 
 	public readonly name: string = 'Backglass API';
+	private readonly router = new BackglassApiRouter();
 
-	constructor() {
-		super();
-	}
-
-	public getRouter(): Router {
-		return backglassApiRouter;
+	public getRouter(): ApiRouter {
+		return this.router;
 	}
 
 	public registerModel(): EndPoint {

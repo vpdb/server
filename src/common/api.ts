@@ -121,7 +121,7 @@ export abstract class Api {
 	 * Instantiates a new router with the API prefix.
 	 * @return API router
 	 */
-	public apiRouter() {
+	public apiRouter(): Router {
 		/* istanbul ignore else: test server uses a prefix */
 		if (config.vpdb.api.prefix || config.vpdb.api.pathname) {
 			return new Router({ prefix: (config.vpdb.api.prefix || '') + (config.vpdb.api.pathname || '') });

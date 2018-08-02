@@ -17,23 +17,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import Router from 'koa-router';
 import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
+import { ApiRouter } from '../common/api.router';
 import { state } from '../state';
-import { fileApiRouter } from './file.api.router';
+import { FileApiRouter } from './file.api.router';
 import { FileDocument } from './file.document';
 import { FileModel, fileSchema } from './file.schema';
 import { FileSerializer } from './file.serializer';
-import { fileStorageRouterProtected, fileStorageRouterPublic } from './file.storage.router';
+import { FileProtectedStorageRouter, FilePublicStorageRouter } from './file.storage.router';
 
 export class FilesApiEndPoint extends EndPoint {
 
 	public readonly name: string = 'Files API';
+	private readonly router = new FileApiRouter();
 
-	public getRouter(): Router {
-		return fileApiRouter;
+	public getRouter(): ApiRouter {
+		return this.router;
 	}
 
 	public registerModel(): EndPoint {
@@ -50,17 +51,19 @@ export class FilesApiEndPoint extends EndPoint {
 export class FilesProtectedStorageEndPoint extends EndPoint {
 
 	public readonly name: string = 'Storage Protected Files API';
+	private readonly router = new FileProtectedStorageRouter();
 
-	public getRouter(): Router {
-		return fileStorageRouterProtected;
+	public getRouter(): ApiRouter {
+		return this.router;
 	}
 }
 
 export class FilesPublicStorageEndPoint extends EndPoint {
 
 	public readonly name: string = 'Storage Public Files API';
+	private readonly router = new FilePublicStorageRouter();
 
-	public getRouter(): Router {
-		return fileStorageRouterPublic;
+	public getRouter(): ApiRouter {
+		return this.router;
 	}
 }

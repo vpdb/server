@@ -29,7 +29,9 @@ import { Thumb } from './typings/serializers';
 
 export abstract class Serializer<T extends Document | ModeratedDocument> {
 
+	public abstract readonly modelName: ModelName;
 	public abstract readonly references: { [level in SerializerLevel]: SerializerReference[] };
+	public idField = 'id';
 
 	/**
 	 * Returns the reduced version of the object.
@@ -65,6 +67,17 @@ export abstract class Serializer<T extends Document | ModeratedDocument> {
 	 */
 	public detailed(ctx: Context, doc: T, opts?: SerializerOptions): T {
 		return this.serialize(this._detailed.bind(this), ctx, doc, opts);
+	}
+
+	public getReferences(level: SerializerLevel, ignoredModels: ModelName[] = [], ignorePaths: string[] = [], path: string = ''): SerializerReference[] {
+		const references: SerializerReference[] = [];
+		if (this.modelName && !ignoredModels.includes(this.modelName)) {
+			references.push({ path: path + this.idField, modelName: this.modelName, level });
+		}
+		for (const ref of this.references[level].filter(r => !ignorePaths.includes(path + r.path))) {
+			references.push(...state.serializers[ref.modelName].getReferences(ref.level, ignoredModels, ignorePaths, path + ref.path + '.'));
+		}
+		return references;
 	}
 
 	protected abstract _reduced(ctx: Context, doc: T, opts: SerializerOptions): T;

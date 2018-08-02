@@ -22,10 +22,12 @@ import { assign, find, isEmpty, mapValues, pick, pickBy, uniq } from 'lodash';
 import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { config } from '../common/settings';
 import { Context } from '../common/typings/context';
+import { ModelName } from '../common/typings/models';
 import { UserDocument } from './user.document';
 
 export class UserSerializer extends Serializer<UserDocument> {
 
+	public readonly modelName: ModelName = 'User';
 	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
 		reduced: [],
 		simple: [],

@@ -17,18 +17,31 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import * as Router from 'koa-router';
+import { ApiRouter } from '../common/api.router';
 import { Scope } from '../common/scope';
 import { StarApi } from '../stars/star.api';
 import { MediumApi } from './medium.api';
 
-const api = new MediumApi();
-const starApi = new StarApi();
+export class MediumApiRouter implements ApiRouter {
 
-export const mediumApiRouter = api.apiRouter();
+	private readonly router: Router;
 
-mediumApiRouter.post('/v1/media',       api.auth(api.create.bind(api), 'media', 'add', [Scope.ALL, Scope.CREATE]));
-mediumApiRouter.delete('/v1/media/:id', api.auth(api.del.bind(api), 'media', 'delete-own', [Scope.ALL, Scope.CREATE]));
+	constructor() {
+		const api = new MediumApi();
+		this.router = api.apiRouter();
 
-mediumApiRouter.post('/v1/media/:id/star',   starApi.auth(starApi.star('medium').bind(starApi), 'media', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
-mediumApiRouter.delete('/v1/media/:id/star', starApi.auth(starApi.unstar('medium').bind(starApi), 'media', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
-mediumApiRouter.get('/v1/media/:id/star',    starApi.auth(starApi.get('medium').bind(starApi), 'media', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
+		this.router.post('/v1/media',       api.auth(api.create.bind(api), 'media', 'add', [Scope.ALL, Scope.CREATE]));
+		this.router.delete('/v1/media/:id', api.auth(api.del.bind(api), 'media', 'delete-own', [Scope.ALL, Scope.CREATE]));
+
+		const starApi = new StarApi();
+		this.router.post('/v1/media/:id/star',   starApi.auth(starApi.star('medium').bind(starApi), 'media', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
+		this.router.delete('/v1/media/:id/star', starApi.auth(starApi.unstar('medium').bind(starApi), 'media', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
+		this.router.get('/v1/media/:id/star',    starApi.auth(starApi.get('medium').bind(starApi), 'media', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
+
+	}
+
+	public getRouter(): Router {
+		return this.router;
+	}
+}

@@ -17,12 +17,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import Router from 'koa-router';
 import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
+import { ApiRouter } from '../common/api.router';
 import { state } from '../state';
-import { logEventApiRouter } from './log.event.api.router';
+import { LogEventApiRouter } from './log.event.api.router';
 import { LogEventDocument } from './log.event.document';
 import { logEventSchema } from './log.event.schema';
 import { LogEventSerializer } from './log.event.serializer';
@@ -30,9 +30,10 @@ import { LogEventSerializer } from './log.event.serializer';
 export class LogEventEndPoint extends EndPoint {
 
 	public readonly name: string = 'Event Log API';
+	private readonly router = new LogEventApiRouter();
 
-	public getRouter(): Router {
-		return logEventApiRouter;
+	public getRouter(): ApiRouter {
+		return this.router;
 	}
 
 	public registerModel(): EndPoint {

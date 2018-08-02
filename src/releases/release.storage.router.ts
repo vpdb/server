@@ -17,13 +17,26 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import * as Router from 'koa-router';
+import { ApiRouter } from '../common/api.router';
 import { Scope } from '../common/scope';
 import { ReleaseStorage } from './release.storage';
 
-const storage = new ReleaseStorage();
-export const releaseStorageRouter = storage.storageRouter(true);
+export class ReleaseStorageRouter implements ApiRouter {
 
-releaseStorageRouter.head('/v1/releases/:release_id',       storage.auth(storage.checkDownload.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
-releaseStorageRouter.get('/v1/releases/:release_id',        storage.auth(storage.download.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
-releaseStorageRouter.post('/v1/releases/:release_id',       storage.auth(storage.download.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
-releaseStorageRouter.get('/v1/releases/:release_id/thumb', storage.thumbRedirect.bind(storage));
+	private readonly router: Router;
+
+	constructor() {
+		const storage = new ReleaseStorage();
+		this.router = storage.storageRouter(true);
+
+		this.router.head('/v1/releases/:release_id',       storage.auth(storage.checkDownload.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
+		this.router.get('/v1/releases/:release_id',        storage.auth(storage.download.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
+		this.router.post('/v1/releases/:release_id',       storage.auth(storage.download.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
+		this.router.get('/v1/releases/:release_id/thumb', storage.thumbRedirect.bind(storage));
+	}
+
+	public getRouter(): Router {
+		return this.router;
+	}
+}

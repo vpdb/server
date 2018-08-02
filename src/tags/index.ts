@@ -17,23 +17,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import Router from 'koa-router';
 import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
+import { ApiRouter } from '../common/api.router';
 import { state } from '../state';
 import { initialTags } from './initial-data/tags';
-import { tagApiRouter } from './tag.api.router';
+import { TagApiRouter } from './tag.api.router';
 import { TagDocument } from './tag.document';
 import { tagSchema } from './tag.schema';
 import { TagSerializer } from './tag.serializer';
 
 export class TagApiEndPoint extends EndPoint {
 
-	public readonly name: string = 'Build API';
+	public readonly name: string = 'Tag API';
+	private readonly router = new TagApiRouter();
 
-	public getRouter(): Router {
-		return tagApiRouter;
+	public getRouter(): ApiRouter {
+		return this.router;
 	}
 
 	public registerModel(): EndPoint {

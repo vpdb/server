@@ -17,14 +17,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import * as Router from 'koa-router';
+import { ApiRouter } from '../common/api.router';
 import { Scope } from '../common/scope';
 import { TokenApi } from './token.api';
 
-const api = new TokenApi();
-export const tokenApiRouter = api.apiRouter();
+export class TokenApiRouter implements ApiRouter {
 
-tokenApiRouter.post('/v1/tokens',      api.auth(api.create.bind(api), 'tokens', 'add', [ Scope.ALL ]));
-tokenApiRouter.get('/v1/tokens',       api.auth(api.list.bind(api), 'tokens', 'list', [ Scope.ALL ], { enableAppTokens: true }));
-tokenApiRouter.get('/v1/tokens/:id',  api.view.bind(api));
-tokenApiRouter.del('/v1/tokens/:id',   api.auth(api.del.bind(api), 'tokens', 'delete-own', [ Scope.ALL ]));
-tokenApiRouter.patch('/v1/tokens/:id', api.auth(api.update.bind(api), 'tokens', 'update-own', [ Scope.ALL ]));
+	private readonly router: Router;
+
+	constructor() {
+		const api = new TokenApi();
+		this.router = api.apiRouter();
+
+		this.router.post('/v1/tokens',      api.auth(api.create.bind(api), 'tokens', 'add', [ Scope.ALL ]));
+		this.router.get('/v1/tokens',       api.auth(api.list.bind(api), 'tokens', 'list', [ Scope.ALL ], { enableAppTokens: true }));
+		this.router.get('/v1/tokens/:id',  api.view.bind(api));
+		this.router.del('/v1/tokens/:id',   api.auth(api.del.bind(api), 'tokens', 'delete-own', [ Scope.ALL ]));
+		this.router.patch('/v1/tokens/:id', api.auth(api.update.bind(api), 'tokens', 'update-own', [ Scope.ALL ]));
+	}
+
+	public getRouter(): Router {
+		return this.router;
+	}
+}

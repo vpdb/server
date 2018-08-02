@@ -17,12 +17,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import Router from 'koa-router';
 import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
+import { ApiRouter } from '../common/api.router';
 import { state } from '../state';
-import { gameRequestRouter } from './game.request.api.router';
+import { GameRequestApiRouter } from './game.request.api.router';
 import { GameRequestDocument } from './game.request.document';
 import { gameRequestSchema } from './game.request.schema';
 import { GameRequestSerializer } from './game.request.serializer';
@@ -30,9 +30,10 @@ import { GameRequestSerializer } from './game.request.serializer';
 export class GameRequestApiEndPoint extends EndPoint {
 
 	public readonly name: string = 'Game Request API';
+	private readonly router = new GameRequestApiRouter();
 
-	public getRouter(): Router {
-		return gameRequestRouter;
+	public getRouter(): ApiRouter {
+		return this.router;
 	}
 
 	public registerModel(): EndPoint {

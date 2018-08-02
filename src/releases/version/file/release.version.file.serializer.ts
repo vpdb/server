@@ -20,6 +20,7 @@
 import { BuildDocument } from '../../../builds/build.document';
 import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../../../common/serializer';
 import { Context } from '../../../common/typings/context';
+import { ModelName } from '../../../common/typings/models';
 import { FileDocument } from '../../../files/file.document';
 import { state } from '../../../state';
 import { UserDocument } from '../../../users/user.document';
@@ -27,6 +28,7 @@ import { ReleaseVersionFileDocument } from './release.version.file.document';
 
 export class ReleaseVersionFileSerializer extends Serializer<ReleaseVersionFileDocument> {
 
+	public readonly modelName: ModelName = 'ReleaseVersionFile';
 	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
 		reduced: [],
 		simple: [
@@ -42,6 +44,7 @@ export class ReleaseVersionFileSerializer extends Serializer<ReleaseVersionFileD
 			{ path: 'validation.validated_by', modelName: 'User', level: 'reduced' },
 		],
 	};
+	public idField = 'file.id';
 
 	protected _reduced(ctx: Context, doc: ReleaseVersionFileDocument, opts: SerializerOptions): ReleaseVersionFileDocument {
 		return undefined;

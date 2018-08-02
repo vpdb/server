@@ -17,24 +17,35 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import Router = require('koa-router');
+import { ApiRouter } from '../common/api.router';
 import { Scope } from '../common/scope';
-
 import { StarApi } from '../stars/star.api';
 import { BackglassApi } from './backglass.api';
 
-const api = new BackglassApi();
-const starApi = new StarApi();
+export class BackglassApiRouter implements ApiRouter {
 
-export const backglassApiRouter = api.apiRouter();
+	private readonly router: Router;
 
-backglassApiRouter.get('/v1/backglasses',       api.list.bind(api));
-backglassApiRouter.post('/v1/backglasses',       api.auth(api.create.bind(api), 'backglasses', 'add', [ Scope.ALL, Scope.CREATE ]));
-backglassApiRouter.get('/v1/backglasses/:id',   api.view.bind(api));
-backglassApiRouter.patch('/v1/backglasses/:id',  api.auth(api.update.bind(api), 'backglasses', 'update-own', [ Scope.ALL, Scope.CREATE ]));
-backglassApiRouter.delete('/v1/backglasses/:id', api.auth(api.del.bind(api), 'backglasses', 'delete-own', [ Scope.ALL, Scope.CREATE ]));
+	constructor() {
+		const api = new BackglassApi();
+		this.router = api.apiRouter();
 
-backglassApiRouter.post('/v1/backglasses/:id/star',   api.auth(starApi.star('backglass').bind(starApi), 'backglasses', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
-backglassApiRouter.delete('/v1/backglasses/:id/star', api.auth(starApi.unstar('backglass').bind(starApi), 'backglasses', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
-backglassApiRouter.get('/v1/backglasses/:id/star',    api.auth(starApi.get('backglass').bind(starApi), 'backglasses', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
+		this.router.get('/v1/backglasses',       api.list.bind(api));
+		this.router.post('/v1/backglasses',       api.auth(api.create.bind(api), 'backglasses', 'add', [ Scope.ALL, Scope.CREATE ]));
+		this.router.get('/v1/backglasses/:id',   api.view.bind(api));
+		this.router.patch('/v1/backglasses/:id',  api.auth(api.update.bind(api), 'backglasses', 'update-own', [ Scope.ALL, Scope.CREATE ]));
+		this.router.delete('/v1/backglasses/:id', api.auth(api.del.bind(api), 'backglasses', 'delete-own', [ Scope.ALL, Scope.CREATE ]));
 
-backglassApiRouter.post('/v1/backglasses/:id/moderate', api.auth(api.moderate.bind(api), 'backglasses', 'moderate', [ Scope.ALL ]));
+		const starApi = new StarApi();
+		this.router.post('/v1/backglasses/:id/star',   api.auth(starApi.star('backglass').bind(starApi), 'backglasses', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
+		this.router.delete('/v1/backglasses/:id/star', api.auth(starApi.unstar('backglass').bind(starApi), 'backglasses', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
+		this.router.get('/v1/backglasses/:id/star',    api.auth(starApi.get('backglass').bind(starApi), 'backglasses', 'star', [ Scope.ALL, Scope.COMMUNITY ]));
+
+		this.router.post('/v1/backglasses/:id/moderate', api.auth(api.moderate.bind(api), 'backglasses', 'moderate', [ Scope.ALL ]));
+
+	}
+	public getRouter(): Router {
+		return this.router;
+	}
+}

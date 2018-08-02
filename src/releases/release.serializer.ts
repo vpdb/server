@@ -21,6 +21,7 @@ import { assign, compact, flatten, intersection, isArray, isUndefined, orderBy, 
 
 import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { Context } from '../common/typings/context';
+import { ModelName } from '../common/typings/models';
 import { Thumb } from '../common/typings/serializers';
 import { File } from '../files/file';
 import { FileDocument } from '../files/file.document';
@@ -35,27 +36,28 @@ import { ReleaseVersionDocument } from './version/release.version.document';
 
 export class ReleaseSerializer extends Serializer<ReleaseDocument> {
 
+	public readonly modelName: ModelName = 'Release';
 	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
 		reduced: [
 			{ path: 'game', modelName: 'Game', level: 'reduced' },
 			{ path: 'tags', modelName: 'Tag', level: 'simple' },
 			{ path: 'created_by', modelName: 'User', level: 'reduced' },
 			{ path: 'authors', modelName: 'ContentAuthor', level: 'reduced' },
-			{ path: 'versions', modelName: 'ReleaseVersion', level: 'simple' },
+			{ path: 'versions', modelName: 'ReleaseVersion', level: 'simple', idField: 'version' },
 		],
 		simple: [
 			{ path: 'game', modelName: 'Game', level: 'reduced' },
 			{ path: 'tags', modelName: 'Tag', level: 'simple' },
 			{ path: 'created_by', modelName: 'User', level: 'reduced' },
 			{ path: 'authors', modelName: 'ContentAuthor', level: 'reduced' },
-			{ path: 'versions', modelName: 'ReleaseVersion', level: 'simple' },
+			{ path: 'versions', modelName: 'ReleaseVersion', level: 'simple', idField: 'version' },
 		],
 		detailed: [
 			{ path: 'game', modelName: 'Game', level: 'reduced' },
 			{ path: 'tags', modelName: 'Tag', level: 'simple' },
 			{ path: 'created_by', modelName: 'User', level: 'reduced' },
 			{ path: 'authors', modelName: 'ContentAuthor', level: 'reduced' },
-			{ path: 'versions', modelName: 'ReleaseVersion', level: 'detailed' },
+			{ path: 'versions', modelName: 'ReleaseVersion', level: 'detailed', idField: 'version' },
 		],
 	};
 

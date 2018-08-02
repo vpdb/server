@@ -17,12 +17,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import Router from 'koa-router';
 import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
+import { ApiRouter } from '../common/api.router';
 import { state } from '../state';
-import { tokenApiRouter } from './token.api.router';
+import { TokenApiRouter } from './token.api.router';
 import { TokenDocument } from './token.document';
 import { tokenSchema } from './token.schema';
 import { TokenSerializer } from './token.serializer';
@@ -30,9 +30,10 @@ import { TokenSerializer } from './token.serializer';
 export class TokenEndPoint extends EndPoint {
 
 	public readonly name: string = 'Token API';
+	private readonly router = new TokenApiRouter();
 
-	public getRouter(): Router {
-		return tokenApiRouter;
+	public getRouter(): ApiRouter {
+		return this.router;
 	}
 
 	public registerModel(): EndPoint {

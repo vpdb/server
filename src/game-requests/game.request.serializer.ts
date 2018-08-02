@@ -21,6 +21,7 @@ import { pick } from 'lodash';
 
 import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { Context } from '../common/typings/context';
+import { ModelName } from '../common/typings/models';
 import { GameDocument } from '../games/game.document';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
@@ -28,6 +29,7 @@ import { GameRequestDocument } from './game.request.document';
 
 export class GameRequestSerializer extends Serializer<GameRequestDocument> {
 
+	public readonly modelName: ModelName = 'GameRequest';
 	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
 		reduced: [],
 		simple: [{ path: 'game', modelName: 'Game', level: 'reduced' }],

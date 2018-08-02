@@ -17,9 +17,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import * as Router from 'koa-router';
+import { ApiRouter } from '../common/api.router';
 import { LogEventApi } from './log.event.api';
 
-const api = new LogEventApi();
-export const logEventApiRouter = api.apiRouter();
+export class LogEventApiRouter implements ApiRouter {
 
-logEventApiRouter.get('/v1/events', api.list().bind(api));
+	private readonly router: Router;
+
+	constructor() {
+		const api = new LogEventApi();
+		this.router = api.apiRouter();
+
+		this.router.get('/v1/events', api.list().bind(api));
+	}
+
+	public getRouter(): Router {
+		return this.router;
+	}
+}

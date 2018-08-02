@@ -17,12 +17,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import Router from 'koa-router';
 import mongoose from 'mongoose';
 
 import { EndPoint } from '../common/api.endpoint';
+import { ApiRouter } from '../common/api.router';
 import { state } from '../state';
-import { mediumApiRouter } from './medium.api.router';
+import { MediumApiRouter } from './medium.api.router';
 import { MediumDocument } from './medium.document';
 import { MediumModel, mediumSchema } from './medium.schema';
 import { MediumSerializer } from './medium.serializer';
@@ -30,9 +30,10 @@ import { MediumSerializer } from './medium.serializer';
 export class MediaApiEndPoint extends EndPoint {
 
 	public readonly name: string = 'Media API';
+	private readonly router = new MediumApiRouter()
 
-	public getRouter(): Router {
-		return mediumApiRouter;
+	public getRouter(): ApiRouter {
+		return this.router;
 	}
 
 	public registerModel(): EndPoint {

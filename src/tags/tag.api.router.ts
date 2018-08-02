@@ -17,12 +17,25 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import * as Router from 'koa-router';
+import { ApiRouter } from '../common/api.router';
 import { Scope } from '../common/scope';
 import { TagApi } from './tag.api';
 
-const api = new TagApi();
-export const tagApiRouter = api.apiRouter();
+export class TagApiRouter implements ApiRouter {
 
-tagApiRouter.get('/v1/tags',       api.list.bind(api));
-tagApiRouter.post('/v1/tags',       api.auth(api.create.bind(api), 'tags', 'add', [Scope.ALL, Scope.CREATE]));
-tagApiRouter.delete('/v1/tags/:id', api.auth(api.del.bind(api), 'tags', 'delete-own', [Scope.ALL, Scope.CREATE]));
+	private readonly router: Router;
+
+	constructor() {
+		const api = new TagApi();
+		this.router = api.apiRouter();
+
+		this.router.get('/v1/tags',       api.list.bind(api));
+		this.router.post('/v1/tags',       api.auth(api.create.bind(api), 'tags', 'add', [Scope.ALL, Scope.CREATE]));
+		this.router.delete('/v1/tags/:id', api.auth(api.del.bind(api), 'tags', 'delete-own', [Scope.ALL, Scope.CREATE]));
+	}
+
+	public getRouter(): Router {
+		return this.router;
+	}
+}

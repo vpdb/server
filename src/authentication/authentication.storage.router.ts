@@ -17,10 +17,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import * as Router from 'koa-router';
+import { ApiRouter } from '../common/api.router';
 import { AuthenticationStorageApi } from './authentication.storage';
 
-export const api = new AuthenticationStorageApi();
-export const authenticationStorageRouter = api.storageRouter(true);
+export class AuthenticationStorageRouter implements ApiRouter {
 
-// url authentication
-authenticationStorageRouter.post('/v1/authenticate', api.authenticateUrls.bind(api));
+	private readonly router: Router;
+
+	constructor() {
+		const api = new AuthenticationStorageApi();
+		this.router = api.storageRouter(true);
+
+		// url authentication
+		this.router.post('/v1/authenticate', api.authenticateUrls.bind(api));
+	}
+
+	public getRouter(): Router {
+		return this.router;
+	}
+}

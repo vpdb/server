@@ -17,21 +17,47 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import * as Router from 'koa-router';
+import { ApiRouter } from '../common/api.router';
 import { Scope } from '../common/scope';
 import { FileStorage } from './file.storage';
 
-const storage = new FileStorage();
-export const fileStorageRouterProtected = storage.storageRouter(true);
-export const fileStorageRouterPublic = storage.storageRouter(false);
+export class FilePublicStorageRouter implements ApiRouter {
 
-fileStorageRouterProtected.post('/v1/files',                  storage.auth(storage.upload.bind(storage), 'files', 'upload', [ Scope.ALL ]));
-fileStorageRouterProtected.head('/files/:id.:ext',            storage.auth(storage.head.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
-fileStorageRouterProtected.head('/files/:variation/:id.:ext', storage.auth(storage.head.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
-fileStorageRouterProtected.get('/files/:id.:ext',             storage.auth(storage.get.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
-fileStorageRouterProtected.get('/files/:variation/:id.:ext',  storage.auth(storage.get.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
+	private readonly router: Router;
 
-// this is usually handled by nginx directly, but might be used as fallback when there's no file before processors finish.
-fileStorageRouterPublic.head('/files/:id.:ext',            storage.head.bind(storage));
-fileStorageRouterPublic.head('/files/:variation/:id.:ext', storage.head.bind(storage));
-fileStorageRouterPublic.get('/files/:id.:ext',             storage.get.bind(storage));
-fileStorageRouterPublic.get('/files/:variation/:id.:ext',  storage.get.bind(storage));
+	constructor() {
+		const storage = new FileStorage();
+		this.router = storage.storageRouter(true);
+
+		this.router.post('/v1/files',                  storage.auth(storage.upload.bind(storage), 'files', 'upload', [ Scope.ALL ]));
+		this.router.head('/files/:id.:ext',            storage.auth(storage.head.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
+		this.router.head('/files/:variation/:id.:ext', storage.auth(storage.head.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
+		this.router.get('/files/:id.:ext',             storage.auth(storage.get.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
+		this.router.get('/files/:variation/:id.:ext',  storage.auth(storage.get.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
+	}
+
+	public getRouter(): Router {
+		return this.router;
+	}
+}
+
+export class FileProtectedStorageRouter implements ApiRouter {
+
+	private readonly router: Router;
+
+	constructor() {
+		const storage = new FileStorage();
+		this.router = storage.storageRouter(false);
+
+		// this is usually handled by nginx directly, but might be used as fallback when there's no file before processors finish.
+		this.router.head('/files/:id.:ext',            storage.head.bind(storage));
+		this.router.head('/files/:variation/:id.:ext', storage.head.bind(storage));
+		this.router.get('/files/:id.:ext',             storage.get.bind(storage));
+		this.router.get('/files/:variation/:id.:ext',  storage.get.bind(storage));
+	}
+
+	public getRouter(): Router {
+		return this.router;
+	}
+}

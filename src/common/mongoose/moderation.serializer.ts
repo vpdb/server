@@ -24,9 +24,11 @@ import { state } from '../../state';
 import { UserDocument } from '../../users/user.document';
 import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../serializer';
 import { Context } from '../typings/context';
+import { ModelName } from '../typings/models';
 
 export class ModerationSerializer extends Serializer<ModerationData> {
 
+	public readonly modelName: ModelName = null;
 	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
 		reduced: [],
 		simple: [],

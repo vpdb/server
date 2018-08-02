@@ -21,12 +21,14 @@ import { pick } from 'lodash';
 
 import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { Context } from '../common/typings/context';
+import { ModelName } from '../common/typings/models';
 import { FileDocument } from '../files/file.document';
 import { state } from '../state';
 import { BackglassVersion } from './backglass.version';
 
 export class BackglassVersionSerializer extends Serializer<BackglassVersion> {
 
+	public readonly modelName: ModelName = 'BackglassVersion';
 	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
 		reduced: [ { path: 'file', modelName: 'File', level: 'reduced' } ],
 		simple: [ { path: 'file', modelName: 'File', level: 'simple' } ],

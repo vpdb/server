@@ -23,12 +23,14 @@ import { ipdb } from '../common/ipdb';
 import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { config } from '../common/settings';
 import { Context } from '../common/typings/context';
+import { ModelName } from '../common/typings/models';
 import { FileDocument } from '../files/file.document';
 import { state } from '../state';
 import { GameDocument, GameRestrictions } from './game.document';
 
 export class GameSerializer extends Serializer<GameDocument> {
 
+	public readonly modelName: ModelName = 'Game';
 	public readonly references: { [level in SerializerLevel]: SerializerReference[] } = {
 		reduced: [],
 		simple: [

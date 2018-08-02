@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import Router from 'koa-router';
 import { Document, Model } from 'mongoose';
+import { ApiRouter } from './api.router';
 import { logger } from './logger';
 
 /**
@@ -39,9 +39,9 @@ export abstract class EndPoint {
 
 	/**
 	 * Returns the router containing all the routes of the end point.
-	 * @return {Router}
+	 * @return {ApiRouter}
 	 */
-	public abstract getRouter(): Router;
+	public abstract getRouter(): ApiRouter;
 
 	public registerModel(): EndPoint {
 		return this;

@@ -30,7 +30,7 @@ import { MediumSerializer } from './medium.serializer';
 export class MediaApiEndPoint extends EndPoint {
 
 	public readonly name: string = 'Media API';
-	private readonly router = new MediumApiRouter()
+	private readonly router = new MediumApiRouter();
 
 	public getRouter(): ApiRouter {
 		return this.router;

@@ -35,7 +35,7 @@ export class AuthenticationEndPoint extends EndPoint {
 export class AuthenticationStorageEndPoint extends EndPoint {
 
 	public readonly name: string = 'Storage Authentication API';
-	private readonly router = new AuthenticationStorageRouter()
+	private readonly router = new AuthenticationStorageRouter();
 
 	public getRouter(): ApiRouter {
 		return this.router;

@@ -210,8 +210,15 @@ class ApiCache {
 		await this.invalidateEntity(requestState, 'game', (release._game as GameDocument).id, 'detailed');
 	}
 
-	public async invalidateReleaseComment(requestState: RequestState, release: ReleaseDocument) {
-		// TODO
+	/**
+	 * Invalidates caches when updating an existing user.
+	 * @param {RequestState} requestState For logging
+	 * @param {GameDocument} user Updated user
+	 * @param {CacheSerializerLevel} level Level should be specified when only attributes are updated that don't concern all levels
+	 */
+	public async invalidateUpdatedUser(requestState: RequestState, user: UserDocument, level?: CacheSerializerLevel) {
+		await this.invalidateList(requestState, 'user');
+		await this.invalidateEntity(requestState, 'user', user.id, level);
 	}
 
 	/**

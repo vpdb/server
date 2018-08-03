@@ -22,6 +22,7 @@ import randomString from 'randomstring';
 
 import { acl } from '../common/acl';
 import { Api } from '../common/api';
+import { apiCache } from '../common/api.cache';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
 import { mailer } from '../common/mailer';
@@ -100,6 +101,13 @@ export class ProfileApi extends Api {
 
 		const user = await updatedUser.save();
 		await LogUserUtil.successDiff(ctx, updatedUser, 'update', pick(ctx.state.user.toObject(), this.updatableFields), updatedUser);
+
+		// invalidate cache
+		if (!this.hasFieldsModified(ctx.request.body, ctx.state.user, [ 'name', 'username', 'email'])) {
+			await apiCache.invalidateUpdatedUser(ctx.state, user, ['simple', 'detailed']);
+		} else {
+			await apiCache.invalidateUpdatedUser(ctx.state, user);
+		}
 
 		// log
 		if (ctx.request.body.password) {

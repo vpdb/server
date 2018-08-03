@@ -76,9 +76,6 @@ export class CommentApi extends Api {
 
 		this.success(ctx, state.serializers.Comment.simple(ctx, comment), 201);
 
-		// invalidate cache
-		await apiCache.invalidateReleaseComment(ctx.state, release);
-
 		// notify release creator (only if not the same user)
 		if ((release._created_by as UserDocument).id !== ctx.state.user.id) {
 			await mailer.releaseCommented(ctx.state, release._created_by as UserDocument, ctx.state.user, game, release, ctx.request.body.message);

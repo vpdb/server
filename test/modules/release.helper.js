@@ -17,6 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+const { isObject } = require('lodash');
 const faker = require('faker');
 const FileHelper = require('./file.helper');
 const GameHelper = require('./game.helper');
@@ -38,7 +39,7 @@ class ReleaseHelper {
 	 * @param user Uploader
 	 * @param game Game to link to
 	 * @param opts Configuration object
-	 * @param {string} opts.author User name of the author
+	 * @param {string|object} opts.author User name of the author
 	 * @param {object[]} opts.files Additional version files
 	 * @param {object} opts.file Extend version file with this data
 	 * @param {object} opts.release Extend release with this data
@@ -49,6 +50,7 @@ class ReleaseHelper {
 		const vptFile = await this.fileHelper.createVpt(user, { keep: true });
 		const playfield = await this.fileHelper.createPlayfield(user, 'fs', null, { keep: true });
 		const additionalFiles = opts.files || [];
+		const author = isObject(opts.author) ? opts.author : this.api.getUser(opts.author || user);
 		const res = await this.api
 			.as(user)
 			.markTeardown()
@@ -65,7 +67,7 @@ class ReleaseHelper {
 					}, opts.file || {}), ...additionalFiles],
 					version: '1.0.0'
 				}],
-				authors: [{ _user: this.api.getUser(opts.author || user).id, roles: ['Table Creator'] }]
+				authors: [{ _user: author.id, roles: ['Table Creator'] }]
 			}, opts.release || {})).then(res => res.expectStatus(201));
 		const release = res.data;
 		release.game = game;

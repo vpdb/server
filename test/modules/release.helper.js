@@ -38,11 +38,12 @@ class ReleaseHelper {
 	 *
 	 * @param user Uploader
 	 * @param game Game to link to
-	 * @param opts Configuration object
-	 * @param {string|object} opts.author User name of the author
-	 * @param {object[]} opts.files Additional version files
-	 * @param {object} opts.file Extend version file with this data
-	 * @param {object} opts.release Extend release with this data
+	 * @param [opts] Configuration object
+	 * @param {string|object} [opts.author] User name of the author
+	 * @param {string[]} [opts.builds] Array of builds to override
+	 * @param {object[]} [opts.files] Additional version files
+	 * @param {object} [opts.file] Extend version file with this data
+	 * @param {object} [opts.release] Extend release with this data
 	 * @returns {Promise<Object>} Created release
 	 */
 	async createReleaseForGame(user, game, opts) {
@@ -62,7 +63,7 @@ class ReleaseHelper {
 					files: [ Object.assign({
 						_file: vptFile.id,
 						_playfield_image: playfield.id,
-						_compatibility: ['9.9.0'],
+						_compatibility: opts.builds || ['9.9.0'],
 						flavor: { orientation: 'fs', lighting: 'night' }
 					}, opts.file || {}), ...additionalFiles],
 					version: '1.0.0'
@@ -78,7 +79,11 @@ class ReleaseHelper {
 	 * Creates a new release and its parent game.
 	 * @param user Uploader
 	 * @param [opts] Configuration object
-	 * @param {string} opts.author User name of the author
+	 * @param {string|object} [opts.author] User name of the author
+	 * @param {string[]} [opts.builds] Array of builds to override
+	 * @param {object[]} [opts.files] Additional version files
+	 * @param {object} [opts.file] Extend version file with this data
+	 * @param {object} [opts.release] Extend release with this data
 	 * @returns {Promise<Object>} Created release
 	 */
 	async createRelease(user, opts) {

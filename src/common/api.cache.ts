@@ -30,6 +30,7 @@ import { UserDocument } from '../users/user.document';
 import { logger } from './logger';
 import { SerializerLevel, SerializerReference } from './serializer';
 import { Context, RequestState } from './typings/context';
+import { BuildDocument } from '../builds/build.document';
 
 /**
  * An in-memory cache using Redis.
@@ -213,12 +214,25 @@ class ApiCache {
 	/**
 	 * Invalidates caches when updating an existing user.
 	 * @param {RequestState} requestState For logging
-	 * @param {GameDocument} user Updated user
+	 * @param {UserDocument} user Updated user
 	 * @param {CacheSerializerLevel} level Level should be specified when only attributes are updated that don't concern all levels
 	 */
 	public async invalidateUpdatedUser(requestState: RequestState, user: UserDocument, level?: CacheSerializerLevel) {
 		await this.invalidateList(requestState, 'user');
 		await this.invalidateEntity(requestState, 'user', user.id, level);
+	}
+
+	/**
+	 * Invalidates caches when updating an existing build.
+	 * Note there is no level because builds are either listed full or ID
+	 * only for reduced, which is never invalidated because the ID can't
+	 * change.
+	 * @param {RequestState} requestState For logging
+	 * @param {BuildDocument} user Updated build
+	 */
+	public async invalidateUpdatedBuild(requestState: RequestState, user: BuildDocument) {
+		await this.invalidateList(requestState, 'build');
+		await this.invalidateEntity(requestState, 'build', user.id, ['simple', 'detailed']);
 	}
 
 	/**

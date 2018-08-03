@@ -22,6 +22,7 @@ import { Types } from 'mongoose';
 
 import { acl } from '../common/acl';
 import { Api } from '../common/api';
+import { apiCache } from '../common/api.cache';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
 import { Context } from '../common/typings/context';
@@ -90,6 +91,9 @@ export class BuildApi extends Api {
 
 		// log event
 		await LogEventUtil.log(ctx, 'update_build', false, LogEventUtil.diff(oldBuild, ctx.request.body), { build: newBuild._id });
+
+		// invalidate cache
+		await apiCache.invalidateUpdatedBuild(ctx.state, newBuild);
 	}
 
 	/**

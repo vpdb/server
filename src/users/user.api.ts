@@ -21,6 +21,7 @@ import { assign, assignIn, difference, escapeRegExp, includes, isNumber, isObjec
 
 import { acl } from '../common/acl';
 import { Api } from '../common/api';
+import { apiCache } from '../common/api.cache';
 import { ApiError, ApiValidationError } from '../common/api.error';
 import { logger } from '../common/logger';
 import { mailer } from '../common/mailer';
@@ -35,6 +36,8 @@ const randomString = require('randomstring');
 const validator = require('validator');
 
 export class UserApi extends Api {
+
+	private readonly updatableFields = ['name', 'email', 'username', 'is_active', 'roles', '_plan', 'location'];
 
 	/**
 	 * Creates a new user.
@@ -233,16 +236,16 @@ export class UserApi extends Api {
 	 */
 	public async update(ctx: Context) {
 
-		const updatableFields = ['name', 'email', 'username', 'is_active', 'roles', '_plan'];
 		const user: UserDocument = await state.models.User.findOne({ id: ctx.params.id }).exec();
 		if (!user) {
 			throw new ApiError('No such user.').status(404);
 		}
+		const oldUser = state.serializers.User.reduced(ctx, user);
 
 		const updatedUser = ctx.request.body;
 
 		// 1. check for changed read-only fields
-		const readOnlyFieldErrors = this.checkReadOnlyFields(ctx.request.body, user, updatableFields);
+		const readOnlyFieldErrors = this.checkReadOnlyFields(ctx.request.body, user, this.updatableFields);
 		if (readOnlyFieldErrors) {
 			throw new ApiError('User tried to update read-only fields').validationErrors(readOnlyFieldErrors as ApiValidationError[]).warn();
 		}
@@ -255,7 +258,7 @@ export class UserApi extends Api {
 		const removedRoles = difference(currentUserRoles, updatedUserRoles);
 		const addedRoles = difference(updatedUserRoles, currentUserRoles);
 
-		const diff = LogUserUtil.diff(pick(user.toObject(), updatableFields), updatedUser);
+		const diff = LogUserUtil.diff(pick(user.toObject(), this.updatableFields), updatedUser);
 
 		// if caller is not root..
 		if (!includes(callerRoles, 'root')) {
@@ -290,14 +293,14 @@ export class UserApi extends Api {
 		}
 
 		// 3. copy over new values
-		updatableFields.forEach(field => {
+		this.updatableFields.forEach(field => {
 			user[field] = updatedUser[field];
 		});
 
 		// 4. save
 		await user.save();
 
-		await LogUserUtil.successDiff(ctx, ctx.state.user, 'update', pick(user.toObject(), updatableFields), updatedUser, ctx.state.user);
+		await LogUserUtil.successDiff(ctx, ctx.state.user, 'update', pick(user.toObject(), this.updatableFields), updatedUser, ctx.state.user);
 		logger.info(ctx.state, '[UserApi.update] Success!');
 
 		// 5. update ACLs if roles changed
@@ -316,6 +319,15 @@ export class UserApi extends Api {
 			await state.redis.set('dirty_user_' + user.id, String(new Date().getTime()));
 			await state.redis.expire('dirty_user_' + user.id, 10000);
 		}
+
+		// invalidate cache
+		const newUser = state.serializers.User.reduced(ctx, user);
+		if (!this.hasFieldsModified(newUser, oldUser, [ 'name', 'username', 'email'])) {
+			await apiCache.invalidateUpdatedUser(ctx.state, user, ['simple', 'detailed']);
+		} else {
+			await apiCache.invalidateUpdatedUser(ctx.state, user);
+		}
+
 		return this.success(ctx, state.serializers.User.detailed(ctx, user), 200);
 	}
 
@@ -386,6 +398,7 @@ export class UserApi extends Api {
 	}
 
 	private async updateProviderUser(ctx: Context, existingUser: UserDocument, provider: string): Promise<UserDocument> {
+		const oldUser = state.serializers.User.reduced(ctx, existingUser);
 		if (!existingUser.providers || !existingUser.providers[provider]) {
 			existingUser.providers = existingUser.providers || {};
 			existingUser.providers[provider] = {
@@ -405,7 +418,17 @@ export class UserApi extends Api {
 			await LogUserUtil.success(ctx, existingUser, 'provider_update', { provider });
 		}
 		existingUser.emails = uniq([existingUser.email, ...existingUser.emails, ctx.request.body.email]);
-		return existingUser.save();
+		const updatedUser = await existingUser.save();
+
+		// invalidate cache
+		const newUser = state.serializers.User.reduced(ctx, updatedUser);
+		if (!this.hasFieldsModified(newUser, oldUser, [ 'name', 'username', 'email'])) {
+			await apiCache.invalidateUpdatedUser(ctx.state, updatedUser, ['simple', 'detailed']);
+		} else {
+			await apiCache.invalidateUpdatedUser(ctx.state, updatedUser);
+		}
+
+		return updatedUser;
 	}
 
 	private async createProviderUser(ctx: Context, provider: string): Promise<UserDocument> {

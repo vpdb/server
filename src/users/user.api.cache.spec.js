@@ -19,13 +19,15 @@
 
 'use strict';
 /*global describe, before, after, it*/
+
+const { pick } = require('lodash');
 const expect = require('expect.js');
 
 const ApiClient = require('../../test/modules/api.client');
 
 const api = new ApiClient();
 
-describe('The user profile cache', () => {
+describe('The user cache', () => {
 
 	let res;
 	before(async () => {
@@ -50,7 +52,9 @@ describe('The user profile cache', () => {
 			res = await api.get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'hit'));
 			expect(res.data.authors[0].user.name).to.be(user.name);
 
-			await api.as(user).patch('/v1/profile', { name: username }).then(res => res.expectStatus(200));
+			user.name = username;
+			await api.as('admin').put('/v1/users/' + user.id, pick(user, ['email', 'username', 'name', 'is_active', 'roles', '_plan' ]))
+				.then(res => res.expectStatus(200));
 
 			res = await api.get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'miss'));
 			expect(res.data.authors[0].user.id).to.be(user.id);
@@ -65,7 +69,9 @@ describe('The user profile cache', () => {
 			res = await api.get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'hit'));
 			expect(res.data.find(rls => rls.id === release.id).authors[0].user.name).to.be(user.name);
 
-			await api.as(user).patch('/v1/profile', { name: username }).then(res => res.expectStatus(200));
+			user.name = username;
+			await api.as('admin').put('/v1/users/' + user.id, pick(user, ['email', 'username', 'name', 'is_active', 'roles', '_plan' ]))
+				.then(res => res.expectStatus(200));
 
 			res = await api.get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
 			const rls = res.data.find(r => r.id === release.id);
@@ -77,35 +83,31 @@ describe('The user profile cache', () => {
 	describe('when updating a invisible property of the user profile', () => {
 
 		it('should not invalidate release details', async () => {
-			const locationBefore = 'original location';
 			const locationAfter = 'updated location';
 			const user = await api.createUser();
-			res = await api.as(user).patch('/v1/profile', { location: locationBefore }).then(res => res.expectStatus(200));
-			expect(res.data.location).to.be(locationBefore);
 
 			const release = await api.releaseHelper.createRelease('moderator', { author: user });
 			await api.get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'miss'));
 			await api.get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'hit'));
 
-			res = await api.as(user).patch('/v1/profile', { location: locationAfter }).then(res => res.expectStatus(200));
-			expect(res.data.location).to.be(locationAfter);
+			user.location = locationAfter;
+			await api.as('admin').put('/v1/users/' + user.id, pick(user, ['email', 'username', 'name', 'is_active', 'roles', '_plan', 'location' ]))
+				.then(res => res.expectStatus(200));
 
 			res = await api.get('/v1/releases/' + release.id).then(res => res.expectHeader('x-cache-api', 'hit'));
 		});
 
 		it('should not invalidate the release list', async () => {
-			const locationBefore = 'original location';
 			const locationAfter = 'updated location';
 			const user = await api.createUser();
-			res = await api.as(user).patch('/v1/profile', { location: locationBefore }).then(res => res.expectStatus(200));
-			expect(res.data.location).to.be(locationBefore);
 
 			await api.releaseHelper.createRelease('moderator', { author: user });
 			await api.get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'miss'));
 			await api.get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'hit'));
 
-			res = await api.as(user).patch('/v1/profile', { location: locationAfter }).then(res => res.expectStatus(200));
-			expect(res.data.location).to.be(locationAfter);
+			user.location = locationAfter;
+			await api.as('admin').put('/v1/users/' + user.id, pick(user, ['email', 'username', 'name', 'is_active', 'roles', '_plan', 'location' ]))
+				.then(res => res.expectStatus(200));
 
 			res = await api.get('/v1/releases').then(res => res.expectHeader('x-cache-api', 'hit'));
 		});

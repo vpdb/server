@@ -322,7 +322,7 @@ export class UserApi extends Api {
 
 		// invalidate cache
 		const newUser = state.serializers.User.reduced(ctx, user);
-		if (!this.hasFieldsModified(newUser, oldUser, [ 'name', 'username', 'email'])) {
+		if (!this.hasFieldsModified(newUser, oldUser, [ 'name', 'username', 'gravatar_id'])) {
 			await apiCache.invalidateUpdatedUser(ctx.state, user, ['simple', 'detailed']);
 		} else {
 			await apiCache.invalidateUpdatedUser(ctx.state, user);
@@ -422,7 +422,7 @@ export class UserApi extends Api {
 
 		// invalidate cache
 		const newUser = state.serializers.User.reduced(ctx, updatedUser);
-		if (!this.hasFieldsModified(newUser, oldUser, [ 'name', 'username', 'email'])) {
+		if (!this.hasFieldsModified(newUser, oldUser, [ 'name', 'username', 'gravatar_id'])) {
 			await apiCache.invalidateUpdatedUser(ctx.state, updatedUser, ['simple', 'detailed']);
 		} else {
 			await apiCache.invalidateUpdatedUser(ctx.state, updatedUser);

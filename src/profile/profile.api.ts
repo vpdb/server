@@ -66,6 +66,7 @@ export class ProfileApi extends Api {
 		if (!updatedUser) {
 			throw new ApiError('User not found. Seems be deleted since last login.').status(404);
 		}
+		const oldUser = state.serializers.User.reduced(ctx, updatedUser);
 
 		// UPDATE SUBMITTED FIELDS
 		await this.changeAttributes(ctx, updatedUser);
@@ -103,7 +104,8 @@ export class ProfileApi extends Api {
 		await LogUserUtil.successDiff(ctx, updatedUser, 'update', pick(ctx.state.user.toObject(), this.updatableFields), updatedUser);
 
 		// invalidate cache
-		if (!this.hasFieldsModified(ctx.request.body, ctx.state.user, [ 'name', 'username', 'email'])) {
+		const newUser = state.serializers.User.reduced(ctx, user);
+		if (!this.hasFieldsModified(oldUser, newUser, [ 'name', 'username', 'gravatar_id'])) {
 			await apiCache.invalidateUpdatedUser(ctx.state, user, ['simple', 'detailed']);
 		} else {
 			await apiCache.invalidateUpdatedUser(ctx.state, user);

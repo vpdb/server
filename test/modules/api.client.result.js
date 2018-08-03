@@ -176,6 +176,18 @@ class ApiClientResult {
 		return this;
 	}
 
+	/**
+	 * Expects a given response header to be absent.
+	 * @param {string} name Name of the header
+	 * @return {ApiClientResult}
+	 */
+	expectNoHeader(name) {
+		if (this.response.headers[name.toLowerCase()]) {
+			throw new Error('Expected header "' + name + '" not to be present, but got "' + this.response.headers[name.toLowerCase()]);
+		}
+		return this;
+	}
+
 	_logResponse() {
 		const res = this.response;
 		let err = '';

@@ -23,6 +23,7 @@ import pathToRegexp from 'path-to-regexp';
 
 import { MetricsDocument, MetricsModel } from 'mongoose';
 import { inspect } from 'util';
+import { BuildDocument } from '../builds/build.document';
 import { GameDocument } from '../games/game.document';
 import { ReleaseDocument } from '../releases/release.document';
 import { state } from '../state';
@@ -30,7 +31,6 @@ import { UserDocument } from '../users/user.document';
 import { logger } from './logger';
 import { SerializerLevel, SerializerReference } from './serializer';
 import { Context, RequestState } from './typings/context';
-import { BuildDocument } from '../builds/build.document';
 
 /**
  * An in-memory cache using Redis.
@@ -68,7 +68,13 @@ class ApiCache {
 	public enable<T>(router: Router, path: string, config: CacheInvalidationConfig<T>) {
 		logger.debug(null, '[ApiCache.enable]: %s\n%s', path, inspect(config.entities, { depth : Infinity, colors: true, breakLength: 120 }));
 		const opts = (router as any).opts as IRouterOptions;
-		this.cacheRoutes.push({ regex: pathToRegexp(opts.prefix + path), entities: config.entities, listModel: config.listModel, counters: config.counters });
+		this.cacheRoutes.push({
+			regex: pathToRegexp(opts.prefix + path),
+			entities: config.entities,
+			listModel: config.listModel,
+			counters: config.counters,
+			noCacheWithQuery: config.noCacheWithQuery || []
+		});
 	}
 
 	/**
@@ -89,6 +95,13 @@ class ApiCache {
 		const cacheRoute = this.cacheRoutes.find(route => route.regex.test(ctx.request.path));
 		if (!cacheRoute) {
 			return next();
+		}
+
+		// don't cache if noCacheWithQuery matches a query parameter
+		for (const q of Object.keys(ctx.query || {})) {
+			if (ctx.query[q] && cacheRoute.noCacheWithQuery.includes(q)) {
+				return next();
+			}
 		}
 
 		// retrieve the cached response
@@ -571,6 +584,7 @@ export interface CacheInvalidationConfig<T> {
 	entities: SerializerReference[];
 	listModel?: string;
 	counters?: Array<CacheCounterConfig<T>>;
+	noCacheWithQuery?: string[];
 }
 
 /**

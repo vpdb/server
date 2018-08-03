@@ -65,6 +65,11 @@ describe('The release cache', () => {
 			expect(res.data.counter.views).to.be(views + 1);
 		});
 
+		it('should not cache release list with a search query', async () => {
+			res = await api.withQuery({ q: release.name }).get('/v1/releases').then(res => res.expectNoHeader('x-cache-api'));
+			res = await api.withQuery({ q: release.name }).get('/v1/releases').then(res => res.expectNoHeader('x-cache-api'));
+		});
+
 	});
 
 	describe('when starring a release', () => {

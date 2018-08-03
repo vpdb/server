@@ -153,14 +153,15 @@ export class ApiError extends Error {
 	 * @param {string} path Path to the invalid field
 	 * @param {string} message Error message
 	 * @param {*} [value] Invalid value
+	 * @param kind Error code
 	 * @returns {ApiError}
 	 */
-	public validationError(path: string, message: string, value?: any): ApiError {
+	public validationError(path: string, message: string, value?: any, kind?: string): ApiError {
 		if (!this.message) {
 			this.message = 'Validation failed.';
 		}
 		this.errors = this.errors || [];
-		this.errors.push({ path, message, value });
+		this.errors.push({ path, message, value, kind });
 		this.statusCode = 422;
 		this.stripFields();
 		return this;

@@ -17,12 +17,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { assign, extend, pick, uniq, values } from 'lodash';
+import { assign, pick, uniq } from 'lodash';
 import randomString from 'randomstring';
 
 import { acl } from '../common/acl';
 import { Api } from '../common/api';
-import { ApiError, ApiValidationError } from '../common/api.error';
+import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
 import { mailer } from '../common/mailer';
 import { quota } from '../common/quota';
@@ -34,6 +34,8 @@ import { UserDocument } from '../users/user.document';
 import { UserUtil } from '../users/user.util';
 
 export class ProfileApi extends Api {
+
+	private readonly updatableFields = ['name', 'location', 'email', 'preferences', 'channel_config'];
 
 	/**
 	 * Returns the current user's profile.
@@ -56,128 +58,33 @@ export class ProfileApi extends Api {
 	 */
 	public async update(ctx: Context) {
 
-		const updatableFields = ['name', 'location', 'email', 'preferences', 'channel_config'];
-
 		// api test behavior
 		const testMode = process.env.NODE_ENV === 'test';
-		const currentUser = ctx.state.user;
-		const errors: ApiValidationError[] = [];
 
-		const updatedUser = await state.models.User.findById(currentUser._id).exec();
+		const updatedUser = await state.models.User.findById(ctx.state.user._id).exec();
 		if (!updatedUser) {
 			throw new ApiError('User not found. Seems be deleted since last login.').status(404);
 		}
 
-		// check for dupe name
-		if (ctx.request.body.name) {
-			const dupeNameUser = await state.models.User.findOne({
-				name: ctx.request.body.name,
-				id: { $ne: currentUser.id },
-			}).exec();
-			if (dupeNameUser) {
-				throw new ApiError('Validation failed').validationError('name', 'User with this name already exists', ctx.request.body.name);
-			}
-		}
+		// UPDATE SUBMITTED FIELDS
+		await this.changeAttributes(ctx, updatedUser);
 
-		// apply new data
-		extend(updatedUser, pick(ctx.request.body, updatableFields));
-
-		// CHANGE PASSWORD
+		// UPDATE PASSWORD
 		if (ctx.request.body.password && !ctx.request.body.username) {
-
-			// check for current password
-			if (!ctx.request.body.current_password) {
-				errors.push({
-					message: 'You must provide your current password.',
-					path: 'current_password',
-				});
-
-			} else {
-				// change password
-				if (updatedUser.authenticate(ctx.request.body.current_password)) {
-					updatedUser.password = ctx.request.body.password;
-					await LogUserUtil.success(ctx, updatedUser, 'change_password');
-				} else {
-					errors.push({ message: 'Invalid password.', path: 'current_password' });
-					logger.warn(ctx.state, '[ProfileApi.update] User <%s> provided wrong current password while changing.', currentUser.email);
-				}
-			}
+			await this.changePassword(ctx, updatedUser);
 		}
 
 		// CREATE LOCAL ACCOUNT
-		if (ctx.request.body.username && !currentUser.is_local) {
-
-			if (!ctx.request.body.password) {
-				errors.push({ message: 'You must provide your new password.', path: 'password' });
-
-			} else {
-				updatedUser.password = ctx.request.body.password;
-				updatedUser.username = ctx.request.body.username;
-				updatedUser.is_local = true;
-				await LogUserUtil.success(ctx, updatedUser, 'create_local_account', { username: ctx.request.body.username });
-			}
-		}
-		if (ctx.request.body.username && currentUser.is_local && ctx.request.body.username !== updatedUser.username) {
-			errors.push({
-				message: 'Cannot change username for already local account.',
-				path: 'username',
-				value: ctx.request.body.username,
-				kind: 'read_only',
-			});
+		if (ctx.request.body.username) {
+			await this.createLocalAccount(ctx, updatedUser);
 		}
 
-		// validate
-		try {
-			await updatedUser.validate();
-		} catch (validationErr) {
-			if (validationErr.name === 'ValidationError') {
-				values(validationErr.errors).forEach(err => errors.push(err));
-			}
-		}
-
-		// if there are validation errors, die.
-		if (errors.length > 0) {
-			throw new ApiError().validationErrors(errors).warn().status(422);
-		}
+		// validate now, because below we assume that the email address is (syntactically) valid
+		await updatedUser.validate();
 
 		// EMAIL CHANGE
-		if (currentUser.email !== updatedUser.email) {
-
-			// there ALREADY IS a pending request.
-			if (currentUser.email_status && currentUser.email_status.code === 'pending_update') {
-
-				// just ignore if it's a re-post of the same address (double patch for the same new email doesn't re-trigger the confirmation mail)
-				if (currentUser.email_status.value === updatedUser.email) {
-					updatedUser.email = currentUser.email;
-
-					// otherwise fail
-				} else {
-					throw new ApiError().validationErrors([{
-						message: 'You cannot update an email address that is still pending confirmation. If your previous change was false, reset the email first by providing the original value.',
-						path: 'email',
-					}]).status(422);
-				}
-
-			} else {
-				// check if we've already validated this address
-				if (currentUser.validated_emails.includes(updatedUser.email)) {
-					updatedUser.email_status = { code: 'confirmed' };
-
-				} else {
-					updatedUser.email_status = {
-						code: 'pending_update',
-						token: randomString.generate(16),
-						expires_at: new Date(new Date().getTime() + 86400000), // 1d valid
-						value: updatedUser.email,
-					};
-					updatedUser.email = currentUser.email;
-					await LogUserUtil.success(ctx, updatedUser, 'update_email_request', {
-						old: { email: currentUser.email },
-						new: { email: updatedUser.email_status.value },
-					});
-					await mailer.emailUpdateConfirmation(ctx.state, updatedUser);
-				}
-			}
+		if (ctx.state.user.email !== updatedUser.email) {
+			await this.changeEmail(ctx, updatedUser);
 
 		} else if (ctx.request.body.email) {
 			// in here it's a special case:
@@ -186,18 +93,13 @@ export class ProfileApi extends Api {
 			// confirmation request and set the email back to what it was.
 
 			// so IF we really are pending, simply set back the status to "confirmed".
-			if (currentUser.email_status && currentUser.email_status.code === 'pending_update') {
-				logger.warn(ctx.state, '[ProfileApi.update] Canceling email confirmation with token "%s" for user <%s> -> <%s> (%s).', currentUser.email_status.token, currentUser.email, currentUser.email_status.value, currentUser.id);
-				await LogUserUtil.success(ctx, updatedUser, 'cancel_email_update', {
-					email: currentUser.email,
-					email_canceled: currentUser.email_status.value,
-				});
-				updatedUser.email_status = { code: 'confirmed' };
+			if (ctx.state.user.email_status && ctx.state.user.email_status.code === 'pending_update') {
+				await this.cancelEmailChange(ctx, updatedUser);
 			}
 		}
 
 		const user = await updatedUser.save();
-		await LogUserUtil.successDiff(ctx, updatedUser, 'update', pick(currentUser.toObject(), updatableFields), updatedUser);
+		await LogUserUtil.successDiff(ctx, updatedUser, 'update', pick(ctx.state.user.toObject(), this.updatableFields), updatedUser);
 
 		// log
 		if (ctx.request.body.password) {
@@ -213,9 +115,9 @@ export class ProfileApi extends Api {
 		const acls = await this.getACLs(user);
 
 		if (testMode && ctx.request.body.returnEmailToken) {
-			return this.success(ctx, extend(state.serializers.User.detailed(ctx, user), acls, { email_token: (user.email_status as any).toObject().token }), 200);
+			return this.success(ctx, assign(state.serializers.User.detailed(ctx, user), acls, { email_token: (user.email_status as any).toObject().token }), 200);
 		}
-		return this.success(ctx, extend(state.serializers.User.detailed(ctx, user), acls), 200);
+		return this.success(ctx, assign(state.serializers.User.detailed(ctx, user), acls), 200);
 	}
 
 	/**
@@ -319,91 +221,100 @@ export class ProfileApi extends Api {
 		});
 	}
 
-	/**
-	 * Authentication route for third party strategies.
-	 *
-	 * Note that this is passed as-is to passport, so the URL params should be the
-	 * same as the ones from the third party provider.
-	 *
-	 * @param ctx Koa context
-	 * @param {function} next
-	 */
-	// public async authenticateOAuth2(ctx: Context, next) {
-	//
-	// 	// use passport with a custom callback: http://passportjs.org/guide/authenticate/
-	// 	passport.authenticate(ctx.params.strategy, passportCallback(req, res))(req, res, next);
-	// }
+	private async changeAttributes(ctx: Context, updatedUser: UserDocument) {
+		// check for dupe name
+		if (ctx.request.body.name) {
+			await this.validateName(ctx, ctx.request.body.name);
+		}
+		// apply new data
+		assign(updatedUser, pick(ctx.request.body, this.updatableFields));
+	}
 
-	/**
-	 * Skips passport authentication and processes the user profile directly.
-	 * @returns {Function}
-	 */
-	// public async authenticateOAuth2Mock(ctx: Context) {
-	// 	logger.info('[api|user:auth-mock] Processing mock authentication via %s...', ctx.request.body.provider);
-	// 	const profile = ctx.request.body.profile;
-	// 	if (profile) {
-	// 		profile._json = {
-	// 			info: 'This mock data and is more complete otherwise.',
-	// 			id: ctx.request.body.profile ? ctx.request.body.profile.id : null
-	// 		};
-	// 	}
-	// 	ctx.params = { strategy: ctx.request.body.provider };
-	// 	require('../../../src/common/passport').verifyCallbackOAuth(ctx.request.body.provider, ctx.request.body.providerName)(ctx, null, null, profile, this.passportCallback(ctx).bind(this));
-	// }
+	private async validateName(ctx: Context, name: string) {
+		const dupeNameUser = await state.models.User.findOne({ name, id: { $ne: ctx.state.user.id }}).exec();
+		if (dupeNameUser) {
+			throw new ApiError().validationError('name', 'User with this name already exists', ctx.request.body.name);
+		}
+	}
 
-	/**
-	 * Returns a custom callback function for passport. It basically checks if the
-	 * user object was populated, enriches it and returns it or fails.
-	 *
-	 * @param ctx Koa context
-	 * @returns {Function}
-	 */
-	// private passportCallback(ctx: Context) {
-	// 	return function (err, user, info) {
-	// 		if (err) {
-	// 			if (err.oauthError) {
-	// 				return api.fail(res, error(err, 'Authentication failed: %j', err.oauthError).warn('authenticate', ctx.params.strategy), err.code || 401);
-	//
-	// 			} else if (err.code === 'invalid_grant') {
-	// 				return api.fail(res, error('Previous grant is not valid anymore. Try again.').warn('authenticate', ctx.params.strategy), 401);
-	//
-	// 			} else {
-	// 				return api.fail(res, err);
-	// 			}
-	//
-	// 		}
-	// 		if (!user) {
-	// 			return api.fail(res, error('No user object in passport callback. More info: %j', info)
-	// 					.display(info ? info : 'Could not retrieve user.')
-	// 					.log('authenticate', ctx.params.strategy),
-	// 				500);
-	// 		}
-	//
-	// 		// fail if user inactive
-	// 		if (!user.is_active) {
-	// 			await
-	// 			LogUserUtil.failure(req, user, 'authenticate', { provider: 'local' }, null, 'Inactive account.');
-	// 			throw new ApiError('User <%s> is disabled, refusing access', user.email)
-	// 				.display('Inactive account. Please contact an administrator')
-	// 				.warn('authenticate')
-	// 				.status(403);
-	// 		}
-	//
-	// 		// generate token and return.
-	// 		const now = new Date();
-	// 		const expires = new Date(now.getTime() + config.vpdb.apiTokenLifetime);
-	// 		const token = auth.generateApiToken(user, now, false);
-	//
-	// 		logger.info('[api|%s:authenticate] User <%s> successfully authenticated.', ctx.params.strategy, user.email);
-	// 		getACLs(user).then(acls => {
-	// 			return api.success(res, {
-	// 				token: token,
-	// 				expires: expires,
-	// 				user: _.extend(state.serializers.User.detailed(user, req), acls)
-	// 			}, 200);
-	// 		});
-	// 	}
-	// }
+	private async changePassword(ctx: Context, updatedUser: UserDocument) {
+		// check for current password
+		if (!ctx.request.body.current_password) {
+			throw new ApiError().validationError('current_password', 'You must provide your current password.');
+
+		} else {
+			// change password
+			if (updatedUser.authenticate(ctx.request.body.current_password)) {
+				updatedUser.password = ctx.request.body.password;
+				await LogUserUtil.success(ctx, updatedUser, 'change_password');
+			} else {
+				logger.warn(ctx.state, '[ProfileApi.update] User <%s> provided wrong current password while changing.', ctx.state.user.email);
+				throw new ApiError().validationError('current_password', 'Invalid password.');
+			}
+		}
+	}
+
+	private async createLocalAccount(ctx: Context, updatedUser: UserDocument) {
+		if (!ctx.state.user.is_local) {
+			if (!ctx.request.body.password) {
+				throw new ApiError().validationError('password', 'You must provide your new password when creating a local account.');
+
+			} else {
+				updatedUser.password = ctx.request.body.password;
+				updatedUser.username = ctx.request.body.username;
+				updatedUser.is_local = true;
+				await LogUserUtil.success(ctx, updatedUser, 'create_local_account', { username: ctx.request.body.username });
+			}
+		}
+		if (ctx.state.user.is_local && ctx.request.body.username !== updatedUser.username) {
+			throw new ApiError().validationError('username', 'Cannot change username for already local account.', ctx.request.body.username, 'read_only');
+		}
+	}
+
+	private async changeEmail(ctx: Context, updatedUser: UserDocument) {
+
+		// there ALREADY IS a pending request.
+		if (ctx.state.user.email_status && ctx.state.user.email_status.code === 'pending_update') {
+
+			// just ignore if it's a re-post of the same address (double patch for the same new email doesn't re-trigger the confirmation mail)
+			if (ctx.state.user.email_status.value === updatedUser.email) {
+				updatedUser.email = ctx.state.user.email;
+
+				// otherwise fail
+			} else {
+				throw new ApiError().validationError('email', 'You cannot update an email address that is still pending confirmation. If your previous change was false, reset the email first by providing the original value.');
+			}
+
+		} else {
+			// check if we've already validated this address
+			if (ctx.state.user.validated_emails.includes(updatedUser.email)) {
+				updatedUser.email_status = { code: 'confirmed' };
+
+			} else {
+				updatedUser.email_status = {
+					code: 'pending_update',
+					token: randomString.generate(16),
+					expires_at: new Date(new Date().getTime() + 86400000), // 1d valid
+					value: updatedUser.email,
+				};
+				updatedUser.email = ctx.state.user.email;
+				await LogUserUtil.success(ctx, updatedUser, 'update_email_request', {
+					old: { email: ctx.state.user.email },
+					new: { email: updatedUser.email_status.value },
+				});
+				await mailer.emailUpdateConfirmation(ctx.state, updatedUser);
+			}
+		}
+	}
+
+	private async cancelEmailChange(ctx: Context, updatedUser: UserDocument) {
+		logger.warn(ctx.state, '[ProfileApi.update] Canceling email confirmation with token "%s" for user <%s> -> <%s> (%s).', ctx.state.user.email_status.token, ctx.state.user.email, ctx.state.user.email_status.value, ctx.state.user.id);
+		await LogUserUtil.success(ctx, updatedUser, 'cancel_email_update', {
+			email: ctx.state.user.email,
+			email_canceled: ctx.state.user.email_status.value,
+		});
+		updatedUser.email_status = { code: 'confirmed' };
+	}
 
 	/**
 	 * Returns the ACLs for a given user.

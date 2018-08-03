@@ -41,6 +41,7 @@ class ReleaseHelper {
 	 * @param [opts] Configuration object
 	 * @param {string|object} [opts.author] User name of the author
 	 * @param {string[]} [opts.builds] Array of builds to override
+	 * @param {string[]} [opts.tags] Array of tags to override
 	 * @param {object[]} [opts.files] Additional version files
 	 * @param {object} [opts.file] Extend version file with this data
 	 * @param {object} [opts.release] Extend release with this data
@@ -59,6 +60,7 @@ class ReleaseHelper {
 				name: faker.company.catchPhraseAdjective() + ' Edition',
 				license: 'by-sa',
 				_game: game.id,
+				_tags: opts.tags || [ 'hd' ],
 				versions: [{
 					files: [ Object.assign({
 						_file: vptFile.id,
@@ -81,6 +83,7 @@ class ReleaseHelper {
 	 * @param [opts] Configuration object
 	 * @param {string|object} [opts.author] User name of the author
 	 * @param {string[]} [opts.builds] Array of builds to override
+	 * @param {string[]} [opts.tags] Array of tags to override
 	 * @param {object[]} [opts.files] Additional version files
 	 * @param {object} [opts.file] Extend version file with this data
 	 * @param {object} [opts.release] Extend release with this data

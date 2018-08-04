@@ -62,7 +62,7 @@ export abstract class EndPoint {
 	 * @param {any[]} data Data to import
 	 */
 	protected async importData(model: Model<Document>, data: any[]) {
-		const count = await model.count({});
+		const count = await model.countDocuments({});
 		/* istanbul ignore if: Database is always empty before running tests. */
 		if (count) {
 			logger.info(null, '[EndPoint.importData] Skipping data population for model "%s", collection is not empty.', model.modelName);

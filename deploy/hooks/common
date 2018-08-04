@@ -116,7 +116,7 @@ repo_link() {
 	fi
 
 	echo Validating settings...
-	APP_SETTINGS=${newSettings} node -r ts-node/register scripts/validate-settings.ts
+	APP_SETTINGS=${newSettings} node build/scripts/validate-settings.js
 	test $? -eq 0 || rollback_abort $1 "Setting validation failed. Please fix settings at ${patchedSettings} and manually finish deployment."
 
 	echo Swapping settings...
@@ -125,7 +125,7 @@ repo_link() {
 
 	echo Running migration scripts...
 	cd ${dest}
-	APP_SETTINGS=${currentSettings} APP_NAME=${DEPLOY_ENV} NODE_ENV=production node -r ts-node/register scripts/migrate.ts --from=${DEPLOY_ROOT}/${DEPLOY_ENV}/current
+	APP_SETTINGS=${currentSettings} APP_NAME=${DEPLOY_ENV} NODE_ENV=production node build/scripts/migrate.js --from=${DEPLOY_ROOT}/${DEPLOY_ENV}/current
 	test $? -eq 0 || abort $1 "Migration failed. Fix and redeploy."
 
 	echo Swapping code...

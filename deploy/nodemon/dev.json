@@ -2,11 +2,11 @@
 	"restartable": "rs",
 	"ignore": [
 		".git",
-		"src/**/*.spec.js"
+		"src/app/**/*.spec.js"
 	],
 	"verbose": true,
 	"watch": [
-		"src/**"
+		"src/app/**"
 	],
 	"env": {
 		"NODE_ENV": "development",

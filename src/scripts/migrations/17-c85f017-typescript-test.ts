@@ -17,11 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-'use strict';
-
+import { apiCache } from '../../app/common/api.cache';
 import { state } from '../../app/state';
-
-const { apiCache } = require('../../../build/common/api.cache');
 
 /**
  * This is a test script that works with Typescript.

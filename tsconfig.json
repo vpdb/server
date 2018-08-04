@@ -7,13 +7,14 @@
 		"moduleResolution": "node",
 		"sourceMap": true,
 		"baseUrl": ".",
+		"allowJs": true,
 		"outDir": "build",
 		"paths": {
 			"*": [ "typings/*" ]
 		}
 	},
 	"include": [
-		"src/**/*"
+		"src/**/*.ts"
 	],
 	"exclude": [
 		"node_modules"

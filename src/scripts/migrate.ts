@@ -22,9 +22,10 @@ import { readdirSync } from 'fs';
 import { padStart, reverse } from 'lodash';
 import mongoose from 'mongoose';
 import Git, { Commit } from 'nodegit';
-import { default as path, resolve as resolvePath } from 'path';
+import { resolve as resolvePath } from 'path';
 import { argv } from 'yargs';
 import { endPoints } from '../app/common/api.endpoints';
+import { logger } from '../app/common/logger';
 import { config } from '../app/common/settings';
 
 const scriptFolder = resolvePath(__dirname, 'migrations');
@@ -38,12 +39,12 @@ const scripts = readdirSync(scriptFolder);
 		} else {
 			await runMigrations(argv.from, argv.to);
 		}
-		console.info('Migration done.');
+		logger.info(null, '[migrate] Migration done.');
 		process.exit(0);
 
 	} catch (err) {
-		console.error('Migration error.');
-		console.error(err.stack);
+		logger.error(null, '[migrate] Migration error.');
+		logger.error(null, err.stack);
 		process.exit(1);
 
 	} finally {
@@ -58,8 +59,8 @@ async function runNumber(scriptNumber: string) {
 		throw new Error('No script found starting with ' + prefix);
 	}
 	await bootstrapDatabase();
-	console.log('Executing migrating script %s...', script);
-	const migrate = require(path.resolve(scriptFolder, script));
+	logger.info(null, '[migrate] Executing migrating script %s...', script);
+	const migrate = require(resolvePath(scriptFolder, script));
 	await migrate.up();
 }
 
@@ -68,11 +69,11 @@ async function runMigrations(fromFolder: string, toFolder: string) {
 	if (!fromFolder) {
 		throw new Error('Must specify --from option when migrating.');
 	}
-	fromFolder = path.resolve(fromFolder);
-	toFolder = path.resolve(toFolder);
+	fromFolder = resolvePath(fromFolder);
+	toFolder = resolvePath(toFolder);
 
 	if (fromFolder === toFolder) {
-		console.log('Migration source and destination identical, skipping.');
+		logger.info(null, '[migrate] Migration source and destination identical, skipping.');
 		return;
 	}
 	await bootstrapDatabase();
@@ -82,7 +83,7 @@ async function runMigrations(fromFolder: string, toFolder: string) {
 	try {
 		await toRepo.getCommit(fromCommit.sha());
 	} catch (err) {
-		console.warn('Cannot find commit %s in repository %s. Assuming force-push, aborting migrations.', fromCommit.sha(), toFolder);
+		logger.info(null, '[migrate] Cannot find commit %s in repository %s. Assuming force-push, aborting migrations.', fromCommit.sha(), toFolder);
 		return;
 	}
 	let foundFromCommit = false;
@@ -101,17 +102,17 @@ async function runMigrations(fromFolder: string, toFolder: string) {
 		(emitter as any).start();
 	});
 	if (!foundFromCommit) {
-		console.log('Initial commit not found, aborting (this can happen on a force push).');
+		logger.info(null, '[migrate] Initial commit not found, aborting (this can happen on a force push).');
 		return;
 	}
-	console.log('Found %s commits between %s and %s.', commits.length, fromCommit.sha().substring(0, 7), toCommit.sha().substring(0, 7));
+	logger.info(null, '[migrate] Found %s commits between %s and %s.', commits.length, fromCommit.sha().substring(0, 7), toCommit.sha().substring(0, 7));
 	for (const commit of reverse(commits)) {
 		const script = scripts.find(filename => commit.sha().startsWith(filename.split('-')[1]));
 		if (!script) {
 			return;
 		}
-		console.log('Executing migrating script %s for commit %s...', script, commit.sha());
-		const migrate = require(path.resolve(scriptFolder, script));
+		logger.info(null, '[migrate] Executing migrating script %s for commit %s...', script, commit.sha());
+		const migrate = require(resolvePath(scriptFolder, script));
 		await migrate.up();
 	}
 }

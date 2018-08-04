@@ -24,7 +24,7 @@
 		"serve:test:debug": "node --inspect -r ts-node/register src/app",
 		"serve:protractor": "cross-env NODE_ENV=test APP_SETTINGS=config/settings.protractor.js PORT=7357 APP_NAME=local run-s test:dropdbs start",
 		"build": "rimraf build && tsc",
-		"lint": "tslint src/**/*.ts",
+		"lint": "tslint src/app/**/*.ts",
 		"test:dropdbs": "node deploy/tools/dropdb",
 		"test:rimraf": "rimraf .nyc_output coverage data/storage-test-protected/**/* data/storage-test-public/**/*",
 		"test:wait": "node deploy/tools/wait",

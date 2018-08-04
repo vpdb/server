@@ -73,7 +73,7 @@ class ApiCache {
 			entities: config.entities,
 			listModel: config.listModel,
 			counters: config.counters,
-			noCacheWithQuery: config.noCacheWithQuery || []
+			noCacheWithQuery: config.noCacheWithQuery || [],
 		});
 	}
 

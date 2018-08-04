@@ -18,6 +18,7 @@
  */
 
 import { apiCache } from '../../app/common/api.cache';
+import { logger } from '../../app/common/logger';
 import { state } from '../../app/state';
 
 /**
@@ -27,9 +28,9 @@ export async function up() {
 
 	// db test
 	const count = await state.models.User.countDocuments({});
-	console.log('There are currently %s users in the database.', count);
+	logger.info(null, '[migrate-17] There are currently %s users in the database.', count);
 
 	// code test
 	await apiCache.invalidateAll();
-	console.log('Cache invalidated.');
+	logger.info(null, '[migrate-17] Cache invalidated.');
 }

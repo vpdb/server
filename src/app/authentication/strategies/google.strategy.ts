@@ -36,8 +36,8 @@ export class GoogleStrategy extends Strategy {
 	constructor(redirectUri: string) {
 		super();
 		this.client = new OAuth2Client(
-			config.vpdb.passport.github.clientID,
-			config.vpdb.passport.github.clientSecret,
+			config.vpdb.passport.google.clientID,
+			config.vpdb.passport.google.clientSecret,
 			redirectUri,
 		);
 		logger.info(null, '[GoogleStrategy] Instantiated with redirection URL %s', redirectUri);

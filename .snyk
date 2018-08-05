@@ -1,17 +1,125 @@
 # Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
 version: v1.12.0
-ignore: {}
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  'npm:braces:20180219':
+    - optipng > optipng-bin > bin-build > decompress > vinyl-fs > glob-stream > micromatch > braces:
+        reason: None given
+        expires: '2018-09-04T08:34:40.447Z'
+    - pngquant > pngquant-bin > bin-build > decompress > vinyl-fs > glob-stream > micromatch > braces:
+        reason: None given
+        expires: '2018-09-04T08:34:40.447Z'
+    - optipng > optipng-bin > bin-build > download > vinyl-fs > glob-stream > micromatch > braces:
+        reason: None given
+        expires: '2018-09-04T08:34:40.447Z'
+    - pngquant > pngquant-bin > bin-build > download > vinyl-fs > glob-stream > micromatch > braces:
+        reason: None given
+        expires: '2018-09-04T08:34:40.447Z'
+    - optipng > optipng-bin > bin-wrapper > download > vinyl-fs > glob-stream > micromatch > braces:
+        reason: None given
+        expires: '2018-09-04T08:34:40.447Z'
+  'npm:cryptiles:20180710':
+    - nodegit > node-gyp > request > hawk > cryptiles:
+        reason: None given
+        expires: '2018-09-04T08:34:40.447Z'
+    - nodegit > node-pre-gyp > request > hawk > cryptiles:
+        reason: None given
+        expires: '2018-09-04T08:34:40.447Z'
+  'npm:deep-extend:20180409':
+    - nodegit > node-pre-gyp > rc > deep-extend:
+        reason: None given
+        expires: '2018-09-04T08:34:40.447Z'
+    - optipng > optipng-bin > bin-build > download > caw > get-proxy > rc > deep-extend:
+        reason: None given
+        expires: '2018-09-04T08:34:40.448Z'
+    - pngquant > pngquant-bin > bin-build > download > caw > get-proxy > rc > deep-extend:
+        reason: None given
+        expires: '2018-09-04T08:34:40.448Z'
+    - optipng > optipng-bin > bin-wrapper > download > caw > get-proxy > rc > deep-extend:
+        reason: None given
+        expires: '2018-09-04T08:34:40.448Z'
+    - pngquant > pngquant-bin > bin-wrapper > download > caw > get-proxy > rc > deep-extend:
+        reason: None given
+        expires: '2018-09-04T08:34:40.448Z'
+  'npm:eslint:20180222':
+    - mongoose > mquery > eslint:
+        reason: None given
+        expires: '2018-09-04T08:34:40.448Z'
+    - mongoose-unique-validator > mongoose > mquery > eslint:
+        reason: None given
+        expires: '2018-09-04T08:34:40.448Z'
+  'npm:extend:20180424':
+    - google-auth-library > gcp-metadata > extend:
+        reason: None given
+        expires: '2018-09-04T08:34:40.448Z'
+    - logdna > request > extend:
+        reason: None given
+        expires: '2018-09-04T08:34:40.448Z'
+    - nodegit > node-gyp > request > extend:
+        reason: None given
+        expires: '2018-09-04T08:34:40.448Z'
+    - nodegit > node-pre-gyp > request > extend:
+        reason: None given
+        expires: '2018-09-04T08:34:40.448Z'
+    - snyk > snyk-docker-plugin > request > extend:
+        reason: None given
+        expires: '2018-09-04T08:34:40.448Z'
+    - snyk > proxy-agent > pac-proxy-agent > get-uri > extend:
+        reason: None given
+        expires: '2018-09-04T08:34:40.448Z'
+    - optipng > optipng-bin > bin-build > download > vinyl-fs > glob-stream > extend:
+        reason: None given
+        expires: '2018-09-04T08:34:40.448Z'
+    - optipng > optipng-bin > bin-build > decompress > vinyl-fs > glob-stream > extend:
+        reason: None given
+        expires: '2018-09-04T08:34:40.448Z'
+    - pngquant > pngquant-bin > bin-wrapper > download > vinyl-fs > glob-stream > extend:
+        reason: None given
+        expires: '2018-09-04T08:34:40.448Z'
+    - pngquant > pngquant-bin > bin-build > decompress > vinyl-fs > glob-stream > extend:
+        reason: None given
+        expires: '2018-09-04T08:34:40.448Z'
+    - optipng > optipng-bin > bin-wrapper > download > vinyl-fs > glob-stream > extend:
+        reason: None given
+        expires: '2018-09-04T08:34:40.448Z'
+    - pngquant > pngquant-bin > bin-build > download > vinyl-fs > glob-stream > extend:
+        reason: None given
+        expires: '2018-09-04T08:34:40.448Z'
+    - optipng > optipng-bin > bin-wrapper > download > gulp-decompress > decompress > vinyl-fs > glob-stream > extend:
+        reason: None given
+        expires: '2018-09-04T08:34:40.448Z'
+    - optipng > optipng-bin > bin-build > download > gulp-decompress > decompress > vinyl-fs > glob-stream > extend:
+        reason: None given
+        expires: '2018-09-04T08:34:40.448Z'
+    - pngquant > pngquant-bin > bin-wrapper > download > gulp-decompress > decompress > vinyl-fs > glob-stream > extend:
+        reason: None given
+        expires: '2018-09-04T08:34:40.448Z'
+    - pngquant > pngquant-bin > bin-build > download > gulp-decompress > decompress > vinyl-fs > glob-stream > extend:
+        reason: None given
+        expires: '2018-09-04T08:34:40.448Z'
+  'npm:lodash:20180130':
+    - raygun > nock > lodash:
+        reason: None given
+        expires: '2018-09-04T08:34:40.448Z'
 # patches apply the minimum changes required to fix a vulnerability
 patch:
   'npm:hoek:20180212':
     - nodegit > node-pre-gyp > hawk > sntp > hoek:
         patched: '2018-07-13T21:22:51.632Z'
+      logdna > request > hawk > boom > hoek:
+        patched: '2018-08-05T08:32:40.897Z'
     - nodegit > node-gyp > request > hawk > hoek:
         patched: '2018-07-13T21:22:51.632Z'
+      logdna > request > hawk > sntp > hoek:
+        patched: '2018-08-05T08:32:40.897Z'
     - nodegit > node-gyp > request > hawk > sntp > hoek:
         patched: '2018-07-13T21:22:51.632Z'
+      logdna > request > hawk > cryptiles > boom > hoek:
+        patched: '2018-08-05T08:32:40.897Z'
     - nodegit > node-gyp > request > hawk > cryptiles > boom > hoek:
         patched: '2018-07-13T21:22:51.632Z'
+      logdna > request > hawk > hoek:
+        patched: '2018-08-05T08:32:40.897Z'
     - nodegit > node-pre-gyp > hawk > hoek:
         patched: '2018-07-13T21:22:51.632Z'
     - nodegit > node-pre-gyp > hawk > boom > hoek:

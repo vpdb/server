@@ -152,9 +152,9 @@ class Logger {
 		if (match) {
 			let prefix: string;
 			if (prefixColor == null) {
-				const [m1, m2] = match[1].split('.', 2);
-				prefix = m2  ?
-					'[' + chalk.cyan(m1.substring(1)) + '.' + chalk.blueBright(m2.substring(0, m2.length - 1)) + ']' :
+				const m = match[1].split('.');
+				prefix = m.length === 2 ?
+					'[' + chalk.cyan(m[0].substring(1)) + '.' + chalk.blueBright(m[1].substring(0, m[1].length - 1)) + ']' :
 					'[' + chalk.cyan(match[1].substring(1, match[1].length - 1)) + ']';
 			} else {
 				prefix = prefixColor(match[1]);

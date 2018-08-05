@@ -26,7 +26,7 @@ import { FileApiRouter } from './file.api.router';
 import { FileDocument } from './file.document';
 import { FileModel, fileSchema } from './file.schema';
 import { FileSerializer } from './file.serializer';
-import { FileProtectedStorageRouter, FilePublicStorageRouter } from './file.storage.router';
+import { FilePublicStorageRouter, FileProtectedStorageRouter } from './file.storage.router';
 
 export class FilesApiEndPoint extends EndPoint {
 
@@ -51,7 +51,7 @@ export class FilesApiEndPoint extends EndPoint {
 export class FilesProtectedStorageEndPoint extends EndPoint {
 
 	public readonly name: string = 'Storage Protected Files API';
-	private readonly router = new FileProtectedStorageRouter();
+	private readonly router = new FilePublicStorageRouter();
 
 	public getRouter(): ApiRouter {
 		return this.router;
@@ -61,7 +61,7 @@ export class FilesProtectedStorageEndPoint extends EndPoint {
 export class FilesPublicStorageEndPoint extends EndPoint {
 
 	public readonly name: string = 'Storage Public Files API';
-	private readonly router = new FilePublicStorageRouter();
+	private readonly router = new FileProtectedStorageRouter();
 
 	public getRouter(): ApiRouter {
 		return this.router;

@@ -22,7 +22,7 @@ import { ApiRouter } from '../common/api.router';
 import { Scope } from '../common/scope';
 import { FileStorage } from './file.storage';
 
-export class FilePublicStorageRouter implements ApiRouter {
+export class FileProtectedStorageRouter implements ApiRouter {
 
 	private readonly router: Router;
 
@@ -42,7 +42,7 @@ export class FilePublicStorageRouter implements ApiRouter {
 	}
 }
 
-export class FileProtectedStorageRouter implements ApiRouter {
+export class FilePublicStorageRouter implements ApiRouter {
 
 	private readonly router: Router;
 

@@ -166,14 +166,16 @@ export class FileStorage extends Api {
 			throw new ApiError('Invalid "Content-Type" parameter. Valid parameter for type "%s" are: [ %s ].', ctx.query.type, fileTypes.getMimeTypes(ctx.query.type).join(', ')).status(422);
 		}
 
-		let err: ApiError;
-		const busboy = new Busboy({ headers: ctx.request.headers });
-		const parseResult = new Promise<FileDocument>((resolve, reject) => {
+		return new Promise<FileDocument>((resolve, reject) => {
 			let numFiles = 0;
+			let internalErr: ApiError;
+			let file: FileDocument;
+			let finished = false;
+			const busboy = new Busboy({ headers: ctx.request.headers });
 			busboy.on('file', (fieldname, stream, filename) => {
 				numFiles++;
 				if (numFiles > 1) {
-					err = new ApiError('Multipart requests must only contain one file.').code('too_many_files').status(422);
+					internalErr = new ApiError('Multipart requests must only contain one file.').code('too_many_files').status(422);
 					stream.resume();
 					return;
 				}
@@ -188,24 +190,39 @@ export class FileStorage extends Api {
 					_created_by: ctx.state.user._id,
 				};
 				FileUtil.create(ctx.state, fileData as FileDocument, stream)
-					.then(file => resolve(file))
-					.catch(reject);
+					.then(f => {
+						if (finished) {
+							return resolve(f);
+						}
+						file = f;
+					})
+					.catch(e => {
+						if (finished) {
+							return reject(e);
+						}
+						internalErr = e;
+					});
 			});
-		});
-
-		const parseMultipart = new Promise((resolve, reject) => {
-			busboy.on('finish', resolve);
-			busboy.on('error', reject);
+			busboy.on('error', (busboyErr: any) => {
+				logger.warn(ctx.state, '[FileApi.handleMultipartUpload] Error: %s', busboyErr);
+				reject(busboyErr);
+			});
+			busboy.on('finish', () => {
+				if (internalErr) {
+					if (file) {
+						logger.warn(ctx.state, '[FileApi.handleMultipartUpload] Removing %s', file.toShortString());
+						file.remove().then(() => reject(internalErr));
+					} else {
+						return reject(internalErr);
+					}
+				}
+				if (file) {
+					return resolve(file);
+				}
+				finished = true;
+			});
 			ctx.req.pipe(busboy);
 		});
-
-		const results = await Promise.all([parseResult, parseMultipart]);
-		if (err) {
-			logger.warn(ctx.state, '[FileApi.handleMultipartUpload] Removing %s', results[0].toShortString());
-			await results[0].remove();
-			throw err;
-		}
-		return results[0];
 	}
 
 	/**

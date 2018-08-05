@@ -68,7 +68,7 @@ describe('The VPDB `Backglass` API', function() {
 			request
 				.post('/api/v1/backglasses')
 				.as('member')
-				.send({ _game: 'non existant', authors: [{ _user: 'grützl', roles: [] }], versions: [] })
+				.send({ _game: 'non existent', authors: [{ _user: 'grützl', roles: [] }], versions: [] })
 				.end(function(err, res) {
 					hlp.expectValidationError(err, res, '_game', 'no such game');
 					hlp.expectValidationError(err, res, 'authors.0._user', 'no such user');

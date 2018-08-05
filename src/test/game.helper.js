@@ -21,6 +21,7 @@ const resolve = require('path').resolve;
 const randomString = require('randomstring');
 const assign = require('lodash').assign;
 const extend = require('lodash').extend;
+const uniqBy = require('lodash').uniqBy;
 const FileHelper = require('./file.helper');
 
 const ipdb = require(resolve(__dirname, '../../data/ipdb.json'));
@@ -32,6 +33,8 @@ class GameHelper {
 		this.api = api;
 		/** @type {FileHelper}*/
 		this.fileHelper = new FileHelper(api);
+
+		this.ipdb = uniqBy(ipdb, g => this._computeGameId(g));
 	}
 
 	/**
@@ -76,11 +79,7 @@ class GameHelper {
 
 	getGame(attrs, ipdbNumber) {
 		const game = this._popGame(ipdbNumber);
-		if (game.short) {
-			game.id = game.short[0].replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
-		} else {
-			game.id = /unknown/i.test(game.title) ? randomString.generate(7) : game.title.replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
-		}
+		game.id = this._computeGameId(game);
 		game.year = game.year || 1900;
 		game.game_type = game.game_type || 'na';
 		game.manufacturer = game.manufacturer || 'unknown';
@@ -89,13 +88,21 @@ class GameHelper {
 
 	_popGame(ipdbNumber) {
 		if (ipdbNumber) {
-			return ipdb.find(i => i.ipdb.number === parseInt(ipdbNumber));
+			return this.ipdb.find(i => i.ipdb.number === parseInt(ipdbNumber));
 		}
-		return ipdb.splice(this._randomInt(ipdb.length), 1)[0];
+		return this.ipdb.splice(this._randomInt(this.ipdb.length), 1)[0];
 	}
 
 	_randomInt(max) {
 		return Math.floor(Math.random() * max - 1) + 1;
+	}
+
+	_computeGameId(game) {
+		if (game.short) {
+			return game.short[0].replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
+		} else {
+			return /unknown/i.test(game.title) ? randomString.generate(7) : game.title.replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
+		}
 	}
 }
 

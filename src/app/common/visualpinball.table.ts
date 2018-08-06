@@ -17,11 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { existsSync } from 'fs';
 import { isUndefined, keys, times } from 'lodash';
 import { OleCompoundDoc, Storage } from 'ole-doc';
 
 import { createHash } from 'crypto';
+import { FileUtil } from '../files/file.util';
 import { TableBlock } from '../releases/release.tableblock';
 import { logger } from './logger';
 import { RequestState } from './typings/context';
@@ -41,7 +41,7 @@ class VisualPinballTable {
 	public async readScriptFromTable(requestState: RequestState, tablePath: string): Promise<{ code: string, head: Buffer, tail: Buffer }> {
 		const now = Date.now();
 		/* istanbul ignore if */
-		if (!existsSync(tablePath)) {
+		if (!(await FileUtil.exists(tablePath))) {
 			throw new Error('File "' + tablePath + '" does not exist.');
 		}
 		const doc = await this.readDoc(tablePath);
@@ -73,7 +73,7 @@ class VisualPinballTable {
 	public async getTableInfo(requestState: RequestState, tablePath: string): Promise<{ [key: string]: string }> {
 
 		/* istanbul ignore if */
-		if (!existsSync(tablePath)) {
+		if (!(await FileUtil.exists(tablePath))) {
 			throw new Error('File "' + tablePath + '" does not exist.');
 		}
 		const doc = await this.readDoc(tablePath);

@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { createReadStream, createWriteStream, exists, mkdir, stat, unlink } from 'fs';
+import { createReadStream, createWriteStream, access, mkdir, stat, unlink } from 'fs';
 import { dirname, resolve as resolvePath, sep } from 'path';
 import * as Stream from 'stream';
 import { promisify } from 'util';
@@ -33,7 +33,6 @@ import { Metadata } from './metadata/metadata';
 import { processorQueue } from './processor/processor.queue';
 
 const statAsync = promisify(stat);
-const existsAsync = promisify(exists);
 const mkdirAsync = promisify(mkdir);
 const unlinkAsync = promisify(unlink);
 
@@ -54,7 +53,7 @@ export class FileUtil {
 		const path = file.getPath(requestState, null, { tmpSuffix: '_original' });
 
 		// create destination folder if necessary
-		if (!(await existsAsync(dirname(path)))) {
+		if (!(await FileUtil.exists(dirname(path)))) {
 			await FileUtil.mkdirp(dirname(path));
 		}
 
@@ -110,6 +109,16 @@ export class FileUtil {
 		await processorQueue.processFile(requestState, file, path);
 
 		return file;
+	}
+
+	/**
+	 * Checks if a file exists. Uses the non-deprecate Node API.
+	 * @param path
+	 */
+	public static async exists(path: string): Promise<boolean> {
+		return new Promise<boolean>(resolve => {
+			access(path, err => resolve(!err));
+		});
 	}
 
 	/**
@@ -220,7 +229,7 @@ export class FileUtil {
 	 * @param {string} what What to print
 	 */
 	private static async removeFile(requestState: RequestState, path: string, what: string): Promise<void> {
-		if (await existsAsync(path)) {
+		if (await FileUtil.exists(path)) {
 			logger.verbose(requestState, '[FileUtil.removeFile] Removing %s at %s..', what, path);
 			try {
 				await unlinkAsync(path);

@@ -17,10 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { exists } from 'fs';
 import gm from 'gm';
 import { DocumentQuery } from 'mongoose';
-import { promisify } from 'util';
 
 import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
@@ -33,7 +31,6 @@ import { processorQueue } from '../files/processor/processor.queue';
 import { state } from '../state';
 import { ReleaseDocument } from './release.document';
 
-const existsAsync = promisify(exists);
 require('bluebird').promisifyAll(gm.prototype);
 
 export abstract class ReleaseAbstractApi extends Api {
@@ -196,7 +193,7 @@ export abstract class ReleaseAbstractApi extends Api {
 	 */
 	private async backupFile(requestState: RequestState, file: FileDocument): Promise<string> {
 		const backup = file.getPath(requestState, null, { tmpSuffix: '_original' });
-		if (!(await existsAsync(backup))) {
+		if (!(await FileUtil.exists(backup))) {
 			logger.info(requestState, '[ReleaseApi.backupFile] Copying "%s" to "%s".', file.getPath(requestState), backup);
 			await FileUtil.cp(file.getPath(requestState), backup);
 		}

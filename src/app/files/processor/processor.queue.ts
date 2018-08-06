@@ -19,7 +19,7 @@
 
 import Bluebird from 'bluebird';
 import Bull, { Job, Queue } from 'bull';
-import { exists, rename, stat, Stats, unlink } from 'fs';
+import { rename, stat, Stats, unlink } from 'fs';
 import { dirname } from 'path';
 import { promisify } from 'util';
 
@@ -33,7 +33,6 @@ import { FileVariation } from '../file.variations';
 import { processorManager } from './processor.manager';
 
 const renameAsync = promisify(rename);
-const existsAsync = promisify(exists);
 const unlinkAsync = promisify(unlink);
 const statAsync = promisify(stat);
 
@@ -258,7 +257,7 @@ class ProcessorQueue {
 			.then(() => state.redis.del(redisLock))
 			.then(async () => {
 				const originalPath = file.getPath(requestState, null, { tmpSuffix: '_original' });
-				if (await existsAsync(originalPath)) {
+				if (await FileUtil.exists(originalPath)) {
 					logger.info(requestState, '[ProcessorQueue.deleteProcessingFile] Finally removing original %s', originalPath);
 					await unlinkAsync(originalPath);
 				}
@@ -313,9 +312,9 @@ class ProcessorQueue {
 
 		// rename remaining files
 		for (const srcPath of changes.keys()) {
-			if (await existsAsync(srcPath)) {
+			if (await FileUtil.exists(srcPath)) {
 				logger.info(requestState, '[ProcessorQueue.activateFile] Rename %s to %s', FileUtil.log(srcPath), FileUtil.log(changes.get(srcPath)));
-				if (!(await existsAsync(dirname(changes.get(srcPath))))) {
+				if (!(await FileUtil.exists(dirname(changes.get(srcPath))))) {
 					await FileUtil.mkdirp(dirname(changes.get(srcPath)));
 				}
 				await renameAsync(srcPath, changes.get(srcPath));

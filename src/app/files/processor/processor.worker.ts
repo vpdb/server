@@ -18,7 +18,7 @@
  */
 
 import { Job } from 'bull';
-import { exists, rename, stat, unlink } from 'fs';
+import { rename, stat, unlink } from 'fs';
 import { assign } from 'lodash';
 import { dirname } from 'path';
 import { promisify } from 'util';
@@ -36,7 +36,6 @@ import { JobData } from './processor.queue';
 
 const renameAsync = promisify(rename);
 const statAsync = promisify(stat);
-const existsAsync = promisify(exists);
 const unlinkAsync = promisify(unlink);
 
 export class ProcessorWorker {
@@ -74,7 +73,7 @@ export class ProcessorWorker {
 		try {
 
 			// create directory
-			if (!(await existsAsync(dirname(destPath)))) {
+			if (!(await FileUtil.exists(dirname(destPath)))) {
 				await FileUtil.mkdirp(dirname(destPath));
 			}
 			logger.debug(requestState, '[ProcessorWorker.create] [%s | #%s] start: %s from %s to %s',
@@ -109,7 +108,7 @@ export class ProcessorWorker {
 			// rename
 			const newPath = await ProcessorWorker.isFileRenamed(requestState, file.getPath(requestState, variation), 'create');
 			const finalPath = newPath || file.getPath(requestState, variation);
-			if (!(await existsAsync(dirname(finalPath)))) {
+			if (!(await FileUtil.exists(dirname(finalPath)))) {
 				await FileUtil.mkdirp(dirname(finalPath));
 			}
 			await renameAsync(destPath, finalPath);
@@ -127,7 +126,7 @@ export class ProcessorWorker {
 		} catch (err) {
 
 			// clean up source
-			if (await existsAsync(srcPath)) {
+			if (await FileUtil.exists(srcPath)) {
 				await unlinkAsync(srcPath);
 			}
 
@@ -173,7 +172,7 @@ export class ProcessorWorker {
 		try {
 
 			// create directory
-			if (!(await existsAsync(dirname(destPath)))) {
+			if (!(await FileUtil.exists(dirname(destPath)))) {
 				await FileUtil.mkdirp(dirname(destPath));
 			}
 			logger.debug(requestState, '[ProcessorWorker.optimize] [%s | #%s] start: %s at %s',

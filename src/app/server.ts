@@ -22,6 +22,7 @@ import Application from 'koa';
 import koaBodyParser from 'koa-bodyparser';
 import koaJson from 'koa-json';
 import { uniq } from 'lodash';
+import { resolve } from 'path';
 
 import { apiCache } from './common/api.cache';
 import { EndPoint } from './common/api.endpoint';
@@ -54,9 +55,14 @@ export class Server {
 		this.app.use(apiCache.middleware.bind(apiCache));
 
 		/* istanbul ignore next: host website at the same time, currently used for website CI */
-		if (process.env.WEBAPP && existsSync(process.env.WEBAPP)) {
-			logger.warn(null, '[Server] Statically hosting website at %s', process.env.WEBAPP);
-			this.app.use(koaWebsiteHandler(process.env.WEBAPP));
+		if (process.env.WEBAPP) {
+			const webappPath = resolve(__dirname, process.env.WEBAPP);
+			if (existsSync(webappPath)) {
+				logger.warn(null, '[Server] Statically hosting website at %s', process.env.WEBAPP);
+				this.app.use(koaWebsiteHandler(webappPath));
+			} else {
+				logger.warn(null, '[Server] Fix env WEBAPP, nothing found at %s (%s)', webappPath, process.env.WEBAPP);
+			}
 		}
 	}
 

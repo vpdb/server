@@ -77,6 +77,7 @@ export class ReleaseApiRouter implements ApiRouter {
 	public getRouter(): Router {
 		return this.router;
 	}
+
 	public setupCache(): void {
 
 		const simpleEntities = state.serializers.Release.getReferences('simple',

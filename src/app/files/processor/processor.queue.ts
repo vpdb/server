@@ -157,7 +157,7 @@ class ProcessorQueue {
 		const hasJob = await this.hasRemainingCreationJob(file, variation);
 		/* istanbul ignore if: Configuration error, this means either wrong queue or non-existent variation, which should have been caught earlier. */
 		if (!hasJob) {
-			throw new ApiError('There is currently no creation job for %s running.', file.toShortString(variation));
+			throw new ApiError('There is currently no creation job for %s running.', file.toShortString(variation)).status(404);
 		}
 
 		return new Promise<any>(resolve => {

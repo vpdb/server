@@ -19,4 +19,3 @@ echo travis_fold:end:Versions
 
 # Run tests
 npm run test:ci
-#grunt coveralls:api

@@ -58,7 +58,7 @@ export class Server {
 		if (process.env.WEBAPP) {
 			const webappPath = resolve(__dirname, process.env.WEBAPP);
 			if (existsSync(webappPath)) {
-				logger.warn(null, '[Server] Statically hosting website at %s', process.env.WEBAPP);
+				logger.warn(null, '[Server] Statically hosting website at %s', webappPath);
 				this.app.use(koaWebsiteHandler(webappPath));
 			} else {
 				logger.warn(null, '[Server] Fix env WEBAPP, nothing found at %s (%s)', webappPath, process.env.WEBAPP);

@@ -12,7 +12,7 @@
 		"NODE_ENV": "development",
 		"PORT": "3000",
 		"APP_NAME": "local",
-		"APP_SETTINGS": "config\\settings.js"
+		"APP_SETTINGS": "config\\settings.nginx.js"
 	},
 	"ext": "ts js json"
 }

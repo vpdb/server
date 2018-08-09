@@ -28,14 +28,7 @@ const shortId = require('shortid32');
 shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 
 const ApiClient = require('../../test/api.client');
-const FileHelper = require('../../test/file.helper');
-const GameHelper = require('../../test/game.helper');
-const ReleaseHelper = require('../../test/release.helper');
-
 const api = new ApiClient();
-const fileHelper = new FileHelper(api);
-const gameHelper = new GameHelper(api);
-const releaseHelper = new ReleaseHelper(api);
 
 const pngPath = resolve(__dirname, '../../../data/test/files/backglass.png');
 
@@ -259,7 +252,7 @@ describe('The VPDB `file` storage API', () => {
 
 		let inactiveFile;
 		before(async () => {
-			inactiveFile = await fileHelper.createBackglass('member');
+			inactiveFile = await api.fileHelper.createBackglass('member');
 		});
 
 		it('should fail downloading through the public URL as anonymous', async () => {
@@ -279,33 +272,33 @@ describe('The VPDB `file` storage API', () => {
 		});
 
 		it('should block until the variation started and finished processing', async () => {
-			const backglass = await fileHelper.createBackglass('member');
+			const backglass = await api.fileHelper.createBackglass('member');
 			res = await api.onStorage().as('member').getAbsolute(backglass.variations['small-2x'].url).then(res => res.expectStatus(200));
 			expect(res.headers['content-length']).to.be.greaterThan(0);
 		});
 
 		it('should block until the variation finished processing', async () => {
-			const backglass = await fileHelper.createBackglass('member');
+			const backglass = await api.fileHelper.createBackglass('member');
 			res = await api.onStorage().as('member').getAbsolute(backglass.variations['full'].url).then(res => res.expectStatus(200));
 			expect(res.headers['content-length']).to.be.greaterThan(0);
 		});
 
 		it('should only return the header when requesting a HEAD on the storage URL', async () => {
-			const textFile = await fileHelper.createTextfile('member');
+			const textFile = await api.fileHelper.createTextfile('member');
 			res = await api.onStorage().as('member').headAbsolute(textFile.url).then(res => res.expectStatus(200));
 			expect(res.headers['content-length']).to.be('0');
 			expect(res.data).to.not.be.ok();
 		});
 
 		it('should block until the file is finished processing when requesting the HEAD of a variation', async () => {
-			const backglass = await fileHelper.createBackglass('member');
+			const backglass = await api.fileHelper.createBackglass('member');
 			res = await api.onStorage().as('member').headAbsolute(backglass.variations['small-2x'].url).then(res => res.expectStatus(200));
 			expect(res.headers['content-length']).to.be('0');
 			expect(res.data).to.not.be.ok();
 		});
 
 		it('should block a video variation until processing is finished', async () => {
-			const video = await fileHelper.createMp4('moderator');
+			const video = await api.fileHelper.createMp4('moderator');
 			// now spawn 5 clients that try to retrieve this simultaneously
 			const token = api.getToken('moderator');
 			const reqs = [];
@@ -323,7 +316,7 @@ describe('The VPDB `file` storage API', () => {
 		});
 
 		it('should block a video variation with a different MIME type until processing is finished', async () => {
-			const video = await fileHelper.createAvi('moderator');
+			const video = await api.fileHelper.createAvi('moderator');
 			res = await api
 				.as('moderator')
 				.getAbsolute(video.variations['small-rotated'].url)
@@ -333,7 +326,7 @@ describe('The VPDB `file` storage API', () => {
 		});
 
 		it('should block HEAD of a video variation with a different MIME type until processing is finished', async () => {
-			const video = await fileHelper.createAvi('moderator');
+			const video = await api.fileHelper.createAvi('moderator');
 			res = await api
 				.as('moderator')
 				.headAbsolute(video.variations['small-rotated'].url)
@@ -347,7 +340,7 @@ describe('The VPDB `file` storage API', () => {
 
 		let activeFile;
 		before(async () => {
-			const bg = await releaseHelper.createDirectB2S('moderator');
+			const bg = await api.releaseHelper.createDirectB2S('moderator');
 			activeFile = (await api.get('/v1/files/' + bg.versions[0].file.id).then(res => res.expectStatus(200))).data;
 		});
 
@@ -389,7 +382,7 @@ describe('The VPDB `file` storage API', () => {
 		});
 
 		it('should block until the variation is finished processing', async () => {
-			const game = await gameHelper.createGame('moderator');
+			const game = await api.gameHelper.createGame('moderator');
 			res = await api.onStorage().as('member').getAbsolute(game.backglass.variations['small-2x'].url).then(res => res.expectStatus(200));
 			expect(res.headers['content-length']).to.be.greaterThan(0);
 		});
@@ -405,7 +398,7 @@ describe('The VPDB `file` storage API', () => {
 	describe('when providing cache headers', () => {
 
 		it('should return a "Last-Modified" header for all storage items.', async () => {
-			const backglass = await fileHelper.createBackglass('member');
+			const backglass = await api.fileHelper.createBackglass('member');
 			const token = await api.retrieveStorageToken('member', backglass.url);
 			await api.onStorage()
 				.withQuery({ token: token })
@@ -414,7 +407,7 @@ describe('The VPDB `file` storage API', () => {
 		});
 
 		it('should return a HTTP 304 Not Modified if a file is requested with the "If-Modified-Since" header', async () => {
-			const backglass = await fileHelper.createBackglass('member');
+			const backglass = await api.fileHelper.createBackglass('member');
 			const token = await api.retrieveStorageToken('member', backglass.url);
 			res = await api.onStorage()
 				.withQuery({ token: token })

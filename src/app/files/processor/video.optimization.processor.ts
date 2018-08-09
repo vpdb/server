@@ -57,7 +57,7 @@ export class VideoOptimizationProcessor implements OptimizationProcessor<VideoFi
 				const md = this.metadataReader.serializeDetailed(file.metadata);
 				if (md.video.bit_rate < 4000000 && /^[hx]264$/.test(md.video.codec_name)) {
 					logger.info(requestState, '[VideoOptimizationProcessor] Original video seems okay (%s mpbs, %s), skipping re-processing.', Math.round(md.video.bit_rate / 1000) / 1000, md.video.codec_name);
-					return resolve(dest);
+					return resolve(null);
 				} else {
 					logger.info(requestState, '[VideoOptimizationProcessor] Re-processing original video (%s mpbs, %s)', Math.round(md.video.bit_rate / 1000) / 1000, md.video.codec_name);
 				}

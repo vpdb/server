@@ -244,8 +244,7 @@ async function authenticateWithJwt(ctx: Context, token: { value: string, fromUrl
 		throw new ApiError('Token is only valid for "GET/HEAD %s" but got "%s %s".', decoded.path, ctx.method, extPath).status(401);
 	}
 
-	const user = await
-		state.models.User.findOne({ id: decoded.iss });
+	const user = await state.models.User.findOne({ id: decoded.iss });
 	if (!user) {
 		throw new ApiError('No user with ID %s found.', decoded.iss).status(403).log();
 	}

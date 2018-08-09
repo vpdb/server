@@ -21,7 +21,7 @@ import { Job } from 'bull';
 import { rename, stat, unlink } from 'fs';
 import { assign } from 'lodash';
 import { dirname } from 'path';
-import { promisify } from 'util';
+import { isUndefined, promisify } from 'util';
 
 import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
@@ -33,6 +33,7 @@ import { FileVariation } from '../file.variations';
 import { Metadata } from '../metadata/metadata';
 import { processorManager } from './processor.manager';
 import { JobData } from './processor.queue';
+import { Api } from '../../common/api';
 
 const renameAsync = promisify(rename);
 const statAsync = promisify(stat);
@@ -157,7 +158,7 @@ export class ProcessorWorker {
 		// retrieve data from deserialized job
 		const data = job.data as JobData;
 		const srcPath = data.srcPath;
-		const destPath = data.destPath;
+		const destPath = data.destPath; // {filename}.{processor}._processing.{ext}
 		const requestState = data.requestState;
 
 		file = await state.models.File.findOne({ id: data.fileId }).exec();
@@ -175,38 +176,47 @@ export class ProcessorWorker {
 			if (!(await FileUtil.exists(dirname(destPath)))) {
 				await FileUtil.mkdirp(dirname(destPath));
 			}
-			logger.debug(requestState, '[ProcessorWorker.optimize] [%s | #%s] start: %s at %s',
-				data.processor, job.id, file.toDetailedString(variation), FileUtil.log(destPath));
+			logger.debug(requestState, '[ProcessorWorker.optimize] [%s | #%s] start: %s from %s to %s',
+				data.processor, job.id, file.toDetailedString(variation), FileUtil.log(srcPath), FileUtil.log(destPath));
 
 			// run processor
-			await processor.process(requestState, file, srcPath, destPath, variation);
-
-			// update metadata
-			const metadataReader = Metadata.getReader(file, variation);
-			const metadata = await metadataReader.getMetadata(requestState, file, destPath, variation);
-			const fileData: any = {};
-			if (variation) {
-				fileData['variations.' + variation.name] = assign(metadataReader.serializeVariation(metadata), {
-					bytes: (await statAsync(destPath)).size,
-					mime_type: variation.mimeType,
-				});
-			} else {
-				fileData.metadata = await Metadata.readFrom(requestState, file, destPath);
-				fileData.bytes = (await statAsync(destPath)).size;
+			const createdFile = await processor.process(requestState, file, srcPath, destPath, variation);
+			if (isUndefined(createdFile)) {
+				throw new ApiError('Processor %s returned undefined but is supposed to return null or path to processed file.', processor.name);
 			}
-			await state.models.File.findByIdAndUpdate(file._id, { $set: fileData }, { new: true }).exec();
 
-			// abort if deleted
-			if (await ProcessorWorker.isFileDeleted(file)) {
-				logger.debug(requestState, '[ProcessorWorker.optimize] Removing created file due to deletion %s', FileUtil.log(destPath));
-				await unlinkAsync(destPath);
-				return null;
+			// if a new file was created, update metadata and delete if necessary.
+			if (createdFile) {
+
+				// update metadata if some processing took place
+				const metadataReader = Metadata.getReader(file, variation);
+				const metadata = await metadataReader.getMetadata(requestState, file, createdFile, variation);
+				const fileData: any = {};
+				if (variation) {
+					fileData['variations.' + variation.name] = assign(metadataReader.serializeVariation(metadata), {
+						bytes: (await statAsync(destPath)).size,
+						mime_type: variation.mimeType,
+					});
+				} else {
+					fileData.metadata = await Metadata.readFrom(requestState, file, destPath);
+					fileData.bytes = (await statAsync(destPath)).size;
+				}
+				await state.models.File.findByIdAndUpdate(file._id, { $set: fileData }, { new: true }).exec();
+
+				// abort if deleted
+				if (await ProcessorWorker.isFileDeleted(file)) {
+					logger.debug(requestState, '[ProcessorWorker.optimize] Removing created file due to deletion %s', FileUtil.log(destPath));
+					await unlinkAsync(createdFile);
+					return null;
+				}
 			}
 
 			// rename
 			const newPath = await ProcessorWorker.isFileRenamed(requestState, file.getPath(requestState, variation), 'optimize');
 			const finalPath = newPath || file.getPath(requestState, variation);
-			await renameAsync(destPath, finalPath); // overwrites destination
+			if (createdFile) {
+				await renameAsync(createdFile, finalPath); // overwrites destination
+			}
 			logger.debug(requestState, '[ProcessorWorker.optimize] [%s | #%s] done: %s at %s', data.processor, job.id, file.toDetailedString(variation), FileUtil.log(finalPath));
 
 			return finalPath;

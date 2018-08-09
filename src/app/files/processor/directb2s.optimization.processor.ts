@@ -142,7 +142,7 @@ export class Directb2sOptimizationProcessor implements OptimizationProcessor<Bac
 					statAsync(dest).then(s => {
 						const crushedSize = s.size;
 						logger.debug(requestState, '[Directb2sOptimizationProcessor] Optimized "%s" in %sms (crushed down to %s%%).', dest, new Date().getTime() - now, Math.round(crushedSize / originalSize * 100));
-						resolve();
+						resolve(dest);
 					});
 				}
 			});

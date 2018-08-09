@@ -26,10 +26,10 @@ import { visualPinballTable } from '../../common/visualpinball.table';
 import { TableBlock } from '../../releases/release.tableblock';
 import { state } from '../../state';
 import { FileDocument } from '../file.document';
-import { FileVariation, ImageFileVariation } from '../file.variations';
+import { FileVariation } from '../file.variations';
 import { OptimizationProcessor } from './processor';
 
-export class VptBlockindexProcessor implements OptimizationProcessor<ImageFileVariation> {
+export class VptBlockindexProcessor implements OptimizationProcessor<FileVariation> {
 
 	public name: string = 'vpt.blockindex';
 
@@ -41,7 +41,7 @@ export class VptBlockindexProcessor implements OptimizationProcessor<ImageFileVa
 		return 700 + (variation && variation.priority ? variation.priority : 0);
 	}
 
-	public async process(requestState: RequestState, file: FileDocument, src: string, dest: string, variation?: ImageFileVariation): Promise<string> {
+	public async process(requestState: RequestState, file: FileDocument, src: string, dest: string, variation?: FileVariation): Promise<string> {
 
 		// retrieve unique blocks from file
 		let fileBlocks = await visualPinballTable.analyzeFile(requestState, src);

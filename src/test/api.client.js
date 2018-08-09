@@ -1,3 +1,5 @@
+const { isUndefined, isString, isObject, get, keys, pick, assign } = require('lodash');
+
 const util = require('util');
 const axios = require('axios');
 const faker = require('faker');
@@ -8,12 +10,6 @@ const mkdirSync = require('fs').mkdirSync;
 const writeFileSync = require('fs').writeFileSync;
 const createReadStream = require('fs').createReadStream;
 const parseUrl = require('url').parse;
-const assign = require('lodash').assign;
-const pick = require('lodash').pick;
-const keys = require('lodash').keys;
-const get = require('lodash').get;
-const isString = require('lodash').isString;
-const isObject = require('lodash').isObject;
 const FormData = require('form-data');
 
 const FileHelper = require('./file.helper');

@@ -59,7 +59,7 @@ export interface Processor<V extends FileVariation> {
 	 * @param {string} src Source path of the file
 	 * @param {string} dest Destination path
 	 * @param variation Variation to process
-	 * @returns {Promise<string>} Path to processed file
+	 * @returns {Promise<string>} Path to processed file or null if no file has been created
 	 */
 	process(requestState: RequestState, file: FileDocument, src: string, dest: string, variation?: V): Promise<string>;
 }

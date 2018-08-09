@@ -41,7 +41,7 @@ class FileHelper {
 	 * Uploads a playfield image.
 	 *
 	 * @param user Uploader
-	 * @param orientation
+	 * @param {string} orientation
 	 * @param type File type
 	 * @param opts Options
 	 * @param {boolean} [opts.keep=false] If true, don't teardown.

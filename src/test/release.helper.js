@@ -49,7 +49,7 @@ class ReleaseHelper {
 	 */
 	async createReleaseForGame(user, game, opts) {
 		opts = opts || {};
-		const vptFile = await this.fileHelper.createVpt(user, { keep: true });
+		const vptFile = await this.fileHelper.createVpt(user, Object.assign({ keep: true }, opts));
 		const playfield = await this.fileHelper.createPlayfield(user, 'fs', null, { keep: true });
 		const additionalFiles = opts.files || [];
 		const author = isObject(opts.author) ? opts.author : this.api.getUser(opts.author || user);
@@ -87,6 +87,7 @@ class ReleaseHelper {
 	 * @param {object[]} [opts.files] Additional version files
 	 * @param {object} [opts.file] Extend version file with this data
 	 * @param {object} [opts.release] Extend release with this data
+	 * @param {boolean} [opts.alternateVpt] If set, upload an alternative file
 	 * @returns {Promise<Object>} Created release
 	 */
 	async createRelease(user, opts) {

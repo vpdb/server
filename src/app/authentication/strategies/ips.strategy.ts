@@ -22,13 +22,13 @@ import Axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { parse, stringify } from 'querystring';
 import randomString from 'randomstring';
 
+import * as querystring from 'querystring';
 import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
 import { VpdbIpsConfig } from '../../common/typings/config';
 import { Context } from '../../common/typings/context';
 import { OAuthProfile } from '../authentication.api';
 import { Strategy } from './strategy';
-import * as querystring from 'querystring';
 
 /**
  * Invision Community authentication strategy.

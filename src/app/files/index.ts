@@ -26,7 +26,7 @@ import { FileApiRouter } from './file.api.router';
 import { FileDocument } from './file.document';
 import { FileModel, fileSchema } from './file.schema';
 import { FileSerializer } from './file.serializer';
-import { FilePublicStorageRouter, FileProtectedStorageRouter } from './file.storage.router';
+import { FileProtectedStorageRouter, FilePublicStorageRouter } from './file.storage.router';
 
 export class FilesApiEndPoint extends EndPoint {
 

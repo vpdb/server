@@ -88,7 +88,11 @@ class GameHelper {
 
 	_popGame(ipdbNumber) {
 		if (ipdbNumber) {
-			return this.ipdb.find(i => i.ipdb.number === parseInt(ipdbNumber));
+			const game = this.ipdb.find(i => i.ipdb.number === parseInt(ipdbNumber));
+			if (!game) {
+				throw new Error('No game with IPDB ID ' + ipdbNumber + ' found.');
+			}
+			return game;
 		}
 		return this.ipdb.splice(this._randomInt(this.ipdb.length), 1)[0];
 	}

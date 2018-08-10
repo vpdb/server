@@ -33,7 +33,6 @@ import { FileVariation } from '../file.variations';
 import { Metadata } from '../metadata/metadata';
 import { processorManager } from './processor.manager';
 import { JobData } from './processor.queue';
-import { Api } from '../../common/api';
 
 const renameAsync = promisify(rename);
 const statAsync = promisify(stat);

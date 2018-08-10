@@ -18,7 +18,7 @@
  */
 
 /* istanbul ignore file */
-import Axios, { AxiosInstance, AxiosResponse } from 'axios';
+import Axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { parse, stringify } from 'querystring';
 import randomString from 'randomstring';
 
@@ -28,6 +28,7 @@ import { VpdbIpsConfig } from '../../common/typings/config';
 import { Context } from '../../common/typings/context';
 import { OAuthProfile } from '../authentication.api';
 import { Strategy } from './strategy';
+import * as querystring from 'querystring';
 
 /**
  * Invision Community authentication strategy.
@@ -60,10 +61,16 @@ export class IpsStrategy extends Strategy {
 
 	protected getAuthUrl(): string {
 		let path: string;
+		let scope: string;
 		switch (this.config.version) {
-			case 3: path = '?app=oauth2&module=server&section=authorize'; break;
-			case 4: path = '/applications/oauth2server/interface/oauth/authorize.php'; break;
-			case 4.3: path = '/oauth/authorize/'; break;
+			case 4:
+				path = '/applications/oauth2server/interface/oauth/authorize.php';
+				scope = 'user.profile user.email';
+				break;
+			case 4.3:
+				path = '/oauth/authorize/';
+				scope = 'profile email';
+				break;
 			default: throw new ApiError('Unsupported IPS version %s', this.config.version);
 		}
 		const state = randomString.generate(16);
@@ -71,7 +78,7 @@ export class IpsStrategy extends Strategy {
 			client_id: this.config.clientID,
 			redirect_uri: this.redirectUri,
 			response_type: 'code',
-			scope: 'user.profile user.email',
+			scope,
 			state,
 		});
 	}
@@ -79,23 +86,32 @@ export class IpsStrategy extends Strategy {
 	protected async getProfile(ctx: Context): Promise<any> {
 		const code = ctx.query.code;
 		const state = ctx.query.state;
-		let path: string;
-		switch (this.config.version) {
-			case 3: path = '?app=oauth2&module=server&section=token'; break;
-			case 4: path = '/applications/oauth2server/interface/oauth/token.php'; break;
-			case 4.3: path = '/oauth/token/'; break;
-			default: throw new ApiError('Unsupported IPS version %s', this.config.version);
-		}
-
-		// get access token
-		let res = await this.client.post(path, {
+		const data = {
 			client_id: this.config.clientID,
 			client_secret: this.config.clientSecret,
 			grant_type: 'authorization_code',
 			code,
 			redirect_uri: this.redirectUri,
 			state,
-		}) as AxiosResponse;
+		};
+		let path: string;
+		let config: AxiosRequestConfig;
+		let postData: any;
+		switch (this.config.version) {
+			case 4:
+				path = '/applications/oauth2server/interface/oauth/token.php';
+				postData = data;
+				break;
+			case 4.3:
+				path = '/oauth/token/';
+				postData = querystring.stringify(data);
+				config = { headers: { 'content-type': 'application/x-www-form-urlencoded' } };
+				break;
+			default: throw new ApiError('Unsupported IPS version %s', this.config.version);
+		}
+
+		// get access token
+		let res = await this.client.post(path + '?XDEBUG_SESSION_START=XDEBUG_ECLIPSE', postData, config) as AxiosResponse;
 
 		// handle errors
 		if (res.status !== 200) {
@@ -111,7 +127,6 @@ export class IpsStrategy extends Strategy {
 		}
 
 		switch (this.config.version) {
-			case 3: path = '?app=oauth2&module=server&section=profile'; break;
 			case 4: path = '/applications/oauth2server/interface/oauth/me.php'; break;
 			case 4.3: path = '/api/core/me'; break;
 		}
@@ -130,17 +145,6 @@ export class IpsStrategy extends Strategy {
 	 */
 	protected normalizeProfile(profile: any): OAuthProfile {
 		switch (this.config.version) {
-			case 3:
-				return {
-					provider: this.providerName,
-					id: profile.id,
-					emails: profile.emails,
-					username: profile.login,
-					displayName: profile.name,
-					photos: profile.avatar && profile.avatar.full && profile.avatar.full.height ? [{ value: profile.avatar.thumb.url }] : undefined,
-					_json: profile,
-				};
-
 			case 4:
 				return {
 					provider: this.providerName,

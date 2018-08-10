@@ -357,6 +357,7 @@ export class AuthenticationApi extends Api {
 
 		const emails = profile.emails.filter((e: { value: string }) => e && e.value).map((e: { value: string }) => e.value);
 		if (emails.length === 0) {
+			logger.warn(ctx.state, '[AuthenticationApi.getEmailsFromProfile|%s] %s', logTag, JSON.stringify(profile));
 			throw new ApiError('Emails must contain at least one value.').status(400);
 		}
 		return emails;

@@ -512,9 +512,9 @@ export interface VpdbIpsConfig {
 	clientSecret: string;
 
 	/**
-	 * Version of the IPS board. Either `3` or `4`.
+	 * Version of the IPS board. Either `4` or `4.3`.
 	 */
-	version: 3 | 4 | 4.3;
+	version: 4 | 4.3;
 }
 
 export interface VpdbHost {

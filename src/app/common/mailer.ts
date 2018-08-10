@@ -61,7 +61,7 @@ class Mailer {
 	}
 
 	public async welcomeLocal(requestState: RequestState, user: UserDocument): Promise<SentMessageInfo> {
-		return this.sendEmail(requestState, user, 'Welcome to the VPDB!', 'welcome-local', { user });
+		return this.sendEmail(requestState, user, 'Welcome to VPDB!', 'welcome-local', { user });
 	}
 
 	public async welcomeOAuth(requestState: RequestState, user: UserDocument): Promise<SentMessageInfo> {
@@ -70,7 +70,7 @@ class Mailer {
 			google: 'Google',
 			gameex: 'GameEx',
 		};
-		return this.sendEmail(requestState, user, 'Welcome to the VPDB!', 'welcome-oauth', {
+		return this.sendEmail(requestState, user, 'Welcome to VPDB!', 'welcome-oauth', {
 			user,
 			profileUrl: settings.webUri('/profile/settings'),
 			strategy: strategyNames[user.provider] || upperFirst(user.provider),

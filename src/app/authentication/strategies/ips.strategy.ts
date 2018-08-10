@@ -67,10 +67,11 @@ export class IpsStrategy extends Strategy {
 			default: throw new ApiError('Unsupported IPS version %s', this.config.version);
 		}
 		const state = randomString.generate(16);
-		return path + (path.includes('?') ? '&' : '?') + stringify({
+		return this.config.baseURL + path + (path.includes('?') ? '&' : '?') + stringify({
 			client_id: this.config.clientID,
 			redirect_uri: this.redirectUri,
-			scope: 'user:email',
+			response_type: 'code',
+			scope: 'user.profile user.email',
 			state,
 		});
 	}
@@ -90,6 +91,7 @@ export class IpsStrategy extends Strategy {
 		let res = await this.client.post(path, {
 			client_id: this.config.clientID,
 			client_secret: this.config.clientSecret,
+			grant_type: 'authorization_code',
 			code,
 			redirect_uri: this.redirectUri,
 			state,
@@ -97,6 +99,7 @@ export class IpsStrategy extends Strategy {
 
 		// handle errors
 		if (res.status !== 200) {
+			logger.error(ctx.state, '[IpsStrategy.getProfile] Got status %s with body: %s', res.status, JSON.stringify(res.data));
 			throw new ApiError('Could not retrieve access token from %s. This has been reported and will be fixed as soon as possible!', this.config.name);
 		}
 		const body = res.headers['content-type'].includes('form-urlencoded') ? parse(res.data) : res.data;

@@ -209,14 +209,16 @@ export class ApiError extends Error {
 			responseLog = '\n' + chalk.cyan(JSON.stringify(this.getResponse(), null, '  '));
 		}
 		if (this.statusCode === 500 || this.logLevel === 'error') {
-			logger.error(ctx.state, '\n\n' + ApiError.colorStackTrace(this) + cause + requestLog + '\n\n');
+			logger.debug(ctx.state, '\n\n' + ApiError.colorStackTrace(this) + cause + requestLog + '\n\n');
 
 		} else if (cause || this.logLevel === 'warn') {
+			logger.warn(ctx.state, chalk.yellowBright(this.message.trim()));
+
 			// sometimes the message is the stack, if that's the case then print the real stack.
 			if (this.message.match(/\n\s+at/)) {
-				logger.warn(ctx.state, '\n\n' + ApiError.colorStackTrace(this) + cause + (requestLog ? requestLog + '\n' : '') + responseLog);
+				logger.debug(ctx.state, '\n\n' + ApiError.colorStackTrace(this) + cause + (requestLog ? requestLog + '\n' : '') + responseLog);
 			} else {
-				logger.warn(ctx.state, chalk.yellowBright(this.message.trim()) + '\n' + cause + (requestLog ? requestLog + '\n' : '') + responseLog);
+				logger.debug(ctx.state, chalk.yellowBright(this.message.trim()) + '\n' + cause + (requestLog ? requestLog + '\n' : '') + responseLog);
 			}
 		}
 	}

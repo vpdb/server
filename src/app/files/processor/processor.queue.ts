@@ -233,11 +233,11 @@ class ProcessorQueue {
 			const waitingJobs = await queue.getWaiting();
 			const waitingJobsForFile = waitingJobs.filter(job => job && (job.data as JobData).fileId === file.id);
 			if (waitingJobsForFile.length) {
-				logger.info(requestState, '[ProcessorQueue.deleteProcessingFile] Removing %s jobs from queue %s',
+				logger.debug(requestState, '[ProcessorQueue.deleteProcessingFile] Removing %s jobs from queue %s',
 					waitingJobsForFile.length, (queue as any).name);
 				promises.push(...waitingJobsForFile.map(job => () => job.remove().then(() => {
 					if (job.data.destVariation) { // these are creator jobs
-						logger.info(requestState, '[ProcessorQueue.deleteProcessingFile] Removing copied source at %s', job.data.srcPath);
+						logger.debug(requestState, '[ProcessorQueue.deleteProcessingFile] Removing copied source at %s', job.data.srcPath);
 						return unlinkAsync(job.data.srcPath);
 					}
 				})));
@@ -247,7 +247,7 @@ class ProcessorQueue {
 			const activeJobs = await queue.getActive();
 			const activeJobsForFile = activeJobs.filter(job => job && (job.data as JobData).fileId === file.id);
 			if (activeJobsForFile.length) {
-				logger.info(requestState, '[ProcessorQueue.deleteProcessingFile] Cleaning up after %s active job(s) from queue %s.',
+				logger.debug(requestState, '[ProcessorQueue.deleteProcessingFile] Cleaning up after %s active job(s) from queue %s.',
 					activeJobsForFile.length, (queue as any).name);
 				promises.push(...activeJobsForFile.map(job => () => this.waitForJobCompletion(requestState, queue, job)));
 			}
@@ -258,7 +258,7 @@ class ProcessorQueue {
 			.then(async () => {
 				const originalPath = file.getPath(requestState, null, { tmpSuffix: '_original' });
 				if (await FileUtil.exists(originalPath)) {
-					logger.info(requestState, '[ProcessorQueue.deleteProcessingFile] Finally removing original %s', originalPath);
+					logger.debug(requestState, '[ProcessorQueue.deleteProcessingFile] Finally removing original %s', originalPath);
 					await unlinkAsync(originalPath);
 				}
 			}).catch(err => {

@@ -63,7 +63,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 			});
 		}
 
-		logger.info(ctx.state, '[ReleaseApi.create] Body: %s', inspect(ctx.request.body, { depth: null }));
+		logger.info(ctx.state, '[ReleaseApi.create] Body: %s', JSON.stringify(ctx.request.body));
 		const newRelease = await state.models.Release.getInstance(ctx.state, extend(ctx.request.body, {
 			_created_by: ctx.state.user._id,
 			modified_at: now,
@@ -135,6 +135,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		if (!release) {
 			throw new ApiError('No such release with ID "%s".', ctx.params.id).status(404).log();
 		}
+		logger.info(ctx.state, '[ReleaseApi.update] Body: %s', JSON.stringify(ctx.request.body));
 
 		// check for global update permissions
 		const canUpdate = await acl.isAllowed(ctx.state.user.id, 'releases', 'update');

@@ -19,7 +19,6 @@
 
 import { createReadStream } from 'fs';
 import { assign, cloneDeep, difference, intersection, isEmpty, keys, omit, pick, sum, upperFirst, values } from 'lodash';
-import { inspect } from 'util';
 
 import { acl } from '../common/acl';
 import { Api } from '../common/api';
@@ -68,7 +67,7 @@ export class GameApi extends Api {
 			created_at: new Date(),
 		})) as GameDocument;
 
-		logger.info(ctx.state, '[GameApi.create] %s', inspect(ctx.request.body));
+		logger.info(ctx.state, '[GameApi.create] Body: %s', JSON.stringify(ctx.request.body));
 		await game.validate();
 
 		logger.info(ctx.state, '[GameApi.create] Validations passed.');
@@ -343,7 +342,7 @@ export class GameApi extends Api {
 		});
 
 		const q = this.searchQuery(query);
-		logger.info(ctx.state, '[GameApi.list] query: %s, sort: %j', inspect(q, { depth: null }), inspect(sort));
+		logger.info(ctx.state, '[GameApi.list] query: %s, sort: %j', JSON.stringify(q), JSON.stringify(sort));
 
 		const result = await state.models.Game.paginate(q, {
 			page: pagination.page,

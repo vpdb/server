@@ -18,7 +18,6 @@
  */
 
 import { cloneDeep, defaults, orderBy, pick } from 'lodash';
-import { inspect } from 'util';
 
 import { acl } from '../../common/acl';
 import { apiCache } from '../../common/api.cache';
@@ -53,6 +52,7 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 		if (!release) {
 			throw new ApiError('No such release with ID "%s".', ctx.params.id).status(404);
 		}
+		logger.info(ctx.state, '[ReleaseVersionApi.addVersion] Body: %s', JSON.stringify(ctx.request.body));
 
 		// check permission
 		const authorIds = release.authors.map(a => a._user.toString());
@@ -77,12 +77,11 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 		}
 
 		// create instance
-		logger.info(ctx.state, '[ReleaseApi.addVersion] body: %s', inspect(versionObj, { depth: null }));
 		const newVersion = await state.models.ReleaseVersion.getInstance(ctx.state, versionObj);
 
 		await this.preProcess(ctx, newVersion.getFileIds());
 
-		logger.info(ctx.state, '[ReleaseApi.addVersion] model: %s', inspect(newVersion, { depth: null }));
+		logger.info(ctx.state, '[ReleaseVersionApi.addVersion] model: %s', JSON.stringify(newVersion));
 
 		let validationErr: any;
 		try {
@@ -200,7 +199,7 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 		const oldVersion = cloneDeep(versionToUpdate);
 
 		const newFiles: ReleaseVersionFileDocument[] = [];
-		logger.info(ctx.state, '[ReleaseApi.updateVersion] %s', inspect(ctx.request.body, { depth: null }));
+		logger.info(ctx.state, '[ReleaseVersionApi.updateVersion] Body: %s', JSON.stringify(ctx.request.body));
 
 		for (const fileObj of (ctx.request.body.files || [])) {
 

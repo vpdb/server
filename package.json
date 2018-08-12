@@ -44,7 +44,7 @@
 	"mod-project-name": "vpdb",
 	"dependencies": {
 		"@koa/cors": "2.2.2",
-		"@slack/client": "4.3.1",
+		"@slack/client": "^4.4.0",
 		"acl": "0.4.11",
 		"adm-zip": "0.4.11",
 		"archiver": "2.1.1",
@@ -71,7 +71,6 @@
 		"koa-router": "7.4.0",
 		"koa-send": "5.0.0",
 		"lodash": "4.17.10",
-		"logdna": "2.0.4",
 		"logform": "1.9.1",
 		"mongoose": "5.2.6",
 		"mongoose-paginate": "5.0.3",
@@ -176,7 +175,6 @@
 			"build/app/files/processor/processor.js",
 			"build/app/common/settings.validator.js",
 			"build/app/common/middleware/website.middleware.js",
-			"build/app/common/logger.logdna.transport.js",
 			"build/app/authentication/strategies/**"
 		],
 		"reporter": [

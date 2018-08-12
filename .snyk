@@ -52,9 +52,6 @@ ignore:
     - google-auth-library > gcp-metadata > extend:
         reason: None given
         expires: '2018-09-04T08:34:40.448Z'
-    - logdna > request > extend:
-        reason: None given
-        expires: '2018-09-04T08:34:40.448Z'
     - nodegit > node-gyp > request > extend:
         reason: None given
         expires: '2018-09-04T08:34:40.448Z'
@@ -106,20 +103,12 @@ patch:
   'npm:hoek:20180212':
     - nodegit > node-pre-gyp > hawk > sntp > hoek:
         patched: '2018-07-13T21:22:51.632Z'
-      logdna > request > hawk > boom > hoek:
-        patched: '2018-08-05T08:32:40.897Z'
     - nodegit > node-gyp > request > hawk > hoek:
         patched: '2018-07-13T21:22:51.632Z'
-      logdna > request > hawk > sntp > hoek:
-        patched: '2018-08-05T08:32:40.897Z'
     - nodegit > node-gyp > request > hawk > sntp > hoek:
         patched: '2018-07-13T21:22:51.632Z'
-      logdna > request > hawk > cryptiles > boom > hoek:
-        patched: '2018-08-05T08:32:40.897Z'
     - nodegit > node-gyp > request > hawk > cryptiles > boom > hoek:
         patched: '2018-07-13T21:22:51.632Z'
-      logdna > request > hawk > hoek:
-        patched: '2018-08-05T08:32:40.897Z'
     - nodegit > node-pre-gyp > hawk > hoek:
         patched: '2018-07-13T21:22:51.632Z'
     - nodegit > node-pre-gyp > hawk > boom > hoek:

@@ -221,57 +221,12 @@ export interface VpdbConfig {
 				 * File location of the application log. Null or empty for no logging.
 				 */
 				app: string,
+
+				/**
+				 * File location where both access and app log are written.
+				 */
+				json: string,
 			},
-
-			/**
-			 * Sends logs to Papertrail.
-			 */
-			papertrail: {
-
-				/**
-				 * Whether to send HTTP access log to Papertrail
-				 */
-				access: boolean,
-
-				/**
-				 * Whether to send application log to Papertrail
-				 */
-				app: boolean,
-
-				/**
-				 * Papertrail configuration. Must be set if at least
-				 * one of the two above is set to true.
-				 *
-				 * @see https://github.com/kenperkins/winston-papertrail#usage
-				 */
-				options: {
-					host: string,
-					port: number,
-					program: string,
-					colorize: boolean,
-				},
-			},
-
-			/**
-			 * Sends logs to LogDNA
-			 */
-			logdna: {
-
-				/**
-				 * The Ingestion Key
-				 */
-				apiKey: string,
-
-				/**
-				 * The environment passed along for each line
-				 */
-				env: string,
-
-				/**
-				 * The hostname passed along
-				 */
-				hostname: string,
-			}
 
 			slack: {
 				enabled: boolean,

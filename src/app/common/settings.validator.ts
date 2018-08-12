@@ -136,38 +136,16 @@ export const settingValidations = {
 						return 'App log path is not a folder.';
 					}
 				},
-			},
-			papertrail: {
-				access: (bool: any) => {
-					if (!isBoolean(bool)) {
-						return 'Papertrail access log must be either true or false';
+				json: (logPath: any) => {
+					if (!logPath) {
+						return null;
 					}
-				},
-				app: (bool: any) => {
-					if (!isBoolean(bool)) {
-						return 'Papertrail application log must be either true or false';
+					const logDir = dirname(logPath);
+					if (!existsSync(logDir)) {
+						return 'Json log path does not exist.';
 					}
-				},
-				options: (bool: any) => {
-					if (!isObject(bool)) {
-						return 'Papertrail config must be at least an object, even if it\'s empty.';
-					}
-				},
-			},
-			logdna: {
-				apiKey: (str: any) => {
-					if (!isString(str)) {
-						return 'API Key must be a string.';
-					}
-				},
-				env:  (str: any) => {
-					if (!isString(str)) {
-						return 'Environment must be a string.';
-					}
-				},
-				hostname:  (str: any) => {
-					if (!isString(str)) {
-						return 'Hostname must be a string.';
+					if (!lstatSync(logDir).isDirectory()) {
+						return 'Json log path is not a folder.';
 					}
 				},
 			},

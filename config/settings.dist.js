@@ -203,57 +203,11 @@ module.exports = {
 				/**
 				 * File location of the application log. Null or empty for no logging.
 				 */
-				app: '/var/www/staging/shared/logs/app.log'
-			},
-
-			/**
-			 * Sends logs to Papertrail.
-			 */
-			papertrail: {
-
+				app: '/var/www/staging/shared/logs/app.log',
 				/**
-				 * Whether to send HTTP access log to Papertrail
+				 * File location of the application log. Null or empty for no logging.
 				 */
-				access: false,
-
-				/**
-				 * Whether to send application log to Papertrail
-				 */
-				app: false,
-
-				/**
-				 * Papertrail configuration. Must be set if at least
-				 * one of the two above is set to true.
-				 *
-				 * @see https://github.com/kenperkins/winston-papertrail#usage
-				 */
-				options: {
-					host: '',
-					port: '',
-					program: 'vpdb-staging',
-					colorize: true
-				}
-			},
-
-			/**
-			 * Sends logs to LogDNA
-			 */
-			logdna: {
-
-				/**
-				 * The Ingestion Key
-				 */
-				apiKey: '',
-
-				/**
-				 * The environment passed along for each line
-				 */
-				env: '',
-
-				/**
-				 * The hostname passed along
-				 */
-				hostname: '',
+				json: '/var/www/staging/shared/logs/json.log'
 			},
 
 			slack: {

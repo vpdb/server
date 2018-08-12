@@ -27,11 +27,8 @@ import winston from 'winston';
 import { config } from './settings';
 import { RequestState } from './typings/context';
 
-const LogDna = require('logdna');
-
 class Logger {
 	private logger: winston.Logger;
-	private readonly logDnaLogger: any;
 
 	constructor(private type: LogType) {
 		const alignedWithColorsAndTime = logFormat.combine(
@@ -45,16 +42,6 @@ class Logger {
 			transports: [],
 			level: config.vpdb.logging.level,
 		});
-
-		/* istanbul ignore next */
-		if (config.vpdb.logging.logdna.apiKey) {
-			this.logDnaLogger = LogDna.createLogger(config.vpdb.logging.logdna.apiKey, {
-				app: 'vpdb',
-				env: config.vpdb.logging.logdna.env,
-				hostname: config.vpdb.logging.logdna.hostname,
-				index_meta: true,
-			});
-		}
 
 		if (type === 'app') {
 			this.setupAppLogger();
@@ -103,15 +90,6 @@ class Logger {
 
 	private log(requestState: RequestState | null, level: string, message: string) {
 		this.logger.log({ level: this.getWinstonLevel(level), message });
-		/* istanbul ignore if */
-		if (this.logDnaLogger) {
-			const opts = {
-				timestamp: Date.now(),
-				level: this.getLogDnaLevel(level),
-				meta: this.getMeta(requestState),
-			};
-			this.logDnaLogger.log(message, opts);
-		}
 	}
 
 	private setupAppLogger(): void {
@@ -177,18 +155,6 @@ class Logger {
 			tokenProvider: requestState.tokenProvider,
 			logType: this.type,
 		} : { logType: this.type };
-	}
-
-	private getLogDnaLevel(level: string): string {
-		const map: Map<string, string> = new Map([
-			['info', 'info'],
-			['error', 'error'],
-			['warn', 'warn'],
-			['verbose', 'debug'],
-			['debug', 'debug'],
-			['wtf', 'fatal'],
-		]);
-		return map.get(level) || 'info';
 	}
 
 	private getWinstonLevel(level: string): string {

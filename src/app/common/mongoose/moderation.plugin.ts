@@ -179,16 +179,16 @@ export function moderationPlugin(schema: Schema) {
 	schema.statics.handleModeration = async function(ctx: Context, entity: ModeratedDocument): Promise<ModerationDataEvent> {
 		const actions = ['refuse', 'approve', 'moderate'];
 		if (!ctx.request.body.action) {
-			throw new ApiError('Validations failed.').validationError('action', 'An action must be provided. Valid actions are: [ "' + actions.join('", "') + '" ].');
+			throw new ApiError().validationError('action', 'An action must be provided. Valid actions are: [ "' + actions.join('", "') + '" ].');
 		}
 		if (!includes(actions, ctx.request.body.action)) {
-			throw new ApiError('Validations failed.').validationError('action', 'Invalid action "' + ctx.request.body.action + '". Valid actions are: [ "' + actions.join('", "') + '" ].');
+			throw new ApiError().validationError('action', 'Invalid action "' + ctx.request.body.action + '". Valid actions are: [ "' + actions.join('", "') + '" ].');
 		}
 		let moderationEvent: ModerationDataEvent;
 		switch (ctx.request.body.action) {
 			case 'refuse':
 				if (!ctx.request.body.message) {
-					throw new ApiError('Validations failed.').validationError('message', 'A message must be provided when refusing.', ctx.request.body.message);
+					throw new ApiError().validationError('message', 'A message must be provided when refusing.', ctx.request.body.message);
 				}
 				moderationEvent = await entity.refuse(ctx.state.user, ctx.request.body.message);
 				break;

@@ -77,7 +77,7 @@ export function koaErrorHandler() {
 
 			// validation error from mongoose
 			} else if (err.name === 'ValidationError') {
-				new ApiError('Validation failed.').validationErrors(getValidationErrors(err)).warn().respond(ctx);
+				new ApiError().validationErrors(getValidationErrors(err)).warn().respond(ctx);
 
 			// unexpected errors
 			} else {

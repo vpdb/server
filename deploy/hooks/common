@@ -99,6 +99,11 @@ build() {
 	cd ${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
 	npm run build
 	test $? -eq 0 || rollback_abort $1 "Failed to build. Manually fix and relaunch deployment.".
+
+	echo "Copying email templates to build folder..."
+	cd src/app
+	find . -name "*.handlebars" | cpio -pdm ../../build/app
+	test $? -eq 0 || rollback_abort $1 "Failed to copy. Manually fix and relaunch deployment.".
 }
 
 repo_link() {

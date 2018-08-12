@@ -20,8 +20,9 @@
 import bytes = require('bytes');
 import chalk, { Chalk, ColorSupport } from 'chalk';
 import randomString from 'randomstring';
+import { isObject } from 'util';
 
-import { accessLogger } from '../logger';
+import { logger } from '../logger';
 import { Context } from '../typings/context';
 
 const Counter = require('passthrough-counter');
@@ -136,9 +137,34 @@ function log(ctx: Context, start: number, len: number, err: any = null, event: s
 	ctx.state.request.duration = duration;
 	ctx.state.request.size = len;
 
-	if (statusCode >= 500 && statusCode < 600) {
-		accessLogger.error(ctx.state, '[%s] %s%s %s %sms - %s', logUserIp, upstream, logStatus(' ' + statusCode + ' '), logMethod(ctx.method + ' ' + ctx.originalUrl), duration, length);
-	} else {
-		accessLogger.info(ctx.state, '[%s] %s%s %s %sms - %s%s', logUserIp, upstream, logStatus(' ' + statusCode + ' '), logMethod(ctx.method + ' ' + ctx.originalUrl), duration, length, cache);
-	}
+	// log this
+	const message = `[${logUserIp}] ${upstream}${logStatus(' ' + statusCode + ' ')} ${logMethod(ctx.method + ' ' + ctx.originalUrl)} ${duration}ms - ${length}${cache}`;
+	const level = statusCode >= 500 && statusCode < 600 ? 'error' : 'info';
+	const fullLog = !['GET', 'OPTIONS'].includes(ctx.request.method);
+	logger.text(ctx.state, level, message);
+	logger.json(ctx.state, level, {
+		type: 'access',
+		message: `${ctx.method} ${ctx.originalUrl} [${ctx.response.status}]`,
+		level,
+		request: {
+			id: ctx.state.request.id,
+			ip: ctx.state.request.ip,
+			method: ctx.request.method,
+			path: ctx.request.url,
+			headers: fullLog ? Object.keys(ctx.request.headers)
+				.filter(header => !['accept', 'connection', 'pragma', 'cache-control', 'authorization', 'host', 'origin'].includes(header))
+				.reduce((obj: { [key: string]: string }, key: string) => { obj[key] = ctx.request.headers[key]; return obj; }, {}) : undefined,
+			body: ctx.request.get('content-type').startsWith('application/json') ? ctx.request.rawBody : undefined,
+		},
+		response: {
+			status: ctx.response.status,
+			body: fullLog && ctx.response.get('content-type').startsWith('application/json') ? (isObject(ctx.response.body) ? JSON.stringify(ctx.response.body) : ctx.response.body) : undefined,
+			headers: fullLog ? Object.keys(ctx.response.headers)
+				.filter(header => !['x-request-id', 'x-user-id', 'x-user-dirty', 'x-cache-api', 'x-response-time', 'x-token-refresh', 'vary', 'access-control-allow-origin', 'access-control-allow-credentials', 'access-control-expose-headers'].includes(header))
+				.reduce((obj: { [key: string]: string }, key: string) => { obj[key] = ctx.response.headers[key]; return obj; }, {}) : undefined,
+			duration: ctx.state.request.duration,
+			size: ctx.state.request.size,
+			cached: ctx.response.headers['x-cache-api'] ? ctx.response.headers['x-cache-api'] === 'HIT' : undefined,
+		},
+	});
 }

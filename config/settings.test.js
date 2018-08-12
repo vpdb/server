@@ -37,8 +37,8 @@ module.exports = {
 		},
 		logging: {
 			level: process.env.LOGLEVEL || 'info',
-			console: { access: true,  app: true },
-			file: { access: null, app: null, json: null },
+			console: { enabled: true, colored: (process.env.COLORLOG ? process.env.COLORLOG === 'true' : true) },
+			file: { text: null, json: null },
 		},
 		skipImageOptimizations: true,
 		quota: {

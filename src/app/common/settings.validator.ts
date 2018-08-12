@@ -100,40 +100,28 @@ export const settingValidations = {
 				}
 			},
 			console: {
-				access: (bool: any) => {
+				enabled: (bool: any) => {
 					if (!isBoolean(bool)) {
-						return 'Console access log must be either true or false';
+						return 'Must be either true or false';
 					}
 				},
-				app: (bool: any) => {
+				colored: (bool: any) => {
 					if (!isBoolean(bool)) {
-						return 'Console application log must be either true or false';
+						return 'Must be either true or false';
 					}
 				},
 			},
 			file: {
-				access: (logPath: any) => {
+				text: (logPath: any) => {
 					if (!logPath) {
 						return null;
 					}
 					const logDir = dirname(logPath);
 					if (!existsSync(logDir)) {
-						return 'Access log path does not exist.';
+						return 'Text log path does not exist.';
 					}
 					if (!lstatSync(logDir).isDirectory()) {
-						return 'Access log path is not a folder.';
-					}
-				},
-				app: (logPath: any) => {
-					if (!logPath) {
-						return null;
-					}
-					const logDir = dirname(logPath);
-					if (!existsSync(logDir)) {
-						return 'App log path does not exist.';
-					}
-					if (!lstatSync(logDir).isDirectory()) {
-						return 'App log path is not a folder.';
+						return 'Text log path is not a folder.';
 					}
 				},
 				json: (logPath: any) => {

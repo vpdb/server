@@ -26,8 +26,8 @@ module.exports = {
 		},
 		logging: {
 			level: 'info',
-			console: { access: true,  app: true },
-			file: { access: null, app: null, json: null },
+			console: { enabled: true, colored: true },
+			file: { text: null, json: null },
 		},
 		skipImageOptimizations: true,
 		quota: {

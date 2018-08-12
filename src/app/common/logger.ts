@@ -21,6 +21,7 @@ import chalk from 'chalk';
 import hasAnsi from 'has-ansi';
 import { format as logFormat } from 'logform';
 import { resolve } from 'path';
+import stripAnsi from 'strip-ansi';
 import { format as sprintf } from 'util';
 import winston from 'winston';
 
@@ -28,27 +29,47 @@ import { config } from './settings';
 import { RequestState } from './typings/context';
 
 class Logger {
-	private logger: winston.Logger;
+	private textLogger: winston.Logger;
+	private jsonLogger: winston.Logger;
 
-	constructor(private type: LogType) {
+	constructor() {
 		const alignedWithColorsAndTime = logFormat.combine(
 			logFormat.colorize(),
 			logFormat.timestamp(),
 			//logFormat.align(),
 			logFormat.printf(info => `${info.timestamp} ${info.level}: ${info.message}`),
 		);
-		this.logger = winston.createLogger({
+
+		this.textLogger = winston.createLogger({
 			format: alignedWithColorsAndTime,
 			transports: [],
 			level: config.vpdb.logging.level,
 		});
 
-		if (type === 'app') {
-			this.setupAppLogger();
+		if (config.vpdb.logging.console.enabled) {
+			this.textLogger.add(new winston.transports.Console());
 		}
-
-		if (type === 'access') {
-			this.setupAccessLogger();
+		/* istanbul ignore next */
+		if (config.vpdb.logging.file.text) {
+			const logPath = resolve(config.vpdb.logging.file.text);
+			this.textLogger.add(new winston.transports.File({
+				filename: logPath,               // The filename of the logfile to write output to.
+				maxsize: 1000000,                // Max size in bytes of the logfile, if the size is exceeded then a new file is created.
+				maxFiles: 10,                    // Limit the number of files created when the size of the logfile is exceeded.
+			}));
+		}
+		/* istanbul ignore next */
+		if (config.vpdb.logging.file.json) {
+			const logPath = resolve(config.vpdb.logging.file.json);
+			this.jsonLogger = winston.createLogger({
+				format: winston.format.json(),
+				transports: [new winston.transports.File({
+					filename: logPath,
+					maxsize: 1000000,
+					maxFiles: 10,
+				})],
+				level: config.vpdb.logging.level,
+			});
 		}
 	}
 
@@ -88,42 +109,26 @@ class Logger {
 		this.log(requestState, 'debug', message);
 	}
 
+	public text(requestState: RequestState | null, level: string, message: string) {
+		this.textLogger.log({ level: this.getWinstonLevel(level), message });
+	}
+
+	public json(requestState: RequestState, level: string, data: any) {
+		if (this.jsonLogger) {
+			this.jsonLogger.log(Object.assign({}, this.getMeta(requestState), { level }, data));
+		}
+	}
+
 	private log(requestState: RequestState | null, level: string, message: string) {
-		this.logger.log({ level: this.getWinstonLevel(level), message });
-	}
-
-	private setupAppLogger(): void {
-		if (config.vpdb.logging.console.app) {
-			this.logger.add(new winston.transports.Console());
-		}
-		/* istanbul ignore next */
-		if (config.vpdb.logging.file.app) {
-			const logPath = resolve(config.vpdb.logging.file.app);
-			this.logger.add(new winston.transports.File({
-				filename: logPath,               // The filename of the logfile to write output to.
-				maxsize: 1000000,                // Max size in bytes of the logfile, if the size is exceeded then a new file is created.
-				maxFiles: 10,                    // Limit the number of files created when the size of the logfile is exceeded.
-			}));
-		}
-	}
-
-	private setupAccessLogger(): void {
-		if (config.vpdb.logging.console.access) {
-			this.logger.add(new winston.transports.Console());
-		}
-		/* istanbul ignore next */
-		if (config.vpdb.logging.file.access) {
-			const logPath = resolve(config.vpdb.logging.file.app);
-			this.logger.add(new winston.transports.File({
-				filename: logPath,               // The filename of the logfile to write output to.
-				maxsize: 1000000,                // Max size in bytes of the logfile, if the size is exceeded then a new file is created.
-				maxFiles: 10,                    // Limit the number of files created when the size of the logfile is exceeded.
-			}));
-		}
+		this.text(requestState, level, message);
+		this.json(requestState, level, this.splitMessage(message));
 	}
 
 	private colorMessage(message: string, prefixColor: any, messageColor?: any): string {
 		if (hasAnsi(message)) {
+			return config.vpdb.logging.console.colored ? message : stripAnsi(message);
+		}
+		if (!config.vpdb.logging.console.colored) {
 			return message;
 		}
 		const match = message.match(/^(\[[^\]]+])(.+)/);
@@ -142,6 +147,15 @@ class Logger {
 		return messageColor ? messageColor(message) : message;
 	}
 
+	private splitMessage(message: string) {
+		message = stripAnsi(message);
+		const match = message.match(/^\[([^\s\]]+)]:?\s+(.+)/i);
+		if (match) {
+			return { module: match[1], message: match[2].trim(), type: 'app' };
+		}
+		return { message: message.trim(), type: 'app' };
+	}
+
 	/* istanbul ignore next */
 	private getMeta(requestState: RequestState) {
 		return requestState ? {
@@ -153,8 +167,7 @@ class Logger {
 			} : undefined,
 			tokenType: requestState.tokenType,
 			tokenProvider: requestState.tokenProvider,
-			logType: this.type,
-		} : { logType: this.type };
+		} : { };
 	}
 
 	private getWinstonLevel(level: string): string {
@@ -170,6 +183,4 @@ class Logger {
 	}
 }
 
-type LogType = 'app' | 'access';
-export const logger = new Logger('app');
-export const accessLogger = new Logger('access');
+export const logger = new Logger();

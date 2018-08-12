@@ -183,13 +183,13 @@ module.exports = {
 			 */
 			console: {
 				/**
-				 * Whether to log HTTP file access
+				 * Whether to log to console
 				 */
-				access: true,
+				enabled: true,
 				/**
-				 * Whether to log application data
+				 * Whether to color the output
 				 */
-				app: true
+				colored: true,
 			},
 
 			/**
@@ -197,17 +197,14 @@ module.exports = {
 			 */
 			file: {
 				/**
-				 * File location of the HTTP access log. Null or empty for no logging.
+				 * File location where logs are written as text.
 				 */
-				access: '/var/www/staging/shared/logs/access.log',
+				text: '/var/www/staging/shared/logs/vpdb.log',
+
 				/**
-				 * File location of the application log. Null or empty for no logging.
+				 * File location where logs are written as JSON.
 				 */
-				app: '/var/www/staging/shared/logs/app.log',
-				/**
-				 * File location of the application log. Null or empty for no logging.
-				 */
-				json: '/var/www/staging/shared/logs/json.log'
+				json: '/var/www/staging/shared/logs/vpdb.json.log',
 			},
 
 			slack: {

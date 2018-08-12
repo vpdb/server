@@ -200,13 +200,13 @@ export interface VpdbConfig {
 			 */
 			console: {
 				/**
-				 * Whether to log HTTP file access
+				 * Whether to log to console
 				 */
-				access: boolean,
+				enabled: boolean,
 				/**
-				 * Whether to log application data
+				 * Whether to color the output
 				 */
-				app: boolean,
+				colored: boolean,
 			},
 
 			/**
@@ -214,23 +214,31 @@ export interface VpdbConfig {
 			 */
 			file: {
 				/**
-				 * File location of the HTTP access log. Null or empty for no logging.
+				 * File location where logs are written as text.
 				 */
-				access: string,
+				text: string,
 				/**
-				 * File location of the application log. Null or empty for no logging.
-				 */
-				app: string,
-
-				/**
-				 * File location where both access and app log are written.
+				 * File location where logs are written as JSON.
 				 */
 				json: string,
 			},
 
+			/**
+			 * Logs events to a Slack channel
+			 */
 			slack: {
+				/**
+				 * Set to true to enable
+				 */
 				enabled: boolean,
+				/**
+				 * Slack authentication token
+				 */
 				token: string,
+
+				/**
+				 * Where to write the messages
+				 */
 				channels: {
 					eventLog: string,
 					userLog: string,

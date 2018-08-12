@@ -406,7 +406,7 @@ class ApiCache {
 		const body = isObject(ctx.response.body) ? ctx.response.body : JSON.parse(ctx.response.body);
 
 		// remove irrelevant headers
-		for (const header of ['x-cache-api', 'x-token-refresh', 'x-user-dirty', 'access-control-allow-origin', 'vary']) {
+		for (const header of ['x-cache-api', 'x-token-refresh', 'x-user-dirty', 'x-request-id', 'x-user-id', 'access-control-allow-origin', 'vary']) {
 			delete response.headers[header];
 		}
 

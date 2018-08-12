@@ -63,6 +63,7 @@ export function koaAuth() {
 
 			// update state
 			ctx.state.user = user;
+			ctx.response.set('X-User-Id', user.id);
 
 		} catch (err) {
 

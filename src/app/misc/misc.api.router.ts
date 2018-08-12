@@ -21,6 +21,8 @@ import * as Router from 'koa-router';
 import { ApiRouter } from '../common/api.router';
 import { Scope } from '../common/scope';
 import { MiscApi } from './misc.api';
+import { apiCache } from '../common/api.cache';
+import { gameListCacheCounters } from '../games/game.api.cache.config';
 
 export class MiscApiRouter implements ApiRouter {
 
@@ -30,7 +32,7 @@ export class MiscApiRouter implements ApiRouter {
 		const api = new MiscApi();
 		this.router = api.apiRouter();
 
-		this.router.get('/v1/sitemap', api.sitemap.bind(api)); // TODO add api cache
+		this.router.get('/v1/sitemap', api.sitemap.bind(api));
 		this.router.get('/v1/ping',    api.ping.bind(api));
 		this.router.get('/v1/plans',   api.plans.bind(api));
 		this.router.get('/v1/roles',    api.auth(api.roles.bind(api), 'roles', 'list', [ Scope.ALL ]));
@@ -42,6 +44,8 @@ export class MiscApiRouter implements ApiRouter {
 		}
 		this.router.get('index', '/v1', api.index.bind(api));
 		this.router.redirect('/', 'index');
+
+		apiCache.enable(this.router, '/v1/sitemap', { entities: [], listModels: ['game', 'release'] });
 	}
 
 	public getRouter(): Router {

@@ -79,7 +79,7 @@ export class GameApiRouter implements ApiRouter {
 			['ContentAuthor', 'ReleaseVersion', 'ReleaseVersionFile', 'File'],
 			['releases.game', 'backglasses.game', 'media.game', 'media.release']);
 
-		apiCache.enable(this.router, '/v1/games', { entities: simpleEntities, counters: gameListCacheCounters, listModel: 'game', noCacheWithQuery: ['q'] });
+		apiCache.enable(this.router, '/v1/games', { entities: simpleEntities, counters: gameListCacheCounters, listModels: ['game'], noCacheWithQuery: ['q'] });
 		apiCache.enable(this.router, '/v1/games/:id', { entities: detailedEntities, counters: gameDetailsCacheCounters });
 
 		//apiCache.enable(gameApiRouter, '/v1/games/:gameId/backglasses', { resources: ['backglass', 'user'] });

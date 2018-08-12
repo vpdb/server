@@ -71,7 +71,7 @@ class ApiCache {
 		this.cacheRoutes.push({
 			regex: pathToRegexp(opts.prefix + path),
 			entities: config.entities,
-			listModel: config.listModel,
+			listModels: config.listModels,
 			counters: config.counters,
 			noCacheWithQuery: config.noCacheWithQuery || [],
 		});
@@ -403,7 +403,11 @@ class ApiCache {
 			headers: ctx.response.headers,
 			body: ctx.response.body,
 		};
-		const body = isObject(ctx.response.body) ? ctx.response.body : JSON.parse(ctx.response.body);
+		const body = isObject(ctx.response.body)
+			? ctx.response.body
+			: (ctx.response.get('content-type') === 'application/json'
+				? JSON.parse(ctx.response.body)
+				: ctx.response.body);
 
 		// remove irrelevant headers
 		for (const header of ['x-cache-api', 'x-token-refresh', 'x-user-dirty', 'x-request-id', 'x-user-id', 'access-control-allow-origin', 'vary']) {
@@ -414,20 +418,24 @@ class ApiCache {
 		await state.redis.set(key, JSON.stringify(response));
 
 		// reference entities
-		for (const entity of cacheRoute.entities) {
-			const ids = this.getIdsFromBody(body, entity.path);
-			for (const id of ids) {
-				const refKey = this.getEntityKey(entity.modelName, entity.level, id);
-				refs.push(() => state.redis.sadd(refKey, key));
-				refKeys.push(refKey);
+		if (isObject(body)) {
+			for (const entity of cacheRoute.entities) {
+				const ids = this.getIdsFromBody(body, entity.path);
+				for (const id of ids) {
+					const refKey = this.getEntityKey(entity.modelName, entity.level, id);
+					refs.push(() => state.redis.sadd(refKey, key));
+					refKeys.push(refKey);
+				}
 			}
 		}
 
 		// reference list model
-		if (cacheRoute.listModel) {
-			const refKey = this.getListModelKey(cacheRoute.listModel);
-			refs.push(() => state.redis.sadd(refKey, key));
-			refKeys.push(refKey);
+		if (cacheRoute.listModels) {
+			for (const listModel of cacheRoute.listModels) {
+				const refKey = this.getListModelKey(listModel);
+				refs.push(() => state.redis.sadd(refKey, key));
+				refKeys.push(refKey);
+			}
 		}
 
 		// reference user
@@ -439,7 +447,7 @@ class ApiCache {
 
 		// save counters
 		let numCounters = 0;
-		if (cacheRoute.counters) {
+		if (cacheRoute.counters && isObject(body)) {
 			const refPairs: any[] = [];
 			for (const counter of cacheRoute.counters) {
 				for (const c of counter.counters) {
@@ -490,6 +498,9 @@ class ApiCache {
 	private async updateCounters(cacheRoute: CacheRoute<any>, cacheHit: string): Promise<CacheResponse> {
 
 		const response = JSON.parse(cacheHit) as CacheResponse;
+		if (response.headers['content-type'] !== 'application/json') {
+			return response;
+		}
 		const body = isObject(response.body) ? response.body : JSON.parse(response.body);
 
 		// update counters
@@ -582,7 +593,7 @@ class ApiCache {
  */
 export interface CacheInvalidationConfig<T> {
 	entities: SerializerReference[];
-	listModel?: string;
+	listModels?: string[];
 	counters?: Array<CacheCounterConfig<T>>;
 	noCacheWithQuery?: string[];
 }

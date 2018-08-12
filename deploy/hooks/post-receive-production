@@ -25,13 +25,16 @@ repo_checkout_tag ${LAST_TAG}
 # 2. install node packages
 npm_install ${LAST_TAG}
 
-# 3. change symlink
+# 3. compile to javascript
+build ${LAST_TAG}
+
+# 4. change symlink
 repo_link ${LAST_TAG}
 
-# 4. reload node cluster
+# 5. reload node cluster
 node_cluster_reload
 
-# 5. cleanup old deployment
+# 6. cleanup old deployment
 repo_cleanup "v[0-9]+\.[0-9]+\.[0-9]+"
 
 echo ==================================================================

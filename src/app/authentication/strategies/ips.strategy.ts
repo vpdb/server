@@ -111,7 +111,7 @@ export class IpsStrategy extends Strategy {
 		}
 
 		// get access token
-		let res = await this.client.post(path + '?XDEBUG_SESSION_START=XDEBUG_ECLIPSE', postData, config) as AxiosResponse;
+		let res = await this.client.post(path, postData, config) as AxiosResponse;
 
 		// handle errors
 		if (res.status !== 200) {

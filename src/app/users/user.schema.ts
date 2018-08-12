@@ -30,6 +30,7 @@ import { config } from '../common/settings';
 import { flavors } from '../releases/release.flavors';
 import { state } from '../state';
 import { UserDocument } from './user.document';
+import { UserUtil } from './user.util';
 
 const shortId = require('shortid32');
 
@@ -151,7 +152,6 @@ userSchema.virtual('provider')
 //-----------------------------------------------------------------------------
 // VALIDATIONS
 //-----------------------------------------------------------------------------
-const validNameRegex = /^[0-9a-z ]{3,}$/i;
 userSchema.path('name').validate(function(name: string) {
 	// this gets default from username if not set anyway.
 	if (this.isNew) {
@@ -165,7 +165,7 @@ userSchema.path('name').validate(function(name: string) {
 	if (this.isNew) {
 		return true;
 	}
-	return validNameRegex.test(name);
+	return UserUtil.isValidName(name);
 }, 'Name can only contain letters, numbers and spaces.');
 
 userSchema.path('email').validate(function(email: string) {

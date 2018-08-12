@@ -20,6 +20,7 @@
 import { assign, keys, sum, uniq, values } from 'lodash';
 import randomString from 'randomstring';
 
+import { OAuthProfile } from '../authentication/authentication.api';
 import { BackglassDocument } from '../backglasses/backglass.document';
 import { acl } from '../common/acl';
 import { ApiError } from '../common/api.error';
@@ -310,6 +311,48 @@ export class UserUtil {
 		const resources = await acl.whatResources(roles);
 		const permissions = await acl.allowedPermissions(user.id, keys(resources));
 		return { permissions };
+	}
+
+	/**
+	 * Checks if a given display name is valid.
+	 * @param name Display name to check
+	 */
+	public static isValidName(name: string) {
+		return  /^[0-9a-z -]{3,}$/i.test(name);
+	}
+
+	/**
+	 * Strips or replaces invalid characters from the display name.
+	 * @param name Display name to strip
+	 */
+	public static stripToValidName(name: string) {
+		return UserUtil.removeDiacritics(name).replace(/[^0-9a-z -]+/gi, '');
+	}
+
+	/**
+	 * Returns a valid display name, if necessary suffixed by a random number in case the name already exists.
+	 * @param originalName Display name to convert to a valid name
+	 */
+	public static async makeValidName(originalName: string) {
+		let name = UserUtil.stripToValidName(originalName);
+		const dupeNameUser = await state.models.User.findOne({ name }).exec();
+		if (dupeNameUser) {
+			name += Math.floor(Math.random() * 1000);
+		}
+		return name;
+	}
+
+	/**
+	 * Retrieves the username from the received OAuth profile. Falls back to
+	 * email prefix if none found.
+	 * @param profile
+	 * @return {string}
+	 */
+	public static getNameFromProfile(profile: OAuthProfile) {
+		return profile.displayName
+			|| profile.username
+			|| (profile.name ? profile.name.givenName || profile.name.familyName : '')
+			|| profile.emails[0].value.substr(0, profile.emails[0].value.indexOf('@'));
 	}
 
 	/**

@@ -432,29 +432,22 @@ export class UserApi extends Api {
 	}
 
 	private async createProviderUser(ctx: Context, provider: string): Promise<UserDocument> {
-		// check if username doesn't conflict
-		let newUser;
-		let name = UserUtil.removeDiacritics(ctx.request.body.username).replace(/[^0-9a-z ]+/gi, '');
-		const originalName = name;
-		const dupeNameUser = await state.models.User.findOne({ name }).exec();
-		if (dupeNameUser) {
-			name += Math.floor(Math.random() * 1000);
-		}
-		newUser = {
-			is_local: false,
+		const name = await UserUtil.makeValidName(ctx.request.body.username);
+		const newUser = {
 			name,
+			is_local: false,
 			email: ctx.request.body.email,
 			emails: [ctx.request.body.email],
 			providers: {
 				[provider]: {
 					id: String(ctx.request.body.provider_id),
-					name: originalName,
+					name: UserUtil.stripToValidName(ctx.request.body.username),
 					emails: [ctx.request.body.email],
 					created_at: new Date(),
 					profile: ctx.request.body.provider_profile,
 				},
 			},
-		};
-		return UserUtil.createUser(ctx, newUser as UserDocument, false);
+		} as UserDocument;
+		return UserUtil.createUser(ctx, newUser, false);
 	}
 }

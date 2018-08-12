@@ -109,6 +109,7 @@ export class IpsStrategy extends Strategy {
 				break;
 			default: throw new ApiError('Unsupported IPS version %s', this.config.version);
 		}
+		logger.debug(ctx.state, '[IpsStrategy.getProfile] Retrieving profile at: %s (%s)', this.config.baseURL + path, JSON.stringify(postData));
 
 		// get access token
 		let res = await this.client.post(path, postData, config) as AxiosResponse;

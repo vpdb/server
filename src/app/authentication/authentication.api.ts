@@ -477,7 +477,7 @@ export class AuthenticationApi extends Api {
 			user.providers = user.providers || {};
 			user.providers[provider] = {
 				id: String(profile.id),
-				name: this.getNameFromProfile(profile),
+				name: UserUtil.getNameFromProfile(profile),
 				emails,
 				created_at: new Date(),
 				modified_at: new Date(),
@@ -492,7 +492,7 @@ export class AuthenticationApi extends Api {
 		} else {
 			user.providers[provider].id = String(profile.id);
 			user.providers[provider].emails = emails;
-			user.providers[provider].name = this.getNameFromProfile(profile);
+			user.providers[provider].name = UserUtil.getNameFromProfile(profile);
 			user.providers[provider].modified_at = new Date();
 			user.providers[provider].profile = profile._json;
 			await LogUserUtil.success(ctx, user, 'authenticate', { provider });
@@ -523,30 +523,16 @@ export class AuthenticationApi extends Api {
 	 */
 	private async createOAuthUser(ctx: Context, provider: string, profile: OAuthProfile, emails: string[]): Promise<UserDocument> {
 		// compute username
-		let name: string;
-		if (!profile.displayName && !profile.username) {
-			logger.warn(ctx.state, '[AuthenticationApi.createOAuthUser] Profile data does contain neither display name nor username: %s', JSON.stringify(profile));
-			name = profile.emails[0].value.substr(0, profile.emails[0].value.indexOf('@'));
-		} else {
-			name = profile.displayName || profile.username;
-		}
-		name = UserUtil.removeDiacritics(name).replace(/[^0-9a-z ]+/gi, '');
-
-		// check if username doesn't conflict
-		let newUser: UserDocument;
-		const dupeNameUser = await state.models.User.findOne({ name }).exec();
-		if (dupeNameUser) {
-			name += Math.floor(Math.random() * 1000);
-		}
+		const name = await UserUtil.makeValidName(UserUtil.getNameFromProfile(profile));
 		const now = new Date();
-		newUser = {
+		let newUser = {
 			is_local: false,
 			name,
 			email: emails[0],
 			providers: {
 				[provider]: {
 					id: String(profile.id),
-					name: this.getNameFromProfile(profile),
+					name: UserUtil.getNameFromProfile(profile),
 					emails,
 					created_at: now,
 					modified_at: now,
@@ -579,19 +565,6 @@ export class AuthenticationApi extends Api {
 		await mailer.welcomeOAuth(ctx.state, newUser);
 
 		return newUser;
-	}
-
-	/**
-	 * Retrieves the username from the received OAuth profile. Falls back to
-	 * email prefix if none found.
-	 * @param profile
-	 * @return {string}
-	 */
-	private getNameFromProfile(profile: any) {
-		return profile.displayName
-			|| profile.username
-			|| (profile.name ? profile.name.givenName || profile.name.familyName : '')
-			|| profile.emails[0].value.substr(0, profile.emails[0].value.indexOf('@'));
 	}
 }
 

@@ -474,7 +474,7 @@ describe('The authentication engine of the VPDB API', () => {
 				profile: {
 					provider: 'github',
 					id: '11234',
-					displayName: 'Motörhead Dude-23',
+					displayName: 'Motörhead-Dude&23',
 					username: 'motorhead',
 					profileUrl: 'https://github.com/mockuser',
 					emails: [
@@ -484,7 +484,7 @@ describe('The authentication engine of the VPDB API', () => {
 				}
 			}).then(res => api.retrieveUserProfile(res));
 			api.tearDownUser(profile.id);
-			expect(profile.name).to.be('Motorhead Dude23');
+			expect(profile.name).to.be('Motorhead-Dude23');
 		});
 
 		it('should match the same already registered Github user even though email and name are different', async () => {

@@ -48,7 +48,7 @@ export abstract class Strategy extends AuthenticationApi {
 	/**
 	 * Where the redirection from the provider lands.
 	 *
-	 * @see GET /auth/:provider
+	 * @see GET /v1/authenticate/:provider
 	 * @param {Context} ctx Koa context coming from redirection, i.e. it should contain the access code or an error in the query.
 	 */
 	public async authenticateOAuth(ctx: Context): Promise<boolean> {

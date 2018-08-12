@@ -198,11 +198,13 @@ export class ApiError extends Error {
 	 */
 	public print(ctx: Context, requestLog = '') {
 		let cause = (this.cause ? '\n' + ApiError.colorStackTrace(this.cause) + '\n' : '');
+		let message = chalk.yellowBright(this.message.trim());
 		if (this.errors) {
 			cause += this.errors
 				.filter(error => !!error.reason)
 				.map(error => '\n' + ApiError.colorStackTrace(error.reason) + '\n')
 				.join('');
+			message += ' ' + JSON.stringify(this.errors);
 		}
 		let responseLog = '';
 		if (requestLog) {
@@ -212,13 +214,13 @@ export class ApiError extends Error {
 			logger.debug(ctx.state, '\n\n' + ApiError.colorStackTrace(this) + cause + requestLog + '\n\n');
 
 		} else if (cause || this.logLevel === 'warn') {
-			logger.warn(ctx.state, chalk.yellowBright(this.message.trim()));
+			logger.warn(ctx.state, message);
 
 			// sometimes the message is the stack, if that's the case then print the real stack.
 			if (this.message.match(/\n\s+at/)) {
 				logger.debug(ctx.state, '\n\n' + ApiError.colorStackTrace(this) + cause + (requestLog ? requestLog + '\n' : '') + responseLog);
 			} else {
-				logger.debug(ctx.state, chalk.yellowBright(this.message.trim()) + '\n' + cause + (requestLog ? requestLog + '\n' : '') + responseLog);
+				logger.debug(ctx.state, message + '\n' + cause + (requestLog ? requestLog + '\n' : '') + responseLog);
 			}
 		}
 	}

@@ -405,7 +405,7 @@ class ApiCache {
 		};
 		const body = isObject(ctx.response.body)
 			? ctx.response.body
-			: (ctx.response.get('content-type') === 'application/json'
+			: (ctx.response.get('content-type') && ctx.response.get('content-type').startsWith('application/json')
 				? JSON.parse(ctx.response.body)
 				: ctx.response.body);
 
@@ -498,7 +498,7 @@ class ApiCache {
 	private async updateCounters(cacheRoute: CacheRoute<any>, cacheHit: string): Promise<CacheResponse> {
 
 		const response = JSON.parse(cacheHit) as CacheResponse;
-		if (response.headers['content-type'] !== 'application/json') {
+		if (!response.headers['content-type'] || !response.headers['content-type'].startsWith('application/json')) {
 			return response;
 		}
 		const body = isObject(response.body) ? response.body : JSON.parse(response.body);

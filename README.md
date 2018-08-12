@@ -43,10 +43,10 @@ For more detailed instructions, check out the [Installation Guide](INSTALL.md).
 ## Cool Stuff
 
 - Data Structure
-- [Processors](https://github.com/vpdb/server/tree/master/src/files/processor)
+- [Processors](https://github.com/vpdb/server/tree/master/src/app/files/processor)
 - Table Blocks
-- [Realtime](https://github.com/vpdb/server/tree/master/src/clients)
-- [Caching](https://github.com/vpdb/server/blob/master/src/common/api.cache.ts#L34)
+- [Realtime](https://github.com/vpdb/server/tree/master/src/app/clients)
+- [Caching](https://github.com/vpdb/server/blob/master/src/app/common/api.cache.ts#L35)
 
 ### Tests
 

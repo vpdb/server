@@ -134,7 +134,7 @@
 		"@types/randomstring": "1.1.6",
 		"@types/redis": "2.8.6",
 		"@types/sax": "1.0.1",
-		"@types/strip-ansi": "^3.0.0",
+		"@types/strip-ansi": "3.0.0",
 		"@types/ua-parser-js": "0.7.32",
 		"@types/uglify-js": "3.0.3",
 		"@types/unzip": "0.1.1",

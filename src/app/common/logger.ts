@@ -115,7 +115,10 @@ class Logger {
 
 	public json(requestState: RequestState, level: string, data: any) {
 		if (this.jsonLogger) {
-			this.jsonLogger.log(Object.assign({}, this.getMeta(requestState), { level }, data));
+			this.jsonLogger.log(Object.assign(
+				{ time: new Date().toISOString(), level },
+				this.getMeta(requestState),
+				data));
 		}
 	}
 

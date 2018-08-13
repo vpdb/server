@@ -158,8 +158,7 @@ function reportRaygun(ctx: Context, err: Error) {
 			return {};
 		};
 	}
-	const customData = {};
-	raygunClient.send(err, customData, (response: IncomingMessage) => {
+	raygunClient.send(err, ctx.state.request, (response: IncomingMessage) => {
 		if (response.statusCode === 202) {
 			logger.info(ctx.state, '[koaErrorHandler] Report sent to Raygun.');
 		} else {
@@ -185,5 +184,5 @@ function reportRollbar(ctx: Context, err: Error) {
 			username: ctx.state.user.name || ctx.state.user.username,
 		};
 	}
-	rollbar.error(err, request);
+	rollbar.error(err, request, ctx.state.request);
 }

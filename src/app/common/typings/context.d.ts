@@ -69,6 +69,11 @@ export interface RequestState {
 		id: string;
 
 		/**
+		 * The (internal) path, so we can determine if it's a storage or API request.
+		 */
+		path: string;
+
+		/**
 		 * Request duration in ms
 		 */
 		duration?: number;

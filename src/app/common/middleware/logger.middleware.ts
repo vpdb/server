@@ -60,6 +60,7 @@ export function koaLogger() {
 		ctx.state.request = {
 			id: randomString.generate(10),
 			ip: ctx.request.get('x-forwarded-for') || ctx.ip || undefined,
+			path: ctx.request.path,
 		};
 		ctx.response.set('X-Request-Id', ctx.state.request.id);
 		try {

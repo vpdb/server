@@ -322,7 +322,7 @@ describe('The authentication engine of the VPDB API', () => {
 	describe('when a provider token is provided in the header', () => {
 		let ipsUser, githubUser;
 		let ipsProfile, githubProfile;
-		let appToken;
+		let providerToken;
 
 		before(async () => {
 
@@ -340,52 +340,52 @@ describe('The authentication engine of the VPDB API', () => {
 				scopes: [ 'community', 'service' ]
 			}).then(res => res.expectStatus(201));
 
-			appToken = res.data.token;
+			providerToken = res.data.token;
 		});
 
 		it('should fail when no user header is provided', async () => {
-			await api.withToken(appToken)
+			await api.withToken(providerToken)
 				.get('/v1/user')
 				.then(res => res.expectError(400, 'must provide "x-vpdb-user-id" or "x-user-id" header'));
 		});
 
 		it('should fail when a non-existent vpdb user header is provided', async () => {
-			await api.withToken(appToken)
+			await api.withToken(providerToken)
 				.withHeader('X-Vpdb-User-Id', 'blürpsl')
 				.get('/v1/user')
 				.then(res => res.expectError(400, 'no user with id'));
 		});
 
 		it('should fail with a vpdb user header of a different provider', async () => {
-			await api.withToken(appToken)
+			await api.withToken(providerToken)
 				.withHeader('X-Vpdb-User-Id', api.getUser('member').id)
 				.get('/v1/user')
 				.then(res => res.expectError(400, 'user has not been authenticated with'));
 		});
 
 		it('should fail on a out-of-scope resource', async () => {
-			await api.withToken(appToken)
+			await api.withToken(providerToken)
 				.withHeader('X-Vpdb-User-Id', ipsUser.id)
 				.post('/v1/backglasses', {})
 				.then(res => res.expectError(401, 'token has an invalid scope'));
 		});
 
 		it('should fail with a non-existent user header', async () => {
-			await api.withToken(appToken)
+			await api.withToken(providerToken)
 				.withHeader('X-User-Id', 'blarp')
 				.get('/v1/user')
 				.then(res => res.expectError(400, 'no user with id'));
 		});
 
 		it('should fail with a user header from a different provider', async () => {
-			await api.withToken(appToken)
+			await api.withToken(providerToken)
 				.withHeader('X-User-Id', githubProfile.id)
 				.get('/v1/user')
 				.then(res => res.expectError(400, 'no user with id'));
 		});
 
 		it('should succeed with the correct provider user header', async () => {
-			res = await api.withToken(appToken)
+			res = await api.withToken(providerToken)
 				.withHeader('X-User-Id', ipsProfile.id)
 				.get('/v1/user')
 				.then(res => res.expectStatus(200));
@@ -393,7 +393,7 @@ describe('The authentication engine of the VPDB API', () => {
 		});
 
 		it('should succeed with the correct vpdb user header', async () => {
-			res = await api.withToken(appToken)
+			res = await api.withToken(providerToken)
 				.withHeader('X-Vpdb-User-Id', ipsUser.id)
 				.get('/v1/user')
 				.then(res => res.expectStatus(200));
@@ -402,7 +402,7 @@ describe('The authentication engine of the VPDB API', () => {
 
 		it('should be able to create an oauth user', async () => {
 			res = await api.markRootTeardown()
-				.withToken(appToken)
+				.withToken(providerToken)
 				.put('/v1/users', { provider_id: 1234, email: 'oauth@vpdb.io', username: 'oauthtest' })
 				.then(res => res.expectStatus(201));
 			expect(res.data.providers.ipbtest).to.be.ok();

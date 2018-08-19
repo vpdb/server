@@ -26,6 +26,7 @@ import { LogUserDocument } from '../log-user/log.user.document';
 import { state } from '../state';
 import { ContentAuthor } from '../users/content.author';
 import { UserDocument } from '../users/user.document';
+import { UserUtil } from '../users/user.util';
 import { logger } from './logger';
 import { config, settings } from './settings';
 
@@ -192,7 +193,7 @@ export class SlackBot {
 				as_user: false,
 				username: actor.name,
 				attachments: msg.atts,
-				icon_url: 'https://www.gravatar.com/avatar/' + actor.gravatar_id + '?d=retro',
+				icon_url: 'https://www.gravatar.com/avatar/' + UserUtil.getGravatarHash(actor) + '?d=retro',
 			});
 		} catch (err) {
 			logger.error(err, 'Error sending event log to slack.');

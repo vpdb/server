@@ -17,6 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { createHash } from 'crypto';
 import { assign, keys, sum, uniq, values } from 'lodash';
 import randomString from 'randomstring';
 
@@ -353,6 +354,14 @@ export class UserUtil {
 			|| profile.username
 			|| (profile.name ? profile.name.givenName || profile.name.familyName : '')
 			|| profile.emails[0].value.substr(0, profile.emails[0].value.indexOf('@'));
+	}
+
+	/**
+	 * Returns the MD5 hash of the user's email or null if email not set.
+	 * @param user
+	 */
+	public static getGravatarHash(user: UserDocument): string {
+		return user.email ? createHash('md5').update(user.email.toLowerCase()).digest('hex') : null;
 	}
 
 	/**

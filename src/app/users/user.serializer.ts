@@ -17,13 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { createHash } from 'crypto';
 import { assign, find, isEmpty, mapValues, pick, pickBy, uniq } from 'lodash';
 import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { config } from '../common/settings';
 import { Context } from '../common/typings/context';
 import { ModelName } from '../common/typings/models';
 import { UserDocument } from './user.document';
+import { UserUtil } from './user.util';
 
 export class UserSerializer extends Serializer<UserDocument> {
 
@@ -41,7 +41,7 @@ export class UserSerializer extends Serializer<UserDocument> {
 		const user: UserDocument = pick(doc, ['id', 'name', 'username']) as UserDocument;
 
 		// gravatar
-		user.gravatar_id = doc.email ? createHash('md5').update(doc.email.toLowerCase()).digest('hex') : null;
+		user.gravatar_id = UserUtil.getGravatarHash(doc);
 
 		// provider id
 		if (ctx.state.tokenType === 'provider' && doc.providers && doc.providers[ctx.state.tokenProvider]) {

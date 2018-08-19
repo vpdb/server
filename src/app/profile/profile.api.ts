@@ -105,7 +105,7 @@ export class ProfileApi extends Api {
 
 		// invalidate cache
 		const newUser = state.serializers.User.reduced(ctx, user);
-		if (!this.hasFieldsModified(oldUser, newUser, [ 'name', 'username', 'gravatar_id'])) {
+		if (!this.hasFieldsModified(oldUser, newUser, [ 'name', 'username', 'email'])) {
 			await apiCache.invalidateUpdatedUser(ctx.state, user, ['simple', 'detailed']);
 		} else {
 			await apiCache.invalidateUpdatedUser(ctx.state, user);

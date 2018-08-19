@@ -18,11 +18,10 @@
  */
 
 import * as Router from 'koa-router';
+import { apiCache } from '../common/api.cache';
 import { ApiRouter } from '../common/api.router';
 import { Scope } from '../common/scope';
 import { MiscApi } from './misc.api';
-import { apiCache } from '../common/api.cache';
-import { gameListCacheCounters } from '../games/game.api.cache.config';
 
 export class MiscApiRouter implements ApiRouter {
 

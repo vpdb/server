@@ -142,6 +142,7 @@ function log(ctx: Context, start: number, len: number, err: any = null, event: s
 	const message = `[${logUserIp}] ${upstream}${logStatus(' ' + statusCode + ' ')} ${logMethod(ctx.method + ' ' + ctx.originalUrl)} ${duration}ms - ${length}${cache}`;
 	const level = statusCode >= 500 ? 'error' : 'info';
 	const fullLog = statusCode >= 400 && statusCode !== 404;
+	const requestHeaders = stripAuthHeaders(ctx.request.headers);
 	logger.text(ctx.state, level, message);
 	logger.json(ctx.state, level, {
 		type: 'access',
@@ -152,9 +153,9 @@ function log(ctx: Context, start: number, len: number, err: any = null, event: s
 			ip: ctx.state.request.ip,
 			method: ctx.request.method,
 			path: ctx.request.url,
-			headers: fullLog ? Object.keys(ctx.request.headers)
-				.filter(header => !['accept', 'connection', 'pragma', 'cache-control', 'authorization', 'host', 'origin'].includes(header))
-				.reduce((obj: { [key: string]: string }, key: string) => { obj[key] = ctx.request.headers[key]; return obj; }, {}) : undefined,
+			headers: fullLog ? Object.keys(requestHeaders)
+				.filter(header => !['accept', 'connection', 'pragma', 'cache-control', 'host', 'origin'].includes(header))
+				.reduce((obj: { [key: string]: string }, key: string) => { obj[key] = requestHeaders[key]; return obj; }, {}) : undefined,
 			body: ctx.request.get('content-type').startsWith('application/json') ? ctx.request.rawBody : undefined,
 		},
 		response: {
@@ -168,4 +169,20 @@ function log(ctx: Context, start: number, len: number, err: any = null, event: s
 			cached: ctx.response.headers['x-cache-api'] ? ctx.response.headers['x-cache-api'] === 'HIT' : undefined,
 		},
 	});
+}
+
+function stripAuthHeaders(headers: { [key: string]: string }) {
+	if (!headers.authorization) {
+		return headers;
+	}
+	const [bearer, token] = headers.authorization.split(' ');
+	const jwtParts = token.split('.');
+	let stripped: string;
+	if (jwtParts.length === 3) {
+		stripped = jwtParts.map(p => p.replace(/^(.{3})(.+)(.{3})$/, '$1***$3')).join('.');
+	} else {
+		stripped = token.replace(/^(.{3})(.+)(.{3})$/, '$1***$3')
+	}
+	headers.authorization = `${bearer} ${stripped}`;
+	return headers;
 }

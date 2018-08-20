@@ -176,6 +176,9 @@ function stripAuthHeaders(headers: { [key: string]: string }) {
 		return headers;
 	}
 	const [bearer, token] = headers.authorization.split(' ');
+	if (!token) {
+		return headers;
+	}
 	const jwtParts = token.split('.');
 	let stripped: string;
 	if (jwtParts.length === 3) {

@@ -77,7 +77,7 @@
 		"mongoose-paginate": "5.0.3",
 		"mongoose-unique-validator": "2.0.1",
 		"nodegit": "0.22.2",
-		"nodemailer": "4.6.7",
+		"nodemailer": "4.6.8",
 		"ole-doc": "0.1.1",
 		"optipng": "1.1.0",
 		"passthrough-counter": "1.0.0",

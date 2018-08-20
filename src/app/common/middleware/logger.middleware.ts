@@ -140,8 +140,8 @@ function log(ctx: Context, start: number, len: number, err: any = null, event: s
 
 	// log this
 	const message = `[${logUserIp}] ${upstream}${logStatus(' ' + statusCode + ' ')} ${logMethod(ctx.method + ' ' + ctx.originalUrl)} ${duration}ms - ${length}${cache}`;
-	const level = statusCode >= 500 && statusCode < 600 ? 'error' : 'info';
-	const fullLog = !['GET', 'OPTIONS'].includes(ctx.request.method);
+	const level = statusCode >= 500 ? 'error' : 'info';
+	const fullLog = statusCode >= 400 && statusCode !== 404;
 	logger.text(ctx.state, level, message);
 	logger.json(ctx.state, level, {
 		type: 'access',

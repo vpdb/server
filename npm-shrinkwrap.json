@@ -1632,9 +1632,9 @@
 			"integrity": "sha1-Jw8HbFpywC9bZaR9+Uxf46J4iS8="
 		},
 		"bull": {
-			"version": "3.4.4",
-			"resolved": "https://registry.npmjs.org/bull/-/bull-3.4.4.tgz",
-			"integrity": "sha512-44Kwpqu/8IhCIq8zrSszbvuUGpTOMp5qNWuOkTJAwQXZyYRZ0XAAEqUyFP61CULDFKQ5+m6Xs+VMvhtY73hGiA==",
+			"version": "3.4.7",
+			"resolved": "https://registry.npmjs.org/bull/-/bull-3.4.7.tgz",
+			"integrity": "sha512-ZWhfP7ujtrppbFppl3vmNU1QaoA4/BuqhnZsJT1NnKUkRxlxYLuTZIVdQJbb71fMNXhLdMngYS5M98OvdoZu/Q==",
 			"requires": {
 				"bluebird": "^3.5.0",
 				"cron-parser": "^2.5.0",
@@ -2318,9 +2318,9 @@
 			}
 		},
 		"cron-parser": {
-			"version": "2.5.0",
-			"resolved": "https://registry.npmjs.org/cron-parser/-/cron-parser-2.5.0.tgz",
-			"integrity": "sha512-gzmXu16/prizIbKPPKJo+WgBpV7k8Rxxu9FgaANW+vx5DebCXavfRqbROjKkr9ETvVPqs+IO+NXj4GG/eLf8zQ==",
+			"version": "2.6.0",
+			"resolved": "https://registry.npmjs.org/cron-parser/-/cron-parser-2.6.0.tgz",
+			"integrity": "sha512-KGfDDTjBIx85MnVYcdhLccoJH/7jcYW+5Z/t3Wsg2QlJhmmjf+97z+9sQftS71lopOYYapjEKEvmWaCsym5Z4g==",
 			"requires": {
 				"is-nan": "^1.2.1",
 				"moment-timezone": "^0.5.0"

@@ -25,6 +25,7 @@ import { resolve as pathResolve } from 'path';
 import { spawn } from 'child_process';
 import { existsSync, mkdirSync } from 'fs';
 import { parse, UrlWithStringQuery } from 'url';
+import { apiCache } from '../app/common/api.cache';
 import { config } from '../app/common/settings';
 
 (async () => {
@@ -36,7 +37,7 @@ import { config } from '../app/common/settings';
  *
  * In your current deployment folder, run:
  *
- * > APP_SETTINGS=../settings.js node src/scripts/reset-to-production.js
+ * > APP_SETTINGS=../settings.js node -r ts-node/register build/scripts/reset-to-production.js
  *
  * Replace emails (in MongoDB console):
  *
@@ -141,6 +142,9 @@ async function resetToProduction() {
 			args.push(`db.grantRolesToUser("${dbUser}", [ { role: "readWrite", db: "${dbName}" } ] )`);
 			await exec('mongo', args);
 		}
+
+		// clear cache
+		await apiCache.invalidateAll();
 
 		console.log('=== All done!');
 

@@ -439,6 +439,15 @@ export interface VpdbConfig {
 		 */
 		path: string;
 	};
+
+	primary?: {
+		api: VpdbHost;
+		replicaDB: string;
+		auth: {
+			user: string;
+			password: string;
+		}
+	};
 }
 
 export interface VpdbIpsConfig {

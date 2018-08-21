@@ -46,7 +46,7 @@ export class ImageOptimizationProcessor implements OptimizationProcessor<FileVar
 
 		if (file.file_type === 'playfield') {
 			logger.info(requestState, '[ImageOptimizationProcessor] Skipping (will process when orientation is set): %s', file.toDetailedString(variation));
-			return dest;
+			return null;
 		}
 
 		const quanter = new PngQuant([128]);

@@ -97,6 +97,9 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		}
 		await (release._game as GameDocument).update({ modified_at: new Date() });
 
+		// invalidate cache
+		await apiCache.invalidateCreatedRelease(ctx.state, release);
+
 		release = await this.getDetails(release._id);
 		this.success(ctx, state.serializers.Release.detailed(ctx, release, { fields: [ 'is_active' ]}), 201);
 
@@ -114,9 +117,6 @@ export class ReleaseApi extends ReleaseAbstractApi {
 				await mailer.releaseAdded(ctx.state, ctx.state.user, author._user as UserDocument, release);
 			}
 		}
-
-		// invalidate cache
-		await apiCache.invalidateCreatedRelease(ctx.state, release);
 	}
 
 	/**

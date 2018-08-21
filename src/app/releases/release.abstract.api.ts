@@ -20,6 +20,7 @@
 import gm from 'gm';
 import { DocumentQuery } from 'mongoose';
 
+import { createWriteStream } from 'fs';
 import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
@@ -102,11 +103,17 @@ export abstract class ReleaseAbstractApi extends Api {
 					file.preprocessed.rotation = file.preprocessed.rotation || 0;
 					file.preprocessed.unvalidatedRotation = (file.preprocessed.rotation + rotation.angle + 360) % 360;
 
-					logger.info(ctx.state, '[ReleaseApi.preprocess] Rotating file "%s" %s° (was %s° before, plus %s°).', file.getPath(ctx.state), file.preprocessed.unvalidatedRotation, file.preprocessed.rotation, rotation.angle);
+					logger.info(ctx.state, '[ReleaseApi.preProcess] Rotating file "%s" %s° (was %s° before, plus %s°).', file.getPath(ctx.state), file.preprocessed.unvalidatedRotation, file.preprocessed.rotation, rotation.angle);
 
 					const img = gm(src);
 					img.rotate('black', -file.preprocessed.unvalidatedRotation);
-					await (img as any).writeAsync(file.getPath(ctx.state));
+					await new Promise<void>((resolve, reject) => {
+						const writeStream = createWriteStream(file.getPath(ctx.state));
+						writeStream.on('finish', resolve);
+						writeStream.on('error', reject);
+						img.stream().on('error', reject).pipe(writeStream).on('error', reject);
+					});
+					logger.info(ctx.state, '[ReleaseApi.preProcess] Rotated file written to %s.', file.getPath(ctx.state));
 				}
 
 				// update metadata
@@ -168,18 +175,18 @@ export abstract class ReleaseAbstractApi extends Api {
 	 * @returns {Promise}
 	 */
 	protected async postProcess(requestState: RequestState, fileIds: string[]) {
-		logger.info(requestState, '[ReleaseApi.postprocess] Post-processing files [ %s ]', fileIds.join(', '));
+		logger.info(requestState, '[ReleaseApi.postProcess] Post-processing files [ %s ]', fileIds.join(', '));
 		for (const id of fileIds) {
 			const file = await state.models.File.findById(id).exec();
 			// so now we're here and unvalidatedRotation is now validated.
 			if (file.preprocessed && file.preprocessed.unvalidatedRotation) {
-				logger.info(requestState, '[ReleaseApi.postprocess] Validation passed, setting rotation to %s°', file.preprocessed.unvalidatedRotation);
+				logger.info(requestState, '[ReleaseApi.postProcess] Validation passed, setting rotation to %s°', file.preprocessed.unvalidatedRotation);
 				await state.models.File.update({ _id: file._id }, {
 					preprocessed: { rotation: file.preprocessed.unvalidatedRotation },
 				});
+				const protectedPath = file.getPath(requestState);
+				await processorQueue.processFile(requestState, file, protectedPath);
 			}
-			const protectedPath = file.getPath(requestState, null, { tmpSuffix: '_original' });
-			await processorQueue.processFile(requestState, file, protectedPath);
 		}
 	}
 
@@ -206,17 +213,17 @@ export abstract class ReleaseAbstractApi extends Api {
 	 * @param {string} rotate Rotation query from URL
 	 * @returns {{ file: string, angle: number }[]} Parsed rotation parameters
 	 */
-	private parseRotationParams(rotate: string) {
+	private parseRotationParams(rotate: string): Array<{ file: string, angle: number }> {
 		return rotate.split(',').map(r => {
 			if (!r.includes(':')) {
 				throw new ApiError('When providing the "rotation" query, pairs must be separated by ":".').status(400);
 			}
-			const rot = r.split(':');
+			const [fileId, rotation] = r.split(':');
 
-			if (!['0', '90', '180', '270'].includes(rot[1])) {
-				throw new ApiError('Wrong angle "%s", must be one of: [0, 90, 180, 270].', rot[1]).status(400);
+			if (!['0', '90', '180', '270'].includes(rotation)) {
+				throw new ApiError('Wrong angle "%s", must be one of: [0, 90, 180, 270].', rotation).status(400);
 			}
-			return { file: rot[0], angle: parseInt(rot[1], 10) };
+			return { file: fileId, angle: parseInt(rotation, 10) };
 		});
 	}
 }

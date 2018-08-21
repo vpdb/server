@@ -49,7 +49,6 @@ describe.skip('The tag cache', () => {
 			const name = 'tagme-updated';
 			await api
 				.as('moderator')
-				.debug()
 				.markTeardown()
 				.post('/v1/tags', { name: id, description: 'A tag, generated for testing purpose.' })
 				.then(res => res.expectStatus(201));

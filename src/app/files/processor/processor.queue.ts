@@ -97,6 +97,13 @@ class ProcessorQueue {
 			if (processor) {
 				const tmpSrcPath = file.getPath(requestState, null, { tmpSuffix: '_' + variation.name + '.source' });
 				const destPath = file.getPath(requestState, variation, { tmpSuffix: '_' + processor.name + '.processing' });
+				try {
+					// we might be here through postprocess and the variation is still
+					// processing from the upload. so we wait until that's done.
+					await this.waitForVariationCreation(requestState, file, variation);
+				} catch (err) {
+					// file's not in queue, all good, continue.
+				}
 				await FileUtil.cp(srcPath, tmpSrcPath);
 				await processorManager.queueCreation(requestState, processor, file, tmpSrcPath, destPath, null, variation);
 				n++;

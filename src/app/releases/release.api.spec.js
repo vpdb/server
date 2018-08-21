@@ -418,6 +418,57 @@ describe('The VPDB `Release` API', function() {
 			const user = 'member';
 			hlp.game.createGame('moderator', request, function(game) {
 				hlp.file.createVpt(user, request, function(vptfile) {
+					hlp.file.createPlayfield(user, request, 'ws', 'playfield', function(playfield) {
+						expect(playfield.metadata.size.width).to.be(1920);
+						expect(playfield.metadata.size.height).to.be(1080);
+						request
+							.post('/api/v1/releases')
+							.query({ rotate: playfield.id + ':90' })
+							.as(user)
+							.send({
+								name: 'release',
+								license: 'by-sa',
+								_game: game.id,
+								versions: [
+									{
+										files: [ {
+											_file: vptfile.id,
+											_playfield_image: playfield.id,
+											_compatibility: [ '9.9.0' ],
+											flavor: { orientation: 'fs', lighting: 'night' } }
+										],
+										version: '1.0.0'
+									}
+								],
+								authors: [ { _user: hlp.getUser(user).id, roles: [ 'Table Creator' ] } ]
+							})
+							.end(function (err, res) {
+								hlp.expectStatus(err, res, 201);
+								hlp.doomRelease(user, res.body.id);
+								let playfieldRotated = res.body.versions[0].files[0].playfield_image;
+								expect(playfieldRotated.metadata.size.width).to.be(1080);
+								expect(playfieldRotated.metadata.size.height).to.be(1920);
+								request.get(playfieldRotated.variations.full.url).end((err, res) => {
+									hlp.expectStatus(err, res, 200);
+									gm(res.body).size((err, size) => {
+										if (err) {
+											throw err;
+										}
+										expect(size.width).to.be(1080);
+										expect(size.height).to.be(1920);
+										done();
+									})
+								});
+							});
+					});
+				});
+			});
+		});
+
+		it('should succeed when rotating a fs playfield to a ws file', function(done) {
+			const user = 'member';
+			hlp.game.createGame('moderator', request, function(game) {
+				hlp.file.createVpt(user, request, function(vptfile) {
 					hlp.file.createPlayfield(user, request, 'fs', 'playfield', function(playfield) {
 						request
 							.post('/api/v1/releases')

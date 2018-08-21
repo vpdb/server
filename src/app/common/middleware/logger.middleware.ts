@@ -184,7 +184,7 @@ function stripAuthHeaders(headers: { [key: string]: string }) {
 	if (jwtParts.length === 3) {
 		stripped = jwtParts.map(p => p.replace(/^(.{3})(.+)(.{3})$/, '$1***$3')).join('.');
 	} else {
-		stripped = token.replace(/^(.{3})(.+)(.{3})$/, '$1***$3')
+		stripped = token.replace(/^(.{3})(.+)(.{3})$/, '$1***$3');
 	}
 	headers.authorization = `${bearer} ${stripped}`;
 	return headers;

@@ -236,7 +236,7 @@ export class BackglassApi extends Api {
 	 */
 	public async view(ctx: Context) {
 		const serializerOpts: SerializerOptions = {
-			fields: [],
+			includedFields: [],
 		};
 		const backglass = await state.models.Backglass.findOne({ id: ctx.params.id })
 			.populate({ path: '_game' })
@@ -251,7 +251,7 @@ export class BackglassApi extends Api {
 		await backglass.assertModeratedView(ctx);
 		const populated = await backglass.populateModeration(ctx, this.getRequestedFields(ctx));
 		if (populated !== false) {
-			serializerOpts.includedFields = ['moderation'];
+			serializerOpts.includedFields.push('moderation');
 		}
 		return this.success(ctx, state.serializers.Backglass.detailed(ctx, populated as BackglassDocument, serializerOpts));
 	}

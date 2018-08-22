@@ -65,7 +65,7 @@ export class FileSerializer extends Serializer<FileDocument> {
 	protected _detailed(ctx: Context, doc: FileDocument, opts: SerializerOptions): FileDocument {
 		const file = this._simple(ctx, doc, opts);
 		assign(file, pick(doc, ['created_at', 'file_type']));
-		if ((opts && opts.fields && opts.fields.includes('is_active')) || !doc.is_active) {
+		if ((opts && opts.includedFields && opts.includedFields.includes('is_active')) || !doc.is_active) {
 			file.is_active = doc.is_active;
 		}
 

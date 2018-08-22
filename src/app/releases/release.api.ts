@@ -101,7 +101,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		await apiCache.invalidateCreatedRelease(ctx.state, release);
 
 		release = await this.getDetails(release._id);
-		this.success(ctx, state.serializers.Release.detailed(ctx, release, { fields: [ 'is_active' ]}), 201);
+		this.success(ctx, state.serializers.Release.detailed(ctx, release, { includedFields: [ 'is_active' ]}), 201);
 
 		await LogEventUtil.log(ctx, 'create_release', true, {
 			release: state.serializers.Release.detailed(ctx, release, { thumbFormat: 'medium' }),

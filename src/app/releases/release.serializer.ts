@@ -66,11 +66,15 @@ export class ReleaseSerializer extends Serializer<ReleaseDocument> {
 	}
 
 	protected _simple(ctx: Context, doc: ReleaseDocument, opts: SerializerOptions): ReleaseDocument {
-		return this.serializeRelease(ctx, doc, opts, state.serializers.ReleaseVersion.simple.bind(state.serializers.ReleaseVersion), true);
+		return this.serializeRelease(ctx, doc, opts,
+			state.serializers.ReleaseVersion.simple.bind(state.serializers.ReleaseVersion),
+			true);
 	}
 
 	protected _detailed(ctx: Context, doc: ReleaseDocument, opts: SerializerOptions): ReleaseDocument {
-		return this.serializeRelease(ctx, doc, opts, state.serializers.ReleaseVersion.detailed.bind(state.serializers.ReleaseVersion), false,
+		return this.serializeRelease(ctx, doc, opts,
+			state.serializers.ReleaseVersion.detailed.bind(state.serializers.ReleaseVersion),
+			false,
 			['description', 'acknowledgements', 'license', 'modified_at']);
 	}
 
@@ -79,7 +83,8 @@ export class ReleaseSerializer extends Serializer<ReleaseDocument> {
 							stripVersions: boolean,
 							additionalFields: string[] = []): ReleaseDocument {
 
-		const requestedFields = intersection(['description'], (ctx.query.include_fields || '').split(','));
+		const validRequestedFields = ['description'];
+		const requestedFields = intersection(validRequestedFields, opts.includedFields);
 		additionalFields = additionalFields || [];
 		const fields = ['id', 'name', 'created_at', 'released_at', 'rating', ...additionalFields, ...requestedFields];
 

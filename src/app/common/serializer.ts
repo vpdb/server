@@ -240,7 +240,6 @@ export interface SerializerOptions {
 	 * after starring.
 	 */
 	starredReleaseIds?: string[];
-	fields?: string[];
 }
 
 export type SerializerLevel = 'reduced' | 'simple' | 'detailed';

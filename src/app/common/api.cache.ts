@@ -198,6 +198,7 @@ class ApiCache {
 	 * @param release Changed, added or removed release
 	 */
 	public async invalidateCreatedRelease(requestState: RequestState, release: ReleaseDocument) {
+		await this.invalidateList(requestState, 'release');
 		await this.invalidateEntity(requestState, 'game', (release._game as GameDocument).id, 'detailed');
 	}
 

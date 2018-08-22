@@ -147,7 +147,7 @@ class ApiCache {
 		const levels = this.getLevel(level);
 		logger.info(requestState, '[ApiCache.invalidateEntity] Invalidating %s with ID %s for level%s %s.', modelName, entityId, levels.length === 1 ? '' : 's', levels.join(', '));
 		for (const l of levels) {
-			tags.push([{ entities: [{ modelName, entityId, level: l }] }]);
+			tags.push([{ entities: [{ modelName: modelName.toLowerCase(), entityId, level: l }] }]);
 		}
 		await this.invalidate(requestState, ...tags);
 	}
@@ -158,7 +158,7 @@ class ApiCache {
 	 * @param {string} modelName Name of the model, e.g. "game"
 	 */
 	public async invalidateList(requestState: RequestState, modelName: string) {
-		await this.invalidate(requestState, [ { list: modelName }]);
+		await this.invalidate(requestState, [ { list: modelName.toLowerCase() }]);
 	}
 
 	/**

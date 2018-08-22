@@ -27,6 +27,7 @@ import { acl } from '../acl';
 import { ApiError } from '../api.error';
 import { logger } from '../logger';
 import { Context } from '../typings/context';
+import { apiCache } from '../api.cache';
 
 const modelResourceMap: { [key: string]: string } = {
 	Release: 'releases',
@@ -201,6 +202,10 @@ export function moderationPlugin(schema: Schema) {
 				moderationEvent = await entity.moderate(ctx.state.user, ctx.request.body.message);
 				break;
 		}
+
+		// invalidate cache
+		await apiCache.invalidateEntity(ctx.state, (entity.constructor as any).modelName, entity.id);
+		await apiCache.invalidateList(ctx.state, (entity.constructor as any).modelName);
 
 		// event log
 		const referenceName = modelReferenceMap[this.modelName];

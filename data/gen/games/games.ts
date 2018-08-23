@@ -102,7 +102,13 @@ export async function uploadGames(config: UploadConfig) {
 		ipdbGame._backglass = bgRef;
 		ipdbGame._logo = logoRef;
 
-		await apiClient.post('/v1/games', ipdbGame);
+		res = await apiClient.post('/v1/games', ipdbGame);
+		if (res.headers['x-token-refresh']) {
+			apiConfig.headers[config.authHeader] = `Bearer ${res.headers['x-token-refresh']}`;
+			storageConfig.headers[config.authHeader] = `Bearer ${res.headers['x-token-refresh']}`;
+			apiClient = Axios.create(apiConfig);
+			storageClient = Axios.create(storageConfig);
+		}
 	}
 	console.log('done!');
 }

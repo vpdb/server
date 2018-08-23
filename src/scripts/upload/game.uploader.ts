@@ -1,116 +1,85 @@
-import { resolve } from 'path';
 import { readFileSync } from 'fs';
-import Axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { resolve } from 'path';
 
-import { UploadConfig } from '../../../src/scripts/upload-data';
+import { DataUploader } from './data.uploader';
 
-export async function uploadGames(config: UploadConfig) {
+export class GameUploader extends DataUploader {
 
-	const ipdb = require('../../ipdb.json');
-	console.log('Local index with %d entries loaded.', ipdb.length);
+	public async upload(): Promise<void> {
 
-	const apiConfig: AxiosRequestConfig = { baseURL: config.apiUri, headers: { 'Content-Type': 'application/json' } }
-	const storageConfig: AxiosRequestConfig = { baseURL: config.storageUri, headers: {} }
+		// import data
+		const ipdb = require('../../ipdb.json');
+		console.log('Local index with %d entries loaded.', ipdb.length);
 
-	if (config.httpSimple) {
-		const httpSimple = 'Basic ' + new Buffer(config.httpSimple.username + ':' + config.httpSimple.password).toString('base64');
-		apiConfig.headers.Authorization = httpSimple;
-		storageConfig.headers.Authorization = httpSimple;
+		// setup paths
+		const bgFolder = resolve(this.config.folder, 'backglass');
+		const logoFolder = resolve(this.config.folder, 'logo');
+		console.log('Reading backglasses from %s.', bgFolder);
+		console.log('Reading logos from %s.', logoFolder);
+
+		await this.login();
+		for (const localData of data) {
+
+			// read metadata from index
+			const ipdbGame = ipdb.find((g: any) => g.ipdb.number === localData.ipdb);
+			if (!ipdbGame) {
+				console.warn('No game in local index found with IPDB# %s.', localData.ipdb);
+				continue;
+			}
+			if (!localData.bg || !localData.logo) {
+				console.log('Skipping "%s" due to incomplete media.', ipdbGame.title);
+				continue;
+			}
+			console.log('Adding game "%s"...', ipdbGame.title);
+
+			// upload background
+			const bg = readFileSync(resolve(bgFolder, localData.bg));
+			let res = await this.storage().post('/v1/files', bg, {
+				headers: {
+					'Content-Disposition': 'attachment; filename="' + localData.bg + '"',
+					'Content-Length': bg.length,
+					'Content-Type': 'image/png',
+				},
+				params: { type: 'backglass' },
+			});
+			const bgRef = res.data.id;
+
+			// upload logo
+			const logo = readFileSync(resolve(logoFolder, localData.logo));
+			res = await this.storage().post('/v1/files', bg, {
+				headers: {
+					'Content-Disposition': 'attachment; filename="' + localData.logo + '"',
+					'Content-Length': logo.length,
+					'Content-Type': 'image/png',
+				},
+				params: { type: 'logo' },
+			});
+			const logoRef = res.data.id;
+
+			// complete data
+			if (localData.id) {
+				ipdbGame.id = localData.id;
+			} else if (ipdbGame.short) {
+				ipdbGame.id = ipdbGame.short[0].replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
+			} else {
+				ipdbGame.id = ipdbGame.title.replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
+			}
+			if (localData.title) {
+				ipdbGame.title = localData.title;
+			}
+			ipdbGame.keywords = localData.keywords;
+			ipdbGame.year = ipdbGame.year || localData.year || 1900;
+			ipdbGame.game_type = ipdbGame.game_type || 'na';
+			ipdbGame.manufacturer = ipdbGame.manufacturer || 'unknown';
+			ipdbGame._backglass = bgRef;
+			ipdbGame._logo = logoRef;
+
+			res = await this.api().post('/v1/games', ipdbGame);
+			this.updateToken(res.headers['x-token-refresh']);
+		}
+		console.log('done!');
 	}
 
-	let apiClient: AxiosInstance = Axios.create(apiConfig);
-	let storageClient: AxiosInstance = Axios.create(storageConfig);
-
-	// login
-	console.log('Authenticating with user %s...', config.credentials.username)
-	let res = await apiClient.post('/v1/authenticate', config.credentials);
-	if (res.status != 200) {
-		throw new Error('Error authenticating (' + res.status + '): ' + JSON.stringify(res.data));
-	}
-	if (!res.data.user.roles.includes('contributor')) {
-		throw new Error('Must be contributor in order to add games!');
-	}
-	if (!res.data.token) {
-		throw new Error('Could not retrieve token.');
-	}
-
-	// update clients with token
-	apiConfig.headers[config.authHeader] = `Bearer ${res.data.token}`;
-	storageConfig.headers[config.authHeader] = `Bearer ${res.data.token}`;
-	apiClient = Axios.create(apiConfig);
-	storageClient = Axios.create(storageConfig);
-
-	// setup paths
-	const bgFolder = resolve(config.folder, 'backglass');
-	const logoFolder = resolve(config.folder, 'logo');
-	console.log('Reading backglasses from %s.', bgFolder);
-	console.log('Reading logos from %s.', logoFolder);
-
-	for (const localData of data) {
-
-		// read metadata from index
-		const ipdbGame = ipdb.find((g: any) => g.ipdb.number === localData.ipdb);
-		if (!ipdbGame) {
-			console.warn('No game in local index found with IPDB# %s.', localData.ipdb);
-			continue;
-		}
-		if (!localData.bg || !localData.logo) {
-			console.log('Skipping "%s" due to incomplete media.', ipdbGame.title);
-			continue;
-		}
-		console.log('Adding game "%s"...', ipdbGame.title);
-
-		// upload background
-		const bg = readFileSync(resolve(bgFolder, localData.bg));
-		res = await storageClient.post('/v1/files', bg, {
-			headers: {
-				'Content-Disposition': 'attachment; filename="' + localData.bg + '"',
-				'Content-Length': bg.length,
-				'Content-Type': 'image/png'
-			},
-			params: { type: 'backglass' }
-		});
-		const bgRef = res.data.id;
-
-		// upload logo
-		const logo = readFileSync(resolve(logoFolder, localData.logo));
-		res = await storageClient.post('/v1/files', bg, {
-			headers: {
-				'Content-Disposition': 'attachment; filename="' + localData.logo + '"',
-				'Content-Length': logo.length,
-				'Content-Type': 'image/png'
-			},
-			params: { type: 'logo' }
-		});
-		const logoRef = res.data.id;
-
-		// complete data
-		if (localData.id) {
-			ipdbGame.id = localData.id;
-		} else if (ipdbGame.short) {
-			ipdbGame.id = ipdbGame.short[0].replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
-		} else {
-			ipdbGame.id = ipdbGame.title.replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
-		}
-		if (localData.title) {
-			ipdbGame.title = ipdbGame.title;
-		}
-		ipdbGame.keywords = localData.keywords;
-		ipdbGame.year = ipdbGame.year || localData.year || 1900;
-		ipdbGame.game_type = ipdbGame.game_type || 'na';
-		ipdbGame.manufacturer = ipdbGame.manufacturer || 'unknown';
-		ipdbGame._backglass = bgRef;
-		ipdbGame._logo = logoRef;
-
-		res = await apiClient.post('/v1/games', ipdbGame);
-		if (res.headers['x-token-refresh']) {
-			apiConfig.headers[config.authHeader] = `Bearer ${res.headers['x-token-refresh']}`;
-			storageConfig.headers[config.authHeader] = `Bearer ${res.headers['x-token-refresh']}`;
-			apiClient = Axios.create(apiConfig);
-			storageClient = Axios.create(storageConfig);
-		}
-	}
-	console.log('done!');
 }
 
 const data: LocalData[] = [
@@ -240,7 +209,7 @@ const data: LocalData[] = [
 	{ bg: 'Whitewater (Williams 1993).png', logo: 'Whitewater (Williams 1993).png', ipdb: 2768, id: 'whitewater' },
 	{ bg: 'Who Dunnit (Bally 1995).png', logo: 'Who Dunnit (Bally 1995).png', ipdb: 3685 },
 	{ bg: 'World Cup Soccer (Midway 1994).png', logo: 'World Cup Soccer (Midway 1994).png', ipdb: 2811 },
-	{ bg: 'Xenon (Bally 1980).png', logo: 'Xenon (Bally 1980).png', ipdb: 2821 }
+	{ bg: 'Xenon (Bally 1980).png', logo: 'Xenon (Bally 1980).png', ipdb: 2821 },
 ];
 
 interface LocalData {

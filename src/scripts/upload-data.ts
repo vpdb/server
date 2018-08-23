@@ -18,56 +18,60 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-// override standard promises
-Promise = require('bluebird');
+import { uploadGames } from '../../data/gen/games/games';
+
 const roms = require('../../data/gen/roms/roms');
 const credentials = require('./credentials');
 
-// eslint-disable-next-line no-unused-vars
-const local = {
-	apiUri: 'http://127.0.0.1:3000/api/v1',
-	storageUri: 'http://127.0.0.1:3000/storage/v1',
+const local: UploadConfig = {
+	apiUri: 'http://127.0.0.1:3000/api',
+	storageUri: 'http://127.0.0.1:3000/storage',
 	authHeader: 'Authorization',
-	credentials: { username: 'test', password: credentials.user.password }
+	credentials: { username: 'uploader', password: credentials.user.password },
 };
-// eslint-disable-next-line no-unused-vars
-const test = {
-	apiUri: 'https://test.vpdb.io/api/v1',
-	storageUri: 'https://test.vpdb.io/storage/v1',
+const test: UploadConfig = {
+	apiUri: 'https://test.vpdb.io/api',
+	storageUri: 'https://test.vpdb.io/storage',
 	authHeader: 'X-Authorization',
 	credentials: { username: 'uploader', password: credentials.user.password },
-	httpSimple: { username: credentials.httpSimple.username, password: credentials.httpSimple.password }
+	httpSimple: { username: credentials.httpSimple.username, password: credentials.httpSimple.password },
 };
-// eslint-disable-next-line no-unused-vars
-const staging = {
-	apiUri: 'https://staging.vpdb.io/api/v1',
-	storageUri: 'https://staging.vpdb.io/storage/v1',
+const staging: UploadConfig = {
+	apiUri: 'https://staging.vpdb.io/api',
+	storageUri: 'https://staging.vpdb.io/storage',
 	authHeader: 'X-Authorization',
 	credentials: { username: 'uploader', password: credentials.user.password },
-	httpSimple: { username: credentials.httpSimple.username, password: credentials.httpSimple.password }
+	httpSimple: { username: credentials.httpSimple.username, password: credentials.httpSimple.password },
 };
-const production = {
-	apiUri: 'https://api.vpdb.io/v1',
-	storageUri: 'https://storage.vpdb.io/v1',
-	authHeader: 'X-Authorization',
-	credentials: { username: 'uploader', password: credentials.user.password }
-	//httpSimple: { username: credentials.httpSimple.username, password: credentials.httpSimple.password }
+const production: UploadConfig = {
+	apiUri: 'https://api.vpdb.io',
+	storageUri: 'https://storage.vpdb.io',
+	authHeader: 'Authorization',
+	credentials: { username: 'uploader', password: credentials.user.password },
 };
 
-const config = production;
+const config = local;
 
 config.folder = process.env.VPDB_DATA_FOLDER;
 config.romFolder = process.env.VPDB_ROM_FOLDER || process.env.VPDB_DATA_FOLDER || 'F:/Pinball/Visual Pinball-103/VPinMame/roms';
 
-Promise.try(() => {
+(async () => {
+	try {
+		await uploadGames(config);
+//		return roms.upload(config);
+//		releases.upload(config);
+		console.log('All done!');
+	} catch (err) {
+		console.error(err);
+	}
+})();
 
-//	games.upload(config);
-	return roms.upload(config);
-//	releases.upload(config);
-
-}).then(() => {
-	console.log('All done!');
-
-}).catch(err => {
-	console.error('ERROR: %s', err.message);
-});
+export interface UploadConfig {
+	apiUri: string;
+	storageUri: string;
+	authHeader: string;
+	credentials: { username: string, password: string; };
+	httpSimple?: { username: string, password: string; };
+	folder?: string;
+	romFolder?: string;
+}

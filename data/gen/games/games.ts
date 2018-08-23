@@ -1,170 +1,113 @@
-"use strict";
+import { resolve } from 'path';
+import { readFileSync } from 'fs';
+import Axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
-var _ = require('lodash');
-var fs = require('fs');
-var path = require('path');
-var async = require('async');
-var request = require('superagent');
+import { UploadConfig } from '../../../src/scripts/upload-data';
 
-exports.upload = function(config) {
+export async function uploadGames(config: UploadConfig) {
 
-	config = config || {};
-	var apiUri = config.apiUri || 'http://localhost:3000/api/v1';
-	var storageUri = config.storageUri || 'http://localhost:3000/storage/v1';
-	var authHeader = config.authHeader || 'Authorization';
-	var credentials = config.credentials || {};
-	var folder = config.folder || path.resolve(__dirname);
+	const ipdb = require('../../ipdb.json');
+	console.log('Local index with %d entries loaded.', ipdb.length);
+
+	const apiConfig: AxiosRequestConfig = { baseURL: config.apiUri, headers: { 'Content-Type': 'application/json' } }
+	const storageConfig: AxiosRequestConfig = { baseURL: config.storageUri, headers: {} }
 
 	if (config.httpSimple) {
-		var httpSimple = 'Basic ' + new Buffer(config.httpSimple.username + ':' + config.httpSimple.password).toString('base64');
+		const httpSimple = 'Basic ' + new Buffer(config.httpSimple.username + ':' + config.httpSimple.password).toString('base64');
+		apiConfig.headers.Authorization = httpSimple;
+		storageConfig.headers.Authorization = httpSimple;
 	}
 
-	var token;
-	var ipdb = require('../../ipdb.json');
+	let apiClient: AxiosInstance = Axios.create(apiConfig);
+	let storageClient: AxiosInstance = Axios.create(storageConfig);
 
-	console.log('Local index with %d entries loaded.', ipdb.length);
-	async.series([
-		function(callback) {
-			var headers = {};
-			if (httpSimple) {
-				headers.Authorization = httpSimple;
-			}
-			var url = apiUri + '/authenticate';
-			console.log('Authenticating at %s...', url);
-			request
-				.post(url)
-				.set(headers)
-				.send(credentials)
-				.end(function(err, res) {
-					if (err) {
-						console.error('Error obtaining token: %s', err);
-						return callback(err);
-					}
-					if (res.status !== 200) {
-						console.error('Error obtaining token: %s', JSON.stringify(res.body));
-						return callback(new Error(res.body));
-					}
-					if (!_.includes(res.body.user.roles, 'contributor')) {
-						return callback(new Error("Must be contributor in order to add games!"));
-					}
-					console.log('Authentication successful.');
-					token = res.body.token;
-					callback();
-				});
-		},
-		function(callback) {
-			var bgPrefix = path.resolve(folder, 'backglass');
-			var logoPrefix = path.resolve(folder, 'logo');
+	// login
+	console.log('Authenticating with user %s...', config.credentials.username)
+	let res = await apiClient.post('/v1/authenticate', config.credentials);
+	if (res.status != 200) {
+		throw new Error('Error authenticating (' + res.status + '): ' + JSON.stringify(res.data));
+	}
+	if (!res.data.user.roles.includes('contributor')) {
+		throw new Error('Must be contributor in order to add games!');
+	}
+	if (!res.data.token) {
+		throw new Error('Could not retrieve token.');
+	}
 
-			//console.log('Reading backglasses from %s.', bgPrefix);
-			//console.log('Reading logos from %s.', logoPrefix);
+	// update clients with token
+	apiConfig.headers[config.authHeader] = `Bearer ${res.data.token}`;
+	storageConfig.headers[config.authHeader] = `Bearer ${res.data.token}`;
+	apiClient = Axios.create(apiConfig);
+	storageClient = Axios.create(storageConfig);
 
-			async.eachSeries(exports.data, function(game, next) {
-				var data = _.find(ipdb, function(g) { return g.ipdb.number === game.ipdb; });
+	// setup paths
+	const bgFolder = resolve(config.folder, 'backglass');
+	const logoFolder = resolve(config.folder, 'logo');
+	console.log('Reading backglasses from %s.', bgFolder);
+	console.log('Reading logos from %s.', logoFolder);
 
-				if (!data) {
-					console.warn('No game in local index found with IPDB# %s.', game.ipdb);
-					return next();
-				}
+	for (const localData of data) {
 
-				if (!game.bg || !game.logo) {
-					console.log('Skipping "%s" due to incomplete media.', data.title);
-					return next();
-				}
-
-				console.log('Adding game "%s"...', data.title);
-
-				var bg = fs.readFileSync(path.resolve(bgPrefix, game.bg));
-
-				var headers = {
-					'Content-Disposition': 'attachment; filename="' + game.bg + '"',
-					'Content-Length': bg.length
-				};
-				headers[authHeader] = 'Bearer ' + token;
-				if (httpSimple) {
-					headers.Authorization = httpSimple;
-				}
-				request
-					.post(storageUri + '/files')
-					.query({ type: 'backglass' })
-					.type('image/png')
-					.set(headers)
-					.send(bg)
-					.end(function(err, res) {
-						if (err) {
-							return next(res.body && res.body.error ? new Error(res.body.error) : err);
-						}
-						var bgRef = res.body.id;
-						var logo = fs.readFileSync(path.resolve(logoPrefix, game.logo));
-
-						var headers = {
-							'Content-Disposition': 'attachment; filename="' + game.logo + '"',
-							'Content-Length': logo.length
-						};
-						headers[authHeader] = 'Bearer ' + token;
-						if (httpSimple) {
-							headers.Authorization = httpSimple;
-						}
-
-						request
-							.post(storageUri + '/files')
-							.query({ type: 'logo' })
-							.type('image/png')
-							.set(headers)
-							.send(logo)
-							.end(function(err, res) {
-								var logoRef = res.body.id;
-
-								if (game.id) {
-									data.id = game.id;
-								} else if (data.short) {
-									data.id = data.short[0].replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
-								} else {
-									data.id = data.title.replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
-								}
-								if (game.title) {
-									data.title = game.title;
-								}
-								data.keywords = game.keywords;
-								data.year = data.year || game.year || 1900;
-								data.game_type = data.game_type || 'na';
-								data.manufacturer = data.manufacturer || 'unknown';
-								data._backglass = bgRef;
-								data._logo = logoRef;
-
-								var headers = {};
-								headers[authHeader] = 'Bearer ' + token;
-								if (httpSimple) {
-									headers.Authorization = httpSimple;
-								}
-
-								request
-									.post(apiUri + '/games')
-									.type('application/json')
-									.set(headers)
-									.send(data)
-									.end(function(err, res) {
-										if (res.headers['x-token-refresh']) {
-											token = res.headers['x-token-refresh'];
-										}
-										//console.log(res.body);
-										next();
-									});
-							});
-					});
-
-			}, callback);
+		// read metadata from index
+		const ipdbGame = ipdb.find((g: any) => g.ipdb.number === localData.ipdb);
+		if (!ipdbGame) {
+			console.warn('No game in local index found with IPDB# %s.', localData.ipdb);
+			continue;
 		}
-	],
-	function(err, results) {
-		if (err) {
-			return console.log('Failed: %s', err.message);
+		if (!localData.bg || !localData.logo) {
+			console.log('Skipping "%s" due to incomplete media.', ipdbGame.title);
+			continue;
 		}
-		console.log('done!');
-	});
-};
+		console.log('Adding game "%s"...', ipdbGame.title);
 
-exports.data = [
+		// upload background
+		const bg = readFileSync(resolve(bgFolder, localData.bg));
+		res = await storageClient.post('/v1/files', bg, {
+			headers: {
+				'Content-Disposition': 'attachment; filename="' + localData.bg + '"',
+				'Content-Length': bg.length,
+				'Content-Type': 'image/png'
+			},
+			params: { type: 'backglass' }
+		});
+		const bgRef = res.data.id;
+
+		// upload logo
+		const logo = readFileSync(resolve(logoFolder, localData.logo));
+		res = await storageClient.post('/v1/files', bg, {
+			headers: {
+				'Content-Disposition': 'attachment; filename="' + localData.logo + '"',
+				'Content-Length': logo.length,
+				'Content-Type': 'image/png'
+			},
+			params: { type: 'logo' }
+		});
+		const logoRef = res.data.id;
+
+		// complete data
+		if (localData.id) {
+			ipdbGame.id = localData.id;
+		} else if (ipdbGame.short) {
+			ipdbGame.id = ipdbGame.short[0].replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
+		} else {
+			ipdbGame.id = ipdbGame.title.replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
+		}
+		if (localData.title) {
+			ipdbGame.title = ipdbGame.title;
+		}
+		ipdbGame.keywords = localData.keywords;
+		ipdbGame.year = ipdbGame.year || localData.year || 1900;
+		ipdbGame.game_type = ipdbGame.game_type || 'na';
+		ipdbGame.manufacturer = ipdbGame.manufacturer || 'unknown';
+		ipdbGame._backglass = bgRef;
+		ipdbGame._logo = logoRef;
+
+		await apiClient.post('/v1/games', ipdbGame);
+	}
+	console.log('done!');
+}
+
+const data: LocalData[] = [
 	{ bg: 'Abra Ca Dabra (Gottlieb 1975).png', logo: 'Abra Ca Dabra (Gottlieb 1975).png', ipdb: 2, keywords: [ 'magic', 'shazam', 'trickery', 'poof', 'hocus pocus', 'wizardry' ] },
 	{ bg: 'Aladdin\'s Castle (Bally 1976).png', logo: 'Aladdin\'s Castle (Bally 1976).png', ipdb: 40, keywords: [ 'night', 'genie', 'lamp', 'boy' ] },
 	{ bg: 'Alien Star (Gottlieb 1984).png', logo: 'Alien Star (Gottlieb 1984).png', ipdb: 49, keywords: [ 'battle', 'world', 'journey' ] },
@@ -292,5 +235,14 @@ exports.data = [
 	{ bg: 'Who Dunnit (Bally 1995).png', logo: 'Who Dunnit (Bally 1995).png', ipdb: 3685 },
 	{ bg: 'World Cup Soccer (Midway 1994).png', logo: 'World Cup Soccer (Midway 1994).png', ipdb: 2811 },
 	{ bg: 'Xenon (Bally 1980).png', logo: 'Xenon (Bally 1980).png', ipdb: 2821 }
-
 ];
+
+interface LocalData {
+	id?: string;
+	title?: string;
+	bg: string;
+	logo: string;
+	ipdb: number;
+	year?: number;
+	keywords?: string[];
+}

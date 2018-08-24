@@ -66,7 +66,7 @@ export class ReleaseUploader extends DataUploader {
 					}
 
 					// read index.json
-					let versionData;
+					let versionData: string;
 					const versionJsonPath = resolve(versionPath, 'index.json');
 					if (existsSync(versionJsonPath)) {
 						versionData = readFileSync(versionJsonPath).toString();

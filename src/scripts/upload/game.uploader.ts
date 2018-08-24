@@ -8,7 +8,7 @@ export class GameUploader extends DataUploader {
 	public async upload(): Promise<void> {
 
 		// import data
-		const ipdb = require('../../ipdb.json');
+		const ipdb = require('../../../data/ipdb.json');
 		console.log('Local index with %d entries loaded.', ipdb.length);
 
 		// setup paths

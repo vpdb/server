@@ -1,4 +1,3 @@
-'use strict';
 /*
  * VPDB - Visual Pinball Database
  * Copyright (C) 2016 freezy <freezy@xbmc.org>
@@ -18,13 +17,30 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import yargs, { Arguments, Argv } from 'yargs';
+
 import { GameUploader } from './upload/game.uploader';
 
+/* tslint:disable:no-unused-expression */
 (async () => {
+
 	try {
-		const uploader = new GameUploader('local');
-		await uploader.upload();
-		console.log('All done!');
+		yargs
+			.usage('$0 <cmd> <environment>')
+			.command('games <env>', 'Upload all games', (args: Argv) => {
+				return args.positional('env', {
+					type: 'string',
+					default: 'local',
+					describe: 'The name of the environment',
+					choices: ['local', 'test', 'staging', 'production'],
+				});
+			}, async (args: Arguments) => {
+				const uploader = new GameUploader(args.env);
+				await uploader.upload();
+				console.log('All games added!');
+			})
+			.help().argv;
+
 	} catch (err) {
 		console.error(err);
 	}

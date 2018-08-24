@@ -83,8 +83,10 @@ export class ReleaseUploader extends DataUploader {
 
 				// post
 				console.log(inspect(releaseJson, { depth: null, colors: true }));
-				await this.api().post('/v1/releases', releaseJson);
+				const res = await this.api().post('/v1/releases', releaseJson);
 				console.log('Release "%s" for game "%s" successfully uploaded.', releaseName, gameId);
+
+				this.updateToken(res.headers['x-token-refresh']);
 			}
 		}
 	}

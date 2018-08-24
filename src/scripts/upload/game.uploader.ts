@@ -46,7 +46,7 @@ export class GameUploader extends DataUploader {
 
 			// upload logo
 			const logo = readFileSync(resolve(logoFolder, localData.logo));
-			res = await this.storage().post('/v1/files', bg, {
+			res = await this.storage().post('/v1/files', logo, {
 				headers: {
 					'Content-Disposition': 'attachment; filename="' + localData.logo + '"',
 					'Content-Length': logo.length,

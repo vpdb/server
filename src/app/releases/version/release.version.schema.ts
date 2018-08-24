@@ -186,13 +186,13 @@ async function validateFile(release: ReleaseDocument, tableFile: ReleaseVersionF
 			// validate aspect ratio
 			const ar = playfieldImage.metadata.size.width / playfieldImage.metadata.size.height;
 
-			if (ar > 1 && (ar < 1.5 || ar > 1.85)) {
+			if (ar > 1 && (ar < 1.5 || ar > 1.89)) {
 				release.invalidate('files.' + index + '._playfield_image',
-					'Playfield image must have an aspect ratio between 16:9 and 16:10.', tableFile._playfield_image);
+					'Playfield image must have an aspect ratio between 16:9 and 16:10 (' + ar + ').', tableFile._playfield_image);
 			}
-			if (ar < 1 && ((1 / ar) < 1.5 || (1 / ar) > 1.85)) {
+			if (ar < 1 && ((1 / ar) < 1.5 || (1 / ar) > 1.89)) {
 				release.invalidate('files.' + index + '._playfield_image',
-					'Playfield image must have an aspect ratio between 16:9 and 16:10.', tableFile._playfield_image);
+					'Playfield image must have an aspect ratio between 16:9 and 16:10 (' + ar + ').', tableFile._playfield_image);
 			}
 
 			if (playfieldImage.file_type === 'playfield') {

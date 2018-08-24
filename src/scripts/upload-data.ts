@@ -17,28 +17,37 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import yargs, { Arguments, Argv } from 'yargs';
+import yargs, { Arguments, Argv, PositionalOptions } from 'yargs';
 
 import { GameUploader } from './upload/game.uploader';
+import { ReleaseUploader } from './upload/release.uploader';
 
 /* tslint:disable:no-unused-expression */
 (async () => {
 
 	try {
+		const envOpts: PositionalOptions = {
+			type: 'string',
+			default: 'local',
+			describe: 'The name of the environment',
+			choices: ['local', 'test', 'staging', 'production'],
+		};
 		yargs
 			.usage('$0 <cmd> <environment>')
-			.command('games <env>', 'Upload all games', (args: Argv) => {
-				return args.positional('env', {
-					type: 'string',
-					default: 'local',
-					describe: 'The name of the environment',
-					choices: ['local', 'test', 'staging', 'production'],
-				});
-			}, async (args: Arguments) => {
-				const uploader = new GameUploader(args.env);
-				await uploader.upload();
-				console.log('All games added!');
-			})
+			.command('games <env>', 'Upload all games',
+				(args: Argv) => args.positional('env', envOpts),
+				async (args: Arguments) => {
+					const uploader = new GameUploader(args.env);
+					await uploader.upload();
+					console.log('All games added!');
+				})
+			.command('releases <env>', 'Upload all releases',
+				(args: Argv) => args.positional('env', envOpts),
+				async (args: Arguments) => {
+					const uploader = new ReleaseUploader(args.env);
+					await uploader.upload();
+					console.log('All releases added!');
+				})
 			.help().argv;
 
 	} catch (err) {

@@ -12,8 +12,8 @@ export class GameUploader extends DataUploader {
 		console.log('Local index with %d entries loaded.', ipdb.length);
 
 		// setup paths
-		const bgFolder = resolve(this.config.folder, 'backglass');
-		const logoFolder = resolve(this.config.folder, 'logo');
+		const bgFolder = resolve(this.config.folder, 'games/backglass');
+		const logoFolder = resolve(this.config.folder, 'games/logo');
 		console.log('Reading backglasses from %s.', bgFolder);
 		console.log('Reading logos from %s.', logoFolder);
 

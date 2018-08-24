@@ -1,5 +1,7 @@
 import Axios from 'axios';
 import { AxiosInstance, AxiosRequestConfig } from 'axios';
+import { resolve } from 'path';
+
 import { UserDocument } from '../../app/users/user.document';
 
 const credentials = require('../credentials');
@@ -41,10 +43,10 @@ export abstract class DataUploader {
 	constructor(configName: string) {
 		this.config = this.configs.get(configName);
 		this.config.folder = process.env.VPDB_DATA_FOLDER;
-		this.config.romFolder = process.env.VPDB_ROM_FOLDER || process.env.VPDB_DATA_FOLDER || 'F:/Pinball/Visual Pinball-103/VPinMame/roms';
+		this.config.romFolder = process.env.VPDB_ROM_FOLDER || (process.env.VPM_HOME ? resolve(process.env.VPM_HOME, 'roms') : undefined) || process.env.VPDB_DATA_FOLDER || 'F:/Pinball/Visual Pinball-103/VPinMame/roms';
 
-		this.apiConfig = { baseURL: this.config.apiUri, headers: { 'Content-Type': 'application/json' } };
-		this.storageConfig = { baseURL: this.config.storageUri, headers: {} };
+		this.apiConfig = { baseURL: this.config.apiUri, headers: { 'Content-Type': 'application/json' }, maxContentLength: 300000000 };
+		this.storageConfig = { baseURL: this.config.storageUri, headers: {}, maxContentLength: 300000000 };
 		if (this.config.httpSimple) {
 			const httpSimple = 'Basic ' + new Buffer(this.config.httpSimple.username + ':' + this.config.httpSimple.password).toString('base64');
 			this.apiConfig.headers.Authorization = httpSimple;

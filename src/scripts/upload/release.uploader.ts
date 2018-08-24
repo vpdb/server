@@ -17,9 +17,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { existsSync, lstatSync, readdirSync, readFileSync } from 'fs';
+import { createReadStream, existsSync, lstatSync, readdirSync, readFileSync } from 'fs';
 import { get, set } from 'lodash';
 import { extname, resolve } from 'path';
+import { inspect } from 'util';
 
 import { FileDocument } from '../../app/files/file.document';
 import { mimeTypes } from '../../app/files/file.mimetypes';
@@ -29,7 +30,7 @@ export class ReleaseUploader extends DataUploader {
 
 	public async upload(): Promise<void> {
 		await this.login();
-		const rootPath = resolve(this.config.folder);
+		const rootPath = resolve(this.config.folder, 'releases');
 		for (const gameId of readdirSync(rootPath)) {
 			const gamePath = resolve(rootPath, gameId);
 			if (!lstatSync(gamePath).isDirectory()) {
@@ -81,7 +82,7 @@ export class ReleaseUploader extends DataUploader {
 				}
 
 				// post
-				console.log(require('util').inspect(releaseJson, { depth: null, colors: true }));
+				console.log(inspect(releaseJson, { depth: null, colors: true }));
 				await this.api().post('/v1/releases', releaseJson);
 				console.log('Release "%s" for game "%s" successfully uploaded.', releaseName, gameId);
 			}
@@ -108,6 +109,7 @@ export class ReleaseUploader extends DataUploader {
 			const uploadedFile = await this.uploadFile(file, pwd);
 			set(json, file.path, uploadedFile.id);
 		}
+		return json;
 	}
 
 	private validate(files: any[], path: string) {
@@ -145,17 +147,17 @@ export class ReleaseUploader extends DataUploader {
 					filetype: 'release',
 				});
 			}
-			if (get(file, '_media.playfield_image')) {
+			if (get(file, '_playfield_image')) {
 				files.push({
-					path: 'files[' + i + ']._media.playfield_image',
-					filename: get(file, '_media.playfield_image'),
+					path: 'files[' + i + ']._playfield_image',
+					filename: get(file, '_playfield_image'),
 					filetype: 'playfield-' + get(file, 'flavor.orientation'),
 				});
 			}
-			if (get(file, '_media.playfield_video')) {
+			if (get(file, '_playfield_video')) {
 				files.push({
-					path: 'files[' + i + ']._media.playfield_video',
-					filename: get(file, '_media.playfield_video'),
+					path: 'files[' + i + ']._playfield_video',
+					filename: get(file, '_playfield_video'),
 					filetype: 'playfield-' + get(file, 'flavor.orientation'),
 				});
 			}
@@ -165,13 +167,12 @@ export class ReleaseUploader extends DataUploader {
 	}
 
 	private async uploadFile(file: any, path: string): Promise<FileDocument> {
-		const fileContents = readFileSync(resolve(path, file.filename));
+		const readStream = createReadStream(resolve(path, file.filename));
 		console.log('Posting %s (%s) as %s...', file.filename, this.getMimeType(file.filename), file.filetype);
-		const res = await this.storage().post('/v1/files', fileContents, {
+		const res = await this.storage().post('/v1/files', readStream, {
 			params: { type: file.filetype },
 			headers: {
 				'Content-Disposition': 'attachment; filename="' + file.filename + '"',
-				'Content-Length': fileContents.length,
 				'Content-Type': this.getMimeType(file.filename),
 			},
 		});

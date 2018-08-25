@@ -21,6 +21,7 @@ import yargs, { Arguments, Argv, PositionalOptions } from 'yargs';
 
 import { GameUploader } from './upload/game.uploader';
 import { ReleaseUploader } from './upload/release.uploader';
+import { RomUploader } from './upload/rom.uploader';
 
 /* tslint:disable:no-unused-expression */
 (async () => {
@@ -47,6 +48,13 @@ import { ReleaseUploader } from './upload/release.uploader';
 					const uploader = new ReleaseUploader(args.env);
 					await uploader.upload();
 					console.log('All releases added!');
+				})
+			.command('roms <env>', 'Upload all ROMs',
+				(args: Argv) => args.positional('env', envOpts),
+				async (args: Arguments) => {
+					const uploader = new RomUploader(args.env);
+					await uploader.upload();
+					console.log('All ROMs added!');
 				})
 			.help().argv;
 

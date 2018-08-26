@@ -31,7 +31,6 @@ import { FileDocument } from '../file.document';
 import { FileUtil } from '../file.util';
 import { FileVariation } from '../file.variations';
 import { processorManager } from './processor.manager';
-import { OptimizationProcessor } from './processor';
 
 const renameAsync = promisify(rename);
 const unlinkAsync = promisify(unlink);

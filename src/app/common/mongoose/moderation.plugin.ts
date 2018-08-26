@@ -24,10 +24,10 @@ import { LogEventUtil } from '../../log-event/log.event.util';
 import { state } from '../../state';
 import { UserDocument } from '../../users/user.document';
 import { acl } from '../acl';
+import { apiCache } from '../api.cache';
 import { ApiError } from '../api.error';
 import { logger } from '../logger';
 import { Context } from '../typings/context';
-import { apiCache } from '../api.cache';
 
 const modelResourceMap: { [key: string]: string } = {
 	Release: 'releases',

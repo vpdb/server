@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { access, createReadStream, createWriteStream, mkdir, stat, unlink, rename } from 'fs';
+import { access, createReadStream, createWriteStream, mkdir, rename, stat, unlink } from 'fs';
 import { dirname, resolve as resolvePath, sep } from 'path';
 import * as Stream from 'stream';
 import { promisify } from 'util';

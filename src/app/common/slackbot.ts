@@ -263,7 +263,7 @@ export class SlackBot {
 					as_user: false,
 					username: actor.name,
 					attachments: msg.atts,
-					icon_url: 'https://www.gravatar.com/avatar/' + actor.gravatar_id + '?d=retro',
+					icon_url: 'https://www.gravatar.com/avatar/' + UserUtil.getGravatarHash(actor) + '?d=retro',
 				});
 
 				//this.rtm.sendMessage(msg, this.config.channels.userLog);

@@ -31,6 +31,7 @@ import { FileDocument } from '../file.document';
 import { FileUtil } from '../file.util';
 import { FileVariation } from '../file.variations';
 import { processorManager } from './processor.manager';
+import { OptimizationProcessor } from './processor';
 
 const renameAsync = promisify(rename);
 const unlinkAsync = promisify(unlink);
@@ -84,12 +85,12 @@ class ProcessorQueue {
 	 * @param requestState For logging
 	 * @param {FileDocument} file File to be processed
 	 * @param {string} srcPath Path to source file
-	 * @return {Promise<void>}
+	 * @return {Promise<number>} Number of matched optimization processors
 	 */
-	public async processFile(requestState: RequestState, file: FileDocument, srcPath: string): Promise<void> {
+	public async processFile(requestState: RequestState, file: FileDocument, srcPath: string): Promise<Array<OptimizationProcessor<FileVariation>>> {
 
 		// match processors against file variations
-		let n = 0;
+		let numCreationProcessors = 0;
 
 		// add variations creation queue
 		for (const variation of file.getVariations().filter(v => !v.source)) {
@@ -106,20 +107,18 @@ class ProcessorQueue {
 				}
 				await FileUtil.cp(srcPath, tmpSrcPath);
 				await processorManager.queueCreation(requestState, processor, file, tmpSrcPath, destPath, null, variation);
-				n++;
+				numCreationProcessors++;
 			}
 		}
 
 		// add original to optimization queue
-		for (const processor of processorManager.getValidOptimizationProcessors(file)) {
+		const optimizationProcessors = processorManager.getValidOptimizationProcessors(file);
+		for (const processor of optimizationProcessors) {
 			const destPath = file.getPath(requestState, null, { tmpSuffix: '_' + processor.name + '.processing' });
 			await processorManager.queueOptimization(requestState, processor, file, srcPath, destPath);
-			n++;
 		}
 
-		if (n === 0) {
-			logger.info(requestState, '[ProcessorQueue.processFile] No processors matched %s.', file.toDetailedString());
-		}
+		return optimizationProcessors;
 	}
 
 	/**

@@ -45,6 +45,10 @@ export class VideoOptimizationProcessor implements OptimizationProcessor<VideoFi
 		return !variation && file.getMimeCategory() === 'video';
 	}
 
+	public modifiesFile(): boolean {
+		return true;
+	}
+
 	public getOrder(variation?: VideoFileVariation): number {
 		return 500;
 	}

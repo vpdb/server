@@ -37,6 +37,10 @@ export class VptBlockindexProcessor implements OptimizationProcessor<FileVariati
 		return file.getMimeCategory() === 'table';
 	}
 
+	public modifiesFile(): boolean {
+		return false;
+	}
+
 	public getOrder(variation?: FileVariation): number {
 		return 700 + (variation && variation.priority ? variation.priority : 0);
 	}

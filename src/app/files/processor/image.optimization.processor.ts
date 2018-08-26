@@ -38,6 +38,10 @@ export class ImageOptimizationProcessor implements OptimizationProcessor<FileVar
 		return file.getMimeType(variation) === 'image/png';
 	}
 
+	public modifiesFile(): boolean {
+		return true;
+	}
+
 	public getOrder(variation?: FileVariation): number {
 		return 500;
 	}

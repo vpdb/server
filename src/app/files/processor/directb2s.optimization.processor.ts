@@ -41,6 +41,10 @@ export class Directb2sOptimizationProcessor implements OptimizationProcessor<Bac
 		return file.getMimeType(variation) === 'application/x-directb2s';
 	}
 
+	public modifiesFile(): boolean {
+		return true;
+	}
+
 	public getOrder(variation?: FileVariation): number {
 		return 600 + (variation && variation.priority ? variation.priority : 0);
 	}

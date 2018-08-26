@@ -89,4 +89,13 @@ export interface OptimizationProcessor<V extends FileVariation> extends Processo
 	 * @returns {boolean} True if it can be processed, false otherwise.
 	 */
 	canProcess(file: FileDocument, variation?: FileVariation): boolean;
+
+	/**
+	 * Some optimization processors write data elsewhere (e.g.
+	 * VptBlockIndexProcessor), this method indicates whether the original file
+	 * is updated.
+	 *
+	 * @returns {boolean} True if the original file is updated or false otherwise.
+	 */
+	modifiesFile(): boolean;
 }

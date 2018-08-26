@@ -50,30 +50,30 @@ export class FileUtil {
 
 		// instantiate file without persisting it yet
 		let file = new state.models.File(fileData);
-		const path = file.getPath(requestState, null, { tmpSuffix: '_original' });
+		const pathOriginal = file.getPath(requestState, null, { tmpSuffix: '_original' });
 
 		// create destination folder if necessary
-		if (!(await FileUtil.exists(dirname(path)))) {
-			await FileUtil.mkdirp(dirname(path));
+		if (!(await FileUtil.exists(dirname(pathOriginal)))) {
+			await FileUtil.mkdirp(dirname(pathOriginal));
 		}
 
 		// now stream to disk
 		await new Promise((resolve, reject) => {
-			const writeStream = createWriteStream(path);
+			const writeStream = createWriteStream(pathOriginal);
 			writeStream.on('finish', resolve);
 			writeStream.on('error', reject);
 			readStream.pipe(writeStream);
 		});
 
 		// update file size
-		const stats = await statAsync(path);
+		const stats = await statAsync(pathOriginal);
 		file.bytes = stats.size;
 
-		logger.info(requestState, '[FileUtil.create] Saved %s bytes of %s to %s', file.bytes, file.toDetailedString(), path);
+		logger.info(requestState, '[FileUtil.create] Saved %s bytes of %s to %s', file.bytes, file.toDetailedString(), pathOriginal);
 
 		try {
 			logger.info(requestState, '[FileUtil.create] Retrieving metadata for %s', file.toDetailedString());
-			const metadata = await Metadata.readFrom(requestState, file, path);
+			const metadata = await Metadata.readFrom(requestState, file, pathOriginal);
 			if (metadata) {
 				file.metadata = metadata;
 				await state.models.File.findByIdAndUpdate(file._id, { metadata }).exec();
@@ -90,10 +90,10 @@ export class FileUtil {
 				//await unlinkAsync(path);
 			} catch (err) {
 				/* istanbul ignore next */
-				logger.error(requestState, '[FileUtil.create] Error removing file at %s: %s', path, err.message);
+				logger.error(requestState, '[FileUtil.create] Error removing file at %s: %s', pathOriginal, err.message);
 			}
 			try {
-				await unlinkAsync(path);
+				await unlinkAsync(pathOriginal);
 			} catch (err) {
 				/* istanbul ignore next */
 				logger.warn(requestState, '[FileUtil.create] Could not delete file after metadata failed: %s', err.message);
@@ -102,11 +102,16 @@ export class FileUtil {
 		}
 
 		// copy to final destination
-		await FileUtil.cp(path, file.getPath(requestState));
+		await FileUtil.cp(pathOriginal, file.getPath(requestState));
 
 		// start processing
 		logger.info(requestState, '[FileUtil.create] Adding file %s to processor queue', file.toShortString());
-		await processorQueue.processFile(requestState, file, path);
+		const optimizationProcessors = await processorQueue.processFile(requestState, file, pathOriginal);
+
+		// we don't need the *_original copy if the file isn't modified.
+		if (optimizationProcessors.filter(processor => processor.modifiesFile()).length > 0) {
+			await FileUtil.removeFile(requestState, pathOriginal, 'unused original');
+		}
 
 		return file;
 	}

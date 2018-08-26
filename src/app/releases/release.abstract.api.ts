@@ -184,9 +184,10 @@ export abstract class ReleaseAbstractApi extends Api {
 				await state.models.File.update({ _id: file._id }, {
 					preprocessed: { rotation: file.preprocessed.unvalidatedRotation },
 				});
-				const protectedPath = file.getPath(requestState);
-				await processorQueue.processFile(requestState, file, protectedPath);
 			}
+			// playfield images with no rotation but uploaded as type `playfield` aren't processed yet either
+			const protectedPath = file.getPath(requestState);
+			await processorQueue.processFile(requestState, file, protectedPath);
 		}
 	}
 

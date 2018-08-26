@@ -414,6 +414,56 @@ describe('The VPDB `Release` API', function() {
 			});
 		});
 
+		it('should succeed using a fs playfield for universal orientation', function(done) {
+			const user = 'member';
+			hlp.game.createGame('moderator', request, function(game) {
+				hlp.file.createVpt(user, request, function(vptfile) {
+					hlp.file.createPlayfield(user, request, 'fs', 'playfield', function(playfield) {
+						expect(playfield.metadata.size.width).to.be(1080);
+						expect(playfield.metadata.size.height).to.be(1920);
+						request
+							.post('/api/v1/releases')
+							.query({ rotate: playfield.id + ':0' })
+							.as(user)
+							.send({
+								name: 'release',
+								license: 'by-sa',
+								_game: game.id,
+								versions: [
+									{
+										files: [ {
+											_file: vptfile.id,
+											_playfield_image: playfield.id,
+											_compatibility: [ '9.9.0' ],
+											flavor: { orientation: 'any', lighting: 'any' } }
+										],
+										version: '1.0.0'
+									}
+								],
+								authors: [ { _user: hlp.getUser(user).id, roles: [ 'Table Creator' ] } ]
+							})
+							.end(function (err, res) {
+								hlp.expectStatus(err, res, 201);
+								hlp.doomRelease(user, res.body.id);
+								let playfieldRelease = res.body.versions[0].files[0].playfield_image;
+								expect(playfieldRelease.metadata.size.width).to.be(1080);
+								expect(playfieldRelease.metadata.size.height).to.be(1920);
+								request.get(playfieldRelease.variations.medium.url).end((err, res) => {
+									hlp.expectStatus(err, res, 200);
+									gm(res.body).size((err, size) => {
+										if (err) {
+											throw err;
+										}
+										expect(size.width).to.be.lessThan(size.height);
+										done();
+									})
+								});
+							});
+					});
+				});
+			});
+		});
+
 		it('should succeed when rotating a ws playfield to a fs file', function(done) {
 			const user = 'member';
 			hlp.game.createGame('moderator', request, function(game) {

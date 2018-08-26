@@ -85,12 +85,8 @@ class ProcessorQueue {
 	 * @param requestState For logging
 	 * @param {FileDocument} file File to be processed
 	 * @param {string} srcPath Path to source file
-	 * @return {Promise<number>} Number of matched optimization processors
 	 */
-	public async processFile(requestState: RequestState, file: FileDocument, srcPath: string): Promise<Array<OptimizationProcessor<FileVariation>>> {
-
-		// match processors against file variations
-		let numCreationProcessors = 0;
+	public async processFile(requestState: RequestState, file: FileDocument, srcPath: string): Promise<void> {
 
 		// add variations creation queue
 		for (const variation of file.getVariations().filter(v => !v.source)) {
@@ -107,18 +103,24 @@ class ProcessorQueue {
 				}
 				await FileUtil.cp(srcPath, tmpSrcPath);
 				await processorManager.queueCreation(requestState, processor, file, tmpSrcPath, destPath, null, variation);
-				numCreationProcessors++;
 			}
 		}
 
 		// add original to optimization queue
-		const optimizationProcessors = processorManager.getValidOptimizationProcessors(file);
-		for (const processor of optimizationProcessors) {
+		for (const processor of processorManager.getValidOptimizationProcessors(file)) {
 			const destPath = file.getPath(requestState, null, { tmpSuffix: '_' + processor.name + '.processing' });
 			await processorManager.queueOptimization(requestState, processor, file, srcPath, destPath);
 		}
+	}
 
-		return optimizationProcessors;
+	/**
+	 * Checks whether an optimization processor will applied to the original file
+	 * that modifies it.
+	 * @param file File to check
+	 */
+	public modifiesFile(file: FileDocument) {
+		const optimizationProcessors = processorManager.getValidOptimizationProcessors(file);
+		return optimizationProcessors.filter(processor => processor.modifiesFile()).length > 0;
 	}
 
 	/**

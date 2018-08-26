@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { access, createReadStream, createWriteStream, mkdir, stat, unlink } from 'fs';
+import { access, createReadStream, createWriteStream, mkdir, stat, unlink, rename } from 'fs';
 import { dirname, resolve as resolvePath, sep } from 'path';
 import * as Stream from 'stream';
 import { promisify } from 'util';
@@ -35,6 +35,7 @@ import { processorQueue } from './processor/processor.queue';
 const statAsync = promisify(stat);
 const mkdirAsync = promisify(mkdir);
 const unlinkAsync = promisify(unlink);
+const renameAsync = promisify(rename);
 
 export class FileUtil {
 
@@ -50,30 +51,30 @@ export class FileUtil {
 
 		// instantiate file without persisting it yet
 		let file = new state.models.File(fileData);
-		const pathOriginal = file.getPath(requestState, null, { tmpSuffix: '_original' });
+		const originalPath = file.getPath(requestState, null, { tmpSuffix: '_original' });
 
 		// create destination folder if necessary
-		if (!(await FileUtil.exists(dirname(pathOriginal)))) {
-			await FileUtil.mkdirp(dirname(pathOriginal));
+		if (!(await FileUtil.exists(dirname(originalPath)))) {
+			await FileUtil.mkdirp(dirname(originalPath));
 		}
 
 		// now stream to disk
 		await new Promise((resolve, reject) => {
-			const writeStream = createWriteStream(pathOriginal);
+			const writeStream = createWriteStream(originalPath);
 			writeStream.on('finish', resolve);
 			writeStream.on('error', reject);
 			readStream.pipe(writeStream);
 		});
 
 		// update file size
-		const stats = await statAsync(pathOriginal);
+		const stats = await statAsync(originalPath);
 		file.bytes = stats.size;
 
-		logger.info(requestState, '[FileUtil.create] Saved %s bytes of %s to %s', file.bytes, file.toDetailedString(), pathOriginal);
+		logger.info(requestState, '[FileUtil.create] Saved %s bytes of %s to %s', file.bytes, file.toDetailedString(), originalPath);
 
 		try {
 			logger.info(requestState, '[FileUtil.create] Retrieving metadata for %s', file.toDetailedString());
-			const metadata = await Metadata.readFrom(requestState, file, pathOriginal);
+			const metadata = await Metadata.readFrom(requestState, file, originalPath);
 			if (metadata) {
 				file.metadata = metadata;
 				await state.models.File.findByIdAndUpdate(file._id, { metadata }).exec();
@@ -90,10 +91,10 @@ export class FileUtil {
 				//await unlinkAsync(path);
 			} catch (err) {
 				/* istanbul ignore next */
-				logger.error(requestState, '[FileUtil.create] Error removing file at %s: %s', pathOriginal, err.message);
+				logger.error(requestState, '[FileUtil.create] Error removing file at %s: %s', originalPath, err.message);
 			}
 			try {
-				await unlinkAsync(pathOriginal);
+				await unlinkAsync(originalPath);
 			} catch (err) {
 				/* istanbul ignore next */
 				logger.warn(requestState, '[FileUtil.create] Could not delete file after metadata failed: %s', err.message);
@@ -101,17 +102,19 @@ export class FileUtil {
 			throw new ApiError('Metadata parsing failed for type "%s": %s', file.mime_type, err.message).log(err).warn().status(400);
 		}
 
-		// copy to final destination
-		await FileUtil.cp(pathOriginal, file.getPath(requestState));
+		// copy or move to final destination
+		let srcPath: string;
+		if (processorQueue.modifiesFile(file)) {
+			await FileUtil.cp(originalPath, file.getPath(requestState));
+			srcPath = originalPath;
+		} else {
+			await renameAsync(originalPath, file.getPath(requestState));
+			srcPath = file.getPath(requestState);
+		}
 
 		// start processing
 		logger.info(requestState, '[FileUtil.create] Adding file %s to processor queue', file.toShortString());
-		const optimizationProcessors = await processorQueue.processFile(requestState, file, pathOriginal);
-
-		// we don't need the *_original copy if the file isn't modified.
-		if (optimizationProcessors.filter(processor => processor.modifiesFile()).length > 0) {
-			await FileUtil.removeFile(requestState, pathOriginal, 'unused original');
-		}
+		await processorQueue.processFile(requestState, file, srcPath);
 
 		return file;
 	}

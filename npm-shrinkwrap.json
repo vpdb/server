@@ -1,6 +1,6 @@
 {
 	"name": "vpdb",
-	"version": "v3.0.3-SNAPSHOT",
+	"version": "v3.0.5-SNAPSHOT",
 	"lockfileVersion": 1,
 	"requires": true,
 	"dependencies": {
@@ -299,9 +299,9 @@
 			}
 		},
 		"@types/cheerio": {
-			"version": "0.22.8",
-			"resolved": "https://registry.npmjs.org/@types/cheerio/-/cheerio-0.22.8.tgz",
-			"integrity": "sha512-LzF540VOFabhS2TR2yYFz2Mu/fTfkA+5AwYddtJbOJGwnYrr2e7fHadT7/Z3jNGJJdCRlO3ySxmW26NgRdwhNA==",
+			"version": "0.22.9",
+			"resolved": "https://registry.npmjs.org/@types/cheerio/-/cheerio-0.22.9.tgz",
+			"integrity": "sha512-q6LuBI0t5u04f0Q4/R+cGBqIbZMtJkVvCSF+nTfFBBdQqQvJR/mNHeWjRkszyLl7oyf2rDoKUYMEjTw5AV0hiw==",
 			"dev": true
 		},
 		"@types/connect": {
@@ -847,6 +847,7 @@
 			"version": "0.1.4",
 			"resolved": "https://registry.npmjs.org/align-text/-/align-text-0.1.4.tgz",
 			"integrity": "sha1-DNkKVhCT810KmSVsIrcGlDP60Rc=",
+			"optional": true,
 			"requires": {
 				"kind-of": "^3.0.2",
 				"longest": "^1.0.1",
@@ -857,6 +858,7 @@
 					"version": "3.2.2",
 					"resolved": "https://registry.npmjs.org/kind-of/-/kind-of-3.2.2.tgz",
 					"integrity": "sha1-MeohpzS6ubuw8yRm2JOupR5KPGQ=",
+					"optional": true,
 					"requires": {
 						"is-buffer": "^1.1.5"
 					}
@@ -7827,6 +7829,7 @@
 					"version": "0.1.4",
 					"bundled": true,
 					"dev": true,
+					"optional": true,
 					"requires": {
 						"kind-of": "^3.0.2",
 						"longest": "^1.0.1",
@@ -8769,7 +8772,8 @@
 				"longest": {
 					"version": "1.0.1",
 					"bundled": true,
-					"dev": true
+					"dev": true,
+					"optional": true
 				},
 				"lru-cache": {
 					"version": "4.1.3",

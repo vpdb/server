@@ -109,7 +109,7 @@
 		"@types/busboy": "0.2.3",
 		"@types/bytes": "3.0.0",
 		"@types/chalk": "2.2.0",
-		"@types/cheerio": "0.22.8",
+		"@types/cheerio": "0.22.9",
 		"@types/ent": "2.2.1",
 		"@types/expect.js": "0.3.29",
 		"@types/faker": "4.1.3",

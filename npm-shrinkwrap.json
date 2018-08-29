@@ -442,9 +442,9 @@
 			"dev": true
 		},
 		"@types/ioredis": {
-			"version": "3.2.13",
-			"resolved": "https://registry.npmjs.org/@types/ioredis/-/ioredis-3.2.13.tgz",
-			"integrity": "sha512-38qPXqV4oEzucMcdl0yhqN9JCGYOjspvfQyOL4T4HpMcD4VIj4RfuumuM2mwTtK12jiHF0oxjyU8EvnLfHD+TA==",
+			"version": "3.2.16",
+			"resolved": "https://registry.npmjs.org/@types/ioredis/-/ioredis-3.2.16.tgz",
+			"integrity": "sha512-+uNw6mCVlk5/N6DAnYCe5rEUA9EvKPL6KmfRNUT0Vexwqg9pAsC7/2bMhYhP0Yc4c0VeHbO+YJ65/vw4t8cVXw==",
 			"dev": true,
 			"requires": {
 				"@types/bluebird": "*",

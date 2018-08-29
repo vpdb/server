@@ -89,6 +89,7 @@ export function koaErrorHandler() {
 			let sendError: boolean;
 			if (err.isApiError) {
 				(err as ApiError).print(ctx, '\n\n' + chalk.magenta(requestLog(ctx)));
+				logger.error(ctx.state, err.message);
 				sendError = (err as ApiError).sendError();
 
 			} else if (err.name === 'ValidationError') {

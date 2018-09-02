@@ -237,7 +237,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 			num_comments: '-counter.comments',
 			num_stars: '-counter.stars',
 		});
-		const populatedFields = ['_game', 'versions.files._file', 'versions.files._playfield_image',
+		const populatedFields = ['_game', 'versions.files._file', 'versions.files._playfield_images',
 			'versions.files._compatibility', 'authors._user'];
 
 		const searchQuery = this.searchQuery(query);
@@ -334,8 +334,8 @@ export class ReleaseApi extends ReleaseAbstractApi {
 
 		const release = await state.models.Release.findOne({ id: ctx.params.id })
 			.populate({ path: 'versions.files._file' })
-			.populate({ path: 'versions.files._playfield_image' })
-			.populate({ path: 'versions.files._playfield_video' })
+			.populate({ path: 'versions.files._playfield_images' })
+			.populate({ path: 'versions.files._playfield_videos' })
 			.exec();
 
 		if (!release) {

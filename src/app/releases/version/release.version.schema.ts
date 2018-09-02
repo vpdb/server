@@ -168,70 +168,77 @@ async function validateFile(release: ReleaseDocument, tableFile: ReleaseVersionF
 	}
 
 	// check if playfield image exists
-	if (!tableFile._playfield_image) {
-		release.invalidate('files.' + index + '._playfield_image', 'Playfield image must be provided.', tableFile._playfield_image);
+	const playfieldImageIds = tableFile._playfield_image ? [tableFile._playfield_image]: tableFile._playfield_images;
+	if (!isArray(playfieldImageIds) || !playfieldImageIds.length) {
+		release.invalidate('files.' + index + '._playfield_images', 'At least one playfield image must be provided.', tableFile._playfield_images);
 	}
 
 	const mediaValidations: Array<Promise<void>> = [];
 
 	// validate playfield image
-	if (tableFile._playfield_image) {
-		mediaValidations.push(state.models.File.findById(tableFile._playfield_image).exec().then(playfieldImage => {
-			if (!playfieldImage) {
-				release.invalidate('files.' + index + '._playfield_image',
-					'Playfield "' + tableFile._playfield_image + '" does not exist.', tableFile._playfield_image);
-				return;
-			}
-
-			// validate aspect ratio
-			const ar = playfieldImage.metadata.size.width / playfieldImage.metadata.size.height;
-
-			if (ar > 1 && (ar < 1.5 || ar > 1.89)) {
-				release.invalidate('files.' + index + '._playfield_image',
-					'Playfield image must have an aspect ratio between 16:9 and 16:10 (' + ar + ').', tableFile._playfield_image);
-			}
-			if (ar < 1 && ((1 / ar) < 1.5 || (1 / ar) > 1.89)) {
-				release.invalidate('files.' + index + '._playfield_image',
-					'Playfield image must have an aspect ratio between 16:9 and 16:10 (' + ar + ').', tableFile._playfield_image);
-			}
-
-			if (playfieldImage.file_type === 'playfield') {
-				release.invalidate('files.' + index + '._playfield_image',
-					'Either provide rotation parameters in query or use "playfield-fs" or "playfield-ws" in file_type.', tableFile._playfield_image);
-
-			} else if (!['playfield-fs', 'playfield-ws'].includes(playfieldImage.file_type)) {
-				release.invalidate('files.' + index + '._playfield_image',
-					'Must reference a file with file_type "playfield-fs" or "playfield-ws".', tableFile._playfield_image);
-
-			} else {
-
-				// fail if table file is set to FS but provided playfield is not
-				if (fileFlavor.orientation && fileFlavor.orientation === 'fs' && playfieldImage.file_type !== 'playfield-fs') {
-					release.invalidate('files.' + index + '._playfield_image', 'Table file orientation is set ' +
-						'to FS but playfield image is "' + playfieldImage.file_type + '".', tableFile._playfield_image);
+	if (isArray(playfieldImageIds)) {
+		let imageIndex = 0;
+		for (const playfieldImageId of playfieldImageIds) {
+			mediaValidations.push(state.models.File.findById(playfieldImageId).exec().then(playfieldImage => {
+				if (!playfieldImage) {
+					release.invalidate('files.' + index + '._playfield_images.' + imageIndex,
+						'Playfield "' + playfieldImageId + '" does not exist.', playfieldImageId);
+					return;
 				}
 
-				// fail if table file is set to WS but provided playfield is not
-				if (fileFlavor.orientation && fileFlavor.orientation === 'ws' && playfieldImage.file_type !== 'playfield-ws') {
-					release.invalidate('files.' + index + '._playfield_image', 'Table file orientation is set ' +
-						'to WS but playfield image is "' + playfieldImage.file_type + '".', tableFile._playfield_image);
+				// validate aspect ratio
+				const ar = playfieldImage.metadata.size.width / playfieldImage.metadata.size.height;
+
+				if (ar > 1 && (ar < 1.5 || ar > 1.89)) {
+					release.invalidate('files.' + index + '._playfield_images.' + imageIndex,
+						'Playfield image must have an aspect ratio between 16:9 and 16:10 (' + ar + ').', playfieldImageId);
+				}
+				if (ar < 1 && ((1 / ar) < 1.5 || (1 / ar) > 1.89)) {
+					release.invalidate('files.' + index + '._playfield_images.' + imageIndex,
+						'Playfield image must have an aspect ratio between 16:9 and 16:10 (' + ar + ').', playfieldImageId);
 				}
 
-				// fail if playfield is set to FS but file's metadata say otherwise
-				if (playfieldImage.file_type === 'playfield-fs' && playfieldImage.metadata.size.width > playfieldImage.metadata.size.height) {
-					release.invalidate('files.' + index + '._playfield_image', 'Provided playfield "' + playfieldImage.id + '" is ' +
-						playfieldImage.metadata.size.width + 'x' + playfieldImage.metadata.size.height +
-						' (landscape) when it really should be portrait.', tableFile._playfield_image);
-				}
+				if (playfieldImage.file_type === 'playfield') {
+					release.invalidate('files.' + index + '._playfield_images.' + imageIndex,
+						'Either provide rotation parameters in query or use "playfield-fs" or "playfield-ws" in file_type.', playfieldImageId);
 
-				// fail if playfield is set to WS but file's metadata say otherwise
-				if (playfieldImage.file_type === 'playfield-ws' && playfieldImage.metadata.size.width < playfieldImage.metadata.size.height) {
-					release.invalidate('files.' + index + '._playfield_image', 'Provided playfield "' + playfieldImage.id + '" is ' +
-						playfieldImage.metadata.size.width + 'x' + playfieldImage.metadata.size.height +
-						' (portrait) when it really should be landscape.', tableFile._playfield_image);
+				} else if (![ 'playfield-fs', 'playfield-ws' ].includes(playfieldImage.file_type)) {
+					release.invalidate('files.' + index + '._playfield_images.' + imageIndex,
+						'Must reference a file with file_type "playfield-fs" or "playfield-ws".', playfieldImageId);
+
+				} else {
+
+					// fail if table file is set to FS but provided playfield is not
+					if (fileFlavor.orientation && fileFlavor.orientation === 'fs' && playfieldImage.file_type !== 'playfield-fs') {
+						release.invalidate('files.' + index + '._playfield_images.' + imageIndex,
+						'Table file orientation is set to FS but playfield image is "' + playfieldImage.file_type + '".', playfieldImageId);
+					}
+
+					// fail if table file is set to WS but provided playfield is not
+					if (fileFlavor.orientation && fileFlavor.orientation === 'ws' && playfieldImage.file_type !== 'playfield-ws') {
+						release.invalidate('files.' + index + '._playfield_images.' + imageIndex,
+						'Table file orientation is set to WS but playfield image is "' + playfieldImage.file_type + '".', playfieldImageId);
+					}
+
+					// fail if playfield is set to FS but file's metadata say otherwise
+					if (playfieldImage.file_type === 'playfield-fs' && playfieldImage.metadata.size.width > playfieldImage.metadata.size.height) {
+						release.invalidate('files.' + index + '._playfield_images.' + imageIndex,
+						'Provided playfield "' + playfieldImage.id + '" is ' +
+							playfieldImage.metadata.size.width + 'x' + playfieldImage.metadata.size.height +
+							' (landscape) when it really should be portrait.', playfieldImageId);
+					}
+
+					// fail if playfield is set to WS but file's metadata say otherwise
+					if (playfieldImage.file_type === 'playfield-ws' && playfieldImage.metadata.size.width < playfieldImage.metadata.size.height) {
+						release.invalidate('files.' + index + '._playfield_images.' + imageIndex,
+						'Provided playfield "' + playfieldImage.id + '" is ' +
+							playfieldImage.metadata.size.width + 'x' + playfieldImage.metadata.size.height +
+							' (portrait) when it really should be landscape.', playfieldImageId);
+					}
 				}
-			}
-		}));
+			}));
+			imageIndex++;
+		}
 	}
 
 	// TODO validate playfield video

@@ -148,7 +148,7 @@ export abstract class Serializer<T extends Document | ModeratedDocument> {
 			return undefined;
 		}
 
-		if (!this._populated(versionFile, '_playfield_image')) {
+		if (!this._populated(versionFile, '_playfield_images')) {
 			return undefined;
 		}
 
@@ -157,8 +157,11 @@ export abstract class Serializer<T extends Document | ModeratedDocument> {
 			thumbFields = [...thumbFields, 'mime_type', 'bytes', 'file_type'];
 		}
 
-		const playfieldImage = state.serializers.File.detailed(ctx, versionFile._playfield_image as FileDocument, opts);
+		const playfieldImages = (versionFile._playfield_images as FileDocument[])
+			.map(image => state.serializers.File.detailed(ctx, image, opts));
 
+		// todo check which orientation is desired and filter accordingly
+		const playfieldImage = playfieldImages[0];
 		if (opts.thumbFormat === 'original') {
 			return assign(pick(playfieldImage, thumbFields), {
 				width: playfieldImage.metadata.size.width,

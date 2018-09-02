@@ -41,8 +41,10 @@ export const releaseVersionFileFields = {
 		_validated_by:   { type: Schema.Types.ObjectId, ref: 'User' },
 	},
 	_compatibility: [ { type: Schema.Types.ObjectId, ref: 'Build' } ],
-	_playfield_image: { type: Schema.Types.ObjectId, ref: 'File' },
-	_playfield_video: { type: Schema.Types.ObjectId, ref: 'File' },
+	_playfield_image: { type: Schema.Types.ObjectId, ref: 'File' }, // deprecated, remove when data migrated.
+	_playfield_video: { type: Schema.Types.ObjectId, ref: 'File' }, // deprecated, remove when data migrated.
+	_playfield_images: [ { type: Schema.Types.ObjectId, ref: 'File' } ],
+	_playfield_videos: [ { type: Schema.Types.ObjectId, ref: 'File' } ],
 	released_at: { type: Date, required: true },
 	counter: {
 		downloads: { type: Number, default: 0 },

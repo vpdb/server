@@ -149,10 +149,10 @@ export class ReleaseUploader extends DataUploader {
 					filetype: 'release',
 				});
 			}
-			if (get(file, '_playfield_image')) {
+			if (get(file, '_playfield_images')) {
 				files.push({
-					path: 'files[' + i + ']._playfield_image',
-					filename: get(file, '_playfield_image'),
+					path: 'files[' + i + ']._playfield_images',
+					filename: get(file, '_playfield_images'),
 					filetype: 'playfield-' + get(file, 'flavor.orientation'),
 				});
 			}

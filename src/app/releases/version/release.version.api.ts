@@ -158,7 +158,7 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 	public async updateVersion(ctx: Context) {
 
 		const updatableFields = ['released_at', 'changes'];
-		const updatableFileFields = ['flavor', '_compatibility', '_playfield_image', '_playfield_video'];
+		const updatableFileFields = ['flavor', '_compatibility', '_playfield_image', '_playfield_video', '_playfield_images', '_playfield_videos'];
 		const now = new Date();
 
 		// retrieve release
@@ -250,8 +250,8 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 			.populate({ path: '_game' })
 			.populate({ path: 'authors._user' })
 			.populate({ path: 'versions.files._file' })
-			.populate({ path: 'versions.files._playfield_image' })
-			.populate({ path: 'versions.files._playfield_video' })
+			.populate({ path: 'versions.files._playfield_images' })
+			.populate({ path: 'versions.files._playfield_videos' })
 			.populate({ path: 'versions.files._compatibility' })
 			.exec();
 

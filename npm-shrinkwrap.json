@@ -1632,9 +1632,9 @@
 			"integrity": "sha1-Jw8HbFpywC9bZaR9+Uxf46J4iS8="
 		},
 		"bull": {
-			"version": "3.4.7",
-			"resolved": "https://registry.npmjs.org/bull/-/bull-3.4.7.tgz",
-			"integrity": "sha512-ZWhfP7ujtrppbFppl3vmNU1QaoA4/BuqhnZsJT1NnKUkRxlxYLuTZIVdQJbb71fMNXhLdMngYS5M98OvdoZu/Q==",
+			"version": "3.4.8",
+			"resolved": "https://registry.npmjs.org/bull/-/bull-3.4.8.tgz",
+			"integrity": "sha512-dO/Dxbe7gpq8hyYlQfkLFz+N7JxTLM7KlEppViOdaaq8JSq15GgQo1wARG7E223MB6Ji9u9xTRcqXi/SwVvI1Q==",
 			"requires": {
 				"bluebird": "^3.5.0",
 				"cron-parser": "^2.5.0",

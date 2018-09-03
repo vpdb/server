@@ -26,12 +26,9 @@ logs
 results
 .nyc_output
 config/settings.js
-src_/scripts/credentials.js
-test/coverage
+src/scripts/credentials.js
 
-npm-debug.log
 node_modules
-bower_components
 
 gitinfo.json
 raml.json

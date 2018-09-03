@@ -737,9 +737,9 @@
 			}
 		},
 		"@types/xmlbuilder": {
-			"version": "0.0.32",
-			"resolved": "https://registry.npmjs.org/@types/xmlbuilder/-/xmlbuilder-0.0.32.tgz",
-			"integrity": "sha512-pYpeUBPFwOga4mkz9kpfua5dUBNUjPGiasg+O1HFYJpJy/NqQhnhm95NFMD9U1825AIrEVyWx0kvAKsV3+CZAA==",
+			"version": "0.0.33",
+			"resolved": "https://registry.npmjs.org/@types/xmlbuilder/-/xmlbuilder-0.0.33.tgz",
+			"integrity": "sha512-9mZ6j+qYLa+Pn2ihLvDvULaLbqVfGlT0etGO0HiCgb2kVEsBz8d0tovBghm6nM1vjnQPOE+0NxX/w0fSiywMiA==",
 			"dev": true
 		},
 		"@types/yargs": {

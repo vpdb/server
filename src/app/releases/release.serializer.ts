@@ -75,7 +75,7 @@ export class ReleaseSerializer extends Serializer<ReleaseDocument> {
 		return this.serializeRelease(ctx, doc, opts,
 			state.serializers.ReleaseVersion.detailed.bind(state.serializers.ReleaseVersion),
 			false,
-			['description', 'acknowledgements', 'license', 'modified_at']);
+			['description', 'acknowledgements', 'license']);
 	}
 
 	private serializeRelease(ctx: Context, doc: ReleaseDocument, opts: SerializerOptions,
@@ -86,7 +86,7 @@ export class ReleaseSerializer extends Serializer<ReleaseDocument> {
 		const validRequestedFields = ['description'];
 		const requestedFields = intersection(validRequestedFields, opts.includedFields);
 		additionalFields = additionalFields || [];
-		const fields = ['id', 'name', 'created_at', 'released_at', 'rating', ...additionalFields, ...requestedFields];
+		const fields = ['id', 'name', 'created_at', 'released_at', 'modified_at', 'rating', ...additionalFields, ...requestedFields];
 
 		// primitive fields
 		const release = pick(doc, fields) as ReleaseDocument;

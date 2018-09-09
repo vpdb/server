@@ -307,6 +307,24 @@ class ApiCache {
 	}
 
 	/**
+	 * Invalidates all caches for a given provider
+	 *
+	 * @todo include which user was added and only clear those caches.
+	 * @param requestState For logging
+	 * @param provider Provider ID
+	 */
+	public async invalidateProviderCache(requestState: RequestState, provider: string) {
+		logger.info(requestState, '[ApiCache.invalidateProviderCache] Invalidating all caches for provider %s', provider);
+		const entityRefs = await state.redis.keys(this.getProviderKey(provider));
+		if (entityRefs.length > 0) {
+			const keys = await state.redis.sunion(...entityRefs);
+			logger.verbose(requestState, '[ApiCache.invalidateProviderCache] Clearing: %s', keys.join(', '));
+			await state.redis.del(keys);
+			await state.redis.del(entityRefs as any);
+		}
+	}
+
+	/**
 	 * Invalidates all caches.
 	 * @see https://github.com/galanonym/redis-delete-wildcard/blob/master/index.js
 	 * @return {Promise<number>} Number of invalidated caches
@@ -362,10 +380,13 @@ class ApiCache {
 						refs.push(this.getEntityKey(entity.modelName, entity.level, entity.entityId));
 					}
 				}
+
 				// user
 				if (tag.user) {
 					refs.push(this.getUserKey(tag.user));
 				}
+
+				// union keys
 				allRefs[i].push(refs);
 				const union = await state.redis.sunion(...refs);
 				// logger.wtf('SUNION %s -> %s', refs.join(' '), union.join(','));
@@ -442,6 +463,13 @@ class ApiCache {
 		// reference user
 		if (ctx.state.user) {
 			const refKey = this.getUserKey(ctx.state.user);
+			refs.push(() => state.redis.sadd(refKey, key));
+			refKeys.push(refKey);
+		}
+
+		// reference provider
+		if (ctx.state.tokenType === 'provider') {
+			const refKey = this.getProviderKey(ctx.state.tokenProvider);
 			refs.push(() => state.redis.sadd(refKey, key));
 			refKeys.push(refKey);
 		}
@@ -537,7 +565,9 @@ class ApiCache {
 
 	private getCacheKey(ctx: Context): string {
 		const normalizedQuery = this.normalizeQuery(ctx);
-		return this.redisCachePrefix + (ctx.state.user ? ctx.state.user.id + ':' : '') + ctx.request.path + (normalizedQuery ? '?' : '') + normalizedQuery;
+		const user = (ctx.state.user ? ctx.state.user.id + ':' : '');
+		const provider = (ctx.state.tokenType === 'provider' ? ctx.state.tokenProvider + ':' : '');
+		return this.redisCachePrefix + provider + user + ctx.request.path + (normalizedQuery ? '?' : '') + normalizedQuery;
 	}
 
 	private getEntityKey(modelName: string, serializerLevel: string, entityId: string = ''): string {
@@ -546,6 +576,10 @@ class ApiCache {
 
 	private getUserKey(user: UserDocument): string {
 		return this.redisRefPrefix + 'user:' + user.id;
+	}
+
+	private getProviderKey(provider: string): string {
+		return this.redisRefPrefix + 'provider:' + provider;
 	}
 
 	private getListModelKey(modelName: string): string {

@@ -31,6 +31,7 @@ import { state } from '../state';
 import { UserDocument } from '../users/user.document';
 import { UserUtil } from '../users/user.util';
 import { AuthenticationUtil } from './authentication.util';
+import { apiCache } from '../common/api.cache';
 
 export class AuthenticationApi extends Api {
 
@@ -563,6 +564,9 @@ export class AuthenticationApi extends Api {
 		});
 		logger.info(ctx.state, '[AuthenticationApi.createOAuthUser] New user <%s> created.', newUser.email);
 		await mailer.welcomeOAuth(ctx.state, newUser);
+
+		// new oauth user, clear provider cache since there might gonna be new user matches.
+		await apiCache.invalidateProviderCache(ctx.state, provider);
 
 		return newUser;
 	}

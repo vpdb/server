@@ -27,7 +27,7 @@ const api = new ApiClient();
 
 describe('The game cache', () => {
 
-	let res, existingGame;
+	let res, existingGame, providerToken;
 	before(async () => {
 		await api.setupUsers({
 			member: { roles: ['member'] },
@@ -36,7 +36,17 @@ describe('The game cache', () => {
 		});
 		existingGame = await api.gameHelper.createGame('moderator');
 		await api.as('admin').del('/v1/cache').then(res => res.expectStatus(204));
+
+		// create provider token
+		let res = await api.as('admin').markTeardown().post('/v1/tokens', {
+			label: 'Auth test token',
+			password: api.getUser('admin').password,
+			provider: 'ipbtest', type: 'provider',
+			scopes: [ 'community', 'service' ]
+		}).then(res => res.expectStatus(201));
+		providerToken = res.data.token;
 	});
+
 
 	afterEach(async () => await api.as('admin').del('/v1/cache').then(res => res.expectStatus(204)));
 	after(async () => await api.teardown());
@@ -53,6 +63,15 @@ describe('The game cache', () => {
 		it('should cache game list for same user', async () => {
 			await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'miss'));
 			await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'hit'));
+
+			await api.as('member').get('/v1/games').then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.as('member').get('/v1/games').then(res => res.expectHeader('x-cache-api', 'hit'));
+		});
+
+		it('should cache game list for same provider', async () => {
+			await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.withToken(providerToken).get('/v1/games').then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.withToken(providerToken).get('/v1/games').then(res => res.expectHeader('x-cache-api', 'hit'));
 		});
 
 	});
@@ -72,6 +91,16 @@ describe('The game cache', () => {
 			await api.get('/v1/games/' + existingGame.id).then(res => res.expectHeader('x-cache-api', 'hit'));
 			await api.gameHelper.createGame('moderator');
 			await api.get('/v1/games/' + existingGame.id).then(res => res.expectHeader('x-cache-api', 'hit'));
+		});
+
+		it('should invalidate the provider cache when a user provider user is authenticated', async () => {
+			await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.withToken(providerToken).get('/v1/games').then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.createOAuthUser('ipbtest');
+
+			await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'hit'));
+			await api.withToken(providerToken).get('/v1/games').then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.withToken(providerToken).get('/v1/games').then(res => res.expectHeader('x-cache-api', 'hit'));
 		});
 	});
 

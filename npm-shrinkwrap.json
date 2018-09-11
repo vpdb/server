@@ -11294,9 +11294,9 @@
 			}
 		},
 		"rollbar": {
-			"version": "2.4.4",
-			"resolved": "https://registry.npmjs.org/rollbar/-/rollbar-2.4.4.tgz",
-			"integrity": "sha512-22DOE8sAkMmmjYOZNcqHJGhmJzq5Jp6zgMfu6x2IH9xnuYveEDyHba46TtCKwYPuY92A+pRCL/d0RKPmazk5Fg==",
+			"version": "2.4.6",
+			"resolved": "https://registry.npmjs.org/rollbar/-/rollbar-2.4.6.tgz",
+			"integrity": "sha512-9sPTImCVTV5hmBO+w4XybUWK09/e3ZRePwVW/+6u2nRrRRMO8GIFz0Y72mFVqEBrzbnf7aE0CLCRauA82hS/ow==",
 			"requires": {
 				"async": "~1.2.1",
 				"console-polyfill": "0.3.0",

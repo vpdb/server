@@ -29,7 +29,7 @@ import { logger } from '../app/common/logger';
 import { config } from '../app/common/settings';
 
 const scriptFolder = resolvePath(__dirname, 'migrations');
-const scripts = readdirSync(scriptFolder);
+const scripts = readdirSync(scriptFolder).filter(s => !s.endsWith('.map'));
 
 (async () => {
 
@@ -77,13 +77,15 @@ async function runMigrations(fromFolder: string, toFolder: string) {
 		return;
 	}
 	await bootstrapDatabase();
+	logger.info(null, '[migrate] Migrating from %s to %s...', fromFolder, toFolder);
+
 	const fromRepo = await Git.Repository.open(fromFolder);
 	const toRepo = await Git.Repository.open(toFolder);
 	const fromCommit = await fromRepo.getHeadCommit();
 	try {
 		await toRepo.getCommit(fromCommit.sha());
 	} catch (err) {
-		logger.info(null, '[migrate] Cannot find commit %s in repository %s. Assuming force-push, aborting migrations.', fromCommit.sha(), toFolder);
+		logger.warn(null, '[migrate] Cannot find commit %s in repository %s. Assuming force-push, aborting migrations.', fromCommit.sha(), toFolder);
 		return;
 	}
 	let foundFromCommit = false;
@@ -106,15 +108,18 @@ async function runMigrations(fromFolder: string, toFolder: string) {
 		return;
 	}
 	logger.info(null, '[migrate] Found %s commits between %s and %s.', commits.length, fromCommit.sha().substring(0, 7), toCommit.sha().substring(0, 7));
+	let numScripts = 0;
 	for (const commit of reverse(commits)) {
 		const script = scripts.find(filename => commit.sha().startsWith(filename.split('-')[1]));
 		if (!script) {
-			return;
+			continue;
 		}
-		logger.info(null, '[migrate] Executing migrating script %s for commit %s...', script, commit.sha());
+		logger.info(null, '[migrate] Executing migration script %s for commit %s...', script, commit.sha());
 		const migrate = require(resolvePath(scriptFolder, script));
 		await migrate.up();
+		numScripts++;
 	}
+	logger.info(null, '[migrate] %s script%s executed.', numScripts, numScripts === 1 ? '' : 's');
 }
 
 async function bootstrapDatabase() {

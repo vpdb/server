@@ -546,6 +546,7 @@ class ApiClient {
 				}
 			}
 		}
+		this._tearDown = [];
 		this._users.clear();
 		this._tokens.clear();
 	}

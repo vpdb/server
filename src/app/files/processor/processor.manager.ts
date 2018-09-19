@@ -237,8 +237,6 @@ class ProcessorManager {
 			destVariation: destVariation.name,
 		} as JobData, {
 			priority: processor.getOrder(destVariation),
-			// removeOnComplete: true,
-			// removeOnFail: true
 		} as JobOptions);
 		logger.debug(requestState, '[ProcessorManager.queueCreation] Added %s based on %s to creation queue with processor %s (%s).',
 			file.toDetailedString(destVariation), file.toDetailedString(srcVariation), processor.name, job.id);
@@ -268,8 +266,6 @@ class ProcessorManager {
 			destVariation: variation ? variation.name : undefined,
 		} as JobData, {
 			priority: processor.getOrder(variation),
-			// removeOnComplete: true,
-			// removeOnFail: true
 		} as JobOptions);
 		logger.debug(requestState, '[ProcessorManager.queueOptimization] Added %s to optimization queue with processor %s (%s).',
 			file.toDetailedString(variation), processor.name, job.id);

@@ -19,7 +19,6 @@
 
 import { assign, cloneDeep, difference, extend, intersection, isUndefined, keys, orderBy, pick } from 'lodash';
 import { Types } from 'mongoose';
-import { inspect } from 'util';
 
 import { acl } from '../common/acl';
 import { apiCache } from '../common/api.cache';

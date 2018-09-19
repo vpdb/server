@@ -87,21 +87,12 @@ class ProcessorQueue {
 	 */
 	public async processFile(requestState: RequestState, file: FileDocument, srcPath: string): Promise<void> {
 
-		// add variations creation queue
+		// add variations creation queue (those with a source will be queued when their source is available)
 		for (const variation of file.getVariations().filter(v => !v.source)) {
 			const processor = processorManager.getValidCreationProcessor(requestState, file, null, variation);
 			if (processor) {
-				const tmpSrcPath = file.getPath(requestState, null, { tmpSuffix: '_' + variation.name + '.source' });
 				const destPath = file.getPath(requestState, variation, { tmpSuffix: '_' + processor.name + '.processing' });
-				try {
-					// we might be here through postprocess and the variation is still
-					// processing from the upload. so we wait until that's done.
-					await this.waitForVariationCreation(requestState, file, variation);
-				} catch (err) {
-					// file's not in queue, all good, continue.
-				}
-				await FileUtil.cp(srcPath, tmpSrcPath);
-				await processorManager.queueCreation(requestState, processor, file, tmpSrcPath, destPath, null, variation);
+				await processorManager.queueCreation(requestState, processor, file, srcPath, destPath, null, variation);
 			}
 		}
 
@@ -331,6 +322,19 @@ class ProcessorQueue {
 	}
 
 	/**
+	 * Checks whether there is a creation job active or waiting for a given file variation.
+	 *
+	 * @param {string} file File
+	 * @param {string} variation Variation
+	 * @return {Promise<boolean>} True if there is a non-finished job, false otherwise.
+	 */
+	public async hasRemainingCreationJob(file: FileDocument, variation: FileVariation): Promise<boolean> {
+		const numJobs = await this.countRemaining([processorManager.getQueue('creation', file, variation)],
+			job => ProcessorQueue.isSame(job.data, file.id, variation.name));
+		return numJobs > 0;
+	}
+
+	/**
 	 * Subscribes to the queue of a given job and returns when the job has finished.
 	 * @param requestState For logging
 	 * @param {Queue} queue Queue to subscribe to
@@ -356,19 +360,6 @@ class ProcessorQueue {
 	}
 
 	/**
-	 * Checks whether there is a creation job active or waiting for a given file variation.
-	 *
-	 * @param {string} file File
-	 * @param {string} variation Variation
-	 * @return {Promise<boolean>} True if there is a non-finished job, false otherwise.
-	 */
-	private async hasRemainingCreationJob(file: FileDocument, variation: FileVariation): Promise<boolean> {
-		const numJobs = await this.countRemaining([processorManager.getQueue('creation', file, variation)],
-			job => ProcessorQueue.isSame(job.data, file.id, variation.name));
-		return numJobs > 0;
-	}
-
-	/**
 	 * Counts how many active or waiting actions there are for any file.
 	 *
 	 * @return {Promise<number>} Number of non-finished jobs
@@ -378,20 +369,26 @@ class ProcessorQueue {
 	}
 
 	/**
+	 * Returns all jobs that are either waiting or active.
+	 * @param queues Queues to check
+	 */
+	private async getRemainingJobs(queues: Queue[]): Promise<Job[]> {
+		const jobs = [];
+		for (const q of queues) {
+			jobs.push(...(await (q as any).getJobs(['waiting', 'active']) as Job[]));
+		}
+		return jobs;
+	}
+
+	/**
 	 * Counts active an waiting jobs based on a filter.
 	 *
 	 * @param {Bull.Queue[]} queues Queue to check
 	 * @param {function} filter Filter applied to returned jobs
 	 * @return {Promise<number>} Number of active or waiting jobs
 	 */
-	private async countRemaining(queues: Queue[], filter: (job: Job) => boolean) {
-		let numbJobs = 0;
-		for (const q of queues) {
-			const jobs = await (q as any).getJobs(['waiting', 'active']) as Job[];
-			const remainingJobs = jobs.filter(filter);
-			numbJobs += remainingJobs.length;
-		}
-		return numbJobs;
+	private async countRemaining(queues: Queue[], filter: (job: Job) => boolean): Promise<number> {
+		return (await this.getRemainingJobs(queues)).filter(filter).length;
 	}
 
 	/* tslint:disable:member-ordering */

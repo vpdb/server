@@ -28,7 +28,7 @@ const api = new ApiClient();
 let res;
 describe('The VPDB `blockmatch` API', () => {
 
-	describe('when trying to match a file', () => {
+	describe('when trying to match any file', () => {
 
 		before(async () => {
 			await api.setupUsers({ moderator: { roles: ['moderator'] } });

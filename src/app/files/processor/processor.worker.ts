@@ -54,7 +54,7 @@ export class ProcessorWorker {
 
 		// retrieve data from deserialized job
 		const data = job.data as JobData;
-		const srcPath = data.srcPath;
+		const srcCopyToPath = data.srcPath;
 		const destPath = data.destPath;
 		const requestState = data.requestState;
 
@@ -64,8 +64,11 @@ export class ProcessorWorker {
 				data.processor, job.id, data.fileId);
 			return null;
 		}
-		const processor = processorManager.getCreationProcessor(data.processor);
 		const variation = file.getVariation(data.destVariation);
+		const srcPath = file.getPath(requestState, null, { tmpSuffix: '_' + variation.name + '.source' });
+		await FileUtil.cp(srcCopyToPath, srcPath);
+
+		const processor = processorManager.getCreationProcessor(data.processor);
 		if (!variation) {
 			throw new ApiError('Got a non-variation on the creation queue: %s', file.toDetailedString());
 		}
@@ -250,10 +253,8 @@ export class ProcessorWorker {
 		for (const dependentVariation of dependentVariations) {
 			const processor = processorManager.getValidCreationProcessor(requestState, file, createdVariation, dependentVariation);
 			if (processor) {
-				const srcPath = file.getPath(requestState, createdVariation, { tmpSuffix: '_' + dependentVariation.name + '.source' });
 				const destPath = file.getPath(requestState, dependentVariation, { tmpSuffix: '_' + processor.name + '.processing' });
-				await FileUtil.cp(file.getPath(requestState, createdVariation), srcPath);
-				await processorManager.queueCreation(requestState, processor, file, srcPath, destPath, createdVariation, dependentVariation);
+				await processorManager.queueCreation(requestState, processor, file, file.getPath(requestState, createdVariation), destPath, createdVariation, dependentVariation);
 			} else {
 				logger.error(requestState, '[ProcessorWorker.continueCreation] Cannot find a processor for %s which is dependent on %s.',
 					file.toShortString(dependentVariation), file.toShortString(createdVariation));

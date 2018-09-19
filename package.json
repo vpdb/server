@@ -22,6 +22,7 @@
 		"serve:dev": "nodemon --config deploy/nodemon/dev.json --inspect -r ts-node/register src/app",
 		"serve:test": "nyc node build/app",
 		"serve:test:debug": "node --inspect -r ts-node/register src/app",
+		"serve:test:debug:compiled": "node --inspect build/app",
 		"serve:protractor": "cross-env NODE_ENV=test APP_SETTINGS=config/settings.protractor.js PORT=7357 APP_NAME=local run-s test:dropdbs start",
 		"build": "rimraf build && tsc",
 		"lint": "tslint src/app/**/*.ts",
@@ -33,6 +34,7 @@
 		"test:run": "run-s test:wait test:mocha test:finish",
 		"test:serve": "cross-env NODE_ENV=test APP_SETTINGS=config/settings.test.js PORT=7357 APP_NAME=local ENABLE_KILL_SWITCH=1 LOGLEVEL=info run-s build test:dropdbs test:rimraf serve:test",
 		"test:serve:debug": "cross-env NODE_ENV=test APP_SETTINGS=config/settings.test.js PORT=7357 APP_NAME=local run-s test:dropdbs serve:test:debug",
+		"test:serve:debug:compiled": "cross-env NODE_ENV=test APP_SETTINGS=config/settings.test.js PORT=7357 APP_NAME=local LOGLEVEL=silly run-s build test:dropdbs test:rimraf serve:test:debug:compiled",
 		"test:ci": "run-p test:serve test:run",
 		"update-top-100": "node -r ts-node/register src/scripts/update-top-100.ts",
 		"snyk-protect": "snyk protect",
@@ -154,6 +156,7 @@
 		"nyc": "13.0.1",
 		"pleasejs": "0.4.2",
 		"superagent": "3.8.3",
+		"treeify": "1.1.0",
 		"ts-node": "7.0.1",
 		"tslint": "5.11.0",
 		"typescript": "3.0.3",
@@ -178,6 +181,7 @@
 			"build/app/files/processor/processor.js",
 			"build/app/common/settings.validator.js",
 			"build/app/common/middleware/website.middleware.js",
+			"build/app/common/profiler.js",
 			"build/app/authentication/strategies/**"
 		],
 		"reporter": [

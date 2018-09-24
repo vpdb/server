@@ -77,7 +77,7 @@
 		"logform": "1.10.0",
 		"mongoose": "5.2.15",
 		"mongoose-paginate": "5.0.3",
-		"mongoose-unique-validator": "2.0.1",
+		"mongoose-unique-validator": "2.0.2",
 		"nodegit": "0.22.2",
 		"nodemailer": "4.6.8",
 		"ole-doc": "0.1.1",

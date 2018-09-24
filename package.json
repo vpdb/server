@@ -89,7 +89,7 @@
 		"randomstring": "1.1.5",
 		"raygun": "0.10.0",
 		"redis": "2.8.0",
-		"rollbar": "2.4.6",
+		"rollbar": "2.4.7",
 		"sax": "1.2.4",
 		"shortid32": "0.1.1",
 		"snyk": "1.96.0",

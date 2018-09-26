@@ -220,6 +220,36 @@ describe('The game cache', () => {
 		});
 	});
 
+	describe('when adding a backglass to a game', () => {
+
+		it('should cache game list', async () => {
+
+			// create game and cache list
+			const game = await api.gameHelper.createGame('moderator');
+			res = await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'miss'));
+
+			// add backglass
+			await api.releaseHelper.createDirectB2S('moderator', { game: game });
+
+			// it's a hit
+			res = await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'hit'));
+		});
+
+		it('should invalidate game details', async () => {
+
+			// create game and cache details
+			const game = await api.gameHelper.createGame('moderator');
+			res = await api.get('/v1/games/' + game.id).then(res => res.expectHeader('x-cache-api', 'miss'));
+
+			// add backglass
+			let backglass = await api.releaseHelper.createDirectB2S('moderator', { game: game });
+
+			// miss, because now the game contains the full release as well
+			res = await api.get('/v1/games/' + game.id).then(res => res.expectHeader('x-cache-api', 'miss'));
+			expect(res.data.backglasses.find(r => r.id === backglass.id)).to.be.ok();
+		});
+	});
+
 	describe('when downloading a release of a game', () => {
 
 		it('should cache game list but update download counter', async () => {

@@ -33,6 +33,7 @@ import { LogEventUtil } from '../log-event/log.event.util';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
 import { BackglassDocument } from './backglass.document';
+import { apiCache } from '../common/api.cache';
 
 export class BackglassApi extends Api {
 
@@ -92,6 +93,9 @@ export class BackglassApi extends Api {
 			.populate({ path: 'versions._file' })
 			.populate({ path: '_created_by' })
 			.exec();
+
+		// invalidate cache
+		await apiCache.invalidateCreatedBackglass(ctx.state, populatedBackglass);
 
 		// send moderation mail
 		if (populatedBackglass.moderation.is_approved) {

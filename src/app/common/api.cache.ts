@@ -31,6 +31,7 @@ import { UserDocument } from '../users/user.document';
 import { logger } from './logger';
 import { SerializerLevel, SerializerReference } from './serializer';
 import { Context, RequestState } from './typings/context';
+import { BackglassDocument } from '../backglasses/backglass.document';
 
 /**
  * An in-memory cache using Redis.
@@ -200,6 +201,16 @@ class ApiCache {
 	public async invalidateCreatedRelease(requestState: RequestState, release: ReleaseDocument) {
 		await this.invalidateList(requestState, 'release');
 		await this.invalidateEntity(requestState, 'game', (release._game as GameDocument).id, 'detailed');
+	}
+
+	/**
+	 * A backglass has been added, updated or deleted. Invalidates game details.
+	 *
+	 * @param requestState For logging
+	 * @param backglass Changed, added or removed backglass
+	 */
+	public async invalidateCreatedBackglass(requestState: RequestState, backglass: BackglassDocument) {
+		await this.invalidateEntity(requestState, 'game', (backglass._game as GameDocument).id, 'detailed');
 	}
 
 	/**

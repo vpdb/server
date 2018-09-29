@@ -45,6 +45,107 @@ describe('The VPDB `Release` API', function() {
 			hlp.cleanup(request, done);
 		});
 
+		it('should succeed using a fs playfield for universal orientation', function(done) {
+			const user = 'member';
+			hlp.game.createGame('moderator', request, function(game) {
+				hlp.file.createVpt(user, request, function(vptfile) {
+					hlp.file.createPlayfield(user, request, 'fs', 'playfield', function(playfield) {
+						expect(playfield.metadata.size.width).to.be(1080);
+						expect(playfield.metadata.size.height).to.be(1920);
+						request
+							.post('/api/v1/releases')
+							.query({ rotate: playfield.id + ':0' })
+							.as(user)
+							.send({
+								name: 'release',
+								license: 'by-sa',
+								_game: game.id,
+								versions: [
+									{
+										files: [ {
+											_file: vptfile.id,
+											_playfield_images: [ playfield.id ],
+											_compatibility: [ '9.9.0' ],
+											flavor: { orientation: 'any', lighting: 'any' } }
+										],
+										version: '1.0.0'
+									}
+								],
+								authors: [ { _user: hlp.getUser(user).id, roles: [ 'Table Creator' ] } ]
+							})
+							.end(function (err, res) {
+								hlp.expectStatus(err, res, 201);
+								hlp.doomRelease(user, res.body.id);
+								let playfieldRelease = res.body.versions[0].files[0].playfield_images[0];
+								expect(playfieldRelease.metadata.size.width).to.be(1080);
+								expect(playfieldRelease.metadata.size.height).to.be(1920);
+								request.get(playfieldRelease.variations.medium.url).end((err, res) => {
+									hlp.expectStatus(err, res, 200);
+									gm(res.body).size((err, size) => {
+										if (err) {
+											throw err;
+										}
+										expect(size.width).to.be.lessThan(size.height);
+										done();
+									})
+								});
+							});
+					});
+				});
+			});
+		});
+
+		it('should succeed when rotating a ws playfield to a fs file', function(done) {
+			const user = 'member';
+			hlp.game.createGame('moderator', request, function(game) {
+				hlp.file.createVpt(user, request, function(vptfile) {
+					hlp.file.createPlayfield(user, request, 'ws', 'playfield', function(playfield) {
+						expect(playfield.metadata.size.width).to.be(1920);
+						expect(playfield.metadata.size.height).to.be(1080);
+						request
+							.post('/api/v1/releases')
+							.query({ rotate: playfield.id + ':90' })
+							.as(user)
+							.send({
+								name: 'release',
+								license: 'by-sa',
+								_game: game.id,
+								versions: [
+									{
+										files: [ {
+											_file: vptfile.id,
+											_playfield_images: [ playfield.id ],
+											_compatibility: [ '9.9.0' ],
+											flavor: { orientation: 'fs', lighting: 'night' } }
+										],
+										version: '1.0.0'
+									}
+								],
+								authors: [ { _user: hlp.getUser(user).id, roles: [ 'Table Creator' ] } ]
+							})
+							.end(function (err, res) {
+								hlp.expectStatus(err, res, 201);
+								hlp.doomRelease(user, res.body.id);
+								let playfieldRotated = res.body.versions[0].files[0].playfield_images[0];
+								expect(playfieldRotated.metadata.size.width).to.be(1080);
+								expect(playfieldRotated.metadata.size.height).to.be(1920);
+								request.get(playfieldRotated.variations.full.url).end((err, res) => {
+									hlp.expectStatus(err, res, 200);
+									gm(res.body).size((err, size) => {
+										if (err) {
+											throw err;
+										}
+										expect(size.width).to.be(1080);
+										expect(size.height).to.be(1920);
+										done();
+									})
+								});
+							});
+					});
+				});
+			});
+		});
+
 		it('should fail validations for empty release', function(done) {
 			request
 				.post('/api/v1/releases')
@@ -80,7 +181,7 @@ describe('The VPDB `Release` API', function() {
 					hlp.expectValidationError(err, res, 'versions.0.files.0._file', 'must provide a file reference');
 					hlp.expectNoValidationError(err, res, 'versions.0.files.0.flavor.orientation');
 					hlp.expectNoValidationError(err, res, 'versions.0.files.0.flavor.lighting');
-					hlp.expectNoValidationError(err, res, 'versions.0.files.0._playfield_image');
+					hlp.expectNoValidationError(err, res, 'versions.0.files.0._playfield_images');
 					done();
 				});
 		});
@@ -111,7 +212,7 @@ describe('The VPDB `Release` API', function() {
 						hlp.expectValidationError(err, res, 'versions.0.files.2.flavor.orientation', 'invalid orientation');
 						hlp.expectValidationError(err, res, 'versions.0.files.3._compatibility', 'must be provided');
 						hlp.expectValidationError(err, res, 'versions.0.files.4._compatibility.0', 'no such build');
-						hlp.expectValidationError(err, res, 'versions.0.files.0._playfield_image', 'must be provided');
+						hlp.expectValidationError(err, res, 'versions.0.files.0._playfield_images', 'must be provided');
 						done();
 					});
 			});
@@ -164,7 +265,7 @@ describe('The VPDB `Release` API', function() {
 								hlp.expectValidationError(err, res, 'versions.1.files', 'at least one table file');
 								hlp.expectNoValidationError(err, res, 'versions.1.files.0.flavor.orientation', 'must be provided');
 								hlp.expectNoValidationError(err, res, 'versions.1.files.0.flavor.lighting', 'must be provided');
-								hlp.expectNoValidationError(err, res, 'versions.1.files.0._playfield_image', 'must be provided');
+								hlp.expectNoValidationError(err, res, 'versions.1.files.0._playfield_images', 'must be provided');
 								done();
 							});
 					});
@@ -199,12 +300,12 @@ describe('The VPDB `Release` API', function() {
 									versions: [{
 										files: [{
 											_file: vptfile.id,
-											_playfield_image: playfieldId
+											_playfield_images: [ playfieldId ]
 										}]
 									}]
 								})
 								.end(function(err, res) {
-									hlp.expectValidationError(err, res, 'versions.0.files.0._playfield_image', 'file_type "playfield-fs" or "playfield-ws"');
+									hlp.expectValidationError(err, res, 'versions.0.files.0._playfield_images.0', 'file_type "playfield-fs" or "playfield-ws"');
 									done();
 								});
 						});
@@ -224,12 +325,12 @@ describe('The VPDB `Release` API', function() {
 							versions: [ {
 								files: [ {
 									_file: vptfile.id,
-									_playfield_image: backglass.id
+									_playfield_images: [ backglass.id ]
 								} ]
 							} ]
 						})
 						.end(function(err, res) {
-							hlp.expectValidationError(err, res, 'versions.0.files.0._playfield_image', 'have an aspect ratio between');
+							hlp.expectValidationError(err, res, 'versions.0.files.0._playfield_images.0', 'have an aspect ratio between');
 							done();
 						});
 				});
@@ -251,7 +352,7 @@ describe('The VPDB `Release` API', function() {
 									{
 										files: [ {
 											_file: vptfile.id,
-											_playfield_image: playfield.id,
+											_playfield_images: [ playfield.id ],
 											_compatibility: [ '9.9.0', '9.9.0' ],
 											flavor: { orientation: 'fs', lighting: 'night' } }
 										],
@@ -289,7 +390,7 @@ describe('The VPDB `Release` API', function() {
 									{
 										files: [ {
 											_file: vptfile.id,
-											_playfield_image: playfield.id,
+											_playfield_images: [ playfield.id ],
 											_compatibility: [ '9.9.0' ],
 											flavor: { orientation: 'fs', lighting: 'night' } }
 										],
@@ -301,6 +402,45 @@ describe('The VPDB `Release` API', function() {
 							.end(function (err, res) {
 								hlp.expectStatus(err, res, 201);
 								hlp.doomRelease(user, res.body.id);
+								hlp.dump(res);
+
+								expect(res.body.name).to.be('release');
+								expect(res.body.rating).to.be.an('object');
+								expect(res.body.license).to.be('by-sa');
+								expect(res.body.metrics).to.be.an('object');
+								expect(res.body.counter).to.be.an('object');
+								expect(res.body.game.id).to.be(game.id);
+								expect(res.body.tags).to.be.an('array');
+								expect(res.body.links).to.be.an('array');
+								expect(res.body.created_by.id).to.be(hlp.getUser(user).id);
+								expect(res.body.authors[0].user.id).to.be(hlp.getUser(user).id);
+								expect(res.body.authors[0].roles[0]).to.be('Table Creator');
+								expect(res.body.versions[0].version).to.be('1.0.0');
+								expect(res.body.versions[0].counter).to.be.an('object');
+								expect(res.body.versions[0].files[0].flavor.orientation).to.be('fs');
+								expect(res.body.versions[0].files[0].flavor.lighting).to.be('night');
+								expect(res.body.versions[0].files[0].file.id).to.be(vptfile.id);
+								expect(res.body.versions[0].files[0].file.mime_type).to.be('application/x-visual-pinball-table');
+								expect(res.body.versions[0].files[0].file.is_protected).to.be(true);
+								expect(res.body.versions[0].files[0].file.counter).to.be.an('object');
+								expect(res.body.versions[0].files[0].file.variations).to.be.an('object');
+								expect(res.body.versions[0].files[0].file.file_type).to.be('release');
+								expect(res.body.versions[0].files[0].file.is_active).to.be(true);
+								expect(res.body.versions[0].files[0].file.metadata).to.be.an('object');
+								expect(res.body.versions[0].files[0].counter).to.be.an('object');
+								expect(res.body.versions[0].files[0].compatibility[0].id).to.be('9.9.0');
+								expect(res.body.versions[0].files[0].compatibility[0].platform).to.be('vp');
+								expect(res.body.versions[0].files[0].playfield_images[0].id).to.be(playfield.id);
+								expect(res.body.versions[0].files[0].playfield_images[0].mime_type).to.be('image/png');
+								expect(res.body.versions[0].files[0].playfield_images[0].file_type).to.be('playfield-fs');
+								expect(res.body.versions[0].files[0].playfield_images[0].is_protected).to.be(true);
+								expect(res.body.versions[0].files[0].playfield_images[0].is_active).to.be(true);
+								expect(res.body.versions[0].files[0].playfield_images[0].counter).to.be.an('object');
+								expect(res.body.versions[0].files[0].playfield_images[0].metadata).to.be.an('object');
+								expect(res.body.versions[0].files[0].playfield_images[0].variations).to.be.an('object');
+								expect(res.body.versions[0].files[0].playfield_images[0].variations.full).to.be.an('object');
+								expect(res.body.versions[0].files[0].playfield_images[0].variations.full.mime_type).to.be('image/jpeg');
+								expect(res.body.versions[0].files[0].playfield_images[0].variations.full.is_protected).to.not.be.ok();
 								done();
 							});
 					});
@@ -327,14 +467,14 @@ describe('The VPDB `Release` API', function() {
 											{
 												files: [ {
 													_file: vptfiles[0].id,
-													_playfield_image: playfieldImages[0].id,
-													_playfield_video: playfieldVideo.id,
+													_playfield_images: [ playfieldImages[0].id ],
+													_playfield_videos: [ playfieldVideo.id ],
 													_compatibility: [ '9.9.0' ],
 													flavor: { orientation: 'fs', lighting: 'night' }
 
 												}, {
 													_file: vptfiles[1].id,
-													_playfield_image: playfieldImages[1].id,
+													_playfield_images: [ playfieldImages[1].id ],
 													_compatibility: [ '9.9.0' ],
 													flavor: { orientation: 'fs', lighting: 'day' }
 												}, {
@@ -350,10 +490,11 @@ describe('The VPDB `Release` API', function() {
 									.end(function(err, res) {
 										hlp.expectStatus(err, res, 201);
 										hlp.doomRelease(user, res.body.id);
+										hlp.dump(res);
 
-										expect(res.body.versions[0].files[0].playfield_image.is_active).to.be(true);
-										expect(res.body.versions[0].files[0].playfield_video.is_active).to.be(true);
-										expect(res.body.versions[0].files[1].playfield_image.is_active).to.be(true);
+										expect(res.body.versions[0].files[0].playfield_images[0].is_active).to.be(true);
+										expect(res.body.versions[0].files[0].playfield_videos[0].is_active).to.be(true);
+										expect(res.body.versions[0].files[1].playfield_images[0].is_active).to.be(true);
 										done();
 									});
 							});
@@ -383,13 +524,13 @@ describe('The VPDB `Release` API', function() {
 										files: [ {
 											released_at: date1,
 											_file: vptfiles[0].id,
-											_playfield_image: playfieldImages[0].id,
+											_playfield_images: [ playfieldImages[0].id ],
 											_compatibility: [ '9.9.0' ],
 											flavor: { orientation: 'fs', lighting: 'night' }
 
 										}, {
 											_file: vptfiles[1].id,
-											_playfield_image: playfieldImages[1].id,
+											_playfield_images: [ playfieldImages[1].id ],
 											_compatibility: [ '9.9.0' ],
 											flavor: { orientation: 'fs', lighting: 'day' }
 										} ],
@@ -414,107 +555,6 @@ describe('The VPDB `Release` API', function() {
 			});
 		});
 
-		it('should succeed using a fs playfield for universal orientation', function(done) {
-			const user = 'member';
-			hlp.game.createGame('moderator', request, function(game) {
-				hlp.file.createVpt(user, request, function(vptfile) {
-					hlp.file.createPlayfield(user, request, 'fs', 'playfield', function(playfield) {
-						expect(playfield.metadata.size.width).to.be(1080);
-						expect(playfield.metadata.size.height).to.be(1920);
-						request
-							.post('/api/v1/releases')
-							.query({ rotate: playfield.id + ':0' })
-							.as(user)
-							.send({
-								name: 'release',
-								license: 'by-sa',
-								_game: game.id,
-								versions: [
-									{
-										files: [ {
-											_file: vptfile.id,
-											_playfield_image: playfield.id,
-											_compatibility: [ '9.9.0' ],
-											flavor: { orientation: 'any', lighting: 'any' } }
-										],
-										version: '1.0.0'
-									}
-								],
-								authors: [ { _user: hlp.getUser(user).id, roles: [ 'Table Creator' ] } ]
-							})
-							.end(function (err, res) {
-								hlp.expectStatus(err, res, 201);
-								hlp.doomRelease(user, res.body.id);
-								let playfieldRelease = res.body.versions[0].files[0].playfield_image;
-								expect(playfieldRelease.metadata.size.width).to.be(1080);
-								expect(playfieldRelease.metadata.size.height).to.be(1920);
-								request.get(playfieldRelease.variations.medium.url).end((err, res) => {
-									hlp.expectStatus(err, res, 200);
-									gm(res.body).size((err, size) => {
-										if (err) {
-											throw err;
-										}
-										expect(size.width).to.be.lessThan(size.height);
-										done();
-									})
-								});
-							});
-					});
-				});
-			});
-		});
-
-		it('should succeed when rotating a ws playfield to a fs file', function(done) {
-			const user = 'member';
-			hlp.game.createGame('moderator', request, function(game) {
-				hlp.file.createVpt(user, request, function(vptfile) {
-					hlp.file.createPlayfield(user, request, 'ws', 'playfield', function(playfield) {
-						expect(playfield.metadata.size.width).to.be(1920);
-						expect(playfield.metadata.size.height).to.be(1080);
-						request
-							.post('/api/v1/releases')
-							.query({ rotate: playfield.id + ':90' })
-							.as(user)
-							.send({
-								name: 'release',
-								license: 'by-sa',
-								_game: game.id,
-								versions: [
-									{
-										files: [ {
-											_file: vptfile.id,
-											_playfield_image: playfield.id,
-											_compatibility: [ '9.9.0' ],
-											flavor: { orientation: 'fs', lighting: 'night' } }
-										],
-										version: '1.0.0'
-									}
-								],
-								authors: [ { _user: hlp.getUser(user).id, roles: [ 'Table Creator' ] } ]
-							})
-							.end(function (err, res) {
-								hlp.expectStatus(err, res, 201);
-								hlp.doomRelease(user, res.body.id);
-								let playfieldRotated = res.body.versions[0].files[0].playfield_image;
-								expect(playfieldRotated.metadata.size.width).to.be(1080);
-								expect(playfieldRotated.metadata.size.height).to.be(1920);
-								request.get(playfieldRotated.variations.full.url).end((err, res) => {
-									hlp.expectStatus(err, res, 200);
-									gm(res.body).size((err, size) => {
-										if (err) {
-											throw err;
-										}
-										expect(size.width).to.be(1080);
-										expect(size.height).to.be(1920);
-										done();
-									})
-								});
-							});
-					});
-				});
-			});
-		});
-
 		it('should succeed when rotating a fs playfield to a ws file', function(done) {
 			const user = 'member';
 			hlp.game.createGame('moderator', request, function(game) {
@@ -532,7 +572,7 @@ describe('The VPDB `Release` API', function() {
 									{
 										files: [ {
 											_file: vptfile.id,
-											_playfield_image: playfield.id,
+											_playfield_images: [ playfield.id ],
 											_compatibility: [ '9.9.0' ],
 											flavor: { orientation: 'ws', lighting: 'night' } }
 										],
@@ -544,7 +584,7 @@ describe('The VPDB `Release` API', function() {
 							.end(function (err, res) {
 								hlp.expectStatus(err, res, 201);
 								hlp.doomRelease(user, res.body.id);
-								let playfieldRotated = res.body.versions[0].files[0].playfield_image;
+								let playfieldRotated = res.body.versions[0].files[0].playfield_images[0];
 								expect(playfield.metadata.size.width).to.be(playfieldRotated.metadata.size.height);
 								expect(playfield.metadata.size.height).to.be(playfieldRotated.metadata.size.width);
 								done();
@@ -572,7 +612,7 @@ describe('The VPDB `Release` API', function() {
 										{
 											files: [ {
 												_file: vptfile.id,
-												_playfield_image: playfield.id,
+												_playfield_images: [ playfield.id ],
 												_compatibility: [ '9.9.0' ],
 												flavor: { orientation: 'ws', lighting: 'night' } }
 											],
@@ -1020,9 +1060,9 @@ describe('The VPDB `Release` API', function() {
 					const rls2 = _.find(res.body, { id: releases[1].id });
 					const rls3 = _.find(res.body, { id: releases[2].id });
 
-					expect(rls1.thumb.image.url).to.be(releases[0].versions[0].files[0].playfield_image.url);
-					expect(rls2.thumb.image.url).to.be(releases[1].versions[0].files[1].playfield_image.url);
-					expect(rls3.thumb.image.url).to.be(releases[2].versions[0].files[1].playfield_image.url);
+					expect(rls1.thumb.image.url).to.be(releases[0].versions[0].files[0].playfield_images[0].url);
+					expect(rls2.thumb.image.url).to.be(releases[1].versions[0].files[1].playfield_images[0].url);
+					expect(rls3.thumb.image.url).to.be(releases[2].versions[0].files[1].playfield_images[0].url);
 
 					done();
 				});
@@ -1039,9 +1079,9 @@ describe('The VPDB `Release` API', function() {
 					const rls2 = _.find(res.body, { id: releases[1].id });
 					const rls3 = _.find(res.body, { id: releases[2].id });
 
-					expect(rls1.thumb.image.url).to.be(releases[0].versions[0].files[0].playfield_image.variations.medium.url);
-					expect(rls2.thumb.image.url).to.be(releases[1].versions[0].files[1].playfield_image.variations.medium.url);
-					expect(rls3.thumb.image.url).to.be(releases[2].versions[0].files[1].playfield_image.variations.medium.url);
+					expect(rls1.thumb.image.url).to.be(releases[0].versions[0].files[0].playfield_images[0].variations.medium.url);
+					expect(rls2.thumb.image.url).to.be(releases[1].versions[0].files[1].playfield_images[0].variations.medium.url);
+					expect(rls3.thumb.image.url).to.be(releases[2].versions[0].files[1].playfield_images[0].variations.medium.url);
 
 					done();
 				});
@@ -1058,9 +1098,9 @@ describe('The VPDB `Release` API', function() {
 					const rls2 = _.find(res.body, { id: releases[1].id });
 					const rls3 = _.find(res.body, { id: releases[2].id });
 
-					expect(rls1.thumb.image.url).to.be(releases[0].versions[0].files[0].playfield_image.url);
-					expect(rls2.thumb.image.url).to.be(releases[1].versions[0].files[0].playfield_image.url);
-					expect(rls3.thumb.image.url).to.be(releases[2].versions[0].files[1].playfield_image.url);
+					expect(rls1.thumb.image.url).to.be(releases[0].versions[0].files[0].playfield_images[0].url);
+					expect(rls2.thumb.image.url).to.be(releases[1].versions[0].files[0].playfield_images[0].url);
+					expect(rls3.thumb.image.url).to.be(releases[2].versions[0].files[1].playfield_images[0].url);
 
 					done();
 				});
@@ -1074,7 +1114,7 @@ describe('The VPDB `Release` API', function() {
 					hlp.expectStatus(err, res, 200);
 
 					const rls4 = _.find(res.body, { id: releases[3].id });
-					expect(rls4.thumb.image.url).to.be(releases[3].versions[1].files[0].playfield_image.url);
+					expect(rls4.thumb.image.url).to.be(releases[3].versions[1].files[0].playfield_images[0].url);
 
 					done();
 				});

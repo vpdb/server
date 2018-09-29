@@ -93,7 +93,7 @@ describe('The VPDB `blockmatch` API', () => {
 					version: version,
 					files: [{
 						_file: file.id,
-						_playfield_image: pf.id,
+						_playfield_images: [ pf.id ],
 						_compatibility: ['9.9.0'],
 						flavor: { 'orientation': 'ws', 'lighting': 'night' }
 					}]

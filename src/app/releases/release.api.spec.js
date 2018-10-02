@@ -402,7 +402,6 @@ describe('The VPDB `Release` API', function() {
 							.end(function (err, res) {
 								hlp.expectStatus(err, res, 201);
 								hlp.doomRelease(user, res.body.id);
-								hlp.dump(res);
 
 								expect(res.body.name).to.be('release');
 								expect(res.body.rating).to.be.an('object');
@@ -490,7 +489,6 @@ describe('The VPDB `Release` API', function() {
 									.end(function(err, res) {
 										hlp.expectStatus(err, res, 201);
 										hlp.doomRelease(user, res.body.id);
-										hlp.dump(res);
 
 										expect(res.body.versions[0].files[0].playfield_images[0].is_active).to.be(true);
 										expect(res.body.versions[0].files[0].playfield_videos[0].is_active).to.be(true);

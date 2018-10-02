@@ -75,11 +75,7 @@ export function fileReferencePlugin(schema: Schema, options: FileReferenceOption
 	 */
 	schema.methods.activateFiles = async function(requestState: RequestState): Promise<string[]> {
 		const objPaths = keys(explodePaths(this, fileRefs));
-		const ids = objPaths.reduce((acc, path) => {
-			const o = get(this, path);
-			isArray(o) ? acc.push(...o) : acc.push(o);
-			return acc;
-		}, []).filter(id => id && id._id);
+		const ids = getIds(this, objPaths);
 		const files = await state.models.File.find({ _id: { $in: ids }, is_active: false }).exec();
 		for (const file of files) {
 			await file.switchToActive(requestState);
@@ -94,13 +90,7 @@ export function fileReferencePlugin(schema: Schema, options: FileReferenceOption
 	schema.post('remove', async (obj: Document) => {
 
 		const objPaths = keys(explodePaths(obj, fileRefs));
-		const ids: string[] = [];
-		objPaths.forEach(path => {
-			const id = get(obj, path + '._id');
-			if (id) {
-				ids.push(id);
-			}
-		});
+		const ids = getIds(obj, objPaths);
 		const files = await state.models.File.find({ _id: { $in: ids } }).exec();
 
 		// remove file references from db
@@ -109,6 +99,16 @@ export function fileReferencePlugin(schema: Schema, options: FileReferenceOption
 			await file.remove();
 		}
 	});
+}
+
+function getIds(doc: Document, objPaths: string[]) {
+	return objPaths.reduce((acc, path) => {
+		const o = get(doc, path);
+		isArray(o) ? acc.push(...o) : acc.push(o);
+		return acc;
+	}, [])
+		.filter(id => id && id._id)
+		.map(id => id._id);
 }
 
 function isFileReference(schemaType: any): boolean {

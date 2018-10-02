@@ -110,7 +110,7 @@ export class Release {
 		if (release.versions && release.versions.length > 0) {
 			[[files]] = release.versions.map(v => {
 				if (v.files && v.files.length > 0) {
-					return v.files.map(f => [...f.playfield_images, ...f.playfield_videos, f.file]);
+					return v.files.map(f => [...(f.playfield_images || []), ...(f.playfield_videos || []), f.file]);
 				}
 				return [];
 			});

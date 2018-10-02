@@ -158,7 +158,7 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 	public async updateVersion(ctx: Context) {
 
 		const updatableFields = ['released_at', 'changes'];
-		const updatableFileFields = ['flavor', '_compatibility', '_playfield_image', '_playfield_video', '_playfield_images', '_playfield_videos'];
+		const updatableFileFields = ['flavor', '_compatibility', '_playfield_images', '_playfield_videos'];
 		const now = new Date();
 
 		// retrieve release

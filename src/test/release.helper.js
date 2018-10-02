@@ -64,7 +64,7 @@ class ReleaseHelper {
 				versions: [{
 					files: [ Object.assign({
 						_file: vptFile.id,
-						_playfield_image: playfield.id,
+						_playfield_images: [ playfield.id ],
 						_compatibility: opts.builds || ['9.9.0'],
 						flavor: { orientation: 'fs', lighting: 'night' }
 					}, opts.file || {}), ...additionalFiles],

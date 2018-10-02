@@ -57,12 +57,12 @@ export class Release {
 	public static getFileIds(release: ReleaseDocument): string[] {
 		const versionFiles = flatten(release.versions.map(version => version.files));
 		const tableFiles = versionFiles.map(file => file._file);
-		const playfieldImages = versionFiles.reduce((acc, file) => { acc.push(...file._playfield_images); return acc }, []);
-		const playfieldVideos = versionFiles.reduce((acc, file) => { acc.push(...file._playfield_videos); return acc }, []);
+		const playfieldImages = versionFiles.reduce((acc, file) => { acc.push(...file._playfield_images); return acc; }, []);
+		const playfieldVideos = versionFiles.reduce((acc, file) => { acc.push(...file._playfield_videos); return acc; }, []);
 
 		return [...tableFiles, ...playfieldImages, ...playfieldVideos]
 			.filter(file => !!file)
-			.map(file => file._id.toString())
+			.map(file => file._id.toString());
 	}
 
 	/**
@@ -73,8 +73,8 @@ export class Release {
 	 */
 	public static getPlayfieldImageIds(release: ReleaseDocument): string[] {
 		const versionFiles = flatten(release.versions.map(version => version.files));
-		const playfieldImages = versionFiles.reduce((acc, file) => { acc.push(...file._playfield_images); return acc }, []);
-		return playfieldImages.filter(file => !!file).map(file => file._id.toString())
+		const playfieldImages = versionFiles.reduce((acc, file) => { acc.push(...file._playfield_images); return acc; }, []);
+		return playfieldImages.filter(file => !!file).map(file => file._id.toString());
 	}
 
 	/**

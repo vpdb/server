@@ -38,7 +38,7 @@ export class ReleaseVersion {
 
 	public static getPlayfieldImageIds(versionFiles: ReleaseVersionFileDocument[]): string[] {
 		return versionFiles
-			.map(f => f._playfield_images as FileDocument[])
+			.map(f => (f._playfield_images || []) as FileDocument[])
 			.reduce((acc, img) => { acc.push(...img); return acc; }, [])
 			.filter(f => !!f)
 			.map((file: FileDocument) => file._id.toString());
@@ -46,7 +46,7 @@ export class ReleaseVersion {
 
 	public static getPlayfieldVideoIds(versionFiles: ReleaseVersionFileDocument[]): string[] {
 		return versionFiles
-			.map(f => f._playfield_videos as FileDocument[])
+			.map(f => (f._playfield_videos || []) as FileDocument[])
 			.reduce((acc, vid) => { acc.push(...vid); return acc; }, [])
 			.filter(f => !!f)
 			.map((file: FileDocument) => file._id.toString());

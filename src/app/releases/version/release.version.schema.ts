@@ -168,7 +168,7 @@ async function validateFile(release: ReleaseDocument, tableFile: ReleaseVersionF
 	}
 
 	// check if playfield image exists
-	const playfieldImageIds = tableFile._playfield_image ? [ tableFile._playfield_image ] : tableFile._playfield_images;
+	const playfieldImageIds = tableFile._playfield_images;
 	if (!isArray(playfieldImageIds) || !playfieldImageIds.length) {
 		release.invalidate('files.' + index + '._playfield_images', 'At least one playfield image must be provided.', tableFile._playfield_images);
 	}

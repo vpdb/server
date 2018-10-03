@@ -401,7 +401,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 			});
 			await comment.save();
 		}
-		release = await state.models.Release.findById(release._id)
+		release = await this.populateAll(state.models.Release.findById(release._id))
 			.populate('moderation.history._created_by')
 			.exec();
 		return this.success(ctx, state.serializers.Release.detailed(ctx, release, { includedFields: ['moderation'] }).moderation, 200);

@@ -17,7 +17,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Api } from '../../../common/api';
 import { apiCache } from '../../../common/api.cache';
 import { ApiError } from '../../../common/api.error';
 import { logger } from '../../../common/logger';
@@ -28,8 +27,9 @@ import { GameDocument } from '../../../games/game.document';
 import { LogEventUtil } from '../../../log-event/log.event.util';
 import { state } from '../../../state';
 import { UserDocument } from '../../../users/user.document';
+import { ReleaseAbstractApi } from '../../release.abstract.api';
 
-export class ReleaseVersionFileApi extends Api {
+export class ReleaseVersionFileApi extends ReleaseAbstractApi {
 
 	/**
 	 * Marks a release file as validated.
@@ -100,12 +100,7 @@ export class ReleaseVersionFileApi extends Api {
 
 		logger.info(ctx.state, '[ReleaseApi.validateFile] Updated file validation status.');
 
-		release = await state.models.Release.findOne({ id: ctx.params.id })
-			.populate({ path: '_created_by' })
-			.populate({ path: '_game' })
-			.populate({ path: 'versions.files._file' })
-			.populate({ path: 'versions.files.validation._validated_by' })
-			.exec();
+		release = await this.getDetails(release._id);
 
 		version = release.versions.find(v => v.version === ctx.params.version);
 		versionFile = version.files.find(f => (f._file as FileDocument).id === ctx.params.file);

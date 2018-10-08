@@ -115,7 +115,7 @@
 		"@types/ent": "2.2.1",
 		"@types/expect.js": "0.3.29",
 		"@types/faker": "4.1.4",
-		"@types/fluent-ffmpeg": "2.1.7",
+		"@types/fluent-ffmpeg": "2.1.8",
 		"@types/gm": "1.18.0",
 		"@types/handlebars": "4.0.39",
 		"@types/has-ansi": "3.0.0",

@@ -42,7 +42,7 @@ describe('The quota engine of VPDB', () => {
 		});
 		release = await releaseHelper.createRelease('moderator');
 		chargedUrl = release.versions[0].files[0].file.url;
-		unchargedUrl = release.versions[0].files[0].playfield_image.url;
+		unchargedUrl = release.versions[0].files[0].playfield_images[0].url;
 	});
 
 	after(async () => await api.teardown());

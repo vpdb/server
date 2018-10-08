@@ -55,11 +55,14 @@ export class Release {
 	 * @returns {string[]} File IDs
 	 */
 	public static getFileIds(release: ReleaseDocument): string[] {
-		const files = flatten(map(release.versions, 'files'));
-		const tableFileIds = map(files, '_file').map(file => file ? file._id.toString() : null);
-		const playfieldImageId = compact(map(files, '_playfield_image')).map(file => file._id.toString());
-		const playfieldVideoId = compact(map(files, '_playfield_video')).map(file => file._id.toString());
-		return compact(flatten([...tableFileIds, playfieldImageId, playfieldVideoId]));
+		const versionFiles = flatten(release.versions.map(version => version.files));
+		const tableFiles = versionFiles.map(file => file._file);
+		const playfieldImages = versionFiles.reduce((acc, file) => { acc.push(...file._playfield_images); return acc; }, []);
+		const playfieldVideos = versionFiles.reduce((acc, file) => { acc.push(...file._playfield_videos); return acc; }, []);
+
+		return [...tableFiles, ...playfieldImages, ...playfieldVideos]
+			.filter(file => !!file)
+			.map(file => file._id.toString());
 	}
 
 	/**
@@ -69,8 +72,9 @@ export class Release {
 	 * @returns {string[]} File IDs
 	 */
 	public static getPlayfieldImageIds(release: ReleaseDocument): string[] {
-		const files = flatten(map(release.versions, 'files'));
-		return compact(map(files, '_playfield_image')).map(file => file._id.toString());
+		const versionFiles = flatten(release.versions.map(version => version.files));
+		const playfieldImages = versionFiles.reduce((acc, file) => { acc.push(...file._playfield_images); return acc; }, []);
+		return playfieldImages.filter(file => !!file).map(file => file._id.toString());
 	}
 
 	/**
@@ -106,7 +110,7 @@ export class Release {
 		if (release.versions && release.versions.length > 0) {
 			[[files]] = release.versions.map(v => {
 				if (v.files && v.files.length > 0) {
-					return v.files.map(f => [f.playfield_image, f.playfield_video, f.file]);
+					return v.files.map(f => [...(f.playfield_images || []), ...(f.playfield_videos || []), f.file]);
 				}
 				return [];
 			});

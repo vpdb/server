@@ -224,7 +224,7 @@ export class ReleaseStorage extends Api {
 		const format = ctx.query.format && validFormats.includes(ctx.query.format) ? ctx.query.format : 'medium';
 
 		const release = await state.models.Release.findOne({ id: ctx.params.release_id })
-			.populate('versions.files._playfield_image')
+			.populate('versions.files._playfield_images')
 			.populate('versions.files._file')
 			.exec();
 
@@ -275,8 +275,8 @@ export class ReleaseStorage extends Api {
 			.populate({ path: '_game._logo' })
 			.populate({ path: 'authors._user' })
 			.populate({ path: 'versions.files._file' })
-			.populate({ path: 'versions.files._playfield_image' })
-			.populate({ path: 'versions.files._playfield_video' })
+			.populate({ path: 'versions.files._playfield_images' })
+			.populate({ path: 'versions.files._playfield_videos' })
 			.populate({ path: 'versions.files._compatibility' })
 			.exec();
 
@@ -308,12 +308,12 @@ export class ReleaseStorage extends Api {
 						requestedFiles.push(file);
 						numTables++;
 
-						// add media if checked
-						if (body.media && body.media.playfield_image && versionFile._playfield_image) {
-							requestedFiles.push(versionFile._playfield_image as FileExtended);
+						// add media if checked - todo might need to filter or at least rename to avoid conflicts
+						if (body.media && body.media.playfield_image && versionFile._playfield_images) {
+							requestedFiles.push(...(versionFile._playfield_images as FileExtended[]));
 						}
-						if (body.media && body.media.playfield_video && versionFile._playfield_video) {
-							requestedFiles.push(versionFile._playfield_video as FileExtended);
+						if (body.media && body.media.playfield_video && versionFile._playfield_videos) {
+							requestedFiles.push(...(versionFile._playfield_videos as FileExtended[]));
 						}
 
 						// count version file download

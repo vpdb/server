@@ -391,8 +391,8 @@ export class GameApi extends Api {
 				.populate({ path: '_created_by' })
 				.populate({ path: 'authors._user' })
 				.populate({ path: 'versions.files._file' })
-				.populate({ path: 'versions.files._playfield_image' })
-				.populate({ path: 'versions.files._playfield_video' })
+				.populate({ path: 'versions.files._playfield_images' })
+				.populate({ path: 'versions.files._playfield_videos' })
 				.populate({ path: 'versions.files._compatibility' })
 				.lean()
 				.exec() as ReleaseDocument[];

@@ -35,16 +35,16 @@ export interface ReleaseVersionFileDocument extends FileReferenceDocument, Prett
 		validated_by?: UserDocument;
 	};
 	_compatibility: BuildDocument[] | Types.ObjectId[];
-	_playfield_image?: FileDocument | Types.ObjectId;
-	_playfield_video?: FileDocument | Types.ObjectId;
+	_playfield_images?: FileDocument[] | Types.ObjectId[];
+	_playfield_videos?: FileDocument[] | Types.ObjectId[];
 	released_at: Date | string;
 	counter: { [T in ReleaseVersionFileCounterType]: number; };
 
 	// serialized
 	file: FileDocument;
 	compatibility?: BuildDocument[];
-	playfield_image?: FileDocument;
-	playfield_video?: FileDocument;
+	playfield_images?: FileDocument[];
+	playfield_videos?: FileDocument[];
 	thumb: any; // todo type
 
 	getFileIds(files?: ReleaseVersionFileDocument[]): string[];

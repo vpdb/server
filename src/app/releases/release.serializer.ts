@@ -230,9 +230,14 @@ export class ReleaseSerializer extends Serializer<ReleaseDocument> {
 	 */
 	private getDefaultThumb(ctx: Context, versionFileDoc: ReleaseVersionFileDocument, opts: SerializerOptions): Thumb {
 
-		const playfieldImage = this._populated(versionFileDoc, '_playfield_image')
-			? state.serializers.File.detailed(ctx, versionFileDoc._playfield_image as FileDocument, opts)
-			: null;
+		const playfieldImages = this._populated(versionFileDoc, '_playfield_images')
+			? (versionFileDoc._playfield_images as FileDocument[])
+				.map(image => state.serializers.File.detailed(ctx, image, opts))
+			: [];
+
+		// todo pick version based on demanded orientation
+		const playfieldImage = playfieldImages.length > 0 ? playfieldImages[0] : null;
+
 		if (!playfieldImage || !playfieldImage.metadata) {
 			return null;
 		}

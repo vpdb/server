@@ -156,7 +156,7 @@ export class MiscApi extends Api {
 		// releases
 		const releases = await state.models.Release.find({})
 			.populate('_game')
-			.populate('versions.files._playfield_image')
+			.populate('versions.files._playfield_images')
 			.populate('authors._user')
 			.exec();
 		releases.forEach(release => {
@@ -165,7 +165,7 @@ export class MiscApi extends Api {
 			let dtImage: FileDocument;
 			release.versions.forEach(version => {
 				version.files.forEach(file => {
-					const playfieldImage = file._playfield_image as FileDocument;
+					const playfieldImage = file._playfield_images[0] as FileDocument;
 					if (playfieldImage.metadata.size.width > playfieldImage.metadata.size.height) {
 						dtImage = playfieldImage;
 					} else {

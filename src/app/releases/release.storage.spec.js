@@ -67,7 +67,7 @@ describe('The VPDB `Release` storage API', () => {
 				description: 'Release description',
 				acknowledgements: 'CREDITS file'
 			},
-			file: { _playfield_video: pfVideo.id },
+			file: { _playfield_videos: [ pfVideo.id ] },
 			files: [
 				{ _file: mp3.id },
 				{ _file: txt.id },

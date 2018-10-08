@@ -149,17 +149,17 @@ export class ReleaseUploader extends DataUploader {
 					filetype: 'release',
 				});
 			}
-			if (get(file, '_playfield_image')) {
+			if (get(file, '_playfield_images')) {
 				files.push({
-					path: 'files[' + i + ']._playfield_image',
-					filename: get(file, '_playfield_image'),
+					path: 'files[' + i + ']._playfield_images',
+					filename: get(file, '_playfield_images'),
 					filetype: 'playfield-' + get(file, 'flavor.orientation'),
 				});
 			}
-			if (get(file, '_playfield_video')) {
+			if (get(file, '_playfield_videos')) {
 				files.push({
-					path: 'files[' + i + ']._playfield_video',
-					filename: get(file, '_playfield_video'),
+					path: 'files[' + i + ']._playfield_videos',
+					filename: get(file, '_playfield_videos'),
 					filetype: 'playfield-' + get(file, 'flavor.orientation'),
 				});
 			}

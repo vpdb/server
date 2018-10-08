@@ -77,19 +77,9 @@ fileSchema.plugin(metricsPlugin);
 // METHODS
 //-----------------------------------------------------------------------------
 
-/**
- * Switches a files from inactive to active and moves it to the public folder
- * if necessary.
- *
- * @return {Promise<FileDocument>} Moved file
- */
 fileSchema.methods.switchToActive = async function(this: FileDocument, requestState: RequestState): Promise<FileDocument> {
-	this.is_active = true;
-	await this.save();
-	await processorQueue.activateFile(requestState, this);
-	return this;
+	return File.switchToActive(requestState, this);
 };
-
 fileSchema.methods.getPath = function(this: FileDocument, requestState: RequestState, variation: FileVariation = null, opts: FilePathOptions = {}): string {
 	return File.getPath(requestState, this, variation, opts);
 };

@@ -34,7 +34,7 @@ export function traversePaths(schema: Schema, prefix: string = '', paths: any = 
 		const fullPath = prefix + (prefix ? '.' : '') + path + (isPathArray ? '.0' : '');
 		paths[fullPath] = schemaType;
 		if (schemaType.schema) {
-			exports.traversePaths(schemaType.schema, fullPath, paths);
+			traversePaths(schemaType.schema, fullPath, paths);
 		}
 	});
 	return paths;
@@ -52,8 +52,8 @@ export function traversePaths(schema: Schema, prefix: string = '', paths: any = 
  *    'original_version._ref': 'Release',
  *    _created_by: 'User',
  *    'versions.0.files.0._file': 'File',
- *    'versions.0.files.0._playfield_image': 'File',
- *    'versions.0.files.0._playfield_video': 'File'
+ *    'versions.0.files.0._playfield_images.0': 'File',
+ *    'versions.0.files.0._playfield_videos.0': 'File'
  * };
  *
  * var arrayRefs = { _tags: 'Tag' }
@@ -65,10 +65,10 @@ export function traversePaths(schema: Schema, prefix: string = '', paths: any = 
  *   _created_by: 'User',
  *   'versions.0.files.0._file': 'File',
  *   'versions.0.files.1._file': 'File',
- *   'versions.0.files.0._playfield_image': 'File',
- *   'versions.0.files.1._playfield_image': 'File',
- *   'versions.0.files.0._playfield_video': 'File',
- *   'versions.0.files.1._playfield_video': 'File',
+ *   'versions.0.files.0._playfield_images.0': 'File',
+ *   'versions.0.files.1._playfield_images.0': 'File',
+ *   'versions.0.files.0._playfield_videos.0': 'File',
+ *   'versions.0.files.1._playfield_videos.0': 'File',
  *   '_tags.0': 'Tag',
  *   '_tags.1': 'Tag'
  * }

@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { get, keys, omitBy, pickBy } from 'lodash';
+import { get, isArray, keys, omitBy, pickBy } from 'lodash';
 import { Document, FileReferenceDocument, FileReferenceOptions, Schema } from 'mongoose';
 import { logger } from '../logger';
 
@@ -38,14 +38,14 @@ import { explodePaths, traversePaths } from './util';
 export function fileReferencePlugin(schema: Schema, options: FileReferenceOptions = {}) {
 
 	// filter ignored paths
-	const paths = pickBy(traversePaths(schema), schemaType => schemaType.options && schemaType.options.ref && schemaType.options.ref === 'File');
+	const traversedPaths = traversePaths(schema);
+	const paths = pickBy(traversedPaths, isFileReference);
 	const fileRefs = omitBy(paths, (schemaType, path) => options.ignore && options.ignore.includes(path));
 
 	//-----------------------------------------------------------------------------
 	// VALIDATIONS
 	//-----------------------------------------------------------------------------
-	keys(fileRefs).forEach(path => {
-
+	for (const path of keys(fileRefs)) {
 		schema.path(path).validate(async function(fileId: any) {
 
 			if (!fileId || !this._created_by) {
@@ -62,7 +62,7 @@ export function fileReferencePlugin(schema: Schema, options: FileReferenceOption
 			return true;
 
 		});
-	});
+	}
 
 	/**
 	 * Sets the referenced files to active. Call this after creating a new
@@ -71,17 +71,11 @@ export function fileReferencePlugin(schema: Schema, options: FileReferenceOption
 	 * Note that only inactive files are activated, already activated files
 	 * are ignored.
 	 *
-	 * @returns {Promise.<String[]>} File IDs that have been activated.
+	 * @returns {Promise<string[]>} File IDs that have been activated.
 	 */
 	schema.methods.activateFiles = async function(requestState: RequestState): Promise<string[]> {
-		const ids: string[] = [];
 		const objPaths = keys(explodePaths(this, fileRefs));
-		objPaths.forEach(path => {
-			const id = get(this, path);
-			if (id) {
-				ids.push(id._id || id);
-			}
-		});
+		const ids = getIds(this, objPaths);
 		const files = await state.models.File.find({ _id: { $in: ids }, is_active: false }).exec();
 		for (const file of files) {
 			await file.switchToActive(requestState);
@@ -96,13 +90,7 @@ export function fileReferencePlugin(schema: Schema, options: FileReferenceOption
 	schema.post('remove', async (obj: Document) => {
 
 		const objPaths = keys(explodePaths(obj, fileRefs));
-		const ids: string[] = [];
-		objPaths.forEach(path => {
-			const id = get(obj, path + '._id');
-			if (id) {
-				ids.push(id);
-			}
-		});
+		const ids = getIds(obj, objPaths);
 		const files = await state.models.File.find({ _id: { $in: ids } }).exec();
 
 		// remove file references from db
@@ -111,6 +99,29 @@ export function fileReferencePlugin(schema: Schema, options: FileReferenceOption
 			await file.remove();
 		}
 	});
+}
+
+function getIds(doc: Document, objPaths: string[]) {
+	return objPaths.reduce((acc, path) => {
+		const o = get(doc, path);
+		isArray(o) ? acc.push(...o) : acc.push(o);
+		return acc;
+	}, [])
+		.filter(id => id && id._id)
+		.map(id => id._id);
+}
+
+function isFileReference(schemaType: any): boolean {
+	if (!schemaType.options) {
+		return false;
+	}
+	if (schemaType.options.ref) {
+		return schemaType.options.ref === 'File';
+	}
+	if (isArray(schemaType.options.type) && schemaType.options.type.length > 0 && schemaType.options.type[0].ref) {
+		return schemaType.options.type[0].ref === 'File';
+	}
+	return false;
 }
 
 declare module 'mongoose' {

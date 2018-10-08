@@ -38,8 +38,8 @@ export class ReleaseVersionFileSerializer extends Serializer<ReleaseVersionFileD
 		],
 		detailed: [
 			{ path: 'file', modelName: 'File', level: 'detailed' },
-			{ path: 'playfield_image', modelName: 'File', level: 'detailed' },
-			{ path: 'playfield_video', modelName: 'File', level: 'detailed' },
+			{ path: 'playfield_images', modelName: 'File', level: 'detailed' },
+			{ path: 'playfield_videos', modelName: 'File', level: 'detailed' },
 			{ path: 'compatibility', modelName: 'Build', level: 'simple' },
 			{ path: 'validation.validated_by', modelName: 'User', level: 'reduced' },
 		],
@@ -57,11 +57,13 @@ export class ReleaseVersionFileSerializer extends Serializer<ReleaseVersionFileD
 	protected _detailed(ctx: Context, doc: ReleaseVersionFileDocument, opts: SerializerOptions): ReleaseVersionFileDocument {
 		const versionFile = this.serializeReleaseVersionFile(ctx, doc, opts, state.serializers.Build.simple.bind(state.serializers.Build), state.serializers.File.detailed.bind(state.serializers.File)) as ReleaseVersionFileDocument;
 		// media
-		if (this._populated(doc, '_playfield_image')) {
-			versionFile.playfield_image = state.serializers.File.detailed(ctx, doc._playfield_image as FileDocument, opts);
+		if (this._populated(doc, '_playfield_images')) {
+			versionFile.playfield_images = (doc._playfield_images as FileDocument[])
+				.map(img => state.serializers.File.detailed(ctx, img, opts));
 		}
-		if (doc._playfield_video && this._populated(doc, '_playfield_video')) {
-			versionFile.playfield_video = state.serializers.File.detailed(ctx, doc._playfield_video as FileDocument, opts);
+		if (this._populated(doc, '_playfield_videos')) {
+			versionFile.playfield_videos = (doc._playfield_videos as FileDocument[])
+				.map(img => state.serializers.File.detailed(ctx, img, opts));
 		}
 		versionFile.counter = doc.counter;
 		return versionFile;

@@ -83,7 +83,7 @@ describe('The VPDB `Release Version` API', function() {
 							hlp.expectValidationError(err, res, 'files.2.flavor.orientation', 'invalid orientation');
 							hlp.expectValidationError(err, res, 'files.3._compatibility', 'must be provided');
 							hlp.expectValidationError(err, res, 'files.4._compatibility.0', 'no such build');
-							hlp.expectValidationError(err, res, 'files.0._playfield_image', 'must be provided');
+							hlp.expectValidationError(err, res, 'files.0._playfield_images', 'must be provided');
 							done();
 						});
 				});
@@ -102,7 +102,7 @@ describe('The VPDB `Release Version` API', function() {
 						changes: '*Second release.*',
 						files: [ {
 							_file: '12345',
-							_playfield_image: '67890',
+							_playfield_images: [ '67890' ],
 							_compatibility: [ '9.9.0' ],
 							flavor: { orientation: 'fs', lighting: 'night' }
 						} ]
@@ -127,7 +127,7 @@ describe('The VPDB `Release Version` API', function() {
 								changes: '*Second release.*',
 								files: [ {
 									_file: vptfile.id,
-									_playfield_image: playfield.id,
+									_playfield_images: [ playfield.id ],
 									_compatibility: [ '9.9.0' ],
 									flavor: { orientation: 'fs', lighting: 'night' }
 								} ]
@@ -163,7 +163,7 @@ describe('The VPDB `Release Version` API', function() {
 										changes: '*Second release.*',
 										files: [ {
 											_file: vptfile.id,
-											_playfield_image: playfield.id,
+											_playfield_images: [ playfield.id ],
 											_compatibility: [ '9.9.0' ],
 											flavor: { orientation: 'fs', lighting: 'night' }
 										} ]
@@ -194,7 +194,7 @@ describe('The VPDB `Release Version` API', function() {
 								changes: '*Second release.*',
 								files: [ {
 									_file: vptfile.id,
-									_playfield_image: playfield.id,
+									_playfield_images: [ playfield.id ],
 									_compatibility: [ '9.9.0' ],
 									flavor: { orientation: 'fs', lighting: 'night' }
 								} ]
@@ -245,7 +245,7 @@ describe('The VPDB `Release Version` API', function() {
 						const data = {
 							files: [{
 								_file: vptfile.id,
-								_playfield_image: playfield.id,
+								_playfield_images: [ playfield.id ],
 								_compatibility: _.map(versionFile.compatibility, 'id'),
 								flavor: versionFile.flavor
 							}]
@@ -278,7 +278,7 @@ describe('The VPDB `Release Version` API', function() {
 								changes: newChanges,
 								files: [{
 									_file: vptfile.id,
-									_playfield_image: playfield.id,
+									_playfield_images: [ playfield.id ],
 									_compatibility: ['9.9.0'],
 									flavor: { orientation: 'fs', lighting: 'day' }
 								}]
@@ -304,12 +304,12 @@ describe('The VPDB `Release Version` API', function() {
 								_file: vptfile.id,
 								flavor: {},
 								_compatibility: [],
-								_playfield_image: null,
-								_playfield_video: null
+								_playfield_images: null,
+								_playfield_videos: null
 							}]
 						}).end(function(err, res) {
 							hlp.expectValidationError(err, res, 'files.0._compatibility', 'must be provided');
-							hlp.expectValidationError(err, res, 'files.0._playfield_image', 'must be provided');
+							hlp.expectValidationError(err, res, 'files.0._playfield_images', 'must be provided');
 							hlp.expectValidationError(err, res, 'files.0.flavor.lighting', 'must be provided');
 							hlp.expectValidationError(err, res, 'files.0.flavor.orientation', 'must be provided');
 							done();
@@ -321,10 +321,10 @@ describe('The VPDB `Release Version` API', function() {
 		it('should succeed when rotating an existing playfield image', function(done) {
 			const user = 'member';
 			hlp.release.createRelease(user, request, function(release) {
-				let playfieldImage = release.versions[0].files[0].playfield_image;
+				let playfieldImage = release.versions[0].files[0].playfield_images[0];
 				request
 					.patch('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
-					.query({ rotate: release.versions[0].files[0].playfield_image.id + ':90' })
+					.query({ rotate: release.versions[0].files[0].playfield_images[0].id + ':90' })
 					.as(user)
 					.send({
 						files: [{
@@ -333,7 +333,7 @@ describe('The VPDB `Release Version` API', function() {
 						}]
 					}).end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
-						let rotatedPlayfieldImage = res.body.files[0].playfield_image;
+						let rotatedPlayfieldImage = res.body.files[0].playfield_images[0];
 						expect(playfieldImage.metadata.size.height).to.be(rotatedPlayfieldImage.metadata.size.width);
 						expect(playfieldImage.metadata.size.width).to.be(rotatedPlayfieldImage.metadata.size.height);
 						done();

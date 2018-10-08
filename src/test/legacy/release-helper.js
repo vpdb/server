@@ -26,7 +26,7 @@ exports.createReleaseForGame = function(user, request, game, opts, done) {
 						{
 							files: [ {
 								_file: vptfile.id,
-								_playfield_image: playfield.id,
+								_playfield_images: [ playfield.id ],
 								_compatibility: [ opts.buildId ? opts.buildId : '9.9.0' ],
 								flavor: { orientation: 'fs', lighting: 'night' } }
 							],
@@ -69,12 +69,12 @@ exports.createRelease2 = function(user, request, done) {
 								{
 									files: [{
 										_file: vptfiles[0].id,
-										_playfield_image: playfieldFs.id,
+										_playfield_images: [ playfieldFs.id ],
 										_compatibility: ['9.9.0'],
 										flavor: { orientation: 'fs', lighting: 'night' }
 									}, {
 										_file: vptfiles[1].id,
-										_playfield_image: playfieldWs.id,
+										_playfield_images: [ playfieldWs.id ],
 										_compatibility: ['9.9.0'],
 										flavor: { orientation: 'ws', lighting: 'day' }
 									}],
@@ -112,17 +112,17 @@ exports.createRelease3 = function(user, request, done) {
 							{
 								files: [ {
 									_file: vptfiles[0].id,
-									_playfield_image: playfields[0].id,
+									_playfield_images: [ playfields[0].id ],
 									_compatibility: [ '10.x' ],
 									flavor: { orientation: 'fs', lighting: 'any' }
 								}, {
 									_file: vptfiles[1].id,
-									_playfield_image: playfields[1].id,
+									_playfield_images: [ playfields[1].id ],
 									_compatibility: [ '10.x' ],
 									flavor: { orientation: 'any', lighting: 'night' }
 								}, {
 									_file: vptfiles[2].id,
-									_playfield_image: playfields[2].id,
+									_playfield_images: [ playfields[2].id ],
 									_compatibility: [ '10.x' ],
 									flavor: { orientation: 'any', lighting: 'any' }
 								} ],
@@ -160,12 +160,12 @@ exports.createRelease4 = function(user, request, done) {
 								{
 									files: [ {
 										_file: vptfiles[0].id,
-										_playfield_image: playfields[0].id,
+										_playfield_images: [ playfields[0].id ],
 										_compatibility: [ '10.x' ],
 										flavor: { orientation: 'fs', lighting: 'night' }
 									}, {
 										_file: vptfiles[1].id,
-										_playfield_image: playfields[1].id,
+										_playfield_images: [ playfields[1].id ],
 										_compatibility: [ '10.x' ],
 										flavor: { orientation: 'fs', lighting: 'day' }
 									} ],
@@ -175,7 +175,7 @@ exports.createRelease4 = function(user, request, done) {
 
 									files: [ {
 										_file: vptfiles[2].id,
-										_playfield_image: playfieldWs.id,
+										_playfield_images: [ playfieldWs.id ],
 										_compatibility: [ '10.x' ],
 										flavor: { orientation: 'ws', lighting: 'night' }
 									} ],

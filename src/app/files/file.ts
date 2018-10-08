@@ -19,6 +19,7 @@
 
 import chalk from 'chalk';
 import { resolve } from 'path';
+import { logger } from '../common/logger';
 import { quota } from '../common/quota';
 import { config, settings } from '../common/settings';
 import { RequestState } from '../common/typings/context';
@@ -26,12 +27,28 @@ import { FileDocument, FilePathOptions } from './file.document';
 import { mimeTypes } from './file.mimetypes';
 import { fileTypes } from './file.types';
 import { FileVariation } from './file.variations';
+import { processorQueue } from './processor/processor.queue';
 
 /**
  * Contains the Game's instance methods so they can also be accessed
  * from dehydrated objects.
  */
 export class File {
+
+	/**
+	 * Switches a files from inactive to active and moves it to the public folder
+	 * if necessary.
+	 *
+	 * @param requestState For logging
+	 * @param {Promise<FileDocument>} file Hydrated file
+	 */
+	public static async switchToActive(requestState: RequestState, file: FileDocument): Promise<FileDocument> {
+		file.is_active = true;
+		await file.save();
+		logger.info(requestState, '[File.switchToActive] Set %s to activated.', file.toDetailedString());
+		await processorQueue.activateFile(requestState, file);
+		return file;
+	}
 
 	/**
 	 * Returns the local path where the file is stored.

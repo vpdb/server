@@ -38,14 +38,16 @@ export class ReleaseVersion {
 
 	public static getPlayfieldImageIds(versionFiles: ReleaseVersionFileDocument[]): string[] {
 		return versionFiles
-			.map(f => f._playfield_image as FileDocument)
+			.map(f => (f._playfield_images || []) as FileDocument[])
+			.reduce((acc, img) => { acc.push(...img); return acc; }, [])
 			.filter(f => !!f)
 			.map((file: FileDocument) => file._id.toString());
 	}
 
 	public static getPlayfieldVideoIds(versionFiles: ReleaseVersionFileDocument[]): string[] {
 		return versionFiles
-			.map(f => f._playfield_video as FileDocument)
+			.map(f => (f._playfield_videos || []) as FileDocument[])
+			.reduce((acc, vid) => { acc.push(...vid); return acc; }, [])
 			.filter(f => !!f)
 			.map((file: FileDocument) => file._id.toString());
 	}

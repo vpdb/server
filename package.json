@@ -139,7 +139,7 @@
 		"@types/sax": "1.0.1",
 		"@types/strip-ansi": "3.0.0",
 		"@types/ua-parser-js": "0.7.32",
-		"@types/uglify-js": "3.0.3",
+		"@types/uglify-js": "3.0.4",
 		"@types/unzip": "0.1.1",
 		"@types/validator": "9.4.2",
 		"@types/xmlbuilder": "0.0.33",

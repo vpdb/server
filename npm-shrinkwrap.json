@@ -698,12 +698,12 @@
 			"dev": true
 		},
 		"@types/uglify-js": {
-			"version": "3.0.3",
-			"resolved": "https://registry.npmjs.org/@types/uglify-js/-/uglify-js-3.0.3.tgz",
-			"integrity": "sha512-MAT0BW2ruO0LhQKjvlipLGCF/Yx0y/cj+tT67tK3QIQDrM2+9R78HgJ54VlrE8AbfjYJJBCQCEPM5ZblPVTuww==",
+			"version": "3.0.4",
+			"resolved": "https://registry.npmjs.org/@types/uglify-js/-/uglify-js-3.0.4.tgz",
+			"integrity": "sha512-SudIN9TRJ+v8g5pTG8RRCqfqTMNqgWCKKd3vtynhGzkIIjxaicNAMuY5TRadJ6tzDu3Dotf3ngaMILtmOdmWEQ==",
 			"dev": true,
 			"requires": {
-				"source-map": "0.6.1"
+				"source-map": "^0.6.1"
 			}
 		},
 		"@types/unzip": {
@@ -3753,7 +3753,8 @@
 				"ansi-regex": {
 					"version": "2.1.1",
 					"bundled": true,
-					"dev": true
+					"dev": true,
+					"optional": true
 				},
 				"aproba": {
 					"version": "1.2.0",
@@ -4168,7 +4169,8 @@
 				"safe-buffer": {
 					"version": "5.1.1",
 					"bundled": true,
-					"dev": true
+					"dev": true,
+					"optional": true
 				},
 				"safer-buffer": {
 					"version": "2.1.2",
@@ -4224,6 +4226,7 @@
 					"version": "3.0.1",
 					"bundled": true,
 					"dev": true,
+					"optional": true,
 					"requires": {
 						"ansi-regex": "2.1.1"
 					}
@@ -4267,12 +4270,14 @@
 				"wrappy": {
 					"version": "1.0.2",
 					"bundled": true,
-					"dev": true
+					"dev": true,
+					"optional": true
 				},
 				"yallist": {
 					"version": "3.0.2",
 					"bundled": true,
-					"dev": true
+					"dev": true,
+					"optional": true
 				}
 			}
 		},

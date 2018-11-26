@@ -149,7 +149,7 @@
 		"cross-env": "5.2.0",
 		"expect.js": "0.3.1",
 		"faker": "4.1.0",
-		"form-data": "2.3.2",
+		"form-data": "2.3.3",
 		"mocha": "5.2.0",
 		"nodemon": "1.18.4",
 		"npm-run-all": "4.1.3",

@@ -299,9 +299,9 @@
 			}
 		},
 		"@types/cheerio": {
-			"version": "0.22.9",
-			"resolved": "https://registry.npmjs.org/@types/cheerio/-/cheerio-0.22.9.tgz",
-			"integrity": "sha512-q6LuBI0t5u04f0Q4/R+cGBqIbZMtJkVvCSF+nTfFBBdQqQvJR/mNHeWjRkszyLl7oyf2rDoKUYMEjTw5AV0hiw==",
+			"version": "0.22.10",
+			"resolved": "https://registry.npmjs.org/@types/cheerio/-/cheerio-0.22.10.tgz",
+			"integrity": "sha512-fOM/Jhv51iyugY7KOBZz2ThfT1gwvsGCfWxpLpZDgkGjpEO4Le9cld07OdskikLjDUQJ43dzDaVRSFwQlpdqVg==",
 			"dev": true
 		},
 		"@types/connect": {
@@ -3753,7 +3753,8 @@
 				"ansi-regex": {
 					"version": "2.1.1",
 					"bundled": true,
-					"dev": true
+					"dev": true,
+					"optional": true
 				},
 				"aproba": {
 					"version": "1.2.0",
@@ -4168,7 +4169,8 @@
 				"safe-buffer": {
 					"version": "5.1.1",
 					"bundled": true,
-					"dev": true
+					"dev": true,
+					"optional": true
 				},
 				"safer-buffer": {
 					"version": "2.1.2",
@@ -4224,6 +4226,7 @@
 					"version": "3.0.1",
 					"bundled": true,
 					"dev": true,
+					"optional": true,
 					"requires": {
 						"ansi-regex": "2.1.1"
 					}
@@ -4267,12 +4270,14 @@
 				"wrappy": {
 					"version": "1.0.2",
 					"bundled": true,
-					"dev": true
+					"dev": true,
+					"optional": true
 				},
 				"yallist": {
 					"version": "3.0.2",
 					"bundled": true,
-					"dev": true
+					"dev": true,
+					"optional": true
 				}
 			}
 		},

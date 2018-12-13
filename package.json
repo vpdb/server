@@ -141,7 +141,7 @@
 		"@types/ua-parser-js": "0.7.32",
 		"@types/uglify-js": "3.0.3",
 		"@types/unzip": "0.1.1",
-		"@types/validator": "9.4.2",
+		"@types/validator": "9.4.4",
 		"@types/xmlbuilder": "0.0.33",
 		"@types/yargs": "12.0.0",
 		"async": "2.6.1",

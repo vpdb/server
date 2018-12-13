@@ -240,9 +240,9 @@
 			}
 		},
 		"@types/bluebird": {
-			"version": "3.5.24",
-			"resolved": "https://registry.npmjs.org/@types/bluebird/-/bluebird-3.5.24.tgz",
-			"integrity": "sha512-YeQoDpq4Lm8ppSBqAnAeF/xy1cYp/dMTif2JFcvmAbETMRlvKHT2iLcWu+WyYiJO3b3Ivokwo7EQca/xfLVJmg==",
+			"version": "3.5.25",
+			"resolved": "https://registry.npmjs.org/@types/bluebird/-/bluebird-3.5.25.tgz",
+			"integrity": "sha512-yfhIBix+AIFTmYGtkC0Bi+XGjSkOINykqKvO/Wqdz/DuXlAKK7HmhLAXdPIGsV4xzKcL3ev/zYc4yLNo+OvGaw==",
 			"dev": true
 		},
 		"@types/body-parser": {
@@ -272,6 +272,14 @@
 			"requires": {
 				"@types/bluebird": "3.5.24",
 				"@types/ioredis": "4.0.1"
+			},
+			"dependencies": {
+				"@types/bluebird": {
+					"version": "3.5.24",
+					"resolved": "https://registry.npmjs.org/@types/bluebird/-/bluebird-3.5.24.tgz",
+					"integrity": "sha512-YeQoDpq4Lm8ppSBqAnAeF/xy1cYp/dMTif2JFcvmAbETMRlvKHT2iLcWu+WyYiJO3b3Ivokwo7EQca/xfLVJmg==",
+					"dev": true
+				}
 			}
 		},
 		"@types/busboy": {
@@ -791,6 +799,13 @@
 				"lodash": "4.17.11",
 				"mongodb": "2.2.35",
 				"redis": "2.8.0"
+			},
+			"dependencies": {
+				"bluebird": {
+					"version": "3.5.2",
+					"resolved": "https://registry.npmjs.org/bluebird/-/bluebird-3.5.2.tgz",
+					"integrity": "sha512-dhHTWMI7kMx5whMQntl7Vr9C6BvV10lFXDAasnqnrMYhXVCzzk6IO9Fo2L75jXHT07WrOngL1WDXOp+yYS91Yg=="
+				}
 			}
 		},
 		"adm-zip": {
@@ -1412,9 +1427,9 @@
 			}
 		},
 		"bluebird": {
-			"version": "3.5.2",
-			"resolved": "https://registry.npmjs.org/bluebird/-/bluebird-3.5.2.tgz",
-			"integrity": "sha512-dhHTWMI7kMx5whMQntl7Vr9C6BvV10lFXDAasnqnrMYhXVCzzk6IO9Fo2L75jXHT07WrOngL1WDXOp+yYS91Yg=="
+			"version": "3.5.3",
+			"resolved": "https://registry.npmjs.org/bluebird/-/bluebird-3.5.3.tgz",
+			"integrity": "sha512-/qKPUQlaW1OyR51WeCPBvRnAlnZFUJkCSG5HzGnuIqhgyJtF+T94lFnn33eiazjRm2LAHVy2guNnaq48X9SJuw=="
 		},
 		"boolbase": {
 			"version": "1.0.0",
@@ -1589,6 +1604,11 @@
 				"uuid": "3.2.1"
 			},
 			"dependencies": {
+				"bluebird": {
+					"version": "3.5.2",
+					"resolved": "https://registry.npmjs.org/bluebird/-/bluebird-3.5.2.tgz",
+					"integrity": "sha512-dhHTWMI7kMx5whMQntl7Vr9C6BvV10lFXDAasnqnrMYhXVCzzk6IO9Fo2L75jXHT07WrOngL1WDXOp+yYS91Yg=="
+				},
 				"debug": {
 					"version": "2.6.9",
 					"resolved": "https://registry.npmjs.org/debug/-/debug-2.6.9.tgz",
@@ -3753,7 +3773,8 @@
 				"ansi-regex": {
 					"version": "2.1.1",
 					"bundled": true,
-					"dev": true
+					"dev": true,
+					"optional": true
 				},
 				"aproba": {
 					"version": "1.2.0",
@@ -4168,7 +4189,8 @@
 				"safe-buffer": {
 					"version": "5.1.1",
 					"bundled": true,
-					"dev": true
+					"dev": true,
+					"optional": true
 				},
 				"safer-buffer": {
 					"version": "2.1.2",
@@ -4224,6 +4246,7 @@
 					"version": "3.0.1",
 					"bundled": true,
 					"dev": true,
+					"optional": true,
 					"requires": {
 						"ansi-regex": "2.1.1"
 					}
@@ -4267,12 +4290,14 @@
 				"wrappy": {
 					"version": "1.0.2",
 					"bundled": true,
-					"dev": true
+					"dev": true,
+					"optional": true
 				},
 				"yallist": {
 					"version": "3.0.2",
 					"bundled": true,
-					"dev": true
+					"dev": true,
+					"optional": true
 				}
 			}
 		},

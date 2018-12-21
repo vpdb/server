@@ -135,7 +135,7 @@
 		"@types/nodegit": "0.22.3",
 		"@types/nodemailer": "4.6.5",
 		"@types/randomstring": "1.1.6",
-		"@types/redis": "2.8.6",
+		"@types/redis": "2.8.10",
 		"@types/sax": "1.0.1",
 		"@types/strip-ansi": "3.0.0",
 		"@types/ua-parser-js": "0.7.32",

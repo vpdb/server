@@ -652,13 +652,12 @@
 			"dev": true
 		},
 		"@types/redis": {
-			"version": "2.8.6",
-			"resolved": "https://registry.npmjs.org/@types/redis/-/redis-2.8.6.tgz",
-			"integrity": "sha512-kaSI4XQwCfJtPiuyCXvLxCaw2N0fMZesdob3Jh01W20vNFct+3lfvJ/4yCJxbSopXOBOzpg+pGxkW6uWZrPZHA==",
+			"version": "2.8.10",
+			"resolved": "https://registry.npmjs.org/@types/redis/-/redis-2.8.10.tgz",
+			"integrity": "sha512-X0NeV3ivoif2SPsmuPhwTkKfcr1fDJlaJIOyxZ9/TCIEbvzMzmZlstqCZ5r7AOolbOJtAfvuGArNXMexYYH3ng==",
 			"dev": true,
 			"requires": {
-				"@types/events": "1.2.0",
-				"@types/node": "9.6.6"
+				"@types/node": "*"
 			}
 		},
 		"@types/retry": {
@@ -3753,7 +3752,8 @@
 				"ansi-regex": {
 					"version": "2.1.1",
 					"bundled": true,
-					"dev": true
+					"dev": true,
+					"optional": true
 				},
 				"aproba": {
 					"version": "1.2.0",
@@ -4168,7 +4168,8 @@
 				"safe-buffer": {
 					"version": "5.1.1",
 					"bundled": true,
-					"dev": true
+					"dev": true,
+					"optional": true
 				},
 				"safer-buffer": {
 					"version": "2.1.2",
@@ -4224,6 +4225,7 @@
 					"version": "3.0.1",
 					"bundled": true,
 					"dev": true,
+					"optional": true,
 					"requires": {
 						"ansi-regex": "2.1.1"
 					}
@@ -4267,12 +4269,14 @@
 				"wrappy": {
 					"version": "1.0.2",
 					"bundled": true,
-					"dev": true
+					"dev": true,
+					"optional": true
 				},
 				"yallist": {
 					"version": "3.0.2",
 					"bundled": true,
-					"dev": true
+					"dev": true,
+					"optional": true
 				}
 			}
 		},

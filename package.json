@@ -126,7 +126,7 @@
 		"@types/koa-json": "2.0.18",
 		"@types/koa-router": "7.0.32",
 		"@types/koa-send": "4.1.1",
-		"@types/lodash": "4.14.116",
+		"@types/lodash": "4.14.120",
 		"@types/logform": "1.2.0",
 		"@types/mocha": "5.2.5",
 		"@types/mongoose": "5.2.17",

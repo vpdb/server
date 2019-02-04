@@ -222,12 +222,12 @@
 			}
 		},
 		"@types/adm-zip": {
-			"version": "0.4.31",
-			"resolved": "https://registry.npmjs.org/@types/adm-zip/-/adm-zip-0.4.31.tgz",
-			"integrity": "sha1-ozdrn6j0xunAeMF20t8srreTneM=",
+			"version": "0.4.32",
+			"resolved": "https://registry.npmjs.org/@types/adm-zip/-/adm-zip-0.4.32.tgz",
+			"integrity": "sha512-hv1O7ySn+XvP5OeDQcJFWwVb2v+GFGO1A9aMTQ5B/bzxb7WW21O8iRhVdsKKr8QwuiagzGmPP+gsUAYZ6bRddQ==",
 			"dev": true,
 			"requires": {
-				"@types/node": "9.6.6"
+				"@types/node": "*"
 			}
 		},
 		"@types/archiver": {
@@ -794,9 +794,9 @@
 			}
 		},
 		"adm-zip": {
-			"version": "0.4.11",
-			"resolved": "https://registry.npmjs.org/adm-zip/-/adm-zip-0.4.11.tgz",
-			"integrity": "sha512-L8vcjDTCOIJk7wFvmlEUN7AsSb8T+2JrdP7KINBjzr24TJ5Mwj590sLu3BC7zNZowvJWa/JtPmD8eJCzdtDWjA=="
+			"version": "0.4.13",
+			"resolved": "https://registry.npmjs.org/adm-zip/-/adm-zip-0.4.13.tgz",
+			"integrity": "sha512-fERNJX8sOXfel6qCBCMPvZLzENBEhZTzKqg6vrOW5pvoEaQuJhRU4ndTAh6lHOxn1I6jnz2NHra56ZODM751uw=="
 		},
 		"after-all-results": {
 			"version": "2.0.0",
@@ -3753,7 +3753,8 @@
 				"ansi-regex": {
 					"version": "2.1.1",
 					"bundled": true,
-					"dev": true
+					"dev": true,
+					"optional": true
 				},
 				"aproba": {
 					"version": "1.2.0",
@@ -4168,7 +4169,8 @@
 				"safe-buffer": {
 					"version": "5.1.1",
 					"bundled": true,
-					"dev": true
+					"dev": true,
+					"optional": true
 				},
 				"safer-buffer": {
 					"version": "2.1.2",
@@ -4224,6 +4226,7 @@
 					"version": "3.0.1",
 					"bundled": true,
 					"dev": true,
+					"optional": true,
 					"requires": {
 						"ansi-regex": "2.1.1"
 					}
@@ -4267,12 +4270,14 @@
 				"wrappy": {
 					"version": "1.0.2",
 					"bundled": true,
-					"dev": true
+					"dev": true,
+					"optional": true
 				},
 				"yallist": {
 					"version": "3.0.2",
 					"bundled": true,
-					"dev": true
+					"dev": true,
+					"optional": true
 				}
 			}
 		},

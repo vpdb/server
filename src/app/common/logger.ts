@@ -19,7 +19,6 @@
 
 import chalk from 'chalk';
 import hasAnsi from 'has-ansi';
-import { format as logFormat } from 'logform';
 import { resolve } from 'path';
 import stripAnsi from 'strip-ansi';
 import { format as sprintf } from 'util';
@@ -33,11 +32,11 @@ class Logger {
 	private jsonLogger: winston.Logger;
 
 	constructor() {
-		const alignedWithColorsAndTime = logFormat.combine(
-			logFormat.colorize(),
-			logFormat.timestamp(),
-			//logFormat.align(),
-			logFormat.printf(info => `${info.timestamp} ${info.level}: ${info.message}`),
+		const alignedWithColorsAndTime = winston.format.combine(
+			winston.format.colorize(),
+			winston.format.timestamp(),
+			//winston.format.align(),
+			winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`),
 		);
 
 		this.textLogger = winston.createLogger({

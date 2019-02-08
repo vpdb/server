@@ -38,21 +38,21 @@ import { RomUploader } from './upload/rom.uploader';
 			.command('games <env>', 'Upload all games',
 				(args: Argv) => args.positional('env', envOpts),
 				async (args: Arguments) => {
-					const uploader = new GameUploader(args.env);
+					const uploader = new GameUploader(args.env as string);
 					await uploader.upload();
 					console.log('All games added!');
 				})
 			.command('releases <env>', 'Upload all releases',
 				(args: Argv) => args.positional('env', envOpts),
 				async (args: Arguments) => {
-					const uploader = new ReleaseUploader(args.env);
+					const uploader = new ReleaseUploader(args.env as string);
 					await uploader.upload();
 					console.log('All releases added!');
 				})
 			.command('roms <env>', 'Upload all ROMs',
 				(args: Argv) => args.positional('env', envOpts),
 				async (args: Arguments) => {
-					const uploader = new RomUploader(args.env);
+					const uploader = new RomUploader(args.env as string);
 					await uploader.upload();
 					console.log('All ROMs added!');
 				})

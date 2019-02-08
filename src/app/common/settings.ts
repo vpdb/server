@@ -19,19 +19,19 @@
 
 import { existsSync } from 'fs';
 import { isArray, isFunction, isObject, isUndefined, keys } from 'lodash';
-import { format as logFormat } from 'logform';
 import { isAbsolute, resolve } from 'path';
 import winston from 'winston';
 
 import { settingValidations } from './settings.validator';
 import { VpdbConfig } from './typings/config';
 
+
 export class Settings {
 
 	public readonly current: VpdbConfig;
 	private readonly filePath: string;
 	private readonly logger = winston.createLogger({
-		format: logFormat.combine(logFormat.colorize(), logFormat.timestamp(), logFormat.printf(info => `${info.timestamp} ${info.level}: ${info.message}`)),
+		format: winston.format.combine(winston.format.colorize(), winston.format.timestamp(), winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`)),
 		transports: [ new winston.transports.Console() ],
 		level: 'silly',
 	});

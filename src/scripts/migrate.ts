@@ -35,9 +35,9 @@ const scripts = readdirSync(scriptFolder).filter(s => !s.endsWith('.map'));
 
 	try {
 		if (argv['run-number']) {
-			await runNumber(argv['run-number']);
+			await runNumber(argv['run-number'] as string);
 		} else {
-			await runMigrations(argv.from, argv.to);
+			await runMigrations(argv.from as string, argv.to as string);
 		}
 		logger.info(null, '[migrate] Migration done.');
 		process.exit(0);
@@ -65,7 +65,7 @@ async function runNumber(scriptNumber: string) {
 }
 
 async function runMigrations(fromFolder: string, toFolder: string) {
-	toFolder = argv.to || '.';
+	toFolder = argv.to  as string || '.';
 	if (!fromFolder) {
 		throw new Error('Must specify --from option when migrating.');
 	}

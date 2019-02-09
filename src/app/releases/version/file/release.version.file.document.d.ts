@@ -21,7 +21,6 @@ import { FileReferenceDocument, MetricsDocument, PrettyIdDocument, Types } from 
 import { BuildDocument } from '../../../builds/build.document';
 import { FileDocument } from '../../../files/file.document';
 import { UserDocument } from '../../../users/user.document';
-import { ReleaseVersionCounterType } from '../release.version.document';
 
 export interface ReleaseVersionFileDocument extends FileReferenceDocument, PrettyIdDocument, MetricsDocument {
 	// model

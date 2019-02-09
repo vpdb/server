@@ -109,7 +109,7 @@ gameSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already t
 gameSchema.plugin(prettyIdPlugin, { model: 'Game', ignore: ['_created_by'] });
 gameSchema.plugin(fileReferencePlugin);
 gameSchema.plugin(paginatePlugin);
-gameSchema.plugin(metricsPlugin, { hotness: { popularity: { views: 1, downloads: 10, comments: 20, stars: 30 } } });
+gameSchema.plugin(metricsPlugin, { hotness: { popularity: { views: 1, downloads: 10, comments: 20, stars: 30 } }, hasChildren: true });
 gameSchema.plugin(sortableTitlePlugin, { src: 'title', dest: 'title_sortable' });
 
 //-----------------------------------------------------------------------------

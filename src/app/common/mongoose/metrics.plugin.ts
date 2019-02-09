@@ -17,13 +17,53 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document, MetricsDocument, MetricsOptions, Model, ModelProperties, Schema } from 'mongoose';
+import { get } from 'lodash';
+import { Document, MetricsDocument, MetricsOptions, Model, ModelProperties, NativeError, Schema } from 'mongoose';
 import { state } from '../../state';
 import { apiCache } from '../api.cache';
 
 export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 
 	const getId = options.getId || (doc => doc.id);
+
+	if (options.hasChildren) {
+		schema.post('findOne', onFindOne);
+	}
+
+	schema.virtual('hasRelations').get(() => true);
+	schema.methods.$updateRelations = function(rootModel: string, rootId: string, path: string) {
+		this.$rootModel = rootModel;
+		this.$rootId = rootId;
+		this.$pathWithinParent = path;
+		this.$normalizedPathWithinParent = path.replace(/\.\d+/g, '');
+		const arrayFields = path.split(/\.\d+/g);
+		const lastArrayField = arrayFields.pop();
+		this.$queryPathWithinParent = arrayFields.join('.$[]') + (arrayFields.length > 0 ? '.$' : '') + lastArrayField;
+	};
+
+	schema.methods.getRootModel = function() {
+		return this.$rootModel || this.constructor.modelName;
+	};
+
+	schema.methods.getRootId = function() {
+		return this.$rootId || this._id;
+	};
+
+	schema.methods.getPathWithinParent = function(prefix?: string) {
+		return prefix ? `${prefix}.${this.$pathWithinParent}` : this.$pathWithinParent;
+	};
+
+	schema.methods.getNormalizedPathWithinParent = function(opts: {prefix?: string, suffix?: string} = {}) {
+		const path = opts.prefix && this.$normalizedPathWithinParent
+			? `${opts.prefix}.${this.$normalizedPathWithinParent}`
+			: opts.prefix || this.$normalizedPathWithinParent || '';
+		return path && opts.suffix ? `${path}.${opts.suffix}` : path || opts.suffix;
+	};
+
+	schema.methods.getQueryPathWithinParent = function(suffix?: string) {
+		const queryPath = this.$queryPathWithinParent || '';
+		return suffix && queryPath ? `${queryPath}.${suffix}` : queryPath || suffix ;
+	};
 
 	/**
 	 * Increments a counter.
@@ -82,29 +122,23 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
  * @return {string} Field path, e.g. `release.versions.files` for a ReleaseVersionFileDocument
  */
 function fieldPath(doc: any, path: string = ''): string {
-	if (doc.__parent) {
-		path = '.' + doc.__parentArray._path + path;
-		return fieldPath(doc.__parent, path);
+	if (doc.getRootId().toString() === doc._id.toString()) {
+		return doc.constructor.modelName.toLowerCase();
 	}
-	return doc.constructor.modelName.toLowerCase() + path;
+	return doc.getNormalizedPathWithinParent({ prefix: doc.getRootModel().toLowerCase() });
 }
 
 /**
  * Returns the query retrieving the entity (and embedded doc, if any).
  * @param doc Document
- * @param {string} [path]='' Current path while transversing
- * @param {ObjectId} [id] Sub-document ID
  * @return {string} Query condition, e.g. `{ _id: "5b60261f687fc336902ffe2d", versions.files._id: "5b60261f687fc336902ffe2f" }`
  */
-function queryCondition(doc: any, path: string = '', id: any = null): any {
-	if (doc.__parent) {
-		path = '.' + doc.__parentArray._path + path;
-		return queryCondition(doc.__parent, path, id || doc._id);
+function queryCondition(doc: MetricsDocument): any {
+	const condition: any = { _id: doc.getRootId() || doc._id };
+	if (doc.getRootId().toString() === doc._id.toString()) {
+		return condition;
 	}
-	const condition: any = { _id: doc._id };
-	if (path) {
-		condition[path.substr(1) + '._id'] = id;
-	}
+	condition[doc.getNormalizedPathWithinParent({ suffix: '_id' })] = doc._id;
 	return condition;
 }
 
@@ -112,18 +146,14 @@ function queryCondition(doc: any, path: string = '', id: any = null): any {
  * Returns the path to update for the query.
  * @param doc Document or sub-document
  * @param {string} counterName Name of the counter to update
- * @param {string} [path] Current path while transversing
- * @param {string} [separator] Current separator, since we use ".$." at the end and ".$[]." otherwise
- * @return {string} Path to the counter, e.g. "versions.$[].files.$.counter.downloads"
+ * @return {string} Path to the counter, e.g. "versions.$[].files.$.counter.downloads" (we use ".$." at the end and ".$[]." otherwise)
  */
-function fieldCounterPath(doc: any, counterName: string, path: string = '', separator = ''): string {
-	if (doc.__parent) {
-		const isArray = doc.__parentArray._schema.$isMongooseDocumentArray;
-		separator = isArray ? (separator || '.$.') : '.';
-		path = doc.__parentArray._path + separator + path;
-		return fieldCounterPath(doc.__parent, counterName, path, '.$[].');
+function fieldCounterPath(doc: MetricsDocument, counterName: string): string {
+	// if the doc's the root doc, don't include path within parent, because we're updating the doc directly.
+	if (doc.getRootId().toString() === doc._id.toString()) {
+		return 'counter.' + counterName;
 	}
-	return path + 'counter.' + counterName;
+	return doc.getQueryPathWithinParent('counter.' + counterName);
 }
 
 /**
@@ -131,11 +161,53 @@ function fieldCounterPath(doc: any, counterName: string, path: string = '', sepa
  * @param doc Document
  * @return {M}
  */
-function getModel<M extends Model<Document> = Model<Document>>(doc: any): M {
-	if (doc.__parent) {
-		return getModel(doc.__parent);
+function getModel<M extends Model<Document> = Model<Document>>(doc: MetricsDocument): M {
+	return state.getModel(doc.getRootModel());
+}
+
+function onFindOne(doc: any, next: (err?: NativeError) => void) {
+	if (doc) {
+		updateChildren(doc, this.schema, doc.constructor.modelName, doc._id.toString());
 	}
-	return state.getModel(doc.constructor.modelName);
+	next();
+}
+
+function updateChildren(doc: Document, schema: any, rootModel: string, rootId: string, parentPath: string = '') {
+
+	// single references
+	const objectIdPaths: any[] = Object.keys(schema.paths).filter((p: string) => schema.paths[p].instance === 'ObjectID');
+	for (const path of objectIdPaths) {
+		const child = get(doc, path);
+		if (child && child.hasRelations) {
+			const currentPath = `${parentPath}${parentPath ? '.' : ''}${path}`;
+			if (isChildSchema(schema, path)) {
+				child.$updateRelations(rootModel, rootId, currentPath);
+			} else {
+				child.$updateRelations(child.constructor.modelName, child._id, currentPath);
+			}
+		}
+	}
+
+	// arrays
+	const arrayPaths: any[] = Object.keys(schema.paths).filter((p: string) => schema.paths[p].instance === 'Array');
+	for (const path of arrayPaths) {
+		const children = get(doc, path).filter((child: any) => child && child.hasRelations);
+		let index = 0;
+		for (const child of children) {
+			const currentPath = `${parentPath}${parentPath ? '.' : ''}${path}.${index}`;
+			if (isChildSchema(schema, path)) {
+				child.$updateRelations(rootModel, rootId, currentPath);
+				updateChildren(child, get(schema.obj, path).type[0], rootModel, rootId, currentPath);
+			} else {
+				child.$updateRelations(child.constructor.modelName, child._id, currentPath);
+			}
+			index++;
+		}
+	}
+}
+
+function isChildSchema(schema: any, path: string) {
+	return schema.childSchemas.map((cs: any) => cs.model.path).includes(path);
 }
 
 declare module 'mongoose' {
@@ -156,6 +228,42 @@ declare module 'mongoose' {
 		 * @returns {Promise<MetricsDocument>} Updated document
 		 */
 		incrementCounter(counterName: string, value?: number): Promise<void>;
+
+		/**
+		 * Returns the path within the parent inclusively indexes.
+		 *
+		 * For example a File within a Release would return "versions.0.files.0._file".
+		 *
+		 * @param prefix If set, append this plus `.` to the path.
+		 */
+		getPathWithinParent(prefix?: string): string;
+
+		/**
+		 * Returns the normalized path within the parent inclusively indexes.
+		 *
+		 * For example a File within a Release would return "versions.files._file".
+		 *
+		 * @param opts Options
+		 * @param [opts.prefix] Path will be prefixed with prefix plus "."
+		 * @param [opts.suffix] Path will be suffixed with "." plus suffix.
+		 */
+		getNormalizedPathWithinParent(opts?: {prefix?: string, suffix?: string}): string;
+
+		/**
+		 * Returns the query path withing the parent.
+		 * @return {string} Path to the counter, e.g. "versions.$[].files.$.counter.downloads"
+		 */
+		getQueryPathWithinParent(suffix?: string): string;
+
+		/**
+		 * Returns the model of the top-most parent.
+		 */
+		getRootModel(): string;
+
+		/**
+		 * Returns the id of the top-most parent, or the document ID if it's the same.
+		 */
+		getRootId(): string;
 	}
 
 	// statics
@@ -182,5 +290,10 @@ declare module 'mongoose' {
 		 * @return {string} Value of the ID(s)
 		 */
 		getId?: (obj: Document) => string;
+
+		/**
+		 * Don't update references on update since there are no children anyway
+		 */
+		hasChildren?: boolean;
 	}
 }

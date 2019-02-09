@@ -64,7 +64,7 @@ backglassSchema.plugin(prettyIdPlugin, { model: 'Backglass', ignore: [ '_created
 backglassSchema.plugin(fileReferencePlugin);
 backglassSchema.plugin(paginatePlugin);
 backglassSchema.plugin(moderationPlugin);
-backglassSchema.plugin(metricsPlugin);
+backglassSchema.plugin(metricsPlugin, { hasChildren: false /* fixme */ });
 
 //-----------------------------------------------------------------------------
 // VALIDATIONS

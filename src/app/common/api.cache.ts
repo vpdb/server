@@ -23,6 +23,7 @@ import pathToRegexp from 'path-to-regexp';
 
 import { MetricsDocument, MetricsModel } from 'mongoose';
 import { inspect } from 'util';
+import { BackglassDocument } from '../backglasses/backglass.document';
 import { BuildDocument } from '../builds/build.document';
 import { GameDocument } from '../games/game.document';
 import { ReleaseDocument } from '../releases/release.document';
@@ -31,7 +32,6 @@ import { UserDocument } from '../users/user.document';
 import { logger } from './logger';
 import { SerializerLevel, SerializerReference } from './serializer';
 import { Context, RequestState } from './typings/context';
-import { BackglassDocument } from '../backglasses/backglass.document';
 
 /**
  * An in-memory cache using Redis.

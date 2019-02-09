@@ -30,13 +30,13 @@ import { moderationPlugin } from '../common/mongoose/moderation.plugin';
 import { prettyIdPlugin } from '../common/mongoose/pretty.id.plugin';
 import { sortableTitlePlugin } from '../common/mongoose/sortable.title.plugin';
 import { authorSchema } from '../users/content.author.schema';
-import { releaseVersionSchema } from './version/release.version.schema';
 
 import { logger } from '../common/logger';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
 import { Release } from './release';
 import { ReleaseDocument } from './release.document';
+import { releaseVersionSchema } from './version/release.version.schema';
 
 const shortId = require('shortid32');
 
@@ -100,7 +100,7 @@ releaseSchema.plugin(prettyIdPlugin, { model: 'Release', ignore: ['_created_by',
 releaseSchema.plugin(idReferenceValidatorPlugin, { fields: ['_tags'] });
 releaseSchema.plugin(paginatePlugin);
 releaseSchema.plugin(moderationPlugin);
-releaseSchema.plugin(metricsPlugin, { hotness: { popularity: { views: 1, downloads: 10, comments: 20, stars: 30 } } });
+releaseSchema.plugin(metricsPlugin, { hotness: { popularity: { views: 1, downloads: 10, comments: 20, stars: 30 } }, hasChildren: true });
 releaseSchema.plugin(sortableTitlePlugin, { src: 'name', dest: 'name_sortable' });
 
 //-----------------------------------------------------------------------------

@@ -46,7 +46,7 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 	};
 
 	schema.methods.getRootId = function() {
-		return this.$rootId || this._id;
+		return this.$rootId || this.id;
 	};
 
 	schema.methods.getPathWithinParent = function(prefix?: string) {
@@ -122,7 +122,7 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
  * @return {string} Field path, e.g. `release.versions.files` for a ReleaseVersionFileDocument
  */
 function fieldPath(doc: any, path: string = ''): string {
-	if (doc.getRootId().toString() === doc._id.toString()) {
+	if (doc.getRootId() === doc.id) {
 		return doc.constructor.modelName.toLowerCase();
 	}
 	return doc.getNormalizedPathWithinParent({ prefix: doc.getRootModel().toLowerCase() });
@@ -134,8 +134,8 @@ function fieldPath(doc: any, path: string = ''): string {
  * @return {string} Query condition, e.g. `{ _id: "5b60261f687fc336902ffe2d", versions.files._id: "5b60261f687fc336902ffe2f" }`
  */
 function queryCondition(doc: MetricsDocument): any {
-	const condition: any = { _id: doc.getRootId() || doc._id };
-	if (doc.getRootId().toString() === doc._id.toString()) {
+	const condition: any = { id: doc.getRootId() || doc.id };
+	if (doc.getRootId() === doc.id) {
 		return condition;
 	}
 	condition[doc.getNormalizedPathWithinParent({ suffix: '_id' })] = doc._id;
@@ -150,7 +150,7 @@ function queryCondition(doc: MetricsDocument): any {
  */
 function fieldCounterPath(doc: MetricsDocument, counterName: string): string {
 	// if the doc's the root doc, don't include path within parent, because we're updating the doc directly.
-	if (doc.getRootId().toString() === doc._id.toString()) {
+	if (doc.getRootId() === doc.id) {
 		return 'counter.' + counterName;
 	}
 	return doc.getQueryPathWithinParent('counter.' + counterName);
@@ -167,7 +167,7 @@ function getModel<M extends Model<Document> = Model<Document>>(doc: MetricsDocum
 
 function onFindOne(doc: any, next: (err?: NativeError) => void) {
 	if (doc) {
-		updateChildren(doc, this.schema, doc.constructor.modelName, doc._id.toString());
+		updateChildren(doc, this.schema, doc.constructor.modelName, doc.id);
 	}
 	next();
 }
@@ -183,7 +183,7 @@ function updateChildren(doc: Document, schema: any, rootModel: string, rootId: s
 			if (isChildSchema(schema, path)) {
 				child.$updateRelations(rootModel, rootId, currentPath);
 			} else {
-				child.$updateRelations(child.constructor.modelName, child._id, currentPath);
+				child.$updateRelations(child.constructor.modelName, child.id, currentPath);
 			}
 		}
 	}
@@ -199,7 +199,7 @@ function updateChildren(doc: Document, schema: any, rootModel: string, rootId: s
 				child.$updateRelations(rootModel, rootId, currentPath);
 				updateChildren(child, get(schema.obj, path).type[0], rootModel, rootId, currentPath);
 			} else {
-				child.$updateRelations(child.constructor.modelName, child._id, currentPath);
+				child.$updateRelations(child.constructor.modelName, child.id, currentPath);
 			}
 			index++;
 		}

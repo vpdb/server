@@ -49,7 +49,7 @@ export const releaseVersionSchema = new Schema(releaseVersionFields, { toObject:
 
 releaseVersionSchema.plugin(fileReferencePlugin);
 releaseVersionSchema.plugin(prettyIdPlugin, { model: 'ReleaseVersion' });
-releaseVersionSchema.plugin(metricsPlugin, { getId: ((doc: any) => [ doc.__parent.id, doc.version ].join(',')), hasChildren: true });
+releaseVersionSchema.plugin(metricsPlugin, { getId: ((doc: any) => [ doc.getRootId(), doc.version ].join(',')), hasChildren: true });
 
 /**
  * Validates files.

@@ -62,7 +62,7 @@
 		"ent": "2.2.0",
 		"fluent-ffmpeg": "2.1.2",
 		"gm": "1.23.1",
-		"google-auth-library": "2.0.0",
+		"google-auth-library": "3.1.0",
 		"handlebars": "4.0.12",
 		"has-ansi": "3.0.0",
 		"ioredis": "4.6.2",

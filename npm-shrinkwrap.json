@@ -848,9 +848,9 @@
 			}
 		},
 		"@types/xmlbuilder": {
-			"version": "0.0.33",
-			"resolved": "https://registry.npmjs.org/@types/xmlbuilder/-/xmlbuilder-0.0.33.tgz",
-			"integrity": "sha512-9mZ6j+qYLa+Pn2ihLvDvULaLbqVfGlT0etGO0HiCgb2kVEsBz8d0tovBghm6nM1vjnQPOE+0NxX/w0fSiywMiA==",
+			"version": "0.0.34",
+			"resolved": "https://registry.npmjs.org/@types/xmlbuilder/-/xmlbuilder-0.0.34.tgz",
+			"integrity": "sha512-yVsHfYqJblSEg3DvUhGndpCZBZz2GiGVmqMa04fbGro2xzxRj85Q7MQ4os+MaXmKcpCDD42MXuxUWfoUKTuVdQ==",
 			"dev": true
 		},
 		"@types/yargs": {

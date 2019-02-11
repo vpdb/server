@@ -140,7 +140,7 @@
 		"@types/uglify-js": "3.0.4",
 		"@types/unzip": "0.1.1",
 		"@types/validator": "9.4.2",
-		"@types/xmlbuilder": "0.0.33",
+		"@types/xmlbuilder": "0.0.34",
 		"@types/yargs": "12.0.8",
 		"async": "2.6.1",
 		"cheerio": "1.0.0-rc.2",

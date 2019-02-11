@@ -78,7 +78,7 @@ export class GitHubStrategy extends Strategy {
 		}
 		const body = res.headers['content-type'].includes('form-urlencoded') ? parse(res.data) : res.data;
 		if (body.error) {
-			throw new ApiError('Error authenticating with GitHub: %s', body.error_description || body.error);
+			throw new ApiError('Error authenticating with GitHub: %s', body.error_description || body.error).code(400);
 		}
 		if (!body.access_token || !body.token_type) {
 			throw new ApiError('Error retrieving access token from GitHub.');

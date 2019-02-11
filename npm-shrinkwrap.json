@@ -256,9 +256,9 @@
 			}
 		},
 		"@types/adm-zip": {
-			"version": "0.4.31",
-			"resolved": "https://registry.npmjs.org/@types/adm-zip/-/adm-zip-0.4.31.tgz",
-			"integrity": "sha1-ozdrn6j0xunAeMF20t8srreTneM=",
+			"version": "0.4.32",
+			"resolved": "https://registry.npmjs.org/@types/adm-zip/-/adm-zip-0.4.32.tgz",
+			"integrity": "sha512-hv1O7ySn+XvP5OeDQcJFWwVb2v+GFGO1A9aMTQ5B/bzxb7WW21O8iRhVdsKKr8QwuiagzGmPP+gsUAYZ6bRddQ==",
 			"dev": true,
 			"requires": {
 				"@types/node": "*"
@@ -299,9 +299,9 @@
 			}
 		},
 		"@types/bull": {
-			"version": "3.5.6",
-			"resolved": "https://registry.npmjs.org/@types/bull/-/bull-3.5.6.tgz",
-			"integrity": "sha512-0Unmv2R77rzwK9d4PIL0KrBp25wSQt8QCHC4IqB4sawU317zJw33d6lpaxDWqr5alTts9v9N0mGWjNOjLMxGEw==",
+			"version": "3.5.7",
+			"resolved": "https://registry.npmjs.org/@types/bull/-/bull-3.5.7.tgz",
+			"integrity": "sha512-qWx6akitp9aFKnVG3nwNpul+jgRAxMllfzwl2HjNl72PPjLOA8ffY4BJtAP15+8b8nfEP6Tv8ANYKGT6JcEetw==",
 			"dev": true,
 			"requires": {
 				"@types/ioredis": "*"
@@ -913,9 +913,9 @@
 			}
 		},
 		"adm-zip": {
-			"version": "0.4.11",
-			"resolved": "https://registry.npmjs.org/adm-zip/-/adm-zip-0.4.11.tgz",
-			"integrity": "sha512-L8vcjDTCOIJk7wFvmlEUN7AsSb8T+2JrdP7KINBjzr24TJ5Mwj590sLu3BC7zNZowvJWa/JtPmD8eJCzdtDWjA=="
+			"version": "0.4.13",
+			"resolved": "https://registry.npmjs.org/adm-zip/-/adm-zip-0.4.13.tgz",
+			"integrity": "sha512-fERNJX8sOXfel6qCBCMPvZLzENBEhZTzKqg6vrOW5pvoEaQuJhRU4ndTAh6lHOxn1I6jnz2NHra56ZODM751uw=="
 		},
 		"after-all-results": {
 			"version": "2.0.0",

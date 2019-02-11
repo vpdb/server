@@ -6004,9 +6004,9 @@
 			}
 		},
 		"jwt-simple": {
-			"version": "0.5.3",
-			"resolved": "https://registry.npmjs.org/jwt-simple/-/jwt-simple-0.5.3.tgz",
-			"integrity": "sha512-mGXp4PTJalEBh5WGe/Ow0P6g+Q4tM/9qAysX7YxCdB/xahDoBKrASZKf7hXT/qTREhOTPJvi4WWpabT2WXh1BQ=="
+			"version": "0.5.5",
+			"resolved": "https://registry.npmjs.org/jwt-simple/-/jwt-simple-0.5.5.tgz",
+			"integrity": "sha512-KEyanRIDHooo8KuBxY3CC019NbwHtxdsxzRJUfaGqcxMrvBPBkosN+RUxx1nZFI6yrErq3KTW8HI/qrNIxHe0g=="
 		},
 		"kareem": {
 			"version": "2.3.0",

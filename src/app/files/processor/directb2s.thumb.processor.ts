@@ -30,7 +30,7 @@ import { mimeTypes } from '../file.mimetypes';
 import { BackglassVariation, FileVariation } from '../file.variations';
 import { CreationProcessor } from './processor';
 
-const base64 = require('base64-stream');
+const { Base64Decode } = require('base64-stream');
 
 require('bluebird').promisifyAll(gm.prototype);
 
@@ -71,7 +71,7 @@ export class Directb2sThumbProcessor implements CreationProcessor<BackglassVaria
 
 					const imgStream = source
 						.on('error', this.error(reject, 'Error reading encoded stream.'))
-						.pipe(base64.decode())
+						.pipe(new Base64Decode())
 						.on('error', this.error(reject, 'Error reading decoded stream.'));
 
 					// setup gm

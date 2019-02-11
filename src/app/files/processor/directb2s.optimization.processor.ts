@@ -30,7 +30,7 @@ import { BackglassVariation, FileVariation } from '../file.variations';
 import { OptimizationProcessor } from './processor';
 
 const PngQuant = require('pngquant');
-const base64 = require('base64-stream');
+const { Base64Encode, Base64Decode } = require('base64-stream');
 const statAsync = promisify(stat);
 
 export class Directb2sOptimizationProcessor implements OptimizationProcessor<BackglassVariation> {
@@ -97,9 +97,9 @@ export class Directb2sOptimizationProcessor implements OptimizationProcessor<Bac
 						parser.resume();
 					};
 					source.on('error', handleError)
-						.pipe(base64.decode()).on('error', handleError)
+						.pipe(new Base64Encode()).on('error', handleError)
 						.pipe(quanter).on('error', handleError)
-						.pipe(base64.encode()).on('error', handleError)
+						.pipe(new Base64Decode()).on('error', handleError)
 						.on('data', (data: any) => {
 							if (!started) {
 								write(' ' + attr.name + '="');

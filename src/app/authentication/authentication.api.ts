@@ -20,6 +20,7 @@
 import { assign, isArray, uniq } from 'lodash';
 
 import { Api } from '../common/api';
+import { apiCache } from '../common/api.cache';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
 import { mailer } from '../common/mailer';
@@ -31,7 +32,6 @@ import { state } from '../state';
 import { UserDocument } from '../users/user.document';
 import { UserUtil } from '../users/user.util';
 import { AuthenticationUtil } from './authentication.util';
-import { apiCache } from '../common/api.cache';
 
 export class AuthenticationApi extends Api {
 

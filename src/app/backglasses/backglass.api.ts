@@ -23,6 +23,7 @@ import { inspect } from 'util';
 
 import { acl } from '../common/acl';
 import { Api } from '../common/api';
+import { apiCache } from '../common/api.cache';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
 import { mailer } from '../common/mailer';
@@ -33,7 +34,6 @@ import { LogEventUtil } from '../log-event/log.event.util';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
 import { BackglassDocument } from './backglass.document';
-import { apiCache } from '../common/api.cache';
 
 export class BackglassApi extends Api {
 

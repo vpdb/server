@@ -30,7 +30,7 @@ class Profiler {
 
 	/**
 	 * Starts measuring.
- 	 * @param name Name of the profile, if not set the calling class/method name will be taken.
+	 * @param name Name of the profile, if not set the calling class/method name will be taken.
 	 */
 	public start(name?: string) {
 		if (!name) {

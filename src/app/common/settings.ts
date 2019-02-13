@@ -25,7 +25,6 @@ import winston from 'winston';
 import { settingValidations } from './settings.validator';
 import { VpdbConfig } from './typings/config';
 
-
 export class Settings {
 
 	public readonly current: VpdbConfig;

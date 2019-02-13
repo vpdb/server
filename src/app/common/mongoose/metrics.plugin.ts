@@ -22,6 +22,14 @@ import { Document, MetricsDocument, MetricsOptions, Model, ModelProperties, Nati
 import { state } from '../../state';
 import { apiCache } from '../api.cache';
 
+/**
+ * This plugin provides methods to update the counters of an entity and
+ * optionally calculate a popularity score based on the weight (hotness) of
+ * each counter.
+ *
+ * @param schema Schema of the model
+ * @param options Optional options
+ */
 export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 
 	const getId = options.getId || (doc => doc.id);
@@ -31,37 +39,32 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 	}
 
 	schema.virtual('hasRelations').get(() => true);
-	schema.methods.$updateRelations = function(rootModel: string, rootId: string, path: string) {
-		this.$rootModel = rootModel;
-		this.$rootId = rootId;
-		this.$pathWithinParent = path;
-		this.$normalizedPathWithinParent = path.replace(/\.\d+/g, '');
+	schema.methods.$updateRelations = function(this: MetricsDocument, parentModel: string, parentId: string, path: string) {
 		const arrayFields = path.split(/\.\d+/g);
 		const lastArrayField = arrayFields.pop();
-		this.$queryPathWithinParent = arrayFields.join('.$[]') + (arrayFields.length > 0 ? '.$' : '') + lastArrayField;
+		this.$$parentModel = parentModel;
+		this.$$parentId = parentId;
+		this.$$normalizedPathWithinParent = path.replace(/\.\d+/g, '');
+		this.$$queryPathWithinParent = arrayFields.join('.$[]') + (arrayFields.length > 0 ? '.$' : '') + lastArrayField;
 	};
 
-	schema.methods.getRootModel = function() {
-		return this.$rootModel || this.constructor.modelName;
+	schema.methods.getParentModel = function(this: MetricsDocument) {
+		return this.$$parentModel || (this.constructor as any).modelName;
 	};
 
-	schema.methods.getRootId = function() {
-		return this.$rootId || this.id;
+	schema.methods.getParentId = function(this: MetricsDocument) {
+		return this.$$parentId || this.id;
 	};
 
-	schema.methods.getPathWithinParent = function(prefix?: string) {
-		return prefix ? `${prefix}.${this.$pathWithinParent}` : this.$pathWithinParent;
-	};
-
-	schema.methods.getNormalizedPathWithinParent = function(opts: {prefix?: string, suffix?: string} = {}) {
-		const path = opts.prefix && this.$normalizedPathWithinParent
-			? `${opts.prefix}.${this.$normalizedPathWithinParent}`
-			: opts.prefix || this.$normalizedPathWithinParent || '';
+	schema.methods.getPathWithinParent = function(this: MetricsDocument, opts: {prefix?: string, suffix?: string} = {}) {
+		const path = opts.prefix && this.$$normalizedPathWithinParent
+			? `${opts.prefix}.${this.$$normalizedPathWithinParent}`
+			: opts.prefix || this.$$normalizedPathWithinParent || '';
 		return path && opts.suffix ? `${path}.${opts.suffix}` : path || opts.suffix;
 	};
 
-	schema.methods.getQueryPathWithinParent = function(suffix?: string) {
-		const queryPath = this.$queryPathWithinParent || '';
+	schema.methods.getQueryFieldPath = function(this: MetricsDocument, suffix?: string) {
+		const queryPath = this.$$queryPathWithinParent || '';
 		return suffix && queryPath ? `${queryPath}.${suffix}` : queryPath || suffix ;
 	};
 
@@ -72,9 +75,9 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 	 * @param {number} [value=1] How much to increment. Use a negative value for decrement
 	 * @returns {Promise}
 	 */
-	schema.methods.incrementCounter = async function(counterName: string, value: number = 1): Promise<void> {
+	schema.methods.incrementCounter = async function(this: MetricsDocument, counterName: string, value: number = 1): Promise<void> {
 		const q: any = {
-			$inc: { [fieldCounterPath(this, counterName)]: value },
+			$inc: { [getCounterUpdatePath(this, counterName)]: value },
 		};
 		if (options.hotness) {
 			q.metrics = q.metrics || {};
@@ -92,10 +95,10 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 		}
 
 		// update cache
-		await apiCache.incrementCounter(fieldPath(this), getId(this), counterName, value);
+		await apiCache.incrementCounter(getCacheModelName(this), getId(this), counterName, value);
 
 		// update db
-		const condition = queryCondition(this);
+		const condition = getQueryCondition(this);
 		await getModel(this).update(condition, q).exec();
 	};
 
@@ -116,16 +119,15 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 }
 
 /**
- * Returns entity name along with the path where the embedded element is located, if any.
+ * Returns entity name along with the path where the embedded element is located, if embedded.
  * @param doc Document
- * @param {string} [path]='' Current path while transversing
  * @return {string} Field path, e.g. `release.versions.files` for a ReleaseVersionFileDocument
  */
-function fieldPath(doc: any, path: string = ''): string {
-	if (doc.getRootId() === doc.id) {
-		return doc.constructor.modelName.toLowerCase();
+function getCacheModelName(doc: MetricsDocument): string {
+	if (doc.getParentId() === doc.id) {
+		return (doc.constructor as any).modelName.toLowerCase();
 	}
-	return doc.getNormalizedPathWithinParent({ prefix: doc.getRootModel().toLowerCase() });
+	return doc.getPathWithinParent({ prefix: doc.getParentModel().toLowerCase() });
 }
 
 /**
@@ -133,27 +135,26 @@ function fieldPath(doc: any, path: string = ''): string {
  * @param doc Document
  * @return {string} Query condition, e.g. `{ _id: "5b60261f687fc336902ffe2d", versions.files._id: "5b60261f687fc336902ffe2f" }`
  */
-function queryCondition(doc: MetricsDocument): any {
-	const condition: any = { id: doc.getRootId() || doc.id };
-	if (doc.getRootId() === doc.id) {
+function getQueryCondition(doc: MetricsDocument): any {
+	const condition: any = { id: doc.getParentId() || doc.id };
+	if (doc.getParentId() === doc.id) {
 		return condition;
 	}
-	condition[doc.getNormalizedPathWithinParent({ suffix: '_id' })] = doc._id;
+	condition[doc.getPathWithinParent({ suffix: '_id' })] = doc._id;
 	return condition;
 }
 
 /**
- * Returns the path to update for the query.
+ * Returns the query to update the counter of an (embedded) entity
  * @param doc Document or sub-document
  * @param {string} counterName Name of the counter to update
  * @return {string} Path to the counter, e.g. "versions.$[].files.$.counter.downloads" (we use ".$." at the end and ".$[]." otherwise)
  */
-function fieldCounterPath(doc: MetricsDocument, counterName: string): string {
-	// if the doc's the root doc, don't include path within parent, because we're updating the doc directly.
-	if (doc.getRootId() === doc.id) {
+function getCounterUpdatePath(doc: MetricsDocument, counterName: string): string {
+	if (doc.getParentId() === doc.id) {
 		return 'counter.' + counterName;
 	}
-	return doc.getQueryPathWithinParent('counter.' + counterName);
+	return doc.getQueryFieldPath('counter.' + counterName);
 }
 
 /**
@@ -162,17 +163,33 @@ function fieldCounterPath(doc: MetricsDocument, counterName: string): string {
  * @return {M}
  */
 function getModel<M extends Model<Document> = Model<Document>>(doc: MetricsDocument): M {
-	return state.getModel(doc.getRootModel());
+	return state.getModel(doc.getParentModel());
 }
 
-function onFindOne(doc: any, next: (err?: NativeError) => void) {
+/**
+ * Executed when the entity is retrieved. It updates the parent relations so we
+ * can automatically update the cache API and increase counters.
+ * @param doc
+ * @param next
+ */
+function onFindOne(doc: MetricsDocument, next: (err?: NativeError) => void) {
 	if (doc) {
-		updateChildren(doc, this.schema, doc.constructor.modelName, doc.id);
+		updateChildren(doc, this.schema, (doc.constructor as any).modelName, doc.id);
 	}
 	next();
 }
 
-function updateChildren(doc: Document, schema: any, rootModel: string, rootId: string, parentPath: string = '') {
+/**
+ * Updates all populated children of type `MetricsDocument` with relations to
+ * their parents.
+ *
+ * @param doc Retrieved document
+ * @param schema Schema of the document
+ * @param parentModel First parent that has its own collection (i.e. isn't nested)
+ * @param parentId Entity `id` of the first parent that isn't nested
+ * @param [parentPath] Path to parent when called recursively
+ */
+function updateChildren(doc: MetricsDocument, schema: any, parentModel: string, parentId: string, parentPath: string = '') {
 
 	// single references
 	const objectIdPaths: any[] = Object.keys(schema.paths).filter((p: string) => schema.paths[p].instance === 'ObjectID');
@@ -181,7 +198,7 @@ function updateChildren(doc: Document, schema: any, rootModel: string, rootId: s
 		if (child && child.hasRelations) {
 			const currentPath = `${parentPath}${parentPath ? '.' : ''}${path}`;
 			if (isChildSchema(schema, path)) {
-				child.$updateRelations(rootModel, rootId, currentPath);
+				child.$updateRelations(parentModel, parentId, currentPath);
 			} else {
 				child.$updateRelations(child.constructor.modelName, child.id, currentPath);
 			}
@@ -196,8 +213,8 @@ function updateChildren(doc: Document, schema: any, rootModel: string, rootId: s
 		for (const child of children) {
 			const currentPath = `${parentPath}${parentPath ? '.' : ''}${path}.${index}`;
 			if (isChildSchema(schema, path)) {
-				child.$updateRelations(rootModel, rootId, currentPath);
-				updateChildren(child, get(schema.obj, path).type[0], rootModel, rootId, currentPath);
+				child.$updateRelations(parentModel, parentId, currentPath);
+				updateChildren(child, get(schema.obj, path).type[0], parentModel, parentId, currentPath);
 			} else {
 				child.$updateRelations(child.constructor.modelName, child.id, currentPath);
 			}
@@ -206,7 +223,12 @@ function updateChildren(doc: Document, schema: any, rootModel: string, rootId: s
 	}
 }
 
-function isChildSchema(schema: any, path: string) {
+/**
+ * Returns `true` if given path is a child (embedded), or `false` otherwise.
+ * @param schema Schema of the document
+ * @param path Path within the document
+ */
+function isChildSchema(schema: any, path: string): boolean {
 	return schema.childSchemas.map((cs: any) => cs.model.path).includes(path);
 }
 
@@ -220,6 +242,12 @@ declare module 'mongoose' {
 		 */
 		counter?: { [key: string]: number };
 
+		// privates
+		$$parentModel: string;
+		$$parentId: string;
+		$$normalizedPathWithinParent: string;
+		$$queryPathWithinParent: string;
+
 		/**
 		 * Increments a counter.
 		 *
@@ -230,16 +258,7 @@ declare module 'mongoose' {
 		incrementCounter(counterName: string, value?: number): Promise<void>;
 
 		/**
-		 * Returns the path within the parent inclusively indexes.
-		 *
-		 * For example a File within a Release would return "versions.0.files.0._file".
-		 *
-		 * @param prefix If set, append this plus `.` to the path.
-		 */
-		getPathWithinParent(prefix?: string): string;
-
-		/**
-		 * Returns the normalized path within the parent inclusively indexes.
+		 * Returns the path of the entity within the parent, without indexes.
 		 *
 		 * For example a File within a Release would return "versions.files._file".
 		 *
@@ -247,23 +266,32 @@ declare module 'mongoose' {
 		 * @param [opts.prefix] Path will be prefixed with prefix plus "."
 		 * @param [opts.suffix] Path will be suffixed with "." plus suffix.
 		 */
-		getNormalizedPathWithinParent(opts?: {prefix?: string, suffix?: string}): string;
+		getPathWithinParent(opts?: {prefix?: string, suffix?: string}): string;
 
 		/**
 		 * Returns the query path withing the parent.
 		 * @return {string} Path to the counter, e.g. "versions.$[].files.$.counter.downloads"
 		 */
-		getQueryPathWithinParent(suffix?: string): string;
+		getQueryFieldPath(suffix?: string): string;
 
 		/**
-		 * Returns the model of the top-most parent.
+		 * Returns the model of the top-most parent that has its own collection.
+		 *
+		 * For example, a for a file within a release that would be `File`,
+		 * but for a `ReleaseVersion` that would be `Release`.
+		 *
+		 * @see getParentId()
+		 * @returns The `id` of the parent (not the `ObjectID`)
 		 */
-		getRootModel(): string;
+		getParentModel(): string;
 
 		/**
-		 * Returns the id of the top-most parent, or the document ID if it's the same.
+		 * Returns the id of the top-most parent that has its own collection.
+		 *
+		 * @see getParentModel()
 		 */
-		getRootId(): string;
+		getParentId(): string;
+
 	}
 
 	// statics
@@ -281,11 +309,24 @@ declare module 'mongoose' {
 
 	// plugin options
 	export interface MetricsOptions {
+
+		/**
+		 * If set, calculate a score.
+		 *
+		 * The score is based on the weights you define for a given counter,
+		 * for example { views: 1, downloads: 10 } means ten views weight the
+		 * same as one download.
+		 */
 		hotness?: {
 			[key: string]: { [key: string]: number },
 		};
+
 		/**
 		 * Returns the ID under which the counter is saved to the cache.
+		 *
+		 * This is necessary when only the ID isn't enough, for example a
+		 * release version needs the release ID as well as the version name.
+		 *
 		 * @param {Document} obj The potentially embedded document
 		 * @return {string} Value of the ID(s)
 		 */

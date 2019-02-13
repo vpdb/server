@@ -21,7 +21,7 @@ before_script:
   - mkdir -p ./data/db/27017
   - mkdir -p ./data/db/27000
   - ./mongodb-linux-x86_64-3.6.4/bin/mongod --fork --nopreallocj --dbpath ./data/db/27017 --syslog --port 27017
-  - wget https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz -O /tmp/ffmpeg.tar.gz
+  - wget https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz -O /tmp/ffmpeg.tar.gz
   - wget http://www.rarlab.com/rar/rarlinux-x64-5.3.0.tar.gz -O /tmp/rar.tar.gz
   - mkdir bin
   - cd bin

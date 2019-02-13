@@ -61,7 +61,7 @@ mediumSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already
 mediumSchema.plugin(prettyIdPlugin, { model: 'Medium', ignore: ['_created_by'] });
 mediumSchema.plugin(fileReferencePlugin);
 mediumSchema.plugin(paginatePlugin);
-mediumSchema.plugin(metricsPlugin, { hasChildren: false /* fixme */ });
+mediumSchema.plugin(metricsPlugin, { hasChildren: true });
 
 //-----------------------------------------------------------------------------
 // VALIDATIONS

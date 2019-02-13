@@ -41,6 +41,9 @@ import { config } from '../app/common/settings';
  *
  * Replace emails (in MongoDB console):
  *
+ *  mongo 127.0.100.100:27010/vpdb
+ *
+ db.auth('vpdb', '***')
  var bulk = db.users.initializeUnorderedBulkOp();
  var count = 0;
  db.users.find({ email: { $ne: 'freezy@xbmc.org' } }).forEach(function(doc) {

@@ -34,6 +34,7 @@ import { koa404Handler } from './common/middleware/notfound.handler.middleware';
 import { koaRestHandler } from './common/middleware/rest.middleware';
 import { koaWebsiteHandler } from './common/middleware/website.middleware';
 import { settings } from './common/settings';
+import { Context } from './common/typings/context';
 
 const koaResponseTime = require('koa-response-time');
 const koaCors = require('@koa/cors');
@@ -50,7 +51,7 @@ export class Server {
 		this.app.use(koaErrorHandler());
 		this.app.use(koaRestHandler());
 		this.app.use(koaAuth());
-		this.app.use(koaCors({ exposeHeaders, maxAge: 600, credentials: true }));
+		this.app.use(koaCors({ exposeHeaders, allowHeaders, origin, maxAge: 600, credentials: true, keepHeadersOnError: true }));
 		this.app.use(koaJson({ pretty: false, param: 'pretty' }));
 		this.app.use(apiCache.middleware.bind(apiCache));
 
@@ -110,6 +111,28 @@ export class Server {
 	}
 }
 
+function origin(ctx: Context): string {
+	const requestOrigin = ctx.get('Origin');
+	return requestOrigin.match(/(^https?:\/\/.*?vpdb\.(io|ch)(:\d+)?$)|(^https?:\/\/localhost(:\d+)?$)/i)
+		? requestOrigin : 'https://vpdb.io';
+}
+
+const allowHeaders = [
+	'Accept',
+	'Accept-Encoding',
+	'Accept-Language',
+	'Authorization',
+	'Cache-Control',
+	'Content-Type',
+	'DNT',
+	'If-Modified-Since',
+	'Keep-Alive',
+	'Origin',
+	'Referer',
+	'User-Agent',
+	'X-Authorization',
+	'X-Requested-With',
+];
 const exposeHeaders = [
 	'Cache-Control',
 	'Content-Disposition',

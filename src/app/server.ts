@@ -111,12 +111,14 @@ export class Server {
 	}
 }
 
+// only allow vpdb.io cross-site sub domains
 function origin(ctx: Context): string {
 	const requestOrigin = ctx.get('Origin');
 	return requestOrigin.match(/(^https?:\/\/.*?vpdb\.(io|ch)(:\d+)?$)|(^https?:\/\/localhost(:\d+)?$)/i)
 		? requestOrigin : 'https://vpdb.io';
 }
 
+// for the pre-flight request
 const allowHeaders = [
 	'Accept',
 	'Accept-Encoding',
@@ -133,6 +135,8 @@ const allowHeaders = [
 	'X-Authorization',
 	'X-Requested-With',
 ];
+
+// added to every request
 const exposeHeaders = [
 	'Cache-Control',
 	'Content-Disposition',

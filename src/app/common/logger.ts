@@ -19,10 +19,11 @@
 
 import chalk from 'chalk';
 import hasAnsi from 'has-ansi';
-import { resolve } from 'path';
+import { basename, dirname, resolve } from 'path';
 import stripAnsi from 'strip-ansi';
 import { format as sprintf } from 'util';
 import winston from 'winston';
+import DailyRotateFile from 'winston-daily-rotate-file';
 
 import { config } from './settings';
 import { RequestState } from './typings/context';
@@ -56,21 +57,28 @@ class Logger {
 				maxsize: 1000000,                // Max size in bytes of the logfile, if the size is exceeded then a new file is created.
 				maxFiles: 10,                    // Limit the number of files created when the size of the logfile is exceeded.
 			}));
-			this.info(null, 'Text logger at %s enabled.', logPath);
+			this.info(null, '[app] Text logger at %s enabled.', logPath);
 		}
 		/* istanbul ignore next */
 		if (config.vpdb.logging.file.json) {
 			const logPath = resolve(config.vpdb.logging.file.json);
+			const transport = new DailyRotateFile({
+				filename: basename(logPath),
+				dirname: dirname(logPath),
+				zippedArchive: true,
+				datePattern: 'YYYY-MM',
+			});
+			transport.on('rotate', (oldFilename, newFilename) => {
+				this.info(null, '[app] Rotating logs from %s to %s.', oldFilename, newFilename);
+			});
+			transport.on('new', newFilename => {
+				this.info(null, '[app] JSON logger at %s enabled.', newFilename);
+			});
 			this.jsonLogger = winston.createLogger({
 				format: winston.format.json(),
-				transports: [new winston.transports.File({
-					filename: logPath,
-					maxsize: 1000000,
-					maxFiles: 10,
-				})],
+				transports: [transport],
 				level: config.vpdb.logging.level,
 			});
-			this.info(null, 'JSON logger at %s enabled.', logPath);
 		}
 	}
 

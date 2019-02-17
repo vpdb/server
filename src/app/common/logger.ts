@@ -52,12 +52,20 @@ class Logger {
 		/* istanbul ignore next */
 		if (config.vpdb.logging.file.text) {
 			const logPath = resolve(config.vpdb.logging.file.text);
-			this.textLogger.add(new winston.transports.File({
-				filename: logPath,               // The filename of the logfile to write output to.
-				maxsize: 1000000,                // Max size in bytes of the logfile, if the size is exceeded then a new file is created.
-				maxFiles: 10,                    // Limit the number of files created when the size of the logfile is exceeded.
-			}));
-			this.info(null, '[app] Text logger at %s enabled.', logPath);
+			const transport = new DailyRotateFile({
+				filename: basename(logPath),
+				dirname: dirname(logPath),
+				zippedArchive: true,
+				datePattern: 'YYYY-MM',
+			});
+			transport.on('rotate', (oldFilename, newFilename) => {
+				this.info(null, '[app] Rotating text logs from %s to %s.', oldFilename, newFilename);
+			});
+			transport.on('new', newFilename => {
+				this.info(null, '[app] Creating new text log at %s.', newFilename);
+			});
+			this.textLogger.add(transport);
+			this.info(null, '[app] Text logger enabled at %s.', logPath);
 		}
 		/* istanbul ignore next */
 		if (config.vpdb.logging.file.json) {
@@ -69,16 +77,17 @@ class Logger {
 				datePattern: 'YYYY-MM',
 			});
 			transport.on('rotate', (oldFilename, newFilename) => {
-				this.info(null, '[app] Rotating logs from %s to %s.', oldFilename, newFilename);
+				this.info(null, '[app] Rotating JSON logs from %s to %s.', oldFilename, newFilename);
 			});
 			transport.on('new', newFilename => {
-				this.info(null, '[app] JSON logger at %s enabled.', newFilename);
+				this.info(null, '[app] Creating new JSON log at %s.', newFilename);
 			});
 			this.jsonLogger = winston.createLogger({
 				format: winston.format.json(),
 				transports: [transport],
 				level: config.vpdb.logging.level,
 			});
+			this.info(null, '[app] JSON logger enabled at %s.', logPath);
 		}
 	}
 

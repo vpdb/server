@@ -36,6 +36,7 @@ import { koaWebsiteHandler } from './common/middleware/website.middleware';
 import { settings } from './common/settings';
 import { Context } from './common/typings/context';
 
+const apm = require('elastic-apm-node');
 const koaResponseTime = require('koa-response-time');
 const koaCors = require('@koa/cors');
 
@@ -65,6 +66,8 @@ export class Server {
 				logger.warn(null, '[Server] Fix env WEBAPP, nothing found at %s (%s)', webappPath, process.env.WEBAPP);
 			}
 		}
+
+		this.setupApmFilter();
 	}
 
 	public async register<T>(endPoint: EndPoint): Promise<void> {
@@ -108,6 +111,27 @@ export class Server {
 		logger.info(null, '[Server.start] Public storage ready at %s', settings.storagePublicUri());
 		logger.info(null, '[Server.start] Protected storage ready at %s', settings.storageProtectedUri());
 		logger.info(null, '[Server.start] API ready at %s', settings.apiExternalUri());
+	}
+
+	private setupApmFilter() {
+		apm.addFilter((payload: any) => {
+			const ctx = payload.context;
+
+			if (ctx.response && ctx.response.headers) {
+				if (ctx.response.headers['x-token-refresh']) {
+					ctx.response.headers['x-token-refresh'] = '[REDACTED]';
+				}
+			}
+			if (ctx.request && ctx.request.body) {
+				if (ctx.request.body.password) {
+					ctx.request.body.password = '[REDACTED]';
+				}
+				if (ctx.request.body.current_password) {
+					ctx.request.body.current_password = '[REDACTED]';
+				}
+			}
+			return payload
+		});
 	}
 }
 

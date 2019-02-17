@@ -69,7 +69,7 @@ async function validateId(doc: Document, path: string, refModelName: string, val
 		return true;
 	}
 	const refModel = mongoose.model(refModelName);
-	const query = refModel.count({ _id: value });
+	const query = refModel.countDocuments({ _id: value });
 	return executeQuery(query, conditions, 1);
 }
 

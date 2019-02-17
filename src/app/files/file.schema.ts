@@ -148,10 +148,10 @@ fileSchema.post('remove', async (obj: FileDocument) => {
 	await processorQueue.deleteProcessingFile(null, obj);
 
 	// remove table blocks
-	await state.models.TableBlock.update(
+	await state.models.TableBlock.updateMany(
 		{ _files: obj._id },
 		{ $pull: { _files: obj._id } },
 		{ multi: true },
 	);
-	await state.models.TableBlock.remove({ _files: { $size: 0 } });
+	await state.models.TableBlock.deleteMany({ _files: { $size: 0 } });
 });

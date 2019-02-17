@@ -40,10 +40,10 @@ export class Release {
 	 */
 	public static async moderationChanged(release: ReleaseDocument, previousModeration: { isApproved: boolean, isRefused: boolean }, moderation: { isApproved: boolean, isRefused: boolean }): Promise<ModeratedDocument> {
 		if (previousModeration.isApproved && !moderation.isApproved) {
-			return state.models.Game.update({ _id: release._game }, { $inc: { 'counter.releases': -1 } });
+			return state.models.Game.updateOne({ _id: release._game }, { $inc: { 'counter.releases': -1 } });
 		}
 		if (!previousModeration.isApproved && moderation.isApproved) {
-			return state.models.Game.update({ _id: release._game }, { $inc: { 'counter.releases': 1 } });
+			return state.models.Game.updateOne({ _id: release._game }, { $inc: { 'counter.releases': 1 } });
 		}
 	}
 

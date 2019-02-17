@@ -99,7 +99,7 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 
 		// update db
 		const condition = getQueryCondition(this);
-		await getModel(this).update(condition, q).exec();
+		await getModel(this).updateOne(condition, q).exec();
 	};
 
 	/**

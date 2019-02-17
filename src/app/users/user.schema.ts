@@ -347,7 +347,7 @@ userSchema.methods.hasRole = function(role: string | string[]): boolean {
 // TRIGGERS
 //-----------------------------------------------------------------------------
 userSchema.post('remove', async (obj: UserDocument) => {
-	await state.models.LogUser.remove({ _user: obj._id });
-	await state.models.Token.remove({ _created_by: obj._id });
+	await state.models.LogUser.deleteMany({ _user: obj._id });
+	await state.models.Token.deleteMany({ _created_by: obj._id });
 	await acl.removeUserRoles(obj.id, obj.roles);
 });

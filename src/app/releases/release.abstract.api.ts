@@ -181,7 +181,7 @@ export abstract class ReleaseAbstractApi extends Api {
 			// so now we're here and unvalidatedRotation is now validated.
 			if (file.preprocessed && file.preprocessed.unvalidatedRotation) {
 				logger.info(requestState, '[ReleaseApi.postProcess] Validation passed, setting rotation to %s°', file.preprocessed.unvalidatedRotation);
-				await state.models.File.update({ _id: file._id }, {
+				await state.models.File.updateOne({ _id: file._id }, {
 					preprocessed: { rotation: file.preprocessed.unvalidatedRotation },
 				});
 			}

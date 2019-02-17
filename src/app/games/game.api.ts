@@ -231,8 +231,8 @@ export class GameApi extends Api {
 
 		// check for release and backglass reference and fail if there are
 		const refs: { [key: string]: number } = {
-			releases: await state.models.Release.find({ _game: game._id }).count().exec(),
-			backglasses: await state.models.Backglass.find({ _game: game._id }).count().exec(),
+			releases: await state.models.Release.countDocuments({ _game: game._id }).exec(),
+			backglasses: await state.models.Backglass.countDocuments({ _game: game._id }).exec(),
 		};
 		if (sum(values(refs)) > 0) {
 			throw new ApiError('Cannot delete game because it is referenced by %s.', Object.keys(refs).map(f => `${refs[f]} ${f}`).join(' and '))

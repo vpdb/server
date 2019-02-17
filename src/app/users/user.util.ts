@@ -61,7 +61,7 @@ export class UserUtil {
 		}
 		await user.validate();
 
-		const count = await state.models.User.count({}).exec();
+		const count = await state.models.User.countDocuments({}).exec();
 
 		user.roles = count ? ['member'] : ['root'];
 		user = await user.save();
@@ -120,21 +120,21 @@ export class UserUtil {
 		let queries: any[];
 
 		// 1. update references
-		await state.models.Backglass.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
-		await state.models.Build.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
-		await state.models.Comment.update({ _from: mergeUser._id.toString() }, { _from: keepUser._id.toString() });
-		await state.models.File.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
-		await state.models.Game.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
-		await state.models.GameRequest.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
-		await state.models.LogEvent.update({ _actor: mergeUser._id.toString() }, { _actor: keepUser._id.toString() });
-		await state.models.LogEvent.update({ '_ref.user': mergeUser._id.toString() }, { '_ref.user': keepUser._id.toString() });
-		await state.models.LogUser.update({ _user: mergeUser._id.toString() }, { _user: keepUser._id.toString() });
-		await state.models.LogUser.update({ _actor: mergeUser._id.toString() }, { _actor: keepUser._id.toString() });
-		await state.models.Medium.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
-		await state.models.Release.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
-		await state.models.Rom.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
-		await state.models.Tag.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
-		await state.models.Token.update({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
+		await state.models.Backglass.updateMany({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
+		await state.models.Build.updateMany({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
+		await state.models.Comment.updateMany({ _from: mergeUser._id.toString() }, { _from: keepUser._id.toString() });
+		await state.models.File.updateMany({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
+		await state.models.Game.updateMany({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
+		await state.models.GameRequest.updateMany({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
+		await state.models.LogEvent.updateMany({ _actor: mergeUser._id.toString() }, { _actor: keepUser._id.toString() });
+		await state.models.LogEvent.updateMany({ '_ref.user': mergeUser._id.toString() }, { '_ref.user': keepUser._id.toString() });
+		await state.models.LogUser.updateMany({ _user: mergeUser._id.toString() }, { _user: keepUser._id.toString() });
+		await state.models.LogUser.updateMany({ _actor: mergeUser._id.toString() }, { _actor: keepUser._id.toString() });
+		await state.models.Medium.updateMany({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
+		await state.models.Release.updateMany({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
+		await state.models.Rom.updateMany({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
+		await state.models.Tag.updateMany({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
+		await state.models.Token.updateMany({ _created_by: mergeUser._id.toString() }, { _created_by: keepUser._id.toString() });
 
 		// const strs = ['%s backglass(es)', '%s build(s)', '%s comment(s)', '%s file(s)', '%s game(s)', '%s game request(s)',
 		// 	'%s log event(s) as actor', '%s log events as ref', '%s user log(s) as user', '%s user log(s) as actor',
@@ -203,7 +203,7 @@ export class UserUtil {
 		num = 0;
 
 		// 1.5 ratings. first, update user id of all ratings
-		const numRatings = await state.models.Rating.update({ _from: mergeUser._id.toString() }, { _from: keepUser._id.toString() });
+		const numRatings = await state.models.Rating.updateMany({ _from: mergeUser._id.toString() }, { _from: keepUser._id.toString() });
 
 		logger.info(ctx.state, '[UserUtil.mergeUsers] Merged %s rating(s)', numRatings.n);
 
@@ -228,7 +228,7 @@ export class UserUtil {
 		await Promise.all(queries);
 
 		// 1.6 stars: first, update user id of all stars
-		const numStars = await state.models.Star.update({ _from: mergeUser._id.toString() }, { _from: keepUser._id.toString() });
+		const numStars = await state.models.Star.updateMany({ _from: mergeUser._id.toString() }, { _from: keepUser._id.toString() });
 
 		logger.info(ctx.state, '[UserUtil.mergeUsers] Merged %s star(s)', numStars.n);
 

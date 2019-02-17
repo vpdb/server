@@ -122,7 +122,7 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 		await release.activateFiles();
 
 		// game modification date
-		await state.models.Game.update({ _id: release._game.toString() }, { modified_at: now });
+		await state.models.Game.updateOne({ _id: release._game.toString() }, { modified_at: now });
 
 		logger.info(ctx.state, '[ReleaseApi.create] All referenced files activated, returning object to client.');
 		release = await this.getDetails(release._id);
@@ -244,7 +244,7 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 		const activatedFiles = await release.activateFiles();
 
 		logger.info(ctx.state, '[ReleaseApi.updateVersion] Activated files [ %s ], returning object to client.', activatedFiles.join(', '));
-		await state.models.Game.update({ _id: release._game.toString() }, { modified_at: new Date() });
+		await state.models.Game.updateOne({ _id: release._game.toString() }, { modified_at: new Date() });
 
 		release = await state.models.Release.findOne({ id: ctx.params.id })
 			.populate({ path: '_game' })

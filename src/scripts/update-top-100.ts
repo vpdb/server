@@ -71,7 +71,7 @@ class Pinside {
 		const top100 = await this.getTop100(opts);
 
 		// reset all ranks
-		await state.models.Game.update({}, { 'pinside.ranks': [] }).exec();
+		await state.models.Game.updateMany({}, { 'pinside.ranks': [] }).exec();
 		for (const pinsideGame of top100) {
 
 			const strip = /\(([^)]+)\)|[^a-z0-9]+$/gi;

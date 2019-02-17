@@ -140,7 +140,7 @@ releaseSchema.methods.isCreatedBy = function(user: UserDocument): boolean {
 releaseSchema.pre('remove', async function(this: ReleaseDocument) {
 
 	// remove linked comments
-	await state.models.Comment.remove({ $or: [{ '_ref.release': this._id }, { '_ref.release_moderation': this._id }] }).exec();
+	await state.models.Comment.deleteMany({ $or: [{ '_ref.release': this._id }, { '_ref.release_moderation': this._id }] }).exec();
 
 	// remove table blocks
 	const fileIds: string[] = [];
@@ -152,11 +152,11 @@ releaseSchema.pre('remove', async function(this: ReleaseDocument) {
 	logger.info(null, '[Release.remove] Removing all table blocks for file IDs [ %s ]', fileIds.map(fid => fid.toString()).join(', '));
 
 	for (const fileId of fileIds) {
-		await state.models.TableBlock.update(
+		await state.models.TableBlock.updateOne(
 			{ _files: fileId },
 			{ $pull: { _files: fileId } },
 			{ multi: true },
 		);
 	}
-	await state.models.TableBlock.remove({ _files: { $size: 0 } }).exec();
+	await state.models.TableBlock.deleteMany({ _files: { $size: 0 } }).exec();
 });

@@ -376,7 +376,7 @@ export class AuthenticationApi extends Api {
 	 */
 	private async removePendingUsers(ctx: Context, emails: string[]): Promise<void> {
 		//
-		const pendingUsers = await state.models.User.find({
+		const pendingUsers: UserDocument[] = await state.models.User.find({
 			email: { $in: emails },
 			'email_status.code': 'pending_registration',
 		});

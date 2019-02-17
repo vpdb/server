@@ -56,6 +56,7 @@ class Logger {
 				maxsize: 1000000,                // Max size in bytes of the logfile, if the size is exceeded then a new file is created.
 				maxFiles: 10,                    // Limit the number of files created when the size of the logfile is exceeded.
 			}));
+			this.info(null, 'Text logger at %s enabled.', logPath);
 		}
 		/* istanbul ignore next */
 		if (config.vpdb.logging.file.json) {
@@ -69,6 +70,7 @@ class Logger {
 				})],
 				level: config.vpdb.logging.level,
 			});
+			this.info(null, 'JSON logger at %s enabled.', logPath);
 		}
 	}
 

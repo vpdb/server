@@ -178,12 +178,12 @@ export class MiscApi extends Api {
 			url.ele('loc', webUrl + 'games/' + game.id + '/releases/' + release.id);
 			if (fsImage) {
 				const img = url.ele('image:image');
-				img.ele('image:loc', fsImage.getUrl(fsImage.getVariation('full')));
+				img.ele('image:loc', fsImage.getUrl(ctx.state, fsImage.getVariation('full')));
 				img.ele('image:caption', 'Portrait playfield for ' + game.title + ', ' + release.name + ' by ' + authors + '.');
 			}
 			if (dtImage) {
 				const img = url.ele('image:image');
-				img.ele('image:loc', dtImage.getUrl(dtImage.getVariation('full')));
+				img.ele('image:loc', dtImage.getUrl(ctx.state, dtImage.getVariation('full')));
 				img.ele('image:caption', 'Landscape playfield for ' + game.title + ', ' + release.name + ' by ' + authors + '.');
 			}
 		});
@@ -201,13 +201,13 @@ export class MiscApi extends Api {
 				switch (medium.category) {
 					case 'wheel_image': {
 						const img = url.ele('image:image');
-						img.ele('image:loc', file.getUrl(file.getVariation('medium-2x')));
+						img.ele('image:loc', file.getUrl(ctx.state, file.getVariation('medium-2x')));
 						img.ele('image:caption', 'Logo for ' + game.title);
 						break;
 					}
 					case 'backglass_image': {
 						const img = url.ele('image:image');
-						img.ele('image:loc', file.getUrl(file.getVariation('full')));
+						img.ele('image:loc', file.getUrl(ctx.state, file.getVariation('full')));
 						img.ele('image:caption', 'Backglass for ' + game.title);
 						break;
 					}

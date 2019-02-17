@@ -74,10 +74,11 @@ export interface FileDocument extends MetricsDocument {
 	 * public only after submission.
 	 *
 	 * @see [[File.getUrl]] for implementation
+	 * @param requestState For logging
 	 * @param {FileVariation} [variation] File variation or null for original file
 	 * @return {string}
 	 */
-	getUrl(variation?: FileVariation): string;
+	getUrl(requestState: RequestState, variation?: FileVariation): string;
 
 	/**
 	 * Returns true if the file is public (as in accessible without being authenticated), false otherwise.

@@ -36,7 +36,6 @@ import { koaWebsiteHandler } from './common/middleware/website.middleware';
 import { settings } from './common/settings';
 import { Context } from './common/typings/context';
 
-const apm = require('elastic-apm-node');
 const koaResponseTime = require('koa-response-time');
 const koaCors = require('@koa/cors');
 
@@ -67,7 +66,10 @@ export class Server {
 			}
 		}
 
-		this.setupApmFilter();
+		/* istanbul ignore if */
+		if (process.env.ELASTIC_APM_ENABLED) {
+			this.setupApmFilter();
+		}
 	}
 
 	public async register<T>(endPoint: EndPoint): Promise<void> {
@@ -113,7 +115,9 @@ export class Server {
 		logger.info(null, '[Server.start] API ready at %s', settings.apiExternalUri());
 	}
 
+	/* istanbul ignore next */
 	private setupApmFilter() {
+		const apm = require('elastic-apm-node');
 		apm.addFilter((payload: any) => {
 			const ctx = payload.context;
 
@@ -130,7 +134,7 @@ export class Server {
 					ctx.request.body.current_password = '[REDACTED]';
 				}
 			}
-			return payload
+			return payload;
 		});
 	}
 }

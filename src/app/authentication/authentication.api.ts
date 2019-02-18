@@ -33,6 +33,8 @@ import { UserDocument } from '../users/user.document';
 import { UserUtil } from '../users/user.util';
 import { AuthenticationUtil } from './authentication.util';
 
+const apm = require('elastic-apm-node');
+
 export class AuthenticationApi extends Api {
 
 	/**
@@ -74,6 +76,9 @@ export class AuthenticationApi extends Api {
 				how = 'token';
 				authenticatedUser = await this.authenticateWithToken(ctx);
 			}
+
+			// update APM client
+			apm.setUserContext({ id: localUser.id, username: localUser.name, email: localUser.email });
 
 			// here we're authenticated (but not yet authorized)
 			await this.authenticateUser(ctx, authenticatedUser, how);

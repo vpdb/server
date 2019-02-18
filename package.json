@@ -121,7 +121,7 @@
 		"@types/ioredis": "4.0.6",
 		"@types/jwt-simple": "0.5.33",
 		"@types/koa": "2.0.48",
-		"@types/koa-bodyparser": "4.2.1",
+		"@types/koa-bodyparser": "4.2.2",
 		"@types/koa-json": "2.0.18",
 		"@types/koa-router": "7.0.39",
 		"@types/koa-send": "4.1.1",

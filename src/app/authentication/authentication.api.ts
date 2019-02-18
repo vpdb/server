@@ -78,7 +78,7 @@ export class AuthenticationApi extends Api {
 			/* istanbul ignore if */
 			if (process.env.ELASTIC_APM_ENABLED) {
 				const apm = require('elastic-apm-node');
-				apm.setUserContext({ id: localUser.id, username: localUser.name, email: localUser.email });
+				apm.setUserContext({ id: authenticatedUser.id, username: authenticatedUser.name, email: authenticatedUser.email });
 			}
 
 			// here we're authenticated (but not yet authorized)

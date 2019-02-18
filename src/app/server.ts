@@ -68,6 +68,7 @@ export class Server {
 
 		/* istanbul ignore if */
 		if (process.env.ELASTIC_APM_ENABLED) {
+			logger.info(null, '[Server] Elastic application performance monitoring at %s enabled.', process.env.ELASTIC_APM_SERVER_URL);
 			this.setupApmFilter();
 		}
 	}
@@ -119,19 +120,22 @@ export class Server {
 	private setupApmFilter() {
 		const apm = require('elastic-apm-node');
 		apm.addFilter((payload: any) => {
-			const ctx = payload.context;
 
-			if (ctx.response && ctx.response.headers) {
-				if (ctx.response.headers['x-token-refresh']) {
-					ctx.response.headers['x-token-refresh'] = '[REDACTED]';
+			if (!payload.context) {
+				return payload;
+			}
+
+			if (payload.context.response && payload.context.response.headers) {
+				if (payload.context.response.headers['x-token-refresh']) {
+					payload.context.response.headers['x-token-refresh'] = '[REDACTED]';
 				}
 			}
-			if (ctx.request && ctx.request.body) {
-				if (ctx.request.body.password) {
-					ctx.request.body.password = '[REDACTED]';
+			if (payload.context.request && payload.context.request.body) {
+				if (payload.context.request.body.password) {
+					payload.context.request.body.password = '[REDACTED]';
 				}
-				if (ctx.request.body.current_password) {
-					ctx.request.body.current_password = '[REDACTED]';
+				if (payload.context.request.body.current_password) {
+					payload.context.request.body.current_password = '[REDACTED]';
 				}
 			}
 			return payload;

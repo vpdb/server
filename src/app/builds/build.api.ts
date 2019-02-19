@@ -87,16 +87,14 @@ export class BuildApi extends Api {
 		const newBuild = await state.models.Build.findById(build._id).populate('_created_by').exec();
 
 		logger.info(ctx.state, '[BuildApi.create] Build "%s" successfully updated.', newBuild.id);
+
+		// log event
+		await LogEventUtil.log(ctx, 'update_build', false, LogEventUtil.diff(oldBuild, ctx.request.body), { build: newBuild._id });
+
+		// invalidate cache
+		await apiCache.invalidateUpdatedBuild(ctx.state, newBuild);
+
 		this.success(ctx, state.serializers.Build.detailed(ctx, newBuild), 200);
-
-		this.noAwait(async () => {
-
-			// log event
-			await LogEventUtil.log(ctx, 'update_build', false, LogEventUtil.diff(oldBuild, ctx.request.body), { build: newBuild._id });
-
-			// invalidate cache
-			await apiCache.invalidateUpdatedBuild(ctx.state, newBuild);
-		});
 	}
 
 	/**
@@ -133,12 +131,11 @@ export class BuildApi extends Api {
 		await newBuild.save();
 
 		logger.info(ctx.state, '[BuildApi.create] Build "%s" successfully created.', newBuild.label);
-		this.success(ctx, state.serializers.Build.simple(ctx, newBuild), 201);
 
-		this.noAwait(async () => {
-			// log event
-			await LogEventUtil.log(ctx, 'create_build', false, state.serializers.Build.detailed(ctx, newBuild), { build: newBuild._id });
-		});
+		// log event
+		await LogEventUtil.log(ctx, 'create_build', false, state.serializers.Build.detailed(ctx, newBuild), { build: newBuild._id });
+
+		this.success(ctx, state.serializers.Build.simple(ctx, newBuild), 201);
 	}
 
 	/**
@@ -169,12 +166,10 @@ export class BuildApi extends Api {
 		}
 		await build.remove();
 
+		// log event
+		await LogEventUtil.log(ctx, 'delete_build', false, state.serializers.Build.simple(ctx, build), { build: build._id });
+
 		logger.info(ctx.state, '[BuildApi.delete] Build "%s" (%s) successfully deleted.', build.label, build.id);
 		this.success(ctx, null, 204);
-
-		this.noAwait(async () => {
-			// log event
-			await LogEventUtil.log(ctx, 'delete_build', false, state.serializers.Build.simple(ctx, build), { build: build._id });
-		});
 	}
 }

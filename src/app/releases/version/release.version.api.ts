@@ -31,6 +31,7 @@ import { LogEventUtil } from '../../log-event/log.event.util';
 import { state } from '../../state';
 import { UserDocument } from '../../users/user.document';
 import { ReleaseAbstractApi } from '../release.abstract.api';
+import { ReleaseDocument } from '../release.document';
 import { ReleaseVersionFileDocument } from './file/release.version.file.document';
 import { ReleaseVersionDocument } from './release.version.document';
 
@@ -45,94 +46,92 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 	 */
 	public async addVersion(ctx: Context) {
 
-		const now = new Date();
-		let release = await state.models.Release.findOne({ id: ctx.params.id }).exec();
+		const span = this.apmStartSpan('ReleaseVersionApi.addVersion');
+		let release: ReleaseDocument;
+		let newVersion: ReleaseVersionDocument;
 
-		// fail if release doesn't exist
-		if (!release) {
-			throw new ApiError('No such release with ID "%s".', ctx.params.id).status(404);
-		}
-		logger.info(ctx.state, '[ReleaseVersionApi.addVersion] Body: %s', JSON.stringify(ctx.request.body));
-
-		// check permission
-		const authorIds = release.authors.map(a => a._user.toString());
-		const creatorId = release._created_by.toString();
-		let isAllowed: boolean;
-		if ([creatorId, ...authorIds].includes(ctx.state.user._id.toString())) {
-			isAllowed = true;
-		} else {
-			isAllowed = await acl.isAllowed(ctx.state.user.id, 'releases', 'update');
-		}
-
-		if (!isAllowed) {
-			throw new ApiError('Only moderators or authors of the release can add new versions.').status(403).log();
-		}
-
-		// set defaults
-		const versionObj = defaults(ctx.request.body, { released_at: now }) as ReleaseVersionDocument;
-		if (versionObj.files) {
-			versionObj.files.forEach(file => {
-				defaults(file, { released_at: now });
-			});
-		}
-
-		// create instance
-		const newVersion = await state.models.ReleaseVersion.getInstance(ctx.state, versionObj);
-
-		await this.preProcess(ctx, newVersion.getFileIds());
-
-		logger.info(ctx.state, '[ReleaseVersionApi.addVersion] model: %s', JSON.stringify(newVersion));
-
-		let validationErr: any;
 		try {
-			await newVersion.validate();
-		} catch (err) {
-			validationErr = err;
-		} finally {
-			// validate existing version here
-			if (release.versions.filter(v => v.version === newVersion.version).length > 0) {
-				if (validationErr) {
-					validationErr.errors.version = {
-						path: 'version',
-						message: 'Provided version already exists and you cannot add a version twice. Try updating the version instead of adding a new one.',
-						value: newVersion.version,
-					};
-				} else {
-					throw new ApiError().validationError('version', 'Provided version already exists and you cannot add a version twice. Try updating the version instead of adding a new one.', newVersion.version);
+			const now = new Date();
+			release = await state.models.Release.findOne({ id: ctx.params.id }).exec();
+
+			// fail if release doesn't exist
+			if (!release) {
+				throw new ApiError('No such release with ID "%s".', ctx.params.id).status(404);
+			}
+			logger.info(ctx.state, '[ReleaseVersionApi.addVersion] Body: %s', JSON.stringify(ctx.request.body));
+
+			// check permission
+			const authorIds = release.authors.map(a => a._user.toString());
+			const creatorId = release._created_by.toString();
+			let isAllowed: boolean;
+			if ([creatorId, ...authorIds].includes(ctx.state.user._id.toString())) {
+				isAllowed = true;
+			} else {
+				isAllowed = await acl.isAllowed(ctx.state.user.id, 'releases', 'update');
+			}
+
+			if (!isAllowed) {
+				throw new ApiError('Only moderators or authors of the release can add new versions.').status(403).log();
+			}
+
+			// set defaults
+			const versionObj = defaults(ctx.request.body, { released_at: now }) as ReleaseVersionDocument;
+			if (versionObj.files) {
+				versionObj.files.forEach(file => {
+					defaults(file, { released_at: now });
+				});
+			}
+
+			// create instance
+			newVersion = await state.models.ReleaseVersion.getInstance(ctx.state, versionObj);
+
+			await this.preProcess(ctx, newVersion.getFileIds());
+
+			logger.info(ctx.state, '[ReleaseVersionApi.addVersion] model: %s', JSON.stringify(newVersion));
+
+			let validationErr: any;
+			try {
+				await newVersion.validate();
+			} catch (err) {
+				validationErr = err;
+			} finally {
+				// validate existing version here
+				if (release.versions.filter(v => v.version === newVersion.version).length > 0) {
+					if (validationErr) {
+						validationErr.errors.version = {
+							path: 'version',
+							message: 'Provided version already exists and you cannot add a version twice. Try updating the version instead of adding a new one.',
+							value: newVersion.version,
+						};
+					} else {
+						throw new ApiError().validationError('version', 'Provided version already exists and you cannot add a version twice. Try updating the version instead of adding a new one.', newVersion.version);
+					}
+
 				}
-
+				if (validationErr) {
+					throw validationErr;
+				}
 			}
-			if (validationErr) {
-				throw validationErr;
-			}
-		}
 
-		release.versions.push(newVersion);
-		release.versions = orderBy(release.versions, ['released_at'], ['desc']);
-		release.released_at = release.versions[0].released_at as Date;
-		release.modified_at = now;
+			release.versions.push(newVersion);
+			release.versions = orderBy(release.versions, ['released_at'], ['desc']);
+			release.released_at = release.versions[0].released_at as Date;
+			release.modified_at = now;
 
-		logger.info(ctx.state, '[ReleaseApi.addVersion] Validations passed, adding new version to release.');
-		release = await release.save();
+			logger.info(ctx.state, '[ReleaseApi.addVersion] Validations passed, adding new version to release.');
+			release = await release.save();
 
-		await this.postProcess(ctx.state, newVersion.getPlayfieldImageIds());
+			await this.postProcess(ctx.state, newVersion.getPlayfieldImageIds());
 
-		logger.info(ctx.state, '[ReleaseApi.create] Added version "%s" to release "%s".', newVersion.version, release.name);
-		// set media to active
-		await release.activateFiles();
+			logger.info(ctx.state, '[ReleaseApi.create] Added version "%s" to release "%s".', newVersion.version, release.name);
+			// set media to active
+			await release.activateFiles();
 
-		// game modification date
-		await state.models.Game.updateOne({ _id: release._game.toString() }, { modified_at: now });
+			// game modification date
+			await state.models.Game.updateOne({ _id: release._game.toString() }, { modified_at: now });
 
-		logger.info(ctx.state, '[ReleaseApi.create] All referenced files activated, returning object to client.');
-		release = await this.getDetails(release._id);
-
-		this.success(ctx, state.serializers.Release.detailed(ctx, release).versions.filter(v => v.version === newVersion.version)[0], 201);
-
-		this.noAwait(async () => {
-
-			// invalidate cache
-			await apiCache.invalidateUpdatedRelease(ctx.state, release, 'detailed');
+			logger.info(ctx.state, '[ReleaseApi.create] All referenced files activated, returning object to client.');
+			release = await this.getDetails(release._id);
 
 			// log event
 			await LogEventUtil.log(ctx, 'create_release_version', true, {
@@ -142,6 +141,20 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 				release: release._id,
 				game: release._game._id,
 			});
+
+			// invalidate cache
+			await apiCache.invalidateUpdatedRelease(ctx.state, release, 'detailed');
+
+			this.success(ctx, state.serializers.Release.detailed(ctx, release).versions.filter(v => v.version === newVersion.version)[0], 201);
+
+		} catch (err) {
+			throw err;
+
+		} finally {
+			this.apmEndSpan(span);
+		}
+
+		this.noAwait(async () => {
 
 			// notify (co-)author(s)
 			for (const author of release.authors) {
@@ -160,117 +173,131 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 	 */
 	public async updateVersion(ctx: Context) {
 
-		const updatableFields = ['released_at', 'changes'];
-		const updatableFileFields = ['flavor', '_compatibility', '_playfield_image', '_playfield_video'];
-		const now = new Date();
-
-		// retrieve release
-		let release = await state.models.Release.findOne({ id: ctx.params.id })
-			.populate('versions.files._compatibility')
-			.populate('versions.files._file')
-			.exec();
-
-		// fail if no release
-		if (!release) {
-			throw new ApiError('No such release with ID "%s".', ctx.params.id).status(404);
-		}
-
-		// fail if no version
-		let version = release.versions.find(v => v.version === ctx.params.version);
-		if (!version) {
-			throw new ApiError('No such version "%s" for release "%s".', ctx.params.version, ctx.params.id).status(404);
-		}
-
-		// check permissions
-		const authorIds = release.authors.map(a => a._user.toString());
-		const creatorId = release._created_by.toString();
-		let hasPermission: boolean;
-		if ([creatorId, ...authorIds].includes(ctx.state.user._id.toString())) {
-			hasPermission = true;
-		} else {
-			// check for global update permissions
-			hasPermission = await acl.isAllowed(ctx.state.user.id, 'releases', 'update');
-		}
-		if (!hasPermission) {
-			throw new ApiError('Only moderators and authors of the release can update a version.').status(403).log();
-		}
-
-		// retrieve release with no references that we can update
-		const releaseToUpdate = await state.models.Release.findOne({ id: ctx.params.id }).exec();
-
-		const versionToUpdate = releaseToUpdate.versions.find(v => v.version === ctx.params.version);
-		const oldVersion = cloneDeep(versionToUpdate);
-
+		const span = this.apmStartSpan('ReleaseVersionApi.updateVersion');
+		let release: ReleaseDocument;
+		let version: ReleaseVersionDocument;
+		let oldVersion: ReleaseVersionDocument;
 		const newFiles: ReleaseVersionFileDocument[] = [];
-		logger.info(ctx.state, '[ReleaseVersionApi.updateVersion] Body: %s', JSON.stringify(ctx.request.body));
 
-		for (const fileObj of (ctx.request.body.files || [])) {
-
-			// check if file reference is already part of this version
-			const existingVersionFile = version.files.find(f => (f._file as FileDocument).id === fileObj._file);
-			if (existingVersionFile) {
-				const versionFileToUpdate = versionToUpdate.files.find(f => f._id.equals(existingVersionFile._id));
-				await versionFileToUpdate.updateInstance(ctx.state, pick(fileObj, updatableFileFields));
-
-			} else {
-				defaults(fileObj, { released_at: now });
-				const newVersionFile = await state.models.ReleaseVersionFile.getInstance(ctx.state, fileObj);
-				versionToUpdate.files.push(newVersionFile);
-				newFiles.push(newVersionFile);
-			}
-		}
-
-		await this.preProcess(ctx, versionToUpdate.getFileIds().concat(version.getFileIds(newFiles)));
-
-		// assign fields and validate
-		Object.assign(versionToUpdate, pick(ctx.request.body, updatableFields));
 		try {
-			await releaseToUpdate.validate();
-		} catch (err) {
-			await this.rollbackPreProcess(ctx);
-			err.trimFields = /^versions\.\d+\./;
-			throw err;
-		}
+			const updatableFields = ['released_at', 'changes'];
+			const updatableFileFields = ['flavor', '_compatibility', '_playfield_image', '_playfield_video'];
+			const now = new Date();
 
-		logger.info(ctx.state, '[ReleaseApi.updateVersion] Validations passed, updating version.');
+			// retrieve release
+			release = await state.models.Release.findOne({ id: ctx.params.id })
+				.populate('versions.files._compatibility')
+				.populate('versions.files._file')
+				.exec();
 
-		releaseToUpdate.versions = orderBy(releaseToUpdate.versions, ['released_at'], ['desc']);
-		releaseToUpdate.released_at = releaseToUpdate.versions[0].released_at as Date;
-		releaseToUpdate.modified_at = now;
-		release = await releaseToUpdate.save();
+			// fail if no release
+			if (!release) {
+				throw new ApiError('No such release with ID "%s".', ctx.params.id).status(404);
+			}
 
-		await this.postProcess(ctx.state, versionToUpdate.getPlayfieldImageIds());
+			// fail if no version
+			version = release.versions.find(v => v.version === ctx.params.version);
+			if (!version) {
+				throw new ApiError('No such version "%s" for release "%s".', ctx.params.version, ctx.params.id).status(404);
+			}
 
-		if (newFiles.length > 0) {
-			logger.info(ctx.state, '[ReleaseApi.updateVersion] Added new file(s) to version "%s" of release "%s".', version.version, release.name);
-		}
-		const activatedFiles = await release.activateFiles();
+			// check permissions
+			const authorIds = release.authors.map(a => a._user.toString());
+			const creatorId = release._created_by.toString();
+			let hasPermission: boolean;
+			if ([creatorId, ...authorIds].includes(ctx.state.user._id.toString())) {
+				hasPermission = true;
+			} else {
+				// check for global update permissions
+				hasPermission = await acl.isAllowed(ctx.state.user.id, 'releases', 'update');
+			}
+			if (!hasPermission) {
+				throw new ApiError('Only moderators and authors of the release can update a version.').status(403).log();
+			}
 
-		logger.info(ctx.state, '[ReleaseApi.updateVersion] Activated files [ %s ], returning object to client.', activatedFiles.join(', '));
-		await state.models.Game.updateOne({ _id: release._game.toString() }, { modified_at: new Date() });
+			// retrieve release with no references that we can update
+			const releaseToUpdate = await state.models.Release.findOne({ id: ctx.params.id }).exec();
 
-		release = await state.models.Release.findOne({ id: ctx.params.id })
-			.populate({ path: '_game' })
-			.populate({ path: 'authors._user' })
-			.populate({ path: 'versions.files._file' })
-			.populate({ path: 'versions.files._playfield_image' })
-			.populate({ path: 'versions.files._playfield_video' })
-			.populate({ path: 'versions.files._compatibility' })
-			.exec();
+			const versionToUpdate = releaseToUpdate.versions.find(v => v.version === ctx.params.version);
+			oldVersion = cloneDeep(versionToUpdate);
 
-		version = state.serializers.Release.detailed(ctx, release).versions.find(v => v.version = ctx.params.version);
-		this.success(ctx, version, 200);
+			logger.info(ctx.state, '[ReleaseVersionApi.updateVersion] Body: %s', JSON.stringify(ctx.request.body));
 
-		this.noAwait(async () => {
+			for (const fileObj of (ctx.request.body.files || [])) {
 
-			// invalidate cache
-			await apiCache.invalidateUpdatedRelease(ctx.state, release, 'detailed');
+				// check if file reference is already part of this version
+				const existingVersionFile = version.files.find(f => (f._file as FileDocument).id === fileObj._file);
+				if (existingVersionFile) {
+					const versionFileToUpdate = versionToUpdate.files.find(f => f._id.equals(existingVersionFile._id));
+					await versionFileToUpdate.updateInstance(ctx.state, pick(fileObj, updatableFileFields));
+
+				} else {
+					defaults(fileObj, { released_at: now });
+					const newVersionFile = await state.models.ReleaseVersionFile.getInstance(ctx.state, fileObj);
+					versionToUpdate.files.push(newVersionFile);
+					newFiles.push(newVersionFile);
+				}
+			}
+
+			await this.preProcess(ctx, versionToUpdate.getFileIds().concat(version.getFileIds(newFiles)));
+
+			// assign fields and validate
+			Object.assign(versionToUpdate, pick(ctx.request.body, updatableFields));
+			try {
+				await releaseToUpdate.validate();
+			} catch (err) {
+				await this.rollbackPreProcess(ctx);
+				err.trimFields = /^versions\.\d+\./;
+				throw err;
+			}
+
+			logger.info(ctx.state, '[ReleaseApi.updateVersion] Validations passed, updating version.');
+
+			releaseToUpdate.versions = orderBy(releaseToUpdate.versions, ['released_at'], ['desc']);
+			releaseToUpdate.released_at = releaseToUpdate.versions[0].released_at as Date;
+			releaseToUpdate.modified_at = now;
+			release = await releaseToUpdate.save();
+
+			await this.postProcess(ctx.state, versionToUpdate.getPlayfieldImageIds());
+
+			if (newFiles.length > 0) {
+				logger.info(ctx.state, '[ReleaseApi.updateVersion] Added new file(s) to version "%s" of release "%s".', version.version, release.name);
+			}
+			const activatedFiles = await release.activateFiles();
+
+			logger.info(ctx.state, '[ReleaseApi.updateVersion] Activated files [ %s ], returning object to client.', activatedFiles.join(', '));
+			await state.models.Game.updateOne({ _id: release._game.toString() }, { modified_at: new Date() });
+
+			release = await state.models.Release.findOne({ id: ctx.params.id })
+				.populate({ path: '_game' })
+				.populate({ path: 'authors._user' })
+				.populate({ path: 'versions.files._file' })
+				.populate({ path: 'versions.files._playfield_image' })
+				.populate({ path: 'versions.files._playfield_video' })
+				.populate({ path: 'versions.files._compatibility' })
+				.exec();
+
+			version = state.serializers.Release.detailed(ctx, release).versions.find(v => v.version = ctx.params.version);
 
 			// log event
 			await LogEventUtil.log(ctx, 'update_release_version', false,
 				LogEventUtil.diff(oldVersion, ctx.request.body),
 				{ release: release._id, game: release._game._id },
 			);
+
+			// invalidate cache
+			await apiCache.invalidateUpdatedRelease(ctx.state, release, 'detailed');
+
+			this.success(ctx, version, 200);
+
+		} catch (err) {
+			throw err;
+
+		} finally {
+			this.apmEndSpan(span);
+		}
+
+		this.noAwait(async () => {
 
 			// notify (co-)author(s)
 			for (const author of release.authors) {

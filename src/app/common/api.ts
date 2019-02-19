@@ -322,8 +322,9 @@ export abstract class Api {
 	 * @param func Function to execute
 	 */
 	protected noAwait(func: () => Promise<void>): void {
-		// noinspection JSIgnoredPromiseFromCall
-		func();
+		func().catch(err => {
+			throw err;
+		});
 	}
 
 	/**

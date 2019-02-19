@@ -28,6 +28,8 @@ import { GameDocument } from '../../../games/game.document';
 import { LogEventUtil } from '../../../log-event/log.event.util';
 import { state } from '../../../state';
 import { UserDocument } from '../../../users/user.document';
+import { ReleaseDocument } from '../../release.document';
+import { ReleaseVersionFileDocument } from './release.version.file.document';
 
 export class ReleaseVersionFileApi extends Api {
 
@@ -39,80 +41,81 @@ export class ReleaseVersionFileApi extends Api {
 	 */
 	public async validateFile(ctx: Context) {
 
-		const now = new Date();
-
-		let release = await state.models.Release.findOne({ id: ctx.params.id })
-			.populate('versions.files._file')
-			.exec();
-
-		if (!release) {
-			throw new ApiError('No such release with ID "%s".', ctx.params.id).status(404);
-		}
-		let version = release.versions.find(v => v.version === ctx.params.version);
-		if (!version) {
-			throw new ApiError('No such version "%s" for release "%s".', ctx.params.version, ctx.params.id).status(404);
-		}
-		let versionFile = version.files.find(f => (f._file as FileDocument).id === ctx.params.file);
-		if (!versionFile) {
-			throw new ApiError('No file with ID "%s" for version "%s" of release "%s".', ctx.params.file, ctx.params.version, ctx.params.id).status(404);
-		}
-		const versionFileId = versionFile._id;
-
-		// validations
-		const validationErrors = [];
-		if (!ctx.request.body.message) {
-			validationErrors.push({
-				path: 'message',
-				message: 'A message must be provided.',
-				value: ctx.request.body.message,
-			});
-		}
-		if (!ctx.request.body.status) {
-			validationErrors.push({ path: 'status', message: 'Status must be provided.', value: ctx.request.body.status });
-		}
-		if (validationErrors.length) {
-			throw new ApiError('Validation error').validationErrors(validationErrors);
-		}
-
-		// retrieve release with no references that we can update
-		const releaseToUpdate = await state.models.Release.findOne({ id: ctx.params.id }).exec();
-
-		const versionToUpdate = releaseToUpdate.versions.find(v => v.version === ctx.params.version);
-		const fileToUpdate = versionToUpdate.files.find(f => f._id.equals(versionFileId));
-
-		fileToUpdate.validation = {
-			status: ctx.request.body.status,
-			message: ctx.request.body.message,
-			validated_at: now,
-			_validated_by: ctx.state.user._id,
-		};
+		const span = this.apmStartSpan('ReleaseVersionFileApi.validateFile');
+		let release: ReleaseDocument;
+		let versionFile: ReleaseVersionFileDocument;
 
 		try {
-			await releaseToUpdate.save();
+			const now = new Date();
 
-		} catch (err) {
-			err.trimFields = /^versions\.\d+\.files\.\d+\.validation\./;
-			throw err;
-		}
+			release = await state.models.Release.findOne({ id: ctx.params.id })
+				.populate('versions.files._file')
+				.exec();
 
-		// invalidate cache
-		await apiCache.invalidateUpdatedRelease(ctx.state, releaseToUpdate, 'detailed');
+			if (!release) {
+				throw new ApiError('No such release with ID "%s".', ctx.params.id).status(404);
+			}
+			let version = release.versions.find(v => v.version === ctx.params.version);
+			if (!version) {
+				throw new ApiError('No such version "%s" for release "%s".', ctx.params.version, ctx.params.id).status(404);
+			}
+			versionFile = version.files.find(f => (f._file as FileDocument).id === ctx.params.file);
+			if (!versionFile) {
+				throw new ApiError('No file with ID "%s" for version "%s" of release "%s".', ctx.params.file, ctx.params.version, ctx.params.id).status(404);
+			}
+			const versionFileId = versionFile._id;
 
-		logger.info(ctx.state, '[ReleaseApi.validateFile] Updated file validation status.');
+			// validations
+			const validationErrors = [];
+			if (!ctx.request.body.message) {
+				validationErrors.push({
+					path: 'message',
+					message: 'A message must be provided.',
+					value: ctx.request.body.message,
+				});
+			}
+			if (!ctx.request.body.status) {
+				validationErrors.push({ path: 'status', message: 'Status must be provided.', value: ctx.request.body.status });
+			}
+			if (validationErrors.length) {
+				throw new ApiError('Validation error').validationErrors(validationErrors);
+			}
 
-		release = await state.models.Release.findOne({ id: ctx.params.id })
-			.populate({ path: '_created_by' })
-			.populate({ path: '_game' })
-			.populate({ path: 'versions.files._file' })
-			.populate({ path: 'versions.files.validation._validated_by' })
-			.exec();
+			// retrieve release with no references that we can update
+			const releaseToUpdate = await state.models.Release.findOne({ id: ctx.params.id }).exec();
 
-		version = release.versions.find(v => v.version === ctx.params.version);
-		versionFile = version.files.find(f => (f._file as FileDocument).id === ctx.params.file);
+			const versionToUpdate = releaseToUpdate.versions.find(v => v.version === ctx.params.version);
+			const fileToUpdate = versionToUpdate.files.find(f => f._id.equals(versionFileId));
 
-		this.success(ctx, state.serializers.ReleaseVersionFile.detailed(ctx, versionFile).validation, 200);
+			fileToUpdate.validation = {
+				status: ctx.request.body.status,
+				message: ctx.request.body.message,
+				validated_at: now,
+				_validated_by: ctx.state.user._id,
+			};
 
-		this.noAwait(async () => {
+			try {
+				await releaseToUpdate.save();
+
+			} catch (err) {
+				err.trimFields = /^versions\.\d+\.files\.\d+\.validation\./;
+				throw err;
+			}
+
+			// invalidate cache
+			await apiCache.invalidateUpdatedRelease(ctx.state, releaseToUpdate, 'detailed');
+
+			logger.info(ctx.state, '[ReleaseApi.validateFile] Updated file validation status.');
+
+			release = await state.models.Release.findOne({ id: ctx.params.id })
+				.populate({ path: '_created_by' })
+				.populate({ path: '_game' })
+				.populate({ path: 'versions.files._file' })
+				.populate({ path: 'versions.files.validation._validated_by' })
+				.exec();
+
+			version = release.versions.find(v => v.version === ctx.params.version);
+			versionFile = version.files.find(f => (f._file as FileDocument).id === ctx.params.file);
 
 			// log event
 			await LogEventUtil.log(ctx, 'validate_release', false,
@@ -120,6 +123,16 @@ export class ReleaseVersionFileApi extends Api {
 				{ release: release._id, game: release._game._id },
 			);
 
+			this.success(ctx, state.serializers.ReleaseVersionFile.detailed(ctx, versionFile).validation, 200);
+
+		} catch (err) {
+			throw err;
+
+		} finally {
+			this.apmEndSpan(span);
+		}
+
+		this.noAwait(async () => {
 			await mailer.releaseValidated(ctx.state, release._created_by as UserDocument, ctx.state.user, release._game as GameDocument, release, state.serializers.ReleaseVersionFile.detailed(ctx, versionFile));
 		});
 	}

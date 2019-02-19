@@ -614,7 +614,7 @@ describe('The VPDB `Release` API', function() {
 					.patch('/api/v1/releases/' + release.id)
 					.as('othermember')
 					.send({ name: 'New name' })
-					.end(hlp.status(403, 'only authors of the release can update it', done));
+					.end(hlp.status(403, 'only authors and owners of the release can update it', done));
 			});
 		});
 

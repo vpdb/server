@@ -37,7 +37,9 @@ export class LogEventUtil {
 			logged_at: new Date(),
 		});
 		log = await log.save();
-		await slackbot.logEvent(log);
+
+		// noinspection JSIgnoredPromiseFromCall
+		slackbot.logEvent(log);
 	}
 
 	public static diff(fromDB: { [key: string]: any }, fromAPI: { [key: string]: any }) {

@@ -375,6 +375,7 @@ class ApiCache {
 		const span = this.apmStartSpan('invalidate()');
 		if (!tagLists || tagLists.length === 0) {
 			logger.info(requestState, '[ApiCache.invalidate]: Nothing to invalidate.');
+			this.apmEndSpan(span);
 			return;
 		}
 
@@ -438,7 +439,7 @@ class ApiCache {
 	 */
 	private async setCache<T>(ctx: Context, key: string, cacheRoute: CacheRoute<T>) {
 
-		const span = this.apmStartSpan(`setCache(${key}`);
+		const span = this.apmStartSpan(`setCache(${key})`);
 		const now = Date.now();
 		const refs: Array<() => Promise<any>> = [];
 		const refKeys: string[] = [];
@@ -553,6 +554,7 @@ class ApiCache {
 		const span = this.apmStartSpan('updateCounters()');
 		const response = JSON.parse(cacheHit) as CacheResponse;
 		if (!response.headers['content-type'] || !response.headers['content-type'].startsWith('application/json')) {
+			this.apmEndSpan(span);
 			return response;
 		}
 		const body = isObject(response.body) ? response.body : JSON.parse(response.body);
@@ -650,12 +652,20 @@ class ApiCache {
 		return num as number;
 	}
 
+	/**
+	 * Starts measuring a span.
+	 * @param name Name of the span
+	 */
 	private apmStartSpan(name: string): any {
 		if (process.env.ELASTIC_APM_ENABLED) {
-			return require('elastic-apm-node').startSpan(name, 'cache');
+			return require('elastic-apm-node').startSpan('ApiCache.' + name, 'cache');
 		}
 	}
 
+	/**
+	 * Ends measuring the span.
+	 * @param span Span to end.
+	 */
 	private apmEndSpan(span: any) {
 		if (span) {
 			span.end();

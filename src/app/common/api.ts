@@ -317,6 +317,36 @@ export abstract class Api {
 		return false;
 	}
 
+	/**
+	 * Runs an async function without awaiting it (i.e. in background).
+	 * @param func Function to execute
+	 */
+	protected noAwait(func: () => Promise<void>): void {
+		// noinspection JSIgnoredPromiseFromCall
+		func();
+	}
+
+	/**
+	 * Starts measuring a span.
+	 * @param name Name of the span
+	 * @param type Type of the span, typically one of: [ app, db, cache, template, ext ].
+	 */
+	protected apmStartSpan(name: string, type?: string): any {
+		if (process.env.ELASTIC_APM_ENABLED) {
+			return require('elastic-apm-node').startSpan(name, type);
+		}
+	}
+
+	/**
+	 * Ends measuring the span.
+	 * @param span Span to end.
+	 */
+	protected apmEndSpan(span: any) {
+		if (span) {
+			span.end();
+		}
+	}
+
 	private getModifiedFields(newObj: { [key: string]: any }, oldObj: { [key: string]: any }, fields?: string[]): string[] {
 		const modifiedFields: string[] = [];
 		fields = fields || uniq([...keys(newObj), ...keys(oldObj)]);

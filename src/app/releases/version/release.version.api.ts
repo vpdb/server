@@ -129,24 +129,27 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 
 		this.success(ctx, state.serializers.Release.detailed(ctx, release).versions.filter(v => v.version === newVersion.version)[0], 201);
 
-		// invalidate cache
-		await apiCache.invalidateUpdatedRelease(ctx.state, release, 'detailed');
+		this.noAwait(async () => {
 
-		// log event
-		await LogEventUtil.log(ctx, 'create_release_version', true, {
-			release: pick(state.serializers.Release.detailed(ctx, release, { thumbFormat: 'medium' }), ['id', 'name', 'authors', 'versions']),
-			game: pick(state.serializers.Game.simple(ctx, release._game as GameDocument), ['id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type']),
-		}, {
-			release: release._id,
-			game: release._game._id,
-		});
+			// invalidate cache
+			await apiCache.invalidateUpdatedRelease(ctx.state, release, 'detailed');
 
-		// notify (co-)author(s)
-		for (const author of release.authors) {
-			if ((author._user as UserDocument).id !== ctx.state.user.id) {
-				await mailer.releaseVersionAdded(ctx.state, ctx.state.user, author._user as UserDocument, release, newVersion);
+			// log event
+			await LogEventUtil.log(ctx, 'create_release_version', true, {
+				release: pick(state.serializers.Release.detailed(ctx, release, { thumbFormat: 'medium' }), ['id', 'name', 'authors', 'versions']),
+				game: pick(state.serializers.Game.simple(ctx, release._game as GameDocument), ['id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type']),
+			}, {
+				release: release._id,
+				game: release._game._id,
+			});
+
+			// notify (co-)author(s)
+			for (const author of release.authors) {
+				if ((author._user as UserDocument).id !== ctx.state.user.id) {
+					await mailer.releaseVersionAdded(ctx.state, ctx.state.user, author._user as UserDocument, release, newVersion);
+				}
 			}
-		}
+		});
 	}
 
 	/**
@@ -258,23 +261,26 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 		version = state.serializers.Release.detailed(ctx, release).versions.find(v => v.version = ctx.params.version);
 		this.success(ctx, version, 200);
 
-		// invalidate cache
-		await apiCache.invalidateUpdatedRelease(ctx.state, release, 'detailed');
+		this.noAwait(async () => {
 
-		// log event
-		await LogEventUtil.log(ctx, 'update_release_version', false,
-			LogEventUtil.diff(oldVersion, ctx.request.body),
-			{ release: release._id, game: release._game._id },
-		);
+			// invalidate cache
+			await apiCache.invalidateUpdatedRelease(ctx.state, release, 'detailed');
 
-		// notify (co-)author(s)
-		for (const author of release.authors) {
-			if ((author._user as UserDocument).id !== ctx.state.user.id) {
-				for (const versionFile of newFiles) {
-					await mailer.releaseFileAdded(ctx.state, ctx.state.user, author._user as UserDocument, release, version, versionFile);
+			// log event
+			await LogEventUtil.log(ctx, 'update_release_version', false,
+				LogEventUtil.diff(oldVersion, ctx.request.body),
+				{ release: release._id, game: release._game._id },
+			);
+
+			// notify (co-)author(s)
+			for (const author of release.authors) {
+				if ((author._user as UserDocument).id !== ctx.state.user.id) {
+					for (const versionFile of newFiles) {
+						await mailer.releaseFileAdded(ctx.state, ctx.state.user, author._user as UserDocument, release, version, versionFile);
+					}
 				}
 			}
-		}
+		});
 	}
 
 }

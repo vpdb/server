@@ -32,9 +32,11 @@ import { LogEventUtil } from '../log-event/log.event.util';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
 import { ReleaseAbstractApi } from './release.abstract.api';
+import { ReleaseDocument } from './release.document';
 import { ReleaseListQueryBuilder } from './release.list.query.builder';
 import { ReleaseVersionFileDocument } from './version/file/release.version.file.document';
 import { ReleaseVersionDocument } from './version/release.version.document';
+import { isCreator } from '../common/mongoose/util';
 
 export class ReleaseApi extends ReleaseAbstractApi {
 
@@ -47,7 +49,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 	public async create(ctx: Context) {
 
 		const now = new Date();
-		let release;
+		let release: ReleaseDocument;
 
 		// defaults
 		if (ctx.request.body.versions) {
@@ -85,37 +87,39 @@ export class ReleaseApi extends ReleaseAbstractApi {
 
 		logger.info(ctx.state, '[ReleaseApi.create] All referenced files activated, returning object to client.');
 
-		// update counters and date
-		release = await release.populate('_game').execPopulate();
-
-		if (release.moderation.is_approved) {
-			await (release._game as GameDocument).incrementCounter('releases');
-			await mailer.releaseAutoApproved(ctx.state, ctx.state.user, release);
-		} else {
-			await mailer.releaseSubmitted(ctx.state, ctx.state.user, release);
-		}
-		await (release._game as GameDocument).update({ modified_at: new Date() });
-
-		// invalidate cache
-		await apiCache.invalidateCreatedRelease(ctx.state, release);
-
 		release = await this.getDetails(release._id);
 		this.success(ctx, state.serializers.Release.detailed(ctx, release, { includedFields: [ 'is_active' ]}), 201);
 
-		await LogEventUtil.log(ctx, 'create_release', true, {
-			release: state.serializers.Release.detailed(ctx, release, { thumbFormat: 'medium' }),
-			game: pick(state.serializers.Game.simple(ctx, release._game as GameDocument), ['id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type']),
-		}, {
-			release: release._id,
-			game: release._game._id,
-		});
+		this.noAwait(async () => {
 
-		// notify (co-)author(s)
-		for (const author of release.authors) {
-			if ((author._user as UserDocument).id !== ctx.state.user.id) {
-				await mailer.releaseAdded(ctx.state, ctx.state.user, author._user as UserDocument, release);
+			// handle moderation mails
+			if (release.moderation.is_approved) {
+				await (release._game as GameDocument).incrementCounter('releases');
+				await mailer.releaseAutoApproved(ctx.state, ctx.state.user, release);
+			} else {
+				await mailer.releaseSubmitted(ctx.state, ctx.state.user, release);
 			}
-		}
+			await (release._game as GameDocument).update({ modified_at: new Date() });
+
+			// invalidate cache
+			await apiCache.invalidateCreatedRelease(ctx.state, release);
+
+			// log event
+			await LogEventUtil.log(ctx, 'create_release', true, {
+				release: state.serializers.Release.detailed(ctx, release, { thumbFormat: 'medium' }),
+				game: pick(state.serializers.Game.simple(ctx, release._game as GameDocument), ['id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type']),
+			}, {
+				release: release._id,
+				game: release._game._id,
+			});
+
+			// notify (co-)author(s)
+			for (const author of release.authors) {
+				if ((author._user as UserDocument).id !== ctx.state.user.id) {
+					await mailer.releaseAdded(ctx.state, ctx.state.user, author._user as UserDocument, release);
+				}
+			}
+		});
 	}
 
 	/**
@@ -142,12 +146,12 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		// if user only has permissions to update own releases, check if owner.
 		if (!canUpdate) {
 			// fail if wrong user
-			const authorIds = release.authors.map(a => a._user.toString());
-			const creatorId = release._created_by.toString();
-			if (![creatorId, ...authorIds].includes(ctx.state.user._id.toString())) {
-				throw new ApiError('Only authors of the release can update it.').status(403).log();
+			if (!isCreator(ctx, release)) {
+				throw new ApiError('Only authors and owners of the release can update it.').status(403).log();
 			}
-			if (!isUndefined(ctx.request.body.authors) && creatorId !== ctx.state.user._id.toString()) {
+
+			// fail if authors are updated by non-owner
+			if (!isUndefined(ctx.request.body.authors) && release._created_by.toString() !== ctx.state.user._id.toString()) {
 				throw new ApiError('Only the original uploader can edit authors.').status(403).log();
 			}
 		}
@@ -173,14 +177,17 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		release = await this.getDetails(release._id);
 		this.success(ctx, state.serializers.Release.detailed(ctx, release), 200);
 
-		// invalidate cache
-		await apiCache.invalidateUpdatedRelease(ctx.state, release);
+		this.noAwait(async () => {
 
-		// log event
-		await LogEventUtil.log(ctx, 'update_release', false,
-			LogEventUtil.diff(oldRelease, ctx.request.body),
-			{ release: release._id, game: release._game._id },
-		);
+			// invalidate cache
+			await apiCache.invalidateUpdatedRelease(ctx.state, release);
+
+			// log event
+			await LogEventUtil.log(ctx, 'update_release', false,
+				LogEventUtil.diff(oldRelease, ctx.request.body),
+				{ release: release._id, game: release._game._id },
+			);
+		});
 	}
 
 	/**
@@ -355,11 +362,14 @@ export class ReleaseApi extends ReleaseAbstractApi {
 
 		logger.info(ctx.state, '[ReleaseApi.delete] Release "%s" (%s) successfully deleted.', release.name, release.id);
 
-		// log event
-		await LogEventUtil.log(ctx, 'delete_release', false,
-			{ release: pick(state.serializers.Release.simple(ctx, release), ['id', 'name', 'authors', 'versions']) },
-			{ release: release._id, game: release._game },
-		);
+		this.noAwait(async () => {
+
+			// log event
+			await LogEventUtil.log(ctx, 'delete_release', false,
+				{ release: pick(state.serializers.Release.simple(ctx, release), ['id', 'name', 'authors', 'versions']) },
+				{ release: release._id, game: release._game },
+			);
+		});
 
 		return this.success(ctx, null, 204);
 	}
@@ -404,6 +414,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		release = await state.models.Release.findById(release._id)
 			.populate('moderation.history._created_by')
 			.exec();
+
 		return this.success(ctx, state.serializers.Release.detailed(ctx, release, { includedFields: ['moderation'] }).moderation, 200);
 	}
 

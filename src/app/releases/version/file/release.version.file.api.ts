@@ -112,12 +112,15 @@ export class ReleaseVersionFileApi extends Api {
 
 		this.success(ctx, state.serializers.ReleaseVersionFile.detailed(ctx, versionFile).validation, 200);
 
-		// log event
-		await LogEventUtil.log(ctx, 'validate_release', false,
-			{ validation: versionFile.validation },
-			{ release: release._id, game: release._game._id },
-		);
+		this.noAwait(async () => {
 
-		await mailer.releaseValidated(ctx.state, release._created_by as UserDocument, ctx.state.user, release._game as GameDocument, release, state.serializers.ReleaseVersionFile.detailed(ctx, versionFile));
+			// log event
+			await LogEventUtil.log(ctx, 'validate_release', false,
+				{ validation: versionFile.validation },
+				{ release: release._id, game: release._game._id },
+			);
+
+			await mailer.releaseValidated(ctx.state, release._created_by as UserDocument, ctx.state.user, release._game as GameDocument, release, state.serializers.ReleaseVersionFile.detailed(ctx, versionFile));
+		});
 	}
 }

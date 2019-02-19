@@ -89,11 +89,14 @@ export class BuildApi extends Api {
 		logger.info(ctx.state, '[BuildApi.create] Build "%s" successfully updated.', newBuild.id);
 		this.success(ctx, state.serializers.Build.detailed(ctx, newBuild), 200);
 
-		// log event
-		await LogEventUtil.log(ctx, 'update_build', false, LogEventUtil.diff(oldBuild, ctx.request.body), { build: newBuild._id });
+		this.noAwait(async () => {
 
-		// invalidate cache
-		await apiCache.invalidateUpdatedBuild(ctx.state, newBuild);
+			// log event
+			await LogEventUtil.log(ctx, 'update_build', false, LogEventUtil.diff(oldBuild, ctx.request.body), { build: newBuild._id });
+
+			// invalidate cache
+			await apiCache.invalidateUpdatedBuild(ctx.state, newBuild);
+		});
 	}
 
 	/**
@@ -132,8 +135,10 @@ export class BuildApi extends Api {
 		logger.info(ctx.state, '[BuildApi.create] Build "%s" successfully created.', newBuild.label);
 		this.success(ctx, state.serializers.Build.simple(ctx, newBuild), 201);
 
-		// log event
-		await LogEventUtil.log(ctx, 'create_build', false, state.serializers.Build.detailed(ctx, newBuild), { build: newBuild._id });
+		this.noAwait(async () => {
+			// log event
+			await LogEventUtil.log(ctx, 'create_build', false, state.serializers.Build.detailed(ctx, newBuild), { build: newBuild._id });
+		});
 	}
 
 	/**
@@ -167,7 +172,9 @@ export class BuildApi extends Api {
 		logger.info(ctx.state, '[BuildApi.delete] Build "%s" (%s) successfully deleted.', build.label, build.id);
 		this.success(ctx, null, 204);
 
-		// log event
-		await LogEventUtil.log(ctx, 'delete_build', false, state.serializers.Build.simple(ctx, build), { build: build._id });
+		this.noAwait(async () => {
+			// log event
+			await LogEventUtil.log(ctx, 'delete_build', false, state.serializers.Build.simple(ctx, build), { build: build._id });
+		});
 	}
 }

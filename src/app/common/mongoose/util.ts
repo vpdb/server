@@ -19,6 +19,9 @@
 
 import { extend, get, isArray, keys } from 'lodash';
 import { Schema } from 'mongoose';
+import { UserDocument } from '../../users/user.document';
+import { ContentAuthor } from '../../users/content.author';
+import { Context } from '../typings/context';
 
 /**
  * Returns all paths of a given schema.
@@ -102,6 +105,18 @@ export function explodePaths(obj: object, singleRefs: { [key: string]: string },
 		}
 	});
 	return extend(paths, arrayPathsExploded);
+}
+
+/**
+ * Checks whether the logged user is either owner (_created_by) or author
+ * of the given document.
+ * @param ctx Koa Context
+ * @param doc Document with authors
+ */
+export function isCreator(ctx: Context, doc: any): boolean {
+	const createdBy = doc._created_by._id;
+	const authoredBy = doc.authors ? doc.authors.map((author: ContentAuthor) => author._user._id) : [];
+	return [...authoredBy, createdBy].reduce((a, id) => a || ctx.state.user._id.equals(id), false);
 }
 
 function appendNext(obj: object, parts: string[], refModelName: string, level: number = 0, path: string = '') {

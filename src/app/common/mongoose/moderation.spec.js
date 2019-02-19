@@ -471,16 +471,36 @@ describe('The VPDB moderation feature', () => {
 
 	describe('when retrieving pending backglass details', () => {
 
-		it('should fail as anonymous an non-creator', async () => {
+		it('should fail as anonymous and non-creator', async () => {
 			await api.get('/v1/backglasses/' + backglass.id).then(res => res.expectStatus(404));
 			await api.as('member2').get('/v1/backglasses/' + backglass.id).then(res => res.expectStatus(404));
 		});
 
-		it('should succeed as creator and moderator', async () => {
+		it('should succeed as creator or moderator', async () => {
 			await api.as('member').get('/v1/backglasses/' + backglass.id).then(res => res.expectStatus(200));
 			await api.as('moderator').get('/v1/backglasses/' + backglass.id).then(res => res.expectStatus(200));
 		});
 
+		it('should succeed as creator or author', async () => {
+			const b2s2 = await api.fileHelper.createDirectB2S('member', { keep: true });
+			res = await api
+				.as('member')
+				.markTeardown()
+				.post('/v1/backglasses', {
+					_game: game.id,
+					authors: [{
+						_user: api.getUser('member2').id,
+						roles: ['creator']
+					}],
+					versions: [{
+						version: '1.0',
+						_file: b2s2.id
+					}]
+				}).then(res => res.expectStatus(201));
+			const backglass2 = res.data;
+			await api.as('member').get('/v1/backglasses/' + backglass2.id).then(res => res.expectStatus(200));
+			await api.as('member2').get('/v1/backglasses/' + backglass2.id).then(res => res.expectStatus(200));
+		});
 	});
 
 	describe('when retrieving pending releases details', () => {
@@ -495,6 +515,11 @@ describe('The VPDB moderation feature', () => {
 			await api.as('moderator').get('/v1/releases/' + release.id).then(res => res.expectStatus(200));
 		});
 
+		it('should succeed as creator or author', async () => {
+			const release2 = await api.releaseHelper.createRelease('member', { author: 'member2'});
+			await api.as('member').get('/v1/releases/' + release2.id).then(res => res.expectStatus(200));
+			await api.as('member2').get('/v1/releases/' + release2.id).then(res => res.expectStatus(200));
+		});
 	});
 
 	describe('when retrieving approved backglass details with moderation fields', () => {

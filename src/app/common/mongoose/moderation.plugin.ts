@@ -28,6 +28,7 @@ import { apiCache } from '../api.cache';
 import { ApiError } from '../api.error';
 import { logger } from '../logger';
 import { Context } from '../typings/context';
+import { isCreator } from './util';
 
 const modelResourceMap: { [key: string]: string } = {
 	Release: 'releases',
@@ -274,7 +275,13 @@ export function moderationPlugin(schema: Schema) {
 		if (isModerator) {
 			return this;
 		}
-		throw new ApiError('No such %s with ID "%s"', reference, ctx.params.id).status(404);
+
+		// if no moderator, must be owner or author
+		if (!isCreator(ctx, this)) {
+			throw new ApiError('No such %s with ID "%s"', reference, ctx.params.id).status(404);
+		}
+
+		return this;
 	};
 
 	/**

@@ -28,6 +28,7 @@ import { acl } from '../acl';
 import { ApiError } from '../api.error';
 import { config } from '../settings';
 import { Context } from '../typings/context';
+import { isCreator } from './util';
 
 const modelResourceMap: { [key: string]: string } = {
 	Release: 'releases',
@@ -167,11 +168,7 @@ export function gameReferencePlugin(schema: Schema, options: GameReferenceOption
 		}
 
 		// if no moderator, must be owner or author
-		const createdBy = (this._created_by as UserDocument)._id;
-		const authoredBy = this.authors ? this.authors.map(author => (author._user as UserDocument)._id) : [];
-		const isCreator = [...authoredBy, createdBy].reduce((a, id) => a || ctx.state.user._id.equals(id), false);
-
-		if (!isCreator) {
+		if (!isCreator(ctx, this)) {
 			throw new ApiError('No such %s with ID "%s"', reference, ctx.params.id).status(404);
 		}
 		return this;

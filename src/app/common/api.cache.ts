@@ -286,6 +286,8 @@ class ApiCache {
 	 * @param entity Starred entity
 	 */
 	public async invalidateStarredEntity(requestState: RequestState, modelName: string, entity: any, user: UserDocument) {
+
+		const span = this.apmStartSpan(`invalidateStarredEntity(${modelName})`);
 		const tags: CacheInvalidationTag[][] = [];
 
 		/** endpoints that include the user's starred status in the payload */
@@ -298,6 +300,7 @@ class ApiCache {
 			tags.push([{ entities: [{ modelName: 'game', entityId: entity._game.id, level: 'detailed' }] }, { user }]);
 		}
 		await this.invalidate(requestState, ...tags);
+		this.apmEndSpan(span);
 	}
 
 	/**
@@ -307,6 +310,7 @@ class ApiCache {
 	 * @param {string} modelName Name of the model, e.g. "game"
 	 */
 	public async invalidateAllEntities(requestState: RequestState, modelName: string) {
+		const span = this.apmStartSpan(`invalidateAllEntities(${modelName})`);
 		logger.info(requestState, '[ApiCache.invalidateAllEntities] Invalidating all caches containing model %s ', modelName);
 		const entityRefs = await state.redis.keys(this.getEntityKey(modelName, '*'));
 		if (entityRefs.length > 0) {
@@ -315,6 +319,7 @@ class ApiCache {
 			await state.redis.del(keys);
 			await state.redis.del(entityRefs as any);
 		}
+		this.apmEndSpan(span);
 	}
 
 	/**
@@ -325,6 +330,7 @@ class ApiCache {
 	 * @param provider Provider ID
 	 */
 	public async invalidateProviderCache(requestState: RequestState, provider: string) {
+		const span = this.apmStartSpan(`invalidateProviderCache(${provider})`);
 		logger.info(requestState, '[ApiCache.invalidateProviderCache] Invalidating all caches for provider %s', provider);
 		const entityRefs = await state.redis.keys(this.getProviderKey(provider));
 		if (entityRefs.length > 0) {
@@ -333,6 +339,7 @@ class ApiCache {
 			await state.redis.del(keys);
 			await state.redis.del(entityRefs as any);
 		}
+		this.apmEndSpan(span);
 	}
 
 	/**
@@ -365,6 +372,7 @@ class ApiCache {
 	 */
 	private async invalidate(requestState: RequestState, ...tagLists: CacheInvalidationTag[][]): Promise<number> {
 
+		const span = this.apmStartSpan('invalidate()');
 		if (!tagLists || tagLists.length === 0) {
 			logger.info(requestState, '[ApiCache.invalidate]: Nothing to invalidate.');
 			return;
@@ -416,6 +424,8 @@ class ApiCache {
 			n++;
 		}
 		logger.debug(requestState, '[ApiCache.invalidate]: Cleared %s caches in %sms.', n, Date.now() - now);
+
+		this.apmEndSpan(span);
 		return n;
 	}
 
@@ -428,6 +438,7 @@ class ApiCache {
 	 */
 	private async setCache<T>(ctx: Context, key: string, cacheRoute: CacheRoute<T>) {
 
+		const span = this.apmStartSpan(`setCache(${key}`);
 		const now = Date.now();
 		const refs: Array<() => Promise<any>> = [];
 		const refKeys: string[] = [];
@@ -506,6 +517,8 @@ class ApiCache {
 		await Promise.all(refs.map(ref => ref()));
 		logger.debug(ctx.state, '[ApiCache.setCache] No hit, saved as "%s" with references [ %s ] and %s counters in %sms.',
 			key, refKeys.join(', '), numCounters, Date.now() - now);
+
+		this.apmEndSpan(span);
 	}
 
 	private getIdsFromBody(body: any, path: string): string[] {
@@ -537,6 +550,7 @@ class ApiCache {
 	 */
 	private async updateCounters(cacheRoute: CacheRoute<any>, cacheHit: string): Promise<CacheResponse> {
 
+		const span = this.apmStartSpan('updateCounters()');
 		const response = JSON.parse(cacheHit) as CacheResponse;
 		if (!response.headers['content-type'] || !response.headers['content-type'].startsWith('application/json')) {
 			return response;
@@ -565,6 +579,7 @@ class ApiCache {
 				}
 			}
 		}
+		this.apmEndSpan(span);
 
 		return {
 			status: response.status,
@@ -621,6 +636,7 @@ class ApiCache {
 	 * @return {Promise<number>} Number of invalidated caches
 	 */
 	private async deleteWildcard(wildcard: string): Promise<number> {
+		const span = this.apmStartSpan(`deleteWildcard(${wildcard})`);
 		const num = await state.redis.eval(
 			'local keysToDelete = redis.call(\'keys\', ARGV[1]) ' + // find keys with wildcard
 			'if unpack(keysToDelete) ~= nil then ' +                     // if there are any keys
@@ -630,7 +646,20 @@ class ApiCache {
 			'end ',
 			0,                                                           // no keys names passed, only one argument ARGV[1]
 			wildcard);
+		this.apmEndSpan(span);
 		return num as number;
+	}
+
+	private apmStartSpan(name: string): any {
+		if (process.env.ELASTIC_APM_ENABLED) {
+			return require('elastic-apm-node').startSpan(name, 'cache');
+		}
+	}
+
+	private apmEndSpan(span: any) {
+		if (span) {
+			span.end();
+		}
 	}
 }
 

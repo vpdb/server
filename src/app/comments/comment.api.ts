@@ -39,6 +39,7 @@ export class CommentApi extends Api {
 	 */
 	public async createForRelease(ctx: Context) {
 
+		const span = this.apmStartSpan('CommentApi.createForRelease');
 		const release = await state.models.Release.findOne({ id: ctx.params.id })
 			.populate('_game')
 			.populate('_created_by')
@@ -75,11 +76,15 @@ export class CommentApi extends Api {
 		comment = await state.models.Comment.findById(comment._id).populate('_from').exec();
 
 		this.success(ctx, state.serializers.Comment.simple(ctx, comment), 201);
+		this.apmEndSpan(span);
 
-		// notify release creator (only if not the same user)
-		if ((release._created_by as UserDocument).id !== ctx.state.user.id) {
-			await mailer.releaseCommented(ctx.state, release._created_by as UserDocument, ctx.state.user, game, release, ctx.request.body.message);
-		}
+		this.noAwait(async () => {
+
+			// notify release creator (only if not the same user)
+			if ((release._created_by as UserDocument).id !== ctx.state.user.id) {
+				await mailer.releaseCommented(ctx.state, release._created_by as UserDocument, ctx.state.user, game, release, ctx.request.body.message);
+			}
+		});
 	}
 
 	/**
@@ -90,6 +95,7 @@ export class CommentApi extends Api {
 	 */
 	public async createForReleaseModeration(ctx: Context) {
 
+		const span = this.apmStartSpan('CommentApi.createForReleaseModeration');
 		const release = await state.models.Release.findOne({ id: ctx.params.id })
 			.populate('_game')
 			.populate('_created_by')
@@ -121,10 +127,13 @@ export class CommentApi extends Api {
 		logger.info(ctx.state, '[CommentApi.createForReleaseModeration] User <%s> commented on release moderation "%s" (%s).', ctx.state.user.email, release.id, release.name);
 		comment = await state.models.Comment.findById(comment._id).populate('_from').exec();
 		this.success(ctx, state.serializers.Comment.simple(ctx, comment), 201);
+		this.apmEndSpan(span);
 
-		// notify
-		await mailer.releaseModerationCommented(ctx.state, ctx.state.user, release, ctx.request.body.message);
+		this.noAwait(async () => {
 
+			// notify
+			await mailer.releaseModerationCommented(ctx.state, ctx.state.user, release, ctx.request.body.message);
+		});
 	}
 
 	/**
@@ -135,6 +144,7 @@ export class CommentApi extends Api {
 	 */
 	public async listForRelease(ctx: Context) {
 
+		const span = this.apmStartSpan('CommentApi.listForRelease');
 		const pagination = this.pagination(ctx, 10, 50);
 		const sort = this.sortParams(ctx, { released_at: 1 }, { date: '-created_at' });
 		const release = await state.models.Release.findOne({ id: ctx.params.id })
@@ -155,7 +165,8 @@ export class CommentApi extends Api {
 		});
 
 		const comments = results.docs.map(comment => state.serializers.Comment.simple(ctx, comment));
-		return this.success(ctx, comments, 200, this.paginationOpts(pagination, results.total));
+		this.success(ctx, comments, 200, this.paginationOpts(pagination, results.total));
+		this.apmEndSpan(span);
 	}
 
 	/**
@@ -166,6 +177,7 @@ export class CommentApi extends Api {
 	 */
 	public async listForReleaseModeration(ctx: Context) {
 
+		const span = this.apmStartSpan('CommentApi.listForReleaseModeration');
 		const release = await state.models.Release.findOne({ id: ctx.params.id }).exec();
 
 		if (!release) {
@@ -186,6 +198,7 @@ export class CommentApi extends Api {
 			.sort({ created_at: 'asc' })
 			.exec();
 
-		return this.success(ctx, comments.map(comment => state.serializers.Comment.simple(ctx, comment)), 200);
+		this.success(ctx, comments.map(comment => state.serializers.Comment.simple(ctx, comment)), 200);
+		this.apmEndSpan(span);
 	}
 }

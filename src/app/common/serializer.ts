@@ -102,7 +102,8 @@ export abstract class Serializer<T extends Document | ModeratedDocument> {
 			return true;
 		}
 		const obj = this.getFirstInPath(doc, field);
-		return obj && !(obj instanceof Types.ObjectId);
+		const type = obj && obj.constructor ? obj.constructor.name : undefined;
+		return obj && type !== 'ObjectID';
 	}
 
 	protected _defaultOpts(opts: SerializerOptions): SerializerOptions {
@@ -179,15 +180,19 @@ export abstract class Serializer<T extends Document | ModeratedDocument> {
 	}
 
 	private getFirstInPath(doc: any, path: string): any {
-		if (!path) {
-			return doc;
-		}
-		if (!doc) {
-			return undefined;
-		}
+
 		if (isArray(doc)) {
 			return doc.length > 0 ? this.getFirstInPath(doc[0], path) : undefined;
 		}
+
+		if (!path) {
+			return doc;
+		}
+
+		if (!doc) {
+			return undefined;
+		}
+
 		const field = path.substr(0, path.indexOf('.') > 0 ? path.indexOf('.') : path.length);
 		if (isObject(doc[field])) {
 			return this.getFirstInPath(doc[field], path.substr((path.indexOf('.') > 0 ? path.indexOf('.') : path.length) + 1));

@@ -73,6 +73,12 @@ export class SlackBot {
 					} as MessageAttachment];
 					break;
 
+				case 'create_moderated_comment':
+					break;
+
+				case 'update_comment':
+					break;
+
 				case 'star_game':
 					msg.msg = `Starred *${log.payload.game.title}* (${log.payload.game.manufacturer} ${log.payload.game.year}).`;
 					break;

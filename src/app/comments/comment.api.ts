@@ -17,17 +17,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { cloneDeep, set } from 'lodash';
+
 import { acl } from '../common/acl';
 import { Api } from '../common/api';
-import { apiCache } from '../common/api.cache';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
 import { mailer } from '../common/mailer';
+import { isCreator } from '../common/mongoose/util';
 import { Context } from '../common/typings/context';
 import { GameDocument } from '../games/game.document';
 import { LogEventUtil } from '../log-event/log.event.util';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
+import { CommentDocument } from './comment.document';
 
 export class CommentApi extends Api {
 
@@ -106,15 +109,11 @@ export class CommentApi extends Api {
 		}
 
 		// must be owner or author of release or moderator
-		const authorIds = release.authors.map(a => a._user.toString());
-		const creatorId = release._created_by._id.toString();
-		const isAllowed: boolean = [creatorId, ...authorIds].includes(ctx.state.user._id.toString()) ?
-			true :
-			await acl.isAllowed(ctx.state.user.id, 'releases', 'moderate');
-
-		if (!isAllowed) {
+		const isModerator = await acl.isAllowed(ctx.state.user.id, 'releases', 'moderate');
+		if (!isCreator(ctx, release) && !isModerator) {
 			throw new ApiError('Access denied, must be either moderator or owner or author of release.').status(403);
 		}
+
 		let comment = new state.models.Comment({
 			_from: ctx.state.user._id,
 			_ref: { release_moderation: release },
@@ -131,8 +130,107 @@ export class CommentApi extends Api {
 
 		this.noAwait(async () => {
 
+			// log
+			LogEventUtil.log(ctx, 'create_moderated_comment', false,
+				{ comment: state.serializers.Comment.simple(ctx, comment) },
+				{ game: release._game._id, release: release._id });
+
 			// notify
 			await mailer.releaseModerationCommented(ctx.state, ctx.state.user, release, ctx.request.body.message);
+		});
+	}
+
+	public async update(ctx: Context) {
+		const span = this.apmStartSpan('CommentApi.update');
+		const comment = await state.models.Comment.findOne({ id: ctx.params.id }).exec();
+
+		if (!comment) {
+			throw new ApiError('No such comment with ID "%s"', ctx.params.id).status(404);
+		}
+
+		let newRef: any;
+		let oldComment: CommentDocument;
+		const updates: Array<() => Promise<any>> = [];
+
+		// currently only supports reference change.
+		if (ctx.request.body._ref) {
+
+			// assert that proper _ref attribute is set
+			if (!ctx.request.body._ref.release && !ctx.request.body._ref.release_moderation) {
+				throw new ApiError('Validation error').validationError('_ref', 'Must contain either `release` or `release_moderation`.', ctx.request.body._ref);
+			}
+
+			// assert that only one _ref attribute is set
+			if (ctx.request.body._ref.release && ctx.request.body._ref.release_moderation) {
+				throw new ApiError('Validation error').validationError('_ref', 'Can only contain `release` or `release_moderation`, not both.', ctx.request.body._ref);
+			}
+
+			// assert moderator permissions
+			const isModerator = await acl.isAllowed(ctx.state.user.id, 'releases', 'moderate');
+			if (!isModerator) {
+				throw new ApiError('Access denied, must be moderator to change reference.').status(403);
+			}
+
+			// assert that the provided ref exists
+			const refPath = ctx.request.body._ref.release ? '_ref.release' : '_ref.release_moderation';
+			const refValue = ctx.request.body._ref.release || ctx.request.body._ref.release_moderation;
+			const release = await state.models.Release.findOne({ id: refValue })
+				.populate('_game')
+				.populate('_created_by')
+				.exec();
+			if (!release) {
+				throw new ApiError('Validation error').validationError(refPath, 'Unknown reference to release.', refValue);
+			}
+			const game = release._game as GameDocument;
+
+			// assert that the provided ref is the same
+			const currentRef = comment._ref.release || comment._ref.release_moderation;
+			newRef = release._id;
+			if (!currentRef._id.equals(newRef._id)) {
+				throw new ApiError('Validation error').validationError(refPath, 'Cannot point reference to different release.', refValue);
+			}
+			oldComment = cloneDeep(comment);
+			if (ctx.request.body._ref.release) {
+				comment._ref.release_moderation = undefined;
+				comment._ref.release = newRef.toString();
+				updates.push(() => release.incrementCounter('comments'));
+				updates.push(() => game.incrementCounter('comments'));
+				updates.push(() => ctx.state.user.incrementCounter('comments'));
+			} else {
+				comment._ref.release = undefined;
+				comment._ref.release_moderation = newRef.toString();
+				updates.push(() => release.incrementCounter('comments', -1));
+				updates.push(() => game.incrementCounter('comments', -1));
+				updates.push(() => ctx.state.user.incrementCounter('comments', -1));
+			}
+		}
+
+		// save
+		await comment.save();
+		await Promise.all(updates.map(u => u()));
+
+		// return
+		const updatedComment = await state.models.Comment.findById(comment._id)
+			.populate('_from')
+			.populate('_ref.release')
+			.populate('_ref.release_moderation')
+			.exec();
+		this.success(ctx, state.serializers.Comment.detailed(ctx, updatedComment), 200);
+		this.apmEndSpan(span);
+
+		this.noAwait(async () => {
+
+			// log
+			const release = await state.models.Release.findById(newRef)
+				.populate('_game')
+				.populate('_created_by')
+				.exec();
+
+			// log event
+			await LogEventUtil.log(ctx, 'update_comment', false,
+				LogEventUtil.diff(state.serializers.Comment.simple(ctx, oldComment), ctx.request.body),
+				{ game: release._game._id, release: release._id },
+			);
 		});
 	}
 

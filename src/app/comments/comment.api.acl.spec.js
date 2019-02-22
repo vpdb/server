@@ -52,6 +52,10 @@ describe('The ACLs of the `Comment` API', function() {
 			request.get('/api/v1/releases/123/moderate/comments').end(hlp.status(401, done));
 		});
 
+		it('should deny access to updating a comment', function(done) {
+			request.patch('/api/v1/comments/123', {}).end(hlp.status(401, done));
+		});
+
 	});
 
 	describe('for logged clients (role member)', function() {
@@ -66,6 +70,10 @@ describe('The ACLs of the `Comment` API', function() {
 
 		it('should allow access to release moderation comment listing', function(done) {
 			request.get('/api/v1/releases/123/moderate/comments').as('member').end(hlp.status(404, done));
+		});
+
+		it('should allow access to updating a comment', function(done) {
+			request.patch('/api/v1/comments/123', {}).as('member').end(hlp.status(404, done));
 		});
 
 	});

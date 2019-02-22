@@ -78,7 +78,7 @@ export async function init(): Promise<void> {
 			allows: [
 				{ resources: 'backglasses',   permissions: ['add', 'delete-own', 'update-own', 'star'] },
 				{ resources: 'builds',        permissions: ['add', 'delete-own'] },
-				{ resources: 'comments',      permissions: ['add'] },
+				{ resources: 'comments',      permissions: ['add', 'update-own'] },
 				{ resources: 'files',         permissions: ['download', 'delete-own', 'upload'] },
 				{ resources: 'games',         permissions: ['rate', 'star'] },
 				{ resources: 'game_requests', permissions: ['add', 'delete-own'] },

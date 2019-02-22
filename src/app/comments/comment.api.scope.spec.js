@@ -100,6 +100,9 @@ describe('The scopes of the `Comment` API', function() {
 		it('should allow access to release moderation comment retrieval', done => {
 			request.get('/api/v1/releases/1234/moderate/comments').with(tokenAll).end(hlp.status(404, done));
 		});
+		it('should allow access to comment update', done => {
+			request.patch('/api/v1/comments/1234').send({}).with(tokenAll).end(hlp.status(404, done));
+		});
 
 	});
 
@@ -113,6 +116,9 @@ describe('The scopes of the `Comment` API', function() {
 		});
 		it('should deny access to release moderation comment retrieval', done => {
 			request.get('/api/v1/releases/1234/moderate/comments').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
+		});
+		it('should deny access to comment update', done => {
+			request.patch('/api/v1/comments/1234').send({}).with(tokenLogin).end(hlp.status(401, done));
 		});
 
 	});
@@ -128,6 +134,9 @@ describe('The scopes of the `Comment` API', function() {
 		it('should deny access to release moderation comment retrieval', done => {
 			request.get('/api/v1/releases/1234/moderate/comments').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
 		});
+		it('should deny access to comment update', done => {
+			request.patch('/api/v1/comments/1234').send({}).with(tokenCommunity).end(hlp.status(401, done));
+		});
 
 	});
 
@@ -141,6 +150,9 @@ describe('The scopes of the `Comment` API', function() {
 		});
 		it('should deny access to release moderation comment retrieval', done => {
 			request.get('/api/v1/releases/1234/moderate/comments').with(tokenService).end(hlp.status(401, 'invalid scope', done));
+		});
+		it('should deny access to comment update', done => {
+			request.patch('/api/v1/comments/1234').send({}).with(tokenService).end(hlp.status(401, done));
 		});
 
 	});

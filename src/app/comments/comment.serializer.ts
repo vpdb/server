@@ -22,6 +22,7 @@ import { pick } from 'lodash';
 import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { Context } from '../common/typings/context';
 import { ModelName } from '../common/typings/models';
+import { ReleaseDocument } from '../releases/release.document';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
 import { CommentDocument } from './comment.document';
@@ -45,14 +46,21 @@ export class CommentSerializer extends Serializer<CommentDocument> {
 		if (this._populated(doc, '_from')) {
 			comment.from = state.serializers.User.reduced(ctx, doc._from as UserDocument, opts);
 		}
-		// if (this._populated(doc, '_ref.release')) {
-		// 	comment.release = state.serializers.Release.reduced(ctx, doc._ref.release as Release, opts);
-		// }
 		return comment;
 	}
 
 	/* istanbul ignore next */
 	protected _detailed(ctx: Context, doc: CommentDocument, opts: SerializerOptions): CommentDocument {
-		return this._simple(ctx, doc, opts);
+		const comment = this._simple(ctx, doc, opts);
+
+		if (this._populated(doc, '_ref.release')) {
+			comment.ref = { release : state.serializers.Release.reduced(ctx, doc._ref.release as ReleaseDocument, opts) };
+		}
+
+		if (this._populated(doc, '_ref.release_moderation')) {
+			comment.ref = { release_moderation : state.serializers.Release.reduced(ctx, doc._ref.release_moderation as ReleaseDocument, opts) };
+		}
+
+		return comment;
 	}
 }

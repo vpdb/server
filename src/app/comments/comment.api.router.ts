@@ -17,25 +17,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document, Types } from 'mongoose';
-import { ReleaseDocument } from '../releases/release.document';
-import { UserDocument } from '../users/user.document';
+import Router = require('koa-router');
+import { ApiRouter } from '../common/api.router';
+import { Scope } from '../common/scope';
+import { CommentApi } from './comment.api';
 
-export interface CommentDocument extends Document {
-	id: string;
-	_from: UserDocument | Types.ObjectId;
-	_ref: {
-		release: ReleaseDocument | Types.ObjectId;
-		release_moderation: ReleaseDocument | Types.ObjectId;
-	};
-	message: string;
-	ip: string;
-	created_at: Date;
+export class CommentApiRouter implements ApiRouter {
 
-	// serialized
-	from?: UserDocument;
-	ref?: {
-		release?: ReleaseDocument;
-		release_moderation?: ReleaseDocument;
-	};
+	private readonly router: Router;
+
+	constructor() {
+		const api = new CommentApi();
+		this.router = api.apiRouter();
+
+		this.router.patch('/v1/comments/:id', api.auth(api.update.bind(api), 'comments', 'update-own', [ Scope.ALL, Scope.CREATE ]));
+	}
+
+	public getRouter(): Router {
+		return this.router;
+	}
 }

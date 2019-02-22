@@ -22,6 +22,7 @@ import mongoose from 'mongoose';
 import { EndPoint } from '../common/api.endpoint';
 import { ApiRouter } from '../common/api.router';
 import { state } from '../state';
+import { CommentApiRouter } from './comment.api.router';
 import { CommentDocument } from './comment.document';
 import { CommentModel, commentSchema } from './comment.schema';
 import { CommentSerializer } from './comment.serializer';
@@ -29,13 +30,14 @@ import { CommentSerializer } from './comment.serializer';
 export class CommentEndPoint extends EndPoint {
 
 	public readonly name: string = 'Comment API';
+	private readonly router = new CommentApiRouter();
 
 	constructor() {
 		super();
 	}
 
 	public getRouter(): ApiRouter {
-		return null;
+		return this.router;
 	}
 
 	public registerModel(): EndPoint {

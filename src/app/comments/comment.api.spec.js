@@ -105,6 +105,109 @@ describe('The VPDB `Comment` API', () => {
 
 	});
 
+	describe('when updating a comment to a release', () => {
+
+		let comment;
+
+		before(async () => {
+			res = await api
+				.as('member')
+				.post('/v1/releases/' + release.id + '/comments', { message: faker.company.catchPhrase() })
+				.then(res => res.expectStatus(201));
+			comment = res.data;
+		});
+
+		it('should fail for a non-existent comment', async () => {
+			await api
+				.as('moderator')
+				.patch(`/v1/comments/124`, {})
+				.then(res => res.expectStatus(404));
+		});
+
+		it('should fail with an invalid reference', async () => {
+			await api
+				.as('moderator')
+				.patch(`/v1/comments/${comment.id}`, { _ref: { not: 'valid' }})
+				.then(res => res.expectValidationError('_ref', 'must contain either `release` or `release_moderation`'));
+		});
+
+		it('should fail when providing the same reference twice', async () => {
+			await api
+				.as('moderator')
+				.patch(`/v1/comments/${comment.id}`, { _ref: { release: '123', release_moderation: '123' }})
+				.then(res => res.expectValidationError('_ref', 'not both'));
+		});
+
+		it('should fail when providing a non-existent reference', async () => {
+			await api
+				.as('moderator')
+				.patch(`/v1/comments/${comment.id}`, { _ref: { release: '123' }})
+				.then(res => res.expectValidationError('_ref.release', 'unknown reference'));
+		});
+
+		it('should fail when changing reference as non-moderator', async () => {
+			await api
+				.as('member')
+				.patch(`/v1/comments/${comment.id}`, { _ref: { release: '123' }})
+				.then(res => res.expectError(403, 'must be moderator to change reference'));
+		});
+
+		it('should fail when changing reference to a different release', async () => {
+			await api
+				.as('moderator')
+				.patch(`/v1/comments/${comment.id}`, { _ref: { release_moderation: restrictedRelease.id }})
+				.then(res => res.expectValidationError('_ref.release_moderation', 'cannot point reference to different release'));
+		});
+
+		it('should succeed when moving a public comment to moderated', async () => {
+
+			res = await api
+				.as('member')
+				.post('/v1/releases/' + release.id + '/comments', { message: faker.company.catchPhrase() })
+				.then(res => res.expectStatus(201));
+
+			const oldComment = res.data;
+
+			res = await api
+				.as('moderator')
+				.patch(`/v1/comments/${oldComment.id}`, { _ref: { release_moderation: release.id }})
+				.then(res => res.expectStatus(200));
+
+			expect(res.data.ref.release).to.be(undefined);
+			expect(res.data.ref.release_moderation.id).to.be(release.id);
+
+			res = await api.as('moderator').get(`/v1/releases/${release.id}/comments`).then(res => res.expectStatus(200));
+			expect(res.data.filter(comment => comment.id === oldComment.id)).to.be.empty();
+			res = await api.as('moderator').get(`/v1/releases/${release.id}/moderate/comments`).then(res => res.expectStatus(200));
+			expect(res.data.filter(comment => comment.id === oldComment.id)).to.have.length(1);
+
+		});
+
+		it('should succeed when moving a moderated comment to public', async () => {
+
+			res = await api
+				.as('moderator')
+				.post('/v1/releases/' + release.id + '/moderate/comments', { message: faker.company.catchPhrase() })
+				.then(res => res.expectStatus(201));
+
+			const oldComment = res.data;
+
+			res = await api
+				.as('moderator')
+				.patch(`/v1/comments/${oldComment.id}`, { _ref: { release: release.id }})
+				.then(res => res.expectStatus(200));
+
+			expect(res.data.ref.release_moderation).to.be(undefined);
+			expect(res.data.ref.release.id).to.be(release.id);
+
+			res = await api.as('moderator').get(`/v1/releases/${release.id}/comments`).then(res => res.expectStatus(200));
+			expect(res.data.filter(comment => comment.id === oldComment.id)).to.have.length(1);
+			res = await api.as('moderator').get(`/v1/releases/${release.id}/moderate/comments`).then(res => res.expectStatus(200));
+			expect(res.data.filter(comment => comment.id === oldComment.id)).to.be.empty();
+		});
+
+	});
+
 	describe('when creating a new moderation comment to a release', () => {
 
 		it('should fail when the release does not exist', async () => {

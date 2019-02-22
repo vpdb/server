@@ -23,7 +23,7 @@ import { LogEventDocument } from './log.event.document';
 
 // also update slackbot when adding new events
 const events = [
-	'create_comment',
+	'create_comment', 'create_moderated_comment', 'update_comment',
 	'star_game', 'star_release', 'star_user',
 	'unstar_game', 'unstar_release', 'unstar_user',
 	'rate_game', 'unrate_game', 'rate_release', 'unrate_release',

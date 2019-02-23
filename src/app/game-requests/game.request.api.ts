@@ -94,7 +94,7 @@ export class GameRequestApi extends Api {
 		}, {
 			game_request: gameRequest._id,
 		});
-		return this.success(ctx, state.serializers.GameRequest.simple(ctx, gameRequest), 201);
+		this.success(ctx, state.serializers.GameRequest.simple(ctx, gameRequest), 201);
 	}
 
 	/**
@@ -138,11 +138,13 @@ export class GameRequestApi extends Api {
 		}, {
 			game_request: gameRequest._id,
 		});
+		this.success(ctx, state.serializers.GameRequest.simple(ctx, gameRequest), 200);
 
-		if (requestClosed) {
-			await mailer.gameRequestDenied(ctx.state, user as UserDocument, gameRequest.ipdb_title, gameRequest.message);
-		}
-		return this.success(ctx, state.serializers.GameRequest.simple(ctx, gameRequest), 200);
+		this.noAwait(async () => {
+			if (requestClosed) {
+				await mailer.gameRequestDenied(ctx.state, user as UserDocument, gameRequest.ipdb_title, gameRequest.message);
+			}
+		});
 	}
 
 	/**
@@ -168,7 +170,7 @@ export class GameRequestApi extends Api {
 			.populate({ path: '_created_by' })
 			.populate({ path: '_game' })
 			.exec();
-		return this.success(ctx, requests.map(r => state.serializers.GameRequest.detailed(ctx, r)));
+		this.success(ctx, requests.map(r => state.serializers.GameRequest.detailed(ctx, r)));
 	}
 
 	/**
@@ -198,6 +200,6 @@ export class GameRequestApi extends Api {
 		}, {
 			game_request: gameRequest._id,
 		});
-		return this.success(ctx, null, 204);
+		this.success(ctx, null, 204);
 	}
 }

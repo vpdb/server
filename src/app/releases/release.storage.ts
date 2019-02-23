@@ -196,6 +196,7 @@ export class ReleaseStorage extends Api {
 	 * The goal is so the webapp can check first if the download works and display an error
 	 * nicely, instead of sending the client to the backend where it will get a JSON error.
 	 *
+	 * @see HEAD /v1/releases/:release_id
 	 * @param {Context} ctx Koa context
 	 */
 	public async checkDownload(ctx: Context) {

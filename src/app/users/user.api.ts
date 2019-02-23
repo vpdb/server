@@ -81,18 +81,20 @@ export class UserApi extends Api {
 			username: newUser.username,
 		});
 
-		// user validated and created. time to send the activation email.
-		if (config.vpdb.email.confirmUserEmail) {
-			await mailer.registrationConfirmation(ctx.state, user);
-		}
-
 		// return result now and send email afterwards
 		if (testMode && ctx.request.body.returnEmailToken) {
-			return this.success(ctx, assign(state.serializers.User.detailed(ctx, user), { email_token: (user.email_status as any).toObject().token }), 201);
+			this.success(ctx, assign(state.serializers.User.detailed(ctx, user), { email_token: (user.email_status as any).toObject().token }), 201);
 
 		} else {
-			return this.success(ctx, state.serializers.User.detailed(ctx, user), 201);
+			this.success(ctx, state.serializers.User.detailed(ctx, user), 201);
 		}
+
+		this.noAwait(async () => {
+			// user validated and created. time to send the activation email.
+			if (config.vpdb.email.confirmUserEmail) {
+				await mailer.registrationConfirmation(ctx.state, user);
+			}
+		});
 	}
 
 	/**
@@ -162,7 +164,7 @@ export class UserApi extends Api {
 		}
 
 		await LogUserUtil.success(ctx, user, 'provider_registration', { provider, email: user.email });
-		return this.success(ctx, state.serializers.User.detailed(ctx, user), isNew ? 201 : 200);
+		this.success(ctx, state.serializers.User.detailed(ctx, user), isNew ? 201 : 200);
 	}
 
 	/**
@@ -224,7 +226,7 @@ export class UserApi extends Api {
 			state.serializers.User.detailed(ctx, user) :
 			state.serializers.User.simple(ctx, user),
 		);
-		return this.success(ctx, users);
+		this.success(ctx, users);
 	}
 
 	/**
@@ -328,7 +330,7 @@ export class UserApi extends Api {
 			await apiCache.invalidateUpdatedUser(ctx.state, user);
 		}
 
-		return this.success(ctx, state.serializers.User.detailed(ctx, user), 200);
+		this.success(ctx, state.serializers.User.detailed(ctx, user), 200);
 	}
 
 	/**
@@ -344,7 +346,7 @@ export class UserApi extends Api {
 			throw new ApiError('No such user').status(404);
 		}
 		const fullDetails = await acl.isAllowed(ctx.state.user.id, 'users', 'full-details');
-		return this.success(ctx, fullDetails ? state.serializers.User.detailed(ctx, user) : state.serializers.User.simple(ctx, user));
+		this.success(ctx, fullDetails ? state.serializers.User.detailed(ctx, user) : state.serializers.User.simple(ctx, user));
 	}
 
 	/**
@@ -364,7 +366,7 @@ export class UserApi extends Api {
 		await user.remove();
 
 		logger.info(ctx.state, '[UserApi.delete] User <%s> successfully deleted.', user.email);
-		return this.success(ctx, null, 204);
+		this.success(ctx, null, 204);
 	}
 
 	/**
@@ -392,9 +394,11 @@ export class UserApi extends Api {
 		user.email_status.expires_at = new Date(new Date().getTime() + 86400000); // 1d valid
 
 		await user.save();
-		await mailer.registrationConfirmation(ctx.state, user);
+		this.success(ctx, null, 200);
 
-		return this.success(ctx, null, 200);
+		this.noAwait(async () => {
+			await mailer.registrationConfirmation(ctx.state, user);
+		});
 	}
 
 	private async updateProviderUser(ctx: Context, existingUser: UserDocument, provider: string): Promise<UserDocument> {

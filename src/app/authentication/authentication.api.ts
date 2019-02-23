@@ -134,7 +134,7 @@ export class AuthenticationApi extends Api {
 	 * @param {UserDocument} authenticatedUser Authenticated user
 	 * @param {"password" | "token" | "oauth"} how Auth method
 	 */
-	protected async authenticateUser(ctx: Context, authenticatedUser: UserDocument, how: 'password' | 'token' | 'oauth'): Promise<boolean> {
+	protected async authenticateUser(ctx: Context, authenticatedUser: UserDocument, how: 'password' | 'token' | 'oauth') {
 
 		await this.assertUserIsActive(ctx, authenticatedUser);
 
@@ -160,7 +160,7 @@ export class AuthenticationApi extends Api {
 		if (process.env.SQREEN_ENABLED) {
 			require('sqreen').auth_track(true, { email: authenticatedUser.email });
 		}
-		return this.success(ctx, response, 200);
+		this.success(ctx, response, 200);
 	}
 
 	/**
@@ -568,15 +568,17 @@ export class AuthenticationApi extends Api {
 			require('sqreen').signup_track({ email: newUser.email });
 		}
 
+		logger.info(ctx.state, '[AuthenticationApi.createOAuthUser] New user <%s> created.', newUser.email);
 		await LogUserUtil.success(ctx, newUser, 'registration', {
 			provider,
 			email: newUser.email,
 		});
-		logger.info(ctx.state, '[AuthenticationApi.createOAuthUser] New user <%s> created.', newUser.email);
-		await mailer.welcomeOAuth(ctx.state, newUser);
-
 		// new oauth user, clear provider cache since there might gonna be new user matches.
 		await apiCache.invalidateProviderCache(ctx.state, provider);
+
+		this.noAwait(async () => {
+			await mailer.welcomeOAuth(ctx.state, newUser);
+		});
 
 		return newUser;
 	}

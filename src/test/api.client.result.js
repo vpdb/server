@@ -197,7 +197,7 @@ class ApiClientResult {
 		}
 		err += '\n<-- ' + res.status + ' ' + res.statusText;
 		Object.keys(res.headers).forEach(name => {
-			err += '\n<-- ' + name + ' ' + res.headers[name];
+			err += '\n<-- ' + name + ': ' + res.headers[name];
 		});
 		if (res.data) {
 			err += '\n<--';

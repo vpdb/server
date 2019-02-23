@@ -110,7 +110,7 @@ export class RomApi extends Api {
 			game: gameRef,
 		}, { game: game._id });
 
-		return this.success(ctx, state.serializers.Rom.simple(ctx, newRom), 201);
+		this.success(ctx, state.serializers.Rom.simple(ctx, newRom), 201);
 	}
 
 	/**
@@ -177,7 +177,7 @@ export class RomApi extends Api {
 		}
 
 		const roms = results.map(rom => state.serializers.Rom.simple(ctx, rom));
-		return this.success(ctx, roms, 200, this.paginationOpts(pagination, count));
+		this.success(ctx, roms, 200, this.paginationOpts(pagination, count));
 	}
 
 	/**
@@ -196,7 +196,7 @@ export class RomApi extends Api {
 		if (!rom) {
 			throw new ApiError('No such ROM with ID "%s".', ctx.params.id).status(404);
 		}
-		return this.success(ctx, rom._game ?
+		this.success(ctx, rom._game ?
 			assign(state.serializers.Rom.simple(ctx, rom), { game: state.serializers.Game.simple(ctx, rom._game as GameDocument) }) :
 			state.serializers.Rom.simple(ctx, rom));
 	}
@@ -225,6 +225,6 @@ export class RomApi extends Api {
 		// remove from db
 		await rom.remove();
 		logger.info(ctx.state, '[RomApi.del] ROM "%s" successfully deleted.', rom.id);
-		return this.success(ctx, null, 204);
+		this.success(ctx, null, 204);
 	}
 }

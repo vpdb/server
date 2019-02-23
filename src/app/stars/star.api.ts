@@ -109,7 +109,7 @@ export class StarApi extends Api {
 	private async _view(ctx: Context, find: (ctx: Context) => Promise<[MetricsDocument, StarDocument]>, titleAttr: string) {
 		const [entity, star] = await find(ctx);
 		if (star) {
-			return this.success(ctx, pick(star, ['created_at']));
+			this.success(ctx, pick(star, ['created_at']));
 		} else {
 			throw new ApiError('No star for <%s> for "%s" found.', ctx.state.user.email, (entity as any)[titleAttr]).status(404);
 		}
@@ -143,7 +143,7 @@ export class StarApi extends Api {
 		// invalidate cache for user
 		await apiCache.invalidateStarredEntity(ctx.state, modelName, entity, ctx.state.user);
 
-		return this.success(ctx, { created_at: obj.created_at, total_stars: entity.counter.stars + 1 }, 201);
+		this.success(ctx, { created_at: obj.created_at, total_stars: entity.counter.stars + 1 }, 201);
 	}
 
 	/**
@@ -165,7 +165,7 @@ export class StarApi extends Api {
 		// invalidate cache for user
 		await apiCache.invalidateStarredEntity(ctx.state, modelName, entity, ctx.state.user);
 
-		return this.success(ctx, null, 204);
+		this.success(ctx, null, 204);
 	}
 
 	/**

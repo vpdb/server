@@ -106,7 +106,7 @@ export class FileBlockmatchApi extends Api {
 			result.matches = result.matches.filter(m => m.release.id !== release.id);
 		}
 		result.matches = sortBy(result.matches, m => -(m.countPercentage + m.bytesPercentage));
-		return this.success(ctx, result);
+		this.success(ctx, result);
 	}
 
 	/**

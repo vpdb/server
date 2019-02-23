@@ -28,6 +28,7 @@ import { isCreator } from '../common/mongoose/util';
 import { Context } from '../common/typings/context';
 import { GameDocument } from '../games/game.document';
 import { LogEventUtil } from '../log-event/log.event.util';
+import { ReleaseDocument } from '../releases/release.document';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
 import { CommentDocument } from './comment.document';
@@ -43,43 +44,52 @@ export class CommentApi extends Api {
 	public async createForRelease(ctx: Context) {
 
 		const span = this.apmStartSpan('CommentApi.createForRelease');
-		const release = await state.models.Release.findOne({ id: ctx.params.id })
-			.populate('_game')
-			.populate('_created_by')
-			.exec();
+		let release: ReleaseDocument;
+		let game: GameDocument;
+		try {
+			release = await state.models.Release.findOne({ id: ctx.params.id })
+				.populate('_game')
+				.populate('_created_by')
+				.exec();
 
-		if (!release) {
-			throw new ApiError('No such release with ID "%s"', ctx.params.id).status(404);
+			if (!release) {
+				throw new ApiError('No such release with ID "%s"', ctx.params.id).status(404);
+			}
+			game = release._game as GameDocument;
+			if (game.isRestricted('release')) {
+				throw new ApiError('No such release with ID "%s"', ctx.params.id).status(404);
+			}
+			let comment = new state.models.Comment({
+				_from: ctx.state.user._id,
+				_ref: { release },
+				message: ctx.request.body.message,
+				ip: this.getIpAddress(ctx),
+				created_at: new Date(),
+			});
+			await comment.save();
+
+			logger.info(ctx.state, '[CommentApi.createForRelease] User <%s> commented on release "%s" (%s).', ctx.state.user.email, release.id, release.name);
+
+			const updates: Array<() => Promise<any>> = [];
+			updates.push(() => release.incrementCounter('comments'));
+			updates.push(() => game.incrementCounter('comments'));
+			updates.push(() => ctx.state.user.incrementCounter('comments'));
+			updates.push(() => LogEventUtil.log(ctx, 'create_comment', true,
+				{ comment: state.serializers.Comment.simple(ctx, comment) },
+				{ game: release._game._id, release: release._id }));
+
+			await Promise.all(updates.map(u => u()));
+
+			comment = await state.models.Comment.findById(comment._id).populate('_from').exec();
+
+			this.success(ctx, state.serializers.Comment.simple(ctx, comment), 201);
+
+		} catch (err) {
+			throw err;
+
+		} finally {
+			this.apmEndSpan(span);
 		}
-		const game = release._game as GameDocument;
-		if (game.isRestricted('release')) {
-			throw new ApiError('No such release with ID "%s"', ctx.params.id).status(404);
-		}
-		let comment = new state.models.Comment({
-			_from: ctx.state.user._id,
-			_ref: { release },
-			message: ctx.request.body.message,
-			ip: this.getIpAddress(ctx),
-			created_at: new Date(),
-		});
-		await comment.save();
-
-		logger.info(ctx.state, '[CommentApi.createForRelease] User <%s> commented on release "%s" (%s).', ctx.state.user.email, release.id, release.name);
-
-		const updates: Array<() => Promise<any>> = [];
-		updates.push(() => release.incrementCounter('comments'));
-		updates.push(() => game.incrementCounter('comments'));
-		updates.push(() => ctx.state.user.incrementCounter('comments'));
-		updates.push(() => LogEventUtil.log(ctx, 'create_comment', true,
-			{ comment: state.serializers.Comment.simple(ctx, comment) },
-			{ game: release._game._id, release: release._id }));
-
-		await Promise.all(updates.map(u => u()));
-
-		comment = await state.models.Comment.findById(comment._id).populate('_from').exec();
-
-		this.success(ctx, state.serializers.Comment.simple(ctx, comment), 201);
-		this.apmEndSpan(span);
 
 		this.noAwait(async () => {
 
@@ -99,34 +109,43 @@ export class CommentApi extends Api {
 	public async createForReleaseModeration(ctx: Context) {
 
 		const span = this.apmStartSpan('CommentApi.createForReleaseModeration');
-		const release = await state.models.Release.findOne({ id: ctx.params.id })
-			.populate('_game')
-			.populate('_created_by')
-			.exec();
+		let comment: CommentDocument;
+		let release: ReleaseDocument;
+		try {
+			release = await state.models.Release.findOne({ id: ctx.params.id })
+				.populate('_game')
+				.populate('_created_by')
+				.exec();
 
-		if (!release) {
-			throw new ApiError('No such release with ID "%s"', ctx.params.id).status(404);
+			if (!release) {
+				throw new ApiError('No such release with ID "%s"', ctx.params.id).status(404);
+			}
+
+			// must be owner or author of release or moderator
+			const isModerator = await acl.isAllowed(ctx.state.user.id, 'releases', 'moderate');
+			if (!isCreator(ctx, release) && !isModerator) {
+				throw new ApiError('Access denied, must be either moderator or owner or author of release.').status(403);
+			}
+
+			comment = new state.models.Comment({
+				_from: ctx.state.user._id,
+				_ref: { release_moderation: release },
+				message: ctx.request.body.message,
+				ip: this.getIpAddress(ctx),
+				created_at: new Date(),
+			});
+			await comment.save();
+
+			logger.info(ctx.state, '[CommentApi.createForReleaseModeration] User <%s> commented on release moderation "%s" (%s).', ctx.state.user.email, release.id, release.name);
+			comment = await state.models.Comment.findById(comment._id).populate('_from').exec();
+			this.success(ctx, state.serializers.Comment.simple(ctx, comment), 201);
+
+		} catch (err) {
+			throw err;
+
+		} finally {
+			this.apmEndSpan(span);
 		}
-
-		// must be owner or author of release or moderator
-		const isModerator = await acl.isAllowed(ctx.state.user.id, 'releases', 'moderate');
-		if (!isCreator(ctx, release) && !isModerator) {
-			throw new ApiError('Access denied, must be either moderator or owner or author of release.').status(403);
-		}
-
-		let comment = new state.models.Comment({
-			_from: ctx.state.user._id,
-			_ref: { release_moderation: release },
-			message: ctx.request.body.message,
-			ip: this.getIpAddress(ctx),
-			created_at: new Date(),
-		});
-		await comment.save();
-
-		logger.info(ctx.state, '[CommentApi.createForReleaseModeration] User <%s> commented on release moderation "%s" (%s).', ctx.state.user.email, release.id, release.name);
-		comment = await state.models.Comment.findById(comment._id).populate('_from').exec();
-		this.success(ctx, state.serializers.Comment.simple(ctx, comment), 201);
-		this.apmEndSpan(span);
 
 		this.noAwait(async () => {
 
@@ -142,81 +161,88 @@ export class CommentApi extends Api {
 
 	public async update(ctx: Context) {
 		const span = this.apmStartSpan('CommentApi.update');
-		const comment = await state.models.Comment.findOne({ id: ctx.params.id }).exec();
-
-		if (!comment) {
-			throw new ApiError('No such comment with ID "%s"', ctx.params.id).status(404);
-		}
 
 		let newRef: any;
 		let oldComment: CommentDocument;
-		const updates: Array<() => Promise<any>> = [];
+		try {
+			const comment = await state.models.Comment.findOne({ id: ctx.params.id }).exec();
+			if (!comment) {
 
-		// currently only supports reference change.
-		if (ctx.request.body._ref) {
+				throw new ApiError('No such comment with ID "%s"', ctx.params.id).status(404);
+			}
+			const updates: Array<() => Promise<any>> = [];
 
-			// assert that proper _ref attribute is set
-			if (!ctx.request.body._ref.release && !ctx.request.body._ref.release_moderation) {
-				throw new ApiError('Validation error').validationError('_ref', 'Must contain either `release` or `release_moderation`.', ctx.request.body._ref);
+			// currently only supports reference change.
+			if (ctx.request.body._ref) {
+
+				// assert that proper _ref attribute is set
+				if (!ctx.request.body._ref.release && !ctx.request.body._ref.release_moderation) {
+					throw new ApiError('Validation error').validationError('_ref', 'Must contain either `release` or `release_moderation`.', ctx.request.body._ref);
+				}
+
+				// assert that only one _ref attribute is set
+				if (ctx.request.body._ref.release && ctx.request.body._ref.release_moderation) {
+					throw new ApiError('Validation error').validationError('_ref', 'Can only contain `release` or `release_moderation`, not both.', ctx.request.body._ref);
+				}
+
+				// assert moderator permissions
+				const isModerator = await acl.isAllowed(ctx.state.user.id, 'releases', 'moderate');
+				if (!isModerator) {
+					throw new ApiError('Access denied, must be moderator to change reference.').status(403);
+				}
+
+				// assert that the provided ref exists
+				const refPath = ctx.request.body._ref.release ? '_ref.release' : '_ref.release_moderation';
+				const refValue = ctx.request.body._ref.release || ctx.request.body._ref.release_moderation;
+				const release = await state.models.Release.findOne({ id: refValue })
+					.populate('_game')
+					.populate('_created_by')
+					.exec();
+				if (!release) {
+					throw new ApiError('Validation error').validationError(refPath, 'Unknown reference to release.', refValue);
+				}
+				const game = release._game as GameDocument;
+
+				// assert that the provided ref is the same
+				const currentRef = comment._ref.release || comment._ref.release_moderation;
+				newRef = release._id;
+				if (!currentRef._id.equals(newRef._id)) {
+					throw new ApiError('Validation error').validationError(refPath, 'Cannot point reference to different release.', refValue);
+				}
+				oldComment = cloneDeep(comment);
+				if (ctx.request.body._ref.release) {
+					comment._ref.release_moderation = undefined;
+					comment._ref.release = newRef.toString();
+					updates.push(() => release.incrementCounter('comments'));
+					updates.push(() => game.incrementCounter('comments'));
+					updates.push(() => ctx.state.user.incrementCounter('comments'));
+				} else {
+					comment._ref.release = undefined;
+					comment._ref.release_moderation = newRef.toString();
+					updates.push(() => release.incrementCounter('comments', -1));
+					updates.push(() => game.incrementCounter('comments', -1));
+					updates.push(() => ctx.state.user.incrementCounter('comments', -1));
+				}
 			}
 
-			// assert that only one _ref attribute is set
-			if (ctx.request.body._ref.release && ctx.request.body._ref.release_moderation) {
-				throw new ApiError('Validation error').validationError('_ref', 'Can only contain `release` or `release_moderation`, not both.', ctx.request.body._ref);
-			}
+			// save
+			await comment.save();
+			await Promise.all(updates.map(u => u()));
 
-			// assert moderator permissions
-			const isModerator = await acl.isAllowed(ctx.state.user.id, 'releases', 'moderate');
-			if (!isModerator) {
-				throw new ApiError('Access denied, must be moderator to change reference.').status(403);
-			}
-
-			// assert that the provided ref exists
-			const refPath = ctx.request.body._ref.release ? '_ref.release' : '_ref.release_moderation';
-			const refValue = ctx.request.body._ref.release || ctx.request.body._ref.release_moderation;
-			const release = await state.models.Release.findOne({ id: refValue })
-				.populate('_game')
-				.populate('_created_by')
+			// return
+			const updatedComment = await state.models.Comment.findById(comment._id)
+				.populate('_from')
+				.populate('_ref.release')
+				.populate('_ref.release_moderation')
 				.exec();
-			if (!release) {
-				throw new ApiError('Validation error').validationError(refPath, 'Unknown reference to release.', refValue);
-			}
-			const game = release._game as GameDocument;
+			this.success(ctx, state.serializers.Comment.detailed(ctx, updatedComment), 200);
 
-			// assert that the provided ref is the same
-			const currentRef = comment._ref.release || comment._ref.release_moderation;
-			newRef = release._id;
-			if (!currentRef._id.equals(newRef._id)) {
-				throw new ApiError('Validation error').validationError(refPath, 'Cannot point reference to different release.', refValue);
-			}
-			oldComment = cloneDeep(comment);
-			if (ctx.request.body._ref.release) {
-				comment._ref.release_moderation = undefined;
-				comment._ref.release = newRef.toString();
-				updates.push(() => release.incrementCounter('comments'));
-				updates.push(() => game.incrementCounter('comments'));
-				updates.push(() => ctx.state.user.incrementCounter('comments'));
-			} else {
-				comment._ref.release = undefined;
-				comment._ref.release_moderation = newRef.toString();
-				updates.push(() => release.incrementCounter('comments', -1));
-				updates.push(() => game.incrementCounter('comments', -1));
-				updates.push(() => ctx.state.user.incrementCounter('comments', -1));
-			}
+		} catch (err) {
+			throw err;
+
+		} finally {
+			this.apmEndSpan(span);
 		}
-
-		// save
-		await comment.save();
-		await Promise.all(updates.map(u => u()));
-
-		// return
-		const updatedComment = await state.models.Comment.findById(comment._id)
-			.populate('_from')
-			.populate('_ref.release')
-			.populate('_ref.release_moderation')
-			.exec();
-		this.success(ctx, state.serializers.Comment.detailed(ctx, updatedComment), 200);
-		this.apmEndSpan(span);
 
 		this.noAwait(async () => {
 
@@ -243,28 +269,35 @@ export class CommentApi extends Api {
 	public async listForRelease(ctx: Context) {
 
 		const span = this.apmStartSpan('CommentApi.listForRelease');
-		const pagination = this.pagination(ctx, 10, 50);
-		const sort = this.sortParams(ctx, { released_at: 1 }, { date: '-created_at' });
-		const release = await state.models.Release.findOne({ id: ctx.params.id })
-			.populate('_game')
-			.populate('_created_by')
-			.exec();
+		try {
+			const pagination = this.pagination(ctx, 10, 50);
+			const sort = this.sortParams(ctx, { released_at: 1 }, { date: '-created_at' });
+			const release = await state.models.Release.findOne({ id: ctx.params.id })
+				.populate('_game')
+				.populate('_created_by')
+				.exec();
 
-		if (!release) {
-			throw new ApiError('No such release with ID "%s"', ctx.params.id).status(404);
+			if (!release) {
+				throw new ApiError('No such release with ID "%s"', ctx.params.id).status(404);
+			}
+			await release.assertRestrictedView(ctx);
+
+			const results = await state.models.Comment.paginate({ '_ref.release': release._id }, {
+				page: pagination.page,
+				limit: pagination.perPage,
+				populate: ['_from'],
+				sort,
+			});
+
+			const comments = results.docs.map(comment => state.serializers.Comment.simple(ctx, comment));
+			this.success(ctx, comments, 200, this.paginationOpts(pagination, results.total));
+
+		} catch (err) {
+			throw err;
+
+		} finally {
+			this.apmEndSpan(span);
 		}
-		await release.assertRestrictedView(ctx);
-
-		const results = await state.models.Comment.paginate({ '_ref.release': release._id }, {
-			page: pagination.page,
-			limit: pagination.perPage,
-			populate: ['_from'],
-			sort,
-		});
-
-		const comments = results.docs.map(comment => state.serializers.Comment.simple(ctx, comment));
-		this.success(ctx, comments, 200, this.paginationOpts(pagination, results.total));
-		this.apmEndSpan(span);
 	}
 
 	/**
@@ -276,27 +309,34 @@ export class CommentApi extends Api {
 	public async listForReleaseModeration(ctx: Context) {
 
 		const span = this.apmStartSpan('CommentApi.listForReleaseModeration');
-		const release = await state.models.Release.findOne({ id: ctx.params.id }).exec();
+		try {
+			const release = await state.models.Release.findOne({ id: ctx.params.id }).exec();
 
-		if (!release) {
-			throw new ApiError('No such release with ID "%s"', ctx.params.id).status(404);
+			if (!release) {
+				throw new ApiError('No such release with ID "%s"', ctx.params.id).status(404);
+			}
+			// check permission
+			const authorIds = release.authors.map(a => a._user.toString());
+			const creatorId = release._created_by.toString();
+			const isAllowed: boolean = [creatorId, ...authorIds].includes(ctx.state.user._id.toString()) ?
+				true :
+				await acl.isAllowed(ctx.state.user.id, 'releases', 'moderate');
+
+			if (!isAllowed) {
+				throw new ApiError('Access denied, must be either moderator or owner or author of release.').status(403);
+			}
+			const comments = await state.models.Comment.find({ '_ref.release_moderation': release._id })
+				.populate('_from')
+				.sort({ created_at: 'asc' })
+				.exec();
+
+			this.success(ctx, comments.map(comment => state.serializers.Comment.simple(ctx, comment)), 200);
+
+		} catch (err) {
+			throw err;
+
+		} finally {
+			this.apmEndSpan(span);
 		}
-		// check permission
-		const authorIds = release.authors.map(a => a._user.toString());
-		const creatorId = release._created_by.toString();
-		const isAllowed: boolean = [creatorId, ...authorIds].includes(ctx.state.user._id.toString()) ?
-			true :
-			await acl.isAllowed(ctx.state.user.id, 'releases', 'moderate');
-
-		if (!isAllowed) {
-			throw new ApiError('Access denied, must be either moderator or owner or author of release.').status(403);
-		}
-		const comments = await state.models.Comment.find({ '_ref.release_moderation': release._id })
-			.populate('_from')
-			.sort({ created_at: 'asc' })
-			.exec();
-
-		this.success(ctx, comments.map(comment => state.serializers.Comment.simple(ctx, comment)), 200);
-		this.apmEndSpan(span);
 	}
 }

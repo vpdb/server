@@ -47,7 +47,7 @@ export class TagApi extends Api {
 
 		// reduce
 		tags = tags.map(tag => state.serializers.Tag.simple(ctx, tag));
-		return this.success(ctx, tags);
+		this.success(ctx, tags);
 	}
 
 	/**
@@ -65,7 +65,7 @@ export class TagApi extends Api {
 		}));
 		await newTag.save();
 		logger.info(ctx.state, '[TagApi.create] Tag "%s" successfully created.', newTag.name);
-		return this.success(ctx, state.serializers.Tag.simple(ctx, newTag), 201);
+		this.success(ctx, state.serializers.Tag.simple(ctx, newTag), 201);
 	}
 
 	/**
@@ -92,6 +92,6 @@ export class TagApi extends Api {
 		await tag.remove();
 
 		logger.info(ctx.state, '[TagApi.del] Tag "%s" (%s) successfully deleted.', tag.name, tag._id);
-		return this.success(ctx, null, 204);
+		this.success(ctx, null, 204);
 	}
 }

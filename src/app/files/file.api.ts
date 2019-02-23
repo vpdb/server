@@ -54,7 +54,7 @@ export class FileApi extends Api {
 		await file.remove();
 
 		logger.info(ctx.state, '[FileApi.del] File "%s" (%s) successfully removed.', file.name, file.id);
-		return this.success(ctx, null, 204);
+		this.success(ctx, null, 204);
 	}
 
 	/**
@@ -74,7 +74,7 @@ export class FileApi extends Api {
 		if (!file.is_active && (!ctx.state.user || !isOwner)) {
 			throw new ApiError('File "%s" is inactive.', ctx.params.id).status(ctx.state.user ? 403 : 401);
 		}
-		return this.success(ctx, state.serializers.File.detailed(ctx, file));
+		this.success(ctx, state.serializers.File.detailed(ctx, file));
 	}
 
 }

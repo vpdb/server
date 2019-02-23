@@ -51,7 +51,7 @@ export class GameApi extends Api {
 	public async head(ctx: Context) {
 		const game = await state.models.Game.findOne({ id: ctx.params.id }).exec();
 		ctx.response.set('Content-Length', '0');
-		return this.success(ctx, null, game ? 200 : 404);
+		this.success(ctx, null, game ? 200 : 404);
 	}
 
 	/**
@@ -105,7 +105,9 @@ export class GameApi extends Api {
 				.exec();
 		}
 		if (gameRequest) {
-			await mailer.gameRequestProcessed(ctx.state, gameRequest._created_by as UserDocument, game);
+			this.noAwait(async () => {
+				await mailer.gameRequestProcessed(ctx.state, gameRequest._created_by as UserDocument, game);
+			});
 			gameRequest.is_closed = true;
 			gameRequest._game = game._id;
 			await gameRequest.save();
@@ -130,7 +132,7 @@ export class GameApi extends Api {
 			logger.error(ctx.state, err);
 		}
 		await LogEventUtil.log(ctx, 'create_game', true, { game: omit(state.serializers.Game.simple(ctx, game), ['rating', 'counter']) }, { game: game._id });
-		return this.success(ctx, state.serializers.Game.detailed(ctx, game), 201);
+		this.success(ctx, state.serializers.Game.detailed(ctx, game), 201);
 	}
 
 	/**
@@ -209,7 +211,7 @@ export class GameApi extends Api {
 			logger.error(ctx.state, err);
 		}
 		await LogEventUtil.log(ctx, 'update_game', false, LogEventUtil.diff(oldGame, body), { game: game._id });
-		return this.success(ctx, state.serializers.Game.detailed(ctx, game), 200);
+		this.success(ctx, state.serializers.Game.detailed(ctx, game), 200);
 	}
 
 	/**
@@ -247,7 +249,7 @@ export class GameApi extends Api {
 		// log event
 		await LogEventUtil.log(ctx, 'delete_game', false, { game: omit(state.serializers.Game.simple(ctx, game), ['rating', 'counter']) }, { game: game._id });
 
-		return this.success(ctx, null, 204);
+		this.success(ctx, null, 204);
 	}
 
 	/**
@@ -351,7 +353,7 @@ export class GameApi extends Api {
 			sort,
 		});
 		const games = result.docs.map(game => state.serializers.Game.simple(ctx, game));
-		return this.success(ctx, games, 200, this.paginationOpts(pagination, result.total));
+		this.success(ctx, games, 200, this.paginationOpts(pagination, result.total));
 	}
 
 	/**
@@ -424,7 +426,7 @@ export class GameApi extends Api {
 
 		result.media = media.map(medium => state.serializers.Medium.simple(ctx, medium), { excludedFields: ['game'] });
 
-		return this.success(ctx, result, 200);
+		this.success(ctx, result, 200);
 	}
 
 	/**
@@ -446,7 +448,7 @@ export class GameApi extends Api {
 			words.push(game.keywords[Math.floor(Math.random() * game.keywords.length)]);
 		}
 		words.push('edition');
-		return this.success(ctx, { name: words.map(w => w.toLowerCase()).map(upperFirst).join(' ') }, 200);
+		this.success(ctx, { name: words.map(w => w.toLowerCase()).map(upperFirst).join(' ') }, 200);
 	}
 
 	/**

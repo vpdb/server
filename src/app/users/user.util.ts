@@ -289,8 +289,10 @@ export class UserUtil {
 
 		// 4. notify
 		if (explanation) {
-			await mailer.userMergedDeleted(ctx.state, keepUser, mergeUser, explanation);
-			await mailer.userMergedKept(ctx.state, keepUser, mergeUser, explanation);
+			// noinspection JSIgnoredPromiseFromCall
+			mailer.userMergedDeleted(ctx.state, keepUser, mergeUser, explanation);
+			// noinspection JSIgnoredPromiseFromCall
+			mailer.userMergedKept(ctx.state, keepUser, mergeUser, explanation);
 		}
 
 		logger.info(ctx.state, '[UserUtil.mergeUsers] Done merging, removing merged user %s.', mergeUser.id);

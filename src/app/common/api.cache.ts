@@ -288,19 +288,26 @@ class ApiCache {
 	public async invalidateStarredEntity(requestState: RequestState, modelName: string, entity: any, user: UserDocument) {
 
 		const span = this.apmStartSpan(`invalidateStarredEntity(${modelName})`);
-		const tags: CacheInvalidationTag[][] = [];
+		try {
+			const tags: CacheInvalidationTag[][] = [];
 
-		/** endpoints that include the user's starred status in the payload */
-		const modelsListingStar = ['release'];
+			/** endpoints that include the user's starred status in the payload */
+			const modelsListingStar = ['release'];
 
-		if (modelsListingStar.includes(modelName)) {
-			tags.push([{ list: modelName }, { user }]);
+			if (modelsListingStar.includes(modelName)) {
+				tags.push([{ list: modelName }, { user }]);
+			}
+			if (entity._game && entity._game.id) {
+				tags.push([{ entities: [{ modelName: 'game', entityId: entity._game.id, level: 'detailed' }] }, { user }]);
+			}
+			await this.invalidate(requestState, ...tags);
+
+		} catch (err) {
+			throw err;
+
+		} finally {
+			this.apmEndSpan(span);
 		}
-		if (entity._game && entity._game.id) {
-			tags.push([{ entities: [{ modelName: 'game', entityId: entity._game.id, level: 'detailed' }] }, { user }]);
-		}
-		await this.invalidate(requestState, ...tags);
-		this.apmEndSpan(span);
 	}
 
 	/**
@@ -311,15 +318,21 @@ class ApiCache {
 	 */
 	public async invalidateAllEntities(requestState: RequestState, modelName: string) {
 		const span = this.apmStartSpan(`invalidateAllEntities(${modelName})`);
-		logger.info(requestState, '[ApiCache.invalidateAllEntities] Invalidating all caches containing model %s ', modelName);
-		const entityRefs = await state.redis.keys(this.getEntityKey(modelName, '*'));
-		if (entityRefs.length > 0) {
-			const keys = await state.redis.sunion(...entityRefs);
-			logger.verbose(requestState, '[ApiCache.invalidateAllEntities] Clearing: %s', keys.join(', '));
-			await state.redis.del(keys);
-			await state.redis.del(entityRefs as any);
+		try {
+			logger.info(requestState, '[ApiCache.invalidateAllEntities] Invalidating all caches containing model %s ', modelName);
+			const entityRefs = await state.redis.keys(this.getEntityKey(modelName, '*'));
+			if (entityRefs.length > 0) {
+				const keys = await state.redis.sunion(...entityRefs);
+				logger.verbose(requestState, '[ApiCache.invalidateAllEntities] Clearing: %s', keys.join(', '));
+				await state.redis.del(keys);
+				await state.redis.del(entityRefs as any);
+			}
+		} catch (err) {
+			throw err;
+
+		} finally {
+			this.apmEndSpan(span);
 		}
-		this.apmEndSpan(span);
 	}
 
 	/**
@@ -331,15 +344,21 @@ class ApiCache {
 	 */
 	public async invalidateProviderCache(requestState: RequestState, provider: string) {
 		const span = this.apmStartSpan(`invalidateProviderCache(${provider})`);
-		logger.info(requestState, '[ApiCache.invalidateProviderCache] Invalidating all caches for provider %s', provider);
-		const entityRefs = await state.redis.keys(this.getProviderKey(provider));
-		if (entityRefs.length > 0) {
-			const keys = await state.redis.sunion(...entityRefs);
-			logger.verbose(requestState, '[ApiCache.invalidateProviderCache] Clearing: %s', keys.join(', '));
-			await state.redis.del(keys);
-			await state.redis.del(entityRefs as any);
+		try {
+			logger.info(requestState, '[ApiCache.invalidateProviderCache] Invalidating all caches for provider %s', provider);
+			const entityRefs = await state.redis.keys(this.getProviderKey(provider));
+			if (entityRefs.length > 0) {
+				const keys = await state.redis.sunion(...entityRefs);
+				logger.verbose(requestState, '[ApiCache.invalidateProviderCache] Clearing: %s', keys.join(', '));
+				await state.redis.del(keys);
+				await state.redis.del(entityRefs as any);
+			}
+		} catch (err) {
+			throw err;
+
+		} finally {
+			this.apmEndSpan(span);
 		}
-		this.apmEndSpan(span);
 	}
 
 	/**
@@ -373,61 +392,67 @@ class ApiCache {
 	private async invalidate(requestState: RequestState, ...tagLists: CacheInvalidationTag[][]): Promise<number> {
 
 		const span = this.apmStartSpan('invalidate()');
-		if (!tagLists || tagLists.length === 0) {
-			logger.info(requestState, '[ApiCache.invalidate]: Nothing to invalidate.');
-			this.apmEndSpan(span);
-			return;
-		}
-
-		const now = Date.now();
-		const allRefs: string[][][] = [];
-		let invalidationKeys = new Set<string>();
-		for (let i = 0; i < tagLists.length; i++) {
-			const tags = tagLists[i];
-			allRefs[i] = [];
-			const keys: string[][] = [];
-			for (const tag of tags) {
-				const refs: string[] = [];
-
-				// path
-				if (tag.list) {
-					refs.push(this.getListModelKey(tag.list));
-				}
-
-				// entities
-				if (tag.entities) {
-					for (const entity of tag.entities) {
-						refs.push(this.getEntityKey(entity.modelName, entity.level, entity.entityId));
-					}
-				}
-
-				// user
-				if (tag.user) {
-					refs.push(this.getUserKey(tag.user));
-				}
-
-				// union keys
-				allRefs[i].push(refs);
-				const union = await state.redis.sunion(...refs);
-				// logger.wtf('SUNION %s -> %s', refs.join(' '), union.join(','));
-				keys.push(union);
+		try {
+			if (!tagLists || tagLists.length === 0) {
+				logger.info(requestState, '[ApiCache.invalidate]: Nothing to invalidate.');
+				this.apmEndSpan(span);
+				return;
 			}
-			// logger.verbose('invalidationKeys = new Set(%s | inter(%s))', Array.from(invalidationKeys).join(','), keys.map(k => '[' + k.join(',') + ']').join(','));
-			// logger.verbose('invalidationKeys = new Set(%s | %s)', Array.from(invalidationKeys).join(','), intersection(...keys).join(','));
-			invalidationKeys = new Set([...invalidationKeys, ...intersection(...keys)]); // redis could do this too using SUNIONSTORE to temp sets and INTER them
-		}
-		logger.debug(requestState, '[ApiCache.invalidate]: Invalidating caches: (%s).',
-			'(' + allRefs.map(r => '(' + r.map(s => s.join(' || ')).join(') && (') + ')').join(') || (') + ')');
 
-		let n = 0;
-		for (const key of invalidationKeys) {
-			await state.redis.del(key);
-			n++;
-		}
-		logger.debug(requestState, '[ApiCache.invalidate]: Cleared %s caches in %sms.', n, Date.now() - now);
+			const now = Date.now();
+			const allRefs: string[][][] = [];
+			let invalidationKeys = new Set<string>();
+			for (let i = 0; i < tagLists.length; i++) {
+				const tags = tagLists[i];
+				allRefs[i] = [];
+				const keys: string[][] = [];
+				for (const tag of tags) {
+					const refs: string[] = [];
 
-		this.apmEndSpan(span);
-		return n;
+					// path
+					if (tag.list) {
+						refs.push(this.getListModelKey(tag.list));
+					}
+
+					// entities
+					if (tag.entities) {
+						for (const entity of tag.entities) {
+							refs.push(this.getEntityKey(entity.modelName, entity.level, entity.entityId));
+						}
+					}
+
+					// user
+					if (tag.user) {
+						refs.push(this.getUserKey(tag.user));
+					}
+
+					// union keys
+					allRefs[i].push(refs);
+					const union = await state.redis.sunion(...refs);
+					// logger.wtf('SUNION %s -> %s', refs.join(' '), union.join(','));
+					keys.push(union);
+				}
+				// logger.verbose('invalidationKeys = new Set(%s | inter(%s))', Array.from(invalidationKeys).join(','), keys.map(k => '[' + k.join(',') + ']').join(','));
+				// logger.verbose('invalidationKeys = new Set(%s | %s)', Array.from(invalidationKeys).join(','), intersection(...keys).join(','));
+				invalidationKeys = new Set([...invalidationKeys, ...intersection(...keys)]); // redis could do this too using SUNIONSTORE to temp sets and INTER them
+			}
+			logger.debug(requestState, '[ApiCache.invalidate]: Invalidating caches: (%s).',
+				'(' + allRefs.map(r => '(' + r.map(s => s.join(' || ')).join(') && (') + ')').join(') || (') + ')');
+
+			let n = 0;
+			for (const key of invalidationKeys) {
+				await state.redis.del(key);
+				n++;
+			}
+			logger.debug(requestState, '[ApiCache.invalidate]: Cleared %s caches in %sms.', n, Date.now() - now);
+			return n;
+
+		} catch (err) {
+			throw err;
+
+		} finally {
+			this.apmEndSpan(span);
+		}
 	}
 
 	/**
@@ -552,43 +577,49 @@ class ApiCache {
 	private async updateCounters(cacheRoute: CacheRoute<any>, cacheHit: string): Promise<CacheResponse> {
 
 		const span = this.apmStartSpan('updateCounters()');
-		const response = JSON.parse(cacheHit) as CacheResponse;
-		if (!response.headers['content-type'] || !response.headers['content-type'].startsWith('application/json')) {
-			this.apmEndSpan(span);
-			return response;
-		}
-		const body = isObject(response.body) ? response.body : JSON.parse(response.body);
+		try {
+			const response = JSON.parse(cacheHit) as CacheResponse;
+			if (!response.headers['content-type'] || !response.headers['content-type'].startsWith('application/json')) {
+				return response;
+			}
+			const body = isObject(response.body) ? response.body : JSON.parse(response.body);
 
-		// update counters
-		if (cacheRoute.counters) {
-			const refs: Array<{ counter: CacheCounterConfig<any>, key: string, id: string, c: string }> = [];
-			for (const counter of cacheRoute.counters) {
-				for (const counterName of counter.counters) {
-					const counters = counter.get(body, counterName);
-					for (const id of Object.keys(counters)) {
-						refs.push({ key: this.getCounterKey(counter.modelName, id, counterName), id, c: counterName, counter });
+			// update counters
+			if (cacheRoute.counters) {
+				const refs: Array<{ counter: CacheCounterConfig<any>, key: string, id: string, c: string }> = [];
+				for (const counter of cacheRoute.counters) {
+					for (const counterName of counter.counters) {
+						const counters = counter.get(body, counterName);
+						for (const id of Object.keys(counters)) {
+							refs.push({ key: this.getCounterKey(counter.modelName, id, counterName), id, c: counterName, counter });
+						}
+					}
+					// update db of view counter
+					if (counter.incrementCounter) {
+						await state.getModel<MetricsModel<MetricsDocument>>(counter.modelName).incrementCounter(counter.incrementCounter.getId(body), counter.incrementCounter.counter);
 					}
 				}
-				// update db of view counter
-				if (counter.incrementCounter) {
-					await state.getModel<MetricsModel<MetricsDocument>>(counter.modelName).incrementCounter(counter.incrementCounter.getId(body), counter.incrementCounter.counter);
+				const values = refs.length > 0 ? (await state.redis.mget.apply(state.redis, refs.map(r => r.key))) : [];
+				for (let i = 0; i < values.length; i++) {
+					if (values[i]) {
+						refs[i].counter.set(body, refs[i].c, { [refs[i].id]: parseInt(values[i], 10) });
+					}
 				}
 			}
-			const values = refs.length > 0 ? (await state.redis.mget.apply(state.redis, refs.map(r => r.key))) : [];
-			for (let i = 0; i < values.length; i++) {
-				if (values[i]) {
-					refs[i].counter.set(body, refs[i].c, { [refs[i].id]: parseInt(values[i], 10) });
-				}
-			}
-		}
-		this.apmEndSpan(span);
 
-		return {
-			status: response.status,
-			headers: response.headers,
-			// if request body was a string it was prettified, so let's do that again.
-			body: !isObject(response.body) ? JSON.stringify(body, null, '  ') : body,
-		};
+			return {
+				status: response.status,
+				headers: response.headers,
+				// if request body was a string it was prettified, so let's do that again.
+				body: !isObject(response.body) ? JSON.stringify(body, null, '  ') : body,
+			};
+
+		} catch (err) {
+			throw err;
+
+		} finally {
+			this.apmEndSpan(span);
+		}
 	}
 
 	private getCacheKey(ctx: Context): string {
@@ -639,17 +670,24 @@ class ApiCache {
 	 */
 	private async deleteWildcard(wildcard: string): Promise<number> {
 		const span = this.apmStartSpan(`deleteWildcard(${wildcard})`);
-		const num = await state.redis.eval(
-			'local keysToDelete = redis.call(\'keys\', ARGV[1]) ' + // find keys with wildcard
-			'if unpack(keysToDelete) ~= nil then ' +                     // if there are any keys
-			'return redis.call(\'del\', unpack(keysToDelete)) ' +        // delete all
-			'else ' +
-			'return 0 ' +                                                // if no keys to delete
-			'end ',
-			0,                                                           // no keys names passed, only one argument ARGV[1]
-			wildcard);
-		this.apmEndSpan(span);
-		return num as number;
+		try {
+			const num = await state.redis.eval(
+				'local keysToDelete = redis.call(\'keys\', ARGV[1]) ' + // find keys with wildcard
+				'if unpack(keysToDelete) ~= nil then ' +                     // if there are any keys
+				'return redis.call(\'del\', unpack(keysToDelete)) ' +        // delete all
+				'else ' +
+				'return 0 ' +                                                // if no keys to delete
+				'end ',
+				0,                                                           // no keys names passed, only one argument ARGV[1]
+				wildcard);
+			return num as number;
+
+		} catch (err) {
+			throw err;
+
+		} finally {
+			this.apmEndSpan(span);
+		}
 	}
 
 	/**

@@ -40,7 +40,7 @@ export class LogEventApi extends Api {
 	 */
 	public list(opts: ListLogEventOpts = {}) {
 
-		return async (ctx: Context): Promise<boolean> => {
+		return async (ctx: Context) => {
 
 			const query: any = [{ is_public: true }];
 			const pagination = this.pagination(ctx, 10, 50);
@@ -157,7 +157,7 @@ export class LogEventApi extends Api {
 			}
 
 			const logs = docs.map(log => fullDetails ? state.serializers.LogEvent.detailed(ctx, log) : state.serializers.LogEvent.simple(ctx, log));
-			return this.success(ctx, logs, 200, this.paginationOpts(pagination, count));
+			this.success(ctx, logs, 200, this.paginationOpts(pagination, count));
 		};
 	}
 }

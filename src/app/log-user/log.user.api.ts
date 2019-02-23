@@ -69,6 +69,6 @@ export class LogUserApi extends Api {
 			}
 			return state.serializers.LogUser.detailed(ctx, log);
 		});
-		return this.success(ctx, logs, 200, this.paginationOpts(pagination, result.total));
+		this.success(ctx, logs, 200, this.paginationOpts(pagination, result.total));
 	}
 }

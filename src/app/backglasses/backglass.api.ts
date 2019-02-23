@@ -97,13 +97,6 @@ export class BackglassApi extends Api {
 		// invalidate cache
 		await apiCache.invalidateCreatedBackglass(ctx.state, populatedBackglass);
 
-		// send moderation mail
-		if (populatedBackglass.moderation.is_approved) {
-			await mailer.backglassAutoApproved(ctx.state, ctx.state.user, populatedBackglass);
-		} else {
-			await mailer.backglassSubmitted(ctx.state, ctx.state.user, populatedBackglass);
-		}
-
 		// event log
 		await LogEventUtil.log(ctx, 'create_backglass', true, {
 			backglass: state.serializers.Backglass.detailed(ctx, populatedBackglass),
@@ -114,7 +107,16 @@ export class BackglassApi extends Api {
 		});
 
 		// return object
-		return this.success(ctx, state.serializers.Backglass.detailed(ctx, populatedBackglass), 201);
+		this.success(ctx, state.serializers.Backglass.detailed(ctx, populatedBackglass), 201);
+
+		this.noAwait(async () => {
+			// send moderation mail
+			if (populatedBackglass.moderation.is_approved) {
+				await mailer.backglassAutoApproved(ctx.state, ctx.state.user, populatedBackglass);
+			} else {
+				await mailer.backglassSubmitted(ctx.state, ctx.state.user, populatedBackglass);
+			}
+		});
 	}
 
 	/**
@@ -176,7 +178,7 @@ export class BackglassApi extends Api {
 		await LogEventUtil.log(ctx, 'update_backglass', false, LogEventUtil.diff(oldBackglass, ctx.request.body),
 			{ backglass: backglass._id, game: backglass._game._id });
 
-		return this.success(ctx, state.serializers.Backglass.detailed(ctx, backglass), 200);
+		this.success(ctx, state.serializers.Backglass.detailed(ctx, backglass), 200);
 	}
 
 	/**
@@ -229,7 +231,7 @@ export class BackglassApi extends Api {
 			sort: { created_at: -1 },
 		});
 		const backglasses = result.docs.map(bg => state.serializers.Backglass.simple(ctx, bg, serializerOpts));
-		return this.success(ctx, backglasses, 200, this.paginationOpts(pagination, result.total));
+		this.success(ctx, backglasses, 200, this.paginationOpts(pagination, result.total));
 	}
 
 	/**
@@ -257,7 +259,7 @@ export class BackglassApi extends Api {
 		if (populated !== false) {
 			serializerOpts.includedFields.push('moderation');
 		}
-		return this.success(ctx, state.serializers.Backglass.detailed(ctx, populated as BackglassDocument, serializerOpts));
+		this.success(ctx, state.serializers.Backglass.detailed(ctx, populated as BackglassDocument, serializerOpts));
 	}
 
 	/**
@@ -293,7 +295,7 @@ export class BackglassApi extends Api {
 			backglass: backglass._id,
 			game: backglass._game._id,
 		});
-		return this.success(ctx, null, 204);
+		this.success(ctx, null, 204);
 	}
 
 	/**
@@ -311,17 +313,21 @@ export class BackglassApi extends Api {
 			throw new ApiError('No such backglass with ID "%s".', ctx.params.id).status(404);
 		}
 		const moderationEvent = await state.models.Backglass.handleModeration(ctx, backglass);
-		switch (moderationEvent.event) {
-			case 'approved':
-				await mailer.backglassApproved(ctx.state, backglass._created_by as UserDocument, backglass, moderationEvent.message);
-				break;
-			case 'refused':
-				await mailer.backglassRefused(ctx.state, backglass._created_by as UserDocument, backglass, moderationEvent.message);
-				break;
-		}
+
 		backglass = await state.models.Backglass.findById(backglass._id)
 			.populate('moderation.history._created_by')
 			.exec();
-		return this.success(ctx, state.serializers.Backglass.detailed(ctx, backglass, { includedFields: ['moderation'] }).moderation, 200);
+		this.success(ctx, state.serializers.Backglass.detailed(ctx, backglass, { includedFields: ['moderation'] }).moderation, 200);
+
+		this.noAwait(async () => {
+			switch (moderationEvent.event) {
+				case 'approved':
+					await mailer.backglassApproved(ctx.state, backglass._created_by as UserDocument, backglass, moderationEvent.message);
+					break;
+				case 'refused':
+					await mailer.backglassRefused(ctx.state, backglass._created_by as UserDocument, backglass, moderationEvent.message);
+					break;
+			}
+		});
 	}
 }

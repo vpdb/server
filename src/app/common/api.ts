@@ -153,7 +153,6 @@ export abstract class Api {
 	 * @param body         Response body or null if no response body to send.
 	 * @param [status=200] HTTP status code
 	 * @param [opts]       Additional options such as pagination options and headers.
-	 * @return {boolean}   Boolean indicating success.
 	 */
 	protected success(ctx: Context, body?: any, status: number = 200, opts: SuccessOpts = {}) {
 
@@ -196,7 +195,6 @@ export abstract class Api {
 		if (body) {
 			ctx.response.body = body;
 		}
-		return true;
 	}
 
 	/**

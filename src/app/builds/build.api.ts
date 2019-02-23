@@ -48,7 +48,7 @@ export class BuildApi extends Api {
 
 		// reduce
 		builds = builds.map(build => state.serializers.Build.simple(ctx, build));
-		return this.success(ctx, builds);
+		this.success(ctx, builds);
 	}
 
 	/**
@@ -111,7 +111,7 @@ export class BuildApi extends Api {
 		if (!build) {
 			throw new ApiError('No such build with ID "%s".', ctx.params.id).status(404);
 		}
-		return this.success(ctx, state.serializers.Build.detailed(ctx, build), 200);
+		this.success(ctx, state.serializers.Build.detailed(ctx, build), 200);
 	}
 
 	/**

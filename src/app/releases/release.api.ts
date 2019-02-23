@@ -18,7 +18,7 @@
  */
 
 import { assign, cloneDeep, difference, extend, intersection, isUndefined, keys, orderBy, pick } from 'lodash';
-import { Types } from 'mongoose';
+import { ModerationDataEvent, Types } from 'mongoose';
 
 import { acl } from '../common/acl';
 import { apiCache } from '../common/api.cache';
@@ -103,13 +103,6 @@ export class ReleaseApi extends ReleaseAbstractApi {
 			// invalidate cache
 			await apiCache.invalidateCreatedRelease(ctx.state, release);
 
-			// notify (co-)author(s)
-			for (const author of release.authors) {
-				if ((author._user as UserDocument).id !== ctx.state.user.id) {
-					await mailer.releaseAdded(ctx.state, ctx.state.user, author._user as UserDocument, release);
-				}
-			}
-
 			this.success(ctx, state.serializers.Release.detailed(ctx, release, { includedFields: ['is_active'] }), 201);
 
 		} catch (err) {
@@ -120,6 +113,13 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		}
 
 		this.noAwait(async () => {
+
+			// notify (co-)author(s)
+			for (const author of release.authors) {
+				if ((author._user as UserDocument).id !== ctx.state.user.id) {
+					await mailer.releaseAdded(ctx.state, ctx.state.user, author._user as UserDocument, release);
+				}
+			}
 
 			// handle moderation mails
 			if (release.moderation.is_approved) {
@@ -425,9 +425,11 @@ export class ReleaseApi extends ReleaseAbstractApi {
 	 */
 	public async moderate(ctx: Context) {
 
+		let release: ReleaseDocument;
+		let moderationEvent: ModerationDataEvent;
 		const span = this.apmStartSpan('ReleaseApi.moderate');
 		try {
-			let release = await state.models.Release.findOne({ id: ctx.params.id })
+			release = await state.models.Release.findOne({ id: ctx.params.id })
 				.populate('_game')
 				.populate('_created_by')
 				.exec();
@@ -435,15 +437,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 			if (!release) {
 				throw new ApiError('No such release with ID "%s".', ctx.params.id).status(404);
 			}
-			const moderationEvent = await state.models.Release.handleModeration(ctx, release);
-			switch (moderationEvent.event) {
-				case 'approved':
-					await mailer.releaseApproved(ctx.state, release._created_by as UserDocument, release, moderationEvent.message);
-					break;
-				case 'refused':
-					await mailer.releaseRefused(ctx.state, release._created_by as UserDocument, release, moderationEvent.message);
-					break;
-			}
+			moderationEvent = await state.models.Release.handleModeration(ctx, release);
 
 			// if message set, create a comment.
 			if (moderationEvent.message) {
@@ -468,6 +462,17 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		} finally {
 			this.apmEndSpan(span);
 		}
+
+		this.noAwait(async () => {
+			switch (moderationEvent.event) {
+				case 'approved':
+					await mailer.releaseApproved(ctx.state, release._created_by as UserDocument, release, moderationEvent.message);
+					break;
+				case 'refused':
+					await mailer.releaseRefused(ctx.state, release._created_by as UserDocument, release, moderationEvent.message);
+					break;
+			}
+		});
 	}
 
 	/**

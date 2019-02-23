@@ -48,7 +48,7 @@ export class ProfileApi extends Api {
 
 		const acls = await this.getACLs(ctx.state.user);
 		const q = await quota.get(ctx.state, ctx.state.user);
-		return this.success(ctx, assign(state.serializers.User.detailed(ctx, ctx.state.user), acls, { quota: q }), 200);
+		this.success(ctx, assign(state.serializers.User.detailed(ctx, ctx.state.user), acls, { quota: q }), 200);
 	}
 
 	/**
@@ -125,9 +125,10 @@ export class ProfileApi extends Api {
 		const acls = await this.getACLs(user);
 
 		if (testMode && ctx.request.body.returnEmailToken) {
-			return this.success(ctx, assign(state.serializers.User.detailed(ctx, user), acls, { email_token: (user.email_status as any).toObject().token }), 200);
+			this.success(ctx, assign(state.serializers.User.detailed(ctx, user), acls, { email_token: (user.email_status as any).toObject().token }), 200);
+		} else {
+			this.success(ctx, assign(state.serializers.User.detailed(ctx, user), acls), 200);
 		}
-		return this.success(ctx, assign(state.serializers.User.detailed(ctx, user), acls), 200);
 	}
 
 	/**
@@ -219,15 +220,17 @@ export class ProfileApi extends Api {
 		await user.save();
 		await LogUserUtil.success(ctx, user, logEvent, { email: user.email });
 
-		if (logEvent === 'registration_email_confirmed' && config.vpdb.email.confirmUserEmail) {
-			await mailer.welcomeLocal(ctx.state, user);
-		}
-
-		return this.success(ctx, {
+		this.success(ctx, {
 			message: successMsg,
 			previous_code: currentCode,
 			deleted_users: delCounter,
 			merged_users: mergeUsers.length,
+		});
+
+		this.noAwait(async () => {
+			if (logEvent === 'registration_email_confirmed' && config.vpdb.email.confirmUserEmail) {
+				await mailer.welcomeLocal(ctx.state, user);
+			}
 		});
 	}
 
@@ -312,7 +315,9 @@ export class ProfileApi extends Api {
 					old: { email: ctx.state.user.email },
 					new: { email: updatedUser.email_status.value },
 				});
-				await mailer.emailUpdateConfirmation(ctx.state, updatedUser);
+				this.noAwait(async () => {
+					await mailer.emailUpdateConfirmation(ctx.state, updatedUser);
+				});
 			}
 		}
 	}

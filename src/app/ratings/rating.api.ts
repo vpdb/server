@@ -124,7 +124,7 @@ export class RatingApi extends Api {
 		if (!rating) {
 			throw new ApiError('No rating of <%s> for "%s" found.', ctx.state.user.email, (entity as any)[titleAttr]).status(404);
 		}
-		return this.success(ctx, pick(rating, ['value', 'created_at', 'modified_at']));
+		this.success(ctx, pick(rating, ['value', 'created_at', 'modified_at']));
 	}
 
 	/**

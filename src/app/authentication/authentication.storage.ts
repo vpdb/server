@@ -50,6 +50,6 @@ export class AuthenticationStorageApi extends Api {
 			tokens[path] = AuthenticationUtil.generateStorageToken(ctx.state.user, now, path);
 		});
 		logger.info(ctx.state, '[AuthenticationStorageApi.authenticateUrls] Generated %d auth tokens for user <%s>.', keys(tokens).length, ctx.state.user.email);
-		return this.success(ctx, tokens);
+		this.success(ctx, tokens);
 	}
 }

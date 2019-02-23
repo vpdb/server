@@ -108,7 +108,7 @@ export class TokenApi extends Api {
 		await newToken.save();
 
 		logger.info(ctx.state, '[TokenApi.create] Token "%s" successfully created.', newToken.label);
-		return this.success(ctx, state.serializers.Token.detailed(ctx, newToken), 201);
+		this.success(ctx, state.serializers.Token.detailed(ctx, newToken), 201);
 	}
 
 	/**
@@ -170,7 +170,7 @@ export class TokenApi extends Api {
 				tokenInfo.for_path = decoded.path;
 			}
 		}
-		return this.success(ctx, tokenInfo, 200);
+		this.success(ctx, tokenInfo, 200);
 	}
 
 	/**
@@ -206,7 +206,7 @@ export class TokenApi extends Api {
 
 		// reduce
 		tokens = tokens.map(token => state.serializers.Token.simple(ctx, token));
-		return this.success(ctx, tokens);
+		this.success(ctx, tokens);
 	}
 
 	/**
@@ -227,7 +227,7 @@ export class TokenApi extends Api {
 		extend(token, pick(ctx.request.body, updatableFields));
 		await token.save();
 		logger.info(ctx.state, '[TokenApi.update] Token "%s" successfully updated.', token.label);
-		return this.success(ctx, state.serializers.Token.simple(ctx, token), 200);
+		this.success(ctx, state.serializers.Token.simple(ctx, token), 200);
 	}
 
 	/**
@@ -242,6 +242,6 @@ export class TokenApi extends Api {
 			throw new ApiError('No such token').status(404);
 		}
 		await token.remove();
-		return this.success(ctx, null, 204);
+		this.success(ctx, null, 204);
 	}
 }

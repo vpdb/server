@@ -54,7 +54,7 @@ export class MiscApi extends Api {
 			app_date: gitInfo.hasInfo() ? gitInfo.getLastCommit().lastCommitTime : undefined,
 			app_sha: gitInfo.hasInfo() ? gitInfo.getLastCommit().SHA : undefined,
 		};
-		return this.success(ctx, result, 200);
+		this.success(ctx, result, 200);
 	}
 
 	/**
@@ -65,7 +65,7 @@ export class MiscApi extends Api {
 	 */
 	public async ipdbDetails(ctx: Context) {
 		const game = await ipdb.details(ctx.state, ctx.params.id, { offline: ctx.query.dryrun });
-		return this.success(ctx, game);
+		this.success(ctx, game);
 	}
 
 	/**
@@ -75,7 +75,7 @@ export class MiscApi extends Api {
 	 * @param {Application.Context} ctx Koa context
 	 */
 	public async roles(ctx: Context) {
-		return this.success(ctx, roles, 200);
+		this.success(ctx, roles, 200);
 	}
 
 	/**
@@ -92,7 +92,7 @@ export class MiscApi extends Api {
 				is_default: plan.id === config.vpdb.quota.defaultPlan,
 			}));
 		});
-		return this.success(ctx, plans, 200);
+		this.success(ctx, plans, 200);
 	}
 
 	/**
@@ -102,7 +102,7 @@ export class MiscApi extends Api {
 	 * @param {Application.Context} ctx Koa context
 	 */
 	public async ping(ctx: Context) {
-		return this.success(ctx, { result: 'pong' }, 200);
+		this.success(ctx, { result: 'pong' }, 200);
 	}
 
 	/**
@@ -115,7 +115,7 @@ export class MiscApi extends Api {
 		const now = Date.now();
 		const num = await apiCache.invalidateAll();
 		logger.info(ctx.state, '[MiscApi.invalidateCache] Cleared %s caches in %sms.', num, Date.now() - now);
-		return this.success(ctx, { cleared: num }, 204);
+		this.success(ctx, { cleared: num }, 204);
 	}
 
 	/**

@@ -50,7 +50,7 @@ export class MediumApi extends Api {
 			.populate({ path: '_created_by' })
 			.populate({ path: '_file' })
 			.exec();
-		return this.success(ctx, state.serializers.Medium.simple(ctx, populatedMedium), 201);
+		this.success(ctx, state.serializers.Medium.simple(ctx, populatedMedium), 201);
 	}
 
 	/**
@@ -71,7 +71,7 @@ export class MediumApi extends Api {
 			.populate({ path: '_created_by' })
 			.populate({ path: '_file' })
 			.exec();
-		return this.success(ctx, media.map(m => state.serializers.Medium.simple(ctx, m)));
+		this.success(ctx, media.map(m => state.serializers.Medium.simple(ctx, m)));
 	}
 
 	/**
@@ -95,6 +95,6 @@ export class MediumApi extends Api {
 		await medium.remove();
 
 		logger.info(ctx.state, '[MediumApi.del] Medium "%s" successfully deleted.', medium.id);
-		return this.success(ctx, null, 204);
+		this.success(ctx, null, 204);
 	}
 }

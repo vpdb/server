@@ -67,7 +67,7 @@ export class FileStorage extends Api {
 		} else {
 			file = await this.handleRawUpload(ctx);
 		}
-		return this.success(ctx, state.serializers.File.detailed(ctx, file), 201);
+		this.success(ctx, state.serializers.File.detailed(ctx, file), 201);
 	}
 
 	/**
@@ -99,8 +99,8 @@ export class FileStorage extends Api {
 	 *
 	 * @see HEAD /v1/files/:id
 	 * @see HEAD /v1/files/:variation/:id
-	 * @see HEAD /public/files/:id
-	 * @see HEAD /public/files/:variation/:id
+	 * @see HEAD /files/:id
+	 * @see HEAD /files/:variation/:id
 	 * @param {Context} ctx Koa context
 	 */
 	public async head(ctx: Context) {

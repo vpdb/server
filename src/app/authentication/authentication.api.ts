@@ -58,6 +58,7 @@ export class AuthenticationApi extends Api {
 			if (ttl > 0) {
 				throw new ApiError('Too many failed login attempts from %s, blocking for another %s seconds.', ipAddress, ttl)
 					.display('Too many failed login attempts from this IP, try again in %s seconds.', ttl)
+					.code('too_many_failed_logins')
 					.body({ wait: ttl })
 					.warn()
 					.status(429);
@@ -232,6 +233,7 @@ export class AuthenticationApi extends Api {
 		} // don't bother logging unknown user names
 		throw new ApiError('Authentication denied for user "%s" (%s)', ctx.request.body.username, localUser ? 'password' : 'username')
 			.display('Wrong username or password')
+			.code('wrong_username_or_password')
 			.warn()
 			.status(401);
 	}
@@ -321,6 +323,7 @@ export class AuthenticationApi extends Api {
 				await LogUserUtil.failure(ctx, user, 'authenticate', { provider: 'local' }, null, 'Inactive account due to pending email confirmation.');
 				throw new ApiError('User <%s> tried to login with unconfirmed email address.', user.email)
 					.display('Your account is inactive until you confirm your email address <%s>. If you did not get an email from <%s>, please contact an administrator.', user.email, config.vpdb.email.sender.email)
+					.code('email_unconfirmed')
 					.warn()
 					.status(403);
 
@@ -328,6 +331,7 @@ export class AuthenticationApi extends Api {
 				await LogUserUtil.failure(ctx, user, 'authenticate', { provider: 'local' }, null, 'Inactive account.');
 				throw new ApiError('User <%s> is disabled, refusing access', user.email)
 					.display('Inactive account. Please contact an administrator')
+					.code('account_disabled')
 					.warn()
 					.status(403);
 			}

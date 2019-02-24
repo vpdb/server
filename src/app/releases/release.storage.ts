@@ -35,13 +35,13 @@ import { fileTypes } from '../files/file.types';
 import { FileVariation } from '../files/file.variations';
 import { processorQueue } from '../files/processor/processor.queue';
 import { GameDocument } from '../games/game.document';
+import { LogEventUtil } from '../log-event/log.event.util';
 import { state } from '../state';
 import { UserDocument, UserPreferences } from '../users/user.document';
 import { ReleaseDocument } from './release.document';
 import { flavors } from './release.flavors';
 import { ReleaseVersionFileDocument } from './version/file/release.version.file.document';
 import { ReleaseVersionDocument } from './version/release.version.document';
-import { LogEventUtil } from '../log-event/log.event.util';
 
 const Unrar = require('unrar');
 

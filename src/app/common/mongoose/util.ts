@@ -19,7 +19,6 @@
 
 import { extend, get, isArray, keys } from 'lodash';
 import { Schema } from 'mongoose';
-import { UserDocument } from '../../users/user.document';
 import { ContentAuthor } from '../../users/content.author';
 import { Context } from '../typings/context';
 

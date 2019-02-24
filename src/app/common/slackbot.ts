@@ -106,7 +106,7 @@ export class SlackBot {
 					if (log.payload.updated) {
 						msg.msg = `Updated rating for *${log.payload.game.title}* (${log.payload.game.manufacturer} ${log.payload.game.year}) to ${log.payload.rating.value}/10.`;
 					} else {
-						msg.msg = `Rated *${log.payload.game.title}* (${log.payload.game.manufacturer} ${log.payload.game.year}) with ${log.payload.rating.value}/10.`;
+						msg.msg = `Rated *${log.payload.game.title}* (${log.payload.game.manufacturer} ${log.payload._game.year}) with ${log.payload.rating.value}/10.`;
 					}
 					break;
 
@@ -114,7 +114,7 @@ export class SlackBot {
 					if (log.payload.updated) {
 						msg.msg = `Updated rating for *${log.payload.release.name}* of ${log.payload.release.game.title} (${log.payload.release.game.manufacturer} ${log.payload.release.game.year}) to ${log.payload.rating.value}/10.`;
 					} else {
-						msg.msg = `Rated *${log.payload.release.name}* of ${log.payload.release.game.title} (${log.payload.release.game.manufacturer} ${log.payload.release.game.year}) with ${log.payload.rating.value}/10.`;
+						msg.msg = `Rated *${log.payload.release.name}* of ${log.payload.release._game.title} (${log.payload.release._game.manufacturer} ${log.payload.release._game.year}) with ${log.payload.rating.value}/10.`;
 					}
 					break;
 

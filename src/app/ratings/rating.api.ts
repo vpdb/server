@@ -249,7 +249,7 @@ export class RatingApi extends Api {
 		};
 	}
 
-	private async logPayload(rating: any, entity: any, modelName: string, updateOnly: boolean) {
+	private logPayload(rating: any, entity: any, modelName: string, updateOnly: boolean) {
 		let payload: any;
 		if (rating) {
 			payload = { rating: pick(rating.toObject(), ['id', 'value']), updated: updateOnly };
@@ -260,7 +260,7 @@ export class RatingApi extends Api {
 		return payload;
 	}
 
-	private async logRefs(rating: any, entity: any, modelName: string) {
+	private logRefs(rating: any, entity: any, modelName: string) {
 		const ref: any = {};
 		if (rating) {
 			ref[modelName] = rating._ref[modelName]._id;

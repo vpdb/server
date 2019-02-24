@@ -11,7 +11,13 @@
 		"outDir": "build",
 		"paths": {
 			"*": [ "typings/*" ]
-		}
+		},
+		"lib": [
+			"es5",
+			"es2015",
+			"es2016.array.include",
+			"esnext.asynciterable"
+		]
 	},
 	"include": [
 		"src/**/*.ts"

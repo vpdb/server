@@ -21,6 +21,8 @@ import { RTMClient, WebClient } from '@slack/client';
 import { MessageAttachment } from '@slack/client/dist/methods';
 import { RTMClientOptions } from '@slack/client/dist/RTMClient';
 
+import { FileDocument } from '../files/file.document';
+import { GameDocument } from '../games/game.document';
 import { LogEventDocument } from '../log-event/log.event.document';
 import { LogUserDocument } from '../log-user/log.user.document';
 import { state } from '../state';
@@ -29,6 +31,7 @@ import { UserDocument } from '../users/user.document';
 import { UserUtil } from '../users/user.util';
 import { logger } from './logger';
 import { config, settings } from './settings';
+import { Context } from './typings/context';
 
 const red = '#cf0000';
 const delay = 5000;
@@ -37,7 +40,7 @@ const delay = 5000;
 export class SlackBot {
 
 	private readonly enabled: boolean = false;
-	private config: { enabled: boolean; token: string; channels: { eventLog: string; userLog: string; general: string } };
+	private config: { enabled: boolean; token: string; channels: { eventLog: string; userLog: string; downloadLog: string; general: string } };
 	private web: WebClient;
 	private rtm: RTMClient;
 
@@ -55,7 +58,7 @@ export class SlackBot {
 		}
 	}
 
-	public async logEvent(log: LogEventDocument): Promise<void> {
+	public async logEvent(ctx: Context, log: LogEventDocument): Promise<void> {
 		if (!this.enabled) {
 			return;
 		}
@@ -63,6 +66,7 @@ export class SlackBot {
 		try {
 			const msg: { msg: string, atts?: MessageAttachment[] } = { msg: '', atts: [] };
 			const actor = await state.models.User.findById((log._actor as UserDocument)._id || log._actor).exec();
+			const channel = this.config.channels.eventLog;
 			switch (log.event) {
 				case 'create_comment':
 					msg.msg = `Commented on *${log.payload.comment.release.name}* of ${log.payload.comment.release.game.title} (${log.payload.comment.release.game.manufacturer} ${log.payload.comment.release.game.year}):`;
@@ -129,7 +133,7 @@ export class SlackBot {
 					}];
 					break;
 
-				case 'update_game':
+				case 'update_game': {
 					const game = await state.models.Game.findById(log._ref.game).exec();
 					msg.msg = 'Updated game:';
 					msg.atts = [{
@@ -140,6 +144,7 @@ export class SlackBot {
 						mrkdwn_in: ['text'],
 					} as MessageAttachment];
 					break;
+				}
 
 				case 'delete_game':
 					break;
@@ -165,6 +170,43 @@ export class SlackBot {
 					}
 					msg.msg = `Created new release for *${log.payload.game.title}* (${log.payload.game.manufacturer} ${log.payload.game.year}):`;
 					break;
+				}
+				case 'download_release': {
+					// sleep
+					await new Promise(resolve => setTimeout(resolve, delay));
+					const release = await state.models.Release.findById(log._ref.release)
+						.populate({ path: '_game' })
+						.populate({ path: 'versions.files._file' })
+						.populate({ path: 'versions.files._playfield_image' })
+						.exec();
+					const r = state.serializers.Release.detailed(ctx, release, { thumbFormat: 'square '});
+					const game = release._game as GameDocument;
+					const bytesSent = log.payload.response.bytes_sent;
+					const timeMs = log.payload.response.time_ms;
+					const sizeMb = Math.round(bytesSent / 100000) / 10;
+					const speedMbps = Math.round(bytesSent / timeMs) / 1000;
+					const message = {
+						channel: this.config.channels.downloadLog,
+						blocks: [
+							{
+								type: 'section',
+								text: {
+									type: 'mrkdwn',
+									text: `*${game.title} (${game.manufacturer} ${game.year})*\n_${release.name}_\nDownloaded ${sizeMb} MB in ${Math.round(timeMs / 1000)}s at ${speedMbps} MB/s`,
+								},
+								accessory: {
+									type: 'image',
+									image_url: r.thumb.image.url,
+									alt_text: 'square',
+								},
+							},
+						],
+						as_user: false,
+						username: actor.name,
+						icon_url: 'https://www.gravatar.com/avatar/' + UserUtil.getGravatarHash(actor) + '?d=retro',
+					};
+					await this.web.chat.postMessage(message as any);
+					return;
 				}
 				case 'update_release':
 					break;
@@ -195,7 +237,7 @@ export class SlackBot {
 			await new Promise(resolve => setTimeout(resolve, delay));
 
 			await this.web.chat.postMessage({
-				channel: this.config.channels.eventLog,
+				channel,
 				text: msg.msg,
 				as_user: false,
 				username: actor.name,
@@ -204,7 +246,7 @@ export class SlackBot {
 			});
 
 		} catch (err) {
-			logger.error(err, 'Error sending event log to slack.');
+			logger.error(null, 'Error sending event log to slack.', err);
 
 		} finally {
 			this.apmEndSpan(span);

@@ -19,6 +19,7 @@
 	},
 	"scripts": {
 		"start": "node -r ts-node/register src/app",
+		"serve": "cross-env NODE_ENV=development PORT=3000 APP_NAME=local APP_SETTINGS=config/settings.js run-s build serve:test:debug:compiled",
 		"serve:dev": "nodemon --config deploy/nodemon/dev.json --inspect -r ts-node/register src/app",
 		"serve:test": "nyc node build/app",
 		"serve:test:debug": "node --inspect -r ts-node/register src/app",
@@ -46,7 +47,7 @@
 	"mod-project-name": "vpdb",
 	"dependencies": {
 		"@koa/cors": "2.2.3",
-		"@slack/client": "4.3.1",
+		"@slack/client": "4.9.0",
 		"acl": "0.4.11",
 		"adm-zip": "0.4.13",
 		"archiver": "3.0.0",

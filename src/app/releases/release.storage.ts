@@ -41,6 +41,7 @@ import { ReleaseDocument } from './release.document';
 import { flavors } from './release.flavors';
 import { ReleaseVersionFileDocument } from './version/file/release.version.file.document';
 import { ReleaseVersionDocument } from './version/release.version.document';
+import { LogEventUtil } from '../log-event/log.event.util';
 
 const Unrar = require('unrar');
 
@@ -90,6 +91,25 @@ export class ReleaseStorage extends Api {
 		ctx.status = 200;
 		ctx.set('Content-Type', 'application/zip');
 		ctx.set('Content-Disposition', 'attachment; filename="' + encodeURIComponent(gameName) + '.zip"'); // todo add release name and authors to zip filename
+		let bytesSent = 0;
+		const timeStarted = Date.now();
+		archive.on('data', chunk => bytesSent += (chunk as any).length);
+		archive.on('end', () => {
+			const timeMs = Date.now() - timeStarted;
+			logger.info(ctx.state, '[ReleaseStorage.download] Download finished, sent %s bytes in %ss (%s MB/s).', bytesSent, timeMs / 1000, Math.round(bytesSent / timeMs) / 1000);
+
+			// noinspection JSIgnoredPromiseFromCall
+			LogEventUtil.log(ctx, 'download_release', false, {
+				request: this.getBody(ctx),
+				response: {
+					bytes_sent: bytesSent,
+					time_ms: timeMs,
+				},
+			}, {
+				release: release._id,
+				game: game._id ,
+			});
+		});
 		archive.pipe(ctx.res);
 
 		// add tables to stream
@@ -250,19 +270,12 @@ export class ReleaseStorage extends Api {
 	 * @returns {Promise<[ReleaseDocument, FileExtended[]]>} Release and collected files.
 	 */
 	private async collectFiles(ctx: Context, dryRun: boolean): Promise<[ReleaseDocument, FileExtended[]]> {
-		let body: DownloadReleaseBody;
 		const counters: Array<() => Promise<any>> = [];
 		const requestedFiles: FileExtended[] = [];
 		let requestedFileIds: string[];
 		let numTables = 0;
-		if (ctx.query.body) {
-			try {
-				body = JSON.parse(ctx.query.body);
-			} catch (e) {
-				throw new ApiError('Error parsing JSON from URL query: %s', e.message).status(400);
-			}
-		}
-		body = body || ctx.request.body;
+
+		const body = this.getBody(ctx);
 		requestedFileIds = body.files;
 
 		logger.info(ctx.state, '[ReleaseStorage.collectFiles] RELEASE: %s', JSON.stringify(body));
@@ -393,6 +406,21 @@ export class ReleaseStorage extends Api {
 		}
 
 		return [release, requestedFiles];
+	}
+
+	/**
+	 * Returns the request body either from URL or from the post body.
+	 * @param ctx Koa context
+	 */
+	private getBody(ctx: Context): DownloadReleaseBody {
+		if (ctx.query.body) {
+			try {
+				return JSON.parse(ctx.query.body);
+			} catch (e) {
+				throw new ApiError('Error parsing JSON from URL query: %s', e.message).status(400);
+			}
+		}
+		return ctx.request.body;
 	}
 
 	/**

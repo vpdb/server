@@ -242,6 +242,7 @@ export interface VpdbConfig {
 				channels: {
 					eventLog: string,
 					userLog: string,
+					downloadLog: string,
 					general: string,
 				},
 			},

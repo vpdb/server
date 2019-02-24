@@ -39,7 +39,7 @@ export class LogEventUtil {
 		log = await log.save();
 
 		// noinspection JSIgnoredPromiseFromCall
-		slackbot.logEvent(log);
+		slackbot.logEvent(ctx, log);
 	}
 
 	public static diff(fromDB: { [key: string]: any }, fromAPI: { [key: string]: any }) {

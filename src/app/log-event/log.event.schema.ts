@@ -34,6 +34,7 @@ const events = [
 	'create_backglass', 'delete_backglass', 'update_backglass',
 	'moderate',
 	'create_game_request', 'update_game_request', 'delete_game_request',
+	'download_file', 'download_release',
 ];
 
 //-----------------------------------------------------------------------------

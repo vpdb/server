@@ -179,7 +179,7 @@ export class SlackBot {
 						.populate({ path: 'versions.files._file' })
 						.populate({ path: 'versions.files._playfield_image' })
 						.exec();
-					const r = state.serializers.Release.detailed(ctx, release, { thumbFormat: 'square '});
+					const r = state.serializers.Release.detailed(ctx, release, { thumbFormat: 'square'});
 					const game = release._game as GameDocument;
 					const bytesSent = log.payload.response.bytes_sent;
 					const timeMs = log.payload.response.time_ms;

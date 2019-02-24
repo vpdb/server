@@ -20,8 +20,6 @@
 import { RTMClient, WebClient } from '@slack/client';
 import { MessageAttachment } from '@slack/client/dist/methods';
 import { RTMClientOptions } from '@slack/client/dist/RTMClient';
-
-import { FileDocument } from '../files/file.document';
 import { GameDocument } from '../games/game.document';
 import { LogEventDocument } from '../log-event/log.event.document';
 import { LogUserDocument } from '../log-user/log.user.document';
@@ -192,7 +190,7 @@ export class SlackBot {
 								type: 'section',
 								text: {
 									type: 'mrkdwn',
-									text: `*${game.title} (${game.manufacturer} ${game.year})*\n_${release.name}_\nDownloaded ${sizeMb} MB in ${Math.round(timeMs / 1000)}s at ${speedMbps} MB/s`,
+									text: `*${game.title} (${game.manufacturer} ${game.year})*\n_${release.name}_\nDownloaded ${sizeMb} MB in ${timeMs / 1000}s at ${speedMbps} MB/s`,
 								},
 								accessory: {
 									type: 'image',
@@ -233,7 +231,7 @@ export class SlackBot {
 						text = `*VPX: ${file.name}*`;
 					}
 
-					text += `\nDownloaded ${sizeMb} MB in ${Math.round(timeMs / 1000)}s at ${speedMbps} MB/s`;
+					text += `\nDownloaded ${sizeMb} MB in ${timeMs / 1000}s at ${speedMbps} MB/s`;
 					const message = {
 						channel: this.config.channels.downloadLog,
 						blocks: [

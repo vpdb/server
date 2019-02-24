@@ -97,13 +97,14 @@ export class FileStorage extends Api {
 			startedMs = Date.now();
 			await this.serve(ctx, file, ctx.params.variation);
 		}
+		const timeMs = Date.now() - startedMs;
 
 		if (!isPublic) {
 			this.noAwait(async () => {
 				await LogEventUtil.log(ctx, 'download_file', false, {
 					response: {
 						bytes_sent: file.bytes,
-						time_ms:  Date.now() - startedMs,
+						time_ms: timeMs,
 					},
 				}, {
 					file: file._id,

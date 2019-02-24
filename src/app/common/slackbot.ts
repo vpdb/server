@@ -86,7 +86,7 @@ export class SlackBot {
 					break;
 
 				case 'star_release':
-					msg.msg = `Starred *${log.payload.release.name}* of ${log.payload.release.game.title} (${log.payload.release.game.manufacturer} ${log.payload.release.game.year}).`;
+					msg.msg = `Starred *${log.payload.release.name}* of ${log.payload.release._game.title} (${log.payload.release._game.manufacturer} ${log.payload.release._game.year}).`;
 					break;
 				case 'star_user':
 					break;
@@ -96,7 +96,7 @@ export class SlackBot {
 					break;
 
 				case 'unstar_release':
-					msg.msg = `Unstarred *${log.payload.release.name}* of ${log.payload.release.game.title} (${log.payload.release.game.manufacturer} ${log.payload.release.game.year}).`;
+					msg.msg = `Unstarred *${log.payload.release.name}* of ${log.payload.release._game.title} (${log.payload.release._game.manufacturer} ${log.payload.release._game.year}).`;
 					break;
 
 				case 'unstar_user':

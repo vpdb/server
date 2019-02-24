@@ -197,7 +197,51 @@ export class SlackBot {
 								accessory: {
 									type: 'image',
 									image_url: r.thumb.image.url,
-									alt_text: 'square',
+									alt_text: `${game.title} (${game.manufacturer} ${game.year})`,
+								},
+							},
+						],
+						as_user: false,
+						username: actor.name,
+						icon_url: 'https://www.gravatar.com/avatar/' + UserUtil.getGravatarHash(actor) + '?d=retro',
+					};
+					await this.web.chat.postMessage(message as any);
+					return;
+				}
+				case 'download_file': {
+					// sleep
+					await new Promise(resolve => setTimeout(resolve, delay));
+					const file = await state.models.File.findById(log._ref.file).exec();
+					const bytesSent = log.payload.response.bytes_sent;
+					const timeMs = log.payload.response.time_ms;
+					const sizeMb = Math.round(bytesSent / 100000) / 10;
+					const speedMbps = Math.round(bytesSent / timeMs) / 1000;
+					let text = '';
+					if (file.file_type === 'rom') {
+						text = `*ROM: ${file.name}*`;
+
+					} else if (file.mime_type === 'application/x-directb2s') {
+						text = `*DirectB2S: ${file.name}*`;
+
+					} else if (file.file_type === 'backglass') {
+						text = `*Backglass Image: ${file.name}*`;
+
+					} else if (file.file_type === 'logo') {
+						text = `*Game Logo: ${file.name}*`;
+
+					} else if (file.mime_type.startsWith('application/x-visual-pinball-table')) {
+						text = `*VPX: ${file.name}*`;
+					}
+
+					text += `\nDownloaded ${sizeMb} MB in ${Math.round(timeMs / 1000)}s at ${speedMbps} MB/s`;
+					const message = {
+						channel: this.config.channels.downloadLog,
+						blocks: [
+							{
+								type: 'section',
+								text: {
+									type: 'mrkdwn',
+									text,
 								},
 							},
 						],

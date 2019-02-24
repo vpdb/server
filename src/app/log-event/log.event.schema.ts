@@ -49,6 +49,7 @@ export const logEventFields = {
 		user: { type: Schema.Types.ObjectId, ref: 'User', index: true, sparse: true },
 		game_request: { type: Schema.Types.ObjectId, ref: 'GameRequest', index: true, sparse: true },
 		build: { type: Schema.Types.ObjectId, ref: 'Build', index: true, sparse: true },
+		file: { type: Schema.Types.ObjectId, ref: 'File', index: true, sparse: true },
 	},
 	event: { type: String, enum: events, required: true, index: true },
 	payload: {},

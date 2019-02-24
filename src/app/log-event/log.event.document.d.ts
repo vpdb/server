@@ -19,6 +19,7 @@
 import { Document, Types } from 'mongoose';
 import { BackglassDocument } from '../backglasses/backglass.document';
 import { BuildDocument } from '../builds/build.document';
+import { FileDocument } from '../files/file.document';
 import { GameRequestDocument } from '../game-requests/game.request.document';
 import { GameDocument } from '../games/game.document';
 import { ReleaseDocument } from '../releases/release.document';
@@ -33,6 +34,7 @@ export interface LogEventDocument extends Document {
 		user?: UserDocument | Types.ObjectId;
 		game_request?: GameRequestDocument | Types.ObjectId;
 		build?: BuildDocument | Types.ObjectId;
+		file?: FileDocument | Types.ObjectId;
 	};
 	event: string;
 	payload: any;

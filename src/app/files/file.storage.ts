@@ -25,6 +25,7 @@ import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
 import { quota } from '../common/quota';
 import { Context } from '../common/typings/context';
+import { LogEventUtil } from '../log-event/log.event.util';
 import { state } from '../state';
 import { FileDocument } from './file.document';
 import { fileTypes } from './file.types';
@@ -91,7 +92,19 @@ export class FileStorage extends Api {
 		await quota.assert(ctx, file);
 
 		// we're here, so serve!
-		return this.serve(ctx, file, ctx.params.variation);
+		const startedMs = Date.now();
+		await this.serve(ctx, file, ctx.params.variation);
+
+		this.noAwait(async () => {
+			await LogEventUtil.log(ctx, 'download_file', false, {
+				response: {
+					bytes_sent: file.bytes,
+					time_ms:  Date.now() - startedMs,
+				},
+			}, {
+				file: file._id,
+			});
+		});
 	}
 
 	/**
@@ -357,6 +370,5 @@ export class FileStorage extends Api {
 		if (!file.isFree(ctx.state, variation)) {
 			await ctx.state.user.incrementCounter('downloads');
 		}
-		return true;
 	}
 }

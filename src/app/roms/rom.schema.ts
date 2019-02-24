@@ -37,7 +37,7 @@ export const romFields = {
 		required: 'ID must be provided. Use the name of the ROM file without file extension.',
 		unique: true,
 	},
-	_file: { type: Schema.Types.ObjectId, ref: 'File', required: 'File reference must be provided.' },
+	_file: { type: Schema.Types.ObjectId, ref: 'File', required: 'File reference must be provided.', index: true },
 	_ipdb_number: { type: Number },
 	rom_files: [{
 		filename: { type: String },

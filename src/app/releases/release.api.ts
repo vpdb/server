@@ -93,7 +93,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 
 			// log event
 			await LogEventUtil.log(ctx, 'create_release', true, {
-				release: state.serializers.Release.detailed(ctx, release, { thumbFormat: 'medium' }),
+				release: state.serializers.Release.detailed(ctx, release, { thumbFormat: 'medium', includedFields: ['moderation'] }),
 				game: pick(state.serializers.Game.simple(ctx, release._game as GameDocument), ['id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type']),
 			}, {
 				release: release._id,

@@ -82,29 +82,34 @@ export class FileStorage extends Api {
 	 */
 	public async get(ctx: Context) {
 
-		const [file, isFree] = await this.find(ctx);
+		const [file, isFree, isPublic] = await this.find(ctx);
 
+		let startedMs: number;
 		if (isFree) {
-			return this.serve(ctx, file, ctx.params.variation);
+			startedMs = Date.now();
+			await this.serve(ctx, file, ctx.params.variation);
+
+		} else {
+			// check the quota
+			await quota.assert(ctx, file);
+
+			// we're here, so serve!
+			startedMs = Date.now();
+			await this.serve(ctx, file, ctx.params.variation);
 		}
 
-		// check the quota
-		await quota.assert(ctx, file);
-
-		// we're here, so serve!
-		const startedMs = Date.now();
-		await this.serve(ctx, file, ctx.params.variation);
-
-		this.noAwait(async () => {
-			await LogEventUtil.log(ctx, 'download_file', false, {
-				response: {
-					bytes_sent: file.bytes,
-					time_ms:  Date.now() - startedMs,
-				},
-			}, {
-				file: file._id,
+		if (!isPublic) {
+			this.noAwait(async () => {
+				await LogEventUtil.log(ctx, 'download_file', false, {
+					response: {
+						bytes_sent: file.bytes,
+						time_ms:  Date.now() - startedMs,
+					},
+				}, {
+					file: file._id,
+				});
 			});
-		});
+		}
 	}
 
 	/**
@@ -242,9 +247,9 @@ export class FileStorage extends Api {
 	 * Retrieves a storage item and does all checks but the quota check.
 	 *
 	 * @param {Context} ctx Koa context
-	 * @returns {Promise<[FileDocument, boolean]>} File and true if free
+	 * @returns {Promise<[FileDocument, boolean, boolean]>} File and true if free, true if public
 	 */
-	private async find(ctx: Context): Promise<[FileDocument, boolean]> {
+	private async find(ctx: Context): Promise<[FileDocument, boolean, boolean]> {
 
 		const file = await state.models.File.findOne({ id: ctx.params.id }).exec();
 		if (!file) {
@@ -262,7 +267,7 @@ export class FileStorage extends Api {
 
 		// conditions for public: cost == -1 && is_active.
 		if (isPublic) {
-			return [file, true];
+			return [file, true, isPublic];
 		}
 
 		// from here on, user must be logged
@@ -277,16 +282,16 @@ export class FileStorage extends Api {
 
 		// now, if it's free, serve it for free
 		if (file.isFree(ctx.state, variation) && ctx.state.user) {
-			return [file, true];
+			return [file, true, isPublic];
 		}
 
 		// if the user is the owner, serve it for free too.
 		if (file._created_by._id.equals(ctx.state.user._id)) {
-			return [file, true];
+			return [file, true, isPublic];
 		}
 
 		// otherwise, it's not free.
-		return [file, false];
+		return [file, false, isPublic];
 	}
 
 	/**

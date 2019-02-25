@@ -118,7 +118,7 @@
 		"@types/fluent-ffmpeg": "2.1.9",
 		"@types/gm": "1.18.2",
 		"@types/has-ansi": "3.0.0",
-		"@types/ioredis": "4.0.6",
+		"@types/ioredis": "4.0.8",
 		"@types/jwt-simple": "0.5.33",
 		"@types/koa": "2.0.48",
 		"@types/koa-bodyparser": "4.2.2",

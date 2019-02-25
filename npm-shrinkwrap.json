@@ -395,9 +395,9 @@
 			"dev": true
 		},
 		"@types/ioredis": {
-			"version": "4.0.6",
-			"resolved": "https://registry.npmjs.org/@types/ioredis/-/ioredis-4.0.6.tgz",
-			"integrity": "sha512-FB8acNZCTLs2zXI3KuAAZJnKkFD04eNoBfgV6gT1ZABNrxbEVkBawPDLBNzhJWSfGT2eh5ELcS1cIwL4OGz/tA==",
+			"version": "4.0.8",
+			"resolved": "https://registry.npmjs.org/@types/ioredis/-/ioredis-4.0.8.tgz",
+			"integrity": "sha512-ZAXWkcij8wN+0eNNM1ofl8kzWvbPIwibBZcDa/8m32wqBcX7S4r+QRA59fob1OD1HQhEFVC16XFN8P5ZgSF1yQ==",
 			"dev": true,
 			"requires": {
 				"@types/node": "*"

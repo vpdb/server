@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { cloneDeep, set } from 'lodash';
+import { cloneDeep } from 'lodash';
 
 import { acl } from '../common/acl';
 import { Api } from '../common/api';
@@ -75,7 +75,15 @@ export class CommentApi extends Api {
 			updates.push(() => game.incrementCounter('comments'));
 			updates.push(() => ctx.state.user.incrementCounter('comments'));
 			updates.push(() => LogEventUtil.log(ctx, 'create_comment', true,
-				{ comment: state.serializers.Comment.simple(ctx, comment) },
+				{
+					comment: Object.assign({}, state.serializers.Comment.simple(ctx, comment), {
+						release: {
+							id: release.id,
+							name: release.name,
+							game: state.serializers.Game.simple(ctx, game),
+						},
+					}),
+				},
 				{ game: release._game._id, release: release._id }));
 
 			await Promise.all(updates.map(u => u()));

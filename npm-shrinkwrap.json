@@ -271,37 +271,6 @@
 			"integrity": "sha512-ZF43+CIIlzngQe8/Zo7L1kpY9W8O6rO006VDz3c5iM21ddtXWxCEyOXyft+q4pVF2tGqvrVuVrEDH1+gJEi1fQ==",
 			"dev": true
 		},
-		"@types/chalk": {
-			"version": "2.2.0",
-			"resolved": "https://registry.npmjs.org/@types/chalk/-/chalk-2.2.0.tgz",
-			"integrity": "sha512-1zzPV9FDe1I/WHhRkf9SNgqtRJWZqrBWgu7JGveuHmmyR9CnAPCie2N/x+iHrgnpYBIcCJWHBoMRv2TRWktsvw==",
-			"dev": true,
-			"requires": {
-				"chalk": "*"
-			},
-			"dependencies": {
-				"chalk": {
-					"version": "2.4.1",
-					"resolved": "https://registry.npmjs.org/chalk/-/chalk-2.4.1.tgz",
-					"integrity": "sha512-ObN6h1v2fTJSmUXoS3nMQ92LbDK9be4TV+6G+omQlGJFdcUX5heKi1LZ1YnRMIgwTLEj3E24bT6tYni50rlCfQ==",
-					"dev": true,
-					"requires": {
-						"ansi-styles": "^3.2.1",
-						"escape-string-regexp": "^1.0.5",
-						"supports-color": "^5.3.0"
-					}
-				},
-				"supports-color": {
-					"version": "5.5.0",
-					"resolved": "https://registry.npmjs.org/supports-color/-/supports-color-5.5.0.tgz",
-					"integrity": "sha512-QjVjwdXIt408MIiAqCX4oUKsgU2EqAGzs2Ppkm4aQYbjm+ZEWEcW4SfFNTr4uMNZma0ey4f5lgLrkB0aX0QMow==",
-					"dev": true,
-					"requires": {
-						"has-flag": "^3.0.0"
-					}
-				}
-			}
-		},
 		"@types/cheerio": {
 			"version": "0.22.10",
 			"resolved": "https://registry.npmjs.org/@types/cheerio/-/cheerio-0.22.10.tgz",

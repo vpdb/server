@@ -1477,6 +1477,14 @@
 			"integrity": "sha1-aN/1++YMUes3cl6p4+0xDcwed24=",
 			"dev": true
 		},
+		"boom": {
+			"version": "5.2.0",
+			"resolved": "https://registry.npmjs.org/boom/-/boom-5.2.0.tgz",
+			"integrity": "sha512-Z5BTk6ZRe4tXXQlkqftmsAUANpXmuwlsF5Oov8ThoMbQRzdGTA1ngYRW160GexgOgjsFOKJz0LYhoNi+2AMBUw==",
+			"requires": {
+				"hoek": "4.x.x"
+			}
+		},
 		"boxen": {
 			"version": "1.3.0",
 			"resolved": "https://registry.npmjs.org/boxen/-/boxen-1.3.0.tgz",
@@ -5198,6 +5206,11 @@
 			"integrity": "sha1-k0EP0hsAlzUVH4howvJx80J+I/0=",
 			"dev": true
 		},
+		"hoek": {
+			"version": "4.2.1",
+			"resolved": "https://registry.npmjs.org/hoek/-/hoek-4.2.1.tgz",
+			"integrity": "sha512-QLg82fGkfnJ/4iy1xZ81/9SIJiq1NGFUMGs6ParyjBZr6jW2Ufj/snDqTHixNlHdPNwN2RLVD0Pi3igeK9+JfA=="
+		},
 		"hosted-git-info": {
 			"version": "2.6.0",
 			"resolved": "https://registry.npmjs.org/hosted-git-info/-/hosted-git-info-2.6.0.tgz",
@@ -5973,13 +5986,6 @@
 				"isemail": "2.x.x",
 				"items": "2.x.x",
 				"topo": "2.x.x"
-			},
-			"dependencies": {
-				"hoek": {
-					"version": "4.2.1",
-					"resolved": "https://registry.npmjs.org/hoek/-/hoek-4.2.1.tgz",
-					"integrity": "sha512-QLg82fGkfnJ/4iy1xZ81/9SIJiq1NGFUMGs6ParyjBZr6jW2Ufj/snDqTHixNlHdPNwN2RLVD0Pi3igeK9+JfA=="
-				}
 			}
 		},
 		"js-tokens": {
@@ -11816,9 +11822,9 @@
 			"integrity": "sha512-IpCr2tpnNkP3Jera4ncexsZUp0enJBLr+pHCyTweMUBrbJsTgQeLWx1FXLhoBj/MvcnUQpkgOn2EY8FKOkUzww=="
 		},
 		"sqreen": {
-			"version": "1.29.0",
-			"resolved": "https://registry.npmjs.org/sqreen/-/sqreen-1.29.0.tgz",
-			"integrity": "sha512-CEaJ6wvsaVC27eE1veN2XxC6S+AOq0UovZBJOvA8vsLlKAK0VFqQewa61sC4SAIiQSvfGX8nDtVMm8NAiKU/Pg==",
+			"version": "1.29.2",
+			"resolved": "https://registry.npmjs.org/sqreen/-/sqreen-1.29.2.tgz",
+			"integrity": "sha512-7Z5SZEBgQK4Ta4fuCsat6FkQNpNntrO95aMCjKbF8nOrwoG4DPgSaLZubp5+nrKwjlJQfI5a1C+kt6k8ku68Sw==",
 			"requires": {
 				"cls-bluebird": "^2.0.1",
 				"commander": "^2.18.0",
@@ -11853,11 +11859,6 @@
 					"version": "2.19.0",
 					"resolved": "https://registry.npmjs.org/commander/-/commander-2.19.0.tgz",
 					"integrity": "sha512-6tvAOO+D6OENvRAh524Dh9jcfKTYDQAqvqezbCW82xj5X0pSrcpxtvRKHLG0yBY6SD7PSDrJaj+0AiOcKVd1Xg=="
-				},
-				"hoek": {
-					"version": "4.2.1",
-					"resolved": "https://registry.npmjs.org/hoek/-/hoek-4.2.1.tgz",
-					"integrity": "sha512-QLg82fGkfnJ/4iy1xZ81/9SIJiq1NGFUMGs6ParyjBZr6jW2Ufj/snDqTHixNlHdPNwN2RLVD0Pi3igeK9+JfA=="
 				},
 				"winston": {
 					"version": "2.4.4",
@@ -12634,13 +12635,6 @@
 			"integrity": "sha1-zVYVdSU5BXwNwEkaYhw7xvvh0YI=",
 			"requires": {
 				"hoek": "4.x.x"
-			},
-			"dependencies": {
-				"hoek": {
-					"version": "4.2.1",
-					"resolved": "https://registry.npmjs.org/hoek/-/hoek-4.2.1.tgz",
-					"integrity": "sha512-QLg82fGkfnJ/4iy1xZ81/9SIJiq1NGFUMGs6ParyjBZr6jW2Ufj/snDqTHixNlHdPNwN2RLVD0Pi3igeK9+JfA=="
-				}
 			}
 		},
 		"touch": {
@@ -13513,21 +13507,6 @@
 			"requires": {
 				"boom": "5.x.x",
 				"hoek": "4.x.x"
-			},
-			"dependencies": {
-				"boom": {
-					"version": "5.2.0",
-					"resolved": "https://registry.npmjs.org/boom/-/boom-5.2.0.tgz",
-					"integrity": "sha512-Z5BTk6ZRe4tXXQlkqftmsAUANpXmuwlsF5Oov8ThoMbQRzdGTA1ngYRW160GexgOgjsFOKJz0LYhoNi+2AMBUw==",
-					"requires": {
-						"hoek": "4.x.x"
-					}
-				},
-				"hoek": {
-					"version": "4.2.1",
-					"resolved": "https://registry.npmjs.org/hoek/-/hoek-4.2.1.tgz",
-					"integrity": "sha512-QLg82fGkfnJ/4iy1xZ81/9SIJiq1NGFUMGs6ParyjBZr6jW2Ufj/snDqTHixNlHdPNwN2RLVD0Pi3igeK9+JfA=="
-				}
 			}
 		},
 		"write-file-atomic": {

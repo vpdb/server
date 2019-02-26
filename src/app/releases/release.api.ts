@@ -451,6 +451,8 @@ export class ReleaseApi extends ReleaseAbstractApi {
 				await comment.save();
 			}
 			release = await state.models.Release.findById(release._id)
+				.populate('_game')
+				.populate('_created_by')
 				.populate('moderation.history._created_by')
 				.exec();
 

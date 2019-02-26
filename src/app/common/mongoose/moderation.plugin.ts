@@ -52,8 +52,9 @@ const modelReferenceMap: { [key: string]: string } = {
  * methods to make querying easier.
  *
  * @param schema
+ * @param opts
  */
-export function moderationPlugin(schema: Schema) {
+export function moderationPlugin(schema: Schema, opts?: ModerationPluginOptions) {
 
 	/*
 	 * Add fields to entity
@@ -207,6 +208,14 @@ export function moderationPlugin(schema: Schema) {
 		// invalidate cache
 		await apiCache.invalidateEntity(ctx.state, (entity.constructor as any).modelName, entity.id);
 		await apiCache.invalidateList(ctx.state, (entity.constructor as any).modelName);
+		if (opts && opts.cachedEntities) {
+			for (const e of opts.cachedEntities) {
+				await apiCache.invalidateList(ctx.state, e.modelName);
+				if (e.modelId) {
+					await apiCache.invalidateEntity(ctx.state, e.modelName, e.modelId(entity));
+				}
+			}
+		}
 
 		// event log
 		const referenceName = modelReferenceMap[this.modelName];
@@ -424,6 +433,13 @@ function addToQuery<T>(toAdd: object, query: T): T {
 	}
 	/* istanbul ignore next: Don't screw up when getting weird query objects, but that hasn't happened. */
 	return query;
+}
+
+interface ModerationPluginOptions {
+	cachedEntities: Array<{
+		modelName: string;
+		modelId?: (entity: ModeratedDocument) => string
+	}>;
 }
 
 declare module 'mongoose' {

@@ -74,6 +74,26 @@ describe('The game cache', () => {
 			await api.withToken(providerToken).get('/v1/games').then(res => res.expectHeader('x-cache-api', 'hit'));
 		});
 
+		it('should invalidate the game cache when a release is approved', async() => {
+
+			const game = await api.gameHelper.createGame('moderator');
+			const release = await api.releaseHelper.createReleaseForGame('member', game);
+
+			await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'hit'));
+
+			await api.get(`/v1/games/${game.id}`).then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.get(`/v1/games/${game.id}`).then(res => res.expectHeader('x-cache-api', 'hit'));
+
+			await api
+				.as('moderator')
+				.post(`/v1/releases/${release.id}/moderate`, { action: 'approve' })
+				.then(res => res.expectStatus(200));
+
+			await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.get(`/v1/games/${game.id}`).then(res => res.expectHeader('x-cache-api', 'miss'));
+		})
+
 	});
 
 	describe('when adding a new game', () => {

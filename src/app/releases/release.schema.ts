@@ -37,6 +37,7 @@ import { UserDocument } from '../users/user.document';
 import { Release } from './release';
 import { ReleaseDocument } from './release.document';
 import { releaseVersionSchema } from './version/release.version.schema';
+import { GameDocument } from '../games/game.document';
 
 const shortId = require('shortid32');
 
@@ -99,7 +100,7 @@ releaseSchema.plugin(fileReferencePlugin);
 releaseSchema.plugin(prettyIdPlugin, { model: 'Release', ignore: ['_created_by', '_tags'] });
 releaseSchema.plugin(idReferenceValidatorPlugin, { fields: ['_tags'] });
 releaseSchema.plugin(paginatePlugin);
-releaseSchema.plugin(moderationPlugin);
+releaseSchema.plugin(moderationPlugin, { cachedEntities: [ { modelName: 'Game', modelId: (entity: ReleaseDocument) => (entity._game as GameDocument).id }]});
 releaseSchema.plugin(metricsPlugin, { hotness: { popularity: { views: 1, downloads: 10, comments: 20, stars: 30 } }, hasChildren: true });
 releaseSchema.plugin(sortableTitlePlugin, { src: 'name', dest: 'name_sortable' });
 

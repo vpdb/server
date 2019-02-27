@@ -66,7 +66,8 @@ export class LogUserUtil {
 		});
 		try {
 			await log.save();
-			await slackbot.logUser(log);
+			// noinspection JSIgnoredPromiseFromCall
+			slackbot.logUser(log);
 		} catch (err) {
 			logger.error(ctx.state, '[LogUserUtil] Error saving log for "%s": %s', event, err.message, err);
 		}

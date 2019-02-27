@@ -264,9 +264,56 @@ describe('The VPDB `Release Version` API', function() {
 			});
 		});
 
+		it('should succeed for same version', function(done) {
+			const user = 'member';
+			const version = '1.0';
+			hlp.release.createRelease(user, request, { version: '1.0' }, function(release) {
+				request
+					.patch('/api/v1/releases/' + release.id + '/versions/' + version)
+					.as(user)
+					.send({ version: version }).end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					done();
+				});
+			});
+		});
+
+		it('should fail for duplicate version', function(done) {
+			const user = 'member';
+			hlp.release.createRelease(user, request, { version: '1.0.0'}, function(release) {
+				hlp.file.createVpt(user, request, function(vptfile) {
+					hlp.file.createPlayfield(user, request, 'fs', function (playfield) {
+						request
+							.post('/api/v1/releases/' + release.id + '/versions')
+							.as(user)
+							.send({
+								version: '2.0.0',
+								changes: '*Second release.*',
+								files: [ {
+									_file: vptfile.id,
+									_playfield_image: playfield.id,
+									_compatibility: [ '9.9.0' ],
+									flavor: { orientation: 'fs', lighting: 'night' }
+								} ]
+							}).end(function(err, res) {
+								hlp.expectStatus(err, res, 201);
+								request
+									.patch('/api/v1/releases/' + release.id + '/versions/2.0.0')
+									.as(user)
+									.send({ version: '1.0.0' }).end(function(err, res) {
+										hlp.expectValidationError(err, res, 'version', 'provided version already exists');
+										done();
+									});
+							});
+					});
+				});
+			});
+		});
+
 		it('should succeed when providing valid data', function(done) {
 			const user = 'member';
 			const newChanges = 'New changes.';
+			const newVersion = 'v666';
 			hlp.release.createRelease(user, request, function(release) {
 				hlp.file.createVpt(user, request, function(vptfile) {
 					hlp.file.createPlayfield(user, request, 'fs', function(playfield) {
@@ -275,6 +322,7 @@ describe('The VPDB `Release Version` API', function() {
 							.save({ path: 'releases/update-version'})
 							.as(user)
 							.send({
+								version: newVersion,
 								changes: newChanges,
 								files: [{
 									_file: vptfile.id,
@@ -285,6 +333,7 @@ describe('The VPDB `Release Version` API', function() {
 							}).end(function(err, res) {
 								hlp.expectStatus(err, res, 200);
 								expect(res.body.changes).to.be(newChanges);
+								expect(res.body.version).to.be(newVersion);
 								done();
 							});
 					});

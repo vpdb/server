@@ -30,7 +30,7 @@ exports.createReleaseForGame = function(user, request, game, opts, done) {
 								_compatibility: [ opts.buildId ? opts.buildId : '9.9.0' ],
 								flavor: { orientation: 'fs', lighting: 'night' } }
 							],
-							version: '1.0.0'
+							version: opts.version || '1.0.0'
 						}
 					],
 					authors: [ { _user: hlp.getUser(user).id, roles: [ 'Table Creator' ] } ]

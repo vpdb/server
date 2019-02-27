@@ -106,7 +106,6 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 					} else {
 						throw new ApiError().validationError('version', 'Provided version already exists and you cannot add a version twice. Try updating the version instead of adding a new one.', newVersion.version);
 					}
-
 				}
 				if (validationErr) {
 					throw validationErr;
@@ -180,7 +179,7 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 		const newFiles: ReleaseVersionFileDocument[] = [];
 
 		try {
-			const updatableFields = ['released_at', 'changes'];
+			const updatableFields = ['version', 'released_at', 'changes'];
 			const updatableFileFields = ['flavor', '_compatibility', '_playfield_image', '_playfield_video'];
 			const now = new Date();
 
@@ -222,6 +221,13 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 			oldVersion = cloneDeep(versionToUpdate);
 
 			logger.info(ctx.state, '[ReleaseVersionApi.updateVersion] Body: %s', JSON.stringify(ctx.request.body));
+
+			// validate version string
+			if (ctx.request.body.version && release.versions
+				.filter(v => !v._id.equals(versionToUpdate._id)) // ignore current
+				.find(v => v.version === ctx.request.body.version)) {
+					throw new ApiError().validationError('version', 'Provided version already exists and you cannot add a version twice.', ctx.request.body.version);
+			}
 
 			for (const fileObj of (ctx.request.body.files || [])) {
 
@@ -277,7 +283,7 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 				.populate({ path: 'versions.files._compatibility' })
 				.exec();
 
-			version = state.serializers.Release.detailed(ctx, release).versions.find(v => v.version = ctx.params.version);
+			version = state.serializers.ReleaseVersion.detailed(ctx, release.versions.find(v => v._id.equals(versionToUpdate._id)));
 
 			// log event
 			await LogEventUtil.log(ctx, 'update_release_version', false,

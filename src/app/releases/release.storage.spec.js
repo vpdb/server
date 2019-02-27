@@ -33,6 +33,7 @@ describe('The VPDB `Release` storage API', () => {
 	let release, backglass, mp3, rom, pfVideo, txt, logo, game, gameName;
 	before(async () => {
 		await api.setupUsers({
+			member: { roles: ['member'] },
 			countertest: { roles: ['member'] },
 			moderator: { roles: ['moderator'] },
 			contributor: { roles: ['contributor'] },
@@ -302,6 +303,17 @@ describe('The VPDB `Release` storage API', () => {
 
 			// check user counter
 			res = await api.as('countertest').get('/v1/user').then(res => res.expectStatus(200));
+			expect(res.data.counter.downloads).to.be(1);
+		});
+	});
+
+	describe('when downloading a release file', () => {
+
+		it('should update the counters of the release version', async () => {
+			const r = await api.releaseHelper.createRelease('moderator', { version: '1.0'});
+			await api.as('member').get(r.versions[0].files[0].file.url).then(res => res.expectStatus(200));
+			res = await api.get(`/v1/releases/${r.id}`).then(res => res.expectHeader('x-cache-api', 'miss'));
+			expect(res.data.versions[0].counter.downloads).to.be(1);
 			expect(res.data.counter.downloads).to.be(1);
 		});
 	});

@@ -336,6 +336,25 @@ export class FileStorage extends Api {
 			});
 		}
 
+		// for the file, only count original downloads
+		if (!variationName) {
+			await file.incrementCounter('downloads');
+			if (file.isTableFile()) {
+				const release = await file.getVersionFile();
+				if (release) {
+					for (const version of release.versions) {
+						for (const versionFile of version.files) {
+							if (versionFile._file.equals(file._id)) {
+								await versionFile.incrementCounter('downloads');
+								await version.incrementCounter('downloads');
+								await release.incrementCounter('downloads');
+							}
+						}
+					}
+				}
+			}
+		}
+
 		logger.info(ctx.state, '[FileStorage.serve] Started serving %s.', file.toShortString());
 		await new Promise((resolve, reject) => {
 
@@ -368,25 +387,6 @@ export class FileStorage extends Api {
 		});
 
 		logger.verbose(ctx.state, '[FileStorage.serve] File %s successfully served to <%s> in %sms.', file.toShortString(variation), ctx.state.user ? ctx.state.user.email : 'anonymous', Date.now() - now);
-
-		// for the file, only count original downloads
-		if (!variationName) {
-			await file.incrementCounter('downloads');
-			if (file.isTableFile()) {
-				const release = await file.getVersionFile();
-				if (release) {
-					for (const version of release.versions) {
-						for (const versionFile of version.files) {
-							if (versionFile._file.equals(file._id)) {
-								await versionFile.incrementCounter('downloads');
-								await version.incrementCounter('downloads');
-								await release.incrementCounter('downloads');
-							}
-						}
-					}
-				}
-			}
-		}
 
 		// for the user, count all non-free downloads
 		if (!file.isFree(ctx.state, variation)) {

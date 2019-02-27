@@ -21,6 +21,7 @@ import { MetricsDocument, Types } from 'mongoose';
 import { RequestState } from '../common/typings/context';
 import { UserDocument } from '../users/user.document';
 import { FileVariation } from './file.variations';
+import { ReleaseDocument } from '../releases/release.document';
 
 export interface FileDocument extends MetricsDocument {
 	id: string;
@@ -177,6 +178,17 @@ export interface FileDocument extends MetricsDocument {
 	 * @returns {FileVariation[]} All variations that depend directly on the given variation.
 	 */
 	getDirectVariationDependencies(variation: FileVariation): FileVariation[];
+
+	/**
+	 * Returns true if a file is a table file or false otherwise.
+	 * @returns true if vpt/vpx file, false otherwise
+	 */
+	isTableFile(): boolean;
+
+	/**
+	 * Returns the release version file for a given file.
+	 */
+	getVersionFile(): Promise<ReleaseDocument>;
 
 	/**
 	 * Returns something useful for logging.

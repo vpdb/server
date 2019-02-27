@@ -21,11 +21,14 @@ import chalk from 'chalk';
 import { resolve } from 'path';
 import { quota } from '../common/quota';
 import { config, settings } from '../common/settings';
-import { RequestState } from '../common/typings/context';
+import { Context, RequestState } from '../common/typings/context';
 import { FileDocument, FilePathOptions } from './file.document';
 import { mimeTypes } from './file.mimetypes';
 import { fileTypes } from './file.types';
 import { FileVariation } from './file.variations';
+import { ReleaseVersionFileDocument } from '../releases/version/file/release.version.file.document';
+import { state } from '../state';
+import { ReleaseDocument } from '../releases/release.document';
 
 /**
  * Contains the Game's instance methods so they can also be accessed
@@ -230,5 +233,21 @@ export class File {
 	 */
 	public static getDirectVariationDependencies(file: FileDocument, variation: FileVariation): FileVariation[] {
 		return File.getVariations(file).filter(v => v.source === variation.name);
+	}
+
+	/**
+	 * Returns true if a file is a table file or false otherwise.
+	 * @param file
+	 */
+	public static isTableFile(file: FileDocument): boolean {
+		return file.file_type === 'release' && file.mime_type.startsWith('application/x-visual-pinball-table');
+	}
+
+	/**
+	 * Returns the release version file for a given file.
+	 * @param file
+	 */
+	public static async getVersionFile(file: FileDocument): Promise<ReleaseDocument> {
+		return await state.models.Release.findOne({ 'versions.files._file': file._id.toString() }).exec();
 	}
 }

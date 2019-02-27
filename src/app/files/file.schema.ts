@@ -21,6 +21,7 @@ import { MetricsModel, Schema } from 'mongoose';
 
 import { metricsPlugin } from '../common/mongoose/metrics.plugin';
 import { RequestState } from '../common/typings/context';
+import { ReleaseDocument } from '../releases/release.document';
 import { state } from '../state';
 import { File } from './file';
 import { FileDocument, FilePathOptions } from './file.document';
@@ -134,6 +135,12 @@ fileSchema.methods.getVariation = function(this: FileDocument, variationName: st
 };
 fileSchema.methods.getDirectVariationDependencies = function(this: FileDocument, variation: FileVariation): FileVariation[] {
 	return File.getDirectVariationDependencies(this, variation);
+};
+fileSchema.methods.isTableFile = function(this: FileDocument): boolean {
+	return File.isTableFile(this);
+};
+fileSchema.methods.getVersionFile = function(this: FileDocument): Promise<ReleaseDocument> {
+	return File.getVersionFile(this);
 };
 
 //-----------------------------------------------------------------------------

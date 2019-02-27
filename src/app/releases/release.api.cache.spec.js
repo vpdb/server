@@ -72,6 +72,31 @@ describe('The release cache', () => {
 
 	});
 
+	describe('when updating a release', () => {
+
+		it('should invalidate the cache of the release', async () => {
+			const r = await releaseHelper.createRelease('moderator');
+			res = await api.get(`/v1/releases/${r.id}`).then(res => res.expectHeader('x-cache-api', 'miss'));
+			await api.as('moderator').patch(`/v1/releases/${r.id}`, { name: 'updated-name' }).then(res => res.expectStatus(200));
+			res = await api.debug().get(`/v1/releases/${r.id}`).then(res => res.expectHeader('x-cache-api', 'miss'));
+			expect(res.data.name).to.be('updated-name');
+		});
+
+		it('should update the counters of the version', async () => {
+			const r = await releaseHelper.createRelease('moderator', { version: '1.0'});
+			await api.as('member').get(r.versions[0].files[0].file.url).then(res => res.expectStatus(200));
+			res = await api.get(`/v1/releases/${r.id}`).then(res => res.expectHeader('x-cache-api', 'miss'));
+			expect(res.data.versions[0].counter.downloads).to.be(1);
+			// await api
+			// 	.as('moderator')
+			// 	.patch(`/v1/releases/${r.id}/versions/1.0`, { version: 'v1.1' })
+			// 	.then(res => res.expectStatus(200));
+			// res = await api.debug().get(`/v1/releases/${r.id}`).then(res => res.expectHeader('x-cache-api', 'miss'));
+			// expect(res.data.name).to.be('updated-name');
+
+		});
+	});
+
 	describe('when starring a release', () => {
 
 		const user = 'member';

@@ -45,6 +45,7 @@ class ReleaseHelper {
 	 * @param {object[]} [opts.files] Additional version files
 	 * @param {object} [opts.file] Extend version file with this data
 	 * @param {object} [opts.release] Extend release with this data
+	 * @param {string} [opts.version] If set, version
 	 * @returns {Promise<Object>} Created release
 	 */
 	async createReleaseForGame(user, game, opts) {
@@ -68,7 +69,7 @@ class ReleaseHelper {
 						_compatibility: opts.builds || ['9.9.0'],
 						flavor: { orientation: 'fs', lighting: 'night' }
 					}, opts.file || {}), ...additionalFiles],
-					version: '1.0.0'
+					version: opts.version || '1.0.0',
 				}],
 				authors: [{ _user: author.id, roles: ['Table Creator'] }]
 			}, opts.release || {})).then(res => res.expectStatus(201));
@@ -88,6 +89,7 @@ class ReleaseHelper {
 	 * @param {object} [opts.file] Extend version file with this data
 	 * @param {object} [opts.release] Extend release with this data
 	 * @param {boolean} [opts.alternateVpt] If set, upload an alternative file
+	 * @param {string} [opts.version] If set, set version
 	 * @returns {Promise<Object>} Created release
 	 */
 	async createRelease(user, opts) {

@@ -1,6 +1,6 @@
 {
 	"name": "vpdb",
-	"version": "v3.0.11-SNAPSHOT",
+	"version": "v3.0.11",
 	"description": "Virtual Pinball Database",
 	"main": "src/app/index.ts",
 	"repository": {
@@ -23,7 +23,7 @@
 		"serve:dev": "nodemon --config deploy/nodemon/dev.json --inspect -r ts-node/register src/app",
 		"serve:test": "nyc node build/app",
 		"serve:test:debug": "node --inspect -r ts-node/register src/app",
-		"serve:test:debug:compiled": "node --inspect build/app",
+		"serve:test:debug:compiled": "cp -r src/app/common/email-templates build/app/common && node --inspect build/app",
 		"serve:protractor": "cross-env NODE_ENV=test APP_SETTINGS=config/settings.protractor.js PORT=7357 APP_NAME=local run-s test:dropdbs start",
 		"build": "rimraf build && tsc",
 		"lint": "tslint src/app/**/*.ts",
@@ -78,6 +78,7 @@
 		"mongoose": "5.4.16",
 		"mongoose-paginate": "5.0.3",
 		"mongoose-unique-validator": "2.0.2",
+		"natives": "^1.1.6",
 		"nodegit": "0.24.1",
 		"nodemailer": "5.1.1",
 		"ole-doc": "0.1.1",

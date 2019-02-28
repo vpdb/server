@@ -48,7 +48,7 @@ export class UserApi extends Api {
 	 */
 	public async create(ctx: Context) {
 
-		const newUser: UserDocument = assignIn<UserDocument>(pick(ctx.request.body, 'username', 'password', 'email'), {
+		const postedUser: UserDocument = assignIn<UserDocument>(pick(ctx.request.body, 'username', 'password', 'email'), {
 			is_local: true,
 			name: ctx.request.body.name || ctx.request.body.username,
 		});
@@ -58,43 +58,43 @@ export class UserApi extends Api {
 		const skipEmailConfirmation = testMode && ctx.request.body.skipEmailConfirmation;
 
 		// TODO make sure newUser.email is sane (comes from user directly)
-		let user = await state.models.User.findOne({
+		const existingUser = await state.models.User.findOne({
 			$or: [
-				{ emails: newUser.email },
-				{ validated_emails: newUser.email },
+				{ emails: postedUser.email },
+				{ validated_emails: postedUser.email },
 			],
 		}).exec();
 
-		if (user) {
-			throw new ApiError('User with email <%s> already exists.', newUser.email).warn().status(409);
+		if (existingUser) {
+			throw new ApiError('User with email <%s> already exists.', postedUser.email).warn().status(409);
 		}
 		const confirmUserEmail = config.vpdb.email.confirmUserEmail && !skipEmailConfirmation;
-		user = await UserUtil.createUser(ctx, newUser, confirmUserEmail);
+		const createdUser = await UserUtil.createUser(ctx, postedUser, confirmUserEmail);
 
 		if (process.env.SQREEN_ENABLED) {
-			require('sqreen').signup_track({ email: user.email });
+			require('sqreen').signup_track({ email: createdUser.email });
 		}
 
-		await LogUserUtil.success(ctx, user, 'registration', {
+		await LogUserUtil.success(ctx, createdUser, 'registration', {
 			provider: 'local',
-			email: newUser.email,
-			username: newUser.username,
+			email: createdUser.email,
+			username: createdUser.username,
 		});
-
-		// return result now and send email afterwards
-		if (testMode && ctx.request.body.returnEmailToken) {
-			this.success(ctx, assign(state.serializers.User.detailed(ctx, user), { email_token: (user.email_status as any).toObject().token }), 201);
-
-		} else {
-			this.success(ctx, state.serializers.User.detailed(ctx, user), 201);
-		}
 
 		this.noAwait(async () => {
 			// user validated and created. time to send the activation email.
 			if (config.vpdb.email.confirmUserEmail) {
-				await mailer.registrationConfirmation(ctx.state, user);
+				await mailer.registrationConfirmation(ctx.state, createdUser);
 			}
 		});
+
+		// return result
+		if (testMode && ctx.request.body.returnEmailToken) {
+			this.success(ctx, assign(state.serializers.User.detailed(ctx, createdUser), { email_token: (createdUser.email_status as any).toObject().token }), 201);
+
+		} else {
+			this.success(ctx, state.serializers.User.detailed(ctx, createdUser), 201);
+		}
 	}
 
 	/**

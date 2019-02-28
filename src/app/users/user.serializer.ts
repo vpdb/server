@@ -66,7 +66,7 @@ export class UserSerializer extends Serializer<UserDocument> {
 	 * User details for admins, or profile data
 	 */
 	protected _detailed(ctx: Context, doc: UserDocument, opts: SerializerOptions): UserDocument {
-		const user = this._simple(ctx, doc, opts);
+		const user = assign({}, this._simple(ctx, doc, opts));
 		assign(user, pick(doc, ['email', 'email_status', 'is_local', 'is_active', 'created_at']));
 
 		user.roles = doc.roles;

@@ -117,7 +117,7 @@ export class IpsStrategy extends Strategy {
 		// handle errors
 		if (res.status !== 200) {
 			logger.error(ctx.state, '[IpsStrategy.getProfile] Got status %s with body: %s', res.status, JSON.stringify(res.data));
-			throw new ApiError('Could not retrieve access token from %s. This has been reported and will be fixed as soon as possible!', this.config.name);
+			throw new ApiError('Could not retrieve access token from %s: %s', this.config.name, res.data.error_description).status(400);
 		}
 		const body = res.headers['content-type'].includes('form-urlencoded') ? parse(res.data) : res.data;
 		if (body.error) {

@@ -991,6 +991,7 @@ class Ipdb {
 		34: { long: 'Stern M-200 MPU', short: 'M-200' },
 		54: { long: 'Stern S.A.M. Board System', short: 'Stern S.A.M.' },
 		61: { long: 'Stern SPIKE™ System', short: 'Stern SPIKE™' },
+		65: { long: 'Stern SPIKE™ 2 System', short: 'Stern SPIKE 2™' },
 		41: { long: 'Stern Whitestar (modified)', short: 'Stern Whitestar' },
 		40: { long: 'Technoplay "2-2C 8008 LS" (68000 CPU)', short: '2-2C 8008' },
 		12: { long: 'Williams Pinball 2000', short: 'Pinball 2000' },

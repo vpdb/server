@@ -18,15 +18,14 @@
  */
 
 import { isUndefined, keys, times } from 'lodash';
-import { OleCompoundDoc, Storage } from 'ole-doc';
 
 import { createHash } from 'crypto';
 import { FileUtil } from '../files/file.util';
 import { TableBlock } from '../releases/release.tableblock';
 import { logger } from './logger';
+import { OleCompoundDoc, Storage } from './ole-doc';
 import { RequestState } from './typings/context';
 
-const OleDoc = require('ole-doc').OleCompoundDoc;
 const bindexOf = require('buffer-indexof');
 
 class VisualPinballTable {
@@ -189,7 +188,7 @@ class VisualPinballTable {
 	 */
 	private async readDoc(filename: string): Promise<OleCompoundDoc> {
 		return new Promise<OleCompoundDoc>((resolve, reject) => {
-			const doc = new OleDoc(filename) as any;
+			const doc = new OleCompoundDoc(filename);
 			doc.on('err', reject);
 			doc.on('ready', () => {
 				resolve(doc);
@@ -216,7 +215,7 @@ class VisualPinballTable {
 				throw new Error('No such stream "' + key + '".');
 			}
 			strm.on('error', reject);
-			strm.on('data', buf => bufs.push(buf));
+			strm.on('data', (buf: Buffer) => bufs.push(buf));
 			strm.on('end', () => {
 				resolve(Buffer.concat(bufs));
 			});

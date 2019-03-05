@@ -81,7 +81,6 @@
 		"natives": "^1.1.6",
 		"nodegit": "0.24.1",
 		"nodemailer": "5.1.1",
-		"ole-doc": "0.1.1",
 		"optipng": "2.0.0",
 		"passthrough-counter": "1.0.0",
 		"path-to-regexp": "3.0.0",

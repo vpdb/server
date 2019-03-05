@@ -184,17 +184,12 @@ class VisualPinballTable {
 	 * Starts reading the compound documents.
 	 *
 	 * @param {string} filename Path to file to read
-	 * @returns {Promise.<OleCompoundDoc>}
+	 * @returns {Promise<OleCompoundDoc>}
 	 */
 	private async readDoc(filename: string): Promise<OleCompoundDoc> {
-		return new Promise<OleCompoundDoc>((resolve, reject) => {
-			const doc = new OleCompoundDoc(filename);
-			doc.on('err', reject);
-			doc.on('ready', () => {
-				resolve(doc);
-			});
-			doc.read();
-		});
+		const doc = new OleCompoundDoc(filename);
+		await doc.read();
+		return doc;
 	}
 
 	/**
@@ -205,14 +200,14 @@ class VisualPinballTable {
 	 * @return {Promise<Buffer>} Read data
 	 */
 	private async readStream(storage: Storage, key: string): Promise<Buffer> {
+		if (!storage) {
+			throw new Error('No such storage.');
+		}
 		return new Promise<Buffer>((resolve, reject) => {
-			if (!storage) {
-				throw new Error('No such storage.');
-			}
 			const strm = storage.stream(key);
 			const bufs: Buffer[] = [];
 			if (!strm) {
-				throw new Error('No such stream "' + key + '".');
+				return reject(new Error('No such stream "' + key + '".'));
 			}
 			strm.on('error', reject);
 			strm.on('data', (buf: Buffer) => bufs.push(buf));

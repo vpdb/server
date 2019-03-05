@@ -17,15 +17,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-/* tslint:disable:no-bitwise variable-name */
-
-// var fs = require('fs');
-// var EventEmitter = require('events').EventEmitter;
-// var util = require('util');
-// var async = require('async');
-// var _ = require('underscore');
-// var es = require('event-stream');
-
 import { EventEmitter } from 'events';
 import { open, read } from 'fs';
 import { find, values } from 'lodash';
@@ -33,38 +24,55 @@ import { readableStream } from './event-stream';
 
 class Header {
 
+	/** Size of sectors */
 	public secSize: number;
+
+	/** Number of sectors used for the Sector Allocation Table */
 	public SATSize: number;
+
+	/** Number of sectors used for the Master Sector Allocation Table */
 	public MSATSize: number;
-	public partialMSAT: number[];
+
+	/** Starting Sec ID of the Master Sector Allocation Table */
 	public MSATSecId: number;
+
+	/** Size of short sectors */
 	public shortSecSize: number;
+
+	/** Maximum size of a short stream */
 	public shortStreamMax: number;
+
+	/** Number of sectors used for the Short Sector Allocation Table */
 	public SSATSize: number;
+
+	/** Starting Sec ID of the Short Sector Allocation Table */
 	public SSATSecId: number;
+
+	/** Starting Sec ID of the directory stream */
 	public dirSecId: number;
-	private ole_id: Buffer;
+
+	public partialMSAT: number[];
+	private readonly _oleId: Buffer;
 
 	constructor() {
-		this.ole_id = new Buffer('D0CF11E0A1B11AE1', 'hex');
+		this._oleId = new Buffer('D0CF11E0A1B11AE1', 'hex');
 	}
 
 	public load(buffer: Buffer) {
 		for (let i = 0; i < 8; i++) {
-			if (this.ole_id[i] !== buffer[i]) {
+			if (this._oleId[i] !== buffer[i]) {
 				return false;
 			}
 		}
-
-		this.secSize = 1 << buffer.readInt16LE(30);  // Size of sectors
-		this.shortSecSize = 1 << buffer.readInt16LE(32);  // Size of short sectors
-		this.SATSize = buffer.readInt32LE(44);  // Number of sectors used for the Sector Allocation Table
-		this.dirSecId = buffer.readInt32LE(48);  // Starting Sec ID of the directory stream
-		this.shortStreamMax = buffer.readInt32LE(56);  // Maximum size of a short stream
-		this.SSATSecId = buffer.readInt32LE(60);  // Starting Sec ID of the Short Sector Allocation Table
-		this.SSATSize = buffer.readInt32LE(64);  // Number of sectors used for the Short Sector Allocation Table
-		this.MSATSecId = buffer.readInt32LE(68);  // Starting Sec ID of the Master Sector Allocation Table
-		this.MSATSize = buffer.readInt32LE(72);  // Number of sectors used for the Master Sector Allocation Table
+		this.secSize = 1 << buffer.readInt16LE(30);
+		this.shortSecSize = 1 << buffer.readInt16LE(32);
+		this.SATSize = buffer.readInt32LE(44);
+		this.dirSecId = buffer.readInt32LE(48);
+		this.shortStreamMax = buffer.readInt32LE(56);
+		this.SSATSecId = buffer.readInt32LE(60);
+		this.SSATSize = buffer.readInt32LE(64);
+		this.MSATSecId = buffer.readInt32LE(68);
+		this.MSATSize = buffer.readInt32LE(72);
 
 		// The first 109 sectors of the MSAT
 		this.partialMSAT = new Array(109);
@@ -82,7 +90,7 @@ class AllocationTable {
 	private static SecIdSAT = -3;
 	private static SecIdMSAT = -4;
 
-	private _doc: OleCompoundDoc;
+	private readonly _doc: OleCompoundDoc;
 	private _table: number[];
 
 	constructor(doc: OleCompoundDoc) {
@@ -135,7 +143,7 @@ class DirectoryTree {
 	private static Leaf = -1;
 	public root: StorageEntry;
 
-	private _doc: OleCompoundDoc;
+	private readonly _doc: OleCompoundDoc;
 	private _entries: StorageEntry[];
 
 	constructor(doc: OleCompoundDoc) {
@@ -210,7 +218,8 @@ class DirectoryTree {
 }
 
 export class Storage {
-	private _doc: OleCompoundDoc;
+
+	private readonly _doc: OleCompoundDoc;
 	private _dirEntry: StorageEntry;
 
 	constructor(doc: OleCompoundDoc, dirEntry: StorageEntry) {
@@ -252,7 +261,6 @@ export class Storage {
 			} else {
 				buffer = await this._doc.readSector(secIds[i]);
 			}
-
 			if (bytes - buffer.length < 0) {
 				buffer = buffer.slice(0, bytes);
 			}
@@ -262,16 +270,12 @@ export class Storage {
 	}
 }
 
-//function Stream( doc, dirEntry ) {
-//   this._doc = doc;
-//   this._dirEntry = dirEntry;
-//};
-
 export class OleCompoundDoc extends EventEmitter {
 
 	public header: Header;
 	public SAT: AllocationTable;
 	public SSAT: AllocationTable;
+
 	private _fd: number;
 	private _filename: string;
 	private _skipBytes: number;
@@ -296,39 +300,25 @@ export class OleCompoundDoc extends EventEmitter {
 	}
 
 	public async read(): Promise<void> {
-		try {
-			await this._openFile();
-			await this._readHeader();
-			await this._readMSAT();
-			await this._readSAT();
-			await this._readSSAT();
-			await this._readDirectoryTree();
-			this.emit('ready');
-
-		} catch (err) {
-			this.emit('err', err);
-			return;
-		}
+		await this._openFile();
+		await this._readHeader();
+		await this._readMSAT();
+		await this._readSAT();
+		await this._readSSAT();
+		await this._readDirectoryTree();
 	}
 
 	public async readWithCustomHeader(size: number): Promise<Buffer> {
 		this._skipBytes = size;
-		try {
-			await this._openFile();
-			const buffer = await this._readCustomHeader();
-			await this._readHeader();
-			await this._readMSAT();
-			await this._readSAT();
-			await this._readSSAT();
-			await this._readDirectoryTree();
+		await this._openFile();
+		const buffer = await this._readCustomHeader();
+		await this._readHeader();
+		await this._readMSAT();
+		await this._readSAT();
+		await this._readSSAT();
+		await this._readDirectoryTree();
 
-			this.emit('ready');
-			return buffer;
-
-		} catch (err) {
-			this.emit('err', err);
-			return;
-		}
+		return buffer;
 	}
 
 	public async readSector(secId: number) {
@@ -337,16 +327,12 @@ export class OleCompoundDoc extends EventEmitter {
 
 	public async readSectors(secIds: number[]): Promise<Buffer> {
 		const buffer = new Buffer(secIds.length * this.header.secSize);
-		try {
-			let i = 0;
-			while (i < secIds.length) {
-				const bufferOffset = i * this.header.secSize;
-				const fileOffset = this._getFileOffsetForSec(secIds[i]);
-				await readAsync(this._fd, buffer, bufferOffset, this.header.secSize, fileOffset);
-				i++;
-			}
-		} catch (err) {
-			this.emit('err', err);
+		let i = 0;
+		while (i < secIds.length) {
+			const bufferOffset = i * this.header.secSize;
+			const fileOffset = this._getFileOffsetForSec(secIds[i]);
+			await readAsync(this._fd, buffer, bufferOffset, this.header.secSize, fileOffset);
+			i++;
 		}
 		return buffer;
 	}
@@ -358,52 +344,35 @@ export class OleCompoundDoc extends EventEmitter {
 	private async _readShortSectors(secIds: number[]): Promise<Buffer> {
 		const buffer = new Buffer(secIds.length * this.header.shortSecSize);
 		let i = 0;
-		try {
-			while (i < secIds.length) {
-				const bufferOffset = i * this.header.shortSecSize;
-				const fileOffset = this._getFileOffsetForShortSec(secIds[i]);
-				await readAsync(this._fd, buffer, bufferOffset, this.header.shortSecSize, fileOffset);
-				i++;
-			}
-			return buffer;
-		} catch (err) {
-			this.emit('err', err);
+		while (i < secIds.length) {
+			const bufferOffset = i * this.header.shortSecSize;
+			const fileOffset = this._getFileOffsetForShortSec(secIds[i]);
+			await readAsync(this._fd, buffer, bufferOffset, this.header.shortSecSize, fileOffset);
+			i++;
 		}
+		return buffer;
 	}
 
 	private async _openFile(): Promise<void> {
-		try {
-			this._fd = await openAsync(this._filename, 'r', 0o666);
-		} catch (err) {
-			this.emit('err', err);
-		}
+		this._fd = await openAsync(this._filename, 'r', 0o666);
 	}
 
 	private async _readCustomHeader(): Promise<Buffer> {
 		const buffer = new Buffer(this._skipBytes);
 		let bytesRead: number;
 		let data: Buffer;
-		try {
-			[bytesRead, data] = await readAsync(this._fd, buffer, 0, this._skipBytes, 0);
-			return data;
-		} catch (err) {
-			this.emit('err', err);
-		}
+		[bytesRead, data] = await readAsync(this._fd, buffer, 0, this._skipBytes, 0);
+		return data;
 	}
 
 	private async _readHeader(): Promise<void> {
 		const buffer = new Buffer(512);
 		let bytesRead: number;
 		let data: Buffer;
-		try {
-			[bytesRead, data] = await readAsync(this._fd, buffer, 0, 512, this._skipBytes);
-			const header = this.header = new Header();
-			if (!header.load(data)) {
-				this.emit('err', 'Not a valid compound document.');
-				return;
-			}
-		} catch (err) {
-			this.emit(err);
+		[bytesRead, data] = await readAsync(this._fd, buffer, 0, 512, this._skipBytes);
+		const header = this.header = new Header();
+		if (!header.load(data)) {
+			throw new Error('Not a valid compound document.');
 		}
 	}
 
@@ -416,26 +385,21 @@ export class OleCompoundDoc extends EventEmitter {
 			return;
 		}
 
-		const buffer = new Buffer(this.header.secSize);
 		let secId = this.header.MSATSecId;
 		let currMSATIndex = 109;
 		let i = 0;
-		try {
-			while (i < this.header.MSATSize) {
-				const sectorBuffer = await this.readSector(secId);
-				for (let s = 0; s < this.header.secSize - 4; s += 4) {
-					if (currMSATIndex >= this.header.SATSize) {
-						break;
-					} else {
-						this._MSAT[currMSATIndex] = sectorBuffer.readInt32LE(s);
-					}
-					currMSATIndex++;
+		while (i < this.header.MSATSize) {
+			const sectorBuffer = await this.readSector(secId);
+			for (let s = 0; s < this.header.secSize - 4; s += 4) {
+				if (currMSATIndex >= this.header.SATSize) {
+					break;
+				} else {
+					this._MSAT[currMSATIndex] = sectorBuffer.readInt32LE(s);
 				}
-				secId = sectorBuffer.readInt32LE(this.header.secSize - 4);
-				i++;
+				currMSATIndex++;
 			}
-		} catch (err) {
-			this.emit('err', err);
+			secId = sectorBuffer.readInt32LE(this.header.secSize - 4);
+			i++;
 		}
 	}
 
@@ -448,8 +412,7 @@ export class OleCompoundDoc extends EventEmitter {
 		this.SSAT = new AllocationTable(this);
 		const secIds = this.SAT.getSecIdChain(this.header.SSATSecId);
 		if (secIds.length !== this.header.SSATSize) {
-			this.emit('err', 'Invalid Short Sector Allocation Table');
-			return;
+			throw new Error('Invalid Short Sector Allocation Table');
 		}
 		await this.SSAT.load(secIds);
 	}

@@ -67,7 +67,7 @@ export abstract class DataUploader {
 		this.apiConfig = { baseURL: this.config.apiUri, headers: { 'Content-Type': 'application/json' }, maxContentLength: 300000000 };
 		this.storageConfig = { baseURL: this.config.storageUri, headers: {}, maxContentLength: 300000000 };
 		if (this.config.httpSimple) {
-			const httpSimple = 'Basic ' + new Buffer(this.config.httpSimple.username + ':' + this.config.httpSimple.password).toString('base64');
+			const httpSimple = 'Basic ' + Buffer.from(this.config.httpSimple.username + ':' + this.config.httpSimple.password).toString('base64');
 			this.apiConfig.headers.Authorization = httpSimple;
 			this.storageConfig.headers.Authorization = httpSimple;
 		}

@@ -55,7 +55,7 @@ class Header {
 	private readonly _oleId: Buffer;
 
 	constructor() {
-		this._oleId = new Buffer('D0CF11E0A1B11AE1', 'hex');
+		this._oleId = Buffer.from('D0CF11E0A1B11AE1', 'hex');
 	}
 
 	public load(buffer: Buffer) {
@@ -112,6 +112,9 @@ class AllocationTable {
 		while (secId !== AllocationTable.SecIdEndOfChain) {
 			secIds.push(secId);
 			secId = this._table[secId];
+			if (!secId) {
+				throw new Error('Possibly corrupt file (cannot find secId ' + secIds[secIds.length - 1] + ' in allocation table).');
+			}
 		}
 		return secIds;
 	}
@@ -326,7 +329,7 @@ export class OleCompoundDoc extends EventEmitter {
 	}
 
 	public async readSectors(secIds: number[]): Promise<Buffer> {
-		const buffer = new Buffer(secIds.length * this.header.secSize);
+		const buffer = Buffer.alloc(secIds.length * this.header.secSize);
 		let i = 0;
 		while (i < secIds.length) {
 			const bufferOffset = i * this.header.secSize;
@@ -342,7 +345,7 @@ export class OleCompoundDoc extends EventEmitter {
 	}
 
 	private async _readShortSectors(secIds: number[]): Promise<Buffer> {
-		const buffer = new Buffer(secIds.length * this.header.shortSecSize);
+		const buffer = Buffer.alloc(secIds.length * this.header.shortSecSize);
 		let i = 0;
 		while (i < secIds.length) {
 			const bufferOffset = i * this.header.shortSecSize;
@@ -358,7 +361,7 @@ export class OleCompoundDoc extends EventEmitter {
 	}
 
 	private async _readCustomHeader(): Promise<Buffer> {
-		const buffer = new Buffer(this._skipBytes);
+		const buffer = Buffer.alloc(this._skipBytes);
 		let bytesRead: number;
 		let data: Buffer;
 		[bytesRead, data] = await readAsync(this._fd, buffer, 0, this._skipBytes, 0);
@@ -366,7 +369,7 @@ export class OleCompoundDoc extends EventEmitter {
 	}
 
 	private async _readHeader(): Promise<void> {
-		const buffer = new Buffer(512);
+		const buffer = Buffer.alloc(512);
 		let bytesRead: number;
 		let data: Buffer;
 		[bytesRead, data] = await readAsync(this._fd, buffer, 0, 512, this._skipBytes);

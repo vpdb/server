@@ -48,8 +48,8 @@ class VisualPinballTable {
 		const storage = doc.storage('GameStg');
 		const buf = await this.readStream(storage, 'GameData');
 
-		const codeStart: number = bindexOf(buf, new Buffer('04000000434F4445', 'hex')); // 0x04000000 "CODE"
-		const codeEnd: number = bindexOf(buf, new Buffer('04000000454E4442', 'hex'));   // 0x04000000 "ENDB"
+		const codeStart: number = bindexOf(buf, Buffer.from('04000000434F4445', 'hex')); // 0x04000000 "CODE"
+		const codeEnd: number = bindexOf(buf, Buffer.from('04000000454E4442', 'hex'));   // 0x04000000 "ENDB"
 		logger.info(requestState, '[VisualPinballTable.readScriptFromTable] Found GameData for "%s" in %d ms.', tablePath, Date.now() - now);
 		/* istanbul ignore if */
 		if (codeStart < 0 || codeEnd < 0) {
@@ -273,7 +273,7 @@ class VisualPinballTable {
 						i += 8;
 						blockSize = buf.slice(i, i + 4).readInt32LE(0);
 						block = buf.slice(i + 4, i + 4 + blockSize);
-						block = Buffer.concat([new Buffer(tag), block]);
+						block = Buffer.concat([Buffer.from(tag), block]);
 						break;
 				}
 
@@ -467,7 +467,7 @@ class VisualPinballTable {
 				chars.push(v);
 			}
 		});
-		return new Buffer(chars).toString('utf8');
+		return Buffer.from(chars).toString('utf8');
 	}
 
 	/**

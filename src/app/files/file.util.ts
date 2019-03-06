@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { access, createReadStream, createWriteStream, mkdir, rename, stat, unlink } from 'fs';
+import { access, createReadStream, createWriteStream, mkdir, rename, stat, unlink, writeFile } from 'fs';
 import { dirname, resolve as resolvePath, sep } from 'path';
 import * as Stream from 'stream';
 import { promisify } from 'util';
@@ -250,4 +250,11 @@ export class FileUtil {
 
 	/* tslint:disable:member-ordering */
 	private static MODE_0777 = parseInt('0777', 8);
+
+	public static writeFile(filePath: string, data: Buffer | string): Promise<void> {
+		return new Promise((resolve, reject) => {
+			writeFile(filePath, data, err => err ? reject(err) : resolve());
+		});
+	}
+
 }

@@ -186,7 +186,7 @@ class VisualPinballTable {
 	 * @param {string} filename Path to file to read
 	 * @returns {Promise<OleCompoundDoc>}
 	 */
-	private async readDoc(filename: string): Promise<OleCompoundDoc> {
+	public async readDoc(filename: string): Promise<OleCompoundDoc> {
 		const doc = new OleCompoundDoc(filename);
 		await doc.read();
 		return doc;
@@ -199,7 +199,7 @@ class VisualPinballTable {
 	 * @param {string} key Key within the storage
 	 * @return {Promise<Buffer>} Read data
 	 */
-	private async readStream(storage: Storage, key: string): Promise<Buffer> {
+	public async readStream(storage: Storage, key: string): Promise<Buffer> {
 		if (!storage) {
 			throw new Error('No such storage.');
 		}
@@ -224,7 +224,7 @@ class VisualPinballTable {
 	 * @param {number} [offset=0] Where to start to read
 	 * @returns {Block} All BIFF blocks.
 	 */
-	private parseBiff(buf: Buffer, offset: number = 0): Block[] {
+	public parseBiff(buf: Buffer, offset: number = 0): Block[] {
 		offset = offset || 0;
 		let tag: string;
 		let data: Buffer;
@@ -493,7 +493,7 @@ class VisualPinballTable {
 	}
 }
 
-interface Block {
+export interface Block {
 	tag: string;
 	data: Buffer;
 }

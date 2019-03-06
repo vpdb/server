@@ -1,4 +1,3 @@
-/* tslint:disable:no-console */
 /*
  * VPDB - Virtual Pinball Database
  * Copyright (C) 2019 freezy <freezy@vpdb.io>
@@ -19,13 +18,14 @@
  */
 
 import { basename } from 'path';
+import { logger } from '../common/logger';
 import { FileUtil } from '../files/file.util';
 import { BiffBlock, BiffParser } from './biff-parser';
 import { GameItem } from './game-item';
 
 export class PrimitiveItem extends GameItem {
 
-	public static async load(buffer: Buffer) {
+	public static async load(buffer: Buffer): Promise<PrimitiveItem> {
 		const primitiveItem = new PrimitiveItem();
 		await primitiveItem._load(buffer);
 		return primitiveItem;
@@ -52,8 +52,8 @@ export class PrimitiveItem extends GameItem {
 		return this.wzName;
 	}
 
-	public async exportObj(fileName: string) {
-		await this.mesh.exportObj(fileName, this.data.use3DMesh ? this.wzName : 'Primitive');
+	public async exportMeshToObj(fileName: string) {
+		await this.mesh.exportToObj(fileName, this.data.use3DMesh ? this.wzName : 'Primitive');
 	}
 
 	private async _load(buffer: Buffer) {
@@ -89,7 +89,7 @@ export class PrimitiveItem extends GameItem {
 				case 'RSCT': this.data.scatter = this.parseFloat(block); break;
 				case 'EFUI': this.data.edgeFactorUI = this.parseFloat(block); break;
 				case 'CORF': this.data.collisionReductionFactor = this.parseFloat(block); break;
-				case 'CLDRP': this.data.fCollidable = this.parseBool(block); break;
+				case 'CLDR': this.data.fCollidable = this.parseBool(block); break; // originally "CLDRP"
 				case 'ISTO': this.data.fToy = this.parseBool(block); break;
 				case 'MAPH': this.data.szPhysicsMaterial = this.parseString(block, 4); break;
 				case 'OVPH': this.data.fOverwritePhysics = this.parseBool(block); break;
@@ -115,6 +115,7 @@ export class PrimitiveItem extends GameItem {
 				case 'M3CI': this.mesh.indices = this.parseUnsignedInts(await BiffParser.decompress(block.data), this.numIndices); break;
 				case 'PIDB': this.data.depthBias = this.parseFloat(block); break;
 				default:
+					this.parseUnknownBlock(block);
 					break;
 			}
 		}
@@ -142,7 +143,7 @@ class Mesh {
 	public indices: number[];
 	private faceIndexOffset = 0;
 
-	public async exportObj(fileName: string, description: string): Promise<void> {
+	public async exportToObj(fileName: string, description: string): Promise<void> {
 
 		const objFile: string[] = [];
 		const mtlFile: string[] = [];
@@ -153,7 +154,7 @@ class Mesh {
 		this._writeFaceInfoLong(objFile);
 
 		await FileUtil.writeFile(fileName, objFile.join('\n'));
-		console.log('Exported OBJ to %s.', fileName);
+		logger.info(null, '[Mesh.exportToObj] Exported OBJ of %s to %s.', description, fileName);
 	}
 
 	private _writeHeader(objFile: string[], mtlFile: string[], mtlFilename: string): void {

@@ -18,6 +18,7 @@
  */
 
 import { BiffBlock } from './biff-parser';
+import { logger } from '../common/logger';
 
 export abstract class GameItem {
 
@@ -47,7 +48,20 @@ export abstract class GameItem {
 	public static TypeCount = 23;
 	public static TypeInvalid = 0xffffffff;
 
+	public fLocked: boolean;
+	public layerIndex: number;
+
 	public abstract getName(): string;
+
+	protected parseUnknownBlock(block: BiffBlock) {
+		switch (block.tag) {
+			case 'LOCK': this.fLocked = this.parseBool(block); break;
+			case 'LAYR': this.layerIndex = this.parseInt(block); break;
+			default:
+				logger.warn(null, '[GameItem.parseUnknownBlock]: Unknown block "%s".', block.tag);
+				break;
+		}
+	}
 
 	protected parseInt(block: BiffBlock): number {
 		return block.data.readInt32LE(0);

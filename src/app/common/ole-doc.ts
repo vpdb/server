@@ -271,6 +271,27 @@ export class Storage {
 			return buffer;
 		});
 	}
+
+	/**
+	 * Reads a given stream from a given storage.
+	 *
+	 * @param {string} key Key within the storage
+	 * @return {Promise<Buffer>} Read data
+	 */
+	public async read(key: string): Promise<Buffer> {
+		return new Promise<Buffer>((resolve, reject) => {
+			const strm = this.stream(key);
+			const bufs: Buffer[] = [];
+			if (!strm) {
+				return reject(new Error('No such stream "' + key + '".'));
+			}
+			strm.on('error', reject);
+			strm.on('data', (buf: Buffer) => bufs.push(buf));
+			strm.on('end', () => {
+				resolve(Buffer.concat(bufs));
+			});
+		});
+	}
 }
 
 export class OleCompoundDoc extends EventEmitter {

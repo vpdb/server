@@ -17,26 +17,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { AuthenticationEndPoint, AuthenticationStorageEndPoint } from '../authentication/index';
-import { BackglassEndPoint } from '../backglasses/index';
-import { BuildApiEndPoint } from '../builds/index';
-import { CommentEndPoint } from '../comments/index';
-import { FilesApiEndPoint, FilesProtectedStorageEndPoint, FilesPublicStorageEndPoint } from '../files/index';
-import { GameRequestApiEndPoint } from '../game-requests/index';
-import { GamesApiEndPoint } from '../games/index';
-import { LogEventEndPoint } from '../log-event/index';
-import { LogUserEndPoint } from '../log-user/index';
-import { MediaApiEndPoint } from '../media/index';
-import { MiscEndPoint } from '../misc/index';
-import { ProfileEndPoint } from '../profile/index';
-import { RatingEndPoint } from '../ratings/index';
-import { ReleaseEndPoint, ReleaseStorageEndPoint } from '../releases/index';
-import { RomApiEndPoint } from '../roms/index';
-import { StarEndPoint } from '../stars/index';
-import { TagApiEndPoint } from '../tags/index';
-import { TokenEndPoint } from '../tokens/index';
-import { UserEndPoint } from '../users/index';
 import { EndPoint } from './api.endpoint';
+import { AuthenticationEndPoint, AuthenticationStorageEndPoint } from '../authentication';
+import { BackglassEndPoint } from '../backglasses';
+import { BuildApiEndPoint } from '../builds';
+import { CommentEndPoint } from '../comments';
+import { FilesApiEndPoint, FilesProtectedStorageEndPoint, FilesPublicStorageEndPoint } from '../files';
+import { GameRequestApiEndPoint } from '../game-requests';
+import { GamesApiEndPoint } from '../games';
+import { LogEventEndPoint } from '../log-event';
+import { LogUserEndPoint } from '../log-user';
+import { MediaApiEndPoint } from '../media';
+import { MiscEndPoint } from '../misc';
+import { ProfileEndPoint } from '../profile';
+import { RatingEndPoint } from '../ratings';
+import { ReleaseEndPoint, ReleaseStorageEndPoint } from '../releases';
+import { RomApiEndPoint } from '../roms';
+import { StarEndPoint } from '../stars';
+import { TagApiEndPoint } from '../tags';
+import { TokenEndPoint } from '../tokens';
+import { UserEndPoint } from '../users';
+import { VpApiEndPoint } from '../vp';
 
 export const endPoints: EndPoint[] = [
 	new AuthenticationEndPoint(),
@@ -62,4 +63,5 @@ export const endPoints: EndPoint[] = [
 	new TagApiEndPoint(),
 	new TokenEndPoint(),
 	new UserEndPoint(),
+	new VpApiEndPoint(),
 ];

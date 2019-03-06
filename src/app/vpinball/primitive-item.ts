@@ -56,6 +56,12 @@ export class PrimitiveItem extends GameItem {
 		await this.mesh.exportToObj(fileName, this.data.use3DMesh ? this.wzName : 'Primitive');
 	}
 
+	public serialize() {
+		return {
+			name: this.wzName
+		};
+	}
+
 	private async _load(buffer: Buffer) {
 		const blocks = BiffParser.parseBiff(buffer, 4);
 		for (const block of blocks) {

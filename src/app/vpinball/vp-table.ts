@@ -38,6 +38,13 @@ export class VpTable {
 	private doc: OleCompoundDoc;
 	private primitives: { [key: string]: PrimitiveItem } = {};
 
+	public getPrimitive(name: string): PrimitiveItem {
+		if (!this.primitives[name]) {
+			throw new Error('No primitive with name "' + name + '" in this table!');
+		}
+		return this.primitives[name];
+	}
+
 	private async _load(fileName: string): Promise<void> {
 
 		// read ole-doc
@@ -64,7 +71,7 @@ export class VpTable {
 				case GameItem.TypePrimitive:
 					const item = await PrimitiveItem.load(itemData);
 					this.primitives[item.getName()] = item;
-					console.log('Adding primitive %s', item.getName());
+					console.log('Adding primitive %s (%s bytes)', item.getName(), itemData.length);
 					break;
 				default:
 					// ignore the rest for now
@@ -117,7 +124,6 @@ export class VpTable {
 		}
 		return gameData;
 	}
-
 }
 
 interface GameData {

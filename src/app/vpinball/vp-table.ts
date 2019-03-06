@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { isUndefined } from 'lodash';
+import { isUndefined, values } from 'lodash';
 import { logger } from '../common/logger';
 import { OleCompoundDoc, Storage } from '../common/ole-doc';
 import { BiffBlock, BiffParser } from './biff-parser';
@@ -43,6 +43,12 @@ export class VpTable {
 			throw new Error('No primitive with name "' + name + '" in this table!');
 		}
 		return this.primitives[name];
+	}
+
+	public serialize() {
+		return {
+			primitives: values(this.primitives).map(p => p.serialize()),
+		}
 	}
 
 	private async _load(fileName: string): Promise<void> {

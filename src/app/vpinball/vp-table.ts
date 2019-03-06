@@ -19,6 +19,7 @@
  */
 
 import { isUndefined } from 'lodash';
+import { logger } from '../common/logger';
 import { OleCompoundDoc, Storage } from '../common/ole-doc';
 import { BiffBlock, BiffParser } from './biff-parser';
 import { GameItem } from './game-item';
@@ -27,8 +28,10 @@ import { PrimitiveItem } from './primitive-item';
 export class VpTable {
 
 	public static async load(fileName: string): Promise<VpTable> {
+		const then = Date.now();
 		const vpTable = new VpTable();
 		await vpTable._load(fileName);
+		logger.info(null, '[VpTable.load] Table loaded in %sms.', Date.now() - then);
 		return vpTable;
 	}
 

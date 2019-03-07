@@ -146,7 +146,10 @@ export class Server {
 // only allow vpdb.io cross-site sub domains
 function origin(ctx: Context): string {
 	const requestOrigin = ctx.get('Origin');
-	return requestOrigin.match(/(^https?:\/\/.*?vpdb\.(io|ch)(:\d+)?$)|(^https?:\/\/localhost(:\d+)?$)/i)
+	if (process.env.NODE_ENV === 'development') {
+		return requestOrigin;
+	}
+	return requestOrigin.match(/(^https?:\/\/.*?vpdb\.(io|ch)(:\d+)?$)|(^https?:\/\/localhost(:\d+)?$)|^none$/i)
 		? requestOrigin : 'https://vpdb.io';
 }
 

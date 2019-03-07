@@ -53,16 +53,22 @@ export class VpApi extends Api {
 	public async getMeshObj(ctx: Context) {
 
 		const vptFile = await this.getVpFile(ctx);
-		const vpTable = await this.getVpTable(ctx, vptFile);
 
-		const mesh = vpTable.getPrimitive(ctx.params.meshName);
-		if (!mesh) {
-			throw new ApiError('No primitive named "%s" in this table!').status(404);
+		const redisKey = `vpt:mesh:${vptFile.id}:${ctx.params.meshName}`;
+		let obj = await state.redis.get(redisKey);
+		if (!obj) {
+			const vpTable = await this.getVpTable(ctx, vptFile);
+			const mesh = vpTable.getPrimitive(ctx.params.meshName);
+			if (!mesh) {
+				throw new ApiError('No primitive named "%s" in this table!').status(404);
+			}
+			obj = mesh.serializeToObj();
+			await state.redis.set(redisKey, obj);
 		}
 
 		ctx.status = 200;
 		ctx.set('Content-Type', 'text/plain');
-		ctx.response.body = mesh.serializeToObj();
+		ctx.response.body = obj;
 	}
 
 	private async getVpFile(ctx: Context): Promise<FileDocument> {

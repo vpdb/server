@@ -19,10 +19,10 @@
 
 import { basename } from 'path';
 import { logger } from '../common/logger';
+import { settings } from '../common/settings';
 import { FileUtil } from '../files/file.util';
 import { BiffBlock, BiffParser } from './biff-parser';
 import { GameItem } from './game-item';
-import { settings } from '../common/settings';
 
 export class PrimitiveItem extends GameItem {
 
@@ -78,6 +78,23 @@ export class PrimitiveItem extends GameItem {
 		return {
 			name: this.wzName,
 			mesh: settings.apiExternalUri(`/v1/vp/${fileId}/meshes/${this.wzName}.obj`),
+			pos: this.data.vPosition,
+			size: this.data.vSize,
+			rot: {
+				x: this.data.aRotAndTra[0],
+				y: this.data.aRotAndTra[1],
+				z: this.data.aRotAndTra[2],
+			},
+			trans: {
+				x: this.data.aRotAndTra[3],
+				y: this.data.aRotAndTra[4],
+			},
+			obj_rot: {
+				x: this.data.aRotAndTra[5],
+				y: this.data.aRotAndTra[6],
+				z: this.data.aRotAndTra[7],
+			},
+			is_visible: this.data.fVisible,
 		};
 	}
 

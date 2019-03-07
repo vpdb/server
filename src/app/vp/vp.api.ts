@@ -17,6 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { inspect } from 'util';
 import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
 import { Context } from '../common/typings/context';
@@ -37,18 +38,31 @@ export class VpApi extends Api {
 		const vptFile = await this.getVpFile(ctx);
 		const vpTable = await this.getVpTable(ctx, vptFile);
 
-		this.success(ctx, vpTable.serialize(), 200);
+		// tslint:disable-next-line:no-console
+		console.log(inspect(vpTable.getPrimitive('Joker'), { colors: true, depth: null }));
+
+		this.success(ctx, vpTable.serialize(vptFile.id), 200);
 	}
 
 	/**
 	 * Returns the mesh of a primitive.
 	 *
-	 * @see GET /v1/vp/:fileId/meshes/:meshName
+	 * @see GET /v1/vp/:fileId/meshes/:meshName.obj
 	 * @param {Context} ctx Koa context
 	 */
-	public async getMesh(ctx: Context) {
+	public async getMeshObj(ctx: Context) {
 
-		this.success(ctx, {}, 200);
+		const vptFile = await this.getVpFile(ctx);
+		const vpTable = await this.getVpTable(ctx, vptFile);
+
+		const mesh = vpTable.getPrimitive(ctx.params.meshName);
+		if (!mesh) {
+			throw new ApiError('No primitive named "%s" in this table!').status(404);
+		}
+
+		ctx.status = 200;
+		ctx.set('Content-Type', 'text/plain');
+		ctx.response.body = mesh.serializeToObj();
 	}
 
 	private async getVpFile(ctx: Context): Promise<FileDocument> {

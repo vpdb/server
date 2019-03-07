@@ -18,12 +18,11 @@
  */
 
 import { Api } from '../common/api';
-import { Context } from '../common/typings/context';
-import { state } from '../state';
 import { ApiError } from '../common/api.error';
+import { Context } from '../common/typings/context';
 import { FileDocument } from '../files/file.document';
+import { state } from '../state';
 import { VpTable } from '../vpinball/vp-table';
-import { inspect } from 'util';
 
 export class VpApi extends Api {
 
@@ -36,9 +35,7 @@ export class VpApi extends Api {
 	public async getMeshes(ctx: Context) {
 
 		const vptFile = await this.getVpFile(ctx);
-		const vpTable = await VpTable.load(vptFile.getPath(ctx.state));
-
-		//console.log(inspect(vpTable, {colors: true, depth: null }));
+		const vpTable = await this.getVpTable(ctx, vptFile);
 
 		this.success(ctx, vpTable.serialize(), 200);
 	}
@@ -54,7 +51,6 @@ export class VpApi extends Api {
 		this.success(ctx, {}, 200);
 	}
 
-
 	private async getVpFile(ctx: Context): Promise<FileDocument> {
 		const file = await state.models.File.findOne({ id: ctx.params.fileId });
 
@@ -68,5 +64,18 @@ export class VpApi extends Api {
 			throw new ApiError('Not a .vpx/.vpt table file.', ctx.params.fileId).status(400);
 		}
 		return file;
+	}
+
+	private async getVpTable(ctx: Context, vptFile: FileDocument): Promise<VpTable> {
+		let vpTable: VpTable;
+		const redisKey = `vpt:${vptFile.id}`;
+		const cachedVpTable = await state.redis.get(redisKey);
+		if (!cachedVpTable) {
+			vpTable = await VpTable.load(vptFile.getPath(ctx.state));
+			await state.redis.set(redisKey, JSON.stringify(vpTable));
+		} else {
+			vpTable = VpTable.from(JSON.parse(cachedVpTable));
+		}
+		return vpTable;
 	}
 }

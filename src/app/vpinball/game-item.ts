@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { BiffBlock } from './biff-parser';
 import { logger } from '../common/logger';
+import { BiffBlock } from './biff-parser';
 
 export abstract class GameItem {
 

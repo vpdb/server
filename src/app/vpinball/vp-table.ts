@@ -35,7 +35,14 @@ export class VpTable {
 		return vpTable;
 	}
 
-	private doc: OleCompoundDoc;
+	public static from(data: any): VpTable {
+		const vpTable = new VpTable();
+		for (const name of Object.keys(data.primitives)) {
+			vpTable.primitives[name] = PrimitiveItem.from(data.primitives[name]);
+		}
+		return vpTable;
+	}
+
 	private primitives: { [key: string]: PrimitiveItem } = {};
 
 	public getPrimitive(name: string): PrimitiveItem {
@@ -48,17 +55,17 @@ export class VpTable {
 	public serialize() {
 		return {
 			primitives: values(this.primitives).map(p => p.serialize()),
-		}
+		};
 	}
 
 	private async _load(fileName: string): Promise<void> {
 
 		// read ole-doc
-		this.doc = new OleCompoundDoc(fileName);
-		await this.doc.read();
+		const doc = new OleCompoundDoc(fileName);
+		await doc.read();
 
 		// open game storage
-		const gameStorage = this.doc.storage('GameStg');
+		const gameStorage = doc.storage('GameStg');
 
 		// get number of items from game data
 		const blocks = BiffParser.parseBiff(await gameStorage.read('GameData'));

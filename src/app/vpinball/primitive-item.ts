@@ -22,6 +22,7 @@ import { logger } from '../common/logger';
 import { FileUtil } from '../files/file.util';
 import { BiffBlock, BiffParser } from './biff-parser';
 import { GameItem } from './game-item';
+import { settings } from '../common/settings';
 
 export class PrimitiveItem extends GameItem {
 
@@ -67,13 +68,22 @@ export class PrimitiveItem extends GameItem {
 	}
 
 	public async exportMeshToObj(fileName: string) {
-		await this.mesh.exportToObj(fileName, this.data.use3DMesh ? this.wzName : 'Primitive');
+		const description = this.data.use3DMesh ? this.wzName : 'Primitive';
+		const obj = this.mesh.serializeToObj(description);
+		await FileUtil.writeFile(fileName, obj);
+		logger.info(null, '[Mesh.serializeToObj] Exported OBJ of %s to %s.', description, fileName);
 	}
 
-	public serialize() {
+	public serialize(fileId: string) {
 		return {
 			name: this.wzName,
+			mesh: settings.apiExternalUri(`/v1/vp/${fileId}/meshes/${this.wzName}.obj`),
 		};
+	}
+
+	public serializeToObj() {
+		const description = this.data.use3DMesh ? this.wzName : 'Primitive';
+		return this.mesh.serializeToObj(description);
 	}
 
 	private async _load(buffer: Buffer) {
@@ -177,18 +187,17 @@ class Mesh {
 	public indices: number[];
 	private faceIndexOffset = 0;
 
-	public async exportToObj(fileName: string, description: string): Promise<void> {
+	public serializeToObj(description: string): string {
 
 		const objFile: string[] = [];
-		const mtlFile: string[] = [];
+		//const mtlFile: string[] = [];
 
-		this._writeHeader(objFile, mtlFile, basename(fileName) + '.wt');
+		//this._writeHeader(objFile, mtlFile, basename(fileName) + '.wt');
 		this._writeObjectName(objFile, description);
 		this._writeVertexInfo(objFile);
 		this._writeFaceInfoLong(objFile);
 
-		await FileUtil.writeFile(fileName, objFile.join('\n'));
-		logger.info(null, '[Mesh.exportToObj] Exported OBJ of %s to %s.', description, fileName);
+		return objFile.join('\n');
 	}
 
 	private _writeHeader(objFile: string[], mtlFile: string[], mtlFilename: string): void {

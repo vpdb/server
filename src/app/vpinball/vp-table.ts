@@ -46,15 +46,12 @@ export class VpTable {
 	private primitives: { [key: string]: PrimitiveItem } = {};
 
 	public getPrimitive(name: string): PrimitiveItem {
-		if (!this.primitives[name]) {
-			throw new Error('No primitive with name "' + name + '" in this table!');
-		}
 		return this.primitives[name];
 	}
 
-	public serialize() {
+	public serialize(fileId: string) {
 		return {
-			primitives: values(this.primitives).map(p => p.serialize()),
+			primitives: values(this.primitives).map((p: PrimitiveItem) => p.serialize(fileId)),
 		};
 	}
 

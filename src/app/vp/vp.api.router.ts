@@ -30,7 +30,7 @@ export class VpApiRouter implements ApiRouter {
 		this.router = api.apiRouter();
 
 		this.router.get('/v1/vp/:fileId/meshes', api.getMeshes.bind(api));
-		this.router.get('/v1/vp/:fileId/meshes/:meshName', api.getMesh.bind(api));
+		this.router.get('/v1/vp/:fileId/meshes/:meshName.obj', api.getMeshObj.bind(api));
 	}
 
 	public getRouter(): Router {

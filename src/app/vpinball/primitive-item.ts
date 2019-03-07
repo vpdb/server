@@ -31,6 +31,20 @@ export class PrimitiveItem extends GameItem {
 		return primitiveItem;
 	}
 
+	public static from(data: any): PrimitiveItem {
+		const primitiveItem = new PrimitiveItem();
+		primitiveItem.data = PrimitiveData.from(data.data);
+		primitiveItem.mesh = Mesh.from(data.mesh);
+		primitiveItem.numVertices = data.numVertices;
+		primitiveItem.compressedAnimationVertices = data.compressedAnimationVertices;
+		primitiveItem.compressedVertices = data.compressedVertices;
+		primitiveItem.pdata = data.pdata;
+		primitiveItem.wzName = data.wzName;
+		primitiveItem.numIndices = data.numIndices;
+		primitiveItem.compressedIndices = data.compressedIndices;
+		return primitiveItem;
+	}
+
 	public data: PrimitiveData;
 	public mesh: Mesh;
 
@@ -58,7 +72,7 @@ export class PrimitiveItem extends GameItem {
 
 	public serialize() {
 		return {
-			name: this.wzName
+			name: this.wzName,
 		};
 	}
 
@@ -67,8 +81,8 @@ export class PrimitiveItem extends GameItem {
 		for (const block of blocks) {
 			switch (block.tag) {
 				case 'PIID': this.pdata = this.parseInt(block); break;
-				case 'VPOS': this.data.vPosition = new Vector3(block); break;
-				case 'VSIZ': this.data.vSize = new Vector3(block); break;
+				case 'VPOS': this.data.vPosition = Vector3.load(block); break;
+				case 'VSIZ': this.data.vSize = Vector3.load(block); break;
 				case 'RTV0': this.data.aRotAndTra[0] = this.parseFloat(block); break;
 				case 'RTV1': this.data.aRotAndTra[1] = this.parseFloat(block); break;
 				case 'RTV2': this.data.aRotAndTra[2] = this.parseFloat(block); break;
@@ -130,17 +144,31 @@ export class PrimitiveItem extends GameItem {
 	private parseVertices(decompressedBuffer: Buffer, num: number): Vertex3DNoTex2[] {
 		const vertices: Vertex3DNoTex2[] = [];
 		for (let i = 0; i < num; i++) {
-			vertices.push(new Vertex3DNoTex2(decompressedBuffer, i, num));
+			vertices.push(Vertex3DNoTex2.load(decompressedBuffer, i, num));
 		}
 		return vertices;
 	}
 
 	private async parseAnimatedVertices(block: BiffBlock, num: number): Promise<FrameData> {
-		return new FrameData(await BiffParser.decompress(block.data), num);
+		return FrameData.load(await BiffParser.decompress(block.data), num);
 	}
 }
 
 class Mesh {
+
+	public static from(data: any): Mesh {
+		const mesh = new Mesh();
+		mesh.vertices = [];
+		for (const vertex of data.vertices) {
+			mesh.vertices.push(Vertex3DNoTex2.from(vertex));
+		}
+		mesh.animationFrames = [];
+		for (const animationFrame of data.animationFrames) {
+			mesh.animationFrames.push(FrameData.from(animationFrame));
+		}
+		mesh.indices = data.indices;
+		return mesh;
+	}
 
 	private static exportPrecision = 6;
 
@@ -222,6 +250,13 @@ class Mesh {
 
 class PrimitiveData {
 
+	public static from(data: any): PrimitiveData {
+		const primitiveData: PrimitiveData = Object.assign(new PrimitiveData(), data);
+		primitiveData.vPosition = Vector3.from(data.vPosition);
+		primitiveData.vSize = Vector3.from(data.vSize);
+		return primitiveData;
+	}
+
 	public vPosition: Vector3;
 	public vSize: Vector3;
 	public aRotAndTra: number[] = [];
@@ -256,20 +291,48 @@ class PrimitiveData {
 }
 
 class Vector3 {
+
+	public static load(block: BiffBlock) {
+		const v3 = new Vector3();
+		v3.x = block.data.readFloatLE(0);
+		v3.y = block.data.readFloatLE(4);
+		v3.z = block.data.readFloatLE(8);
+		return v3;
+	}
+
+	public static from(data: any): Vector3 {
+		return Object.assign(new Vector3(), data);
+	}
+
 	public x: number;
 	public y: number;
 	public z: number;
-
-	constructor(block: BiffBlock) {
-		this.x = block.data.readFloatLE(0);
-		this.y = block.data.readFloatLE(4);
-		this.z = block.data.readFloatLE(8);
-	}
 }
 
 class Vertex3DNoTex2 {
 
 	public static size = 32;
+
+	public static load(buffer: Buffer, pos: number, num: number): Vertex3DNoTex2 {
+		const offset = pos * Vertex3DNoTex2.size;
+		const vertex = new Vertex3DNoTex2();
+		if (buffer.length < offset + Vertex3DNoTex2.size) {
+			throw new Error('Cannot parse vertice number ' + pos + '/' + num + ' at position ' + offset + ' when buffer is only ' + buffer.length + ' bytes long.');
+		}
+		vertex.x = buffer.readFloatLE(offset);
+		vertex.y = buffer.readFloatLE(offset + 4);
+		vertex.z = buffer.readFloatLE(offset + 8);
+		vertex.nx = buffer.readFloatLE(offset + 12);
+		vertex.ny = buffer.readFloatLE(offset + 16);
+		vertex.nz = buffer.readFloatLE(offset + 20);
+		vertex.tu = buffer.readFloatLE(offset + 24);
+		vertex.tv = buffer.readFloatLE(offset + 28);
+		return vertex;
+	}
+
+	public static from(data: any): Vertex3DNoTex2 {
+		return Object.assign(new Vertex3DNoTex2(), data);
+	}
 
 	public x: number;
 	public y: number;
@@ -281,33 +344,45 @@ class Vertex3DNoTex2 {
 
 	public tu: number;
 	public tv: number;
-
-	constructor(buffer: Buffer, pos: number, num: number) {
-		const offset = pos * Vertex3DNoTex2.size;
-		if (buffer.length < offset + Vertex3DNoTex2.size) {
-			throw new Error('Cannot parse vertice number ' + pos + '/' + num + ' at position ' + offset + ' when buffer is only ' + buffer.length + ' bytes long.');
-		}
-		this.x = buffer.readFloatLE(offset);
-		this.y = buffer.readFloatLE(offset + 4);
-		this.z = buffer.readFloatLE(offset + 8);
-		this.nx = buffer.readFloatLE(offset + 12);
-		this.ny = buffer.readFloatLE(offset + 16);
-		this.nz = buffer.readFloatLE(offset + 20);
-		this.tu = buffer.readFloatLE(offset + 24);
-		this.tv = buffer.readFloatLE(offset + 28);
-	}
 }
 
 class FrameData {
-	public frameVerts: VertData[] = [];
-	constructor(buffer: Buffer, numVertices: number) {
+
+	public static load(buffer: Buffer, numVertices: number): FrameData {
+		const frameData = new FrameData();
 		for (let i = 0; i < numVertices; i++) {
-			this.frameVerts.push(new VertData(buffer, i * 24));
+			frameData.frameVerts.push(VertData.load(buffer, i * 24));
 		}
+		return frameData;
 	}
+
+	public static from(data: any): FrameData {
+		const frameData = new FrameData();
+		for (const frameVert of data.frameVerts) {
+			frameData.frameVerts.push(VertData.from(frameVert));
+		}
+		return frameData;
+	}
+
+	public frameVerts: VertData[] = [];
 }
 
 class VertData {
+
+	public static load(buffer: Buffer, offset: number = 0): VertData {
+		const vertData = new VertData();
+		vertData.x = buffer.readFloatLE(offset);
+		vertData.y = buffer.readFloatLE(offset + 4);
+		vertData.z = buffer.readFloatLE(offset + 8);
+		vertData.nx = buffer.readFloatLE(offset + 12);
+		vertData.ny = buffer.readFloatLE(offset + 16);
+		vertData.nz = buffer.readFloatLE(offset + 20);
+		return vertData;
+	}
+
+	public static from(data: any): VertData {
+		return Object.assign(new VertData(), data);
+	}
 
 	public x: number;
 	public y: number;
@@ -316,13 +391,4 @@ class VertData {
 	public nx: number;
 	public ny: number;
 	public nz: number;
-
-	constructor(buffer: Buffer, offset: number = 0) {
-		this.x = buffer.readFloatLE(offset);
-		this.y = buffer.readFloatLE(offset + 4);
-		this.z = buffer.readFloatLE(offset + 8);
-		this.nx = buffer.readFloatLE(offset + 12);
-		this.ny = buffer.readFloatLE(offset + 16);
-		this.nz = buffer.readFloatLE(offset + 20);
-	}
 }

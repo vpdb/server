@@ -17,7 +17,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { basename } from 'path';
 import { logger } from '../common/logger';
 import { settings } from '../common/settings';
 import { FileUtil } from '../files/file.util';

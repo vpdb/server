@@ -96,6 +96,9 @@ export class Server {
 
 		// import data
 		await endPoint.import();
+
+		// invalidate VP cache
+		await apiCache.invalidateVp();
 	}
 
 	public postRegister(endPoints: EndPoint[]) {

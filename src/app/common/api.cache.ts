@@ -361,6 +361,10 @@ class ApiCache {
 		}
 	}
 
+	public async invalidateVp(): Promise<number> {
+		return this.deleteWildcard('vpt:*');
+	}
+
 	/**
 	 * Invalidates all caches.
 	 * @see https://github.com/galanonym/redis-delete-wildcard/blob/master/index.js

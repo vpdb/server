@@ -28,6 +28,16 @@ export class GameData extends BiffParser {
 		return gameData;
 	}
 
+	public static from(data: any): GameData {
+		const gameData = new GameData();
+		Object.assign(gameData, data);
+		gameData.materials = [];
+		for (const material of gameData.materials) {
+			gameData.materials.push(Material.fromCached(material));
+		}
+		return gameData;
+	}
+
 	private static BG_DESKTOP = 0;
 	private static BG_FULLSCREEN = 1;
 	private static BG_FSS = 2;
@@ -129,6 +139,20 @@ export class GameData extends BiffParser {
 
 	public getName(): string {
 		return this.wzName;
+	}
+
+	public serialize() {
+		return {
+			table_height: this.tableheight,
+			glass_height: this.glassheight,
+			offset: this.offset,
+			light: {
+				ambient: this.lightAmbient,
+				height: this.lightHeight,
+				range: this.lightRange,
+				emmission_scale: this.lightEmissionScale,
+			},
+		};
 	}
 
 	private async _load(buffer: Buffer) {
@@ -267,7 +291,7 @@ export class GameData extends BiffParser {
 		const materials: Material[] = [];
 		for (let i = 0; i < num; i++) {
 			const saveMat = new SaveMaterial(buffer, i);
-			materials.push(Material.from(saveMat));
+			materials.push(Material.fromSaved(saveMat));
 		}
 		return materials;
 	}
@@ -396,7 +420,7 @@ class SavePhysicsMaterial {
 
 class Material {
 
-	public static from(saveMaterial: SaveMaterial): Material {
+	public static fromSaved(saveMaterial: SaveMaterial): Material {
 		const material = new Material();
 		material.szName = saveMaterial.szName;
 		material.cBase = saveMaterial.cBase;
@@ -411,6 +435,12 @@ class Material {
 		material.bIsMetal = saveMaterial.bIsMetal;
 		material.bOpacityActive = false; //!!(saveMaterial.bOpacityActive_fEdgeAlpha & 1);
 		material.fEdgeAlpha = 0; //dequantizeUnsigned<7>(mats[i].bOpacityActive_fEdgeAlpha >> 1);
+		return material;
+	}
+
+	public static fromCached(data: any): Material {
+		const material = new Material();
+		Object.assign(material, data);
 		return material;
 	}
 

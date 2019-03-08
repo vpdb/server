@@ -21,8 +21,8 @@
 import { values } from 'lodash';
 import { logger } from '../common/logger';
 import { OleCompoundDoc, Storage } from '../common/ole-doc';
-import { GameItem } from './game-item';
 import { GameData } from './game-data';
+import { GameItem } from './game-item';
 import { PrimitiveItem } from './primitive-item';
 
 export class VpTable {
@@ -40,6 +40,7 @@ export class VpTable {
 		for (const name of Object.keys(data.primitives)) {
 			vpTable.primitives[name] = PrimitiveItem.from(data.primitives[name]);
 		}
+		vpTable.gameData = GameData.from(data.gameData);
 		return vpTable;
 	}
 
@@ -52,6 +53,7 @@ export class VpTable {
 
 	public serialize(fileId: string) {
 		return {
+			game_data: this.gameData.serialize(),
 			primitives: values(this.primitives).map((p: PrimitiveItem) => p.serialize(fileId)),
 		};
 	}

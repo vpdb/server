@@ -111,6 +111,17 @@ export class BiffParser {
 		});
 	}
 
+	public static parseNullTerminatedString(buffer: Buffer, maxLength: number = 0) {
+		if (maxLength) {
+			buffer = buffer.slice(0, maxLength);
+		}
+		const nullBuffer = Buffer.from([0x0]);
+		if (buffer.indexOf(nullBuffer) >= 0) {
+			return buffer.slice(0, buffer.indexOf(nullBuffer)).toString('utf8');
+		}
+		return buffer.toString('utf8');
+	}
+
 	protected parseInt(block: BiffBlock): number {
 		return block.data.readInt32LE(0);
 	}

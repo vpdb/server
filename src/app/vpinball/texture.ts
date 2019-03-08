@@ -18,14 +18,22 @@
  */
 
 import { logger } from '../common/logger';
+import { settings } from '../common/settings';
 import { BiffParser } from './biff-parser';
 import { Binary } from './binary';
 
 export class Texture extends BiffParser {
 
-	public static async load(buffer: Buffer): Promise<Texture> {
+	public static async load(buffer: Buffer, pos: number): Promise<Texture> {
 		const texture = new Texture();
-		await texture._load(buffer);
+		await texture._load(buffer, pos);
+		return texture;
+	}
+
+	public static from(data: any): Texture {
+		const texture = new Texture();
+		Object.assign(texture, data);
+		texture.binary = Binary.from(data.binary);
 		return texture;
 	}
 
@@ -38,10 +46,23 @@ export class Texture extends BiffParser {
 	public binary: Binary;
 
 	public getName(): string {
-		return this.szName;
+		return this.szInternalName;
 	}
 
-	private async _load(buffer: Buffer): Promise<void> {
+	public serialize(fileId: string) {
+		const serialized: any = {
+			name: this.szName,
+			width: this.width,
+			height: this.height,
+		};
+		if (this.binary) {
+			serialized.url = settings.apiExternalUri(`/v1/vp/${fileId}/textures/${encodeURI(this.getName())}`);
+			serialized.size = this.binary.cdata;
+		}
+		return serialized;
+	}
+
+	private async _load(buffer: Buffer, pos: number): Promise<void> {
 		const blocks = BiffParser.parseBiff(buffer);
 		for (const block of blocks) {
 			switch (block.tag) {
@@ -51,11 +72,9 @@ export class Texture extends BiffParser {
 				case 'WDTH': this.width = this.parseInt(block); break;
 				case 'HGHT': this.height = this.parseInt(block); break;
 				case 'ALTV': this.alphaTestValue = this.parseFloat(block); break;
-				case 'BITS': logger.warn(null, '[Texture.load] Ignoring BITS tag, implement when understood what it is.'); break;
-				case 'LINK': logger.warn(null, '[Texture.load] Ignoring LINK tag, implement when understood what it is.'); break;
-				case 'JPEG': this.binary = await Binary.load(buffer, block.pos + block.len); return; // we're done here
-				default:
-					logger.warn(null, '[Texture.load] Unknown tag %s!', block.tag); break;
+				case 'BITS': logger.warn(null, '[Texture.load] Ignoring BITS tag for %s at Image%s, implement when understood what it is.', this.szName, pos); break;
+				case 'LINK': logger.warn(null, '[Texture.load] Ignoring LINK tag for %s at Image%s, implement when understood what it is.', this.szName, pos); break;
+				case 'JPEG': this.binary = await Binary.load(buffer, block.pos + block.len); break;
 			}
 		}
 	}

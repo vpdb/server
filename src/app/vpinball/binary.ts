@@ -17,7 +17,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { logger } from '../common/logger';
 import { BiffParser } from './biff-parser';
 
 export class Binary extends BiffParser {
@@ -25,6 +24,12 @@ export class Binary extends BiffParser {
 	public static async load(buffer: Buffer, offset: number = 0): Promise<Binary> {
 		const binary = new Binary();
 		await binary._load(buffer, offset);
+		return binary;
+	}
+
+	public static from(data: any): Binary {
+		const binary = new Binary();
+		Object.assign(binary, data);
 		return binary;
 	}
 
@@ -43,8 +48,6 @@ export class Binary extends BiffParser {
 				case 'PATH': this.szPath = this.parseString(block, 4); break;
 				case 'SIZE': this.cdata = this.parseInt(block); break;
 				case 'DATA': this.data = block.pos; break;
-				default:
-					logger.warn(null, '[Binary.load] Unknown tag %s!', block.tag); break;
 			}
 		}
 	}

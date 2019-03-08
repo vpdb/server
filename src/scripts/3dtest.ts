@@ -19,6 +19,7 @@
  */
 
 import { VpTable } from '../app/vpinball/vp-table';
+import { inspect } from 'util';
 
 (async () => {
 
@@ -31,8 +32,9 @@ import { VpTable } from '../app/vpinball/vp-table';
 		const tag = 'M3CX';
 
 		const vpt = await VpTable.load(tablePath);
+		console.log(inspect(vpt.getTableInfo(), { colors: true, depth: null }));
 
-		await vpt.getPrimitive('Joker').exportMeshToObj('Joker.obj');
+		//await vpt.getPrimitive('Joker').exportMeshToObj('Joker.obj');
 
 	} catch (err) {
 		console.error(err);

@@ -88,11 +88,12 @@ export class PrimitiveItem extends GameItem {
 			trans: {
 				x: this.data.aRotAndTra[3],
 				y: this.data.aRotAndTra[4],
+				z: this.data.aRotAndTra[5],
 			},
 			obj_rot: {
-				x: this.data.aRotAndTra[5],
-				y: this.data.aRotAndTra[6],
-				z: this.data.aRotAndTra[7],
+				x: this.data.aRotAndTra[6],
+				y: this.data.aRotAndTra[7],
+				z: this.data.aRotAndTra[8],
 			},
 			is_visible: this.data.fVisible,
 		};
@@ -157,9 +158,9 @@ export class PrimitiveItem extends GameItem {
 				case 'M3CY': this.compressedVertices = this.parseInt(block); break;
 				case 'M3CX': this.mesh.vertices = this.parseVertices(await BiffParser.decompress(block.data), this.numVertices); break;
 				case 'M3FN': this.numIndices = this.parseInt(block); break;
-				case 'M3DI': this.mesh.indices = this.parseUnsignedInts(block.data, this.numIndices); break;
+				case 'M3DI': this.mesh.indices = this.parseUnsignedInt2s(block.data, this.numIndices); break;
 				case 'M3CJ': this.compressedIndices = this.parseInt(block); break;
-				case 'M3CI': this.mesh.indices = this.parseUnsignedInts(await BiffParser.decompress(block.data), this.numIndices); break;
+				case 'M3CI': this.mesh.indices = this.parseUnsignedInt2s(await BiffParser.decompress(block.data), this.numIndices); break;
 				case 'PIDB': this.data.depthBias = this.parseFloat(block); break;
 				default:
 					this.parseUnknownBlock(block);

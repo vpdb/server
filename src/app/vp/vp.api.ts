@@ -30,10 +30,10 @@ export class VpApi extends Api {
 	/**
 	 * Returns all primitives of the vpx file
 	 *
-	 * @see GET /v1/vp/:fileId/meshes
+	 * @see GET /v1/vp/:fileId
 	 * @param {Context} ctx Koa context
 	 */
-	public async getMeshes(ctx: Context) {
+	public async view(ctx: Context) {
 
 		const vptFile = await this.getVpFile(ctx);
 		const vpTable = await this.getVpTable(ctx, vptFile);

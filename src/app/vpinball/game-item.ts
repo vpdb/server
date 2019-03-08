@@ -18,9 +18,9 @@
  */
 
 import { logger } from '../common/logger';
-import { BiffBlock } from './biff-parser';
+import { BiffBlock, BiffParser } from './biff-parser';
 
-export abstract class GameItem {
+export abstract class GameItem extends BiffParser {
 
 	public static TypeSurface = 0;
 	public static TypeFlipper = 1;
@@ -48,6 +48,35 @@ export abstract class GameItem {
 	public static TypeCount = 23;
 	public static TypeInvalid = 0xffffffff;
 
+	public static getType(type: number): string {
+		switch (type) {
+			case GameItem.TypeSurface: return 'Surface';
+			case GameItem.TypeFlipper: return 'Flipper';
+			case GameItem.TypeTimer: return 'Timer';
+			case GameItem.TypePlunger: return 'Plunger';
+			case GameItem.TypeTextbox: return 'Textbox';
+			case GameItem.TypeBumper: return 'Bumper';
+			case GameItem.TypeTrigger: return 'Trigger';
+			case GameItem.TypeLight: return 'Light';
+			case GameItem.TypeKicker: return 'Kicker';
+			case GameItem.TypeDecal: return 'Decal';
+			case GameItem.TypeGate: return 'Gate';
+			case GameItem.TypeSpinner: return 'Spinner';
+			case GameItem.TypeRamp: return 'Ramp';
+			case GameItem.TypeLightCenter: return 'Light Center';
+			case GameItem.TypeDragPoint: return 'Drag Point';
+			case GameItem.TypeCollection: return 'Collection';
+			case GameItem.TypeDispReel: return 'Reel';
+			case GameItem.TypeLightSeq: return 'Light Sequence';
+			case GameItem.TypePrimitive: return 'Primitive';
+			case GameItem.TypeFlasher: return 'Flasher';
+			case GameItem.TypeRubber: return 'Rubber';
+			case GameItem.TypeHitTarget: return 'Hit Target';
+			case GameItem.TypeCount: return 'Count';
+			case GameItem.TypeInvalid: return 'Invalid';
+		}
+	}
+
 	public fLocked: boolean;
 	public layerIndex: number;
 
@@ -61,45 +90,5 @@ export abstract class GameItem {
 				logger.warn(null, '[GameItem.parseUnknownBlock]: Unknown block "%s".', block.tag);
 				break;
 		}
-	}
-
-	protected parseInt(block: BiffBlock): number {
-		return block.data.readInt32LE(0);
-	}
-
-	protected parseBool(block: BiffBlock): boolean {
-		return block.data.readInt32LE(0) > 0;
-	}
-
-	protected parseFloat(block: BiffBlock): number {
-		return block.data.readFloatLE(0);
-	}
-
-	protected parseString(block: BiffBlock, offset: number = 0): string {
-		return offset > 0
-			? block.data.slice(offset).toString('utf8')
-			: block.data.toString('utf8');
-	}
-
-	protected parseWideString(block: BiffBlock): string {
-		const chars: number[] = [];
-		block.data.slice(4).forEach((v, i) => {
-			if (i % 2 === 0) {
-				chars.push(v);
-			}
-		});
-		return Buffer.from(chars).toString('utf8');
-	}
-
-	protected parseUnsignedInts(buffer: Buffer, num: number): number[] {
-		const intSize = 2;
-		if (buffer.length < num * intSize) {
-			throw new Error('Cannot parse ' + num * intSize + ' bytes of ' + num + ' unsigned ints with ' + buffer.length + ' bytes of buffer data.');
-		}
-		const ints: number[] = [];
-		for (let i = 0; i < num; i++) {
-			ints.push(buffer.readUInt16LE(i * intSize));
-		}
-		return ints;
 	}
 }

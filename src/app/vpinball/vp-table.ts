@@ -38,10 +38,13 @@ export class VpTable {
 
 	public static from(data: any): VpTable {
 		const vpTable = new VpTable();
+		vpTable.gameData = GameData.from(data.gameData);
 		for (const name of Object.keys(data.primitives)) {
 			vpTable.primitives[name] = PrimitiveItem.from(data.primitives[name]);
 		}
-		vpTable.gameData = GameData.from(data.gameData);
+		for (const name of Object.keys(data.textures)) {
+			vpTable.textures[name] = Texture.from(data.textures[name]);
+		}
 		return vpTable;
 	}
 
@@ -57,6 +60,11 @@ export class VpTable {
 		return {
 			game_data: this.gameData.serialize(),
 			primitives: values(this.primitives).map((p: PrimitiveItem) => p.serialize(fileId)),
+			//textures: values(this.textures).map((t: Texture) => t.serialize(fileId)),
+			textures: Object.keys(this.textures).reduce<{ [key: string]: any }>((textures, textureName) => {
+				textures[textureName] = this.textures[textureName].serialize(fileId);
+				return textures;
+			}, {}),
 		};
 	}
 
@@ -111,7 +119,7 @@ export class VpTable {
 		for (let i = 0; i < numItems; i++) {
 			const itemName = `Image${i}`;
 			const itemData = await storage.read(itemName);
-			const texture = await Texture.load(itemData);
+			const texture = await Texture.load(itemData, i);
 			this.textures[texture.getName()] = texture;
 		}
 	}

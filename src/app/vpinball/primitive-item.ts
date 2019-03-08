@@ -76,7 +76,7 @@ export class PrimitiveItem extends GameItem {
 	public serialize(fileId: string) {
 		return {
 			name: this.wzName,
-			mesh: settings.apiExternalUri(`/v1/vp/${fileId}/meshes/${this.wzName}.obj`),
+			mesh: settings.apiExternalUri(`/v1/vp/${fileId}/meshes/${encodeURI(this.wzName)}.obj`),
 			pos: this.data.vPosition,
 			size: this.data.vSize,
 			rot: {

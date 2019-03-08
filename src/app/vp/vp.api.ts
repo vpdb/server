@@ -54,7 +54,7 @@ export class VpApi extends Api {
 
 		const vptFile = await this.getVpFile(ctx);
 
-		const redisKey = `vpt:mesh:${vptFile.id}:${ctx.params.meshName}`;
+		const redisKey = `api-cache-vpt:mesh:${vptFile.id}:${ctx.params.meshName}`;
 		let obj = await state.redis.get(redisKey);
 		if (!obj) {
 			const vpTable = await this.getVpTable(ctx, vptFile);
@@ -88,7 +88,7 @@ export class VpApi extends Api {
 
 	private async getVpTable(ctx: Context, vptFile: FileDocument): Promise<VpTable> {
 		let vpTable: VpTable;
-		const redisKey = `vpt:${vptFile.id}`;
+		const redisKey = `api-cache-vpt:data:${vptFile.id}`;
 		const cachedVpTable = await state.redis.get(redisKey);
 		if (!cachedVpTable) {
 			vpTable = await VpTable.load(vptFile.getPath(ctx.state));

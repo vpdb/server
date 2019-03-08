@@ -20,6 +20,7 @@
 
 import { VpTable } from '../app/vpinball/vp-table';
 import { inspect } from 'util';
+import { writeFileSync } from 'fs';
 
 (async () => {
 
@@ -33,6 +34,7 @@ import { inspect } from 'util';
 
 		const vpt = await VpTable.load(tablePath);
 		console.log(inspect(vpt.gameData, { colors: true, depth: null }));
+		writeFileSync('batman.json', JSON.stringify(vpt, null, '  '));
 
 		//await vpt.getPrimitive('Joker').exportMeshToObj('Joker.obj');
 

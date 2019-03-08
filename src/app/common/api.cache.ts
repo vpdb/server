@@ -362,7 +362,7 @@ class ApiCache {
 	}
 
 	public async invalidateVp(): Promise<number> {
-		return this.deleteWildcard('vpt:*');
+		return this.deleteWildcard('api-cache-vpt:data:*');
 	}
 
 	/**

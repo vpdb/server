@@ -82,9 +82,9 @@ export class BiffParser {
 				}
 
 				if (!counterIncreased) {
-					if (blockSize > 4) {
+					if (blockSize >= 4) {
 						data = block.slice(4);
-						blocks.push({ tag, data });
+						blocks.push({ tag, data, pos: i + 8, len: blockSize - 4 });
 					}
 					i += blockSize + 4;
 				}
@@ -178,4 +178,6 @@ export class BiffParser {
 export interface BiffBlock {
 	tag: string;
 	data: Buffer;
+	pos: number;
+	len: number;
 }

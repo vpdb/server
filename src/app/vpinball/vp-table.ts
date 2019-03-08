@@ -24,6 +24,7 @@ import { OleCompoundDoc, Storage } from '../common/ole-doc';
 import { GameData } from './game-data';
 import { GameItem } from './game-item';
 import { PrimitiveItem } from './primitive-item';
+import { Texture } from './texture';
 
 export class VpTable {
 
@@ -46,6 +47,7 @@ export class VpTable {
 
 	public gameData: GameData;
 	private primitives: { [key: string]: PrimitiveItem } = {};
+	private textures: { [key: string]: Texture } = {};
 
 	public getPrimitive(name: string): PrimitiveItem {
 		return this.primitives[name];
@@ -73,6 +75,9 @@ export class VpTable {
 		// load items
 		const stats = await this.loadGameItems(gameStorage, this.gameData.numGameItems);
 
+		// load images
+		await this.loadTextures(gameStorage, this.gameData.numTextures);
+
 		console.log(stats);
 	}
 
@@ -86,7 +91,7 @@ export class VpTable {
 				case GameItem.TypePrimitive:
 					const item = await PrimitiveItem.load(itemData);
 					this.primitives[item.getName()] = item;
-					console.log('Adding primitive %s (%s bytes)', item.getName(), itemData.length);
+					//console.log('Adding primitive %s (%s bytes)', item.getName(), itemData.length);
 					break;
 
 				default:
@@ -100,5 +105,14 @@ export class VpTable {
 			}
 		}
 		return stats;
+	}
+
+	private async loadTextures(storage: Storage, numItems: number): Promise<void> {
+		for (let i = 0; i < numItems; i++) {
+			const itemName = `Image${i}`;
+			const itemData = await storage.read(itemName);
+			const texture = await Texture.load(itemData);
+			this.textures[texture.getName()] = texture;
+		}
 	}
 }

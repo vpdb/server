@@ -32,7 +32,7 @@ import { inspect } from 'util';
 		const tag = 'M3CX';
 
 		const vpt = await VpTable.load(tablePath);
-		console.log(inspect(vpt.getTableInfo(), { colors: true, depth: null }));
+		console.log(inspect(vpt.gameData, { colors: true, depth: null }));
 
 		//await vpt.getPrimitive('Joker').exportMeshToObj('Joker.obj');
 

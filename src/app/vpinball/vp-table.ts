@@ -18,12 +18,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { isUndefined, values } from 'lodash';
+import { values } from 'lodash';
 import { logger } from '../common/logger';
 import { OleCompoundDoc, Storage } from '../common/ole-doc';
-import { BiffBlock, BiffParser } from './biff-parser';
 import { GameItem } from './game-item';
-import { PintableItem } from './pintable-item';
+import { GameData } from './game-data';
 import { PrimitiveItem } from './primitive-item';
 
 export class VpTable {
@@ -44,15 +43,11 @@ export class VpTable {
 		return vpTable;
 	}
 
-	private table: PintableItem;
+	public gameData: GameData;
 	private primitives: { [key: string]: PrimitiveItem } = {};
 
 	public getPrimitive(name: string): PrimitiveItem {
 		return this.primitives[name];
-	}
-
-	public getTableInfo() {
-		return this.table;
 	}
 
 	public serialize(fileId: string) {
@@ -70,12 +65,11 @@ export class VpTable {
 		// open game storage
 		const gameStorage = doc.storage('GameStg');
 
-		// get number of items from game data
-		const blocks = BiffParser.parseBiff(await gameStorage.read('GameData'));
-		const gameData = this.parseGameData(blocks);
+		// load game data
+		this.gameData = await GameData.load(await gameStorage.read('GameData'));
 
 		// load items
-		const stats = await this.loadGameItems(gameStorage, gameData.numGameItems);
+		const stats = await this.loadGameItems(gameStorage, this.gameData.numGameItems);
 
 		console.log(stats);
 	}
@@ -93,16 +87,7 @@ export class VpTable {
 					console.log('Adding primitive %s (%s bytes)', item.getName(), itemData.length);
 					break;
 
-				case GameItem.TypeTable:
-					if (this.table) {
-						throw new Error('Already got table data!');
-					}
-					console.log('Adding table infos (%s bytes)', itemData.length);
-					this.table = await PintableItem.load(itemData);
-					break;
-
 				default:
-					console.log('Ignoring type %s', itemType);
 					// ignore the rest for now
 					break;
 			}
@@ -114,59 +99,4 @@ export class VpTable {
 		}
 		return stats;
 	}
-
-	/**
-	 * Parses the stream counters and table script from the "GameData" stream.
-	 *
-	 * @param {Block[]} blocks "GameData" blocks
-	 * @return {GameDataItem} GameData values
-	 */
-	private parseGameData(blocks: BiffBlock[]): GameData {
-		const gameData: GameData = {};
-		for (const block of blocks) {
-			switch (block.tag) {
-				case 'SEDT':
-					if (isUndefined(gameData.numGameItems)) {
-						gameData.numGameItems = block.data.readInt32LE(0);
-					}
-					break;
-				case 'SSND':
-					if (isUndefined(gameData.numSounds)) {
-						gameData.numSounds = block.data.readInt32LE(0);
-					}
-					break;
-				case 'SIMG':
-					if (isUndefined(gameData.numTextures)) {
-						gameData.numTextures = block.data.readInt32LE(0);
-					}
-					break;
-				case 'SFNT':
-					if (isUndefined(gameData.numFonts)) {
-						gameData.numFonts = block.data.readInt32LE(0);
-					}
-					break;
-				case 'SCOL':
-					if (isUndefined(gameData.numCollections)) {
-						gameData.numCollections = block.data.readInt32LE(0);
-					}
-					break;
-				case 'CODE':
-					if (isUndefined(gameData.script)) {
-						gameData.script = block.data.toString('utf8');
-					}
-					break;
-			}
-		}
-		return gameData;
-	}
-}
-
-interface GameData {
-	numGameItems?: number;
-	numSounds?: number;
-	numTextures?: number;
-	numFonts?: number;
-	numCollections?: number;
-	collections?: number;
-	script?: string;
 }

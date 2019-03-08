@@ -19,14 +19,13 @@
  */
 
 import { BiffBlock, BiffParser } from './biff-parser';
-import { GameItem } from './game-item';
 
-export class PintableItem extends GameItem {
+export class GameData extends BiffParser {
 
-	public static async load(buffer: Buffer): Promise<PintableItem> {
-		const pintableItem = new PintableItem();
-		await pintableItem._load(buffer);
-		return pintableItem;
+	public static async load(buffer: Buffer): Promise<GameData> {
+		const gameData = new GameData();
+		await gameData._load(buffer);
+		return gameData;
 	}
 
 	private static BG_DESKTOP = 0;
@@ -79,6 +78,12 @@ export class PintableItem extends GameItem {
 	public szBallImageFront: string;
 	public szScreenShot: string;
 	public fBackdrop: boolean;
+	public numGameItems: number;
+	public numSounds: number;
+	public numTextures: number;
+	public numFonts: number;
+	public numCollections: number;
+	public script: string;
 	public wzName: string;
 	public Light: LightSource[] = [ new LightSource() ];
 	public BG_szImage: string[] = [];
@@ -127,7 +132,7 @@ export class PintableItem extends GameItem {
 	}
 
 	private async _load(buffer: Buffer) {
-		const blocks = BiffParser.parseBiff(buffer, 4);
+		const blocks = BiffParser.parseBiff(buffer);
 		for (const block of blocks) {
 			switch (block.tag) {
 				case 'PIID': this.pdata[0] = this.parseInt(block); break;
@@ -135,40 +140,40 @@ export class PintableItem extends GameItem {
 				case 'TOPX': this.top = this.parseFloat(block); break;
 				case 'RGHT': this.right = this.parseFloat(block); break;
 				case 'BOTM': this.bottom = this.parseFloat(block); break;
-				case 'ROTA': this.BG_rotation[PintableItem.BG_DESKTOP] = this.parseFloat(block); break;
-				case 'LAYB': this.BG_layback[PintableItem.BG_DESKTOP] = this.parseFloat(block); break;
-				case 'INCL': this.BG_inclination[PintableItem.BG_DESKTOP] = this.parseFloat(block); break;
-				case 'FOVX': this.BG_FOV[PintableItem.BG_DESKTOP] = this.parseFloat(block); break;
-				case 'SCLX': this.BG_scalex[PintableItem.BG_DESKTOP] = this.parseFloat(block); break;
-				case 'SCLY': this.BG_scaley[PintableItem.BG_DESKTOP] = this.parseFloat(block); break;
-				case 'SCLZ': this.BG_scalez[PintableItem.BG_DESKTOP] = this.parseFloat(block); break;
-				case 'XLTX': this.BG_xlatex[PintableItem.BG_DESKTOP] = this.parseFloat(block); break;
-				case 'XLTY': this.BG_xlatey[PintableItem.BG_DESKTOP] = this.parseFloat(block); break;
-				case 'XLTZ': this.BG_xlatez[PintableItem.BG_DESKTOP] = this.parseFloat(block); break;
-				case 'ROTF': this.BG_rotation[PintableItem.BG_FULLSCREEN] = this.parseFloat(block); break;
-				case 'LAYF': this.BG_layback[PintableItem.BG_FULLSCREEN] = this.parseFloat(block); break;
-				case 'INCF': this.BG_inclination[PintableItem.BG_FULLSCREEN] = this.parseFloat(block); break;
-				case 'FOVF': this.BG_FOV[PintableItem.BG_FULLSCREEN] = this.parseFloat(block); break;
-				case 'SCFX': this.BG_scalex[PintableItem.BG_FULLSCREEN] = this.parseFloat(block); break;
-				case 'SCFY': this.BG_scaley[PintableItem.BG_FULLSCREEN] = this.parseFloat(block); break;
-				case 'SCFZ': this.BG_scalez[PintableItem.BG_FULLSCREEN] = this.parseFloat(block); break;
-				case 'XLFX': this.BG_xlatex[PintableItem.BG_FULLSCREEN] = this.parseFloat(block); break;
-				case 'XLFY': this.BG_xlatey[PintableItem.BG_FULLSCREEN] = this.parseFloat(block); break;
-				case 'XLFZ': this.BG_xlatez[PintableItem.BG_FULLSCREEN] = this.parseFloat(block); break;
-				case 'ROFS': this.BG_rotation[PintableItem.BG_FSS] = this.parseFloat(block); break;
-				case 'LAFS': this.BG_layback[PintableItem.BG_FSS] = this.parseFloat(block); break;
-				case 'INFS': this.BG_inclination[PintableItem.BG_FSS] = this.parseFloat(block); break;
-				case 'FOFS': this.BG_FOV[PintableItem.BG_FSS] = this.parseFloat(block); break;
-				case 'SCXS': this.BG_scalex[PintableItem.BG_FSS] = this.parseFloat(block); break;
-				case 'SCYS': this.BG_scaley[PintableItem.BG_FSS] = this.parseFloat(block); break;
-				case 'SCZS': this.BG_scalez[PintableItem.BG_FSS] = this.parseFloat(block); break;
-				case 'XLXS': this.BG_xlatex[PintableItem.BG_FSS] = this.parseFloat(block); break;
-				case 'XLYS': this.BG_xlatey[PintableItem.BG_FSS] = this.parseFloat(block); break;
-				case 'XLZS': this.BG_xlatez[PintableItem.BG_FSS] = this.parseFloat(block); break;
+				case 'ROTA': this.BG_rotation[GameData.BG_DESKTOP] = this.parseFloat(block); break;
+				case 'LAYB': this.BG_layback[GameData.BG_DESKTOP] = this.parseFloat(block); break;
+				case 'INCL': this.BG_inclination[GameData.BG_DESKTOP] = this.parseFloat(block); break;
+				case 'FOVX': this.BG_FOV[GameData.BG_DESKTOP] = this.parseFloat(block); break;
+				case 'SCLX': this.BG_scalex[GameData.BG_DESKTOP] = this.parseFloat(block); break;
+				case 'SCLY': this.BG_scaley[GameData.BG_DESKTOP] = this.parseFloat(block); break;
+				case 'SCLZ': this.BG_scalez[GameData.BG_DESKTOP] = this.parseFloat(block); break;
+				case 'XLTX': this.BG_xlatex[GameData.BG_DESKTOP] = this.parseFloat(block); break;
+				case 'XLTY': this.BG_xlatey[GameData.BG_DESKTOP] = this.parseFloat(block); break;
+				case 'XLTZ': this.BG_xlatez[GameData.BG_DESKTOP] = this.parseFloat(block); break;
+				case 'ROTF': this.BG_rotation[GameData.BG_FULLSCREEN] = this.parseFloat(block); break;
+				case 'LAYF': this.BG_layback[GameData.BG_FULLSCREEN] = this.parseFloat(block); break;
+				case 'INCF': this.BG_inclination[GameData.BG_FULLSCREEN] = this.parseFloat(block); break;
+				case 'FOVF': this.BG_FOV[GameData.BG_FULLSCREEN] = this.parseFloat(block); break;
+				case 'SCFX': this.BG_scalex[GameData.BG_FULLSCREEN] = this.parseFloat(block); break;
+				case 'SCFY': this.BG_scaley[GameData.BG_FULLSCREEN] = this.parseFloat(block); break;
+				case 'SCFZ': this.BG_scalez[GameData.BG_FULLSCREEN] = this.parseFloat(block); break;
+				case 'XLFX': this.BG_xlatex[GameData.BG_FULLSCREEN] = this.parseFloat(block); break;
+				case 'XLFY': this.BG_xlatey[GameData.BG_FULLSCREEN] = this.parseFloat(block); break;
+				case 'XLFZ': this.BG_xlatez[GameData.BG_FULLSCREEN] = this.parseFloat(block); break;
+				case 'ROFS': this.BG_rotation[GameData.BG_FSS] = this.parseFloat(block); break;
+				case 'LAFS': this.BG_layback[GameData.BG_FSS] = this.parseFloat(block); break;
+				case 'INFS': this.BG_inclination[GameData.BG_FSS] = this.parseFloat(block); break;
+				case 'FOFS': this.BG_FOV[GameData.BG_FSS] = this.parseFloat(block); break;
+				case 'SCXS': this.BG_scalex[GameData.BG_FSS] = this.parseFloat(block); break;
+				case 'SCYS': this.BG_scaley[GameData.BG_FSS] = this.parseFloat(block); break;
+				case 'SCZS': this.BG_scalez[GameData.BG_FSS] = this.parseFloat(block); break;
+				case 'XLXS': this.BG_xlatex[GameData.BG_FSS] = this.parseFloat(block); break;
+				case 'XLYS': this.BG_xlatey[GameData.BG_FSS] = this.parseFloat(block); break;
+				case 'XLZS': this.BG_xlatez[GameData.BG_FSS] = this.parseFloat(block); break;
 				case 'EFSS':
 					this.BG_enable_FSS = this.parseBool(block);
 					if (this.BG_enable_FSS) {
-						this.BG_current_set = PintableItem.BG_FSS;
+						this.BG_current_set = GameData.BG_FSS;
 					}
 					break;
 				case 'ORRP': this.overridePhysics = this.parseInt(block); break;
@@ -196,24 +201,25 @@ export class PintableItem extends GameItem {
 				case 'SLOP': this.angletiltMin = this.parseFloat(block); break;
 				case 'GLAS': this.glassheight = this.parseFloat(block); break;
 				case 'TBLH': this.tableheight = this.parseFloat(block); break;
-				case 'IMAG': this.szImage = this.parseString(block); break;
-				case 'BLIM': this.szBallImage = this.parseString(block); break;
-				case 'BLIF': this.szBallImageFront = this.parseString(block); break;
-				case 'SSHT': this.szScreenShot = this.parseString(block); break;
+				case 'IMAG': this.szImage = this.parseString(block, 4); break;
+				case 'BLIM': this.szBallImage = this.parseString(block, 4); break;
+				case 'BLIF': this.szBallImageFront = this.parseString(block, 4); break;
+				case 'SSHT': this.szScreenShot = this.parseString(block, 4); break;
 				case 'FBCK': this.fBackdrop = this.parseBool(block); break;
-				case 'SEDT': this.pdata[1] = this.parseInt(block); break;
-				case 'SSND': this.pdata[2] = this.parseInt(block); break;
-				case 'SIMG': this.pdata[3] = this.parseInt(block); break;
-				case 'SFNT': this.pdata[4] = this.parseInt(block); break;
-				case 'SCOL': this.pdata[5] = this.parseInt(block); break;
+				case 'SEDT': this.numGameItems = this.parseInt(block); break;
+				case 'SSND': this.numSounds = this.parseInt(block); break;
+				case 'SIMG': this.numTextures = this.parseInt(block); break;
+				case 'SFNT': this.numFonts = this.parseInt(block); break;
+				case 'SCOL': this.numCollections = this.parseInt(block); break;
+				case 'CODE': this.script = this.parseString(block); break;
 				case 'NAME': this.wzName = this.parseWideString(block); break;
-				case 'BIMG': this.BG_szImage[PintableItem.BG_DESKTOP] = this.parseString(block); break;
-				case 'BIMF': this.BG_szImage[PintableItem.BG_FULLSCREEN] = this.parseString(block); break;
-				case 'BIMS': this.BG_szImage[PintableItem.BG_FSS] = this.parseString(block); break;
+				case 'BIMG': this.BG_szImage[GameData.BG_DESKTOP] = this.parseString(block, 4); break;
+				case 'BIMF': this.BG_szImage[GameData.BG_FULLSCREEN] = this.parseString(block, 4); break;
+				case 'BIMS': this.BG_szImage[GameData.BG_FSS] = this.parseString(block, 4); break;
 				case 'BIMN': this.ImageBackdropNightDay = this.parseBool(block); break;
-				case 'IMCG': this.szImageColorGrade = this.parseString(block); break;
-				case 'EIMG': this.szEnvImage = this.parseString(block); break;
-				case 'PLMA': this.szPlayfieldMaterial = this.parseString(block); break;
+				case 'IMCG': this.szImageColorGrade = this.parseString(block, 4); break;
+				case 'EIMG': this.szEnvImage = this.parseString(block, 4); break;
+				case 'PLMA': this.szPlayfieldMaterial = this.parseString(block, 4); break;
 				case 'LZAM': this.lightAmbient = this.parseInt(block); break;
 				case 'LZDI': this.Light[0].emission = this.parseInt(block); break;
 				case 'LZHI': this.lightHeight = this.parseFloat(block); break;
@@ -237,7 +243,7 @@ export class PintableItem extends GameItem {
 				case 'BCLR': this.colorbackdrop = this.parseInt(block); break;
 				case 'CCUS': this.rgcolorcustom = this.parseUnsignedInt4s(block.data, 16); break;
 				case 'TDFT': this.globalDifficulty = this.parseFloat(block); break;
-				case 'CUST': this.szT = this.parseString(block); this.vCustomInfoTag.push(this.szT); break;
+				case 'CUST': this.szT = this.parseString(block, 4); this.vCustomInfoTag.push(this.szT); break;
 				case 'SVOL': this.TableSoundVolume = this.parseFloat(block); break;
 				case 'BDMO': this.BallDecalMode = this.parseBool(block); break;
 				case 'MVOL': this.TableMusicVolume = this.parseFloat(block); break;
@@ -248,24 +254,35 @@ export class PintableItem extends GameItem {
 				case 'REOP': this.fReflectElementsOnPlayfield = this.parseBool(block); break;
 				case 'ARAC': this.userDetailLevel = this.parseInt(block); break;
 				case 'MASI': this.numMaterials = this.parseInt(block); break;
-				case 'MATE':
-					for (let i = 0; i < this.numMaterials; i++) {
-						const saveMat = new SaveMaterial(block.data, i);
-						this.materials.push(Material.from(saveMat));
-					}
-					break;
-
-				case 'PHMA':
-					for (let i = 0; i < this.numMaterials; i++) {
-						const savePhysMat = new SavePhysicsMaterial(block.data, i);
-						this.materials.find(m => m.szName === savePhysMat.szName).physUpdate(savePhysMat);
-					}
-					break;
-
-				default:
-					this.parseUnknownBlock(block);
-					break;
+				case 'MATE': this.materials = this._parseMaterials(block.data, this.numMaterials); break;
+				case 'PHMA': this._parsePhysicsMaterials(block.data, this.numMaterials); break;
 			}
+		}
+	}
+
+	private _parseMaterials(buffer: Buffer, num: number): Material[] {
+		if (buffer.length < num * SaveMaterial.size) {
+			throw new Error('Cannot parse ' + num + ' materials of ' + (num * SaveMaterial.size) + ' bytes from a ' + buffer.length + ' bytes buffer.');
+		}
+		const materials: Material[] = [];
+		for (let i = 0; i < num; i++) {
+			const saveMat = new SaveMaterial(buffer, i);
+			materials.push(Material.from(saveMat));
+		}
+		return materials;
+	}
+
+	private _parsePhysicsMaterials(buffer: Buffer, num: number): void {
+		if (buffer.length < num * SavePhysicsMaterial.size) {
+			throw new Error('Cannot parse ' + num + ' physical materials of ' + (num * SavePhysicsMaterial.size) + ' bytes from a ' + buffer.length + ' bytes buffer.');
+		}
+		for (let i = 0; i < num; i++) {
+			const savePhysMat = new SavePhysicsMaterial(buffer, i);
+			const material = this.materials.find(m => m.szName === savePhysMat.szName);
+			if (!material) {
+				throw new Error('Cannot find material "' + savePhysMat.szName + '" in [' + this.materials.map(m => m.szName).join(', ') + '] for updating physics.');
+			}
+			material.physUpdate(savePhysMat);
 		}
 	}
 }
@@ -325,7 +342,7 @@ class LightSource {
 
 class SaveMaterial {
 
-	public static size = 80;
+	public static size = 76;
 
 	public szName: string;
 	public cBase: number; // can be overriden by texture on object itself
@@ -342,18 +359,18 @@ class SaveMaterial {
 
 	constructor(buffer: Buffer, i = 0) {
 		const offset = i * SaveMaterial.size;
-		this.szName = buffer.slice(offset, offset + 32).toString('utf8');
+		this.szName = BiffParser.parseNullTerminatedString(buffer.slice(offset, offset + 32));
 		this.cBase = buffer.readInt32LE(offset + 32);
 		this.cGlossy = buffer.readInt32LE(offset + 36);
 		this.cClearcoat = buffer.readInt32LE(offset + 40);
 		this.fWrapLighting = buffer.readFloatLE(offset + 44);
-		this.bIsMetal =  buffer.readInt32LE(offset + 50) > 0;
-		this.fRoughness =  buffer.readFloatLE(offset + 54);
-		this.fGlossyImageLerp =  buffer.readInt32LE(offset + 60);
-		this.fEdge =  buffer.readFloatLE(offset + 64);
-		this.fThickness =  buffer.readInt32LE(offset + 68);
-		this.fOpacity =  buffer.readFloatLE(offset + 72);
-		this.bOpacityActive_fEdgeAlpha =  buffer.readInt32LE(offset + 76);
+		this.bIsMetal =  buffer.readInt32LE(offset + 48) > 0;
+		this.fRoughness =  buffer.readFloatLE(offset + 52);
+		this.fGlossyImageLerp =  buffer.readInt32LE(offset + 56);
+		this.fEdge =  buffer.readFloatLE(offset + 60);
+		this.fThickness =  buffer.readInt32LE(offset + 64);
+		this.fOpacity =  buffer.readFloatLE(offset + 68);
+		this.bOpacityActive_fEdgeAlpha =  buffer.readInt32LE(offset + 72);
 	}
 }
 
@@ -369,7 +386,7 @@ class SavePhysicsMaterial {
 
 	constructor(buffer: Buffer, i = 0) {
 		const offset = i * SavePhysicsMaterial.size;
-		this.szName = buffer.slice(offset, offset + 32).toString('utf8');
+		this.szName = BiffParser.parseNullTerminatedString(buffer.slice(offset, offset + 32));
 		this.fElasticity =  buffer.readFloatLE(offset + 32);
 		this.fElasticityFallOff =  buffer.readFloatLE(offset + 36);
 		this.fFriction =  buffer.readFloatLE(offset + 40);
@@ -381,6 +398,7 @@ class Material {
 
 	public static from(saveMaterial: SaveMaterial): Material {
 		const material = new Material();
+		material.szName = saveMaterial.szName;
 		material.cBase = saveMaterial.cBase;
 		material.cGlossy = saveMaterial.cGlossy;
 		material.cClearcoat = saveMaterial.cClearcoat;
@@ -393,7 +411,6 @@ class Material {
 		material.bIsMetal = saveMaterial.bIsMetal;
 		material.bOpacityActive = false; //!!(saveMaterial.bOpacityActive_fEdgeAlpha & 1);
 		material.fEdgeAlpha = 0; //dequantizeUnsigned<7>(mats[i].bOpacityActive_fEdgeAlpha >> 1);
-		material.szName = saveMaterial.szName;
 		return material;
 	}
 

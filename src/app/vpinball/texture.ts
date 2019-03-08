@@ -1,0 +1,62 @@
+/*
+ * VPDB - Virtual Pinball Database
+ * Copyright (C) 2019 freezy <freezy@vpdb.io>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+import { logger } from '../common/logger';
+import { BiffParser } from './biff-parser';
+import { Binary } from './binary';
+
+export class Texture extends BiffParser {
+
+	public static async load(buffer: Buffer): Promise<Texture> {
+		const texture = new Texture();
+		await texture._load(buffer);
+		return texture;
+	}
+
+	public szName: string;
+	public szInternalName: string;
+	public szPath: string;
+	public width: number;
+	public height: number;
+	public alphaTestValue: number;
+	public binary: Binary;
+
+	public getName(): string {
+		return this.szName;
+	}
+
+	private async _load(buffer: Buffer): Promise<void> {
+		const blocks = BiffParser.parseBiff(buffer);
+		for (const block of blocks) {
+			switch (block.tag) {
+				case 'NAME': this.szName = this.parseString(block, 4); break;
+				case 'INME': this.szInternalName = this.parseString(block, 4); break;
+				case 'PATH': this.szPath = this.parseString(block, 4); break;
+				case 'WDTH': this.width = this.parseInt(block); break;
+				case 'HGHT': this.height = this.parseInt(block); break;
+				case 'ALTV': this.alphaTestValue = this.parseFloat(block); break;
+				case 'BITS': logger.warn(null, '[Texture.load] Ignoring BITS tag, implement when understood what it is.'); break;
+				case 'LINK': logger.warn(null, '[Texture.load] Ignoring LINK tag, implement when understood what it is.'); break;
+				case 'JPEG': this.binary = await Binary.load(buffer, block.pos + block.len); return; // we're done here
+				default:
+					logger.warn(null, '[Texture.load] Unknown tag %s!', block.tag); break;
+			}
+		}
+	}
+}

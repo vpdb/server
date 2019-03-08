@@ -63,6 +63,7 @@ export abstract class GameItem extends BiffParser {
 			case GameItem.TypeGate: return 'Gate';
 			case GameItem.TypeSpinner: return 'Spinner';
 			case GameItem.TypeRamp: return 'Ramp';
+			case GameItem.TypeTable: return 'Table';
 			case GameItem.TypeLightCenter: return 'Light Center';
 			case GameItem.TypeDragPoint: return 'Drag Point';
 			case GameItem.TypeCollection: return 'Collection';

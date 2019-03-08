@@ -110,6 +110,58 @@ export class BiffParser {
 			});
 		});
 	}
+
+	protected parseInt(block: BiffBlock): number {
+		return block.data.readInt32LE(0);
+	}
+
+	protected parseBool(block: BiffBlock): boolean {
+		return block.data.readInt32LE(0) > 0;
+	}
+
+	protected parseFloat(block: BiffBlock): number {
+		return block.data.readFloatLE(0);
+	}
+
+	protected parseString(block: BiffBlock, offset: number = 0): string {
+		return offset > 0
+			? block.data.slice(offset).toString('utf8')
+			: block.data.toString('utf8');
+	}
+
+	protected parseWideString(block: BiffBlock): string {
+		const chars: number[] = [];
+		block.data.slice(4).forEach((v, i) => {
+			if (i % 2 === 0) {
+				chars.push(v);
+			}
+		});
+		return Buffer.from(chars).toString('utf8');
+	}
+
+	protected parseUnsignedInt2s(buffer: Buffer, num: number): number[] {
+		const intSize = 2;
+		if (buffer.length < num * intSize) {
+			throw new Error('Cannot parse ' + num * intSize + ' bytes of ' + num + ' unsigned ints with ' + buffer.length + ' bytes of buffer data.');
+		}
+		const ints: number[] = [];
+		for (let i = 0; i < num; i++) {
+			ints.push(buffer.readUInt16LE(i * intSize));
+		}
+		return ints;
+	}
+
+	protected parseUnsignedInt4s(buffer: Buffer, num: number): number[] {
+		const intSize = 4;
+		if (buffer.length < num * intSize) {
+			throw new Error('Cannot parse ' + num * intSize + ' bytes of ' + num + ' unsigned ints with ' + buffer.length + ' bytes of buffer data.');
+		}
+		const ints: number[] = [];
+		for (let i = 0; i < num; i++) {
+			ints.push(buffer.readUInt32LE(i * intSize));
+		}
+		return ints;
+	}
 }
 
 export interface BiffBlock {

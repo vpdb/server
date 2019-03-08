@@ -23,6 +23,7 @@ import { logger } from '../common/logger';
 import { OleCompoundDoc, Storage } from '../common/ole-doc';
 import { BiffBlock, BiffParser } from './biff-parser';
 import { GameItem } from './game-item';
+import { PintableItem } from './pintable-item';
 import { PrimitiveItem } from './primitive-item';
 
 export class VpTable {
@@ -43,10 +44,15 @@ export class VpTable {
 		return vpTable;
 	}
 
+	private table: PintableItem;
 	private primitives: { [key: string]: PrimitiveItem } = {};
 
 	public getPrimitive(name: string): PrimitiveItem {
 		return this.primitives[name];
+	}
+
+	public getTableInfo() {
+		return this.table;
 	}
 
 	public serialize(fileId: string) {
@@ -69,10 +75,13 @@ export class VpTable {
 		const gameData = this.parseGameData(blocks);
 
 		// load items
-		await this.loadGameItems(gameStorage, gameData.numGameItems);
+		const stats = await this.loadGameItems(gameStorage, gameData.numGameItems);
+
+		console.log(stats);
 	}
 
-	private async loadGameItems(storage: Storage, numItems: number) {
+	private async loadGameItems(storage: Storage, numItems: number): Promise<{[key: string]: number}> {
+		const stats: {[key: string]: number} = {};
 		for (let i = 0; i < numItems; i++) {
 			const itemName = `GameItem${i}`;
 			const itemData = await storage.read(itemName);
@@ -83,11 +92,27 @@ export class VpTable {
 					this.primitives[item.getName()] = item;
 					console.log('Adding primitive %s (%s bytes)', item.getName(), itemData.length);
 					break;
+
+				case GameItem.TypeTable:
+					if (this.table) {
+						throw new Error('Already got table data!');
+					}
+					console.log('Adding table infos (%s bytes)', itemData.length);
+					this.table = await PintableItem.load(itemData);
+					break;
+
 				default:
+					console.log('Ignoring type %s', itemType);
 					// ignore the rest for now
 					break;
 			}
+			if (!stats[GameItem.getType(itemType)]) {
+				stats[GameItem.getType(itemType)] = 1;
+			} else {
+				stats[GameItem.getType(itemType)]++;
+			}
 		}
+		return stats;
 	}
 
 	/**

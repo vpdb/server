@@ -144,6 +144,10 @@ export class GameData extends BiffParser {
 	public serialize() {
 		return {
 			table_height: this.tableheight,
+			size: {
+				width: this.right - this.left,
+				height: this.bottom - this.top,
+			},
 			glass_height: this.glassheight,
 			offset: this.offset,
 			light: {
@@ -159,149 +163,149 @@ export class GameData extends BiffParser {
 		const blocks = BiffParser.parseBiff(buffer);
 		for (const block of blocks) {
 			switch (block.tag) {
-				case 'PIID': this.pdata[0] = this.parseInt(block); break;
-				case 'LEFT': this.left = this.parseFloat(block); break;
-				case 'TOPX': this.top = this.parseFloat(block); break;
-				case 'RGHT': this.right = this.parseFloat(block); break;
-				case 'BOTM': this.bottom = this.parseFloat(block); break;
-				case 'ROTA': this.BG_rotation[GameData.BG_DESKTOP] = this.parseFloat(block); break;
-				case 'LAYB': this.BG_layback[GameData.BG_DESKTOP] = this.parseFloat(block); break;
-				case 'INCL': this.BG_inclination[GameData.BG_DESKTOP] = this.parseFloat(block); break;
-				case 'FOVX': this.BG_FOV[GameData.BG_DESKTOP] = this.parseFloat(block); break;
-				case 'SCLX': this.BG_scalex[GameData.BG_DESKTOP] = this.parseFloat(block); break;
-				case 'SCLY': this.BG_scaley[GameData.BG_DESKTOP] = this.parseFloat(block); break;
-				case 'SCLZ': this.BG_scalez[GameData.BG_DESKTOP] = this.parseFloat(block); break;
-				case 'XLTX': this.BG_xlatex[GameData.BG_DESKTOP] = this.parseFloat(block); break;
-				case 'XLTY': this.BG_xlatey[GameData.BG_DESKTOP] = this.parseFloat(block); break;
-				case 'XLTZ': this.BG_xlatez[GameData.BG_DESKTOP] = this.parseFloat(block); break;
-				case 'ROTF': this.BG_rotation[GameData.BG_FULLSCREEN] = this.parseFloat(block); break;
-				case 'LAYF': this.BG_layback[GameData.BG_FULLSCREEN] = this.parseFloat(block); break;
-				case 'INCF': this.BG_inclination[GameData.BG_FULLSCREEN] = this.parseFloat(block); break;
-				case 'FOVF': this.BG_FOV[GameData.BG_FULLSCREEN] = this.parseFloat(block); break;
-				case 'SCFX': this.BG_scalex[GameData.BG_FULLSCREEN] = this.parseFloat(block); break;
-				case 'SCFY': this.BG_scaley[GameData.BG_FULLSCREEN] = this.parseFloat(block); break;
-				case 'SCFZ': this.BG_scalez[GameData.BG_FULLSCREEN] = this.parseFloat(block); break;
-				case 'XLFX': this.BG_xlatex[GameData.BG_FULLSCREEN] = this.parseFloat(block); break;
-				case 'XLFY': this.BG_xlatey[GameData.BG_FULLSCREEN] = this.parseFloat(block); break;
-				case 'XLFZ': this.BG_xlatez[GameData.BG_FULLSCREEN] = this.parseFloat(block); break;
-				case 'ROFS': this.BG_rotation[GameData.BG_FSS] = this.parseFloat(block); break;
-				case 'LAFS': this.BG_layback[GameData.BG_FSS] = this.parseFloat(block); break;
-				case 'INFS': this.BG_inclination[GameData.BG_FSS] = this.parseFloat(block); break;
-				case 'FOFS': this.BG_FOV[GameData.BG_FSS] = this.parseFloat(block); break;
-				case 'SCXS': this.BG_scalex[GameData.BG_FSS] = this.parseFloat(block); break;
-				case 'SCYS': this.BG_scaley[GameData.BG_FSS] = this.parseFloat(block); break;
-				case 'SCZS': this.BG_scalez[GameData.BG_FSS] = this.parseFloat(block); break;
-				case 'XLXS': this.BG_xlatex[GameData.BG_FSS] = this.parseFloat(block); break;
-				case 'XLYS': this.BG_xlatey[GameData.BG_FSS] = this.parseFloat(block); break;
-				case 'XLZS': this.BG_xlatez[GameData.BG_FSS] = this.parseFloat(block); break;
+				case 'PIID': this.pdata[0] = this.parseInt(buffer, block); break;
+				case 'LEFT': this.left = this.parseFloat(buffer, block); break;
+				case 'TOPX': this.top = this.parseFloat(buffer, block); break;
+				case 'RGHT': this.right = this.parseFloat(buffer, block); break;
+				case 'BOTM': this.bottom = this.parseFloat(buffer, block); break;
+				case 'ROTA': this.BG_rotation[GameData.BG_DESKTOP] = this.parseFloat(buffer, block); break;
+				case 'LAYB': this.BG_layback[GameData.BG_DESKTOP] = this.parseFloat(buffer, block); break;
+				case 'INCL': this.BG_inclination[GameData.BG_DESKTOP] = this.parseFloat(buffer, block); break;
+				case 'FOVX': this.BG_FOV[GameData.BG_DESKTOP] = this.parseFloat(buffer, block); break;
+				case 'SCLX': this.BG_scalex[GameData.BG_DESKTOP] = this.parseFloat(buffer, block); break;
+				case 'SCLY': this.BG_scaley[GameData.BG_DESKTOP] = this.parseFloat(buffer, block); break;
+				case 'SCLZ': this.BG_scalez[GameData.BG_DESKTOP] = this.parseFloat(buffer, block); break;
+				case 'XLTX': this.BG_xlatex[GameData.BG_DESKTOP] = this.parseFloat(buffer, block); break;
+				case 'XLTY': this.BG_xlatey[GameData.BG_DESKTOP] = this.parseFloat(buffer, block); break;
+				case 'XLTZ': this.BG_xlatez[GameData.BG_DESKTOP] = this.parseFloat(buffer, block); break;
+				case 'ROTF': this.BG_rotation[GameData.BG_FULLSCREEN] = this.parseFloat(buffer, block); break;
+				case 'LAYF': this.BG_layback[GameData.BG_FULLSCREEN] = this.parseFloat(buffer, block); break;
+				case 'INCF': this.BG_inclination[GameData.BG_FULLSCREEN] = this.parseFloat(buffer, block); break;
+				case 'FOVF': this.BG_FOV[GameData.BG_FULLSCREEN] = this.parseFloat(buffer, block); break;
+				case 'SCFX': this.BG_scalex[GameData.BG_FULLSCREEN] = this.parseFloat(buffer, block); break;
+				case 'SCFY': this.BG_scaley[GameData.BG_FULLSCREEN] = this.parseFloat(buffer, block); break;
+				case 'SCFZ': this.BG_scalez[GameData.BG_FULLSCREEN] = this.parseFloat(buffer, block); break;
+				case 'XLFX': this.BG_xlatex[GameData.BG_FULLSCREEN] = this.parseFloat(buffer, block); break;
+				case 'XLFY': this.BG_xlatey[GameData.BG_FULLSCREEN] = this.parseFloat(buffer, block); break;
+				case 'XLFZ': this.BG_xlatez[GameData.BG_FULLSCREEN] = this.parseFloat(buffer, block); break;
+				case 'ROFS': this.BG_rotation[GameData.BG_FSS] = this.parseFloat(buffer, block); break;
+				case 'LAFS': this.BG_layback[GameData.BG_FSS] = this.parseFloat(buffer, block); break;
+				case 'INFS': this.BG_inclination[GameData.BG_FSS] = this.parseFloat(buffer, block); break;
+				case 'FOFS': this.BG_FOV[GameData.BG_FSS] = this.parseFloat(buffer, block); break;
+				case 'SCXS': this.BG_scalex[GameData.BG_FSS] = this.parseFloat(buffer, block); break;
+				case 'SCYS': this.BG_scaley[GameData.BG_FSS] = this.parseFloat(buffer, block); break;
+				case 'SCZS': this.BG_scalez[GameData.BG_FSS] = this.parseFloat(buffer, block); break;
+				case 'XLXS': this.BG_xlatex[GameData.BG_FSS] = this.parseFloat(buffer, block); break;
+				case 'XLYS': this.BG_xlatey[GameData.BG_FSS] = this.parseFloat(buffer, block); break;
+				case 'XLZS': this.BG_xlatez[GameData.BG_FSS] = this.parseFloat(buffer, block); break;
 				case 'EFSS':
-					this.BG_enable_FSS = this.parseBool(block);
+					this.BG_enable_FSS = this.parseBool(buffer, block);
 					if (this.BG_enable_FSS) {
 						this.BG_current_set = GameData.BG_FSS;
 					}
 					break;
-				case 'ORRP': this.overridePhysics = this.parseInt(block); break;
-				case 'ORPF': this.overridePhysicsFlipper = this.parseBool(block); break;
-				case 'GAVT': this.Gravity = this.parseFloat(block); break;
-				case 'FRCT': this.friction = this.parseFloat(block); break;
-				case 'ELAS': this.elasticity = this.parseFloat(block); break;
-				case 'ELFA': this.elasticityFalloff = this.parseFloat(block); break;
-				case 'PFSC': this.scatter = this.parseFloat(block); break;
-				case 'SCAT': this.defaultScatter = this.parseFloat(block); break;
-				case 'NDGT': this.nudgeTime = this.parseFloat(block); break;
-				case 'MPGC': this.plungerNormalize = this.parseInt(block); break;
-				case 'MPDF': this.plungerFilter = this.parseBool(block); break;
-				case 'PHML': this.PhysicsMaxLoops = this.parseInt(block); break;
-				case 'DECL': this.fRenderDecals = this.parseBool(block); break;
-				case 'REEL': this.fRenderEMReels = this.parseBool(block); break;
-				case 'OFFX': this.offset.x = this.parseFloat(block); break;
-				case 'OFFY': this.offset.y = this.parseFloat(block); break;
-				case 'ZOOM': this.zoom = this.parseFloat(block); break;
-				case 'MAXSEP': this._3DmaxSeparation = this.parseFloat(block); break;
-				case 'ZPD': this._3DZPD = this.parseFloat(block); break;
-				case 'STO': this._3DOffset = this.parseFloat(block); break;
-				case 'OGST': this.overwriteGlobalStereo3D = this.parseBool(block); break;
-				case 'SLPX': this.angletiltMax = this.parseFloat(block); break;
-				case 'SLOP': this.angletiltMin = this.parseFloat(block); break;
-				case 'GLAS': this.glassheight = this.parseFloat(block); break;
-				case 'TBLH': this.tableheight = this.parseFloat(block); break;
-				case 'IMAG': this.szImage = this.parseString(block, 4); break;
-				case 'BLIM': this.szBallImage = this.parseString(block, 4); break;
-				case 'BLIF': this.szBallImageFront = this.parseString(block, 4); break;
-				case 'SSHT': this.szScreenShot = this.parseString(block, 4); break;
-				case 'FBCK': this.fBackdrop = this.parseBool(block); break;
-				case 'SEDT': this.numGameItems = this.parseInt(block); break;
-				case 'SSND': this.numSounds = this.parseInt(block); break;
-				case 'SIMG': this.numTextures = this.parseInt(block); break;
-				case 'SFNT': this.numFonts = this.parseInt(block); break;
-				case 'SCOL': this.numCollections = this.parseInt(block); break;
-				case 'CODE': this.script = this.parseString(block); break;
-				case 'NAME': this.wzName = this.parseWideString(block); break;
-				case 'BIMG': this.BG_szImage[GameData.BG_DESKTOP] = this.parseString(block, 4); break;
-				case 'BIMF': this.BG_szImage[GameData.BG_FULLSCREEN] = this.parseString(block, 4); break;
-				case 'BIMS': this.BG_szImage[GameData.BG_FSS] = this.parseString(block, 4); break;
-				case 'BIMN': this.ImageBackdropNightDay = this.parseBool(block); break;
-				case 'IMCG': this.szImageColorGrade = this.parseString(block, 4); break;
-				case 'EIMG': this.szEnvImage = this.parseString(block, 4); break;
-				case 'PLMA': this.szPlayfieldMaterial = this.parseString(block, 4); break;
-				case 'LZAM': this.lightAmbient = this.parseInt(block); break;
-				case 'LZDI': this.Light[0].emission = this.parseInt(block); break;
-				case 'LZHI': this.lightHeight = this.parseFloat(block); break;
-				case 'LZRA': this.lightRange = this.parseFloat(block); break;
-				case 'LIES': this.lightEmissionScale = this.parseFloat(block); break;
-				case 'ENES': this.envEmissionScale = this.parseFloat(block); break;
-				case 'GLES': this.globalEmissionScale = this.parseFloat(block); break;
-				case 'AOSC': this.AOScale = this.parseFloat(block); break;
-				case 'SSSC': this.SSRScale = this.parseFloat(block); break;
-				case 'BREF': this.useReflectionForBalls = this.parseInt(block); break;
-				case 'PLST': this.playfieldReflectionStrength = this.parseInt(block); break; // m_playfieldReflectionStrength = dequantizeUnsigned<8>(tmp);
-				case 'BTRA': this.useTrailForBalls = this.parseInt(block); break;
-				case 'BTST': this.ballTrailStrength = this.parseInt(block); break; // m_ballTrailStrength = dequantizeUnsigned<8>(tmp);
-				case 'BPRS': this.ballPlayfieldReflectionStrength = this.parseFloat(block); break;
-				case 'DBIS': this.defaultBulbIntensityScaleOnBall = this.parseFloat(block); break;
-				case 'UAAL': this.useAA = this.parseInt(block); break;
-				case 'UAOC': this.useAO = this.parseInt(block); break;
-				case 'USSR': this.useSSR = this.parseInt(block); break;
-				case 'UFXA': this.useFXAA = this.parseFloat(block); break;
-				case 'BLST': this.bloom_strength = this.parseFloat(block); break;
-				case 'BCLR': this.colorbackdrop = this.parseInt(block); break;
-				case 'CCUS': this.rgcolorcustom = this.parseUnsignedInt4s(block.data, 16); break;
-				case 'TDFT': this.globalDifficulty = this.parseFloat(block); break;
-				case 'CUST': this.szT = this.parseString(block, 4); this.vCustomInfoTag.push(this.szT); break;
-				case 'SVOL': this.TableSoundVolume = this.parseFloat(block); break;
-				case 'BDMO': this.BallDecalMode = this.parseBool(block); break;
-				case 'MVOL': this.TableMusicVolume = this.parseFloat(block); break;
-				case 'AVSY': this.TableAdaptiveVSync = this.parseInt(block); break;
-				case 'OGAC': this.overwriteGlobalDetailLevel = this.parseBool(block); break;
-				case 'OGDN': this.overwriteGlobalDayNight = this.parseBool(block); break;
-				case 'GDAC': this.fGrid = this.parseBool(block); break;
-				case 'REOP': this.fReflectElementsOnPlayfield = this.parseBool(block); break;
-				case 'ARAC': this.userDetailLevel = this.parseInt(block); break;
-				case 'MASI': this.numMaterials = this.parseInt(block); break;
-				case 'MATE': this.materials = this._parseMaterials(block.data, this.numMaterials); break;
-				case 'PHMA': this._parsePhysicsMaterials(block.data, this.numMaterials); break;
+				case 'ORRP': this.overridePhysics = this.parseInt(buffer, block); break;
+				case 'ORPF': this.overridePhysicsFlipper = this.parseBool(buffer, block); break;
+				case 'GAVT': this.Gravity = this.parseFloat(buffer, block); break;
+				case 'FRCT': this.friction = this.parseFloat(buffer, block); break;
+				case 'ELAS': this.elasticity = this.parseFloat(buffer, block); break;
+				case 'ELFA': this.elasticityFalloff = this.parseFloat(buffer, block); break;
+				case 'PFSC': this.scatter = this.parseFloat(buffer, block); break;
+				case 'SCAT': this.defaultScatter = this.parseFloat(buffer, block); break;
+				case 'NDGT': this.nudgeTime = this.parseFloat(buffer, block); break;
+				case 'MPGC': this.plungerNormalize = this.parseInt(buffer, block); break;
+				case 'MPDF': this.plungerFilter = this.parseBool(buffer, block); break;
+				case 'PHML': this.PhysicsMaxLoops = this.parseInt(buffer, block); break;
+				case 'DECL': this.fRenderDecals = this.parseBool(buffer, block); break;
+				case 'REEL': this.fRenderEMReels = this.parseBool(buffer, block); break;
+				case 'OFFX': this.offset.x = this.parseFloat(buffer, block); break;
+				case 'OFFY': this.offset.y = this.parseFloat(buffer, block); break;
+				case 'ZOOM': this.zoom = this.parseFloat(buffer, block); break;
+				case 'MAXSEP': this._3DmaxSeparation = this.parseFloat(buffer, block); break;
+				case 'ZPD': this._3DZPD = this.parseFloat(buffer, block); break;
+				case 'STO': this._3DOffset = this.parseFloat(buffer, block); break;
+				case 'OGST': this.overwriteGlobalStereo3D = this.parseBool(buffer, block); break;
+				case 'SLPX': this.angletiltMax = this.parseFloat(buffer, block); break;
+				case 'SLOP': this.angletiltMin = this.parseFloat(buffer, block); break;
+				case 'GLAS': this.glassheight = this.parseFloat(buffer, block); break;
+				case 'TBLH': this.tableheight = this.parseFloat(buffer, block); break;
+				case 'IMAG': this.szImage = this.parseString(buffer, block, 4); break;
+				case 'BLIM': this.szBallImage = this.parseString(buffer, block, 4); break;
+				case 'BLIF': this.szBallImageFront = this.parseString(buffer, block, 4); break;
+				case 'SSHT': this.szScreenShot = this.parseString(buffer, block, 4); break;
+				case 'FBCK': this.fBackdrop = this.parseBool(buffer, block); break;
+				case 'SEDT': this.numGameItems = this.parseInt(buffer, block); break;
+				case 'SSND': this.numSounds = this.parseInt(buffer, block); break;
+				case 'SIMG': this.numTextures = this.parseInt(buffer, block); break;
+				case 'SFNT': this.numFonts = this.parseInt(buffer, block); break;
+				case 'SCOL': this.numCollections = this.parseInt(buffer, block); break;
+				case 'CODE': this.script = this.parseString(buffer, block); break;
+				case 'NAME': this.wzName = this.parseWideString(buffer, block); break;
+				case 'BIMG': this.BG_szImage[GameData.BG_DESKTOP] = this.parseString(buffer, block, 4); break;
+				case 'BIMF': this.BG_szImage[GameData.BG_FULLSCREEN] = this.parseString(buffer, block, 4); break;
+				case 'BIMS': this.BG_szImage[GameData.BG_FSS] = this.parseString(buffer, block, 4); break;
+				case 'BIMN': this.ImageBackdropNightDay = this.parseBool(buffer, block); break;
+				case 'IMCG': this.szImageColorGrade = this.parseString(buffer, block, 4); break;
+				case 'EIMG': this.szEnvImage = this.parseString(buffer, block, 4); break;
+				case 'PLMA': this.szPlayfieldMaterial = this.parseString(buffer, block, 4); break;
+				case 'LZAM': this.lightAmbient = this.parseInt(buffer, block); break;
+				case 'LZDI': this.Light[0].emission = this.parseInt(buffer, block); break;
+				case 'LZHI': this.lightHeight = this.parseFloat(buffer, block); break;
+				case 'LZRA': this.lightRange = this.parseFloat(buffer, block); break;
+				case 'LIES': this.lightEmissionScale = this.parseFloat(buffer, block); break;
+				case 'ENES': this.envEmissionScale = this.parseFloat(buffer, block); break;
+				case 'GLES': this.globalEmissionScale = this.parseFloat(buffer, block); break;
+				case 'AOSC': this.AOScale = this.parseFloat(buffer, block); break;
+				case 'SSSC': this.SSRScale = this.parseFloat(buffer, block); break;
+				case 'BREF': this.useReflectionForBalls = this.parseInt(buffer, block); break;
+				case 'PLST': this.playfieldReflectionStrength = this.parseInt(buffer, block); break; // m_playfieldReflectionStrength = dequantizeUnsigned<8>(tmp);
+				case 'BTRA': this.useTrailForBalls = this.parseInt(buffer, block); break;
+				case 'BTST': this.ballTrailStrength = this.parseInt(buffer, block); break; // m_ballTrailStrength = dequantizeUnsigned<8>(tmp);
+				case 'BPRS': this.ballPlayfieldReflectionStrength = this.parseFloat(buffer, block); break;
+				case 'DBIS': this.defaultBulbIntensityScaleOnBall = this.parseFloat(buffer, block); break;
+				case 'UAAL': this.useAA = this.parseInt(buffer, block); break;
+				case 'UAOC': this.useAO = this.parseInt(buffer, block); break;
+				case 'USSR': this.useSSR = this.parseInt(buffer, block); break;
+				case 'UFXA': this.useFXAA = this.parseFloat(buffer, block); break;
+				case 'BLST': this.bloom_strength = this.parseFloat(buffer, block); break;
+				case 'BCLR': this.colorbackdrop = this.parseInt(buffer, block); break;
+				case 'CCUS': this.rgcolorcustom = this.parseUnsignedInt4s(buffer, block, 16); break;
+				case 'TDFT': this.globalDifficulty = this.parseFloat(buffer, block); break;
+				case 'CUST': this.szT = this.parseString(buffer, block, 4); this.vCustomInfoTag.push(this.szT); break;
+				case 'SVOL': this.TableSoundVolume = this.parseFloat(buffer, block); break;
+				case 'BDMO': this.BallDecalMode = this.parseBool(buffer, block); break;
+				case 'MVOL': this.TableMusicVolume = this.parseFloat(buffer, block); break;
+				case 'AVSY': this.TableAdaptiveVSync = this.parseInt(buffer, block); break;
+				case 'OGAC': this.overwriteGlobalDetailLevel = this.parseBool(buffer, block); break;
+				case 'OGDN': this.overwriteGlobalDayNight = this.parseBool(buffer, block); break;
+				case 'GDAC': this.fGrid = this.parseBool(buffer, block); break;
+				case 'REOP': this.fReflectElementsOnPlayfield = this.parseBool(buffer, block); break;
+				case 'ARAC': this.userDetailLevel = this.parseInt(buffer, block); break;
+				case 'MASI': this.numMaterials = this.parseInt(buffer, block); break;
+				case 'MATE': this.materials = this._parseMaterials(buffer, block, this.numMaterials); break;
+				case 'PHMA': this._parsePhysicsMaterials(buffer, block, this.numMaterials); break;
 			}
 		}
 	}
 
-	private _parseMaterials(buffer: Buffer, num: number): Material[] {
-		if (buffer.length < num * SaveMaterial.size) {
+	private _parseMaterials(buffer: Buffer, block: BiffBlock, num: number): Material[] {
+		if (block.len < num * SaveMaterial.size) {
 			throw new Error('Cannot parse ' + num + ' materials of ' + (num * SaveMaterial.size) + ' bytes from a ' + buffer.length + ' bytes buffer.');
 		}
 		const materials: Material[] = [];
 		for (let i = 0; i < num; i++) {
-			const saveMat = new SaveMaterial(buffer, i);
+			const saveMat = new SaveMaterial(buffer, block, i);
 			materials.push(Material.fromSaved(saveMat));
 		}
 		return materials;
 	}
 
-	private _parsePhysicsMaterials(buffer: Buffer, num: number): void {
-		if (buffer.length < num * SavePhysicsMaterial.size) {
+	private _parsePhysicsMaterials(buffer: Buffer, block: BiffBlock, num: number): void {
+		if (block.len < num * SavePhysicsMaterial.size) {
 			throw new Error('Cannot parse ' + num + ' physical materials of ' + (num * SavePhysicsMaterial.size) + ' bytes from a ' + buffer.length + ' bytes buffer.');
 		}
 		for (let i = 0; i < num; i++) {
-			const savePhysMat = new SavePhysicsMaterial(buffer, i);
+			const savePhysMat = new SavePhysicsMaterial(buffer, block, i);
 			const material = this.materials.find(m => m.szName === savePhysMat.szName);
 			if (!material) {
 				throw new Error('Cannot find material "' + savePhysMat.szName + '" in [' + this.materials.map(m => m.szName).join(', ') + '] for updating physics.');
@@ -313,10 +317,10 @@ export class GameData extends BiffParser {
 
 class Vertex2D {
 
-	public static load(block: BiffBlock) {
+	public static load(buffer: Buffer, block: BiffBlock) {
 		const v2 = new Vertex2D();
-		v2.x = block.data.readFloatLE(0);
-		v2.y = block.data.readFloatLE(4);
+		v2.x = buffer.readFloatLE(block.pos);
+		v2.y = buffer.readFloatLE(block.pos + 4);
 		return v2;
 	}
 
@@ -330,11 +334,11 @@ class Vertex2D {
 
 class Vertex3D {
 
-	public static load(block: BiffBlock) {
+	public static load(buffer: Buffer, block: BiffBlock) {
 		const v3 = new Vertex3D();
-		v3.x = block.data.readFloatLE(0);
-		v3.y = block.data.readFloatLE(4);
-		v3.z = block.data.readFloatLE(8);
+		v3.x = buffer.readFloatLE(block.pos);
+		v3.y = buffer.readFloatLE(block.pos + 4);
+		v3.z = buffer.readFloatLE(block.pos + 8);
 		return v3;
 	}
 
@@ -349,10 +353,10 @@ class Vertex3D {
 
 class LightSource {
 
-	public static load(block: BiffBlock) {
+	public static load(buffer: Buffer, block: BiffBlock) {
 		const v2 = new Vertex2D();
-		v2.x = block.data.readFloatLE(0);
-		v2.y = block.data.readFloatLE(4);
+		v2.x = buffer.readFloatLE(block.pos);
+		v2.y = buffer.readFloatLE(block.pos + 4);
 		return v2;
 	}
 
@@ -381,8 +385,8 @@ class SaveMaterial {
 	public fOpacity: number; // opacity (0..1)
 	public bOpacityActive_fEdgeAlpha: number;
 
-	constructor(buffer: Buffer, i = 0) {
-		const offset = i * SaveMaterial.size;
+	constructor(buffer: Buffer, block: BiffBlock, i = 0) {
+		const offset = block.pos + i * SaveMaterial.size;
 		this.szName = BiffParser.parseNullTerminatedString(buffer.slice(offset, offset + 32));
 		this.cBase = buffer.readInt32LE(offset + 32);
 		this.cGlossy = buffer.readInt32LE(offset + 36);
@@ -408,8 +412,8 @@ class SavePhysicsMaterial {
 	public fFriction: number;
 	public fScatterAngle: number;
 
-	constructor(buffer: Buffer, i = 0) {
-		const offset = i * SavePhysicsMaterial.size;
+	constructor(buffer: Buffer, block: BiffBlock, i = 0) {
+		const offset = block.pos + i * SavePhysicsMaterial.size;
 		this.szName = BiffParser.parseNullTerminatedString(buffer.slice(offset, offset + 32));
 		this.fElasticity =  buffer.readFloatLE(offset + 32);
 		this.fElasticityFallOff =  buffer.readFloatLE(offset + 36);

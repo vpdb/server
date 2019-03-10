@@ -66,12 +66,12 @@ export class Texture extends BiffParser {
 		const blocks = BiffParser.parseBiff(buffer);
 		for (const block of blocks) {
 			switch (block.tag) {
-				case 'NAME': this.szName = this.parseString(block, 4); break;
-				case 'INME': this.szInternalName = this.parseString(block, 4); break;
-				case 'PATH': this.szPath = this.parseString(block, 4); break;
-				case 'WDTH': this.width = this.parseInt(block); break;
-				case 'HGHT': this.height = this.parseInt(block); break;
-				case 'ALTV': this.alphaTestValue = this.parseFloat(block); break;
+				case 'NAME': this.szName = this.parseString(buffer, block, 4); break;
+				case 'INME': this.szInternalName = this.parseString(buffer, block, 4); break;
+				case 'PATH': this.szPath = this.parseString(buffer, block, 4); break;
+				case 'WDTH': this.width = this.parseInt(buffer, block); break;
+				case 'HGHT': this.height = this.parseInt(buffer, block); break;
+				case 'ALTV': this.alphaTestValue = this.parseFloat(buffer, block); break;
 				case 'BITS': logger.warn(null, '[Texture.load] Ignoring BITS tag for %s at Image%s, implement when understood what it is.', this.szName, pos); break;
 				case 'LINK': logger.warn(null, '[Texture.load] Ignoring LINK tag for %s at Image%s, implement when understood what it is.', this.szName, pos); break;
 				case 'JPEG': this.binary = await Binary.load(buffer, block.pos + block.len); break;

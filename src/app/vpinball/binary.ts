@@ -37,7 +37,7 @@ export class Binary extends BiffParser {
 	public szInternalName: string;
 	public szPath: string;
 	public cdata: number;
-	public data: number;
+	public pos: number;
 
 	private async _load(buffer: Buffer, offset: number = 0): Promise<void> {
 		const blocks = BiffParser.parseBiff(buffer, offset);
@@ -47,7 +47,7 @@ export class Binary extends BiffParser {
 				case 'INME': this.szInternalName = this.parseString(buffer, block, 4); break;
 				case 'PATH': this.szPath = this.parseString(buffer, block, 4); break;
 				case 'SIZE': this.cdata = this.parseInt(buffer, block); break;
-				case 'DATA': this.data = block.pos; break;
+				case 'DATA': this.pos = block.pos; break;
 			}
 		}
 	}

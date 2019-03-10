@@ -138,7 +138,7 @@ export class BiffParser {
 
 	protected parseWideString(buffer: Buffer, block: BiffBlock): string {
 		const chars: number[] = [];
-		buffer.slice(block.pos + 4, block.pos + block.len + 4).forEach((v, i) => {
+		buffer.slice(block.pos + 4, block.pos + block.len).forEach((v, i) => {
 			if (i % 2 === 0) {
 				chars.push(v);
 			}

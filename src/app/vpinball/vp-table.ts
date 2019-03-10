@@ -49,12 +49,17 @@ export class VpTable {
 	}
 
 	public gameData: GameData;
-	private primitives: { [key: string]: PrimitiveItem } = {};
-	private textures: { [key: string]: Texture } = {};
+	public primitives: { [key: string]: PrimitiveItem } = {};
+	public textures: { [key: string]: Texture } = {};
 
 	public getPrimitive(name: string): PrimitiveItem {
 		return this.primitives[name];
 	}
+
+	public getTexture(name: string): Texture {
+		return this.textures[name];
+	}
+
 
 	public serialize(fileId: string) {
 		return {

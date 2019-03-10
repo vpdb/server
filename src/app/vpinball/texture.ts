@@ -37,6 +37,7 @@ export class Texture extends BiffParser {
 		return texture;
 	}
 
+	public storageName: string;
 	public szName: string;
 	public szInternalName: string;
 	public szPath: string;
@@ -63,6 +64,7 @@ export class Texture extends BiffParser {
 	}
 
 	private async _load(buffer: Buffer, pos: number): Promise<void> {
+		this.storageName = `Image${pos}`;
 		const blocks = BiffParser.parseBiff(buffer);
 		for (const block of blocks) {
 			switch (block.tag) {

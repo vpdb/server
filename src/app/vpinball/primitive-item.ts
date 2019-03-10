@@ -95,6 +95,7 @@ export class PrimitiveItem extends GameItem {
 				z: this.data.aRotAndTra[8],
 			},
 			is_visible: this.data.fVisible,
+			texture: this.data.szImage,
 		};
 	}
 
@@ -186,11 +187,9 @@ class Mesh {
 
 	public static from(data: any): Mesh {
 		const mesh = new Mesh();
-		mesh.vertices = [];
 		for (const vertex of data.vertices) {
 			mesh.vertices.push(Vertex3DNoTex2.from(vertex));
 		}
-		mesh.animationFrames = [];
 		for (const animationFrame of data.animationFrames) {
 			mesh.animationFrames.push(FrameData.from(animationFrame));
 		}
@@ -200,9 +199,9 @@ class Mesh {
 
 	private static exportPrecision = 6;
 
-	public vertices: Vertex3DNoTex2[];
-	public animationFrames: FrameData[];
-	public indices: number[];
+	public vertices: Vertex3DNoTex2[] = [];
+	public animationFrames: FrameData[] = [];
+	public indices: number[] = [];
 	private faceIndexOffset = 0;
 
 	public serializeToObj(description: string): string {

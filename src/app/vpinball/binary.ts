@@ -43,10 +43,10 @@ export class Binary extends BiffParser {
 		const blocks = BiffParser.parseBiff(buffer, offset);
 		for (const block of blocks) {
 			switch (block.tag) {
-				case 'NAME': this.szName = this.parseString(block, 4); break;
-				case 'INME': this.szInternalName = this.parseString(block, 4); break;
-				case 'PATH': this.szPath = this.parseString(block, 4); break;
-				case 'SIZE': this.cdata = this.parseInt(block); break;
+				case 'NAME': this.szName = this.parseString(buffer, block, 4); break;
+				case 'INME': this.szInternalName = this.parseString(buffer, block, 4); break;
+				case 'PATH': this.szPath = this.parseString(buffer, block, 4); break;
+				case 'SIZE': this.cdata = this.parseInt(buffer, block); break;
 				case 'DATA': this.data = block.pos; break;
 			}
 		}

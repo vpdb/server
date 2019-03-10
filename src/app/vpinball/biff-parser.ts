@@ -31,7 +31,6 @@ export class BiffParser {
 	public static parseBiff(buf: Buffer, offset: number = 0): BiffBlock[] {
 		offset = offset || 0;
 		let tag: string;
-		let data: Buffer;
 		let blockSize: number;
 		let block: Buffer;
 		const blocks: BiffBlock[] = [];
@@ -83,8 +82,7 @@ export class BiffParser {
 
 				if (!counterIncreased) {
 					if (blockSize >= 4) {
-						data = block.slice(4);
-						blocks.push({ tag, data, pos: i + 8, len: blockSize - 4 });
+						blocks.push({ tag, pos: i + 8, len: blockSize - 4 });
 					}
 					i += blockSize + 4;
 				}
@@ -100,9 +98,9 @@ export class BiffParser {
 		return blocks;
 	}
 
-	public static async decompress(buffer: Buffer): Promise<Buffer> {
+	public static async decompress(buffer: Buffer, block: BiffBlock): Promise<Buffer> {
 		return new Promise((resolve, reject) => {
-			inflate(buffer, (err, result) => {
+			inflate(buffer.slice(block.pos, block.pos + block.len), (err, result) => {
 				if (err) {
 					return reject(err);
 				}
@@ -122,27 +120,25 @@ export class BiffParser {
 		return buffer.toString('utf8');
 	}
 
-	protected parseInt(block: BiffBlock): number {
-		return block.data.readInt32LE(0);
+	protected parseInt(buffer: Buffer, block: BiffBlock): number {
+		return buffer.readInt32LE(block.pos);
 	}
 
-	protected parseBool(block: BiffBlock): boolean {
-		return block.data.readInt32LE(0) > 0;
+	protected parseBool(buffer: Buffer, block: BiffBlock): boolean {
+		return buffer.readInt32LE(block.pos) > 0;
 	}
 
-	protected parseFloat(block: BiffBlock): number {
-		return block.data.readFloatLE(0);
+	protected parseFloat(buffer: Buffer, block: BiffBlock): number {
+		return buffer.readFloatLE(block.pos);
 	}
 
-	protected parseString(block: BiffBlock, offset: number = 0): string {
-		return offset > 0
-			? block.data.slice(offset).toString('utf8')
-			: block.data.toString('utf8');
+	protected parseString(buffer: Buffer, block: BiffBlock, offset: number = 0): string {
+		return buffer.slice(block.pos + offset, block.pos + block.len).toString('utf8');
 	}
 
-	protected parseWideString(block: BiffBlock): string {
+	protected parseWideString(buffer: Buffer, block: BiffBlock): string {
 		const chars: number[] = [];
-		block.data.slice(4).forEach((v, i) => {
+		buffer.slice(block.pos + 4, block.pos + block.len + 4).forEach((v, i) => {
 			if (i % 2 === 0) {
 				chars.push(v);
 			}
@@ -150,34 +146,34 @@ export class BiffParser {
 		return Buffer.from(chars).toString('utf8');
 	}
 
-	protected parseUnsignedInt2s(buffer: Buffer, num: number): number[] {
+	protected parseUnsignedInt2s(buffer: Buffer, block: BiffBlock, num: number): number[] {
+		block = block || { pos: 0, len: buffer.length };
 		const intSize = 2;
-		if (buffer.length < num * intSize) {
+		if (block.len < num * intSize) {
 			throw new Error('Cannot parse ' + num * intSize + ' bytes of ' + num + ' unsigned ints with ' + buffer.length + ' bytes of buffer data.');
 		}
 		const ints: number[] = [];
 		for (let i = 0; i < num; i++) {
-			ints.push(buffer.readUInt16LE(i * intSize));
+			ints.push(buffer.readUInt16LE(block.pos + i * intSize));
 		}
 		return ints;
 	}
 
-	protected parseUnsignedInt4s(buffer: Buffer, num: number): number[] {
+	protected parseUnsignedInt4s(buffer: Buffer, block: BiffBlock, num: number): number[] {
 		const intSize = 4;
-		if (buffer.length < num * intSize) {
+		if (block.len < num * intSize) {
 			throw new Error('Cannot parse ' + num * intSize + ' bytes of ' + num + ' unsigned ints with ' + buffer.length + ' bytes of buffer data.');
 		}
 		const ints: number[] = [];
 		for (let i = 0; i < num; i++) {
-			ints.push(buffer.readUInt32LE(i * intSize));
+			ints.push(buffer.readUInt32LE(block.pos + i * intSize));
 		}
 		return ints;
 	}
 }
 
 export interface BiffBlock {
-	tag: string;
-	data: Buffer;
+	tag?: string;
 	pos: number;
 	len: number;
 }

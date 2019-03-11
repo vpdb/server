@@ -125,7 +125,7 @@
 		"@types/koa-bodyparser": "4.2.2",
 		"@types/koa-json": "2.0.18",
 		"@types/koa-router": "7.0.40",
-		"@types/koa-send": "4.1.1",
+		"@types/koa-send": "4.1.2",
 		"@types/lodash": "4.14.121",
 		"@types/mocha": "5.2.6",
 		"@types/mongoose": "5.3.20",

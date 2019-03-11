@@ -32,7 +32,7 @@ export class GameData extends BiffParser {
 		const gameData = new GameData();
 		Object.assign(gameData, data);
 		gameData.materials = [];
-		for (const material of gameData.materials) {
+		for (const material of data.materials) {
 			gameData.materials.push(Material.fromCached(material));
 		}
 		return gameData;
@@ -156,6 +156,8 @@ export class GameData extends BiffParser {
 				range: this.lightRange,
 				emmission_scale: this.lightEmissionScale,
 			},
+			textureMap: this.szImage,
+			material: this.szPlayfieldMaterial,
 		};
 	}
 
@@ -437,7 +439,8 @@ class Material {
 		material.fEdge = saveMaterial.fEdge;
 		material.fOpacity = saveMaterial.fOpacity;
 		material.bIsMetal = saveMaterial.bIsMetal;
-		material.bOpacityActive = false; //!!(saveMaterial.bOpacityActive_fEdgeAlpha & 1);
+		// tslint:disable-next-line:no-bitwise
+		material.bOpacityActive = !!(saveMaterial.bOpacityActive_fEdgeAlpha & 1);
 		material.fEdgeAlpha = 0; //dequantizeUnsigned<7>(mats[i].bOpacityActive_fEdgeAlpha >> 1);
 		return material;
 	}
@@ -467,6 +470,24 @@ class Material {
 	public fElasticityFalloff: number;
 	public fFriction: number;
 	public fScatterAngle: number;
+
+	public serialize() {
+		return {
+			name: this.szName,
+			wrap_lighting: this.fWrapLighting,
+			roughness: this.fRoughness,
+			//glossy_image_lerp: this.fGlossyImageLerp,
+			//thickness: this.fThickness,
+			edge: this.fEdge,
+			//edge_alpha: this.fEdgeAlpha,
+			opacity: this.fOpacity,
+			base_color: this.cBase,
+			glossy_color: this.cGlossy,
+			clearcoat_color: this.cClearcoat,
+			is_metal: this.bIsMetal,
+			is_opacity_enabled: this.bOpacityActive,
+		};
+	}
 
 	public physUpdate(savePhysMat: SavePhysicsMaterial) {
 		this.fElasticity = savePhysMat.fElasticity;

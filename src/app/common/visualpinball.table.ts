@@ -43,23 +43,28 @@ class VisualPinballTable {
 		if (!(await FileUtil.exists(tablePath))) {
 			throw new Error('File "' + tablePath + '" does not exist.');
 		}
-		const doc = await this.readDoc(tablePath);
+		let doc: OleCompoundDoc;
+		try {
+			doc = await this.readDoc(tablePath);
 
-		const storage = doc.storage('GameStg');
-		const buf = await this.readStream(storage, 'GameData');
+			const storage = doc.storage('GameStg');
+			const buf = await this.readStream(storage, 'GameData');
 
-		const codeStart: number = bindexOf(buf, Buffer.from('04000000434F4445', 'hex')); // 0x04000000 "CODE"
-		const codeEnd: number = bindexOf(buf, Buffer.from('04000000454E4442', 'hex'));   // 0x04000000 "ENDB"
-		logger.info(requestState, '[VisualPinballTable.readScriptFromTable] Found GameData for "%s" in %d ms.', tablePath, Date.now() - now);
-		/* istanbul ignore if */
-		if (codeStart < 0 || codeEnd < 0) {
-			throw new Error('Cannot find CODE part in BIFF structure.');
+			const codeStart: number = bindexOf(buf, Buffer.from('04000000434F4445', 'hex')); // 0x04000000 "CODE"
+			const codeEnd: number = bindexOf(buf, Buffer.from('04000000454E4442', 'hex'));   // 0x04000000 "ENDB"
+			logger.info(requestState, '[VisualPinballTable.readScriptFromTable] Found GameData for "%s" in %d ms.', tablePath, Date.now() - now);
+			/* istanbul ignore if */
+			if (codeStart < 0 || codeEnd < 0) {
+				throw new Error('Cannot find CODE part in BIFF structure.');
+			}
+			return {
+				code: buf.slice(codeStart + 12, codeEnd).toString(),
+				head: buf.slice(0, codeStart + 12),
+				tail: buf.slice(codeEnd),
+			};
+		} finally {
+			await doc.close();
 		}
-		return {
-			code: buf.slice(codeStart + 12, codeEnd).toString(),
-			head: buf.slice(0, codeStart + 12),
-			tail: buf.slice(codeEnd),
-		};
 	}
 
 	/**
@@ -75,37 +80,43 @@ class VisualPinballTable {
 		if (!(await FileUtil.exists(tablePath))) {
 			throw new Error('File "' + tablePath + '" does not exist.');
 		}
-		const doc = await this.readDoc(tablePath);
+		let doc: OleCompoundDoc;
+		try {
+			doc = await this.readDoc(tablePath);
 
-		const storage = doc.storage('TableInfo');
-		const props: { [key: string]: string } = {};
-		if (!storage) {
-			logger.warn(requestState, '[VisualPinballTable.getTableInfo] Storage "TableInfo" not found in "%s".', tablePath);
-			return props;
-		}
-		const streams: { [key: string]: string } = {
-			TableName: 'table_name',
-			AuthorName: 'author_name',
-			TableBlurp: 'table_blurp',
-			TableRules: 'table_rules',
-			AuthorEmail: 'author_email',
-			ReleaseDate: 'release_date',
-			TableVersion: 'table_version',
-			AuthorWebSite: 'author_website',
-			TableDescription: 'table_description',
-		};
-		for (const key of keys(streams)) {
-			const propKey = streams[key];
-			try {
-				const buf = await this.readStream(storage, key);
-				if (buf) {
-					props[propKey] = buf.toString().replace(/\0/g, '');
-				}
-			} catch (err) {
-				logger.warn(requestState, '[VisualPinballTable.getTableInfo] %s', err.message);
+			const storage = doc.storage('TableInfo');
+			const props: { [key: string]: string } = {};
+			if (!storage) {
+				logger.warn(requestState, '[VisualPinballTable.getTableInfo] Storage "TableInfo" not found in "%s".', tablePath);
+				return props;
 			}
+			const streams: { [key: string]: string } = {
+				TableName: 'table_name',
+				AuthorName: 'author_name',
+				TableBlurp: 'table_blurp',
+				TableRules: 'table_rules',
+				AuthorEmail: 'author_email',
+				ReleaseDate: 'release_date',
+				TableVersion: 'table_version',
+				AuthorWebSite: 'author_website',
+				TableDescription: 'table_description',
+			};
+			for (const key of keys(streams)) {
+				const propKey = streams[key];
+				try {
+					const buf = await this.readStream(storage, key);
+					if (buf) {
+						props[propKey] = buf.toString().replace(/\0/g, '');
+					}
+				} catch (err) {
+					logger.warn(requestState, '[VisualPinballTable.getTableInfo] %s', err.message);
+				}
+			}
+			return props;
+
+		} finally {
+			await doc.close();
 		}
-		return props;
 	}
 
 	/**
@@ -122,62 +133,69 @@ class VisualPinballTable {
 	public async analyzeFile(requestState: RequestState, tablePath: string): Promise<TableBlock[]> {
 		const started = Date.now();
 		logger.info(requestState, '[VisualPinballTable.analyzeFile] Analyzing %s..', tablePath);
-		const doc = await this.readDoc(tablePath);
-		const storage = doc.storage('GameStg');
-		const gameDataStream = await this.readStream(storage, 'GameData');
-		const block = this.parseBiff(gameDataStream);
-		const gameData = this.parseGameData(block);
-		const tableBlocks: TableBlock[] = [];
+		let doc: OleCompoundDoc;
 
-		// images
-		for (const streamName of times(gameData.numTextures, n => 'Image' + n)) {
-			const data = await this.readStream(storage, streamName);
-			const blocks = this.parseBiff(data);
-			const [parsedData, meta] = this.parseImage(blocks, streamName);
-			const tableBlock = this.analyzeBlock(requestState, parsedData || data, 'image', meta);
-			if (tableBlock) {
-				tableBlocks.push(tableBlock);
-			}
-		}
-		// sounds
-		for (const streamName of times(gameData.numSounds, n => 'Sound' + n)) {
-			const data = await this.readStream(storage, streamName);
-			const blocks = this.parseUntaggedBiff(data);
-			const [parsedData, meta] = await this.parseSound(blocks, streamName);
-			const tableBlock = this.analyzeBlock(requestState, parsedData || data, 'sound', meta);
-			if (tableBlock) {
-				tableBlocks.push(tableBlock);
-			}
-		}
+		try {
+			doc = await this.readDoc(tablePath);
+			const storage = doc.storage('GameStg');
+			const gameDataStream = await this.readStream(storage, 'GameData');
+			const block = this.parseBiff(gameDataStream);
+			const gameData = this.parseGameData(block);
+			const tableBlocks: TableBlock[] = [];
 
-		// game items
-		for (const streamName of times(gameData.numGameItems, n => 'GameItem' + n)) {
-			const data = await this.readStream(storage, streamName);
-			const blocks = await this.parseBiff(data, 4);
-			const meta = await this.parseGameItem(blocks, streamName);
-			const tableBlock = this.analyzeBlock(requestState, data, 'gameitem', meta);
-			if (tableBlock) {
-				tableBlocks.push(tableBlock);
+			// images
+			for (const streamName of times(gameData.numTextures, n => 'Image' + n)) {
+				const data = await this.readStream(storage, streamName);
+				const blocks = this.parseBiff(data);
+				const [parsedData, meta] = this.parseImage(blocks, streamName);
+				const tableBlock = this.analyzeBlock(requestState, parsedData || data, 'image', meta);
+				if (tableBlock) {
+					tableBlocks.push(tableBlock);
+				}
 			}
-		}
-
-		// collections
-		for (const streamName of times(gameData.numCollections, n => 'Collection' + n)) {
-			const data = await this.readStream(storage, streamName);
-			const blocks = await this.parseBiff(data);
-			const meta = await this.parseCollection(blocks, streamName);
-			const tableBlock = this.analyzeBlock(requestState, data, 'collection', meta);
-			if (tableBlock) {
-				tableBlocks.push(tableBlock);
+			// sounds
+			for (const streamName of times(gameData.numSounds, n => 'Sound' + n)) {
+				const data = await this.readStream(storage, streamName);
+				const blocks = this.parseUntaggedBiff(data);
+				const [parsedData, meta] = await this.parseSound(blocks, streamName);
+				const tableBlock = this.analyzeBlock(requestState, parsedData || data, 'sound', meta);
+				if (tableBlock) {
+					tableBlocks.push(tableBlock);
+				}
 			}
-		}
 
-		logger.info(requestState, '[VisualPinballTable.analyzeFile] Found %d items in table file in %sms:', tableBlocks.length, new Date().getTime() - started);
-		logger.info(requestState, '        - %d textures.', gameData.numTextures);
-		logger.info(requestState, '        - %d sounds.', gameData.numSounds);
-		logger.info(requestState, '        - %d game items.', gameData.numGameItems);
-		logger.info(requestState, '        - %d collections.', gameData.numCollections);
-		return tableBlocks;
+			// game items
+			for (const streamName of times(gameData.numGameItems, n => 'GameItem' + n)) {
+				const data = await this.readStream(storage, streamName);
+				const blocks = await this.parseBiff(data, 4);
+				const meta = await this.parseGameItem(blocks, streamName);
+				const tableBlock = this.analyzeBlock(requestState, data, 'gameitem', meta);
+				if (tableBlock) {
+					tableBlocks.push(tableBlock);
+				}
+			}
+
+			// collections
+			for (const streamName of times(gameData.numCollections, n => 'Collection' + n)) {
+				const data = await this.readStream(storage, streamName);
+				const blocks = await this.parseBiff(data);
+				const meta = await this.parseCollection(blocks, streamName);
+				const tableBlock = this.analyzeBlock(requestState, data, 'collection', meta);
+				if (tableBlock) {
+					tableBlocks.push(tableBlock);
+				}
+			}
+
+			logger.info(requestState, '[VisualPinballTable.analyzeFile] Found %d items in table file in %sms:', tableBlocks.length, new Date().getTime() - started);
+			logger.info(requestState, '        - %d textures.', gameData.numTextures);
+			logger.info(requestState, '        - %d sounds.', gameData.numSounds);
+			logger.info(requestState, '        - %d game items.', gameData.numGameItems);
+			logger.info(requestState, '        - %d collections.', gameData.numCollections);
+			return tableBlocks;
+
+		} finally {
+			await doc.close();
+		}
 	}
 
 	/**

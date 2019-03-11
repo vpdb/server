@@ -114,12 +114,17 @@ export class VpApi extends Api {
 		}
 
 		const doc = new OleCompoundDoc(vptFile.getPath(ctx.state));
-		await doc.read();
-		const biffData = await doc.storage('GameStg').read(texture.storageName);
+		try {
+			await doc.read();
+			const biffData = await doc.storage('GameStg').read(texture.storageName);
 
-		ctx.status = 200;
-		ctx.set('Content-Type', 'image/png'); // pre-analyze and read from data
-		ctx.response.body = biffData.slice(texture.binary.pos, texture.binary.pos + texture.binary.cdata);
+			ctx.status = 200;
+			ctx.set('Content-Type', 'image/png'); // pre-analyze and read from data
+			ctx.response.body = biffData.slice(texture.binary.pos, texture.binary.pos + texture.binary.cdata);
+
+		} finally {
+			await doc.close();
+		}
 	}
 
 	private async getVpFile(ctx: Context): Promise<FileDocument> {

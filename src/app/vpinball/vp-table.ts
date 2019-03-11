@@ -60,15 +60,17 @@ export class VpTable {
 		return this.textures[name];
 	}
 
-
 	public serialize(fileId: string) {
 		return {
 			game_data: this.gameData.serialize(),
 			primitives: values(this.primitives).map((p: PrimitiveItem) => p.serialize(fileId)),
-			//textures: values(this.textures).map((t: Texture) => t.serialize(fileId)),
 			textures: Object.keys(this.textures).reduce<{ [key: string]: any }>((textures, textureName) => {
 				textures[textureName] = this.textures[textureName].serialize(fileId);
 				return textures;
+			}, {}),
+			materials: this.gameData.materials.reduce<{ [key: string]: any }>((materials, material) => {
+				materials[material.szName] = material.serialize();
+				return materials;
 			}, {}),
 		};
 	}

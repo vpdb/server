@@ -18,7 +18,7 @@
  */
 
 import { EventEmitter } from 'events';
-import { open, read } from 'fs';
+import { close, open, read } from 'fs';
 import { find, values } from 'lodash';
 import { readableStream } from './event-stream';
 
@@ -90,19 +90,19 @@ class AllocationTable {
 	private static SecIdSAT = -3;
 	private static SecIdMSAT = -4;
 
-	private readonly _doc: OleCompoundDoc;
-	private _table: number[];
+	private readonly doc: OleCompoundDoc;
+	private table: number[];
 
 	constructor(doc: OleCompoundDoc) {
-		this._doc = doc;
+		this.doc = doc;
 	}
 
 	public async load(secIds: number[]) {
-		const header = this._doc.header;
-		this._table = new Array(secIds.length * (header.secSize / 4));
-		const buffer = await this._doc.readSectors(secIds);
+		const header = this.doc.header;
+		this.table = new Array(secIds.length * (header.secSize / 4));
+		const buffer = await this.doc.readSectors(secIds);
 		for (let i = 0; i < buffer.length / 4; i++) {
-			this._table[i] = buffer.readInt32LE(i * 4);
+			this.table[i] = buffer.readInt32LE(i * 4);
 		}
 	}
 
@@ -111,7 +111,7 @@ class AllocationTable {
 		const secIds: number[] = [];
 		while (secId !== AllocationTable.SecIdEndOfChain) {
 			secIds.push(secId);
-			secId = this._table[secId];
+			secId = this.table[secId];
 			if (!secId) {
 				throw new Error('Possibly corrupt file (cannot find secId ' + secIds[secIds.length - 1] + ' in allocation table).');
 			}
@@ -146,21 +146,21 @@ class DirectoryTree {
 	private static Leaf = -1;
 	public root: StorageEntry;
 
-	private readonly _doc: OleCompoundDoc;
-	private _entries: StorageEntry[];
+	private readonly doc: OleCompoundDoc;
+	private entries: StorageEntry[];
 
 	constructor(doc: OleCompoundDoc) {
-		this._doc = doc;
+		this.doc = doc;
 	}
 
 	public async load(secIds: number[]): Promise<void> {
-		const buffer = await this._doc.readSectors(secIds);
+		const buffer = await this.doc.readSectors(secIds);
 		const count = buffer.length / 128;
-		this._entries = new Array(count);
+		this.entries = new Array(count);
 		for (let i = 0; i < count; i++) {
 			const offset = i * 128;
 			const nameLength = Math.max(buffer.readInt16LE(64 + offset) - 1, 0);
-			this._entries[i] = {
+			this.entries[i] = {
 				name: buffer.toString('utf16le', offset, nameLength + offset),
 				type: buffer.readInt8(66 + offset),
 				nodeColor: buffer.readInt8(67 + offset),
@@ -171,7 +171,7 @@ class DirectoryTree {
 				size: buffer.readInt32LE(120 + offset),
 			};
 		}
-		this.root = find<StorageEntry>(this._entries, entry => entry.type === DirectoryTree.EntryTypeRoot);
+		this.root = find<StorageEntry>(this.entries, entry => entry.type === DirectoryTree.EntryTypeRoot);
 		this._buildHierarchy(this.root);
 	}
 
@@ -182,7 +182,7 @@ class DirectoryTree {
 		storageEntry.streams = {};
 
 		for (const childId of childIds) {
-			const childEntry = this._entries[childId];
+			const childEntry = this.entries[childId];
 			const name = childEntry.name;
 			if (childEntry.type === DirectoryTree.EntryTypeStorage) {
 				storageEntry.storages[name] = childEntry;
@@ -201,7 +201,7 @@ class DirectoryTree {
 		const childIds = [];
 		if (storageEntry.storageDirId > -1) {
 			childIds.push(storageEntry.storageDirId);
-			const rootChildEntry = this._entries[storageEntry.storageDirId];
+			const rootChildEntry = this.entries[storageEntry.storageDirId];
 			return this._visit(rootChildEntry, childIds);
 		}
 		return [];
@@ -210,11 +210,11 @@ class DirectoryTree {
 	private _visit(visitEntry: StorageEntry, childIds: number[] = []): number[] {
 		if (visitEntry.left !== DirectoryTree.Leaf) {
 			childIds.push(visitEntry.left);
-			childIds = this._visit(this._entries[visitEntry.left], childIds);
+			childIds = this._visit(this.entries[visitEntry.left], childIds);
 		}
 		if (visitEntry.right !== DirectoryTree.Leaf) {
 			childIds.push(visitEntry.right);
-			childIds = this._visit(this._entries[visitEntry.right], childIds);
+			childIds = this._visit(this.entries[visitEntry.right], childIds);
 		}
 		return childIds;
 	}
@@ -222,31 +222,31 @@ class DirectoryTree {
 
 export class Storage {
 
-	private readonly _doc: OleCompoundDoc;
-	private _dirEntry: StorageEntry;
+	private readonly doc: OleCompoundDoc;
+	private dirEntry: StorageEntry;
 
 	constructor(doc: OleCompoundDoc, dirEntry: StorageEntry) {
-		this._doc = doc;
-		this._dirEntry = dirEntry;
+		this.doc = doc;
+		this.dirEntry = dirEntry;
 	}
 
 	public storage(storageName: string) {
-		return new Storage(this._doc, this._dirEntry.storages[storageName]);
+		return new Storage(this.doc, this.dirEntry.storages[storageName]);
 	}
 
 	public stream(streamName: string) {
-		const streamEntry = this._dirEntry.streams[streamName];
+		const streamEntry = this.dirEntry.streams[streamName];
 		if (!streamEntry) {
 			return null;
 		}
 
 		let bytes = streamEntry.size;
 
-		let allocationTable = this._doc.SAT;
+		let allocationTable = this.doc.SAT;
 		let shortStream = false;
-		if (bytes < this._doc.header.shortStreamMax) {
+		if (bytes < this.doc.header.shortStreamMax) {
 			shortStream = true;
-			allocationTable = this._doc.SSAT;
+			allocationTable = this.doc.SSAT;
 		}
 
 		const secIds = allocationTable.getSecIdChain(streamEntry.secId);
@@ -260,9 +260,9 @@ export class Storage {
 
 			let buffer: Buffer;
 			if (shortStream) {
-				buffer = await this._doc.readShortSector(secIds[i]);
+				buffer = await this.doc.readShortSector(secIds[i]);
 			} else {
-				buffer = await this._doc.readSector(secIds[i]);
+				buffer = await this.doc.readSector(secIds[i]);
 			}
 			if (bytes - buffer.length < 0) {
 				buffer = buffer.slice(0, bytes);
@@ -300,27 +300,29 @@ export class OleCompoundDoc extends EventEmitter {
 	public SAT: AllocationTable;
 	public SSAT: AllocationTable;
 
-	private _fd: number;
-	private _filename: string;
-	private _skipBytes: number;
-	private _rootStorage: Storage;
-	private _MSAT: number[];
-	private _shortStreamSecIds: number[];
-	private _directoryTree: DirectoryTree;
+	private readonly  filename: string;
+	private fd: number;
+	private skipBytes: number;
+	private rootStorage: Storage;
+	private MSAT: number[];
+	private shortStreamSecIds: number[];
+	private directoryTree: DirectoryTree;
 
 	constructor(filename: string) {
 		super();
 
-		this._filename = filename;
-		this._skipBytes = 0;
+		this.filename = filename;
+		this.skipBytes = 0;
 	}
 
 	public storage(storageName: string) {
-		return this._rootStorage.storage(storageName);
+		this._assertLoaded();
+		return this.rootStorage.storage(storageName);
 	}
 
 	public stream(streamName: string) {
-		return this._rootStorage.stream(streamName);
+		this._assertLoaded();
+		return this.rootStorage.stream(streamName);
 	}
 
 	public async read(): Promise<void> {
@@ -333,7 +335,7 @@ export class OleCompoundDoc extends EventEmitter {
 	}
 
 	public async readWithCustomHeader(size: number): Promise<Buffer> {
-		this._skipBytes = size;
+		this.skipBytes = size;
 		await this._openFile();
 		const buffer = await this._readCustomHeader();
 		await this._readHeader();
@@ -346,23 +348,39 @@ export class OleCompoundDoc extends EventEmitter {
 	}
 
 	public async readSector(secId: number) {
+		this._assertLoaded();
 		return this.readSectors([secId]);
 	}
 
 	public async readSectors(secIds: number[]): Promise<Buffer> {
+		this._assertLoaded();
 		const buffer = Buffer.alloc(secIds.length * this.header.secSize);
 		let i = 0;
 		while (i < secIds.length) {
 			const bufferOffset = i * this.header.secSize;
 			const fileOffset = this._getFileOffsetForSec(secIds[i]);
-			await readAsync(this._fd, buffer, bufferOffset, this.header.secSize, fileOffset);
+			await readAsync(this.fd, buffer, bufferOffset, this.header.secSize, fileOffset);
 			i++;
 		}
 		return buffer;
 	}
 
 	public async readShortSector(secId: number): Promise<Buffer> {
+		this._assertLoaded();
 		return this._readShortSectors([secId]);
+	}
+
+	public async close(): Promise<void> {
+		if (this.fd) {
+			await closeAsync(this.fd);
+		}
+		this.fd = null;
+	}
+
+	private _assertLoaded() {
+		if (!this.fd) {
+			throw new Error('Document must be loaded first.');
+		}
 	}
 
 	private async _readShortSectors(secIds: number[]): Promise<Buffer> {
@@ -371,21 +389,21 @@ export class OleCompoundDoc extends EventEmitter {
 		while (i < secIds.length) {
 			const bufferOffset = i * this.header.shortSecSize;
 			const fileOffset = this._getFileOffsetForShortSec(secIds[i]);
-			await readAsync(this._fd, buffer, bufferOffset, this.header.shortSecSize, fileOffset);
+			await readAsync(this.fd, buffer, bufferOffset, this.header.shortSecSize, fileOffset);
 			i++;
 		}
 		return buffer;
 	}
 
 	private async _openFile(): Promise<void> {
-		this._fd = await openAsync(this._filename, 'r', 0o666);
+		this.fd = await openAsync(this.filename, 'r', 0o666);
 	}
 
 	private async _readCustomHeader(): Promise<Buffer> {
-		const buffer = Buffer.alloc(this._skipBytes);
+		const buffer = Buffer.alloc(this.skipBytes);
 		let bytesRead: number;
 		let data: Buffer;
-		[bytesRead, data] = await readAsync(this._fd, buffer, 0, this._skipBytes, 0);
+		[bytesRead, data] = await readAsync(this.fd, buffer, 0, this.skipBytes, 0);
 		return data;
 	}
 
@@ -393,7 +411,7 @@ export class OleCompoundDoc extends EventEmitter {
 		const buffer = Buffer.alloc(512);
 		let bytesRead: number;
 		let data: Buffer;
-		[bytesRead, data] = await readAsync(this._fd, buffer, 0, 512, this._skipBytes);
+		[bytesRead, data] = await readAsync(this.fd, buffer, 0, 512, this.skipBytes);
 		const header = this.header = new Header();
 		if (!header.load(data)) {
 			throw new Error('Not a valid compound document.');
@@ -402,8 +420,8 @@ export class OleCompoundDoc extends EventEmitter {
 
 	private async _readMSAT(): Promise<void> {
 
-		this._MSAT = this.header.partialMSAT.slice(0);
-		this._MSAT.length = this.header.SATSize;
+		this.MSAT = this.header.partialMSAT.slice(0);
+		this.MSAT.length = this.header.SATSize;
 
 		if (this.header.SATSize <= 109 || this.header.MSATSize === 0) {
 			return;
@@ -418,7 +436,7 @@ export class OleCompoundDoc extends EventEmitter {
 				if (currMSATIndex >= this.header.SATSize) {
 					break;
 				} else {
-					this._MSAT[currMSATIndex] = sectorBuffer.readInt32LE(s);
+					this.MSAT[currMSATIndex] = sectorBuffer.readInt32LE(s);
 				}
 				currMSATIndex++;
 			}
@@ -429,7 +447,7 @@ export class OleCompoundDoc extends EventEmitter {
 
 	private async _readSAT(): Promise<void> {
 		this.SAT = new AllocationTable(this);
-		await this.SAT.load(this._MSAT);
+		await this.SAT.load(this.MSAT);
 	}
 
 	private async _readSSAT(): Promise<void> {
@@ -442,19 +460,19 @@ export class OleCompoundDoc extends EventEmitter {
 	}
 
 	private async _readDirectoryTree(): Promise<void> {
-		this._directoryTree = new DirectoryTree(this);
+		this.directoryTree = new DirectoryTree(this);
 
 		const secIds = this.SAT.getSecIdChain(this.header.dirSecId);
-		await this._directoryTree.load(secIds);
+		await this.directoryTree.load(secIds);
 
-		const rootEntry = this._directoryTree.root;
-		this._rootStorage = new Storage(this, rootEntry);
-		this._shortStreamSecIds = this.SAT.getSecIdChain(rootEntry.secId);
+		const rootEntry = this.directoryTree.root;
+		this.rootStorage = new Storage(this, rootEntry);
+		this.shortStreamSecIds = this.SAT.getSecIdChain(rootEntry.secId);
 	}
 
 	private _getFileOffsetForSec(secId: number): number {
 		const secSize = this.header.secSize;
-		return this._skipBytes + (secId + 1) * secSize;  // Skip past the header sector
+		return this.skipBytes + (secId + 1) * secSize;  // Skip past the header sector
 	}
 
 	private _getFileOffsetForShortSec(shortSecId: number): number {
@@ -463,7 +481,7 @@ export class OleCompoundDoc extends EventEmitter {
 		const secSize = this.header.secSize;
 		const secIdIndex = Math.floor(shortStreamOffset / secSize);
 		const secOffset = shortStreamOffset % secSize;
-		const secId = this._shortStreamSecIds[secIdIndex];
+		const secId = this.shortStreamSecIds[secIdIndex];
 		return this._getFileOffsetForSec(secId) + secOffset;
 	}
 }
@@ -476,6 +494,18 @@ async function openAsync(path: string, flags?: string | number, mode: number = 0
 				return;
 			}
 			resolve(fd);
+		});
+	});
+}
+
+async function closeAsync(fd: number): Promise<void> {
+	return new Promise((resolve, reject) => {
+		close(fd, err => {
+			if (err) {
+				reject(err);
+				return;
+			}
+			resolve();
 		});
 	});
 }

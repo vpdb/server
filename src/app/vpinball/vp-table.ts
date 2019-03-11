@@ -75,23 +75,30 @@ export class VpTable {
 
 	private async _load(fileName: string): Promise<void> {
 
-		// read ole-doc
 		const doc = new OleCompoundDoc(fileName);
-		await doc.read();
 
-		// open game storage
-		const gameStorage = doc.storage('GameStg');
+		try {
 
-		// load game data
-		this.gameData = await GameData.load(await gameStorage.read('GameData'));
+			// read ole-doc
+			await doc.read();
 
-		// load items
-		const stats = await this.loadGameItems(gameStorage, this.gameData.numGameItems);
+			// open game storage
+			const gameStorage = doc.storage('GameStg');
 
-		// load images
-		await this.loadTextures(gameStorage, this.gameData.numTextures);
+			// load game data
+			this.gameData = await GameData.load(await gameStorage.read('GameData'));
 
-		console.log(stats);
+			// load items
+			const stats = await this.loadGameItems(gameStorage, this.gameData.numGameItems);
+
+			// load images
+			await this.loadTextures(gameStorage, this.gameData.numTextures);
+
+			console.log(stats);
+
+		} finally {
+			await doc.close();
+		}
 	}
 
 	private async loadGameItems(storage: Storage, numItems: number): Promise<{[key: string]: number}> {

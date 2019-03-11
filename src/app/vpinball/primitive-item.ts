@@ -95,7 +95,9 @@ export class PrimitiveItem extends GameItem {
 				z: this.data.aRotAndTra[8],
 			},
 			is_visible: this.data.fVisible,
-			texture: this.data.szImage,
+			textureMap: this.data.szImage,
+			normalMap: this.data.szNormalMap,
+			material: this.data.szMaterial,
 		};
 	}
 

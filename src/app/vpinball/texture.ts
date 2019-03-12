@@ -68,9 +68,21 @@ export class Texture extends BiffParser {
 		const blocks = BiffParser.parseBiff(buffer);
 		for (const block of blocks) {
 			switch (block.tag) {
-				case 'NAME': this.szName = this.parseString(buffer, block, 4); break;
-				case 'INME': this.szInternalName = this.parseString(buffer, block, 4); break;
-				case 'PATH': this.szPath = this.parseString(buffer, block, 4); break;
+				case 'NAME':
+					if (!this.szName) {
+						this.szName = this.parseString(buffer, block, 4);
+					}
+					break;
+				case 'INME':
+					if (!this.szInternalName) {
+						this.szInternalName = this.parseString(buffer, block, 4);
+					}
+					break;
+				case 'PATH':
+					if (!this.szPath) {
+						this.szPath = this.parseString(buffer, block, 4);
+					}
+					break;
 				case 'WDTH': this.width = this.parseInt(buffer, block); break;
 				case 'HGHT': this.height = this.parseInt(buffer, block); break;
 				case 'ALTV': this.alphaTestValue = this.parseFloat(buffer, block); break;

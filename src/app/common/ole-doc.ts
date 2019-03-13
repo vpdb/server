@@ -272,6 +272,37 @@ export class Storage {
 		});
 	}
 
+	public streamFiltered<T>(streamName: string, offset: number, len: number, next: (data: Buffer) => number) {
+		const streamEntry = this.dirEntry.streams[streamName];
+		if (!streamEntry) {
+			throw new Error('No such stream "' + streamName + '" in document.');
+		}
+
+		let bytes = streamEntry.size;
+		const shortStream = bytes < this.doc.header.shortStreamMax;
+		const allocationTable = shortStream ? this.doc.SSAT : this.doc.SAT;
+		const secIds = allocationTable.getSecIdChain(streamEntry.secId);
+
+		return readableStream<Buffer>(async (stream): Promise<Buffer> => {
+
+			let buffer: Buffer;
+			if (shortStream) {
+				buffer = await this.doc.readShortSectors(secIds, offset, len);
+			} else {
+				buffer = await this.doc.readSectors(secIds, offset, len);
+			}
+
+			len = next(buffer);
+			if (len === -1) {
+				stream.emit('end');
+				return Promise.resolve(null);
+			}
+			offset += len;
+
+			return buffer;
+		});
+	}
+
 	/**
 	 * Reads a given stream from a given storage.
 	 *
@@ -300,7 +331,7 @@ export class OleCompoundDoc extends EventEmitter {
 	public SAT: AllocationTable;
 	public SSAT: AllocationTable;
 
-	private readonly  filename: string;
+	private readonly filename: string;
 	private fd: number;
 	private skipBytes: number;
 	private rootStorage: Storage;
@@ -347,32 +378,48 @@ export class OleCompoundDoc extends EventEmitter {
 		return buffer;
 	}
 
-	public async readSector(secId: number) {
+	public async readSector(secId: number, offset: number = 0, len: number = -1) {
 		this._assertLoaded();
-		return this.readSectors([secId]);
+		return this.readSectors([secId], offset, len);
 	}
 
-	public async readSectors(secIds: number[]): Promise<Buffer> {
+	public async readSectors(secIds: number[], offset: number = 0, len: number = -1): Promise<Buffer> {
+		len = len < 0 ? secIds.length * this.header.secSize : len;
 		this._assertLoaded();
-		const buffer = Buffer.alloc(secIds.length * this.header.secSize);
+		const buffer = Buffer.alloc(len);
 		let i = 0;
-		while (i < secIds.length) {
+		while (i < secIds.length && len > 0) {
+			if (offset > this.header.secSize) {
+				offset -= this.header.secSize;
+				i++;
+				continue;
+			}
 			const bufferOffset = i * this.header.secSize;
-			const fileOffset = this._getFileOffsetForSec(secIds[i]);
-			await readAsync(this.fd, buffer, bufferOffset, this.header.secSize, fileOffset);
+			const fileOffset = offset + this._getFileOffsetForSec(secIds[i]);
+			await this._read(buffer, bufferOffset, Math.min(this.header.secSize, len), fileOffset);
+			len -= this.header.secSize;
+			offset = 0;
 			i++;
 		}
 		return buffer;
 	}
 
-	public async readShortSector(secId: number): Promise<Buffer> {
+	public async readShortSector(secId: number, offset: number = 0, len: number = -1): Promise<Buffer> {
 		this._assertLoaded();
-		return this._readShortSectors([secId]);
+		return this.readShortSectors([secId], offset, len);
 	}
 
 	public async close(): Promise<void> {
 		if (this.fd) {
-			await closeAsync(this.fd);
+			await new Promise((resolve, reject) => {
+				close(this.fd, err => {
+					if (err) {
+						reject(err);
+						return;
+					}
+					resolve();
+				});
+			});
 		}
 		this.fd = null;
 	}
@@ -383,27 +430,43 @@ export class OleCompoundDoc extends EventEmitter {
 		}
 	}
 
-	private async _readShortSectors(secIds: number[]): Promise<Buffer> {
-		const buffer = Buffer.alloc(secIds.length * this.header.shortSecSize);
+	public async readShortSectors(secIds: number[], offset: number = 0, len: number = -1): Promise<Buffer> {
+		len = len < 0 ? secIds.length * this.header.shortSecSize : len;
+		const buffer = Buffer.alloc(len);
 		let i = 0;
-		while (i < secIds.length) {
+		while (i < secIds.length && len > 0) {
+			if (offset > this.header.shortSecSize) {
+				offset -= this.header.shortSecSize;
+				i++;
+				continue;
+			}
 			const bufferOffset = i * this.header.shortSecSize;
-			const fileOffset = this._getFileOffsetForShortSec(secIds[i]);
-			await readAsync(this.fd, buffer, bufferOffset, this.header.shortSecSize, fileOffset);
+			const fileOffset = offset + this._getFileOffsetForShortSec(secIds[i]);
+			await this._read(buffer, bufferOffset, Math.min(this.header.shortSecSize, len), fileOffset);
+			len -= this.header.shortSecSize;
+			offset = 0;
 			i++;
 		}
 		return buffer;
 	}
 
 	private async _openFile(): Promise<void> {
-		this.fd = await openAsync(this.filename, 'r', 0o666);
+		this.fd = await new Promise((resolve, reject) => {
+			open(this.filename, 'r', 0o666, (err, fd) => {
+				if (err) {
+					reject(err);
+					return;
+				}
+				resolve(fd);
+			});
+		});
 	}
 
 	private async _readCustomHeader(): Promise<Buffer> {
 		const buffer = Buffer.alloc(this.skipBytes);
 		let bytesRead: number;
 		let data: Buffer;
-		[bytesRead, data] = await readAsync(this.fd, buffer, 0, this.skipBytes, 0);
+		[bytesRead, data] = await this._read(buffer, 0, this.skipBytes, 0);
 		return data;
 	}
 
@@ -411,7 +474,7 @@ export class OleCompoundDoc extends EventEmitter {
 		const buffer = Buffer.alloc(512);
 		let bytesRead: number;
 		let data: Buffer;
-		[bytesRead, data] = await readAsync(this.fd, buffer, 0, 512, this.skipBytes);
+		[bytesRead, data] = await this._read(buffer, 0, 512, this.skipBytes);
 		const header = this.header = new Header();
 		if (!header.load(data)) {
 			throw new Error('Not a valid compound document.');
@@ -484,39 +547,16 @@ export class OleCompoundDoc extends EventEmitter {
 		const secId = this.shortStreamSecIds[secIdIndex];
 		return this._getFileOffsetForSec(secId) + secOffset;
 	}
-}
 
-async function openAsync(path: string, flags?: string | number, mode: number = 0o666): Promise<number> {
-	return new Promise((resolve, reject) => {
-		open(path, flags, mode, (err, fd) => {
-			if (err) {
-				reject(err);
-				return;
-			}
-			resolve(fd);
+	private async _read(buffer: Buffer, offset: number, length: number, position: number): Promise<[ number, Buffer ]> {
+		return new Promise((resolve, reject) => {
+			read(this.fd, buffer, offset, length, position, (err, bytesRead, data) => {
+				if (err) {
+					reject(err);
+					return;
+				}
+				resolve([bytesRead, data]);
+			});
 		});
-	});
-}
-
-async function closeAsync(fd: number): Promise<void> {
-	return new Promise((resolve, reject) => {
-		close(fd, err => {
-			if (err) {
-				reject(err);
-				return;
-			}
-			resolve();
-		});
-	});
-}
-async function readAsync(fd: number, buffer: Buffer, offset: number, length: number, position: number): Promise<[ number, Buffer ]> {
-	return new Promise((resolve, reject) => {
-		read(fd, buffer, offset, length, position, (err, bytesRead, data) => {
-			if (err) {
-				reject(err);
-				return;
-			}
-			resolve([bytesRead, data]);
-		});
-	});
+	}
 }

@@ -19,6 +19,7 @@
  */
 
 import { BiffBlock, BiffParser } from './biff-parser';
+import { Vertex2D, Vertex3D } from './common';
 
 export class GameData extends BiffParser {
 
@@ -315,42 +316,6 @@ export class GameData extends BiffParser {
 			material.physUpdate(savePhysMat);
 		}
 	}
-}
-
-class Vertex2D {
-
-	public static load(buffer: Buffer, block: BiffBlock) {
-		const v2 = new Vertex2D();
-		v2.x = buffer.readFloatLE(block.pos);
-		v2.y = buffer.readFloatLE(block.pos + 4);
-		return v2;
-	}
-
-	public static from(data: any): Vertex2D {
-		return Object.assign(new Vertex2D(), data);
-	}
-
-	public x: number;
-	public y: number;
-}
-
-class Vertex3D {
-
-	public static load(buffer: Buffer, block: BiffBlock) {
-		const v3 = new Vertex3D();
-		v3.x = buffer.readFloatLE(block.pos);
-		v3.y = buffer.readFloatLE(block.pos + 4);
-		v3.z = buffer.readFloatLE(block.pos + 8);
-		return v3;
-	}
-
-	public static from(data: any): Vertex3D {
-		return Object.assign(new Vertex3D(), data);
-	}
-
-	public x: number;
-	public y: number;
-	public z: number;
 }
 
 class LightSource {

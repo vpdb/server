@@ -20,7 +20,7 @@
 const Stream = require('stream').Stream;
 const immediately = global.setImmediate || process.nextTick;
 
-export function readableStream(func: (stream: any, i: number) => Promise<Buffer>, continueOnError: boolean = false) {
+export function readableStream<T>(func: (stream: any, i: number) => Promise<T>, continueOnError: boolean = false) {
 
 	const stream = new Stream();
 	let i = 0;
@@ -33,7 +33,7 @@ export function readableStream(func: (stream: any, i: number) => Promise<Buffer>
 
 	stream.on('end', () => ended = true);
 
-	function get(err?: Error, data: Buffer = null) {
+	function get(err?: Error, data: T = null) {
 
 		if (err) {
 			stream.emit('error', err);

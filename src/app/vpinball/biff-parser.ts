@@ -25,14 +25,19 @@ export class BiffParser {
 	public static stream(streamedTags: string[], callback: (buffer: Buffer, tag: string, len: number) => void) {
 		return (data: Buffer) => {
 			let len = data.readInt32LE(0);
+			let dataResult: Buffer;
 			const tag = data.slice(4, 8).toString();
 			if (streamedTags.includes(tag)) {
 				len += data.readInt32LE(8) + 4;
+				dataResult = data.slice(8, 12);
+			} else {
+				dataResult = data.slice(8, 8 + len - 4);
 			}
+
 			if (!tag || tag === 'ENDB') {
 				return -1;
 			}
-			callback(data, tag, len);
+			callback(dataResult, tag, len - 4);
 			return len + 4;
 		};
 	}

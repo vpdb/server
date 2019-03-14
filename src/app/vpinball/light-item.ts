@@ -20,6 +20,7 @@
 import { BiffParser } from './biff-parser';
 import { Vertex2D } from './common';
 import { GameItem } from './game-item';
+import { settings } from '../common/settings';
 
 export class LightItem extends GameItem {
 
@@ -73,9 +74,15 @@ export class LightItem extends GameItem {
 		return this.wzName;
 	}
 
-	public serialize(fileId: string) {
+	public serialize() {
 		return {
 			name: this.wzName,
+			center: this.vCenter,
+			intensity: this.intensity,
+			color: this.color,
+			falloff: this.falloff,
+			mesh: this.showBulbMesh ? settings.apiExternalUri(`/v1/meshes/bulbLightMess.obj`) : undefined,
+			meshRadius: this.meshRadius,
 		};
 	}
 

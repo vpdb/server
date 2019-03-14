@@ -46,6 +46,7 @@ export class VpTable {
 		for (const name of Object.keys(data.textures)) {
 			vpTable.textures[name] = Texture.from(data.textures[name]);
 		}
+		vpTable.lights = data.lights.map((light: any) => LightItem.from(light));
 		return vpTable;
 	}
 
@@ -74,6 +75,7 @@ export class VpTable {
 				materials[material.szName] = material.serialize();
 				return materials;
 			}, {}),
+			lights: this.lights.map(l => l.serialize()),
 		};
 	}
 

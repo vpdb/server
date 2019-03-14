@@ -17,6 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+/* tslint:disable:no-bitwise */
 import { EventEmitter } from 'events';
 import { close, open, read } from 'fs';
 import { find, values } from 'lodash';
@@ -52,15 +53,15 @@ class Header {
 	public dirSecId: number;
 
 	public partialMSAT: number[];
-	private readonly _oleId: Buffer;
+	private readonly oleId: Buffer;
 
 	constructor() {
-		this._oleId = Buffer.from('D0CF11E0A1B11AE1', 'hex');
+		this.oleId = Buffer.from('D0CF11E0A1B11AE1', 'hex');
 	}
 
 	public load(buffer: Buffer) {
 		for (let i = 0; i < 8; i++) {
-			if (this._oleId[i] !== buffer[i]) {
+			if (this.oleId[i] !== buffer[i]) {
 				return false;
 			}
 		}
@@ -272,18 +273,18 @@ export class Storage {
 		});
 	}
 
-	public streamFiltered<T>(streamName: string, offset: number, len: number, next: (data: Buffer) => number) {
+	public async streamFiltered<T>(streamName: string, offset: number, len: number, next: (data: Buffer) => number): Promise<void> {
 		const streamEntry = this.dirEntry.streams[streamName];
 		if (!streamEntry) {
 			throw new Error('No such stream "' + streamName + '" in document.');
 		}
 
-		let bytes = streamEntry.size;
+		const bytes = streamEntry.size;
 		const shortStream = bytes < this.doc.header.shortStreamMax;
 		const allocationTable = shortStream ? this.doc.SSAT : this.doc.SAT;
 		const secIds = allocationTable.getSecIdChain(streamEntry.secId);
 
-		return readableStream<Buffer>(async (stream): Promise<Buffer> => {
+		const str = readableStream<Buffer>(async (stream): Promise<Buffer> => {
 
 			let buffer: Buffer;
 			if (shortStream) {
@@ -293,13 +294,18 @@ export class Storage {
 			}
 
 			len = next(buffer);
-			if (len === -1) {
+			if (len <= 0) {
 				stream.emit('end');
 				return Promise.resolve(null);
 			}
 			offset += len;
 
 			return buffer;
+		});
+
+		await new Promise((resolve, reject) => {
+			str.on('end', resolve);
+			str.on('error', reject);
 		});
 	}
 
@@ -388,16 +394,18 @@ export class OleCompoundDoc extends EventEmitter {
 		this._assertLoaded();
 		const buffer = Buffer.alloc(len);
 		let i = 0;
+		let bufferOffset = 0;
 		while (i < secIds.length && len > 0) {
-			if (offset > this.header.secSize) {
+			if (offset >= this.header.secSize) {
 				offset -= this.header.secSize;
 				i++;
 				continue;
 			}
-			const bufferOffset = i * this.header.secSize;
+			const fileLen = Math.min(this.header.secSize - offset, len);
 			const fileOffset = offset + this._getFileOffsetForSec(secIds[i]);
-			await this._read(buffer, bufferOffset, Math.min(this.header.secSize, len), fileOffset);
-			len -= this.header.secSize;
+			await this._read(buffer, bufferOffset, fileLen, fileOffset);
+			len -= fileLen;
+			bufferOffset += fileLen;
 			offset = 0;
 			i++;
 		}
@@ -407,6 +415,28 @@ export class OleCompoundDoc extends EventEmitter {
 	public async readShortSector(secId: number, offset: number = 0, len: number = -1): Promise<Buffer> {
 		this._assertLoaded();
 		return this.readShortSectors([secId], offset, len);
+	}
+
+	public async readShortSectors(secIds: number[], offset: number = 0, len: number = -1): Promise<Buffer> {
+		len = len < 0 ? secIds.length * this.header.shortSecSize : len;
+		const buffer = Buffer.alloc(len);
+		let i = 0;
+		let bufferOffset = 0;
+		while (i < secIds.length && len > 0) {
+			if (offset >= this.header.shortSecSize) {
+				offset -= this.header.shortSecSize;
+				i++;
+				continue;
+			}
+			const fileOffset = offset + this._getFileOffsetForShortSec(secIds[i]);
+			const fileLen = Math.min(this.header.shortSecSize - offset, len);
+			await this._read(buffer, bufferOffset, fileLen, fileOffset);
+			len -= fileLen;
+			bufferOffset += fileLen;
+			offset = 0;
+			i++;
+		}
+		return buffer;
 	}
 
 	public async close(): Promise<void> {
@@ -428,26 +458,6 @@ export class OleCompoundDoc extends EventEmitter {
 		if (!this.fd) {
 			throw new Error('Document must be loaded first.');
 		}
-	}
-
-	public async readShortSectors(secIds: number[], offset: number = 0, len: number = -1): Promise<Buffer> {
-		len = len < 0 ? secIds.length * this.header.shortSecSize : len;
-		const buffer = Buffer.alloc(len);
-		let i = 0;
-		while (i < secIds.length && len > 0) {
-			if (offset > this.header.shortSecSize) {
-				offset -= this.header.shortSecSize;
-				i++;
-				continue;
-			}
-			const bufferOffset = i * this.header.shortSecSize;
-			const fileOffset = offset + this._getFileOffsetForShortSec(secIds[i]);
-			await this._read(buffer, bufferOffset, Math.min(this.header.shortSecSize, len), fileOffset);
-			len -= this.header.shortSecSize;
-			offset = 0;
-			i++;
-		}
-		return buffer;
 	}
 
 	private async _openFile(): Promise<void> {
@@ -560,3 +570,5 @@ export class OleCompoundDoc extends EventEmitter {
 		});
 	}
 }
+
+/* tslint:enable:no-bitwise */

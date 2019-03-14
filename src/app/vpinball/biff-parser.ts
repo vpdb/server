@@ -21,6 +21,22 @@ import { inflate } from 'zlib';
 
 export class BiffParser {
 
+
+	public static stream(streamedTags: string[], callback: (buffer: Buffer, tag: string, len: number) => void) {
+		return (data: Buffer) => {
+			let len = data.readInt32LE(0);
+			const tag = data.slice(4, 8).toString();
+			if (streamedTags.includes(tag)) {
+				len += data.readInt32LE(8) + 4;
+			}
+			if (!tag || tag === 'ENDB') {
+				return -1;
+			}
+			callback(data, tag, len);
+			return len + 4;
+		};
+	}
+
 	/**
 	 * Tries to parse the BIFF format and returns all blocks as an array.
 	 *

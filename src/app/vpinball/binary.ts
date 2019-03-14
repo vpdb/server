@@ -18,6 +18,7 @@
  */
 
 import { BiffParser } from './biff-parser';
+import { logger } from '../common/logger';
 
 export class Binary extends BiffParser {
 
@@ -38,6 +39,17 @@ export class Binary extends BiffParser {
 	public szPath: string;
 	public cdata: number;
 	public pos: number;
+
+	public fromTag(buffer: Buffer, tag: string, offset: number, len: number) {
+		switch (tag) {
+			case 'NAME': this.szName = this.getString(buffer, len); break;
+			case 'INME': this.szInternalName = this.getString(buffer, len); break;
+			case 'PATH': this.szPath = this.getString(buffer, len); break;
+			case 'SIZE': this.cdata = this.getInt(buffer); break;
+			case 'DATA': this.pos = offset; break;
+			default: logger.warn(null,'Unknown tag "%s".', tag);
+		}
+	}
 
 	private async _load(buffer: Buffer, offset: number = 0): Promise<void> {
 		const blocks = BiffParser.parseBiff(buffer, offset);

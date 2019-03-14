@@ -32,7 +32,7 @@ before_script:
 script:
   - deploy/ci/travis.sh
 env:
-  - CXX=g++-4.8
   global:
     - secure: he13bEicdzpoLGeoj+xaU2kIkKsw1/m+Ejcm5YanhGicECrCWVvFOu0O7vGHPDDj3s/xnTgBhhUPzIS3SdcIVqfTS+nP+CJNtzOm4zOdPvmfbfCvuIukLmCLtADrrz2HUxO1en1vfpH1trkUP5gwdo4vAGli7hOD4MsncRYaYio=
     - BUILDER="Travis CI"
+    - CXX=g++-4.8

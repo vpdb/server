@@ -33,8 +33,13 @@ export class Mesh {
 		return mesh;
 	}
 
-	public static fromArray(vertices: number[][], indexes: number[]): Mesh {
-		return new Mesh();
+	public static fromArray(vertices: number[][], indices: number[]): Mesh {
+		const mesh = new Mesh();
+		for (const vertex of vertices) {
+			mesh.vertices.push(Vertex3DNoTex2.fromArray(vertex));
+		}
+		mesh.indices = indices;
+		return mesh;
 	}
 
 	private static exportPrecision = 6;
@@ -156,6 +161,19 @@ export class Vertex3DNoTex2 {
 
 	public static from(data: any): Vertex3DNoTex2 {
 		return Object.assign(new Vertex3DNoTex2(), data);
+	}
+
+	public static fromArray(arr: number[]): Vertex3DNoTex2 {
+		const vertex = new Vertex3DNoTex2();
+		vertex.x = arr[0];
+		vertex.y = arr[1];
+		vertex.z = arr[2];
+		vertex.nx = arr[3];
+		vertex.ny = arr[4];
+		vertex.nz = arr[5];
+		vertex.tu = arr[6];
+		vertex.tv = arr[7];
+		return vertex;
 	}
 
 	public x: number;

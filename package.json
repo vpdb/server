@@ -182,7 +182,7 @@
 			"build/app/common/profiler.js",
 			"build/app/authentication/strategies/**",
 			"build/app/vp/**",
-			"build/app/vpinball/**",
+			"build/app/vpinball/**"
 		],
 		"reporter": [
 			"lcov",

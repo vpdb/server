@@ -24,6 +24,8 @@ import { OleCompoundDoc } from '../common/ole-doc';
 import { Context } from '../common/typings/context';
 import { FileDocument } from '../files/file.document';
 import { state } from '../state';
+import { Mesh } from '../vpinball/common';
+import { bulbLightMess } from '../vpinball/meshes/bulb-light-mess';
 import { Texture } from '../vpinball/texture';
 import { VpTable } from '../vpinball/vp-table';
 
@@ -74,12 +76,34 @@ export class VpApi extends Api {
 			const vpTable = await this.getVpTable(ctx, vptFile);
 			const mesh = vpTable.getPrimitive(ctx.params.meshName);
 			if (!mesh) {
-				throw new ApiError('No primitive named "%s" in this table!').status(404);
+				throw new ApiError('No primitive named "%s" in this table!', ctx.params.meshName).status(404);
 			}
 			obj = mesh.serializeToObj();
 			await state.redis.set(redisKey, obj);
 		}
 
+		ctx.status = 200;
+		ctx.set('Content-Type', 'text/plain');
+		ctx.response.body = obj;
+	}
+
+	/**
+	 * Returns the mesh of a primitive.
+	 *
+	 * @see GET  /v1/meshes/:meshName.obj
+	 * @param {Context} ctx Koa context
+	 */
+	public async getLocalMeshObj(ctx: Context) {
+
+		const meshes: { [key: string]: Mesh } = {
+			bulbLightMess,
+		};
+
+		if (!meshes[ctx.params.meshName]) {
+			throw new ApiError('There is no global mesh named "%s"!', ctx.params.meshName).status(404);
+		}
+		const mesh: Mesh = meshes[ctx.params.meshName];
+		const obj = mesh.serializeToObj(ctx.params.meshName);
 		ctx.status = 200;
 		ctx.set('Content-Type', 'text/plain');
 		ctx.response.body = obj;

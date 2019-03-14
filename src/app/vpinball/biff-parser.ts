@@ -18,25 +18,44 @@
  */
 
 import { inflate } from 'zlib';
+import { ReadResult } from '../common/ole-doc';
+
+export type OnBiffResult = (buffer: Buffer, tag: string, offset: number, len: number) => void;
 
 export class BiffParser {
 
-	public static stream(streamedTags: string[], callback: (buffer: Buffer, tag: string, len: number) => void) {
-		return (data: Buffer) => {
+	public static stream(callback: OnBiffResult, opts: { streamedTags?: string[], nestedTags?: { [key: string]: OnBiffResult } } = {}) {
+		let nestedCallback:OnBiffResult = null;
+		return (result: ReadResult) => {
+			const data = result.data;
 			let len = data.readInt32LE(0);
 			let dataResult: Buffer;
 			const tag = data.slice(4, 8).toString();
-			if (streamedTags.includes(tag)) {
+			let relStartPos = 8;
+			let relEndPos = -4;
+
+			if (opts.nestedTags && opts.nestedTags[tag]) {
+				nestedCallback = opts.nestedTags[tag];
+				return len + 4;
+			}
+
+			if (opts.streamedTags && opts.streamedTags.includes(tag)) {
 				len += data.readInt32LE(8) + 4;
-				dataResult = data.slice(8, 12);
+				dataResult = null;
+				relStartPos += 4;
+				relEndPos -= 4;
 			} else {
 				dataResult = data.slice(8, 8 + len - 4);
 			}
 
 			if (!tag || tag === 'ENDB') {
+				if (nestedCallback) {
+					nestedCallback = null;
+					return len + 4;
+				}
 				return -1;
 			}
-			callback(dataResult, tag, len - 4);
+			(nestedCallback || callback)(dataResult, tag, result.storageOffset + relStartPos, len + relEndPos);
 			return len + 4;
 		};
 	}
@@ -154,6 +173,18 @@ export class BiffParser {
 
 	protected parseString(buffer: Buffer, block: BiffBlock, offset: number = 0): string {
 		return buffer.slice(block.pos + offset, block.pos + block.len).toString('utf8');
+	}
+
+	protected getString(buffer: Buffer, len: number): string {
+		return buffer.slice(4, len).toString('utf8');
+	}
+
+	protected getInt(buffer: Buffer): number {
+		return buffer.readInt32LE(0);
+	}
+
+	protected getFloat(buffer: Buffer): number {
+		return buffer.readFloatLE(0);
 	}
 
 	protected parseWideString(buffer: Buffer, block: BiffBlock): string {

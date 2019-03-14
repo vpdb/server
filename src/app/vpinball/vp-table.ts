@@ -26,6 +26,7 @@ import { GameItem } from './game-item';
 import { LightItem } from './light-item';
 import { PrimitiveItem } from './primitive-item';
 import { Texture } from './texture';
+import { BiffParser } from './biff-parser';
 
 export class VpTable {
 
@@ -140,8 +141,8 @@ export class VpTable {
 	private async loadTextures(storage: Storage, numItems: number): Promise<void> {
 		for (let i = 0; i < numItems; i++) {
 			const itemName = `Image${i}`;
-			const itemData = await storage.read(itemName);
-			const texture = await Texture.load(itemData, i);
+			const texture = new Texture();
+			await storage.streamFiltered(itemName, 0, Texture.createStreamHandler(texture));
 			this.textures[texture.getName()] = texture;
 		}
 	}

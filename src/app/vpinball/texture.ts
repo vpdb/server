@@ -37,6 +37,27 @@ export class Texture extends BiffParser {
 		return texture;
 	}
 
+	public static createStreamHandler(texture: Texture) {
+		texture.binary = new Binary();
+		return BiffParser.stream(texture.fromTag.bind(texture), {
+			nestedTags: { JPEG: texture.binary.fromTag.bind(texture.binary) }
+		});
+	}
+
+	public fromTag(buffer: Buffer, tag: string, offset: number, len: number) {
+		switch (tag) {
+			case 'NAME': this.szName = this.getString(buffer, len); break;
+			case 'INME': this.szInternalName = this.getString(buffer, len); break;
+			case 'PATH': this.szPath = this.getString(buffer, len); break;
+			case 'WDTH': this.width = this.getInt(buffer); break;
+			case 'HGHT': this.height = this.getInt(buffer); break;
+			case 'ALTV': this.alphaTestValue = this.getFloat(buffer); break;
+			case 'BITS': logger.warn(null, '[Texture.load] Ignoring BITS tag for %s at Image%s, implement when understood what it is.', this.szName, offset); break;
+			case 'LINK': logger.warn(null, '[Texture.load] Ignoring LINK tag for %s at Image%s, implement when understood what it is.', this.szName, offset); break;
+			default: logger.warn(null,'Unknown tag "%s".', tag);
+		}
+	}
+
 	public storageName: string;
 	public szName: string;
 	public szInternalName: string;

@@ -21,7 +21,6 @@ import { inflate } from 'zlib';
 
 export class BiffParser {
 
-
 	public static stream(streamedTags: string[], callback: (buffer: Buffer, tag: string, len: number) => void) {
 		return (data: Buffer) => {
 			let len = data.readInt32LE(0);

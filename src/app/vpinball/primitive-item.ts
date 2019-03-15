@@ -23,12 +23,13 @@ import { FileUtil } from '../files/file.util';
 import { BiffBlock, BiffParser } from './biff-parser';
 import { FrameData, Mesh, Vector3, Vertex3DNoTex2 } from './common';
 import { GameItem } from './game-item';
+import { Storage } from '../common/ole-doc';
 
 export class PrimitiveItem extends GameItem {
 
-	public static async load(buffer: Buffer): Promise<PrimitiveItem> {
+	public static async fromStorage(storage: Storage, itemName: string): Promise<PrimitiveItem> {
 		const primitiveItem = new PrimitiveItem();
-		await primitiveItem._load(buffer);
+		await storage.streamFiltered(itemName, 4, BiffParser.stream(primitiveItem.fromTag.bind(primitiveItem)));
 		return primitiveItem;
 	}
 
@@ -107,82 +108,78 @@ export class PrimitiveItem extends GameItem {
 		return this.mesh.serializeToObj(description);
 	}
 
-	private async _load(buffer: Buffer) {
-		const blocks = BiffParser.parseBiff(buffer, 4);
-		for (const block of blocks) {
-			switch (block.tag) {
-				case 'PIID': this.pdata = this.parseInt(buffer, block); break;
-				case 'VPOS': this.data.vPosition = Vector3.load(buffer, block); break;
-				case 'VSIZ': this.data.vSize = Vector3.load(buffer, block); break;
-				case 'RTV0': this.data.aRotAndTra[0] = this.parseFloat(buffer, block); break;
-				case 'RTV1': this.data.aRotAndTra[1] = this.parseFloat(buffer, block); break;
-				case 'RTV2': this.data.aRotAndTra[2] = this.parseFloat(buffer, block); break;
-				case 'RTV3': this.data.aRotAndTra[3] = this.parseFloat(buffer, block); break;
-				case 'RTV4': this.data.aRotAndTra[4] = this.parseFloat(buffer, block); break;
-				case 'RTV5': this.data.aRotAndTra[5] = this.parseFloat(buffer, block); break;
-				case 'RTV6': this.data.aRotAndTra[6] = this.parseFloat(buffer, block); break;
-				case 'RTV7': this.data.aRotAndTra[7] = this.parseFloat(buffer, block); break;
-				case 'RTV8': this.data.aRotAndTra[8] = this.parseFloat(buffer, block); break;
-				case 'IMAG': this.data.szImage = this.parseString(buffer, block, 4); break;
-				case 'NRMA': this.data.szNormalMap = this.parseString(buffer, block, 4); break;
-				case 'SIDS': this.data.Sides = this.parseInt(buffer, block); break;
-				case 'NAME': this.wzName = this.parseWideString(buffer, block); break;
-				case 'MATR': this.data.szMaterial = this.parseString(buffer, block, 4); break;
-				case 'SCOL': this.data.SideColor = this.parseString(buffer, block, 4); break;
-				case 'TVIS': this.data.fVisible = this.parseBool(buffer, block); break;
-				case 'REEN': this.data.fReflectionEnabled = this.parseBool(buffer, block); break;
-				case 'DTXI': this.data.DrawTexturesInside = this.parseBool(buffer, block); break;
-				case 'HTEV': this.data.fHitEvent = this.parseBool(buffer, block); break;
-				case 'THRS': this.data.threshold = this.parseFloat(buffer, block); break;
-				case 'ELAS': this.data.elasticity = this.parseFloat(buffer, block); break;
-				case 'ELFO': this.data.elasticityFalloff = this.parseFloat(buffer, block); break;
-				case 'RFCT': this.data.friction = this.parseFloat(buffer, block); break;
-				case 'RSCT': this.data.scatter = this.parseFloat(buffer, block); break;
-				case 'EFUI': this.data.edgeFactorUI = this.parseFloat(buffer, block); break;
-				case 'CORF': this.data.collisionReductionFactor = this.parseFloat(buffer, block); break;
-				case 'CLDR': this.data.fCollidable = this.parseBool(buffer, block); break; // originally "CLDRP"
-				case 'ISTO': this.data.fToy = this.parseBool(buffer, block); break;
-				case 'MAPH': this.data.szPhysicsMaterial = this.parseString(buffer, block, 4); break;
-				case 'OVPH': this.data.fOverwritePhysics = this.parseBool(buffer, block); break;
-				case 'STRE': this.data.staticRendering = this.parseBool(buffer, block); break;
-				case 'DILI': this.data.fDisableLightingTop = this.parseFloat(buffer, block); break; // m_d.m_fDisableLightingTop = (tmp == 1) ? 1.f : dequantizeUnsigned<8>(tmp); // backwards compatible hacky loading!
-				case 'DILB': this.data.fDisableLightingBelow = this.parseFloat(buffer, block); break;
-				case 'U3DM': this.data.use3DMesh = this.parseBool(buffer, block); break;
-				case 'EBFC': this.data.fBackfacesEnabled = this.parseBool(buffer, block); break;
-				case 'DIPT': this.data.fDisplayTexture = this.parseBool(buffer, block); break;
-				case 'M3DN': this.data.meshFileName = this.parseWideString(buffer, block); break;
-				case 'M3VN':
-					this.numVertices = this.parseInt(buffer, block);
-					this.mesh.animationFrames = [];
-					break;
-				case 'M3DX': this.mesh.vertices = this.parseVertices(buffer, block, this.numVertices); break;
-				case 'M3AY': this.compressedAnimationVertices = this.parseInt(buffer, block); break;
-				case 'M3AX': this.mesh.animationFrames.push(await this.parseAnimatedVertices(buffer, block, this.numVertices)); break;
-				case 'M3CY': this.compressedVertices = this.parseInt(buffer, block); break;
-				case 'M3CX': this.mesh.vertices = this.parseVertices(await BiffParser.decompress(buffer, block), null, this.numVertices); break;
-				case 'M3FN': this.numIndices = this.parseInt(buffer, block); break;
-				case 'M3DI': this.mesh.indices = this.parseUnsignedInt2s(buffer, block, this.numIndices); break;
-				case 'M3CJ': this.compressedIndices = this.parseInt(buffer, block); break;
-				case 'M3CI': this.mesh.indices = this.parseUnsignedInt2s(await BiffParser.decompress(buffer, block), null, this.numIndices); break;
-				case 'PIDB': this.data.depthBias = this.parseFloat(buffer, block); break;
-				default:
-					this.parseUnknownBlock(buffer, block);
-					break;
-			}
+	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<void> {
+		switch (tag) {
+			case 'PIID': this.pdata = this.getInt(buffer); break;
+			case 'VPOS': this.data.vPosition = Vector3.get(buffer); break;
+			case 'VSIZ': this.data.vSize = Vector3.get(buffer); break;
+			case 'RTV0': this.data.aRotAndTra[0] = this.getFloat(buffer); break;
+			case 'RTV1': this.data.aRotAndTra[1] = this.getFloat(buffer); break;
+			case 'RTV2': this.data.aRotAndTra[2] = this.getFloat(buffer); break;
+			case 'RTV3': this.data.aRotAndTra[3] = this.getFloat(buffer); break;
+			case 'RTV4': this.data.aRotAndTra[4] = this.getFloat(buffer); break;
+			case 'RTV5': this.data.aRotAndTra[5] = this.getFloat(buffer); break;
+			case 'RTV6': this.data.aRotAndTra[6] = this.getFloat(buffer); break;
+			case 'RTV7': this.data.aRotAndTra[7] = this.getFloat(buffer); break;
+			case 'RTV8': this.data.aRotAndTra[8] = this.getFloat(buffer); break;
+			case 'IMAG': this.data.szImage = this.getString(buffer, len); break;
+			case 'NRMA': this.data.szNormalMap = this.getString(buffer, len); break;
+			case 'SIDS': this.data.Sides = this.getInt(buffer); break;
+			case 'NAME': this.wzName = this.getWideString(buffer, len); break;
+			case 'MATR': this.data.szMaterial = this.getString(buffer, len); break;
+			case 'SCOL': this.data.SideColor = this.getString(buffer, len); break;
+			case 'TVIS': this.data.fVisible = this.getBool(buffer); break;
+			case 'REEN': this.data.fReflectionEnabled = this.getBool(buffer); break;
+			case 'DTXI': this.data.DrawTexturesInside = this.getBool(buffer); break;
+			case 'HTEV': this.data.fHitEvent = this.getBool(buffer); break;
+			case 'THRS': this.data.threshold = this.getFloat(buffer); break;
+			case 'ELAS': this.data.elasticity = this.getFloat(buffer); break;
+			case 'ELFO': this.data.elasticityFalloff = this.getFloat(buffer); break;
+			case 'RFCT': this.data.friction = this.getFloat(buffer); break;
+			case 'RSCT': this.data.scatter = this.getFloat(buffer); break;
+			case 'EFUI': this.data.edgeFactorUI = this.getFloat(buffer); break;
+			case 'CORF': this.data.collisionReductionFactor = this.getFloat(buffer); break;
+			case 'CLDR': this.data.fCollidable = this.getBool(buffer); break; // originally "CLDRP"
+			case 'ISTO': this.data.fToy = this.getBool(buffer); break;
+			case 'MAPH': this.data.szPhysicsMaterial = this.getString(buffer, len); break;
+			case 'OVPH': this.data.fOverwritePhysics = this.getBool(buffer); break;
+			case 'STRE': this.data.staticRendering = this.getBool(buffer); break;
+			case 'DILI': this.data.fDisableLightingTop = this.getFloat(buffer); break; // m_d.m_fDisableLightingTop = (tmp == 1) ? 1.f : dequantizeUnsigned<8>(tmp); // backwards compatible hacky loading!
+			case 'DILB': this.data.fDisableLightingBelow = this.getFloat(buffer); break;
+			case 'U3DM': this.data.use3DMesh = this.getBool(buffer); break;
+			case 'EBFC': this.data.fBackfacesEnabled = this.getBool(buffer); break;
+			case 'DIPT': this.data.fDisplayTexture = this.getBool(buffer); break;
+			case 'M3DN': this.data.meshFileName = this.getWideString(buffer, len); break;
+			case 'M3VN':
+				this.numVertices = this.getInt(buffer);
+				this.mesh.animationFrames = [];
+				break;
+			case 'M3DX': this.mesh.vertices = this.getVertices(buffer, this.numVertices); break;
+			case 'M3AY': this.compressedAnimationVertices = this.getInt(buffer); break;
+			case 'M3AX': this.mesh.animationFrames.push(await this.getAnimatedVertices(await BiffParser.decompress(buffer, len), this.numVertices)); break;
+			case 'M3CY': this.compressedVertices = this.getInt(buffer); break;
+			case 'M3CX': this.mesh.vertices = this.getVertices(await BiffParser.decompress(buffer, len), this.numVertices); break;
+			case 'M3FN': this.numIndices = this.getInt(buffer); break;
+			case 'M3DI': this.mesh.indices = this.getUnsignedInt2s(buffer, this.numIndices); break;
+			case 'M3CJ': this.compressedIndices = this.getInt(buffer); break;
+			case 'M3CI': this.mesh.indices = this.getUnsignedInt2s(await BiffParser.decompress(buffer, len), this.numIndices); break;
+			case 'PIDB': this.data.depthBias = this.getFloat(buffer); break;
+			default:
+				this.getUnknownBlock(buffer, tag);
+				break;
 		}
 	}
 
-	private parseVertices(decompressedBuffer: Buffer, block: BiffBlock, num: number): Vertex3DNoTex2[] {
-		block = block || { pos: 0, len: decompressedBuffer.length };
+	private getVertices(decompressedBuffer: Buffer, num: number): Vertex3DNoTex2[] {
 		const vertices: Vertex3DNoTex2[] = [];
 		for (let i = 0; i < num; i++) {
-			vertices.push(Vertex3DNoTex2.load(decompressedBuffer, block, i, num));
+			vertices.push(Vertex3DNoTex2.get(decompressedBuffer, i));
 		}
 		return vertices;
 	}
 
-	private async parseAnimatedVertices(buffer: Buffer, block: BiffBlock, num: number): Promise<FrameData> {
-		return FrameData.load(await BiffParser.decompress(buffer, block), num);
+	private async getAnimatedVertices(buffer: Buffer, num: number): Promise<FrameData> {
+		return FrameData.get(buffer, num);
 	}
 }
 

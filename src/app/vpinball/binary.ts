@@ -22,12 +22,6 @@ import { logger } from '../common/logger';
 
 export class Binary extends BiffParser {
 
-	public static async load(buffer: Buffer, offset: number = 0): Promise<Binary> {
-		const binary = new Binary();
-		await binary._load(buffer, offset);
-		return binary;
-	}
-
 	public static from(data: any): Binary {
 		const binary = new Binary();
 		Object.assign(binary, data);
@@ -39,28 +33,19 @@ export class Binary extends BiffParser {
 	public szPath: string;
 	public cdata: number;
 	public pos: number;
+	public len: number;
 
-	public fromTag(buffer: Buffer, tag: string, offset: number, len: number) {
+	public async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<void> {
 		switch (tag) {
 			case 'NAME': this.szName = this.getString(buffer, len); break;
 			case 'INME': this.szInternalName = this.getString(buffer, len); break;
 			case 'PATH': this.szPath = this.getString(buffer, len); break;
 			case 'SIZE': this.cdata = this.getInt(buffer); break;
-			case 'DATA': this.pos = offset; break;
-			default: logger.warn(null,'Unknown tag "%s".', tag);
-		}
-	}
-
-	private async _load(buffer: Buffer, offset: number = 0): Promise<void> {
-		const blocks = BiffParser.parseBiff(buffer, offset);
-		for (const block of blocks) {
-			switch (block.tag) {
-				case 'NAME': this.szName = this.parseString(buffer, block, 4); break;
-				case 'INME': this.szInternalName = this.parseString(buffer, block, 4); break;
-				case 'PATH': this.szPath = this.parseString(buffer, block, 4); break;
-				case 'SIZE': this.cdata = this.parseInt(buffer, block); break;
-				case 'DATA': this.pos = block.pos; break;
-			}
+			case 'DATA':
+				this.pos = offset;
+				this.len = len;
+				break;
+			default: logger.warn(null,'[Binary.fromTag] Unknown tag "%s".', tag);
 		}
 	}
 }

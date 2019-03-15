@@ -299,7 +299,7 @@ export class Storage {
 	 * @param offset Where to start reading in the stream
 	 * @param next Callback taking in the data and returning the next position
 	 */
-	public async streamFiltered<T>(streamName: string, offset: number, next: (data: ReadResult) => number): Promise<void> {
+	public async streamFiltered<T>(streamName: string, offset: number, next: (data: ReadResult) => Promise<number>): Promise<void> {
 		const streamEntry = this.dirEntry.streams[streamName];
 		if (!streamEntry) {
 			throw new Error('No such stream "' + streamName + '" in document.');
@@ -342,7 +342,7 @@ export class Storage {
 				data: resultBuffer,
 				storageOffset: storageOffset,
 			};
-			const len = next(result);
+			const len = await next(result);
 			if (len <= 0) {
 				stream.emit('end');
 				return Promise.resolve(null);

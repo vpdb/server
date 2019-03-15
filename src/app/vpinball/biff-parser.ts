@@ -20,13 +20,13 @@
 import { inflate } from 'zlib';
 import { ReadResult } from '../common/ole-doc';
 
-export type OnBiffResult = (buffer: Buffer, tag: string, offset: number, len: number) => void;
+export type OnBiffResult = (buffer: Buffer, tag: string, offset: number, len: number) => Promise<void>;
 
 export class BiffParser {
 
 	public static stream(callback: OnBiffResult, opts: { streamedTags?: string[], nestedTags?: { [key: string]: OnBiffResult } } = {}) {
 		let nestedCallback:OnBiffResult = null;
-		return (result: ReadResult) => {
+		return async (result: ReadResult) => {
 			const data = result.data;
 			let len = data.readInt32LE(0);
 			let dataResult: Buffer;
@@ -55,7 +55,8 @@ export class BiffParser {
 				}
 				return -1;
 			}
-			(nestedCallback || callback)(dataResult, tag, result.storageOffset + relStartPos, len + relEndPos);
+			const cb = nestedCallback || callback;
+			await cb(dataResult, tag, result.storageOffset + relStartPos, len + relEndPos);
 			return len + 4;
 		};
 	}
@@ -137,9 +138,9 @@ export class BiffParser {
 		return blocks;
 	}
 
-	public static async decompress(buffer: Buffer, block: BiffBlock): Promise<Buffer> {
+	public static async decompress(buffer: Buffer, len: number): Promise<Buffer> {
 		return new Promise((resolve, reject) => {
-			inflate(buffer.slice(block.pos, block.pos + block.len), (err, result) => {
+			inflate(buffer.slice(0, len), (err, result) => {
 				if (err) {
 					return reject(err);
 				}
@@ -159,24 +160,18 @@ export class BiffParser {
 		return buffer.toString('utf8');
 	}
 
-	protected parseInt(buffer: Buffer, block: BiffBlock): number {
-		return buffer.readInt32LE(block.pos);
-	}
-
-	protected parseBool(buffer: Buffer, block: BiffBlock): boolean {
-		return buffer.readInt32LE(block.pos) > 0;
-	}
-
-	protected parseFloat(buffer: Buffer, block: BiffBlock): number {
-		return buffer.readFloatLE(block.pos);
-	}
-
-	protected parseString(buffer: Buffer, block: BiffBlock, offset: number = 0): string {
-		return buffer.slice(block.pos + offset, block.pos + block.len).toString('utf8');
-	}
-
 	protected getString(buffer: Buffer, len: number): string {
 		return buffer.slice(4, len).toString('utf8');
+	}
+
+	protected getWideString(buffer: Buffer, len: number): string {
+		const chars: number[] = [];
+		buffer.slice(4, len).forEach((v, i) => {
+			if (i % 2 === 0) {
+				chars.push(v);
+			}
+		});
+		return Buffer.from(chars).toString('utf8');
 	}
 
 	protected getInt(buffer: Buffer): number {
@@ -187,37 +182,24 @@ export class BiffParser {
 		return buffer.readFloatLE(0);
 	}
 
-	protected parseWideString(buffer: Buffer, block: BiffBlock): string {
-		const chars: number[] = [];
-		buffer.slice(block.pos + 4, block.pos + block.len).forEach((v, i) => {
-			if (i % 2 === 0) {
-				chars.push(v);
-			}
-		});
-		return Buffer.from(chars).toString('utf8');
+	protected getBool(buffer: Buffer): boolean {
+		return buffer.readInt32LE(0) > 0;
 	}
 
-	protected parseUnsignedInt2s(buffer: Buffer, block: BiffBlock, num: number): number[] {
-		block = block || { pos: 0, len: buffer.length };
+	protected getUnsignedInt2s(buffer: Buffer, num: number): number[] {
 		const intSize = 2;
-		if (block.len < num * intSize) {
-			throw new Error('Cannot parse ' + num * intSize + ' bytes of ' + num + ' unsigned ints with ' + buffer.length + ' bytes of buffer data.');
-		}
 		const ints: number[] = [];
 		for (let i = 0; i < num; i++) {
-			ints.push(buffer.readUInt16LE(block.pos + i * intSize));
+			ints.push(buffer.readUInt16LE(i * intSize));
 		}
 		return ints;
 	}
 
-	protected parseUnsignedInt4s(buffer: Buffer, block: BiffBlock, num: number): number[] {
+	protected getUnsignedInt4s(buffer: Buffer, num: number): number[] {
 		const intSize = 4;
-		if (block.len < num * intSize) {
-			throw new Error('Cannot parse ' + num * intSize + ' bytes of ' + num + ' unsigned ints with ' + buffer.length + ' bytes of buffer data.');
-		}
 		const ints: number[] = [];
 		for (let i = 0; i < num; i++) {
-			ints.push(buffer.readUInt32LE(block.pos + i * intSize));
+			ints.push(buffer.readUInt32LE(i * intSize));
 		}
 		return ints;
 	}

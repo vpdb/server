@@ -21,12 +21,13 @@ import { logger } from '../common/logger';
 import { settings } from '../common/settings';
 import { BiffParser } from './biff-parser';
 import { Binary } from './binary';
+import { Storage } from '../common/ole-doc';
 
 export class Texture extends BiffParser {
 
-	public static async load(buffer: Buffer, pos: number): Promise<Texture> {
+	public static async fromStorage(storage: Storage, itemName: string): Promise<Texture> {
 		const texture = new Texture();
-		await texture._load(buffer, pos);
+		await storage.streamFiltered(itemName, 0, Texture.createStreamHandler(texture));
 		return texture;
 	}
 
@@ -37,25 +38,11 @@ export class Texture extends BiffParser {
 		return texture;
 	}
 
-	public static createStreamHandler(texture: Texture) {
+	private static createStreamHandler(texture: Texture) {
 		texture.binary = new Binary();
 		return BiffParser.stream(texture.fromTag.bind(texture), {
 			nestedTags: { JPEG: texture.binary.fromTag.bind(texture.binary) }
 		});
-	}
-
-	public fromTag(buffer: Buffer, tag: string, offset: number, len: number) {
-		switch (tag) {
-			case 'NAME': this.szName = this.getString(buffer, len); break;
-			case 'INME': this.szInternalName = this.getString(buffer, len); break;
-			case 'PATH': this.szPath = this.getString(buffer, len); break;
-			case 'WDTH': this.width = this.getInt(buffer); break;
-			case 'HGHT': this.height = this.getInt(buffer); break;
-			case 'ALTV': this.alphaTestValue = this.getFloat(buffer); break;
-			case 'BITS': logger.warn(null, '[Texture.load] Ignoring BITS tag for %s at Image%s, implement when understood what it is.', this.szName, offset); break;
-			case 'LINK': logger.warn(null, '[Texture.load] Ignoring LINK tag for %s at Image%s, implement when understood what it is.', this.szName, offset); break;
-			default: logger.warn(null,'Unknown tag "%s".', tag);
-		}
 	}
 
 	public storageName: string;
@@ -84,33 +71,17 @@ export class Texture extends BiffParser {
 		return serialized;
 	}
 
-	private async _load(buffer: Buffer, pos: number): Promise<void> {
-		this.storageName = `Image${pos}`;
-		const blocks = BiffParser.parseBiff(buffer);
-		for (const block of blocks) {
-			switch (block.tag) {
-				case 'NAME':
-					if (!this.szName) {
-						this.szName = this.parseString(buffer, block, 4);
-					}
-					break;
-				case 'INME':
-					if (!this.szInternalName) {
-						this.szInternalName = this.parseString(buffer, block, 4);
-					}
-					break;
-				case 'PATH':
-					if (!this.szPath) {
-						this.szPath = this.parseString(buffer, block, 4);
-					}
-					break;
-				case 'WDTH': this.width = this.parseInt(buffer, block); break;
-				case 'HGHT': this.height = this.parseInt(buffer, block); break;
-				case 'ALTV': this.alphaTestValue = this.parseFloat(buffer, block); break;
-				case 'BITS': logger.warn(null, '[Texture.load] Ignoring BITS tag for %s at Image%s, implement when understood what it is.', this.szName, pos); break;
-				case 'LINK': logger.warn(null, '[Texture.load] Ignoring LINK tag for %s at Image%s, implement when understood what it is.', this.szName, pos); break;
-				case 'JPEG': this.binary = await Binary.load(buffer, block.pos + block.len); break;
-			}
+	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<void> {
+		switch (tag) {
+			case 'NAME': this.szName = this.getString(buffer, len); break;
+			case 'INME': this.szInternalName = this.getString(buffer, len); break;
+			case 'PATH': this.szPath = this.getString(buffer, len); break;
+			case 'WDTH': this.width = this.getInt(buffer); break;
+			case 'HGHT': this.height = this.getInt(buffer); break;
+			case 'ALTV': this.alphaTestValue = this.getFloat(buffer); break;
+			case 'BITS': logger.warn(null, '[Texture.fromTag] Ignoring BITS tag for %s at Image%s, implement when understood what it is.', this.szName, offset); break;
+			case 'LINK': logger.warn(null, '[Texture.fromTag] Ignoring LINK tag for %s at Image%s, implement when understood what it is.', this.szName, offset); break;
+			default: logger.warn(null,'[Texture.fromTag] Unknown tag "%s".', tag);
 		}
 	}
 }

@@ -121,11 +121,11 @@ export class Mesh {
 
 export class Vector3 {
 
-	public static load(buffer: Buffer, block: BiffBlock) {
+	public static get(buffer: Buffer) {
 		const v3 = new Vector3();
-		v3.x = buffer.readFloatLE(block.pos);
-		v3.y = buffer.readFloatLE(block.pos + 4);
-		v3.z = buffer.readFloatLE(block.pos + 8);
+		v3.x = buffer.readFloatLE(0);
+		v3.y = buffer.readFloatLE(4);
+		v3.z = buffer.readFloatLE(8);
 		return v3;
 	}
 
@@ -142,12 +142,9 @@ export class Vertex3DNoTex2 {
 
 	public static size = 32;
 
-	public static load(buffer: Buffer, block: BiffBlock, pos: number, num: number): Vertex3DNoTex2 {
-		const offset = block.pos + pos * Vertex3DNoTex2.size;
+	public static get(buffer: Buffer, pos: number): Vertex3DNoTex2 {
+		const offset = pos * Vertex3DNoTex2.size;
 		const vertex = new Vertex3DNoTex2();
-		if (block.len < offset + Vertex3DNoTex2.size) {
-			throw new Error('Cannot parse vertice number ' + pos + '/' + num + ' at position ' + offset + ' when buffer is only ' + buffer.length + ' bytes long.');
-		}
 		vertex.x = buffer.readFloatLE(offset);
 		vertex.y = buffer.readFloatLE(offset + 4);
 		vertex.z = buffer.readFloatLE(offset + 8);
@@ -190,7 +187,7 @@ export class Vertex3DNoTex2 {
 
 export class FrameData {
 
-	public static load(buffer: Buffer, numVertices: number): FrameData {
+	public static get(buffer: Buffer, numVertices: number): FrameData {
 		const frameData = new FrameData();
 		for (let i = 0; i < numVertices; i++) {
 			frameData.frameVerts.push(VertData.load(buffer, i * 24));
@@ -241,6 +238,13 @@ export class Vertex2D {
 		const v2 = new Vertex2D();
 		v2.x = buffer.readFloatLE(block.pos);
 		v2.y = buffer.readFloatLE(block.pos + 4);
+		return v2;
+	}
+
+	public static get(buffer: Buffer) {
+		const v2 = new Vertex2D();
+		v2.x = buffer.readFloatLE(0);
+		v2.y = buffer.readFloatLE(4);
 		return v2;
 	}
 

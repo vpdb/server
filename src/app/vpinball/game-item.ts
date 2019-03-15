@@ -83,12 +83,12 @@ export abstract class GameItem extends BiffParser {
 
 	public abstract getName(): string;
 
-	protected parseUnknownBlock(buffer: Buffer, block: BiffBlock) {
-		switch (block.tag) {
-			case 'LOCK': this.fLocked = this.parseBool(buffer,  block); break;
-			case 'LAYR': this.layerIndex = this.parseInt(buffer, block); break;
+	protected getUnknownBlock(buffer: Buffer, tag: string) {
+		switch (tag) {
+			case 'LOCK': this.fLocked = this.getBool(buffer); break;
+			case 'LAYR': this.layerIndex = this.getInt(buffer); break;
 			default:
-				logger.warn(null, '[GameItem.parseUnknownBlock]: Unknown block "%s".', block.tag);
+				logger.warn(null, '[GameItem.parseUnknownBlock]: Unknown block "%s".', tag);
 				break;
 		}
 	}

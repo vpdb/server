@@ -54,10 +54,14 @@ export function readableStream<T>(func: (stream: any, i: number) => Promise<T>, 
 					reading = false;
 					get(null, buffer);
 
-				}).catch(e => stream.emit('error', e).emit('end'));
+				}).catch(e => {
+					stream.emit('error', e);
+					stream.emit('end');
+				});
 
 			} catch (err) {
-				stream.emit('error', err).emit('end');
+				stream.emit('error', err);
+				stream.emit('end');
 			}
 		});
 	}

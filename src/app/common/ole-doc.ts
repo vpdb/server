@@ -365,21 +365,21 @@ export class Storage {
 	/**
 	 * Reads a given stream from a given storage.
 	 *
-	 * @param {string} key Key within the storage
+	 * @param key Key within the storage
+	 * @param offset Offset within the storage
+	 * @param bytesToRead Number of bytes to read, 0 for entire storage
 	 * @return {Promise<Buffer>} Read data
 	 */
-	public async read(key: string): Promise<Buffer> {
+	public async read(key: string, offset: number = 0, bytesToRead: number = 0): Promise<Buffer> {
 		return new Promise<Buffer>((resolve, reject) => {
-			const strm = this.stream(key);
+			const strm = this.stream(key, offset, bytesToRead);
 			const bufs: Buffer[] = [];
 			if (!strm) {
 				return reject(new Error('No such stream "' + key + '".'));
 			}
 			strm.on('error', reject);
 			strm.on('data', (buf: Buffer) => bufs.push(buf));
-			strm.on('end', () => {
-				resolve(Buffer.concat(bufs));
-			});
+			strm.on('end', () => resolve(Buffer.concat(bufs)));
 		});
 	}
 }

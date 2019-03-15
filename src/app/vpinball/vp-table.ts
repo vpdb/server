@@ -111,7 +111,7 @@ export class VpTable {
 		const stats: {[key: string]: number} = {};
 		for (let i = 0; i < numItems; i++) {
 			const itemName = `GameItem${i}`;
-			const itemData = await storage.read(itemName);
+			const itemData = await storage.read(itemName, 0, 4);
 			const itemType = itemData.readInt32LE(0);
 			switch (itemType) {
 				case GameItem.TypePrimitive:

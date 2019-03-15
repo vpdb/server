@@ -18,18 +18,19 @@
  */
 
 import { logger } from '../common/logger';
+import { Storage } from '../common/ole-doc';
 import { settings } from '../common/settings';
 import { FileUtil } from '../files/file.util';
-import { BiffBlock, BiffParser } from './biff-parser';
+import { BiffParser } from './biff-parser';
 import { FrameData, Mesh, Vector3, Vertex3DNoTex2 } from './common';
 import { GameItem } from './game-item';
-import { Storage } from '../common/ole-doc';
 
 export class PrimitiveItem extends GameItem {
 
 	public static async fromStorage(storage: Storage, itemName: string): Promise<PrimitiveItem> {
 		const primitiveItem = new PrimitiveItem();
-		await storage.streamFiltered(itemName, 4, BiffParser.stream(primitiveItem.fromTag.bind(primitiveItem)));
+		await storage.streamFiltered(itemName, 4, BiffParser
+			.stream((buffer, tag, offset, len) => primitiveItem.fromTag(buffer, tag, offset, len, storage, itemName)));
 		return primitiveItem;
 	}
 
@@ -108,7 +109,7 @@ export class PrimitiveItem extends GameItem {
 		return this.mesh.serializeToObj(description);
 	}
 
-	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<void> {
+	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number, storage: Storage, itemName: string): Promise<void> {
 		switch (tag) {
 			case 'PIID': this.pdata = this.getInt(buffer); break;
 			case 'VPOS': this.data.vPosition = Vector3.get(buffer); break;
@@ -156,18 +157,25 @@ export class PrimitiveItem extends GameItem {
 				break;
 			case 'M3DX': this.mesh.vertices = this.getVertices(buffer, this.numVertices); break;
 			case 'M3AY': this.compressedAnimationVertices = this.getInt(buffer); break;
-			case 'M3AX': this.mesh.animationFrames.push(await this.getAnimatedVertices(await BiffParser.decompress(buffer, len), this.numVertices)); break;
+			case 'M3AX': this.mesh.animationFrames.push(await this.getAnimatedVertices(await BiffParser.decompress(await this.getData(buffer, offset, len, storage, itemName), len), this.numVertices)); break;
 			case 'M3CY': this.compressedVertices = this.getInt(buffer); break;
-			case 'M3CX': this.mesh.vertices = this.getVertices(await BiffParser.decompress(buffer, len), this.numVertices); break;
+			case 'M3CX': this.mesh.vertices = this.getVertices(await BiffParser.decompress(await this.getData(buffer, offset, len, storage, itemName), len), this.numVertices); break;
 			case 'M3FN': this.numIndices = this.getInt(buffer); break;
 			case 'M3DI': this.mesh.indices = this.getUnsignedInt2s(buffer, this.numIndices); break;
 			case 'M3CJ': this.compressedIndices = this.getInt(buffer); break;
-			case 'M3CI': this.mesh.indices = this.getUnsignedInt2s(await BiffParser.decompress(buffer, len), this.numIndices); break;
+			case 'M3CI': this.mesh.indices = this.getUnsignedInt2s(await BiffParser.decompress(await this.getData(buffer, offset, len, storage, itemName), len), this.numIndices); break;
 			case 'PIDB': this.data.depthBias = this.getFloat(buffer); break;
 			default:
 				this.getUnknownBlock(buffer, tag);
 				break;
 		}
+	}
+
+	private async getData(buffer: Buffer, offset: number, len: number, storage: Storage, itemName: string): Promise<Buffer> {
+		if (buffer.length === len) {
+			return buffer;
+		}
+		return storage.read(itemName, offset, len);
 	}
 
 	private getVertices(decompressedBuffer: Buffer, num: number): Vertex3DNoTex2[] {

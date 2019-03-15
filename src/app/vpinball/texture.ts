@@ -18,15 +18,16 @@
  */
 
 import { logger } from '../common/logger';
+import { Storage } from '../common/ole-doc';
 import { settings } from '../common/settings';
 import { BiffParser } from './biff-parser';
 import { Binary } from './binary';
-import { Storage } from '../common/ole-doc';
 
 export class Texture extends BiffParser {
 
 	public static async fromStorage(storage: Storage, itemName: string): Promise<Texture> {
 		const texture = new Texture();
+		texture.storageName = itemName;
 		await storage.streamFiltered(itemName, 0, Texture.createStreamHandler(texture));
 		return texture;
 	}
@@ -41,7 +42,8 @@ export class Texture extends BiffParser {
 	private static createStreamHandler(texture: Texture) {
 		texture.binary = new Binary();
 		return BiffParser.stream(texture.fromTag.bind(texture), {
-			nestedTags: { JPEG: texture.binary.fromTag.bind(texture.binary) }
+			nestedTags: { JPEG: texture.binary.fromTag.bind(texture.binary) },
+			streamedTags: [ 'BITS' ],
 		});
 	}
 

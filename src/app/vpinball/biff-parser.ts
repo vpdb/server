@@ -22,10 +22,15 @@ import { ReadResult } from '../common/ole-doc';
 
 export type OnBiffResult = (buffer: Buffer, tag: string, offset: number, len: number) => Promise<void>;
 
+export interface BiffStreamOptions {
+	streamedTags?: string[];
+	nestedTags?: { [key: string]: OnBiffResult };
+}
+
 export class BiffParser {
 
-	public static stream(callback: OnBiffResult, opts: { streamedTags?: string[], nestedTags?: { [key: string]: OnBiffResult } } = {}) {
-		let nestedCallback:OnBiffResult = null;
+	public static stream(callback: OnBiffResult, opts: BiffStreamOptions = {}) {
+		let nestedCallback: OnBiffResult = null;
 		return async (result: ReadResult) => {
 			const data = result.data;
 			let len = data.readInt32LE(0);

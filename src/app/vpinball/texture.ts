@@ -81,7 +81,7 @@ export class Texture extends BiffParser {
 			case 'ALTV': this.alphaTestValue = this.getFloat(buffer); break;
 			case 'BITS': logger.warn(null, '[Texture.fromTag] Ignoring BITS tag for %s at Image%s, implement when understood what it is.', this.szName, offset); break;
 			case 'LINK': logger.warn(null, '[Texture.fromTag] Ignoring LINK tag for %s at Image%s, implement when understood what it is.', this.szName, offset); break;
-			default: logger.warn(null,'[Texture.fromTag] Unknown tag "%s".', tag);
+			default: logger.warn(null, '[Texture.fromTag] Unknown tag "%s".', tag);
 		}
 	}
 }

@@ -21,13 +21,14 @@ import { Storage } from '../common/ole-doc';
 import { settings } from '../common/settings';
 import { BiffParser } from './biff-parser';
 import { Vertex2D } from './common';
+import { DragPoint } from './dragpoint';
 import { GameItem } from './game-item';
 
 export class LightItem extends GameItem {
 
 	public static async fromStorage(storage: Storage, itemName: string): Promise<LightItem> {
 		const lightItem = new LightItem();
-		await storage.streamFiltered(itemName, 4, BiffParser.stream(lightItem.fromTag.bind(lightItem)));
+		await storage.streamFiltered(itemName, 4, LightItem.createStreamHandler(lightItem));
 		return lightItem;
 	}
 
@@ -35,6 +36,13 @@ export class LightItem extends GameItem {
 		const lightItem = new LightItem();
 		Object.assign(lightItem, data);
 		return lightItem;
+	}
+
+	private static createStreamHandler(lightItem: LightItem) {
+		lightItem.dragPoint = new DragPoint();
+		return BiffParser.stream(lightItem.fromTag.bind(lightItem), {
+			nestedTags: { DPNT: lightItem.dragPoint.fromTag.bind(lightItem.dragPoint) },
+		});
 	}
 
 	public wzName: string;
@@ -66,6 +74,7 @@ export class LightItem extends GameItem {
 	public meshRadius: number;
 	public modulateVsAdd: number;
 	public bulbHaloHeight: number;
+	public dragPoint: DragPoint;
 
 	private constructor() {
 		super();

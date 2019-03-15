@@ -234,13 +234,6 @@ export class VertData {
 
 export class Vertex2D {
 
-	public static load(buffer: Buffer, block: BiffBlock) {
-		const v2 = new Vertex2D();
-		v2.x = buffer.readFloatLE(block.pos);
-		v2.y = buffer.readFloatLE(block.pos + 4);
-		return v2;
-	}
-
 	public static get(buffer: Buffer) {
 		const v2 = new Vertex2D();
 		v2.x = buffer.readFloatLE(0);
@@ -258,11 +251,13 @@ export class Vertex2D {
 
 export class Vertex3D {
 
-	public static load(buffer: Buffer, block: BiffBlock) {
+	public static get(buffer: Buffer) {
 		const v3 = new Vertex3D();
-		v3.x = buffer.readFloatLE(block.pos);
-		v3.y = buffer.readFloatLE(block.pos + 4);
-		v3.z = buffer.readFloatLE(block.pos + 8);
+		v3.x = buffer.readFloatLE(0);
+		v3.y = buffer.readFloatLE(4);
+		if (buffer.length >= 12) {
+			v3.z = buffer.readFloatLE(8);
+		}
 		return v3;
 	}
 

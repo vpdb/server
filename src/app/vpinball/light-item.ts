@@ -21,12 +21,13 @@ import { BiffParser } from './biff-parser';
 import { Vertex2D } from './common';
 import { GameItem } from './game-item';
 import { settings } from '../common/settings';
+import { Storage } from '../common/ole-doc';
 
 export class LightItem extends GameItem {
 
-	public static async load(buffer: Buffer): Promise<LightItem> {
+	public static async fromStorage(storage: Storage, itemName: string): Promise<LightItem> {
 		const lightItem = new LightItem();
-		await lightItem._load(buffer);
+		await storage.streamFiltered(itemName, 4, BiffParser.stream(lightItem.fromTag.bind(lightItem)));
 		return lightItem;
 	}
 
@@ -86,43 +87,40 @@ export class LightItem extends GameItem {
 		};
 	}
 
-	private async _load(buffer: Buffer) {
-		const blocks = BiffParser.parseBiff(buffer, 4);
-		for (const block of blocks) {
-			switch (block.tag) {
-				case 'PIID': this.pdata = this.parseInt(buffer, block); break;
-				case 'VCEN': this.vCenter = Vertex2D.load(buffer, block); break;
-				case 'RADI': this.falloff = this.parseFloat(buffer, block); break;
-				case 'FAPO': this.falloffPower = this.parseFloat(buffer, block); break;
-				case 'STAT': this.state = this.parseInt(buffer, block); break;
-				case 'COLR': this.color = this.parseInt(buffer, block); break;
-				case 'COL2': this.color2 = this.parseInt(buffer, block); break;
-				case 'IMG1': this.szOffImage = this.parseString(buffer, block, 4); break;
-				case 'TMON': this.fTimerEnabled = this.parseBool(buffer, block); break;
-				case 'TMIN': this.TimerInterval = this.parseInt(buffer, block); break;
-				case 'SHAP': this.roundLight = this.parseBool(buffer, block); break;
-				case 'BPAT': this.rgblinkpattern = this.parseString(buffer, block, 4); break;
-				case 'BINT': this.blinkinterval = this.parseInt(buffer, block); break;
-				case 'BWTH': this.intensity = this.parseFloat(buffer, block); break;
-				case 'TRMS': this.transmissionScale = this.parseFloat(buffer, block); break;
-				case 'SURF': this.szSurface = this.parseString(buffer, block, 4); break;
-				case 'NAME': this.wzName = this.parseWideString(buffer, block); break;
-				case 'BGLS': this.fBackglass = this.parseBool(buffer, block); break;
-				case 'LIDB': this.depthBias = this.parseFloat(buffer, block); break;
-				case 'FASP': this.fadeSpeedUp = this.parseFloat(buffer, block); break;
-				case 'FASD': this.fadeSpeedDown = this.parseFloat(buffer, block); break;
-				case 'BULT': this.BulbLight = this.parseBool(buffer, block); break;
-				case 'IMMO': this.imageMode = this.parseBool(buffer, block); break;
-				case 'SHBM': this.showBulbMesh = this.parseBool(buffer, block); break;
-				case 'STBM': this.staticBulbMesh = this.parseBool(buffer, block); break;
-				case 'SHRB': this.showReflectionOnBall = this.parseBool(buffer, block); break;
-				case 'BMSC': this.meshRadius = this.parseFloat(buffer, block); break;
-				case 'BMVA': this.modulateVsAdd = this.parseFloat(buffer, block); break;
-				case 'BHHI': this.bulbHaloHeight = this.parseFloat(buffer, block); break;
-				default:
-					this.parseUnknownBlock(buffer, block);
-					break;
-			}
+	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<void> {
+		switch (tag) {
+			case 'PIID': this.pdata = this.getInt(buffer); break;
+			case 'VCEN': this.vCenter = Vertex2D.get(buffer); break;
+			case 'RADI': this.falloff = this.getFloat(buffer); break;
+			case 'FAPO': this.falloffPower = this.getFloat(buffer); break;
+			case 'STAT': this.state = this.getInt(buffer); break;
+			case 'COLR': this.color = this.getInt(buffer); break;
+			case 'COL2': this.color2 = this.getInt(buffer); break;
+			case 'IMG1': this.szOffImage = this.getString(buffer, len); break;
+			case 'TMON': this.fTimerEnabled = this.getBool(buffer); break;
+			case 'TMIN': this.TimerInterval = this.getInt(buffer); break;
+			case 'SHAP': this.roundLight = this.getBool(buffer); break;
+			case 'BPAT': this.rgblinkpattern = this.getString(buffer, len); break;
+			case 'BINT': this.blinkinterval = this.getInt(buffer); break;
+			case 'BWTH': this.intensity = this.getFloat(buffer); break;
+			case 'TRMS': this.transmissionScale = this.getFloat(buffer); break;
+			case 'SURF': this.szSurface = this.getString(buffer, len); break;
+			case 'NAME': this.wzName = this.getWideString(buffer, len); break;
+			case 'BGLS': this.fBackglass = this.getBool(buffer); break;
+			case 'LIDB': this.depthBias = this.getFloat(buffer); break;
+			case 'FASP': this.fadeSpeedUp = this.getFloat(buffer); break;
+			case 'FASD': this.fadeSpeedDown = this.getFloat(buffer); break;
+			case 'BULT': this.BulbLight = this.getBool(buffer); break;
+			case 'IMMO': this.imageMode = this.getBool(buffer); break;
+			case 'SHBM': this.showBulbMesh = this.getBool(buffer); break;
+			case 'STBM': this.staticBulbMesh = this.getBool(buffer); break;
+			case 'SHRB': this.showReflectionOnBall = this.getBool(buffer); break;
+			case 'BMSC': this.meshRadius = this.getFloat(buffer); break;
+			case 'BMVA': this.modulateVsAdd = this.getFloat(buffer); break;
+			case 'BHHI': this.bulbHaloHeight = this.getFloat(buffer); break;
+			default:
+				this.getUnknownBlock(buffer, tag);
+				break;
 		}
 	}
 }

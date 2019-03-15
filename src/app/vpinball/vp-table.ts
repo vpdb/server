@@ -26,7 +26,6 @@ import { GameItem } from './game-item';
 import { LightItem } from './light-item';
 import { PrimitiveItem } from './primitive-item';
 import { Texture } from './texture';
-import { BiffParser } from './biff-parser';
 
 export class VpTable {
 
@@ -93,7 +92,7 @@ export class VpTable {
 			const gameStorage = doc.storage('GameStg');
 
 			// load game data
-			this.gameData = await GameData.load(await gameStorage.read('GameData'));
+			this.gameData = await GameData.fromStorage(gameStorage, 'GameData');
 
 			// load items
 			const stats = await this.loadGameItems(gameStorage, this.gameData.numGameItems);
@@ -116,13 +115,13 @@ export class VpTable {
 			const itemType = itemData.readInt32LE(0);
 			switch (itemType) {
 				case GameItem.TypePrimitive:
-					const item = await PrimitiveItem.load(itemData);
+					const item = await PrimitiveItem.fromStorage(storage, itemName);
 					this.primitives[item.getName()] = item;
 					//console.log('Adding primitive %s (%s bytes)', item.getName(), itemData.length);
 					break;
 
 				case GameItem.TypeLight:
-					this.lights.push(await LightItem.load(itemData));
+					this.lights.push(await LightItem.fromStorage(storage, itemName));
 					break;
 
 				default:
@@ -141,8 +140,7 @@ export class VpTable {
 	private async loadTextures(storage: Storage, numItems: number): Promise<void> {
 		for (let i = 0; i < numItems; i++) {
 			const itemName = `Image${i}`;
-			const texture = new Texture();
-			await storage.streamFiltered(itemName, 0, Texture.createStreamHandler(texture));
+			const texture = await Texture.fromStorage(storage, itemName);
 			this.textures[texture.getName()] = texture;
 		}
 	}

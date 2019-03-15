@@ -17,11 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { Storage } from '../common/ole-doc';
+import { settings } from '../common/settings';
 import { BiffParser } from './biff-parser';
 import { Vertex2D } from './common';
 import { GameItem } from './game-item';
-import { settings } from '../common/settings';
-import { Storage } from '../common/ole-doc';
 
 export class LightItem extends GameItem {
 

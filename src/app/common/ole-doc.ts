@@ -235,41 +235,44 @@ export class Storage {
 		return new Storage(this.doc, this.dirEntry.storages[storageName]);
 	}
 
-	public stream(streamName: string) {
+	public stream(streamName: string, offset: number = 0, bytesToRead: number = 0) {
 		const streamEntry = this.dirEntry.streams[streamName];
 		if (!streamEntry) {
 			return null;
 		}
 
-		let bytes = streamEntry.size;
-
-		let allocationTable = this.doc.SAT;
-		let shortStream = false;
-		if (bytes < this.doc.header.shortStreamMax) {
-			shortStream = true;
-			allocationTable = this.doc.SSAT;
-		}
-
+		bytesToRead = bytesToRead || streamEntry.size;
+		const shortStream = streamEntry.size < this.doc.header.shortStreamMax;
+		const secSize = shortStream ? this.doc.header.shortSecSize : this.doc.header.secSize;
+		const allocationTable = shortStream ? this.doc.SSAT : this.doc.SAT;
 		const secIds = allocationTable.getSecIdChain(streamEntry.secId);
+		const secOffset = Math.floor(offset / secSize);
+		offset -= secOffset * secSize;
 
 		return readableStream(async (stream, i): Promise<Buffer> => {
+			try {
+				if (bytesToRead <= 0) {
+					stream.emit('end');
+					return Promise.resolve(null);
+				}
 
-			if (i >= secIds.length) {
+				const currentSec = i + secOffset;
+				const currentBytesToRead = Math.min(bytesToRead, secSize - offset);
+
+				let buffer: Buffer;
+				if (shortStream) {
+					buffer = await this.doc.readShortSector(secIds[currentSec], offset, currentBytesToRead);
+				} else {
+					buffer = await this.doc.readSector(secIds[currentSec], offset, currentBytesToRead);
+				}
+				bytesToRead -= currentBytesToRead;
+				offset = 0;
+				return buffer;
+
+			} catch (err) {
+				stream.emit('error', err);
 				stream.emit('end');
-				return Promise.resolve(null);
 			}
-
-			let buffer: Buffer;
-			if (shortStream) {
-				buffer = await this.doc.readShortSector(secIds[i]);
-			} else {
-				buffer = await this.doc.readSector(secIds[i]);
-			}
-			if (bytes - buffer.length < 0) {
-				buffer = buffer.slice(0, bytes);
-			}
-			bytes -= buffer.length;
-			return buffer;
 		});
 	}
 
@@ -312,35 +315,35 @@ export class Storage {
 		const secIds = allocationTable.getSecIdChain(streamEntry.secId);
 
 		let storageOffset = offset;
-		let secStart = Math.floor(offset / secSize);
+		let secOffset = Math.floor(offset / secSize);
 		let slidingBuffer: Buffer;
-		offset -= secStart * secSize;
+		offset -= secOffset * secSize;
 
 		const str = readableStream<ReadResult>(async (stream): Promise<ReadResult> => {
 
 			const nextSec = Math.floor(offset / secSize);
 
 			if (!slidingBuffer || nextSec > 1) { // if no buffer can be reused, fetch both
-				secStart += nextSec;
+				secOffset += nextSec;
 				if (shortStream) {
-					slidingBuffer = await this.doc.readShortSectors(secIds.slice(secStart, secStart + 2));
+					slidingBuffer = await this.doc.readShortSectors(secIds.slice(secOffset, secOffset + 2));
 				} else {
-					slidingBuffer = await this.doc.readSectors(secIds.slice(secStart, secStart + 2));
+					slidingBuffer = await this.doc.readSectors(secIds.slice(secOffset, secOffset + 2));
 				}
 
 			} else if (nextSec === 1) { // if last buffer can be reused as first buffer, fetch second and shift
-				secStart++;
+				secOffset++;
 				if (shortStream) {
-					slidingBuffer = Buffer.concat([slidingBuffer.slice(secSize), await this.doc.readShortSectors(secIds.slice(secStart + 1, secStart + 2))], secSize * 2);
+					slidingBuffer = Buffer.concat([slidingBuffer.slice(secSize), await this.doc.readShortSectors(secIds.slice(secOffset + 1, secOffset + 2))], secSize * 2);
 				} else {
-					slidingBuffer = Buffer.concat([slidingBuffer.slice(secSize), await this.doc.readSectors(secIds.slice(secStart + 1, secStart + 2))], secSize * 2);
+					slidingBuffer = Buffer.concat([slidingBuffer.slice(secSize), await this.doc.readSectors(secIds.slice(secOffset + 1, secOffset + 2))], secSize * 2);
 				}
 			}
 			offset -= nextSec * secSize;
 			const resultBuffer = slidingBuffer.slice(offset);
 			const result = {
 				data: resultBuffer,
-				storageOffset: storageOffset,
+				storageOffset,
 			};
 			const len = await next(result);
 			if (len <= 0) {
@@ -407,9 +410,9 @@ export class OleCompoundDoc extends EventEmitter {
 		return this.rootStorage.storage(storageName);
 	}
 
-	public stream(streamName: string) {
+	public stream(streamName: string, offset: number = 0, len: number = -1) {
 		this._assertLoaded();
-		return this.rootStorage.stream(streamName);
+		return this.rootStorage.stream(streamName, offset, len);
 	}
 
 	public async read(): Promise<void> {
@@ -434,36 +437,56 @@ export class OleCompoundDoc extends EventEmitter {
 		return buffer;
 	}
 
-	public async readSector(secId: number) {
+	public async readSector(secId: number, offset: number = 0, bytesToRead: number = 0) {
 		this._assertLoaded();
-		return this.readSectors([secId]);
+		return this.readSectors([secId], offset, bytesToRead);
 	}
 
-	public async readSectors(secIds: number[]): Promise<Buffer> {
+	public async readSectors(secIds: number[], offset: number = 0, bytesToRead: number = 0): Promise<Buffer> {
+		bytesToRead = Math.min(secIds.length * this.header.secSize, bytesToRead || secIds.length * this.header.secSize);
 		this._assertLoaded();
-		const buffer = Buffer.alloc(secIds.length * this.header.secSize);
+		const buffer = Buffer.alloc(bytesToRead);
 		let i = 0;
-		while (i < secIds.length) {
-			const bufferOffset = i * this.header.secSize;
-			const fileOffset = this._getFileOffsetForSec(secIds[i]);
-			await this._read(buffer, bufferOffset, this.header.secSize, fileOffset);
+		let bufferOffset = 0;
+		while (i < secIds.length && bytesToRead > 0) {
+			if (offset >= this.header.secSize) {
+				offset -= this.header.secSize;
+				i++;
+				continue;
+			}
+			const fileLen = Math.min(this.header.secSize - offset, bytesToRead);
+			const fileOffset = offset + this._getFileOffsetForSec(secIds[i]);
+			await this._read(buffer, bufferOffset, fileLen, fileOffset);
+			bytesToRead -= fileLen;
+			bufferOffset += fileLen;
+			offset = 0;
 			i++;
 		}
 		return buffer;
 	}
 
-	public async readShortSector(secId: number): Promise<Buffer> {
+	public async readShortSector(secId: number, offset: number = 0, bytesToRead: number = 0): Promise<Buffer> {
 		this._assertLoaded();
-		return this.readShortSectors([secId]);
+		return this.readShortSectors([secId], offset, bytesToRead);
 	}
 
-	public async readShortSectors(secIds: number[]): Promise<Buffer> {
-		const buffer = Buffer.alloc(secIds.length * this.header.shortSecSize);
+	public async readShortSectors(secIds: number[], offset: number = 0, bytesToRead: number = 0): Promise<Buffer> {
+		bytesToRead = Math.min(secIds.length * this.header.shortSecSize, bytesToRead || secIds.length * this.header.shortSecSize);
+		const buffer = Buffer.alloc(bytesToRead);
 		let i = 0;
-		while (i < secIds.length) {
-			const bufferOffset = i * this.header.shortSecSize;
-			const fileOffset = this._getFileOffsetForShortSec(secIds[i]);
-			await this._read(buffer, bufferOffset, this.header.shortSecSize, fileOffset);
+		let bufferOffset = 0;
+		while (i < secIds.length && bytesToRead > 0) {
+			if (offset >= this.header.shortSecSize) {
+				offset -= this.header.shortSecSize;
+				i++;
+				continue;
+			}
+			const fileOffset = offset + this._getFileOffsetForShortSec(secIds[i]);
+			const fileLen = Math.min(this.header.shortSecSize - offset, bytesToRead);
+			await this._read(buffer, bufferOffset, fileLen, fileOffset);
+			bytesToRead -= fileLen;
+			bufferOffset += fileLen;
+			offset = 0;
 			i++;
 		}
 		return buffer;
@@ -602,8 +625,8 @@ export class OleCompoundDoc extends EventEmitter {
 }
 
 export interface ReadResult {
-	data: Buffer,
-	storageOffset: number,
+	data: Buffer;
+	storageOffset: number;
 }
 
 /* tslint:enable:no-bitwise */

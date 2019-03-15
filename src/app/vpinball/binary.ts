@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { BiffParser } from './biff-parser';
 import { logger } from '../common/logger';
+import { BiffParser } from './biff-parser';
 
 export class Binary extends BiffParser {
 
@@ -45,7 +45,7 @@ export class Binary extends BiffParser {
 				this.pos = offset;
 				this.len = len;
 				break;
-			default: logger.warn(null,'[Binary.fromTag] Unknown tag "%s".', tag);
+			default: logger.warn(null, '[Binary.fromTag] Unknown tag "%s".', tag);
 		}
 	}
 }

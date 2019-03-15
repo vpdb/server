@@ -110,9 +110,9 @@ export class VpApi extends Api {
 	}
 
 	/**
-	 * Returns the mesh of a primitive.
+	 * Returns texture map inside of an .vpt file.
 	 *
-	 * @see GET /v1/vp/:fileId/meshes/:meshName.obj
+	 * @see GET /v1/vp/:fileId/textures/:textureName
 	 * @param {Context} ctx Koa context
 	 */
 	public async getTexture(ctx: Context) {
@@ -138,17 +138,17 @@ export class VpApi extends Api {
 		}
 
 		const doc = new OleCompoundDoc(vptFile.getPath(ctx.state));
-		try {
-			await doc.read();
-			const biffData = await doc.storage('GameStg').read(texture.storageName);
+		await doc.read();
 
-			ctx.status = 200;
-			ctx.set('Content-Type', 'image/png'); // pre-analyze and read from data
-			ctx.response.body = biffData.slice(texture.binary.pos, texture.binary.pos + texture.binary.cdata);
-
-		} finally {
-			await doc.close();
-		}
+		ctx.status = 200;
+		ctx.respond = false;
+		ctx.set('Content-Type', 'image/png'); // pre-analyze and read from data
+		doc
+			.storage('GameStg')
+			.stream(texture.storageName, texture.binary.pos, texture.binary.len)
+			.on('end', () => doc.close())
+			.on('error', () => doc.close())
+			.pipe(ctx.res);
 	}
 
 	private async getVpFile(ctx: Context): Promise<FileDocument> {

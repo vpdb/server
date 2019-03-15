@@ -18,9 +18,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { BiffBlock, BiffParser } from './biff-parser';
-import { Vertex2D, Vertex3D } from './common';
 import { Storage } from '../common/ole-doc';
+import { BiffParser } from './biff-parser';
+import { Vertex2D, Vertex3D } from './common';
 
 export class GameData extends BiffParser {
 
@@ -323,13 +323,6 @@ export class GameData extends BiffParser {
 }
 
 class LightSource {
-
-	public static load(buffer: Buffer, block: BiffBlock) {
-		const v2 = new Vertex2D();
-		v2.x = buffer.readFloatLE(block.pos);
-		v2.y = buffer.readFloatLE(block.pos + 4);
-		return v2;
-	}
 
 	public static from(data: any): Vertex2D {
 		return Object.assign(new Vertex2D(), data);

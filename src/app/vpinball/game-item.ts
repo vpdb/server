@@ -18,7 +18,7 @@
  */
 
 import { logger } from '../common/logger';
-import { BiffBlock, BiffParser } from './biff-parser';
+import { BiffParser } from './biff-parser';
 
 export abstract class GameItem extends BiffParser {
 

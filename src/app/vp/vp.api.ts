@@ -28,8 +28,15 @@ import { Mesh } from '../vpinball/common';
 import { bulbLightMess } from '../vpinball/meshes/bulb-light-mess';
 import { Texture } from '../vpinball/texture';
 import { VpTable } from '../vpinball/vp-table';
+import { GameData } from '../vpinball/game-data';
+import { GameItem } from '../vpinball/game-item';
+import { PrimitiveItem } from '../vpinball/primitive-item';
+import { LightItem } from '../vpinball/light-item';
 
 export class VpApi extends Api {
+
+	private static cacheObj = false;
+	private static cacheVpx = false;
 
 	/**
 	 * Returns all primitives of the vpx file
@@ -42,20 +49,22 @@ export class VpApi extends Api {
 		const vptFile = await this.getVpFile(ctx);
 		const vpTable = await this.getVpTable(ctx, vptFile);
 
-		// cache texture info
-		for (const textureName of Object.keys(vpTable.textures)) {
-			const redisKey = `api-cache-vpt:texture:${vptFile.id}:${textureName}`;
-			await state.redis.set(redisKey, JSON.stringify(vpTable.getTexture(textureName)));
-		}
+		if (VpApi.cacheVpx) {
+			// cache texture info
+			for (const textureName of Object.keys(vpTable.textures)) {
+				const redisKey = `api-cache-vpt:texture:${vptFile.id}:${textureName}`;
+				await state.redis.set(redisKey, JSON.stringify(vpTable.getTexture(textureName)));
+			}
 
-		// cache primitives
-		for (const primitiveName of Object.keys(vpTable.primitives)) {
-			const redisKey = `api-cache-vpt:mesh:${vptFile.id}:${primitiveName}`;
-			await state.redis.set(redisKey, vpTable.getPrimitive(primitiveName).serializeToObj());
+			// cache primitives
+			for (const primitiveName of Object.keys(vpTable.primitives)) {
+				const redisKey = `api-cache-vpt:mesh:${vptFile.id}:${primitiveName}`;
+				await state.redis.set(redisKey, vpTable.getPrimitive(primitiveName).serializeToObj());
+			}
 		}
 
 		// tslint:disable-next-line:no-console
-		console.log(inspect(vpTable.getPrimitive('Joker'), { colors: true, depth: null }));
+		//console.log(inspect(vpTable.getPrimitive('Joker'), { colors: true, depth: null }));
 
 		this.success(ctx, vpTable.serialize(vptFile.id), 200);
 	}
@@ -70,16 +79,41 @@ export class VpApi extends Api {
 
 		const vptFile = await this.getVpFile(ctx);
 
-		const redisKey = `api-cache-vpt:mesh:${vptFile.id}:${ctx.params.meshName}`;
-		let obj = await state.redis.get(redisKey);
-		if (!obj) {
-			const vpTable = await this.getVpTable(ctx, vptFile);
-			const mesh = vpTable.getPrimitive(ctx.params.meshName);
-			if (!mesh) {
+		let obj: string;
+		if (VpApi.cacheObj) {
+			const redisKey = `api-cache-vpt:mesh:${vptFile.id}:${ctx.params.meshName}`;
+			obj = await state.redis.get(redisKey);
+			if (!obj) {
+				const vpTable = await this.getVpTable(ctx, vptFile);
+				const mesh = vpTable.getPrimitive(ctx.params.meshName);
+				if (!mesh) {
+					throw new ApiError('No primitive named "%s" in this table!', ctx.params.meshName).status(404);
+				}
+				obj = mesh.serializeToObj();
+				await state.redis.set(redisKey, obj);
+			}
+		} else {
+			const doc = new OleCompoundDoc(vptFile.getPath(ctx.state));
+			await doc.read();
+			const gameStorage = doc.storage('GameStg');
+			const gameData = await GameData.fromStorage(gameStorage, 'GameData');
+			let primitive: PrimitiveItem;
+			for (let i = 0; i < gameData.numGameItems; i++) {
+				const itemName = `GameItem${i}`;
+				const itemData = await gameStorage.read(itemName, 0, 4);
+				const itemType = itemData.readInt32LE(0);
+				if (itemType !== GameItem.TypePrimitive) {
+					continue;
+				}
+				primitive = await PrimitiveItem.fromStorage(gameStorage, itemName);
+				if (primitive.getName() === ctx.params.meshName) {
+					break;
+				}
+			}
+			if (!primitive) {
 				throw new ApiError('No primitive named "%s" in this table!', ctx.params.meshName).status(404);
 			}
-			obj = mesh.serializeToObj();
-			await state.redis.set(redisKey, obj);
+			obj = primitive.serializeToObj();
 		}
 
 		ctx.status = 200;
@@ -118,27 +152,42 @@ export class VpApi extends Api {
 	public async getTexture(ctx: Context) {
 
 		const vptFile = await this.getVpFile(ctx);
+		const doc = new OleCompoundDoc(vptFile.getPath(ctx.state));
+		await doc.read();
 
-		const redisKey = `api-cache-vpt:texture:${vptFile.id}:${ctx.params.textureName}`;
 		let texture: Texture;
-		const textureInfo = await state.redis.get(redisKey);
-		if (!textureInfo) {
-			const vpTable = await this.getVpTable(ctx, vptFile);
-			texture = vpTable.getTexture(ctx.params.textureName);
+		if (VpApi.cacheVpx) {
+			const redisKey = `api-cache-vpt:texture:${vptFile.id}:${ctx.params.textureName}`;
+			const textureInfo = await state.redis.get(redisKey);
+			if (!textureInfo) {
+				const vpTable = await this.getVpTable(ctx, vptFile);
+				texture = vpTable.getTexture(ctx.params.textureName);
+				if (!texture) {
+					throw new ApiError('No texture named "%s" in this table!').status(404);
+				}
+				await state.redis.set(redisKey, JSON.stringify(texture));
+			} else {
+				texture = JSON.parse(textureInfo);
+			}
+
+		} else {
+			const gameStorage = doc.storage('GameStg');
+			const gameData = await GameData.fromStorage(gameStorage, 'GameData');
+			for (let i = 0; i < gameData.numTextures; i++) {
+				const itemName = `Image${i}`;
+				texture = await Texture.fromStorage(gameStorage, itemName);
+				if (texture.getName() === ctx.params.textureName) {
+					break;
+				}
+			}
 			if (!texture) {
 				throw new ApiError('No texture named "%s" in this table!').status(404);
 			}
-			await state.redis.set(redisKey, JSON.stringify(texture));
-		} else {
-			texture = JSON.parse(textureInfo);
 		}
 
 		if (!texture.binary) {
 			throw new ApiError('Texture does not contain any data.').status(400);
 		}
-
-		const doc = new OleCompoundDoc(vptFile.getPath(ctx.state));
-		await doc.read();
 
 		ctx.status = 200;
 		ctx.respond = false;
@@ -168,13 +217,17 @@ export class VpApi extends Api {
 
 	private async getVpTable(ctx: Context, vptFile: FileDocument): Promise<VpTable> {
 		let vpTable: VpTable;
-		const redisKey = `api-cache-vpt:data:${vptFile.id}`;
-		const cachedVpTable = await state.redis.get(redisKey);
-		if (!cachedVpTable) {
-			vpTable = await VpTable.load(vptFile.getPath(ctx.state));
-			await state.redis.set(redisKey, JSON.stringify(vpTable));
+		if (VpApi.cacheVpx) {
+			const redisKey = `api-cache-vpt:data:${vptFile.id}`;
+			const cachedVpTable = await state.redis.get(redisKey);
+			if (!cachedVpTable) {
+				vpTable = await VpTable.load(vptFile.getPath(ctx.state));
+				await state.redis.set(redisKey, JSON.stringify(vpTable));
+			} else {
+				vpTable = VpTable.from(JSON.parse(cachedVpTable));
+			}
 		} else {
-			vpTable = VpTable.from(JSON.parse(cachedVpTable));
+			vpTable = await VpTable.load(vptFile.getPath(ctx.state));
 		}
 		return vpTable;
 	}

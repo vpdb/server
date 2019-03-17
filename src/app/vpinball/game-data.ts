@@ -27,7 +27,7 @@ export class GameData extends BiffParser {
 	public static async fromStorage(storage: Storage, itemName: string): Promise<GameData> {
 		const gameData = new GameData();
 		await storage.streamFiltered(itemName, 0, BiffParser.stream(gameData.fromTag.bind(gameData), {
-			streamedTags: [ 'CODE' ]
+			streamedTags: [ 'CODE' ],
 		}));
 		return gameData;
 	}
@@ -415,6 +415,23 @@ class Material {
 
 	public szName: string;
 	public fWrapLighting: number;
+
+	/**
+	 * Roughness seems to be mapped to the "specular" exponent.
+	 *
+	 * Comment when importing:
+	 *
+	 * > normally a wavefront material specular exponent ranges from 0..1000.
+	 * > but our shininess calculation differs from the way how e.g. Blender is calculating the specular exponent
+	 * > starting from 0.5 and use only half of the exponent resolution to get a similar look
+	 *
+	 * Then the roughness is converted like this:
+	 * > mat->m_fRoughness = 0.5f + (tmp / 2000.0f);
+	 *
+	 * When sending to the render device, the roughness is defined like that:
+	 * > fRoughness = exp2f(10.0f * mat->m_fRoughness + 1.0f); // map from 0..1 to 2..2048
+	 *
+	 */
 	public fRoughness: number;
 	public fGlossyImageLerp: number;
 	public fThickness: number;
@@ -443,9 +460,9 @@ class Material {
 			edge: this.fEdge,
 			//edge_alpha: this.fEdgeAlpha,
 			opacity: this.fOpacity,
-			base_color: this.cBase,
-			glossy_color: this.cGlossy,
-			clearcoat_color: this.cClearcoat,
+			base_color: BiffParser.bgrToRgb(this.cBase),
+			glossy_color: BiffParser.bgrToRgb(this.cGlossy),
+			clearcoat_color: BiffParser.bgrToRgb(this.cClearcoat),
 			is_metal: this.bIsMetal,
 			is_opacity_enabled: this.bOpacityActive,
 		};

@@ -88,6 +88,15 @@ export class BiffParser {
 		return buffer.toString('utf8');
 	}
 
+	public static bgrToRgb(bgr: number) {
+		/* tslint:disable:no-bitwise */
+		const r = (bgr & 0xff) << 16;
+		const g = bgr & 0xff00;
+		const b = (bgr & 0xff0000) >> 16;
+		/* tslint:enable:no-bitwise */
+		return r + g + b;
+	}
+
 	protected getString(buffer: Buffer, len: number): string {
 		return buffer.slice(4, len).toString('utf8');
 	}

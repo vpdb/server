@@ -103,8 +103,8 @@ export class LightItem extends GameItem {
 			case 'RADI': this.falloff = this.getFloat(buffer); break;
 			case 'FAPO': this.falloffPower = this.getFloat(buffer); break;
 			case 'STAT': this.state = this.getInt(buffer); break;
-			case 'COLR': this.color = this.getInt(buffer); break;
-			case 'COL2': this.color2 = this.getInt(buffer); break;
+			case 'COLR': this.color = BiffParser.bgrToRgb(this.getInt(buffer)); break;
+			case 'COL2': this.color2 = BiffParser.bgrToRgb(this.getInt(buffer)); break;
 			case 'IMG1': this.szOffImage = this.getString(buffer, len); break;
 			case 'TMON': this.fTimerEnabled = this.getBool(buffer); break;
 			case 'TMIN': this.TimerInterval = this.getInt(buffer); break;

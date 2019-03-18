@@ -12327,6 +12327,11 @@
 				"thenify": ">= 3.1.0 < 4"
 			}
 		},
+		"three": {
+			"version": "0.102.1",
+			"resolved": "https://registry.npmjs.org/three/-/three-0.102.1.tgz",
+			"integrity": "sha512-btHBdww/Es4vdBkB2GjTE9mpj0vy8tgtxkX7ne7uxySXV8zoGxWJv1N88BydxnCqvAfmD4ZUTqPeESO7oDgeOQ=="
+		},
 		"through": {
 			"version": "2.3.8",
 			"resolved": "https://registry.npmjs.org/through/-/through-2.3.8.tgz",

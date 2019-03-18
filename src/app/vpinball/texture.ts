@@ -42,8 +42,14 @@ export class Texture extends BiffParser {
 	private static createStreamHandler(texture: Texture) {
 		texture.binary = new Binary();
 		return BiffParser.stream(texture.fromTag.bind(texture), {
-			nestedTags: { JPEG: texture.binary.fromTag.bind(texture.binary) },
-			streamedTags: [ 'BITS' ],
+			nestedTags: {
+				JPEG: {
+					onStart: () => new Binary(),
+					onTag: binary => binary.fromTag.bind(binary),
+					onEnd: binary => texture.binary = binary,
+				}
+			},
+			streamedTags: ['BITS'],
 		});
 	}
 

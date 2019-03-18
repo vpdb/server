@@ -17,107 +17,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-export class Mesh {
+import { Vector3 as ThreeVector3, Vector2 as ThreeVector2, Vector } from 'three';
 
-	public static from(data: any): Mesh {
-		const mesh = new Mesh();
-		for (const vertex of data.vertices) {
-			mesh.vertices.push(Vertex3DNoTex2.from(vertex));
-		}
-		for (const animationFrame of data.animationFrames) {
-			mesh.animationFrames.push(FrameData.from(animationFrame));
-		}
-		mesh.indices = data.indices;
-		return mesh;
-	}
-
-	public static fromArray(vertices: number[][], indices: number[]): Mesh {
-		const mesh = new Mesh();
-		for (const vertex of vertices) {
-			mesh.vertices.push(Vertex3DNoTex2.fromArray(vertex));
-		}
-		mesh.indices = indices;
-		return mesh;
-	}
-
-	private static exportPrecision = 6;
-
-	public vertices: Vertex3DNoTex2[] = [];
-	public animationFrames: FrameData[] = [];
-	public indices: number[] = [];
-	private faceIndexOffset = 0;
-
-	public serializeToObj(description: string): string {
-
-		const objFile: string[] = [];
-		//const mtlFile: string[] = [];
-
-		//this._writeHeader(objFile, mtlFile, basename(fileName) + '.wt');
-		this._writeObjectName(objFile, description);
-		this._writeVertexInfo(objFile);
-		this._writeFaceInfoLong(objFile);
-
-		return objFile.join('\n');
-	}
-
-	private _writeHeader(objFile: string[], mtlFile: string[], mtlFilename: string): void {
-		mtlFile.push(`# Visual Pinball table mat file`);
-
-		objFile.push(`# Visual Pinball table OBJ file`);
-		objFile.push(`mtllib ${mtlFilename}`);
-		objFile.push(`# numVerts: ${this.vertices.length} numFaces: ${this.indices.length}`);
-	}
-
-	private _writeObjectName(objFile: string[], objName: string): void {
-		objFile.push(`o ${objName}`);
-	}
-
-	private _writeVertexInfo(objFile: string[]): void {
-		for (const vert of this.vertices) {
-			objFile.push(`v ${vert.x.toFixed(Mesh.exportPrecision)} ${vert.y.toFixed(Mesh.exportPrecision)} ${(-vert.z).toFixed(Mesh.exportPrecision)}`);
-		}
-		for (const vert of this.vertices) {
-			let tu = vert.tu;
-			let tv = 1 - vert.tv;
-			if (tu !== tu) {
-				tu = 0.0;
-			}
-			if (tv !== tv) {
-				tv = 0.0;
-			}
-			objFile.push(`vt ${tu.toFixed(Mesh.exportPrecision)} ${tv.toFixed(Mesh.exportPrecision)}`);
-		}
-		for (const vert of this.vertices) {
-			let nx = vert.nx;
-			let ny = vert.ny;
-			let nz = vert.nz;
-			if (nx !== nx) {
-				nx = 0.0;
-			}
-			if (ny !== ny) {
-				ny = 0.0;
-			}
-			if (nz !== nz) {
-				nz = 0.0;
-			}
-			objFile.push(`vn ${nx.toFixed(Mesh.exportPrecision)} ${ny.toFixed(Mesh.exportPrecision)} ${(-nz).toFixed(Mesh.exportPrecision)}`);
-		}
-	}
-
-	private _writeFaceInfoLong(objFile: string[]): void {
-		const faces = this.indices;
-		for (let i = 0; i < this.indices.length; i += 3) {
-			const values = [
-				[faces[i + 2] + 1 + this.faceIndexOffset, faces[i + 2] + 1 + this.faceIndexOffset, faces[i + 2] + 1 + this.faceIndexOffset],
-				[faces[i + 1] + 1 + this.faceIndexOffset, faces[i + 1] + 1 + this.faceIndexOffset, faces[i + 1] + 1 + this.faceIndexOffset],
-				[faces[i] + 1 + this.faceIndexOffset, faces[i] + 1 + this.faceIndexOffset, faces[i] + 1 + this.faceIndexOffset],
-			];
-			objFile.push(`f ` + values.map(v => v.join('/')).join(' '));
-		}
-	}
-}
-
-export class Vector3 {
+export class Vector3 extends ThreeVector3 {
 
 	public static get(buffer: Buffer) {
 		const v3 = new Vector3();
@@ -130,10 +32,6 @@ export class Vector3 {
 	public static from(data: any): Vector3 {
 		return Object.assign(new Vector3(), data);
 	}
-
-	public x: number;
-	public y: number;
-	public z: number;
 }
 
 export class Vertex3DNoTex2 {
@@ -230,7 +128,9 @@ export class VertData {
 	public nz: number;
 }
 
-export class Vertex2D {
+export class Vertex2D extends ThreeVector2 implements IVertex {
+
+	public readonly isVector3 = false;
 
 	public static get(buffer: Buffer) {
 		const v2 = new Vertex2D();
@@ -242,12 +142,11 @@ export class Vertex2D {
 	public static from(data: any): Vertex2D {
 		return Object.assign(new Vertex2D(), data);
 	}
-
-	public x: number;
-	public y: number;
 }
 
-export class Vertex3D {
+export class Vertex3D extends ThreeVector3 {
+
+	public readonly isVector2 = false;
 
 	public static get(buffer: Buffer) {
 		const v3 = new Vertex3D();
@@ -263,7 +162,47 @@ export class Vertex3D {
 		return Object.assign(new Vertex3D(), data);
 	}
 
-	public x: number;
-	public y: number;
-	public z: number;
+	public xy(): Vertex2D {
+		return new Vertex2D(this.x, this.y);
+	}
+
+	public static getRotatedAxis(angle: number, axis: Vertex3D, temp: Vertex3D): Vertex3D {
+		const u = axis.clone();
+		u.normalize();
+
+		const sinAngle = Math.sin((Math.PI / 180.0)*angle);
+		const cosAngle = Math.cos((Math.PI / 180.0)*angle);
+		const oneMinusCosAngle = 1.0 - cosAngle;
+
+		const rotMatrixRow0 = new Vertex3D();
+		const rotMatrixRow1 = new Vertex3D();
+		const rotMatrixRow2 = new Vertex3D();
+
+		rotMatrixRow0.x = u.x*u.x + cosAngle*(1.0 - u.x*u.x);
+		rotMatrixRow0.y = u.x*u.y*oneMinusCosAngle - sinAngle*u.z;
+		rotMatrixRow0.z = u.x*u.z*oneMinusCosAngle + sinAngle*u.y;
+
+		rotMatrixRow1.x = u.x*u.y*oneMinusCosAngle + sinAngle*u.z;
+		rotMatrixRow1.y = u.y*u.y + cosAngle*(1.0 - u.y*u.y);
+		rotMatrixRow1.z = u.y*u.z*oneMinusCosAngle - sinAngle*u.x;
+
+		rotMatrixRow2.x = u.x*u.z*oneMinusCosAngle - sinAngle*u.y;
+		rotMatrixRow2.y = u.y*u.z*oneMinusCosAngle + sinAngle*u.x;
+		rotMatrixRow2.z = u.z*u.z + cosAngle*(1.0 - u.z*u.z);
+
+		return new Vertex3D(temp.dot(rotMatrixRow0), temp.dot(rotMatrixRow1), temp.dot(rotMatrixRow2));
+	}
+
+}
+
+export class RenderVertex extends Vertex2D {
+	public fSmooth: boolean;
+	public fSlingshot: boolean;
+	public fControlPoint: boolean; // Whether this point was a control point on the curve
+	public padd: boolean;
+}
+
+export interface IVertex extends Vector {
+	isVector2: boolean;
+	isVector3: boolean;
 }

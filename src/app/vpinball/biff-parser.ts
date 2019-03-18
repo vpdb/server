@@ -21,16 +21,22 @@ import { inflate } from 'zlib';
 import { ReadResult } from '../common/ole-doc';
 
 export type OnBiffResult = (buffer: Buffer, tag: string, offset: number, len: number) => Promise<void>;
+export type OnBiffResultStream<T> = {
+	onStart: () => T;
+	onTag: (item: T) => OnBiffResult;
+	onEnd: (item: T) => void;
+};
 
 export interface BiffStreamOptions {
 	streamedTags?: string[];
-	nestedTags?: { [key: string]: OnBiffResult };
+	nestedTags?: { [key: string]: OnBiffResultStream<any> };
 }
 
 export class BiffParser {
 
 	public static stream(callback: OnBiffResult, opts: BiffStreamOptions = {}) {
-		let nestedCallback: OnBiffResult = null;
+		let nested: OnBiffResultStream<any> = null;
+		let nestedItem: any = null;
 		return async (result: ReadResult) => {
 			const data = result.data;
 			let len = data.readInt32LE(0);
@@ -40,7 +46,8 @@ export class BiffParser {
 			let relEndPos = -4;
 
 			if (opts.nestedTags && opts.nestedTags[tag]) {
-				nestedCallback = opts.nestedTags[tag];
+				nested = opts.nestedTags[tag];
+				nestedItem = nested.onStart();
 				return len + 4;
 			}
 
@@ -54,16 +61,35 @@ export class BiffParser {
 			}
 
 			if (!tag || tag === 'ENDB') {
-				if (nestedCallback) {
-					nestedCallback = null;
+				if (nested) {
+					nested.onEnd(nestedItem);
+					nestedItem = null;
+					nested = null;
 					return len + 4;
 				}
 				return -1;
 			}
-			const cb = nestedCallback || callback;
+			const cb = nested ? nested.onTag(nestedItem) : callback;
 			await cb(dataResult, tag, result.storageOffset + relStartPos, len + relEndPos);
 			return len + 4;
 		};
+	}
+
+	/* istanbul ignore next: currently not used */
+	private static getTag(buffer: Buffer): string {
+
+		const tags5 = [ 'CLDRP' ];
+
+		const tag = buffer.slice(4, 8).toString('utf8');
+
+		if (tags5.map(t => t.substr(0, 4)).includes(tag)) {
+			const tag5 = buffer.slice(4, 9).toString('utf8');
+			if (tags5.includes(tag5)) {
+				return tag5;
+			}
+		}
+
+		return tag;
 	}
 
 	public static async decompress(buffer: Buffer, len: number): Promise<Buffer> {

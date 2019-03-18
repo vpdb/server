@@ -39,9 +39,15 @@ export class LightItem extends GameItem {
 	}
 
 	private static createStreamHandler(lightItem: LightItem) {
-		lightItem.dragPoint = new DragPoint();
+		lightItem.dragPoints = [];
 		return BiffParser.stream(lightItem.fromTag.bind(lightItem), {
-			nestedTags: { DPNT: lightItem.dragPoint.fromTag.bind(lightItem.dragPoint) },
+			nestedTags: {
+				DPNT: {
+					onStart: () => new DragPoint(),
+					onTag: dragPoint => dragPoint.fromTag.bind(dragPoint),
+					onEnd: dragPoint => lightItem.dragPoints.push(dragPoint),
+				},
+			},
 		});
 	}
 
@@ -74,7 +80,7 @@ export class LightItem extends GameItem {
 	public meshRadius: number;
 	public modulateVsAdd: number;
 	public bulbHaloHeight: number;
-	public dragPoint: DragPoint;
+	public dragPoints: DragPoint[];
 
 	private constructor() {
 		super();

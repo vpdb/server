@@ -22,8 +22,9 @@ import { Storage } from '../common/ole-doc';
 import { settings } from '../common/settings';
 import { FileUtil } from '../files/file.util';
 import { BiffParser } from './biff-parser';
-import { FrameData, Mesh, Vector3, Vertex3DNoTex2 } from './common';
+import { FrameData, Vector3, Vertex3DNoTex2 } from './common';
 import { GameItem } from './game-item';
+import { Mesh } from './mesh';
 
 export class PrimitiveItem extends GameItem {
 

@@ -26,6 +26,7 @@ import { GameItem } from './game-item';
 import { LightItem } from './light-item';
 import { PrimitiveItem } from './primitive-item';
 import { Texture } from './texture';
+import { RubberItem } from './rubber-item';
 
 export class VpTable {
 
@@ -54,6 +55,7 @@ export class VpTable {
 	public primitives: { [key: string]: PrimitiveItem } = {};
 	public textures: { [key: string]: Texture } = {};
 	public lights: LightItem[] = [];
+	public rubbers: RubberItem[] = [];
 
 	public getPrimitive(name: string): PrimitiveItem {
 		return this.primitives[name];
@@ -114,14 +116,18 @@ export class VpTable {
 			const itemData = await storage.read(itemName, 0, 4);
 			const itemType = itemData.readInt32LE(0);
 			switch (itemType) {
+
 				case GameItem.TypePrimitive:
 					const item = await PrimitiveItem.fromStorage(storage, itemName);
 					this.primitives[item.getName()] = item;
-					//console.log('Adding primitive %s (%s bytes)', item.getName(), itemData.length);
 					break;
 
 				case GameItem.TypeLight:
 					this.lights.push(await LightItem.fromStorage(storage, itemName));
+					break;
+
+				case GameItem.TypeRubber:
+					this.rubbers.push(await RubberItem.fromStorage(storage, itemName));
 					break;
 
 				default:

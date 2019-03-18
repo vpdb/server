@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Mesh } from '../common';
+import { Mesh } from '../mesh';
 
 const vertices = [
 	[0.220295, -0.381570, 0.984870, 0.496400, -0.859800, 0.119300, 0.698812, 0.614784],

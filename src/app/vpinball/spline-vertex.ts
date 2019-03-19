@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { RenderVertex, Vertex2D } from './common';
 import { DragPoint } from './dragpoint';
+import { RenderVertex, Vertex2D } from './vertex';
 
 export class SplineVertex {
 
@@ -57,11 +57,11 @@ export class SplineVertex {
 			const v2normal = new Vertex2D(vmiddle.y - vnext.y, vnext.x - vmiddle.x);   // vector vnext-vmiddle rotated RIGHT
 
 			// not needed special start/end handling as rubbers always loop, except for the case where there are only 2 control points
-			if (cvertex == 2 && i == (cvertex - 1)) {
+			if (cvertex === 2 && i === (cvertex - 1)) {
 				v1normal.normalize();
 				vnormal = v1normal;
 
-			} else if (cvertex == 2 && i == 0) {
+			} else if (cvertex === 2 && i === 0) {
 				v2normal.normalize();
 				vnormal = v2normal;
 
@@ -89,13 +89,13 @@ export class SplineVertex {
 					const E = vmiddle.x - vnext.x;
 
 					// Shift line along the normal
-					const F = D*(v2normal.x - vnext.x) + E*(v2normal.y - vnext.y);
+					const F = D * (v2normal.x - vnext.x) + E * (v2normal.y - vnext.y);
 
-					const det = A*E - B*D;
-					const inv_det = (det !== 0.0) ? 1.0 / det : 0.0;
+					const det = A * E - B * D;
+					const invDet = (det !== 0.0) ? 1.0 / det : 0.0;
 
-					const intersectx = (B*F - E*C)*inv_det;
-					const intersecty = (C*D - A*F)*inv_det;
+					const intersectx = (B * F - E * C) * invDet;
+					const intersecty = (C * D - A * F) * invDet;
 
 					vnormal = new Vertex2D(vmiddle.x - intersectx, vmiddle.y - intersecty);
 				}
@@ -111,7 +111,7 @@ export class SplineVertex {
 			//vmiddle - (widthcur*0.5f) * vnormal;
 			v.rgvLocal[(cvertex + 1) * 2 - i - 1] = vmiddle.clone().sub(vnormal.clone().multiplyScalar(widthcur * 0.5));
 
-			if (i == 0) {
+			if (i === 0) {
 				v.rgvLocal[cvertex] = v.rgvLocal[0];
 				v.rgvLocal[(cvertex + 1) * 2 - cvertex - 1] = v.rgvLocal[(cvertex + 1) * 2 - 1];
 			}
@@ -124,18 +124,18 @@ export class SplineVertex {
 		return v;
 	}
 
-	private static getCentralCurve(dragPoints: DragPoint[], _accuracy: number): RenderVertex[] {
+	private static getCentralCurve(dragPoints: DragPoint[], acc: number): RenderVertex[] {
 
 		let accuracy: number;
 
 		// as solid rubbers are rendered into the static buffer, always use maximum precision
-		if (_accuracy != -1.0) {
-			accuracy = _accuracy; // used for hit shape calculation, always!
+		if (acc !== -1.0) {
+			accuracy = acc; // used for hit shape calculation, always!
 		} else {
 			if (true /*m_d.m_staticRendering*/) {
 				accuracy = 10.0;
 			} else {
-				accuracy = 10; //m_ptable->GetDetailLevel();
+				accuracy = 10.0; //m_ptable->GetDetailLevel();
 			}
 			accuracy = 4.0 * Math.pow(10.0, (10.0 - accuracy) * (1.0 / 1.5)); // min = 4 (highest accuracy/detail level), max = 4 * 10^(10/1.5) = ~18.000.000 (lowest accuracy/detail level)
 		}

@@ -17,10 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { FrameData, Vertex3D, Vertex3DNoTex2 } from './common';
+import { FrameData } from './common';
+import { Vertex3D, Vertex3DNoTex2 } from './vertex';
 
-const FLT_MIN = 1.175494350822287507968736537222245677819e-038;
-const FLT_MAX = 340282346638528859811704183484516925440;
+export const FLT_MIN = 1.175494350822287507968736537222245677819e-038;
+export const FLT_MAX = 340282346638528859811704183484516925440;
 
 export class Mesh {
 
@@ -69,11 +70,11 @@ export class Mesh {
 
 		for (let i = 0; i < numVertices; i++) {
 			const v = vertices[i];
-			const l = v.nx*v.nx + v.ny*v.ny + v.nz*v.nz;
-			const inv_l = (l >= FLT_MIN) ? 1.0 / Math.sqrt(l) : 0.0;
-			v.nx *= inv_l;
-			v.ny *= inv_l;
-			v.nz *= inv_l;
+			const l = v.nx * v.nx + v.ny * v.ny + v.nz * v.nz;
+			const invL = (l >= FLT_MIN) ? 1.0 / Math.sqrt(l) : 0.0;
+			v.nx *= invL;
+			v.ny *= invL;
+			v.nz *= invL;
 		}
 	}
 

@@ -20,9 +20,9 @@
 import { Storage } from '../common/ole-doc';
 import { settings } from '../common/settings';
 import { BiffParser } from './biff-parser';
-import { Vertex2D } from './common';
 import { DragPoint } from './dragpoint';
 import { GameItem } from './game-item';
+import { Vertex2D } from './vertex';
 
 export class LightItem extends GameItem {
 

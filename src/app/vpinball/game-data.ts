@@ -20,7 +20,7 @@
 
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
-import { Vertex2D, Vertex3D } from './common';
+import { Vertex2D, Vertex3D } from './vertex';
 
 export class GameData extends BiffParser {
 

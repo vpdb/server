@@ -21,20 +21,11 @@ import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { DragPoint } from './dragpoint';
 import { GameItem } from './game-item';
+import { FLT_MAX, FLT_MIN, Mesh } from './mesh';
 import { SplineVertex } from './spline-vertex';
-import { Vertex3D, Vertex3DNoTex2 } from './common';
-import { Mesh } from './mesh';
-
-const FLT_MIN = 1.175494350822287507968736537222245677819e-038;
-const FLT_MAX = 340282346638528859811704183484516925440;
+import { Vertex3D, Vertex3DNoTex2 } from './vertex';
 
 export class RubberItem extends GameItem {
-
-	private m_numVertices: number;
-	private m_numIndices: number;
-	private m_vertices: Vertex3DNoTex2[];
-	private ringIndices: number[];
-	private middlePoint: Vertex3D = new Vertex3D();
 
 	public static async fromStorage(storage: Storage, itemName: string): Promise<RubberItem> {
 		const rubberItem = new RubberItem();
@@ -86,6 +77,12 @@ export class RubberItem extends GameItem {
 	public fOverwritePhysics: boolean;
 	public dragPoints: DragPoint[];
 
+	private numVertices: number;
+	private numIndices: number;
+	private vertices: Vertex3DNoTex2[];
+	private ringIndices: number[];
+	private middlePoint: Vertex3D = new Vertex3D();
+
 	private constructor() {
 		super();
 	}
@@ -100,7 +97,7 @@ export class RubberItem extends GameItem {
 		};
 	}
 
-	private generateMesh(hitHeight: number, tableHeight: number, tableDetailLevel: number, thickness: number, _accuracy: number = 10) {
+	private generateMesh(hitHeight: number, tableHeight: number, tableDetailLevel: number, thickness: number, acc: number = 10) {
 
 		const createHitShape = true;
 		let accuracy: number;
@@ -119,8 +116,8 @@ export class RubberItem extends GameItem {
 			accuracy = Math.floor(10.0 * 1.3); // see also above
 		}
 
-		if (_accuracy !== -1) { // hit shapes and UI display have the same, static, precision
-			accuracy = _accuracy;
+		if (acc !== -1) { // hit shapes and UI display have the same, static, precision
+			accuracy = acc;
 		}
 
 		const sv = SplineVertex.getInstance(this.dragPoints, accuracy);
@@ -128,10 +125,10 @@ export class RubberItem extends GameItem {
 		const numRings = sv.pcvertex - 1;
 		const numSegments = accuracy;
 
-		this.m_numVertices = numRings*numSegments;
-		this.m_numIndices = 6 * this.m_numVertices;//m_numVertices*2+2;
+		this.numVertices = numRings * numSegments;
+		this.numIndices = 6 * this.numVertices; //m_numVertices*2+2;
 
-		this.m_vertices = [];
+		this.vertices = [];
 		this.ringIndices = [];
 		const height = hitHeight + tableHeight;
 
@@ -148,7 +145,7 @@ export class RubberItem extends GameItem {
 			let binorm: Vertex3D;
 			let normal: Vertex3D;
 			if (i === 0) {
-				const up = new Vertex3D(sv.pMiddlePoints[i2].x + sv.pMiddlePoints[i].x, sv.pMiddlePoints[i2].y + sv.pMiddlePoints[i].y, height*2.0);
+				const up = new Vertex3D(sv.pMiddlePoints[i2].x + sv.pMiddlePoints[i].x, sv.pMiddlePoints[i2].y + sv.pMiddlePoints[i].y, height * 2.0);
 				normal = new Vertex3D(tangent.y * up.z, - tangent.x * up.z, tangent.x * up.y - tangent.y * up.x); // = CrossProduct(tangent, up)
 				binorm = new Vertex3D(tangent.y * normal.z, - tangent.x * normal.z, tangent.x * normal.y - tangent.y * normal.x); // = CrossProduct(tangent, normal)
 
@@ -163,17 +160,17 @@ export class RubberItem extends GameItem {
 			for (let j = 0; j < numSegments; j++, index++) {
 
 				const v = (j + u) * invNS;
-				const tmp = Vertex3D.getRotatedAxis(j*(360.0 * invNS), tangent, normal).multiplyScalar(thickness * 0.5);
-				this.m_vertices[index].x = sv.pMiddlePoints[i].x + tmp.x;
-				this.m_vertices[index].y = sv.pMiddlePoints[i].y + tmp.y;
-				if (createHitShape && (j==0 || j==3)) { //!! hack, adapt if changing detail level for hitshape
+				const tmp = Vertex3D.getRotatedAxis(j * (360.0 * invNS), tangent, normal).multiplyScalar(thickness * 0.5);
+				this.vertices[index].x = sv.pMiddlePoints[i].x + tmp.x;
+				this.vertices[index].y = sv.pMiddlePoints[i].y + tmp.y;
+				if (createHitShape && (j === 0 || j === 3)) { //!! hack, adapt if changing detail level for hitshape
 					// for a hit shape create a more rectangle mesh and not a smooth one
 					tmp.z *= 0.6;
 				}
-				this.m_vertices[index].z = height + tmp.z;
+				this.vertices[index].z = height + tmp.z;
 				//texel
-				this.m_vertices[index].tu = u;
-				this.m_vertices[index].tv = v;
+				this.vertices[index].tu = u;
+				this.vertices[index].tv = v;
 			}
 		}
 
@@ -181,39 +178,39 @@ export class RubberItem extends GameItem {
 		for (let i = 0; i < numRings; i++) {
 			for (let j = 0; j < numSegments; j++) {
 				const quad: number[] = [];
-				quad[0] = i*numSegments + j;
+				quad[0] = i * numSegments + j;
 
-				if (j != numSegments - 1) {
+				if (j !== numSegments - 1) {
 					quad[1] = i * numSegments + j + 1;
 				} else {
 					quad[1] = i * numSegments;
 				}
 
-				if (i != numRings - 1) {
-					quad[2] = (i + 1)*numSegments + j;
-					if (j != numSegments - 1) {
+				if (i !== numRings - 1) {
+					quad[2] = (i + 1) * numSegments + j;
+					if (j !== numSegments - 1) {
 						quad[3] = (i + 1) * numSegments + j + 1;
 					} else {
 						quad[3] = (i + 1) * numSegments;
 					}
 				} else {
 					quad[2] = j;
-					if (j != numSegments - 1) {
+					if (j !== numSegments - 1) {
 						quad[3] = j + 1;
 					} else {
 						quad[3] = 0;
 					}
 				}
-				this.ringIndices[(i*numSegments + j) * 6    ] = quad[0];
-				this.ringIndices[(i*numSegments + j) * 6 + 1] = quad[1];
-				this.ringIndices[(i*numSegments + j) * 6 + 2] = quad[2];
-				this.ringIndices[(i*numSegments + j) * 6 + 3] = quad[3];
-				this.ringIndices[(i*numSegments + j) * 6 + 4] = quad[2];
-				this.ringIndices[(i*numSegments + j) * 6 + 5] = quad[1];
+				this.ringIndices[(i * numSegments + j) * 6] = quad[0];
+				this.ringIndices[(i * numSegments + j) * 6 + 1] = quad[1];
+				this.ringIndices[(i * numSegments + j) * 6 + 2] = quad[2];
+				this.ringIndices[(i * numSegments + j) * 6 + 3] = quad[3];
+				this.ringIndices[(i * numSegments + j) * 6 + 4] = quad[2];
+				this.ringIndices[(i * numSegments + j) * 6 + 5] = quad[1];
 			}
 		}
 
-		Mesh.computeNormals(this.m_vertices, this.m_numVertices, this.ringIndices, this.m_numIndices);
+		Mesh.computeNormals(this.vertices, this.numVertices, this.ringIndices, this.numIndices);
 
 		let maxx = FLT_MIN;
 		let minx = FLT_MAX;
@@ -221,17 +218,17 @@ export class RubberItem extends GameItem {
 		let miny = FLT_MAX;
 		let maxz = FLT_MIN;
 		let minz = FLT_MAX;
-		for (let i = 0; i < this.m_numVertices; i++) {
-			if (maxx < this.m_vertices[i].x) maxx = this.m_vertices[i].x;
-			if (minx > this.m_vertices[i].x) minx = this.m_vertices[i].x;
-			if (maxy < this.m_vertices[i].y) maxy = this.m_vertices[i].y;
-			if (miny > this.m_vertices[i].y) miny = this.m_vertices[i].y;
-			if (maxz < this.m_vertices[i].z) maxz = this.m_vertices[i].z;
-			if (minz > this.m_vertices[i].z) minz = this.m_vertices[i].z;
+		for (let i = 0; i < this.numVertices; i++) {
+			if (maxx < this.vertices[i].x) { maxx = this.vertices[i].x; }
+			if (minx > this.vertices[i].x) { minx = this.vertices[i].x; }
+			if (maxy < this.vertices[i].y) { maxy = this.vertices[i].y; }
+			if (miny > this.vertices[i].y) { miny = this.vertices[i].y; }
+			if (maxz < this.vertices[i].z) { maxz = this.vertices[i].z; }
+			if (minz > this.vertices[i].z) { minz = this.vertices[i].z; }
 		}
-		this.middlePoint.x = (maxx + minx)*0.5;
-		this.middlePoint.y = (maxy + miny)*0.5;
-		this.middlePoint.z = (maxz + minz)*0.5;
+		this.middlePoint.x = (maxx + minx) * 0.5;
+		this.middlePoint.y = (maxy + miny) * 0.5;
+		this.middlePoint.z = (maxz + minz) * 0.5;
 	}
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<void> {
@@ -272,4 +269,3 @@ class TimerDataRoot {
 	public interval: number;
 	public enabled: boolean;
 }
-

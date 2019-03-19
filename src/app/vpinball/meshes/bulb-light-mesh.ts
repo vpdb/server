@@ -212,4 +212,4 @@ const indexes = [
 	18, 53, 21,
 ];
 
-export const bulbLightMess = Mesh.fromArray(vertices, indexes);
+export const bulbLightMesh = Mesh.fromArray(vertices, indexes);

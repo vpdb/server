@@ -17,26 +17,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { inspect } from 'util';
 import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
 import { OleCompoundDoc } from '../common/ole-doc';
 import { Context } from '../common/typings/context';
 import { FileDocument } from '../files/file.document';
 import { state } from '../state';
-import { Mesh } from '../vpinball/common';
-import { bulbLightMess } from '../vpinball/meshes/bulb-light-mess';
-import { Texture } from '../vpinball/texture';
-import { VpTable } from '../vpinball/vp-table';
 import { GameData } from '../vpinball/game-data';
 import { GameItem } from '../vpinball/game-item';
+import { bulbLightMesh } from '../vpinball/meshes/bulb-light-mesh';
 import { PrimitiveItem } from '../vpinball/primitive-item';
-import { LightItem } from '../vpinball/light-item';
+import { Texture } from '../vpinball/texture';
+import { VpTable } from '../vpinball/vp-table';
+import { Mesh } from '../vpinball/mesh';
 
 export class VpApi extends Api {
 
-	private static cacheObj = false;
-	private static cacheVpx = false;
+	private static cacheObj = true;
+	private static cacheVpx = true;
 
 	/**
 	 * Returns all primitives of the vpx file
@@ -130,7 +128,7 @@ export class VpApi extends Api {
 	public async getLocalMeshObj(ctx: Context) {
 
 		const meshes: { [key: string]: Mesh } = {
-			bulbLightMess,
+			bulbLightMess: bulbLightMesh,
 		};
 
 		if (!meshes[ctx.params.meshName]) {

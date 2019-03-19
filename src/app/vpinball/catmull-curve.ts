@@ -17,17 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Vertex2D, Vertex3D } from './common';
-import { RenderVertex } from './rubber-item';
+import { RenderVertex, Vertex2D, Vertex3D } from './vertex';
 
 export class CatmullCurve {
 
 	private c: { x: number[], y: number[], z?: number[] } = { x: [], y: [], z: [] };
-
-	public constructor(v0: Vertex2D, v1: Vertex2D, v2: Vertex2D, v3: Vertex2D, dt0: number, dt1: number, dt2: number) {
-		this.c.x = CatmullCurve.initNonuniformCatmullCoeffs(v0.x, v1.x, v2.x, v3.x, dt0, dt1, dt2);
-		this.c.y = CatmullCurve.initNonuniformCatmullCoeffs(v0.y, v1.y, v2.y, v3.y, dt0, dt1, dt2);
-	}
 
 	public static fromVertex3D(v0: Vertex3D, v1: Vertex3D, v2: Vertex3D, v3: Vertex3D): CatmullCurve {
 		return this.fromVertex2D(v0.xy(), v1.xy(), v2.xy(), v3.xy());
@@ -41,7 +35,7 @@ export class CatmullCurve {
 
 		// check for repeated control points
 		if (dt1 < 1e-4) {
-			dt1 = 1.0
+			dt1 = 1.0;
 		}
 		if (dt0 < 1e-4) {
 			dt0 = dt1;
@@ -50,6 +44,11 @@ export class CatmullCurve {
 			dt2 = dt1;
 		}
 		return new CatmullCurve(v0, v1, v2, v3, dt0, dt1, dt2);
+	}
+
+	public constructor(v0: Vertex2D, v1: Vertex2D, v2: Vertex2D, v3: Vertex2D, dt0: number, dt1: number, dt2: number) {
+		this.c.x = CatmullCurve.initNonuniformCatmullCoeffs(v0.x, v1.x, v2.x, v3.x, dt0, dt1, dt2);
+		this.c.y = CatmullCurve.initNonuniformCatmullCoeffs(v0.y, v1.y, v2.y, v3.y, dt0, dt1, dt2);
 	}
 
 	public getPoint2At(t: number): RenderVertex {
@@ -61,7 +60,7 @@ export class CatmullCurve {
 		);
 	}
 
-	public GetPoint3At(t: number): Vertex3D {
+	public getPoint3At(t: number): Vertex3D {
 		const t2 = t * t;
 		const t3 = t2 * t;
 		return new Vertex3D(
@@ -89,7 +88,7 @@ export class CatmullCurve {
 		out[0] = x0;
 		out[1] = t0;
 		out[2] = -3.0 * x0 + 3.0 * x1 - 2.0 * t0 - t1;
-		out[3] = 2.0 * x0 - 2.0 *x1 + t0 + t1;
+		out[3] = 2.0 * x0 - 2.0 * x1 + t0 + t1;
 		return out;
 	}
 }

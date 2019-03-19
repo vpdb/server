@@ -17,10 +17,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { RenderVertex, Vertex2D, Vertex3D } from './common';
-import { GameItem } from './game-item';
-import { CatmullCurve } from './catmull-curve';
 import { Vector } from 'three';
+import { CatmullCurve } from './catmull-curve';
+import { GameItem } from './game-item';
+import { RenderVertex, Vertex2D, Vertex3D } from './vertex';
 
 export class DragPoint extends GameItem {
 
@@ -30,20 +30,20 @@ export class DragPoint extends GameItem {
 		return dragPoint;
 	}
 
-	public static getRgVertex(m_vdpoint: DragPoint[], loop: boolean = true, accuracy: number = 4.0): RenderVertex[] {
+	public static getRgVertex(vdpoint: DragPoint[], loop: boolean = true, accuracy: number = 4.0): RenderVertex[] {
 
 		let vv: RenderVertex[] = [];
 
 		//static const int Dim = T::Dim;    // for now, this is always 2 or 3
-		const cpoint: number = m_vdpoint.length;
+		const cpoint: number = vdpoint.length;
 		const endpoint: number = loop ? cpoint : cpoint - 1;
 
 		const rendv2 = new RenderVertex();
 
 		for (let i = 0; i < endpoint; i++) {
 
-			const pdp1: DragPoint = m_vdpoint[i];
-			const pdp2: DragPoint = m_vdpoint[(i < cpoint - 1) ? (i + 1) : 0];
+			const pdp1: DragPoint = vdpoint[i];
+			const pdp2: DragPoint = vdpoint[(i < cpoint - 1) ? (i + 1) : 0];
 
 			if ((pdp1.vertex.x === pdp2.vertex.x) && (pdp1.vertex.y === pdp2.vertex.y) && (pdp1.vertex.z === pdp2.vertex.z)) {
 				// Special case - two points coincide
@@ -60,8 +60,8 @@ export class DragPoint extends GameItem {
 				inext = (loop ? inext - cpoint : cpoint - 1);
 			}
 
-			const pdp0: DragPoint = m_vdpoint[iprev];
-			const pdp3: DragPoint = m_vdpoint[inext];
+			const pdp0: DragPoint = vdpoint[iprev];
+			const pdp3: DragPoint = vdpoint[inext];
 
 			const cc = CatmullCurve.fromVertex3D(pdp0.vertex, pdp1.vertex, pdp2.vertex, pdp3.vertex);
 

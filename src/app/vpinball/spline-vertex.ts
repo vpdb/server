@@ -33,17 +33,17 @@ export class SplineVertex {
 
 	public rgvLocal: Vertex2D[] = [];
 
-	public static getInstance(dragPoints: DragPoint[], thickness: number, accuracy: number): SplineVertex {
+	public static getInstance(dragPoints: DragPoint[], thickness: number, tableDetailLevel: number, accuracy: number, staticRendering = true): SplineVertex {
 
 		const v = new SplineVertex();
-		const vvertex = SplineVertex.getCentralCurve(dragPoints, accuracy);
+		const vvertex = SplineVertex.getCentralCurve(dragPoints, tableDetailLevel, accuracy, staticRendering);
 
 		const cvertex = vvertex.length;
 
 		for (let i = 0; i < cvertex; i++) {
 			// prev and next wrap around as rubbers always loop
-			const vprev   = vvertex[(i > 0) ? i - 1 : cvertex-1];
-			const vnext   = vvertex[(i < (cvertex - 1)) ? i + 1 : 0];
+			const vprev = vvertex[(i > 0) ? i - 1 : cvertex - 1];
+			const vnext = vvertex[(i < (cvertex - 1)) ? i + 1 : 0];
 			const vmiddle = vvertex[i];
 
 			v.ppfCross[i] = vmiddle.fControlPoint;
@@ -82,7 +82,7 @@ export class SplineVertex {
 					const B = vmiddle.x - vprev.x;
 
 					// Shift line along the normal
-					const C = A*(v1normal.x - vprev.x) + B*(v1normal.y - vprev.y);
+					const C = A * (v1normal.x - vprev.x) + B * (v1normal.y - vprev.y);
 
 					// Second line
 					const D = vnext.y - vmiddle.y;
@@ -124,7 +124,7 @@ export class SplineVertex {
 		return v;
 	}
 
-	private static getCentralCurve(dragPoints: DragPoint[], acc: number): RenderVertex[] {
+	private static getCentralCurve(dragPoints: DragPoint[], tableDetailLevel: number, acc: number, staticRendering = true): RenderVertex[] {
 
 		let accuracy: number;
 
@@ -132,10 +132,10 @@ export class SplineVertex {
 		if (acc !== -1.0) {
 			accuracy = acc; // used for hit shape calculation, always!
 		} else {
-			if (true /*m_d.m_staticRendering*/) {
+			if (staticRendering) {
 				accuracy = 10.0;
 			} else {
-				accuracy = 10.0; //m_ptable->GetDetailLevel();
+				accuracy = tableDetailLevel;
 			}
 			accuracy = 4.0 * Math.pow(10.0, (10.0 - accuracy) * (1.0 / 1.5)); // min = 4 (highest accuracy/detail level), max = 4 * 10^(10/1.5) = ~18.000.000 (lowest accuracy/detail level)
 		}

@@ -164,7 +164,7 @@ export class VpApi extends Api {
 			if (!rubber) {
 				throw new ApiError('No rubber named "%s" in this table!', ctx.params.meshName).status(404);
 			}
-			obj = rubber.serializeToObj(gameData.tableheight);
+			obj = rubber.serializeToObj(gameData.tableheight, 4);
 		}
 
 		ctx.status = 200;

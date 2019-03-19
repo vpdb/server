@@ -26,15 +26,12 @@ import { writeFileSync } from 'fs';
 
 	try {
 
-		const tablePath = 'D:/Pinball/Visual Pinball/Tables/Batman Dark Knight tt&NZ 1.2.vpx';
-		const outPath2 = 'compressed.bin';
-		const outPath = 'test.obj';
-		const item = 'GameItem201';
-		const tag = 'M3CX';
+		const tablePath = 'C:/Development/vpdb-server/data/storage-protected/pk45rodfw.vpx';
+		//const tablePath = 'D:/Pinball/Visual Pinball/Tables/Batman Dark Knight tt&NZ 1.2.vpx';
 
 		const vpt = await VpTable.load(tablePath);
 		console.log(inspect(vpt.gameData, { colors: true, depth: null }));
-		writeFileSync('batman.json', JSON.stringify(vpt, null, '  '));
+		writeFileSync('test.json', JSON.stringify(vpt, null, '  '));
 
 		//await vpt.getPrimitive('Joker').exportMeshToObj('Joker.obj');
 

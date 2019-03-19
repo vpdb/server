@@ -24,6 +24,12 @@ import { RenderVertex, Vertex2D, Vertex3D } from './vertex';
 
 export class DragPoint extends GameItem {
 
+	public vertex: Vertex3D;
+	public fSmooth: boolean;
+	public fSlingshot: boolean;
+	public fAutoTexture: boolean;
+	public texturecoord: number;
+
 	public static from(data: any): DragPoint {
 		const dragPoint = new DragPoint();
 		Object.assign(dragPoint, data);
@@ -75,7 +81,7 @@ export class DragPoint extends GameItem {
 			// Properties of last point don't matter, because it won't be added to the list on this pass (it'll get added as the first point of the next curve)
 			rendv2.set(pdp2.vertex.x, pdp2.vertex.y);
 
-			vv = DragPoint.recurseSmoothLine(cc, 0.0, 1.0, rendv1, rendv2, accuracy, vv);
+			vv = DragPoint.recurseSmoothLine(vv, cc, 0.0, 1.0, rendv1, rendv2, accuracy);
 		}
 
 		if (!loop) {
@@ -88,7 +94,7 @@ export class DragPoint extends GameItem {
 		return vv;
 	}
 
-	private static recurseSmoothLine(cc: CatmullCurve, t1: number, t2: number, vt1: RenderVertex, vt2: RenderVertex, accuracy: number, vv: RenderVertex[] = []): RenderVertex[] {
+	private static recurseSmoothLine(vv: RenderVertex[] = [], cc: CatmullCurve, t1: number, t2: number, vt1: RenderVertex, vt2: RenderVertex, accuracy: number): RenderVertex[] {
 
 		const tMid = (t1 + t2) * 0.5;
 
@@ -104,8 +110,8 @@ export class DragPoint extends GameItem {
 			vv.push(vt1);
 
 		} else {
-			vv = DragPoint.recurseSmoothLine(cc, t1, tMid, vt1, vmid, accuracy, vv);
-			vv = DragPoint.recurseSmoothLine(cc, tMid, t2, vmid, vt2, accuracy, vv);
+			vv = DragPoint.recurseSmoothLine(vv, cc, t1, tMid, vt1, vmid, accuracy);
+			vv = DragPoint.recurseSmoothLine(vv, cc, tMid, t2, vmid, vt2, accuracy);
 		}
 		return vv;
 	}
@@ -136,12 +142,6 @@ export class DragPoint extends GameItem {
 		const dblareasq = cross.lengthSq();
 		return (dblareasq < accuracy);
 	}
-
-	public vertex: Vertex3D;
-	public fSmooth: boolean;
-	public fSlingshot: boolean;
-	public fAutoTexture: boolean;
-	public texturecoord: number;
 
 	public async fromTag(buffer: Buffer, tag: string): Promise<void> {
 		switch (tag) {

@@ -92,12 +92,12 @@ export class RubberItem extends GameItem {
 		};
 	}
 
-	public serializeToObj(tableHeight: number, tableDetailLevel: number = 10) {
-		const mesh = this.generateMesh(tableHeight, tableDetailLevel);
+	public serializeToObj(tableHeight: number, accuracy: number = 10) {
+		const mesh = this.generateMesh(tableHeight, 10, accuracy);
 		return mesh.serializeToObj(this.wzName);
 	}
 
-	private generateMesh(tableHeight: number, tableDetailLevel: number = 10, acc: number = 10): Mesh {
+	private generateMesh(tableHeight: number, tableDetailLevel: number = 10, acc: number = 10, staticRendering = true): Mesh {
 
 		const mesh = new Mesh();
 		const createHitShape = true;
@@ -113,7 +113,7 @@ export class RubberItem extends GameItem {
 		}
 
 		// as solid rubbers are rendered into the static buffer, always use maximum precision
-		if (true /*m_d.m_staticRendering*/) {
+		if (staticRendering) {
 			accuracy = Math.floor(10.0 * 1.3); // see also above
 		}
 
@@ -121,7 +121,7 @@ export class RubberItem extends GameItem {
 			accuracy = acc;
 		}
 
-		const sv = SplineVertex.getInstance(this.dragPoints, this.thickness, accuracy);
+		const sv = SplineVertex.getInstance(this.dragPoints, this.thickness, tableDetailLevel, accuracy);
 
 		const numRings = sv.pcvertex - 1;
 		const numSegments = accuracy;

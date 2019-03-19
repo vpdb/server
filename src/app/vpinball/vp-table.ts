@@ -25,8 +25,8 @@ import { GameData } from './game-data';
 import { GameItem } from './game-item';
 import { LightItem } from './light-item';
 import { PrimitiveItem } from './primitive-item';
-import { Texture } from './texture';
 import { RubberItem } from './rubber-item';
+import { Texture } from './texture';
 
 export class VpTable {
 
@@ -54,11 +54,15 @@ export class VpTable {
 	public gameData: GameData;
 	public primitives: { [key: string]: PrimitiveItem } = {};
 	public textures: { [key: string]: Texture } = {};
+	public rubbers: { [key: string]: RubberItem } = {};
 	public lights: LightItem[] = [];
-	public rubbers: RubberItem[] = [];
 
 	public getPrimitive(name: string): PrimitiveItem {
 		return this.primitives[name];
+	}
+
+	public getRubber(name: string): RubberItem {
+		return this.rubbers[name];
 	}
 
 	public getTexture(name: string): Texture {
@@ -78,6 +82,7 @@ export class VpTable {
 				return materials;
 			}, {}),
 			lights: this.lights.map(l => l.serialize()),
+			rubbers: values(this.rubbers).map(r => r.serialize(fileId)),
 		};
 	}
 
@@ -117,18 +122,22 @@ export class VpTable {
 			const itemType = itemData.readInt32LE(0);
 			switch (itemType) {
 
-				case GameItem.TypePrimitive:
+				case GameItem.TypePrimitive: {
 					const item = await PrimitiveItem.fromStorage(storage, itemName);
 					this.primitives[item.getName()] = item;
 					break;
+				}
 
-				case GameItem.TypeLight:
+				case GameItem.TypeLight: {
 					this.lights.push(await LightItem.fromStorage(storage, itemName));
 					break;
+				}
 
-				case GameItem.TypeRubber:
-					this.rubbers.push(await RubberItem.fromStorage(storage, itemName));
+				case GameItem.TypeRubber: {
+					const item = await RubberItem.fromStorage(storage, itemName);
+					this.rubbers[item.getName()] = item;
 					break;
+				}
 
 				default:
 					// ignore the rest for now

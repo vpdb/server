@@ -18,6 +18,7 @@
  */
 
 import { Storage } from '../common/ole-doc';
+import { settings } from '../common/settings';
 import { BiffParser } from './biff-parser';
 import { DragPoint } from './dragpoint';
 import { GameItem } from './game-item';
@@ -26,31 +27,6 @@ import { SplineVertex } from './spline-vertex';
 import { Vertex3D, Vertex3DNoTex2 } from './vertex';
 
 export class RubberItem extends GameItem {
-
-	public static async fromStorage(storage: Storage, itemName: string): Promise<RubberItem> {
-		const rubberItem = new RubberItem();
-		await storage.streamFiltered(itemName, 4, RubberItem.createStreamHandler(rubberItem));
-		return rubberItem;
-	}
-
-	public static from(data: any): RubberItem {
-		const rubberItem = new RubberItem();
-		Object.assign(rubberItem, data);
-		return rubberItem;
-	}
-
-	private static createStreamHandler(rubberItem: RubberItem) {
-		rubberItem.dragPoints = [];
-		return BiffParser.stream(rubberItem.fromTag.bind(rubberItem), {
-			nestedTags: {
-				DPNT: {
-					onStart: () => new DragPoint(),
-					onTag: dragPoint => dragPoint.fromTag.bind(dragPoint),
-					onEnd: dragPoint => rubberItem.dragPoints.push(dragPoint),
-				},
-			},
-		});
-	}
 
 	public wzName: string;
 	public pdata: number;
@@ -77,28 +53,53 @@ export class RubberItem extends GameItem {
 	public fOverwritePhysics: boolean;
 	public dragPoints: DragPoint[];
 
-	private numVertices: number;
-	private numIndices: number;
-	private vertices: Vertex3DNoTex2[];
-	private ringIndices: number[];
 	private middlePoint: Vertex3D = new Vertex3D();
 
-	private constructor() {
-		super();
+	public static async fromStorage(storage: Storage, itemName: string): Promise<RubberItem> {
+		const rubberItem = new RubberItem();
+		await storage.streamFiltered(itemName, 4, RubberItem.createStreamHandler(rubberItem));
+		return rubberItem;
+	}
+
+	public static from(data: any): RubberItem {
+		const rubberItem = new RubberItem();
+		Object.assign(rubberItem, data);
+		return rubberItem;
+	}
+
+	private static createStreamHandler(rubberItem: RubberItem) {
+		rubberItem.dragPoints = [];
+		return BiffParser.stream(rubberItem.fromTag.bind(rubberItem), {
+			nestedTags: {
+				DPNT: {
+					onStart: () => new DragPoint(),
+					onTag: dragPoint => dragPoint.fromTag.bind(dragPoint),
+					onEnd: dragPoint => rubberItem.dragPoints.push(dragPoint),
+				},
+			},
+		});
 	}
 
 	public getName(): string {
 		return this.wzName;
 	}
 
-	public serialize() {
+	public serialize(fileId: string) {
 		return {
 			name: this.wzName,
+			mesh: settings.apiExternalUri(`/v1/vp/${fileId}/rubbers/${encodeURI(this.wzName)}.obj`),
+			material: this.szMaterial,
 		};
 	}
 
-	private generateMesh(hitHeight: number, tableHeight: number, tableDetailLevel: number, thickness: number, acc: number = 10) {
+	public serializeToObj(tableHeight: number, tableDetailLevel: number = 10) {
+		const mesh = this.generateMesh(tableHeight, tableDetailLevel);
+		return mesh.serializeToObj(this.wzName);
+	}
 
+	private generateMesh(tableHeight: number, tableDetailLevel: number = 10, acc: number = 10): Mesh {
+
+		const mesh = new Mesh();
 		const createHitShape = true;
 		let accuracy: number;
 		if (tableDetailLevel < 5) {
@@ -120,17 +121,15 @@ export class RubberItem extends GameItem {
 			accuracy = acc;
 		}
 
-		const sv = SplineVertex.getInstance(this.dragPoints, accuracy);
+		const sv = SplineVertex.getInstance(this.dragPoints, this.thickness, accuracy);
 
 		const numRings = sv.pcvertex - 1;
 		const numSegments = accuracy;
 
-		this.numVertices = numRings * numSegments;
-		this.numIndices = 6 * this.numVertices; //m_numVertices*2+2;
+		const numVertices = numRings * numSegments;
+		const numIndices = 6 * numVertices; //m_numVertices*2+2;
 
-		this.vertices = [];
-		this.ringIndices = [];
-		const height = hitHeight + tableHeight;
+		const height = this.hitHeight + tableHeight;
 
 		let prevB = new Vertex3D();
 		const invNR = 1.0 / numRings;
@@ -157,20 +156,23 @@ export class RubberItem extends GameItem {
 			normal.normalize();
 			prevB = binorm;
 			const u = i * invNR;
-			for (let j = 0; j < numSegments; j++, index++) {
+			for (let j = 0; j < numSegments; j++) {
 
 				const v = (j + u) * invNS;
-				const tmp = Vertex3D.getRotatedAxis(j * (360.0 * invNS), tangent, normal).multiplyScalar(thickness * 0.5);
-				this.vertices[index].x = sv.pMiddlePoints[i].x + tmp.x;
-				this.vertices[index].y = sv.pMiddlePoints[i].y + tmp.y;
+				const tmp = Vertex3D.getRotatedAxis(j * (360.0 * invNS), tangent, normal).multiplyScalar(this.thickness * 0.5);
+
+				mesh.vertices[index] = new Vertex3DNoTex2();
+				mesh.vertices[index].x = sv.pMiddlePoints[i].x + tmp.x;
+				mesh.vertices[index].y = sv.pMiddlePoints[i].y + tmp.y;
 				if (createHitShape && (j === 0 || j === 3)) { //!! hack, adapt if changing detail level for hitshape
 					// for a hit shape create a more rectangle mesh and not a smooth one
 					tmp.z *= 0.6;
 				}
-				this.vertices[index].z = height + tmp.z;
+				mesh.vertices[index].z = height + tmp.z;
 				//texel
-				this.vertices[index].tu = u;
-				this.vertices[index].tv = v;
+				mesh.vertices[index].tu = u;
+				mesh.vertices[index].tv = v;
+				index++;
 			}
 		}
 
@@ -201,16 +203,16 @@ export class RubberItem extends GameItem {
 						quad[3] = 0;
 					}
 				}
-				this.ringIndices[(i * numSegments + j) * 6] = quad[0];
-				this.ringIndices[(i * numSegments + j) * 6 + 1] = quad[1];
-				this.ringIndices[(i * numSegments + j) * 6 + 2] = quad[2];
-				this.ringIndices[(i * numSegments + j) * 6 + 3] = quad[3];
-				this.ringIndices[(i * numSegments + j) * 6 + 4] = quad[2];
-				this.ringIndices[(i * numSegments + j) * 6 + 5] = quad[1];
+				mesh.indices[(i * numSegments + j) * 6] = quad[0];
+				mesh.indices[(i * numSegments + j) * 6 + 1] = quad[1];
+				mesh.indices[(i * numSegments + j) * 6 + 2] = quad[2];
+				mesh.indices[(i * numSegments + j) * 6 + 3] = quad[3];
+				mesh.indices[(i * numSegments + j) * 6 + 4] = quad[2];
+				mesh.indices[(i * numSegments + j) * 6 + 5] = quad[1];
 			}
 		}
 
-		Mesh.computeNormals(this.vertices, this.numVertices, this.ringIndices, this.numIndices);
+		Mesh.computeNormals(mesh.vertices, numVertices, mesh.indices, numIndices);
 
 		let maxx = FLT_MIN;
 		let minx = FLT_MAX;
@@ -218,17 +220,19 @@ export class RubberItem extends GameItem {
 		let miny = FLT_MAX;
 		let maxz = FLT_MIN;
 		let minz = FLT_MAX;
-		for (let i = 0; i < this.numVertices; i++) {
-			if (maxx < this.vertices[i].x) { maxx = this.vertices[i].x; }
-			if (minx > this.vertices[i].x) { minx = this.vertices[i].x; }
-			if (maxy < this.vertices[i].y) { maxy = this.vertices[i].y; }
-			if (miny > this.vertices[i].y) { miny = this.vertices[i].y; }
-			if (maxz < this.vertices[i].z) { maxz = this.vertices[i].z; }
-			if (minz > this.vertices[i].z) { minz = this.vertices[i].z; }
+		for (let i = 0; i < numVertices; i++) {
+			if (maxx < mesh.vertices[i].x) { maxx = mesh.vertices[i].x; }
+			if (minx > mesh.vertices[i].x) { minx = mesh.vertices[i].x; }
+			if (maxy < mesh.vertices[i].y) { maxy = mesh.vertices[i].y; }
+			if (miny > mesh.vertices[i].y) { miny = mesh.vertices[i].y; }
+			if (maxz < mesh.vertices[i].z) { maxz = mesh.vertices[i].z; }
+			if (minz > mesh.vertices[i].z) { minz = mesh.vertices[i].z; }
 		}
 		this.middlePoint.x = (maxx + minx) * 0.5;
 		this.middlePoint.y = (maxy + miny) * 0.5;
 		this.middlePoint.z = (maxz + minz) * 0.5;
+
+		return mesh;
 	}
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<void> {

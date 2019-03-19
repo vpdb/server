@@ -33,7 +33,7 @@ export class SplineVertex {
 
 	public rgvLocal: Vertex2D[] = [];
 
-	public static getInstance(dragPoints: DragPoint[], accuracy: number): SplineVertex {
+	public static getInstance(dragPoints: DragPoint[], thickness: number, accuracy: number): SplineVertex {
 
 		const v = new SplineVertex();
 		const vvertex = SplineVertex.getCentralCurve(dragPoints, accuracy);
@@ -101,7 +101,7 @@ export class SplineVertex {
 				}
 			}
 
-			const widthcur = 10; //m_d.m_thickness;
+			const widthcur = thickness;
 
 			v.pMiddlePoints[i] = vmiddle;
 

@@ -25,16 +25,17 @@ import { FileDocument } from '../files/file.document';
 import { state } from '../state';
 import { GameData } from '../vpinball/game-data';
 import { GameItem } from '../vpinball/game-item';
+import { Mesh } from '../vpinball/mesh';
 import { bulbLightMesh } from '../vpinball/meshes/bulb-light-mesh';
 import { PrimitiveItem } from '../vpinball/primitive-item';
+import { RubberItem } from '../vpinball/rubber-item';
 import { Texture } from '../vpinball/texture';
 import { VpTable } from '../vpinball/vp-table';
-import { Mesh } from '../vpinball/mesh';
 
 export class VpApi extends Api {
 
-	private static cacheObj = true;
-	private static cacheVpx = true;
+	private static cacheObj = false;
+	private static cacheVpx = false;
 
 	/**
 	 * Returns all primitives of the vpx file
@@ -112,6 +113,58 @@ export class VpApi extends Api {
 				throw new ApiError('No primitive named "%s" in this table!', ctx.params.meshName).status(404);
 			}
 			obj = primitive.serializeToObj();
+		}
+
+		ctx.status = 200;
+		ctx.set('Content-Type', 'text/plain');
+		ctx.response.body = obj;
+	}
+
+	/**
+	 * Returns the mesh of a rubber.
+	 *
+	 * @see GET /v1/vp/:fileId/rubbers/:rubberName.obj
+	 * @param {Context} ctx Koa context
+	 */
+	public async getRubberObj(ctx: Context) {
+
+		const vptFile = await this.getVpFile(ctx);
+
+		let obj: string;
+		if (VpApi.cacheObj) {
+			const redisKey = `api-cache-vpt:rubber:${vptFile.id}:${ctx.params.rubberName}`;
+			obj = await state.redis.get(redisKey);
+			if (!obj) {
+				const vpTable = await this.getVpTable(ctx, vptFile);
+				const rubber = vpTable.getRubber(ctx.params.meshName);
+				if (!rubber) {
+					throw new ApiError('No primitive named "%s" in this table!', ctx.params.meshName).status(404);
+				}
+				obj = rubber.serializeToObj(vpTable.gameData.tableheight);
+				await state.redis.set(redisKey, obj);
+			}
+		} else {
+			const doc = new OleCompoundDoc(vptFile.getPath(ctx.state));
+			await doc.read();
+			const gameStorage = doc.storage('GameStg');
+			const gameData = await GameData.fromStorage(gameStorage, 'GameData');
+			let rubber: RubberItem;
+			for (let i = 0; i < gameData.numGameItems; i++) {
+				const itemName = `GameItem${i}`;
+				const itemData = await gameStorage.read(itemName, 0, 4);
+				const itemType = itemData.readInt32LE(0);
+				if (itemType !== GameItem.TypeRubber) {
+					continue;
+				}
+				rubber = await RubberItem.fromStorage(gameStorage, itemName);
+				if (rubber.getName() === ctx.params.rubberName) {
+					break;
+				}
+			}
+			if (!rubber) {
+				throw new ApiError('No rubber named "%s" in this table!', ctx.params.meshName).status(404);
+			}
+			obj = rubber.serializeToObj(gameData.tableheight);
 		}
 
 		ctx.status = 200;

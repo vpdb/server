@@ -25,6 +25,13 @@ export const FLT_MAX = 340282346638528859811704183484516925440;
 
 export class Mesh {
 
+	private static exportPrecision = 6;
+
+	public vertices: Vertex3DNoTex2[] = [];
+	public animationFrames: FrameData[] = [];
+	public indices: number[] = [];
+	private faceIndexOffset = 0;
+
 	public static from(data: any): Mesh {
 		const mesh = new Mesh();
 		for (const vertex of data.vertices) {
@@ -44,6 +51,19 @@ export class Mesh {
 		}
 		mesh.indices = indices;
 		return mesh;
+	}
+
+	public serializeToObj(description: string): string {
+
+		const objFile: string[] = [];
+		//const mtlFile: string[] = [];
+
+		//this._writeHeader(objFile, mtlFile, basename(fileName) + '.wt');
+		this._writeObjectName(objFile, description);
+		this._writeVertexInfo(objFile);
+		this._writeFaceInfoLong(objFile);
+
+		return objFile.join('\n');
 	}
 
 	public static computeNormals(vertices: Vertex3DNoTex2[], numVertices: number, indices: number[], numIndices: number) {
@@ -76,34 +96,6 @@ export class Mesh {
 			v.ny *= invL;
 			v.nz *= invL;
 		}
-	}
-
-	private static exportPrecision = 6;
-
-	public vertices: Vertex3DNoTex2[] = [];
-	public animationFrames: FrameData[] = [];
-	public indices: number[] = [];
-	private faceIndexOffset = 0;
-
-	public serializeToObj(description: string): string {
-
-		const objFile: string[] = [];
-		//const mtlFile: string[] = [];
-
-		//this._writeHeader(objFile, mtlFile, basename(fileName) + '.wt');
-		this._writeObjectName(objFile, description);
-		this._writeVertexInfo(objFile);
-		this._writeFaceInfoLong(objFile);
-
-		return objFile.join('\n');
-	}
-
-	private _writeHeader(objFile: string[], mtlFile: string[], mtlFilename: string): void {
-		mtlFile.push(`# Visual Pinball table mat file`);
-
-		objFile.push(`# Visual Pinball table OBJ file`);
-		objFile.push(`mtllib ${mtlFilename}`);
-		objFile.push(`# numVerts: ${this.vertices.length} numFaces: ${this.indices.length}`);
 	}
 
 	private _writeObjectName(objFile: string[], objName: string): void {

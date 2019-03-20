@@ -22,6 +22,8 @@ import { CatmullCurve } from './catmull-curve';
 import { GameItem } from './game-item';
 import { RenderVertex, Vertex2D, Vertex3D } from './vertex';
 
+export const HIT_SHAPE_DETAIL_LEVEL = 7.0;
+
 export class DragPoint extends GameItem {
 
 	public vertex: Vertex3D;

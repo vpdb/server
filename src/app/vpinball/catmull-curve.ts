@@ -29,9 +29,9 @@ export class CatmullCurve {
 
 	public static fromVertex2D(v0: Vertex2D, v1: Vertex2D, v2: Vertex2D, v3: Vertex2D): CatmullCurve {
 
-		let dt0 = Math.sqrt(v1.sub(v0).length());
-		let dt1 = Math.sqrt(v2.sub(v1).length());
-		let dt2 = Math.sqrt(v3.sub(v2).length());
+		let dt0 = Math.sqrt(v1.clone().sub(v0).length());
+		let dt1 = Math.sqrt(v2.clone().sub(v1).length());
+		let dt2 = Math.sqrt(v3.clone().sub(v2).length());
 
 		// check for repeated control points
 		if (dt1 < 1e-4) {

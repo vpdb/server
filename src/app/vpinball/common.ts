@@ -36,6 +36,8 @@ export class Vector3 extends ThreeVector3 {
 
 export class FrameData {
 
+	public frameVerts: VertData[] = [];
+
 	public static get(buffer: Buffer, numVertices: number): FrameData {
 		const frameData = new FrameData();
 		for (let i = 0; i < numVertices; i++) {
@@ -52,10 +54,23 @@ export class FrameData {
 		return frameData;
 	}
 
-	public frameVerts: VertData[] = [];
+	public clone(): FrameData {
+		const frameData = new FrameData();
+		frameData.frameVerts = this.frameVerts.map(v => v.clone());
+		return frameData;
+	}
+
 }
 
 export class VertData {
+
+	public x: number;
+	public y: number;
+	public z: number;
+
+	public nx: number;
+	public ny: number;
+	public nz: number;
 
 	public static load(buffer: Buffer, offset: number = 0): VertData {
 		const vertData = new VertData();
@@ -72,11 +87,14 @@ export class VertData {
 		return Object.assign(new VertData(), data);
 	}
 
-	public x: number;
-	public y: number;
-	public z: number;
-
-	public nx: number;
-	public ny: number;
-	public nz: number;
+	public clone(): VertData {
+		const vertData = new VertData();
+		vertData.x = this.x;
+		vertData.y = this.y;
+		vertData.z = this.z;
+		vertData.nx = this.nx;
+		vertData.ny = this.ny;
+		vertData.nz = this.nz;
+		return vertData;
+	}
 }

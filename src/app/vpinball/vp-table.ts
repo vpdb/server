@@ -21,13 +21,13 @@
 import { values } from 'lodash';
 import { logger } from '../common/logger';
 import { OleCompoundDoc, Storage } from '../common/ole-doc';
+import { FlipperItem } from './flipper-item';
 import { GameData } from './game-data';
 import { GameItem } from './game-item';
 import { LightItem } from './light-item';
 import { PrimitiveItem } from './primitive-item';
 import { RubberItem } from './rubber-item';
 import { Texture } from './texture';
-import { FlipperItem } from './flipper-item';
 
 export class VpTable {
 
@@ -87,6 +87,11 @@ export class VpTable {
 			rubbers: values(this.rubbers).filter(r => r.fVisible).map(r => r.serialize(fileId)),
 			flippers: values(this.flippers).filter(r => r.fVisible).map(r => r.serialize()),
 		};
+	}
+
+	public getSurfaceHeight(surface: string, x: number, y: number) {
+		// see pinable.cpp L9100
+		return this.gameData.tableheight;
 	}
 
 	private async _load(fileName: string): Promise<void> {

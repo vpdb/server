@@ -108,6 +108,17 @@ export class Vertex3DNoTex2 {
 
 	public static size = 32;
 
+	public x: number;
+	public y: number;
+	public z: number;
+
+	public nx: number;
+	public ny: number;
+	public nz: number;
+
+	public tu: number;
+	public tv: number;
+
 	public static get(buffer: Buffer, pos: number): Vertex3DNoTex2 {
 		const offset = pos * Vertex3DNoTex2.size;
 		const vertex = new Vertex3DNoTex2();
@@ -119,6 +130,19 @@ export class Vertex3DNoTex2 {
 		vertex.nz = buffer.readFloatLE(offset + 20);
 		vertex.tu = buffer.readFloatLE(offset + 24);
 		vertex.tv = buffer.readFloatLE(offset + 28);
+		return vertex;
+	}
+
+	public clone(): Vertex3DNoTex2 {
+		const vertex = new Vertex3DNoTex2();
+		vertex.x = this.x;
+		vertex.y = this.y;
+		vertex.z = this.z;
+		vertex.nx = this.nx;
+		vertex.ny = this.ny;
+		vertex.nz = this.nz;
+		vertex.tu = this.tu;
+		vertex.tv = this.tv;
 		return vertex;
 	}
 
@@ -138,15 +162,4 @@ export class Vertex3DNoTex2 {
 		vertex.tv = arr[7];
 		return vertex;
 	}
-
-	public x: number;
-	public y: number;
-	public z: number;
-
-	public nx: number;
-	public ny: number;
-	public nz: number;
-
-	public tu: number;
-	public tv: number;
 }

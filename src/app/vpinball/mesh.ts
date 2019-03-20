@@ -27,10 +27,11 @@ export class Mesh {
 
 	private static exportPrecision = 6;
 
+	public name: string;
 	public vertices: Vertex3DNoTex2[] = [];
 	public animationFrames: FrameData[] = [];
 	public indices: number[] = [];
-	private faceIndexOffset = 0;
+	public faceIndexOffset = 0;
 
 	public static from(data: any): Mesh {
 		const mesh = new Mesh();
@@ -53,17 +54,27 @@ export class Mesh {
 		return mesh;
 	}
 
-	public serializeToObj(description: string): string {
+	public serializeToObj(description?: string): string {
 
 		const objFile: string[] = [];
 		//const mtlFile: string[] = [];
 
 		//this._writeHeader(objFile, mtlFile, basename(fileName) + '.wt');
-		this._writeObjectName(objFile, description);
+		this._writeObjectName(objFile, description || this.name);
 		this._writeVertexInfo(objFile);
 		this._writeFaceInfoLong(objFile);
 
 		return objFile.join('\n');
+	}
+
+	public clone(): Mesh {
+		const mesh = new Mesh();
+		mesh.name = this.name;
+		mesh.vertices = this.vertices.map(v => v.clone());
+		mesh.animationFrames = this.animationFrames.map(a => a.clone());
+		mesh.indices = this.indices.slice();
+		mesh.faceIndexOffset = this.faceIndexOffset;
+		return mesh;
 	}
 
 	public static computeNormals(vertices: Vertex3DNoTex2[], numVertices: number, indices: number[], numIndices: number) {

@@ -27,6 +27,7 @@ import { LightItem } from './light-item';
 import { PrimitiveItem } from './primitive-item';
 import { RubberItem } from './rubber-item';
 import { Texture } from './texture';
+import { FlipperItem } from './flipper-item';
 
 export class VpTable {
 
@@ -55,6 +56,7 @@ export class VpTable {
 	public primitives: { [key: string]: PrimitiveItem } = {};
 	public textures: { [key: string]: Texture } = {};
 	public rubbers: { [key: string]: RubberItem } = {};
+	public flippers: { [key: string]: FlipperItem } = {};
 	public lights: LightItem[] = [];
 
 	public getPrimitive(name: string): PrimitiveItem {
@@ -83,6 +85,7 @@ export class VpTable {
 			}, {}),
 			lights: this.lights.map(l => l.serialize()),
 			rubbers: values(this.rubbers).filter(r => r.fVisible).map(r => r.serialize(fileId)),
+			flippers: values(this.flippers).filter(r => r.fVisible).map(r => r.serialize()),
 		};
 	}
 
@@ -136,6 +139,12 @@ export class VpTable {
 				case GameItem.TypeRubber: {
 					const item = await RubberItem.fromStorage(storage, itemName);
 					this.rubbers[item.getName()] = item;
+					break;
+				}
+
+				case GameItem.TypeFlipper: {
+					const item = await FlipperItem.fromStorage(storage, itemName);
+					this.flippers[item.getName()] = item;
 					break;
 				}
 

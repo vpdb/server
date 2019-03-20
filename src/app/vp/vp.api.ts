@@ -34,8 +34,8 @@ import { VpTable } from '../vpinball/vp-table';
 
 export class VpApi extends Api {
 
-	private static cacheObj = false;
-	private static cacheVpx = false;
+	private static cacheObj = true;
+	private static cacheVpx = true;
 
 	/**
 	 * Returns all primitives of the vpx file

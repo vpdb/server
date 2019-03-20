@@ -82,7 +82,7 @@ export class VpTable {
 				return materials;
 			}, {}),
 			lights: this.lights.map(l => l.serialize()),
-			rubbers: values(this.rubbers).map(r => r.serialize(fileId)),
+			rubbers: values(this.rubbers).filter(r => r.fVisible).map(r => r.serialize(fileId)),
 		};
 	}
 

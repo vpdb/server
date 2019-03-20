@@ -20,7 +20,7 @@
 import { Storage } from '../common/ole-doc';
 import { settings } from '../common/settings';
 import { BiffParser } from './biff-parser';
-import { DragPoint } from './dragpoint';
+import { DragPoint, HIT_SHAPE_DETAIL_LEVEL } from './dragpoint';
 import { GameItem } from './game-item';
 import { FLT_MAX, FLT_MIN, Mesh } from './mesh';
 import { SplineVertex } from './spline-vertex';
@@ -92,12 +92,12 @@ export class RubberItem extends GameItem {
 		};
 	}
 
-	public serializeToObj(tableHeight: number, accuracy: number = 10) {
+	public serializeToObj(tableHeight: number, accuracy: number = -1) {
 		const mesh = this.generateMesh(tableHeight, 10, accuracy);
 		return mesh.serializeToObj(this.wzName);
 	}
 
-	private generateMesh(tableHeight: number, tableDetailLevel: number = 10, acc: number = 10, staticRendering = true): Mesh {
+	private generateMesh(tableHeight: number, tableDetailLevel: number = 10, acc: number = -1, staticRendering = true): Mesh {
 
 		const mesh = new Mesh();
 		const createHitShape = true;
@@ -121,7 +121,10 @@ export class RubberItem extends GameItem {
 			accuracy = acc;
 		}
 
-		const sv = SplineVertex.getInstance(this.dragPoints, this.thickness, tableDetailLevel, accuracy);
+		const sv = SplineVertex.getInstance(this.dragPoints, this.thickness, tableDetailLevel, acc !== -1
+			? 4.0 * Math.pow(10.0, (10.0 - HIT_SHAPE_DETAIL_LEVEL) * (1.0 / 1.5))
+			: -1.0,
+		);
 
 		const numRings = sv.pcvertex - 1;
 		const numSegments = accuracy;

@@ -522,21 +522,21 @@ export const OBJLoader = ( function () {
 
 					}
 
-				} else if ( lineFirstChar === 'f' ) {
+				} else if ( lineFirstChar === 'f' ) { // f 101/101/101 102/102/102 100/100/100
 
-					var lineData = line.substr( 1 ).trim();
-					var vertexData = lineData.split( /\s+/ );
+					var lineData = line.substr( 1 ).trim(); // 101/101/101 102/102/102 100/100/100
+					var vertexData = lineData.split( /\s+/ ); // [ '101/101/101', '102/102/102', '100/100/100' ]
 					var faceVertices = [];
 
 					// Parse the face vertex data into an easy to work with format
 
 					for ( var j = 0, jl = vertexData.length; j < jl; j ++ ) {
 
-						var vertex = vertexData[ j ];
+						var vertex = vertexData[ j ]; // '101/101/101'
 
 						if ( vertex.length > 0 ) {
 
-							var vertexParts = vertex.split( '/' );
+							var vertexParts = vertex.split( '/' ); // [ '101', '101', '101' ]
 							faceVertices.push( vertexParts );
 
 						}

@@ -18,6 +18,7 @@
  */
 
 import { FrameData } from './common';
+import { MeshConverter } from './gltf/mesh-converter';
 import { RenderVertex, Vertex2D, Vertex3D, Vertex3DNoTex2 } from './vertex';
 
 export const FLT_MIN = 1.175494350822287507968736537222245677819e-038;
@@ -65,6 +66,11 @@ export class Mesh {
 		this._writeFaceInfoLong(objFile);
 
 		return objFile.join('\n');
+	}
+
+	public getBufferGeometry() {
+		const converter = new MeshConverter(this);
+		return converter.convertToBufferGeometry();
 	}
 
 	public clone(): Mesh {
@@ -236,29 +242,14 @@ export class Mesh {
 			objFile.push(`v ${vert.x.toFixed(Mesh.exportPrecision)} ${vert.y.toFixed(Mesh.exportPrecision)} ${(-vert.z).toFixed(Mesh.exportPrecision)}`);
 		}
 		for (const vert of this.vertices) {
-			let tu = vert.tu;
-			let tv = 1 - vert.tv;
-			if (tu !== tu) {
-				tu = 0.0;
-			}
-			if (tv !== tv) {
-				tv = 0.0;
-			}
+			const tu = vert.tu;
+			const tv = 1 - vert.tv;
 			objFile.push(`vt ${tu.toFixed(Mesh.exportPrecision)} ${tv.toFixed(Mesh.exportPrecision)}`);
 		}
 		for (const vert of this.vertices) {
-			let nx = vert.nx;
-			let ny = vert.ny;
-			let nz = vert.nz;
-			if (nx !== nx) {
-				nx = 0.0;
-			}
-			if (ny !== ny) {
-				ny = 0.0;
-			}
-			if (nz !== nz) {
-				nz = 0.0;
-			}
+			const nx = vert.nx;
+			const ny = vert.ny;
+			const nz = vert.nz;
 			objFile.push(`vn ${nx.toFixed(Mesh.exportPrecision)} ${ny.toFixed(Mesh.exportPrecision)} ${(-nz).toFixed(Mesh.exportPrecision)}`);
 		}
 	}

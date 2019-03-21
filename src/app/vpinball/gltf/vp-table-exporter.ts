@@ -18,7 +18,7 @@
  */
 
 import { values } from 'lodash';
-import { Group, Scene } from 'three';
+import { Group, Mesh, MeshStandardMaterial, Scene } from 'three';
 
 import { PrimitiveItem } from '../primitive-item';
 import { VpTable } from '../vp-table';
@@ -61,9 +61,9 @@ export class VpTableExporter extends BaseExporter {
 
 		let primitive: PrimitiveItem;
 		for (primitive of values(this.table.primitives)) {
-			const group: Group = this.objLoader.parse(primitive.serializeToObj());
 
-			const mesh = group.children[0];
+			const bufferGeometry = primitive.mesh.getBufferGeometry();
+			const mesh = new Mesh(bufferGeometry, new MeshStandardMaterial());
 			mesh.name = primitive.getName();
 
 			this.positionPrimitive(mesh, primitive);

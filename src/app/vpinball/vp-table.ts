@@ -28,6 +28,7 @@ import { LightItem } from './light-item';
 import { PrimitiveItem } from './primitive-item';
 import { RubberItem } from './rubber-item';
 import { Texture } from './texture';
+import { SurfaceItem } from './surface-item';
 
 export class VpTable {
 
@@ -53,6 +54,7 @@ export class VpTable {
 	}
 
 	public gameData: GameData;
+	public surfaces: { [key: string]: SurfaceItem } = {};
 	public primitives: { [key: string]: PrimitiveItem } = {};
 	public textures: { [key: string]: Texture } = {};
 	public rubbers: { [key: string]: RubberItem } = {};
@@ -69,6 +71,10 @@ export class VpTable {
 
 	public getTexture(name: string): Texture {
 		return this.textures[name];
+	}
+
+	public getSurface(name: string): SurfaceItem {
+		return this.surfaces[name];
 	}
 
 	public serialize(fileId: string) {
@@ -129,6 +135,12 @@ export class VpTable {
 			const itemData = await storage.read(itemName, 0, 4);
 			const itemType = itemData.readInt32LE(0);
 			switch (itemType) {
+
+				case GameItem.TypeSurface: {
+					const item = await SurfaceItem.fromStorage(storage, itemName);
+					this.surfaces[item.getName()] = item;
+					break;
+				}
 
 				case GameItem.TypePrimitive: {
 					const item = await PrimitiveItem.fromStorage(storage, itemName);

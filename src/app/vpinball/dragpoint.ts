@@ -96,6 +96,97 @@ export class DragPoint extends GameItem {
 		return vv;
 	}
 
+	public static getTextureCoords(dragPoints: DragPoint[], vv: RenderVertex[]): number[] {
+
+		const vitexpoints: number[] = [];
+		const virenderpoints: number[] = [];
+		let m_fNoCoords = false;
+
+		const cpoints = vv.length;
+		let icontrolpoint = 0;
+
+		const ppcoords: number[] = [];
+
+		for (let i = 0; i < cpoints; ++i) {
+			const prv = vv[i];
+			if (prv.fControlPoint) {
+				if (!dragPoints[icontrolpoint].fAutoTexture) {
+					vitexpoints.push(icontrolpoint);
+					virenderpoints.push(i);
+				}
+				++icontrolpoint;
+			}
+		}
+
+		if (vitexpoints.length === 0) {
+			// Special case - no texture coordinates were specified
+			// Make them up starting at point 0
+			vitexpoints.push(0);
+			virenderpoints.push(0);
+
+			m_fNoCoords = true;
+		}
+
+		// Wrap the array around so we cover the last section
+		vitexpoints.push(vitexpoints[0] + dragPoints.length);
+		virenderpoints.push(virenderpoints[0] + cpoints);
+
+		for (let i = 0; i < vitexpoints.length - 1; ++i) {
+
+			const startrenderpoint = virenderpoints[i] % cpoints;
+			let endrenderpoint = virenderpoints[(i < cpoints - 1) ? (i + 1) : 0] % cpoints;
+
+			let starttexcoord: number;
+			let endtexcoord: number;
+			if (m_fNoCoords) {
+				starttexcoord = 0.0;
+				endtexcoord = 1.0;
+
+			} else {
+				starttexcoord = dragPoints[vitexpoints[i] % dragPoints.length].texturecoord;
+				endtexcoord = dragPoints[vitexpoints[i + 1] % dragPoints.length].texturecoord;
+			}
+
+			const deltacoord = endtexcoord - starttexcoord;
+
+			if (endrenderpoint <= startrenderpoint) {
+				endrenderpoint += cpoints;
+			}
+
+			let totallength = 0.0;
+			for (let l = startrenderpoint; l < endrenderpoint; ++l) {
+
+				const pv1 = vv[l % cpoints];
+				const pv2 = vv[(l + 1) % cpoints];
+
+				const dx = pv1.x - pv2.x;
+				const dy = pv1.y - pv2.y;
+				const length = Math.sqrt(dx*dx + dy*dy);
+
+				totallength += length;
+			}
+
+			let partiallength = 0.0;
+			for (let l = startrenderpoint; l < endrenderpoint; ++l) {
+
+				const pv1 = vv[l % cpoints];
+				const pv2 = vv[(l + 1) % cpoints];
+
+				const dx = pv1.x - pv2.x;
+				const dy = pv1.y - pv2.y;
+				const length = Math.sqrt(dx*dx + dy*dy);
+				if (totallength === 0.0) {
+					totallength = 1.0;
+				}
+				const texcoord = partiallength / totallength;
+
+				ppcoords[l % cpoints] = (texcoord * deltacoord) + starttexcoord;
+				partiallength += length;
+			}
+		}
+		return ppcoords;
+	}
+
 	private static recurseSmoothLine(vv: RenderVertex[] = [], cc: CatmullCurve, t1: number, t2: number, vt1: RenderVertex, vt2: RenderVertex, accuracy: number): RenderVertex[] {
 
 		const tMid = (t1 + t2) * 0.5;

@@ -123,8 +123,12 @@ export class BiffParser {
 		return r + g + b;
 	}
 
-	protected getString(buffer: Buffer, len: number): string {
-		return buffer.slice(4, len).toString('utf8');
+	protected getString(buffer: Buffer, len: number, dropIfNotAscii = false): string {
+		const str = buffer.slice(4, len).toString('utf8');
+		if (!dropIfNotAscii || this.isAscii(str)) {
+			return str;
+		}
+		return '';
 	}
 
 	protected getWideString(buffer: Buffer, len: number): string {
@@ -166,4 +170,9 @@ export class BiffParser {
 		}
 		return ints;
 	}
+
+	private isAscii(str: string): boolean {
+		return /^[\x00-\x7F]*$/.test(str);
+	}
+
 }

@@ -97,7 +97,7 @@ export class RubberItem extends GameItem {
 		return mesh.serializeToObj(this.wzName);
 	}
 
-	private generateMesh(tableHeight: number, tableDetailLevel: number = 10, acc: number = -1, staticRendering = true): Mesh {
+	public generateMesh(tableHeight: number, tableDetailLevel: number = 10, acc: number = -1, staticRendering = true): Mesh {
 
 		const mesh = new Mesh();
 		const createHitShape = true;

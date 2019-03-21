@@ -47,7 +47,7 @@ export class Texture extends BiffParser {
 					onStart: () => new Binary(),
 					onTag: binary => binary.fromTag.bind(binary),
 					onEnd: binary => texture.binary = binary,
-				}
+				},
 			},
 			streamedTags: ['BITS'],
 		});

@@ -32,12 +32,12 @@ import { sortableTitlePlugin } from '../common/mongoose/sortable.title.plugin';
 import { authorSchema } from '../users/content.author.schema';
 
 import { logger } from '../common/logger';
+import { GameDocument } from '../games/game.document';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
 import { Release } from './release';
 import { ReleaseDocument } from './release.document';
 import { releaseVersionSchema } from './version/release.version.schema';
-import { GameDocument } from '../games/game.document';
 
 const shortId = require('shortid32');
 

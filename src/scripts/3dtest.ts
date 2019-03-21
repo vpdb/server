@@ -30,8 +30,10 @@ import { writeFileSync } from 'fs';
 		//const tablePath = 'D:/Pinball/Visual Pinball/Tables/Batman Dark Knight tt&NZ 1.2.vpx';
 
 		const vpt = await VpTable.load(tablePath);
-		console.log(inspect(vpt.gameData, { colors: true, depth: null }));
-		writeFileSync('test.json', JSON.stringify(vpt, null, '  '));
+		await vpt.export();
+
+		//console.log(inspect(vpt.gameData, { colors: true, depth: null }));
+		//writeFileSync('test.json', JSON.stringify(vpt, null, '  '));
 
 		//await vpt.getPrimitive('Joker').exportMeshToObj('Joker.obj');
 

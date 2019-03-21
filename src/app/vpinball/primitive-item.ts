@@ -24,10 +24,10 @@ import { FileUtil } from '../files/file.util';
 import { BiffParser } from './biff-parser';
 import { FrameData, Vector3 } from './common';
 import { GameItem } from './game-item';
-import { Mesh } from './mesh';
-import { Vertex3DNoTex2 } from './vertex';
+import { IPositionable, Mesh } from './mesh';
+import { Vertex3D, Vertex3DNoTex2 } from './vertex';
 
-export class PrimitiveItem extends GameItem {
+export class PrimitiveItem extends GameItem implements IPositionable {
 
 	public static async fromStorage(storage: Storage, itemName: string): Promise<PrimitiveItem> {
 		const primitiveItem = new PrimitiveItem();
@@ -76,6 +76,26 @@ export class PrimitiveItem extends GameItem {
 		const obj = this.mesh.serializeToObj(description);
 		await FileUtil.writeFile(fileName, obj);
 		logger.info(null, '[Mesh.serializeToObj] Exported OBJ of %s to %s.', description, fileName);
+	}
+
+	public getPosition(): Vertex3D {
+		return new Vertex3D(this.data.vPosition.x, this.data.vPosition.y, this.data.vPosition.z);
+	}
+
+	public getRotation(): Vertex3D {
+		return new Vertex3D(this.data.aRotAndTra[0], this.data.aRotAndTra[1], this.data.aRotAndTra[2]);
+	}
+
+	public getTransition(): Vertex3D {
+		return new Vertex3D(this.data.aRotAndTra[3], this.data.aRotAndTra[4], this.data.aRotAndTra[5]);
+	}
+
+	public getObjectRotation(): Vertex3D {
+		return new Vertex3D(this.data.aRotAndTra[6], this.data.aRotAndTra[7], this.data.aRotAndTra[8]);
+	}
+
+	public getScale(): Vertex3D {
+		return new Vertex3D(this.data.vSize.x, this.data.vSize.y, this.data.vSize.z);
 	}
 
 	public serialize(fileId: string) {

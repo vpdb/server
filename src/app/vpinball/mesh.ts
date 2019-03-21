@@ -118,7 +118,7 @@ export class Mesh {
 		for (let l = 0; l < tricount; ++l) {
 			for (let i = 0; i < pvpoly.length; ++i) {
 				const s = pvpoly.length;
-				const pre = pvpoly[(i == 0) ? (s - 1) : (i - 1)];
+				const pre = pvpoly[(i === 0) ? (s - 1) : (i - 1)];
 				const a = pvpoly[i];
 				const b = pvpoly[(i < s - 1) ? (i + 1) : 0];
 				const c = pvpoly[(i < s - 2) ? (i + 2) : ((i + 2) - s)];
@@ -164,20 +164,20 @@ export class Mesh {
 
 		for (let i = 0; i < pvpoly.length; ++i) {
 
-		const pvCross1 = rgv[pvpoly[i]];
-		const pvCross2 = rgv[pvpoly[(i < pvpoly.length - 1) ? (i + 1) : 0]];
+			const pvCross1 = rgv[pvpoly[i]];
+			const pvCross2 = rgv[pvpoly[(i < pvpoly.length - 1) ? (i + 1) : 0]];
 
-		if (pvCross1 != pv1 && pvCross2 != pv1 && pvCross1 != pv3 && pvCross2 != pv3 &&
-			(pvCross1.y >= miny || pvCross2.y >= miny) &&
-			(pvCross1.y <= maxy || pvCross2.y <= maxy) &&
-			(pvCross1.x >= minx || pvCross2.x >= minx) &&
-			(pvCross1.x <= maxx || pvCross2.y <= maxx) &&
-			Mesh.fLinesIntersect(pv1, pv3, pvCross1, pvCross2)) {
-			return false;
+			if (pvCross1 !== pv1 && pvCross2 !== pv1 && pvCross1 !== pv3 && pvCross2 !== pv3 &&
+				(pvCross1.y >= miny || pvCross2.y >= miny) &&
+				(pvCross1.y <= maxy || pvCross2.y <= maxy) &&
+				(pvCross1.x >= minx || pvCross2.x >= minx) &&
+				(pvCross1.x <= maxx || pvCross2.y <= maxx) &&
+				Mesh.fLinesIntersect(pv1, pv3, pvCross1, pvCross2)) {
+				return false;
+			}
 		}
-	}
 
-	return true;
+		return true;
 	}
 
 	private static getDot(pvEnd1: Vertex2D, pvJoint: Vertex2D, pvEnd2: Vertex2D): number {
@@ -198,13 +198,13 @@ export class Mesh {
 
 		const d123 = (x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1);
 
-		if (d123 == 0.0) { // p3 lies on the same line as p1 and p2
+		if (d123 === 0.0) { // p3 lies on the same line as p1 and p2
 			return (x3 >= Math.min(x1, x2) && x3 <= Math.max(x2, x1));
 		}
 
 		const d124 = (x2 - x1) * (y4 - y1) - (x4 - x1) * (y2 - y1);
 
-		if (d124 == 0.0) { // p4 lies on the same line as p1 and p2
+		if (d124 === 0.0) { // p4 lies on the same line as p1 and p2
 			return (x4 >= Math.min(x1, x2) && x4 <= Math.max(x2, x1));
 		}
 
@@ -214,7 +214,7 @@ export class Mesh {
 
 		const d341 = (x3 - x1) * (y4 - y1) - (x4 - x1) * (y3 - y1);
 
-		if (d341 == 0.0) { // p1 lies on the same line as p3 and p4
+		if (d341 === 0.0) { // p1 lies on the same line as p3 and p4
 			return (x1 >= Math.min(x3, x4) && x1 <= Math.max(x3, x4));
 		}
 
@@ -274,4 +274,12 @@ export class Mesh {
 			objFile.push(`f ` + values.map(v => v.join('/')).join(' '));
 		}
 	}
+}
+
+export interface IPositionable {
+	getPosition(): Vertex3D;
+	getRotation(): Vertex3D;
+	getTransition(): Vertex3D;
+	getObjectRotation(): Vertex3D;
+	getScale(): Vertex3D;
 }

@@ -19,9 +19,9 @@
 
 import { MetricsDocument, Types } from 'mongoose';
 import { RequestState } from '../common/typings/context';
+import { ReleaseDocument } from '../releases/release.document';
 import { UserDocument } from '../users/user.document';
 import { FileVariation } from './file.variations';
-import { ReleaseDocument } from '../releases/release.document';
 
 export interface FileDocument extends MetricsDocument {
 	id: string;

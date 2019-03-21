@@ -95,7 +95,6 @@ export class FlipperItem extends GameItem {
 	}
 
 	private generateMeshes(table: VpTable): Mesh[] {
-		const meshes: Mesh[] = [];
 
 		const matTrafo = new Matrix4();
 		const matTemp = new Matrix4();
@@ -153,7 +152,7 @@ export class FlipperItem extends GameItem {
 			return [ baseMesh, rubberMesh ];
 		}
 
-		return meshes;
+		return [ baseMesh ];
 	}
 
 	private generateBaseMesh(table: VpTable): { base: Vertex3DNoTex2[], rubber: Vertex3DNoTex2[] } {

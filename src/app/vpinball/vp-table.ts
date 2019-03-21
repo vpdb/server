@@ -24,11 +24,12 @@ import { OleCompoundDoc, Storage } from '../common/ole-doc';
 import { FlipperItem } from './flipper-item';
 import { GameData } from './game-data';
 import { GameItem } from './game-item';
+import { VpTableExporter } from './gltf/vp-table-exporter';
 import { LightItem } from './light-item';
 import { PrimitiveItem } from './primitive-item';
 import { RubberItem } from './rubber-item';
-import { Texture } from './texture';
 import { SurfaceItem } from './surface-item';
+import { Texture } from './texture';
 
 export class VpTable {
 
@@ -98,6 +99,11 @@ export class VpTable {
 	public getSurfaceHeight(surface: string, x: number, y: number) {
 		// see pinable.cpp L9100
 		return this.gameData.tableheight;
+	}
+
+	public async export() {
+		const exporter = new VpTableExporter(this);
+		return await exporter.export();
 	}
 
 	private async _load(fileName: string): Promise<void> {

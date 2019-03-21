@@ -17,7 +17,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { EndPoint } from './api.endpoint';
 import { AuthenticationEndPoint, AuthenticationStorageEndPoint } from '../authentication';
 import { BackglassEndPoint } from '../backglasses';
 import { BuildApiEndPoint } from '../builds';
@@ -38,6 +37,7 @@ import { TagApiEndPoint } from '../tags';
 import { TokenEndPoint } from '../tokens';
 import { UserEndPoint } from '../users';
 import { VpApiEndPoint } from '../vp';
+import { EndPoint } from './api.endpoint';
 
 export const endPoints: EndPoint[] = [
 	new AuthenticationEndPoint(),

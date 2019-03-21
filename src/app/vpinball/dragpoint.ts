@@ -100,7 +100,7 @@ export class DragPoint extends GameItem {
 
 		const vitexpoints: number[] = [];
 		const virenderpoints: number[] = [];
-		let m_fNoCoords = false;
+		let fNoCoords = false;
 
 		const cpoints = vv.length;
 		let icontrolpoint = 0;
@@ -124,7 +124,7 @@ export class DragPoint extends GameItem {
 			vitexpoints.push(0);
 			virenderpoints.push(0);
 
-			m_fNoCoords = true;
+			fNoCoords = true;
 		}
 
 		// Wrap the array around so we cover the last section
@@ -138,7 +138,7 @@ export class DragPoint extends GameItem {
 
 			let starttexcoord: number;
 			let endtexcoord: number;
-			if (m_fNoCoords) {
+			if (fNoCoords) {
 				starttexcoord = 0.0;
 				endtexcoord = 1.0;
 
@@ -161,7 +161,7 @@ export class DragPoint extends GameItem {
 
 				const dx = pv1.x - pv2.x;
 				const dy = pv1.y - pv2.y;
-				const length = Math.sqrt(dx*dx + dy*dy);
+				const length = Math.sqrt(dx * dx + dy * dy);
 
 				totallength += length;
 			}
@@ -174,7 +174,7 @@ export class DragPoint extends GameItem {
 
 				const dx = pv1.x - pv2.x;
 				const dy = pv1.y - pv2.y;
-				const length = Math.sqrt(dx*dx + dy*dy);
+				const length = Math.sqrt(dx * dx + dy * dy);
 				if (totallength === 0.0) {
 					totallength = 1.0;
 				}
@@ -238,13 +238,27 @@ export class DragPoint extends GameItem {
 
 	public async fromTag(buffer: Buffer, tag: string): Promise<void> {
 		switch (tag) {
-			case 'VCEN': this.vertex = Vertex3D.get(buffer); break;
-			case 'POSZ': this.vertex.z = this.getFloat(buffer); break;
-			case 'SMTH': this.fSmooth = this.getBool(buffer); break;
-			case 'SLNG': this.fSlingshot = this.getBool(buffer); break;
-			case 'ATEX': this.fAutoTexture = this.getBool(buffer); break;
-			case 'TEXC': this.texturecoord = this.getFloat(buffer); break;
-			default: this.getUnknownBlock(buffer, tag); break;
+			case 'VCEN':
+				this.vertex = Vertex3D.get(buffer);
+				break;
+			case 'POSZ':
+				this.vertex.z = this.getFloat(buffer);
+				break;
+			case 'SMTH':
+				this.fSmooth = this.getBool(buffer);
+				break;
+			case 'SLNG':
+				this.fSlingshot = this.getBool(buffer);
+				break;
+			case 'ATEX':
+				this.fAutoTexture = this.getBool(buffer);
+				break;
+			case 'TEXC':
+				this.texturecoord = this.getFloat(buffer);
+				break;
+			default:
+				this.getUnknownBlock(buffer, tag);
+				break;
 		}
 	}
 

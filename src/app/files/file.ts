@@ -21,14 +21,13 @@ import chalk from 'chalk';
 import { resolve } from 'path';
 import { quota } from '../common/quota';
 import { config, settings } from '../common/settings';
-import { Context, RequestState } from '../common/typings/context';
+import { RequestState } from '../common/typings/context';
+import { ReleaseDocument } from '../releases/release.document';
+import { state } from '../state';
 import { FileDocument, FilePathOptions } from './file.document';
 import { mimeTypes } from './file.mimetypes';
 import { fileTypes } from './file.types';
 import { FileVariation } from './file.variations';
-import { ReleaseVersionFileDocument } from '../releases/version/file/release.version.file.document';
-import { state } from '../state';
-import { ReleaseDocument } from '../releases/release.document';
 
 /**
  * Contains the Game's instance methods so they can also be accessed

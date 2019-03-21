@@ -21,11 +21,11 @@ import { inflate } from 'zlib';
 import { ReadResult } from '../common/ole-doc';
 
 export type OnBiffResult = (buffer: Buffer, tag: string, offset: number, len: number) => Promise<void>;
-export type OnBiffResultStream<T> = {
+export interface OnBiffResultStream<T> {
 	onStart: () => T;
 	onTag: (item: T) => OnBiffResult;
 	onEnd: (item: T) => void;
-};
+}
 
 export interface BiffStreamOptions {
 	streamedTags?: string[];

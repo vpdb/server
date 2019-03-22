@@ -39,6 +39,10 @@ export class BiffParser {
 		let nestedItem: any = null;
 		return async (result: ReadResult) => {
 			const data = result.data;
+			if (data.length < 4) {
+				// todo why does this happen with example table?
+				return -1;
+			}
 			let len = data.readInt32LE(0);
 			let dataResult: Buffer;
 			const tag = data.slice(4, 8).toString();

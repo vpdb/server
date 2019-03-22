@@ -111,9 +111,9 @@ export class SurfaceItem extends GameItem {
 		let rgtexcoord: number[] = null;
 
 		const pinSide = this.szSideImage;
-		if (pinSide) {
+		//if (pinSide) {
 			rgtexcoord = DragPoint.getTextureCoords(this.dragPoints, vvertex);
-		}
+		//}
 
 		const numVertices = vvertex.length;
 		const rgnormal: Vertex2D[] = [];
@@ -183,7 +183,7 @@ export class SurfaceItem extends GameItem {
 			meshes.side.vertices[offset + 3].y = pv2.y;
 			meshes.side.vertices[offset + 3].z = bottom;
 
-			if (pinSide) {
+			//if (pinSide) {
 				meshes.side.vertices[offset].tu = rgtexcoord[i];
 				meshes.side.vertices[offset].tv = 1.0;
 
@@ -195,7 +195,7 @@ export class SurfaceItem extends GameItem {
 
 				meshes.side.vertices[offset + 3].tu = rgtexcoord[c];
 				meshes.side.vertices[offset + 3].tv = 1.0;
-			}
+			//}
 
 			meshes.side.vertices[offset].nx = vnormal[0].x;
 			meshes.side.vertices[offset].ny = -vnormal[0].y;
@@ -291,104 +291,39 @@ export class SurfaceItem extends GameItem {
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<void> {
 		switch (tag) {
-			case 'PIID':
-				this.pdata = this.getInt(buffer);
-				break;
-			case 'HTEV':
-				this.fHitEvent = this.getBool(buffer);
-				break;
-			case 'DROP':
-				this.fDroppable = this.getBool(buffer);
-				break;
-			case 'FLIP':
-				this.fFlipbook = this.getBool(buffer);
-				break;
-			case 'ISBS':
-				this.fIsBottomSolid = this.getBool(buffer);
-				break;
-			case 'CLDW':
-				this.fCollidable = this.getBool(buffer);
-				break;
-			case 'TMON':
-				this.fTimerEnabled = this.getBool(buffer);
-				break;
-			case 'TMIN':
-				this.TimerInterval = this.getInt(buffer);
-				break;
-			case 'THRS':
-				this.threshold = this.getFloat(buffer);
-				break;
-			case 'IMAG':
-				this.szImage = this.getString(buffer, len);
-				break;
-			case 'SIMG':
-				this.szSideImage = this.getString(buffer, len);
-				break;
-			case 'SIMA':
-				this.szSideMaterial = this.getString(buffer, len, true);
-				break;
-			case 'TOMA':
-				this.szTopMaterial = this.getString(buffer, len, true);
-				break;
-			case 'MAPH':
-				this.szPhysicsMaterial = this.getString(buffer, len);
-				break;
-			case 'SLMA':
-				this.szSlingShotMaterial = this.getString(buffer, len, true);
-				break;
-			case 'HTBT':
-				this.heightbottom = this.getFloat(buffer);
-				break;
-			case 'HTTP':
-				this.heighttop = this.getFloat(buffer);
-				break;
-			case 'INNR':
-				this.fInner = this.getBool(buffer);
-				break;
-			case 'NAME':
-				this.wzName = this.getWideString(buffer, len);
-				break;
-			case 'DSPT':
-				this.fDisplayTexture = this.getBool(buffer);
-				break;
-			case 'SLGF':
-				this.slingshotforce = this.getFloat(buffer);
-				break;
-			case 'SLTH':
-				this.slingshotThreshold = this.getFloat(buffer);
-				break;
-			case 'ELAS':
-				this.elasticity = this.getFloat(buffer);
-				break;
-			case 'WFCT':
-				this.friction = this.getFloat(buffer);
-				break;
-			case 'WSCT':
-				this.scatter = this.getFloat(buffer);
-				break;
-			case 'VSBL':
-				this.fTopBottomVisible = this.getBool(buffer);
-				break;
-			case 'OVPH':
-				this.fOverwritePhysics = this.getBool(buffer);
-				break;
-			case 'SLGA':
-				this.fSlingshotAnimation = this.getBool(buffer);
-				break;
-			case 'DILI':
-				this.fDisableLightingTop = this.getFloat(buffer);
-				break;
-			case 'DILB':
-				this.fDisableLightingBelow = this.getFloat(buffer);
-				break;
-			case 'SVBL':
-				this.fSideVisible = this.getBool(buffer);
-				break;
-			case 'REEN':
-				this.fReflectionEnabled = this.getBool(buffer);
-				break;
-			case 'PNTS':
-				break; // never read in vpinball
+			case 'PIID': this.pdata = this.getInt(buffer); break;
+			case 'HTEV': this.fHitEvent = this.getBool(buffer); break;
+			case 'DROP': this.fDroppable = this.getBool(buffer); break;
+			case 'FLIP': this.fFlipbook = this.getBool(buffer); break;
+			case 'ISBS': this.fIsBottomSolid = this.getBool(buffer); break;
+			case 'CLDW': this.fCollidable = this.getBool(buffer); break;
+			case 'TMON': this.fTimerEnabled = this.getBool(buffer); break;
+			case 'TMIN': this.TimerInterval = this.getInt(buffer); break;
+			case 'THRS': this.threshold = this.getFloat(buffer); break;
+			case 'IMAG': this.szImage = this.getString(buffer, len); break;
+			case 'SIMG': this.szSideImage = this.getString(buffer, len); break;
+			case 'SIMA': this.szSideMaterial = this.getString(buffer, len, true); break;
+			case 'TOMA': this.szTopMaterial = this.getString(buffer, len, true); break;
+			case 'MAPH': this.szPhysicsMaterial = this.getString(buffer, len); break;
+			case 'SLMA': this.szSlingShotMaterial = this.getString(buffer, len, true); break;
+			case 'HTBT': this.heightbottom = this.getFloat(buffer); break;
+			case 'HTTP': this.heighttop = this.getFloat(buffer); break;
+			case 'INNR': this.fInner = this.getBool(buffer); break;
+			case 'NAME': this.wzName = this.getWideString(buffer, len); break;
+			case 'DSPT': this.fDisplayTexture = this.getBool(buffer); break;
+			case 'SLGF': this.slingshotforce = this.getFloat(buffer);break;
+			case 'SLTH': this.slingshotThreshold = this.getFloat(buffer); break;
+			case 'ELAS': this.elasticity = this.getFloat(buffer); break;
+			case 'WFCT': this.friction = this.getFloat(buffer); break;
+			case 'WSCT': this.scatter = this.getFloat(buffer); break;
+			case 'VSBL': this.fTopBottomVisible = this.getBool(buffer); break;
+			case 'OVPH': this.fOverwritePhysics = this.getBool(buffer); break;
+			case 'SLGA': this.fSlingshotAnimation = this.getBool(buffer); break;
+			case 'DILI': this.fDisableLightingTop = this.getFloat(buffer); break;
+			case 'DILB': this.fDisableLightingBelow = this.getFloat(buffer); break;
+			case 'SVBL': this.fSideVisible = this.getBool(buffer); break;
+			case 'REEN': this.fReflectionEnabled = this.getBool(buffer); break;
+			case 'PNTS': break; // never read in vpinball
 			default:
 				this.getUnknownBlock(buffer, tag);
 				break;

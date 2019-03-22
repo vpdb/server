@@ -25,6 +25,7 @@ import { GameItem } from './game-item';
 import { FLT_MAX, FLT_MIN, Mesh } from './mesh';
 import { SplineVertex } from './spline-vertex';
 import { Vertex3D, Vertex3DNoTex2 } from './vertex';
+import { VpTable } from './vp-table';
 
 export class RubberItem extends GameItem {
 
@@ -92,12 +93,12 @@ export class RubberItem extends GameItem {
 		};
 	}
 
-	public serializeToObj(tableHeight: number, accuracy: number = -1) {
-		const mesh = this.generateMesh(tableHeight, 10, accuracy);
+	public serializeToObj(table: VpTable, accuracy: number = -1) {
+		const mesh = this.generateMesh(table, 10, accuracy);
 		return mesh.serializeToObj(this.wzName);
 	}
 
-	public generateMesh(tableHeight: number, tableDetailLevel: number = 10, acc: number = -1, staticRendering = true): Mesh {
+	public generateMesh(table: VpTable, tableDetailLevel: number = 10, acc: number = -1, staticRendering = true): Mesh {
 
 		const mesh = new Mesh();
 		const createHitShape = true;
@@ -132,7 +133,7 @@ export class RubberItem extends GameItem {
 		const numVertices = numRings * numSegments;
 		const numIndices = 6 * numVertices; //m_numVertices*2+2;
 
-		const height = this.hitHeight + tableHeight;
+		const height = this.hitHeight + table.gameData.tableheight;
 
 		let prevB = new Vertex3D();
 		const invNR = 1.0 / numRings;

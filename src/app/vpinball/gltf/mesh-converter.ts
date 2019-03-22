@@ -36,7 +36,9 @@ export class MeshConverter {
 		for (const vertex of this.mesh.vertices) {
 			state.vertices.push(vertex.x, vertex.y, -vertex.z);
 			state.normals.push(vertex.nx, vertex.ny, -vertex.nz);
-			state.uvs.push(vertex.tu, 1 - vertex.tv);
+			if (vertex.hasTextureCoordinates()) {
+				state.uvs.push(vertex.tu, 1 - vertex.tv);
+			}
 		}
 
 		// faces

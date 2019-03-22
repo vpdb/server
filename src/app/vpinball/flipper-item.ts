@@ -94,7 +94,8 @@ export class FlipperItem extends GameItem {
 		};
 	}
 
-	private generateMeshes(table: VpTable): Mesh[] {
+	public generateMeshes(table: VpTable): { base: Mesh, rubber?: Mesh } {
+
 
 		const matTrafo = new Matrix4();
 		const matTemp = new Matrix4();
@@ -102,7 +103,7 @@ export class FlipperItem extends GameItem {
 		matTemp.identity();
 		matTrafo.makeTranslation(this.Center.x, this.Center.y, 0);
 		matTemp.makeRotationZ(M.radToDeg(this.StartAngle));
-		matTrafo.multiplyMatrices(matTemp, matTrafo);
+		matTrafo.multiplyMatrices(matTrafo, matTemp);
 
 		const flipper = this.generateBaseMesh(table);
 
@@ -115,7 +116,7 @@ export class FlipperItem extends GameItem {
 			buf[i].z = vert.z;
 
 			vert = new Vertex3D(buf[i].nx, buf[i].ny, buf[i].nz);
-			vert.applyMatrix4(matTrafo);
+			vert.applyMatrix4(matTemp);
 			buf[i].nx = vert.x;
 			buf[i].ny = vert.y;
 			buf[i].nz = vert.z;
@@ -125,6 +126,10 @@ export class FlipperItem extends GameItem {
 		baseMesh.name = 'Base';
 		baseMesh.vertices = buf;
 		baseMesh.indices = flipperBaseMesh.indices;
+
+		const meshes: { base: Mesh, rubber?: Mesh } = {
+			base: baseMesh
+		};
 
 		if (this.rubberthickness > 0.0) {
 
@@ -137,7 +142,7 @@ export class FlipperItem extends GameItem {
 				buf[i].z = vert.z;
 
 				vert = new Vertex3D(buf[i].nx, buf[i].ny, buf[i].nz);
-				vert.applyMatrix4(matTrafo);
+				vert.applyMatrix4(matTemp);
 				buf[i].nx = vert.x;
 				buf[i].ny = vert.y;
 				buf[i].nz = vert.z;
@@ -149,10 +154,10 @@ export class FlipperItem extends GameItem {
 			rubberMesh.indices = flipperBaseMesh.indices;
 			rubberMesh.faceIndexOffset = flipperBaseMesh.vertices.length;
 
-			return [ baseMesh, rubberMesh ];
+			meshes.rubber = rubberMesh;
 		}
 
-		return [ baseMesh ];
+		return meshes;
 	}
 
 	private generateBaseMesh(table: VpTable): { base: Vertex3DNoTex2[], rubber: Vertex3DNoTex2[] } {
@@ -162,7 +167,7 @@ export class FlipperItem extends GameItem {
 			rubber: [],
 		};
 		const fullMatrix = new Matrix4();
-		fullMatrix.makeRotationZ(M.degToRad(180.0));
+		//fullMatrix.makeRotationZ(M.degToRad(180.0));
 
 		const height = table.getSurfaceHeight(this.szSurface, this.Center.x, this.Center.y);
 		const baseScale = 10.0;
@@ -202,7 +207,7 @@ export class FlipperItem extends GameItem {
 			result.base[i] = new Vertex3DNoTex2();
 			result.base[i].x = vert.x;
 			result.base[i].y = vert.y;
-			result.base[i].z = vert.z * this.height * table.gameData.BG_scalez[table.gameData.BG_current_set] + height;
+			result.base[i].z = vert.z * this.height * table.getScaleZ() + height;
 
 			vert = new Vertex3D(flipperBaseMesh.vertices[i].nx, flipperBaseMesh.vertices[i].ny, flipperBaseMesh.vertices[i].nz);
 			vert.applyMatrix4(fullMatrix);
@@ -247,7 +252,7 @@ export class FlipperItem extends GameItem {
 				result.rubber[i] = new Vertex3DNoTex2();
 				result.rubber[i].x = vert.x;
 				result.rubber[i].y = vert.y;
-				result.rubber[i].z = vert.z * this.rubberwidth * table.gameData.BG_scalez[table.gameData.BG_current_set] + (height + this.rubberheight);
+				result.rubber[i].z = vert.z * this.rubberwidth * table.getScaleZ() + (height + this.rubberheight);
 
 				vert = new Vertex3D(flipperBaseMesh.vertices[i].nx, flipperBaseMesh.vertices[i].ny, flipperBaseMesh.vertices[i].nz);
 				vert.applyMatrix4(fullMatrix);

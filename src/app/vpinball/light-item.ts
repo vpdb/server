@@ -23,6 +23,10 @@ import { BiffParser } from './biff-parser';
 import { DragPoint } from './dragpoint';
 import { GameItem } from './game-item';
 import { Vertex2D } from './vertex';
+import { VpTable } from './vp-table';
+import { Mesh } from './mesh';
+import { bulbLightMesh } from './meshes/bulb-light-mesh';
+import { bulbSocketMesh } from './meshes/bulb-socket-mesh';
 
 export class LightItem extends GameItem {
 
@@ -36,6 +40,29 @@ export class LightItem extends GameItem {
 		const lightItem = new LightItem();
 		Object.assign(lightItem, data);
 		return lightItem;
+	}
+
+	public generateMeshes(table: VpTable): { light: Mesh, socket: Mesh } {
+
+		const lightMesh = bulbLightMesh.clone();
+		const height = table.getSurfaceHeight(this.szSurface, this.vCenter.x, this.vCenter.y);
+		for (const vertex of lightMesh.vertices) {
+			vertex.x = vertex.x * this.meshRadius + this.vCenter.x;
+			vertex.y = vertex.y * this.meshRadius + this.vCenter.y;
+			vertex.z = vertex.z * this.meshRadius * table.getScaleZ() + height;
+		}
+
+		const socketMesh = bulbSocketMesh.clone();
+		for (const vertex of socketMesh.vertices) {
+			vertex.x = vertex.x * this.meshRadius + this.vCenter.x;
+			vertex.y = vertex.y * this.meshRadius + this.vCenter.y;
+			vertex.z = vertex.z * this.meshRadius * table.getScaleZ() + height;
+		}
+
+		return {
+			light: lightMesh,
+			socket: socketMesh,
+		}
 	}
 
 	private static createStreamHandler(lightItem: LightItem) {

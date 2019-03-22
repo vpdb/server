@@ -25,6 +25,9 @@ import { VpTable } from '../vp-table';
 import { BaseExporter } from './base-exporter';
 import { SurfaceItem } from '../surface-item';
 import { RubberItem } from '../rubber-item';
+import { FlipperItem } from '../flipper-item';
+import { bulbLightMesh } from '../meshes/bulb-light-mesh';
+import { BumperItem } from '../bumper-item';
 
 const Canvas = require('canvas');
 const { Blob, FileReader } = require('vblob');
@@ -68,6 +71,7 @@ export class VpTableExporter extends BaseExporter {
 
 	public async export(): Promise<object> {
 
+		// primitives
 		let primitive: PrimitiveItem;
 		for (primitive of values(this.table.primitives)) {
 
@@ -79,26 +83,89 @@ export class VpTableExporter extends BaseExporter {
 			this.playfield.add(mesh);
 		}
 
+		// rubbers
 		let rubber: RubberItem;
 		for (rubber of values(this.table.rubbers).filter(r => r.fVisible)) {
-			const bufferGeometry = rubber.generateMesh(this.table.gameData.tableheight).getBufferGeometry();
+			const bufferGeometry = rubber.generateMesh(this.table).getBufferGeometry();
 			const mesh = new Mesh(bufferGeometry, new MeshStandardMaterial());
-			mesh.name = 'rubber:' + primitive.getName();
+			mesh.name = 'rubber:' + rubber.getName();
 			this.playfield.add(mesh);
 		}
 
-		// let surface: SurfaceItem;
-		// for (surface of values(this.table.surfaces)) {
-		// 	const meshes = surface.generateMeshes(this.table);
-		//
-		// 	const topMesh = new Mesh(meshes.top.getBufferGeometry(), new MeshStandardMaterial());
-		// 	const sideMesh = new Mesh(meshes.side.getBufferGeometry(), new MeshStandardMaterial());
-		// 	topMesh.name = 'surface-top:' + surface.getName();
-		// 	sideMesh.name = 'surface-side:' + surface.getName();
-		//
-		// 	this.playfield.add(topMesh);
-		// 	this.playfield.add(sideMesh);
-		// }
+		// surfaces
+		let surface: SurfaceItem;
+		for (surface of values(this.table.surfaces)) {
+
+			const meshes = surface.generateMeshes(this.table);
+
+			const topMesh = new Mesh(meshes.top.getBufferGeometry(), new MeshStandardMaterial());
+			const sideMesh = new Mesh(meshes.side.getBufferGeometry(), new MeshStandardMaterial());
+			topMesh.name = 'surface-top:' + surface.getName();
+			sideMesh.name = 'surface-side:' + surface.getName();
+
+			this.playfield.add(topMesh);
+			this.playfield.add(sideMesh);
+		}
+
+		// flippers
+		let flipper: FlipperItem;
+		for (flipper of values(this.table.flippers)) {
+
+			const meshes = flipper.generateMeshes(this.table);
+
+			const baseMesh = new Mesh(meshes.base.getBufferGeometry(), new MeshStandardMaterial());
+			const rubberMesh = new Mesh(meshes.rubber.getBufferGeometry(), new MeshStandardMaterial());
+
+			baseMesh.name = 'flipper-base:' + flipper.getName();
+			this.playfield.add(baseMesh);
+
+			if (rubberMesh) {
+				rubberMesh.name = 'flipper-rubber:' + flipper.getName();
+				this.playfield.add(rubberMesh);
+			}
+		}
+
+		// light bulbs
+		for (const light of this.table.lights) {
+			if (!light.showBulbMesh) {
+				continue;
+			}
+			const meshes = light.generateMeshes(this.table);
+
+			const lightMesh = new Mesh(meshes.light.getBufferGeometry(), new MeshStandardMaterial());
+			const socketMesh = new Mesh(meshes.socket.getBufferGeometry(), new MeshStandardMaterial());
+			lightMesh.name = 'bulb-light:' + light.getName();
+			socketMesh.name = 'bulb-socket:' + light.getName();
+
+			this.playfield.add(lightMesh);
+			this.playfield.add(socketMesh);
+		}
+
+		// bumpers
+		let bumper: BumperItem;
+		for (bumper of values(this.table.bumpers)) {
+			const meshes = bumper.generateMeshes(this.table);
+			if (meshes.cap) {
+				const mesh = new Mesh(meshes.cap.getBufferGeometry(), new MeshStandardMaterial());
+				mesh.name = 'bumper-cap:' + bumper.getName();
+				this.playfield.add(mesh);
+			}
+			if (meshes.skirt) {
+				const mesh = new Mesh(meshes.skirt.getBufferGeometry(), new MeshStandardMaterial());
+				mesh.name = 'bumper-skirt:' + bumper.getName();
+				this.playfield.add(mesh);
+			}
+			if (meshes.ring) {
+				const mesh = new Mesh(meshes.ring.getBufferGeometry(), new MeshStandardMaterial());
+				mesh.name = 'bumper-ring:' + bumper.getName();
+				this.playfield.add(mesh);
+			}
+			if (meshes.base) {
+				const mesh = new Mesh(meshes.base.getBufferGeometry(), new MeshStandardMaterial());
+				mesh.name = 'bumper-base:' + bumper.getName();
+				this.playfield.add(mesh);
+			}
+		}
 
 		this.scene.add(this.playfield);
 

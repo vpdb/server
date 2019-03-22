@@ -62,7 +62,7 @@ export class GameData extends BiffParser {
 	public BG_xlatey: number[] = [];
 	public BG_xlatez: number[] = [];
 	public BG_enable_FSS: boolean;
-	public BG_current_set: number;
+	public BG_current_set: number = 0;
 	public overridePhysics: number;
 	public overridePhysicsFlipper: boolean;
 	public Gravity: number;

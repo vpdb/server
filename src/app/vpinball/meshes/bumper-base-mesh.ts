@@ -1326,4 +1326,4 @@ const indexes = [
 	514, 515, 516,
 ];
 
-export const bumperSocketMesh = Mesh.fromArray(vertices, indexes);
+export const bumperBaseMesh = Mesh.fromArray(vertices, indexes);

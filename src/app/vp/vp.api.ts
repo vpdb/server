@@ -140,7 +140,7 @@ export class VpApi extends Api {
 				if (!rubber) {
 					throw new ApiError('No primitive named "%s" in this table!', ctx.params.meshName).status(404);
 				}
-				obj = rubber.serializeToObj(vpTable.gameData.tableheight);
+				obj = rubber.serializeToObj(vpTable);
 				await state.redis.set(redisKey, obj);
 			}
 		} else {
@@ -164,7 +164,7 @@ export class VpApi extends Api {
 			if (!rubber) {
 				throw new ApiError('No rubber named "%s" in this table!', ctx.params.meshName).status(404);
 			}
-			obj = rubber.serializeToObj(gameData.tableheight);
+			obj = rubber.serializeToObj({ gameData } as VpTable);
 		}
 
 		ctx.status = 200;

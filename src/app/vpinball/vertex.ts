@@ -18,6 +18,7 @@
  */
 
 import { Vector2 as ThreeVector2, Vector3 as ThreeVector3 } from 'three';
+import { isUndefined } from 'util';
 
 export class Vertex2D extends ThreeVector2 {
 
@@ -144,6 +145,10 @@ export class Vertex3DNoTex2 {
 		vertex.tu = this.tu;
 		vertex.tv = this.tv;
 		return vertex;
+	}
+
+	public hasTextureCoordinates(): boolean {
+		return !isUndefined(this.tu) && !isUndefined(this.tv);
 	}
 
 	public static from(data: any): Vertex3DNoTex2 {

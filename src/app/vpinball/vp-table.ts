@@ -30,6 +30,7 @@ import { PrimitiveItem } from './primitive-item';
 import { RubberItem } from './rubber-item';
 import { SurfaceItem } from './surface-item';
 import { Texture } from './texture';
+import { BumperItem } from './bumper-item';
 
 export class VpTable {
 
@@ -60,6 +61,7 @@ export class VpTable {
 	public textures: { [key: string]: Texture } = {};
 	public rubbers: { [key: string]: RubberItem } = {};
 	public flippers: { [key: string]: FlipperItem } = {};
+	public bumpers: { [key: string]: BumperItem } = {};
 	public lights: LightItem[] = [];
 
 	public getPrimitive(name: string): PrimitiveItem {
@@ -76,6 +78,18 @@ export class VpTable {
 
 	public getSurface(name: string): SurfaceItem {
 		return this.surfaces[name];
+	}
+
+	public getScaleX(): number {
+		return this.gameData.BG_scalex[this.gameData.BG_current_set] || 1.0;
+	}
+
+	public getScaleY(): number {
+		return this.gameData.BG_scaley[this.gameData.BG_current_set] || 1.0;
+	}
+
+	public getScaleZ(): number {
+		return this.gameData.BG_scalez[this.gameData.BG_current_set] || 1.0;
 	}
 
 	public serialize(fileId: string) {
@@ -97,7 +111,19 @@ export class VpTable {
 	}
 
 	public getSurfaceHeight(surface: string, x: number, y: number) {
-		// see pinable.cpp L9100
+		if (!surface) {
+			return this.gameData.tableheight;
+		}
+
+		if (this.surfaces[surface]) {
+			return this.gameData.tableheight + this.surfaces[surface].heighttop;
+		}
+
+		// todo ramps
+		// if (this.ramps[surface]) {
+		// 	return this.gameData.tableheight + this.ramps[surface].getSurfaceHeight();
+		// }
+		logger.warn(null, '[VpTable.getSurfaceHeight] Unknown surface %s.', surface);
 		return this.gameData.tableheight;
 	}
 
@@ -168,6 +194,12 @@ export class VpTable {
 				case GameItem.TypeFlipper: {
 					const item = await FlipperItem.fromStorage(storage, itemName);
 					this.flippers[item.getName()] = item;
+					break;
+				}
+
+				case GameItem.TypeBumper: {
+					const item = await BumperItem.fromStorage(storage, itemName);
+					this.bumpers[item.getName()] = item;
 					break;
 				}
 

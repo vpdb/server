@@ -242,6 +242,9 @@ export class Mesh {
 			objFile.push(`v ${vert.x.toFixed(Mesh.exportPrecision)} ${vert.y.toFixed(Mesh.exportPrecision)} ${(-vert.z).toFixed(Mesh.exportPrecision)}`);
 		}
 		for (const vert of this.vertices) {
+			if (!vert.hasTextureCoordinates()) {
+				continue;
+			}
 			const tu = vert.tu;
 			const tv = 1 - vert.tv;
 			objFile.push(`vt ${tu.toFixed(Mesh.exportPrecision)} ${tv.toFixed(Mesh.exportPrecision)}`);

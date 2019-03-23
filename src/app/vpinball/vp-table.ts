@@ -31,6 +31,7 @@ import { RubberItem } from './rubber-item';
 import { SurfaceItem } from './surface-item';
 import { Texture } from './texture';
 import { BumperItem } from './bumper-item';
+import { RampItem } from './ramp-item';
 
 export class VpTable {
 
@@ -62,6 +63,7 @@ export class VpTable {
 	public rubbers: { [key: string]: RubberItem } = {};
 	public flippers: { [key: string]: FlipperItem } = {};
 	public bumpers: { [key: string]: BumperItem } = {};
+	public ramps: { [key: string]: RampItem } = {};
 	public lights: LightItem[] = [];
 
 	public getPrimitive(name: string): PrimitiveItem {
@@ -200,6 +202,12 @@ export class VpTable {
 				case GameItem.TypeBumper: {
 					const item = await BumperItem.fromStorage(storage, itemName);
 					this.bumpers[item.getName()] = item;
+					break;
+				}
+
+				case GameItem.TypeRamp: {
+					const item = await RampItem.fromStorage(storage, itemName);
+					this.ramps[item.getName()] = item;
 					break;
 				}
 

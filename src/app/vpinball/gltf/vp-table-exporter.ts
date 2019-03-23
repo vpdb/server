@@ -20,14 +20,13 @@
 import { values } from 'lodash';
 import { Group, Mesh, MeshStandardMaterial, Scene } from 'three';
 
+import { BumperItem } from '../bumper-item';
+import { FlipperItem } from '../flipper-item';
 import { PrimitiveItem } from '../primitive-item';
+import { RubberItem } from '../rubber-item';
+import { SurfaceItem } from '../surface-item';
 import { VpTable } from '../vp-table';
 import { BaseExporter } from './base-exporter';
-import { SurfaceItem } from '../surface-item';
-import { RubberItem } from '../rubber-item';
-import { FlipperItem } from '../flipper-item';
-import { bulbLightMesh } from '../meshes/bulb-light-mesh';
-import { BumperItem } from '../bumper-item';
 
 const Canvas = require('canvas');
 const { Blob, FileReader } = require('vblob');

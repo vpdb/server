@@ -22,11 +22,11 @@ import { settings } from '../common/settings';
 import { BiffParser } from './biff-parser';
 import { DragPoint } from './dragpoint';
 import { GameItem } from './game-item';
-import { Vertex2D } from './vertex';
-import { VpTable } from './vp-table';
 import { Mesh } from './mesh';
 import { bulbLightMesh } from './meshes/bulb-light-mesh';
 import { bulbSocketMesh } from './meshes/bulb-socket-mesh';
+import { Vertex2D } from './vertex';
+import { VpTable } from './vp-table';
 
 export class LightItem extends GameItem {
 

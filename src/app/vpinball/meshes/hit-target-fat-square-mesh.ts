@@ -322,7 +322,6 @@ const vertices = [
 	[-0.517099, 0.163437, 0.647248, 0.000000, -1.000000, 0.000000, 0.255949, 0.962965],
 	[0.257901, 0.163437, 0.610645, 0.000000, -1.000000, 0.000000, 0.114251, 0.969658],
 	[-0.292099, 0.163437, 0.610645, 0.000000, -1.000000, 0.000000, 0.214811, 0.969658],
-
 ];
 
 const indexes = [
@@ -642,4 +641,4 @@ const indexes = [
 	301, 300, 284,
 ];
 
-export const hitTargetFatSquareMesh = Mesh.fromArray(vertices, indexes);
+export const hitFatTargetSquareMesh = Mesh.fromArray(vertices, indexes);

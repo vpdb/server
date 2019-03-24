@@ -151,4 +151,4 @@ const indexes = [
 	42, 43, 40,
 ];
 
-export const dropTargetT4Mesh = Mesh.fromArray(vertices, indexes);
+export const hitTargetT4Mesh = Mesh.fromArray(vertices, indexes);

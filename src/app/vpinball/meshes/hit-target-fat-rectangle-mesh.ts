@@ -642,4 +642,4 @@ const indexes = [
 	301, 300, 284,
 ];
 
-export const hitTargetFatRectangleMesh = Mesh.fromArray(vertices, indexes);
+export const hitFatTargetRectangleMesh = Mesh.fromArray(vertices, indexes);

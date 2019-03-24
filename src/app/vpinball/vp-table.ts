@@ -35,6 +35,7 @@ import { RampItem } from './ramp-item';
 import { HitTargetItem } from './hit-target-item';
 import { GateItem } from './gate-item';
 import { KickerItem } from './kicker-item';
+import { TriggerItem } from './trigger-item';
 
 export class VpTable {
 
@@ -71,6 +72,7 @@ export class VpTable {
 	public hitTargets: HitTargetItem[] = [];
 	public gates: GateItem[] = [];
 	public kickers: KickerItem[] = [];
+	public triggers: TriggerItem[] = [];
 
 	public getPrimitive(name: string): PrimitiveItem {
 		return this.primitives[name];
@@ -241,6 +243,11 @@ export class VpTable {
 
 				case GameItem.TypeKicker: {
 					this.kickers.push(await KickerItem.fromStorage(storage, itemName));
+					break;
+				}
+
+				case GameItem.TypeTrigger: {
+					this.triggers.push(await TriggerItem.fromStorage(storage, itemName));
 					break;
 				}
 

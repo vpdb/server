@@ -694,6 +694,11 @@
 			"integrity": "sha1-m2PUU6a1SqhJGCIHcRoIvo7qSK4=",
 			"dev": true
 		},
+		"@types/tmp": {
+			"version": "0.0.33",
+			"resolved": "https://registry.npmjs.org/@types/tmp/-/tmp-0.0.33.tgz",
+			"integrity": "sha1-EHPEvIJHVK49EM+riKsCN7qWTk0="
+		},
 		"@types/ua-parser-js": {
 			"version": "0.7.32",
 			"resolved": "https://registry.npmjs.org/@types/ua-parser-js/-/ua-parser-js-0.7.32.tgz",
@@ -1773,6 +1778,22 @@
 					"version": "2.1.1",
 					"resolved": "https://registry.npmjs.org/camelcase/-/camelcase-2.1.1.tgz",
 					"integrity": "sha1-fB0W1nmhu+WcoCys7PsBHiAfWh8="
+				}
+			}
+		},
+		"canvas": {
+			"version": "2.4.1",
+			"resolved": "https://registry.npmjs.org/canvas/-/canvas-2.4.1.tgz",
+			"integrity": "sha512-SaFomFqDuuuSTScTHQ7nXc5ea71Ieb8ctvwXjR7vzLsBMfp3euTv2xsTY70zIoC5r4sSQZYXv6tiHiORJ4y1vg==",
+			"requires": {
+				"nan": "^2.12.1",
+				"node-pre-gyp": "^0.11.0"
+			},
+			"dependencies": {
+				"nan": {
+					"version": "2.13.1",
+					"resolved": "https://registry.npmjs.org/nan/-/nan-2.13.1.tgz",
+					"integrity": "sha512-I6YB/YEuDeUZMmhscXKxGgZlFnhsn5y0hgOZBadkzfTRrZBtJDZeg6eQf7PYMIEclwmorTKK8GztsyOUSVBREA=="
 				}
 			}
 		},
@@ -3238,6 +3259,11 @@
 			"version": "3.1.0",
 			"resolved": "https://registry.npmjs.org/eventemitter3/-/eventemitter3-3.1.0.tgz",
 			"integrity": "sha512-ivIvhpq/Y0uSjcHDcOIccjmYjGLcP09MFGE7ysAwkAvkXfpZlC985pH2/ui64DKazbTW/4kN3yqozUxlXzI6cA=="
+		},
+		"eventtarget": {
+			"version": "0.1.0",
+			"resolved": "https://registry.npmjs.org/eventtarget/-/eventtarget-0.1.0.tgz",
+			"integrity": "sha1-Hr3XKj3PuwIY4W1RRQlAzf/qTiY="
 		},
 		"exec-series": {
 			"version": "1.0.3",
@@ -12893,6 +12919,17 @@
 			"version": "1.1.2",
 			"resolved": "https://registry.npmjs.org/vary/-/vary-1.1.2.tgz",
 			"integrity": "sha1-IpnwLG3tMNSllhsLn3RSShj2NPw="
+		},
+		"vblob": {
+			"version": "1.0.2",
+			"resolved": "https://registry.npmjs.org/vblob/-/vblob-1.0.2.tgz",
+			"integrity": "sha512-7ZexHDhnlKNbySsYUxdlZCafvVLI8xpxOfjfSnW6HDooyJFjCF+Rw4vejhL3KeDWoDkuvoEhexRE+97GXTHW0g==",
+			"requires": {
+				"@types/node": "^9.4.0",
+				"@types/tmp": "0.0.33",
+				"eventtarget": "^0.1.0",
+				"tmp": "0.0.33"
+			}
 		},
 		"verror": {
 			"version": "1.10.0",

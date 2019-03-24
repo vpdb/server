@@ -17,11 +17,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { Math as M, Matrix4 } from 'three';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { GameItem } from './game-item';
-import { Meshes } from './mesh';
-import { Vertex2D } from './vertex';
+import { Mesh, Meshes } from './mesh';
+import { kickerCupMesh } from './meshes/kicker-cup-mesh';
+import { kickerGottliebMesh } from './meshes/kicker-gottlieb-mesh';
+import { kickerHoleMesh } from './meshes/kicker-hole-mesh';
+import { kickerSimpleHoleMesh } from './meshes/kicker-simple-hole-mesh';
+import { kickerT1Mesh } from './meshes/kicker-t1-mesh';
+import { kickerWilliamsMesh } from './meshes/kicker-williams-mesh';
+import { Vertex2D, Vertex3D } from './vertex';
 import { VpTable } from './vp-table';
 
 export class KickerItem extends GameItem {
@@ -60,11 +67,68 @@ export class KickerItem extends GameItem {
 	public generateMeshes(table: VpTable): Meshes {
 
 		const meshes: Meshes = {};
+		if (this.kickerType === KickerItem.TypeKickerInvisible) {
+			return meshes;
+		}
+		const baseHeight = table.getSurfaceHeight(this.szSurface, this.vCenter.x, this.vCenter.y) * table.getScaleZ();
+		meshes.kicker = this.generateMesh(table, baseHeight);
 		return meshes;
 	}
 
 	public getName(): string {
 		return this.wzName;
+	}
+
+	private generateMesh(table: VpTable, baseHeight: number): Mesh {
+		let zOffset = 0.0;
+		let zRot = this.orientation;
+		switch (this.kickerType) {
+			case KickerItem.TypeKickerCup:
+				zOffset = -0.18;
+				break;
+			case KickerItem.TypeKickerWilliams:
+				zRot = this.orientation + 90.0;
+				break;
+			case KickerItem.TypeKickerHole:
+				zRot = 0.0;
+				break;
+			case KickerItem.TypeKickerHoleSimple:
+			default:
+				zRot = 0.0;
+				break;
+		}
+
+		const fullMatrix = new Matrix4();
+		fullMatrix.makeRotationZ(M.degToRad(zRot));
+
+		const mesh = this.getBaseMesh();
+		for (const vertex of mesh.vertices) {
+			let vert = new Vertex3D(vertex.x, vertex.y, vertex.z + zOffset);
+			vert.applyMatrix4(fullMatrix);
+
+			vertex.x = vert.x * this.radius + this.vCenter.x;
+			vertex.y = vert.y * this.radius + this.vCenter.y;
+			vertex.z = vert.z * this.radius * table.getScaleZ() + baseHeight;
+			vert = new Vertex3D(vertex.nx, vertex.ny, vertex.nz);
+			vert.applyMatrix4(fullMatrix);
+			vertex.nx = vert.x;
+			vertex.ny = vert.y;
+			vertex.nz = vert.z;
+		}
+		return mesh;
+	}
+
+	private getBaseMesh(): Mesh {
+		switch (this.kickerType) {
+			case KickerItem.TypeKickerCup: return kickerCupMesh.clone();
+			case KickerItem.TypeKickerWilliams: return kickerWilliamsMesh.clone();
+			case KickerItem.TypeKickerGottlieb: return kickerGottliebMesh.clone();
+			case KickerItem.TypeKickerCup2: return kickerT1Mesh.clone();
+			case KickerItem.TypeKickerHole: return kickerHoleMesh.clone();
+			case KickerItem.TypeKickerHoleSimple:
+			default:
+				return kickerSimpleHoleMesh.clone();
+		}
 	}
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<void> {

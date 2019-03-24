@@ -17,17 +17,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { Math as M, Matrix4 } from 'three';
 import { logger } from '../common/logger';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { GameItem } from './game-item';
 import { Mesh, Meshes } from './mesh';
 import { hitTargetT3Mesh } from './meshes/drop-target-t3-mesh';
+import { gateBracketMesh } from './meshes/gate-bracket-mesh';
 import { gateLongPlateMesh } from './meshes/gate-long-plate-mesh';
 import { gatePlateMesh } from './meshes/gate-plate-mesh';
 import { gateWireMesh } from './meshes/gate-wire-mesh';
 import { gateWireRectangleMesh } from './meshes/gate-wire-rectangle-mesh';
-import { Vertex2D } from './vertex';
+import { Vertex2D, Vertex3D } from './vertex';
 import { VpTable } from './vp-table';
 
 export class GateItem extends GameItem {
@@ -58,19 +60,27 @@ export class GateItem extends GameItem {
 	private angleMin: number;
 	private friction: number;
 	private damping: number;
+	private gravityfactor: number;
+
 	public static async fromStorage(storage: Storage, itemName: string): Promise<GateItem> {
 		const gateItem = new GateItem();
 		await storage.streamFiltered(itemName, 4, BiffParser.stream(gateItem.fromTag.bind(gateItem), {}));
 		return gateItem;
 	}
 
-	private gravityfactor: number;
-
 	public generateMeshes(table: VpTable): Meshes {
 
 		const meshes: Meshes = {};
-
+		const baseHeight = table.getSurfaceHeight(this.szSurface, this.vCenter.x, this.vCenter.y) * table.getScaleZ();
+		if (this.fShowBracket) {
+			meshes.bracket = this.positionMesh(gateBracketMesh.clone(), table, baseHeight);
+		}
+		meshes.wire = this.positionMesh(this.getBaseMesh(), table, baseHeight);
 		return meshes;
+	}
+
+	public getName(): string {
+		return this.wzName;
 	}
 
 	private getBaseMesh(): Mesh {
@@ -85,12 +95,24 @@ export class GateItem extends GameItem {
 		}
 	}
 
-	private constructor() {
-		super();
-	}
+	private positionMesh(mesh: Mesh, table: VpTable, baseHeight: number): Mesh {
+		const fullMatrix = new Matrix4();
+		fullMatrix.makeRotationZ(M.degToRad(this.rotation));
+		for (const vertex of mesh.vertices) {
 
-	public getName(): string {
-		return this.wzName;
+			let vert = new Vertex3D(vertex.x, vertex.y, vertex.z);
+			vert.applyMatrix4(fullMatrix);
+			vertex.x = vert.x * this.length + this.vCenter.x;
+			vertex.y = vert.y * this.length + this.vCenter.y;
+			vertex.z = vert.z * this.length * table.getScaleZ() + (this.height * table.getScaleZ() + baseHeight);
+
+			vert = new Vertex3D(vertex.nx, vertex.ny, vertex.nz);
+			vert.applyMatrix4(fullMatrix);
+			vertex.nx = vert.x;
+			vertex.ny = vert.y;
+			vertex.nz = vert.z;
+		}
+		return mesh;
 	}
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<void> {

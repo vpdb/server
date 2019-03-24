@@ -381,4 +381,4 @@ const indexes = [
 	180, 182, 183,
 ];
 
-export const gateBracket = Mesh.fromArray(vertices, indexes);
+export const gateBracketMesh = Mesh.fromArray(vertices, indexes);

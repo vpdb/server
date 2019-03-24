@@ -17,12 +17,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { Math as M, Matrix4 } from 'three';
+import { logger } from '../common/logger';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { DragPoint } from './dragpoint';
 import { GameItem } from './game-item';
-import { Meshes } from './mesh';
-import { Vertex2D } from './vertex';
+import { Mesh, Meshes } from './mesh';
+import { triggerButtonMesh } from './meshes/trigger-button-mesh';
+import { triggerSimpleMesh } from './meshes/trigger-simple-mesh';
+import { triggerStarMesh } from './meshes/trigger-star-mesh';
+import { triggerDWireMesh } from './meshes/trigger-wire-d-mesh';
+import { Vertex2D, Vertex3D } from './vertex';
 import { VpTable } from './vp-table';
 
 export class TriggerItem extends GameItem {
@@ -62,13 +68,88 @@ export class TriggerItem extends GameItem {
 	}
 
 	public generateMeshes(table: VpTable): Meshes {
-
-		const meshes: Meshes = {};
-		return meshes;
+		if (this.shape === TriggerItem.ShapeTriggerNone) {
+			return {};
+		}
+		return {
+			trigger: this.createMesh(table),
+		};
 	}
 
 	public getName(): string {
 		return this.wzName;
+	}
+
+	public isVisible(): boolean {
+		return this.fVisible && this.shape !== TriggerItem.ShapeTriggerNone;
+	}
+
+	private createMesh(table: VpTable): Mesh {
+		const baseHeight = table.getSurfaceHeight(this.szSurface, this.vCenter.x, this.vCenter.y) * table.getScaleZ();
+
+		let zOffset = (this.shape === TriggerItem.ShapeTriggerButton) ? 5.0 : 0.0;
+		if (this.shape === TriggerItem.ShapeTriggerWireC) {
+			zOffset = -19.0;
+		}
+
+		const fullMatrix = new Matrix4();
+		if (this.shape === TriggerItem.ShapeTriggerWireB) {
+			const tempMatrix = new Matrix4();
+			fullMatrix.makeRotationX(M.degToRad(-23.0));
+			tempMatrix.makeRotationZ(M.degToRad(this.rotation));
+			fullMatrix.multiplyMatrices(fullMatrix, tempMatrix);
+
+		} else if (this.shape === TriggerItem.ShapeTriggerWireC) {
+			const tempMatrix = new Matrix4();
+			fullMatrix.makeRotationX(M.degToRad(140.0));
+			tempMatrix.makeRotationZ(M.degToRad(this.rotation));
+			fullMatrix.multiplyMatrices(fullMatrix, tempMatrix);
+
+		} else {
+			fullMatrix.makeRotationZ(M.degToRad(this.rotation));
+		}
+
+		const mesh = this.getBaseMesh();
+		for (const vertex of mesh.vertices) {
+
+			let vert = new Vertex3D(vertex.x, vertex.y, vertex.z);
+			vert.applyMatrix4(fullMatrix);
+
+			if (this.shape === TriggerItem.ShapeTriggerButton || this.shape === TriggerItem.ShapeTriggerStar) {
+				vertex.x = (vert.x * this.radius) + this.vCenter.x;
+				vertex.y = (vert.y * this.radius) + this.vCenter.y;
+				vertex.z = (vert.z * this.radius * table.getScaleZ()) + baseHeight + zOffset;
+			} else {
+				vertex.x = (vert.x * this.scaleX) + this.vCenter.x;
+				vertex.y = (vert.y * this.scaleY) + this.vCenter.y;
+				vertex.z = (vert.z * table.getScaleZ()) + baseHeight + zOffset;
+			}
+
+			vert = new Vertex3D(vertex.nx, vertex.ny, vertex.nz);
+			vert.applyMatrix4(fullMatrix);
+			vertex.nx = vert.x;
+			vertex.ny = vert.y;
+			vertex.nz = vert.z;
+		}
+		return mesh;
+	}
+
+	private getBaseMesh(): Mesh {
+		switch (this.shape) {
+			case TriggerItem.ShapeTriggerWireA:
+			case TriggerItem.ShapeTriggerWireB:
+			case TriggerItem.ShapeTriggerWireC:
+				return triggerSimpleMesh.clone();
+			case TriggerItem.ShapeTriggerWireD:
+				return triggerDWireMesh.clone();
+			case TriggerItem.ShapeTriggerButton:
+				return triggerButtonMesh.clone();
+			case TriggerItem.ShapeTriggerStar:
+				return triggerStarMesh.clone();
+			default:
+				logger.warn(null, '[TriggerItem.getBaseMesh] Unknown shape "%s".', this.shape);
+				return triggerSimpleMesh.clone();
+		}
 	}
 
 	private static createStreamHandler(triggerItem: TriggerItem) {

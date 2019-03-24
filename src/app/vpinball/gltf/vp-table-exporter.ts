@@ -208,6 +208,16 @@ export class VpTableExporter extends BaseExporter {
 			}
 		}
 
+		// triggers
+		for (const kicker of this.table.triggers) {
+			const meshes = kicker.generateMeshes(this.table);
+			for (const type of Object.keys(meshes)) {
+				const mesh = new Mesh(meshes[type].getBufferGeometry(), new MeshStandardMaterial());
+				mesh.name = `${type}: ${kicker.getName()}`;
+				this.playfield.add(mesh);
+			}
+		}
+
 		this.scene.add(this.playfield);
 
 		return await new Promise(resolve => {

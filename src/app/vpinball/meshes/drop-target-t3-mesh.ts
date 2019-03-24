@@ -83,4 +83,4 @@ const indexes = [
 	30, 31, 28,
 ];
 
-export const dropTargetT3Mesh = Mesh.fromArray(vertices, indexes);
+export const hitTargetT3Mesh = Mesh.fromArray(vertices, indexes);

@@ -177,4 +177,4 @@ const indexes = [
 	87, 86, 85,
 ];
 
-export const dropTargetT2Mesh = Mesh.fromArray(vertices, indexes);
+export const hitTargetT2Mesh = Mesh.fromArray(vertices, indexes);

@@ -32,6 +32,7 @@ import { SurfaceItem } from './surface-item';
 import { Texture } from './texture';
 import { BumperItem } from './bumper-item';
 import { RampItem } from './ramp-item';
+import { HitTargetItem } from './hit-target-item';
 
 export class VpTable {
 
@@ -65,6 +66,7 @@ export class VpTable {
 	public bumpers: { [key: string]: BumperItem } = {};
 	public ramps: { [key: string]: RampItem } = {};
 	public lights: LightItem[] = [];
+	public hitTargets: HitTargetItem[] = [];
 
 	public getPrimitive(name: string): PrimitiveItem {
 		return this.primitives[name];
@@ -92,6 +94,18 @@ export class VpTable {
 
 	public getScaleZ(): number {
 		return this.gameData.BG_scalez[this.gameData.BG_current_set] || 1.0;
+	}
+
+	public getDetailLevel() {
+		return 10; // todo check if true
+	}
+
+	public getMaterial(name: string) {
+		return this.gameData.materials.find(m => m.szName === name);
+	}
+
+	public getTableHeight() {
+		return this.gameData.tableheight;
 	}
 
 	public serialize(fileId: string) {
@@ -211,6 +225,11 @@ export class VpTable {
 					break;
 				}
 
+				case GameItem.TypeHitTarget: {
+					this.hitTargets.push(await HitTargetItem.fromStorage(storage, itemName));
+					break;
+				}
+
 				default:
 					// ignore the rest for now
 					break;
@@ -230,13 +249,5 @@ export class VpTable {
 			const texture = await Texture.fromStorage(storage, itemName);
 			this.textures[texture.getName()] = texture;
 		}
-	}
-
-	public getDetailLevel() {
-		return 10; // todo check if true
-	}
-
-	public getMaterial(name: string) {
-		return this.gameData.materials.find(m => m.szName === name);
 	}
 }

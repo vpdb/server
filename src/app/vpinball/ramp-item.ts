@@ -25,6 +25,8 @@ import { GameItem } from './game-item';
 import { Mesh, Meshes } from './mesh';
 import { RenderVertex3D, Vertex2D, Vertex3D, Vertex3DNoTex2 } from './vertex';
 import { VpTable } from './vp-table';
+import { _Math } from 'three/src/math/Math';
+import floorPowerOfTwo = _Math.floorPowerOfTwo;
 
 export class RampItem extends GameItem {
 
@@ -155,143 +157,160 @@ export class RampItem extends GameItem {
 		const rgioffset = (rampVertex - 1) * 6;
 		const numIndices = rgioffset * 3; // to draw the full ramp in one go (could only use *1, and draw three times with offsets into vertices)
 
-		const floorVertices: Vertex3DNoTex2[] = [];
-		const indices: number[] = [];
+		const floorMesh = new Mesh();
 		for (let i = 0; i < rampVertex; i++) {
 
-			const rgv3D = [new Vertex3DNoTex2(), new Vertex3DNoTex2()];
-			floorVertices[i * 2] = rgv3D[0];
-			floorVertices[i * 2 + 1] = rgv3D[1];
+			const rgv3d1 = new Vertex3DNoTex2();
+			const rgv3d2 = new Vertex3DNoTex2();
 
-			rgv3D[0].x = rv.rgvLocal[i].x;
-			rgv3D[0].y = rv.rgvLocal[i].y;
-			rgv3D[0].z = rgheight[i] * table.getScaleZ();
+			rgv3d1.x = rv.rgvLocal[i].x;
+			rgv3d1.y = rv.rgvLocal[i].y;
+			rgv3d1.z = rgheight[i] * table.getScaleZ();
 
-			rgv3D[1].x = rv.rgvLocal[rampVertex * 2 - i - 1].x;
-			rgv3D[1].y = rv.rgvLocal[rampVertex * 2 - i - 1].y;
-			rgv3D[1].z = rgv3D[0].z;
+			rgv3d2.x = rv.rgvLocal[rampVertex * 2 - i - 1].x;
+			rgv3d2.y = rv.rgvLocal[rampVertex * 2 - i - 1].y;
+			rgv3d2.z = rgv3d1.z;
 
 			if (this.szImage) {
 				if (this.imagealignment == RampItem.RampImageAlignmentWorld) {
-					rgv3D[0].tu = rgv3D[0].x * inv_tablewidth;
-					rgv3D[0].tv = rgv3D[0].y * inv_tableheight;
-					rgv3D[1].tu = rgv3D[1].x * inv_tablewidth;
-					rgv3D[1].tv = rgv3D[1].y * inv_tableheight;
+					rgv3d1.tu = rgv3d1.x * inv_tablewidth;
+					rgv3d1.tv = rgv3d1.y * inv_tableheight;
+					rgv3d2.tu = rgv3d2.x * inv_tablewidth;
+					rgv3d2.tv = rgv3d2.y * inv_tableheight;
 
 				} else {
-					rgv3D[0].tu = 1.0;
-					rgv3D[0].tv = rgratio[i];
-					rgv3D[1].tu = 0.0;
-					rgv3D[1].tv = rgratio[i];
+					rgv3d1.tu = 1.0;
+					rgv3d1.tv = rgratio[i];
+					rgv3d2.tu = 0.0;
+					rgv3d2.tv = rgratio[i];
 				}
 
 			} else {
-				rgv3D[0].tu = 0.0;
-				rgv3D[0].tv = 0.0;
-				rgv3D[1].tu = 0.0;
-				rgv3D[1].tv = 0.0;
+				rgv3d1.tu = 0.0;
+				rgv3d1.tv = 0.0;
+				rgv3d2.tu = 0.0;
+				rgv3d2.tv = 0.0;
 			}
+
+			floorMesh.vertices.push(rgv3d1);
+			floorMesh.vertices.push(rgv3d2);
 
 			if (i == rampVertex - 1) {
 				break;
 			}
 
-			//floor
-			let offs = i * 6;
-			indices[offs] = i * 2;
-			indices[offs + 1] = i * 2 + 1;
-			indices[offs + 2] = i * 2 + 3;
-			indices[offs + 3] = i * 2;
-			indices[offs + 4] = i * 2 + 3;
-			indices[offs + 5] = i * 2 + 2;
-
-			//walls
-			offs += rgioffset;
-			indices[offs] = i * 2 + numIndices;
-			indices[offs + 1] = i * 2 + numIndices + 1;
-			indices[offs + 2] = i * 2 + numIndices + 3;
-			indices[offs + 3] = i * 2 + numIndices;
-			indices[offs + 4] = i * 2 + numIndices + 3;
-			indices[offs + 5] = i * 2 + numIndices + 2;
-
-			offs += rgioffset;
-			indices[offs] = i * 2 + numIndices * 2;
-			indices[offs + 1] = i * 2 + numIndices * 2 + 1;
-			indices[offs + 2] = i * 2 + numIndices * 2 + 3;
-			indices[offs + 3] = i * 2 + numIndices * 2;
-			indices[offs + 4] = i * 2 + numIndices * 2 + 3;
-			indices[offs + 5] = i * 2 + numIndices * 2 + 2;
+			floorMesh.indices.push(i * 2);
+			floorMesh.indices.push(i * 2 + 1);
+			floorMesh.indices.push(i * 2 + 3);
+			floorMesh.indices.push(i * 2);
+			floorMesh.indices.push(i * 2 + 3);
+			floorMesh.indices.push(i * 2 + 2);
 		}
 
-		Mesh.computeNormals(floorVertices, numVertices, indices, (rampVertex - 1) * 6);
-		//meshes.rampFloor = new Mesh(floorVertices, indices);
+		Mesh.computeNormals(floorMesh.vertices, numVertices, floorMesh.indices, (rampVertex - 1) * 6);
+		meshes.rampFloor = floorMesh;
 
 		if (this.leftwallheightvisible !== 0.0) {
-			const leftVertices = floorVertices.map(v => v.clone());
+			const leftMesh = new Mesh();
 			for (let i = 0; i < rampVertex; i++) {
 
-				const rgv3D = [leftVertices[i * 2], leftVertices[i * 2 + 1]];
+				const rgv3d1 = new Vertex3DNoTex2();
+				const rgv3d2 = new Vertex3DNoTex2();
 
-				rgv3D[1].x = rv.rgvLocal[i].x;
-				rgv3D[1].y = rv.rgvLocal[i].y;
-				rgv3D[1].z = (rgheight[i] + this.rightwallheightvisible) * table.getScaleZ();
+				rgv3d1.x = rv.rgvLocal[i].x;
+				rgv3d1.y = rv.rgvLocal[i].y;
+				rgv3d1.z = rgheight[i] * table.getScaleZ();
+
+				rgv3d2.x = rv.rgvLocal[i].x;
+				rgv3d2.y = rv.rgvLocal[i].y;
+				rgv3d2.z = (rgheight[i] + this.rightwallheightvisible) * table.getScaleZ();
 
 				if (this.szImage && this.fImageWalls) {
 					if (this.imagealignment == RampItem.RampImageAlignmentWorld) {
-						rgv3D[0].tu = rgv3D[0].x * inv_tablewidth;
-						rgv3D[0].tv = rgv3D[0].y * inv_tableheight;
-					} else {
-						rgv3D[0].tu = 0;
-						rgv3D[0].tv = rgratio[i];
-					}
+						rgv3d1.tu = rgv3d1.x * inv_tablewidth;
+						rgv3d1.tv = rgv3d1.y * inv_tableheight;
 
-					rgv3D[1].tu = rgv3D[0].tu;
-					rgv3D[1].tv = rgv3D[0].tv;
+					} else {
+						rgv3d1.tu = 0;
+						rgv3d1.tv = rgratio[i];
+					}
+					rgv3d2.tu = rgv3d1.tu;
+					rgv3d2.tv = rgv3d1.tv;
 				} else {
-					rgv3D[0].tu = 0.0;
-					rgv3D[0].tv = 0.0;
-					rgv3D[1].tu = 0.0;
-					rgv3D[1].tv = 0.0;
+					rgv3d1.tu = 0.0;
+					rgv3d1.tv = 0.0;
+					rgv3d2.tu = 0.0;
+					rgv3d2.tv = 0.0;
 				}
+
+				leftMesh.vertices.push(rgv3d1);
+				leftMesh.vertices.push(rgv3d2);
+
+				if (i == rampVertex - 1) {
+					break;
+				}
+
+				leftMesh.indices.push(i * 2);
+				leftMesh.indices.push(i * 2 + 1);
+				leftMesh.indices.push(i * 2 + 3);
+				leftMesh.indices.push(i * 2);
+				leftMesh.indices.push(i * 2 + 3);
+				leftMesh.indices.push(i * 2 + 2);
+
 			}
-			Mesh.computeNormals(leftVertices, numVertices, indices, (rampVertex - 1) * 6);
-			meshes.rampLeftWall = new Mesh(leftVertices, indices);
+			Mesh.computeNormals(leftMesh.vertices, numVertices, leftMesh.indices, (rampVertex - 1) * 6);
+			meshes.rampLeftWall = leftMesh;
 		}
 
-		if (this.leftwallheightvisible !== 0.0 || this.rightwallheightvisible !== 0.0) {
-			const rightVertices = floorVertices.map(v => v.clone());
+		if (this.rightwallheightvisible !== 0.0) {
+			const rightMesh = new Mesh();
 			for (let i = 0; i < rampVertex; i++) {
 
-				const rgv3D = [rightVertices[i * 2], rightVertices[i * 2 + 1]];
+				const rgv3d1 = new Vertex3DNoTex2();
+				const rgv3d2 = new Vertex3DNoTex2();
 
-				rgv3D[0].x = rv.rgvLocal[rampVertex * 2 - i - 1].x;
-				rgv3D[0].y = rv.rgvLocal[rampVertex * 2 - i - 1].y;
-				rgv3D[0].z = rgheight[i] * table.getScaleZ();
+				rgv3d1.x = rv.rgvLocal[rampVertex * 2 - i - 1].x;
+				rgv3d1.y = rv.rgvLocal[rampVertex * 2 - i - 1].y;
+				rgv3d1.z = rgheight[i] * table.getScaleZ();
 
-				rgv3D[1].x = rgv3D[0].x;
-				rgv3D[1].y = rgv3D[0].y;
-				rgv3D[1].z = (rgheight[i] + this.leftwallheightvisible) * table.getScaleZ();
+				rgv3d2.x = rgv3d1.x;
+				rgv3d2.y = rgv3d1.y;
+				rgv3d2.z = (rgheight[i] + this.leftwallheightvisible) * table.getScaleZ();
 
 				if (this.szImage && this.fImageWalls) {
 					if (this.imagealignment == RampItem.RampImageAlignmentWorld) {
-						rgv3D[0].tu = rgv3D[0].x * inv_tablewidth;
-						rgv3D[0].tv = rgv3D[0].y * inv_tableheight;
+						rgv3d1.tu = rgv3d1.x * inv_tablewidth;
+						rgv3d1.tv = rgv3d1.y * inv_tableheight;
 					} else {
-						rgv3D[0].tu = 0;
-						rgv3D[0].tv = rgratio[i];
+						rgv3d1.tu = 0;
+						rgv3d1.tv = rgratio[i];
 					}
 
-					rgv3D[1].tu = rgv3D[0].tu;
-					rgv3D[1].tv = rgv3D[0].tv;
+					rgv3d2.tu = rgv3d1.tu;
+					rgv3d2.tv = rgv3d1.tv;
 				} else {
-					rgv3D[0].tu = 0.0;
-					rgv3D[0].tv = 0.0;
-					rgv3D[1].tu = 0.0;
-					rgv3D[1].tv = 0.0;
+					rgv3d1.tu = 0.0;
+					rgv3d1.tv = 0.0;
+					rgv3d2.tu = 0.0;
+					rgv3d2.tv = 0.0;
 				}
+
+				rightMesh.vertices.push(rgv3d1);
+				rightMesh.vertices.push(rgv3d2);
+
+				if (i == rampVertex - 1) {
+					break;
+				}
+
+				rightMesh.indices.push(i * 2);
+				rightMesh.indices.push(i * 2 + 1);
+				rightMesh.indices.push(i * 2 + 3);
+				rightMesh.indices.push(i * 2);
+				rightMesh.indices.push(i * 2 + 3);
+				rightMesh.indices.push(i * 2 + 2);
 			}
-			Mesh.computeNormals(rightVertices, numVertices, indices, (rampVertex - 1) * 6);
-			//meshes.rampLeftWall = new Mesh(vertices3, indices);
+			Mesh.computeNormals(rightMesh.vertices, numVertices, rightMesh.indices, (rampVertex - 1) * 6);
+			meshes.rampRightWall = rightMesh;
 		}
 		return meshes;
 	}

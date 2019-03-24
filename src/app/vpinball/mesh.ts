@@ -34,6 +34,11 @@ export class Mesh {
 	public indices: number[] = [];
 	public faceIndexOffset = 0;
 
+	constructor(vertices: Vertex3DNoTex2[] = [], indices: number[] = []) {
+		this.vertices = vertices;
+		this.indices = indices;
+	}
+
 	public static from(data: any): Mesh {
 		const mesh = new Mesh();
 		for (const vertex of data.vertices) {
@@ -71,6 +76,15 @@ export class Mesh {
 	public getBufferGeometry() {
 		const converter = new MeshConverter(this);
 		return converter.convertToBufferGeometry();
+	}
+
+	public makeTranslation(x: number, y: number, z: number) {
+		for (const vertex of this.vertices) {
+			vertex.x += x;
+			vertex.y += y;
+			vertex.z += z;
+		}
+		return this;
 	}
 
 	public clone(): Mesh {
@@ -276,4 +290,8 @@ export interface IPositionable {
 	getTransition(): Vertex3D;
 	getObjectRotation(): Vertex3D;
 	getScale(): Vertex3D;
+}
+
+export interface Meshes {
+	[key: string]: Mesh;
 }

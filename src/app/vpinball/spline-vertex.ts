@@ -139,6 +139,6 @@ export class SplineVertex {
 			}
 			accuracy = 4.0 * Math.pow(10.0, (10.0 - accuracy) * (1.0 / 1.5)); // min = 4 (highest accuracy/detail level), max = 4 * 10^(10/1.5) = ~18.000.000 (lowest accuracy/detail level)
 		}
-		return DragPoint.getRgVertex(dragPoints, true, accuracy);
+		return DragPoint.getRgVertex<RenderVertex>(dragPoints, () => new RenderVertex(), true, accuracy);
 	}
 }

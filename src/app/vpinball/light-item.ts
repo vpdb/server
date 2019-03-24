@@ -42,7 +42,7 @@ export class LightItem extends GameItem {
 		return lightItem;
 	}
 
-	public generateMeshes(table: VpTable): { light: Mesh, socket: Mesh } {
+	public generateMeshes(table: VpTable): LightMeshes {
 
 		const lightMesh = bulbLightMesh.clone();
 		const height = table.getSurfaceHeight(this.szSurface, this.vCenter.x, this.vCenter.y);
@@ -165,4 +165,9 @@ export class LightItem extends GameItem {
 				break;
 		}
 	}
+}
+
+export interface LightMeshes {
+	light: Mesh;
+	socket: Mesh;
 }

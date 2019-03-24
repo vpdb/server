@@ -107,13 +107,8 @@ export class SurfaceItem extends GameItem {
 		meshes.top.name = this.getName() + ' Top';
 		meshes.side.name = this.getName() + ' Side';
 
-		const vvertex: RenderVertex[] = DragPoint.getRgVertex(this.dragPoints);
-		let rgtexcoord: number[] = null;
-
-		const pinSide = this.szSideImage;
-		//if (pinSide) {
-			rgtexcoord = DragPoint.getTextureCoords(this.dragPoints, vvertex);
-		//}
+		const vvertex: RenderVertex[] = DragPoint.getRgVertex<RenderVertex>(this.dragPoints, () => new RenderVertex());
+		const rgtexcoord = DragPoint.getTextureCoords(this.dragPoints, vvertex);
 
 		const numVertices = vvertex.length;
 		const rgnormal: Vertex2D[] = [];
@@ -183,19 +178,17 @@ export class SurfaceItem extends GameItem {
 			meshes.side.vertices[offset + 3].y = pv2.y;
 			meshes.side.vertices[offset + 3].z = bottom;
 
-			//if (pinSide) {
-				meshes.side.vertices[offset].tu = rgtexcoord[i];
-				meshes.side.vertices[offset].tv = 1.0;
+			meshes.side.vertices[offset].tu = rgtexcoord[i];
+			meshes.side.vertices[offset].tv = 1.0;
 
-				meshes.side.vertices[offset + 1].tu = rgtexcoord[i];
-				meshes.side.vertices[offset + 1].tv = 0;
+			meshes.side.vertices[offset + 1].tu = rgtexcoord[i];
+			meshes.side.vertices[offset + 1].tv = 0;
 
-				meshes.side.vertices[offset + 2].tu = rgtexcoord[c];
-				meshes.side.vertices[offset + 2].tv = 0;
+			meshes.side.vertices[offset + 2].tu = rgtexcoord[c];
+			meshes.side.vertices[offset + 2].tv = 0;
 
-				meshes.side.vertices[offset + 3].tu = rgtexcoord[c];
-				meshes.side.vertices[offset + 3].tv = 1.0;
-			//}
+			meshes.side.vertices[offset + 3].tu = rgtexcoord[c];
+			meshes.side.vertices[offset + 3].tv = 1.0;
 
 			meshes.side.vertices[offset].nx = vnormal[0].x;
 			meshes.side.vertices[offset].ny = -vnormal[0].y;
@@ -311,7 +304,7 @@ export class SurfaceItem extends GameItem {
 			case 'INNR': this.fInner = this.getBool(buffer); break;
 			case 'NAME': this.wzName = this.getWideString(buffer, len); break;
 			case 'DSPT': this.fDisplayTexture = this.getBool(buffer); break;
-			case 'SLGF': this.slingshotforce = this.getFloat(buffer);break;
+			case 'SLGF': this.slingshotforce = this.getFloat(buffer); break;
 			case 'SLTH': this.slingshotThreshold = this.getFloat(buffer); break;
 			case 'ELAS': this.elasticity = this.getFloat(buffer); break;
 			case 'WFCT': this.friction = this.getFloat(buffer); break;

@@ -634,7 +634,7 @@ export class RampItem extends GameItem {
 			case 'IMAG': this.szImage = this.getString(buffer, len); break;
 			case 'ALGN': this.imagealignment = this.getInt(buffer); break;
 			case 'IMGW': this.fImageWalls = this.getBool(buffer); break;
-			case 'NAME': this.wzName = this.getString(buffer, len); break;
+			case 'NAME': this.wzName = this.getWideString(buffer, len); break;
 			case 'WLHL': this.leftwallheight = this.getFloat(buffer); break;
 			case 'WLHR': this.rightwallheight = this.getFloat(buffer); break;
 			case 'WVHL': this.leftwallheightvisible = this.getFloat(buffer); break;

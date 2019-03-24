@@ -23,6 +23,7 @@ import { Group, Mesh, MeshStandardMaterial, Scene } from 'three';
 import { BumperItem } from '../bumper-item';
 import { FlipperItem } from '../flipper-item';
 import { PrimitiveItem } from '../primitive-item';
+import { RampItem } from '../ramp-item';
 import { RubberItem } from '../rubber-item';
 import { SurfaceItem } from '../surface-item';
 import { VpTable } from '../vp-table';
@@ -162,6 +163,17 @@ export class VpTableExporter extends BaseExporter {
 			if (meshes.base) {
 				const mesh = new Mesh(meshes.base.getBufferGeometry(), new MeshStandardMaterial());
 				mesh.name = 'bumper-base:' + bumper.getName();
+				this.playfield.add(mesh);
+			}
+		}
+
+		// bumpers
+		let ramp: RampItem;
+		for (ramp of values(this.table.ramps)) {
+			const meshes = ramp.generateMeshes(this.table);
+			for (const type of Object.keys(meshes)) {
+				const mesh = new Mesh(meshes[type].getBufferGeometry(), new MeshStandardMaterial());
+				mesh.name = `ramp-${type}: ${ramp.getName()}`;
 				this.playfield.add(mesh);
 			}
 		}

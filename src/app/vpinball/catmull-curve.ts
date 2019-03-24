@@ -17,11 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { RenderVertex, Vertex2D, Vertex3D } from './vertex';
+import { IRenderVertex, RenderVertex, RenderVertex3D, Vertex2D, Vertex3D } from './vertex';
 
 export class CatmullCurve {
 
-	private c: { x: number[], y: number[], z?: number[] } = { x: [], y: [], z: [] };
+	private c: { x: number[], y: number[], z?: number[] } = { x: [0, 0, 0, 0], y: [0, 0, 0, 0], z: [0, 0, 0, 0] };
 
 	public static fromVertex3D(v0: Vertex3D, v1: Vertex3D, v2: Vertex3D, v3: Vertex3D): CatmullCurve {
 		return this.fromVertex2D(v0.xy(), v1.xy(), v2.xy(), v3.xy());
@@ -51,7 +51,7 @@ export class CatmullCurve {
 		this.c.y = CatmullCurve.initNonuniformCatmullCoeffs(v0.y, v1.y, v2.y, v3.y, dt0, dt1, dt2);
 	}
 
-	public getPoint2At(t: number): RenderVertex {
+	public getPoint2At(t: number): IRenderVertex {
 		const t2 = t * t;
 		const t3 = t2 * t;
 		return new RenderVertex(
@@ -60,10 +60,10 @@ export class CatmullCurve {
 		);
 	}
 
-	public getPoint3At(t: number): Vertex3D {
+	public getPoint3At(t: number): IRenderVertex {
 		const t2 = t * t;
 		const t3 = t2 * t;
-		return new Vertex3D(
+		return new RenderVertex3D(
 			this.c.x[3] * t3 + this.c.x[2] * t2 + this.c.x[1] * t + this.c.x[0],
 			this.c.y[3] * t3 + this.c.y[2] * t2 + this.c.y[1] * t + this.c.y[0],
 			this.c.z[3] * t3 + this.c.z[2] * t2 + this.c.z[1] * t + this.c.z[0],

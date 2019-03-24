@@ -22,6 +22,8 @@ import { isUndefined } from 'util';
 
 export class Vertex2D extends ThreeVector2 {
 
+	public readonly isVector3 = false;
+
 	public static get(buffer: Buffer) {
 		const v2 = new Vertex2D();
 		v2.x = buffer.readFloatLE(0);
@@ -33,18 +35,26 @@ export class Vertex2D extends ThreeVector2 {
 		return Object.assign(new Vertex2D(), data);
 	}
 
-	public readonly isVector3 = false;
-
 	constructor(x?: number, y?: number) {
 		super(x, y);
 	}
 }
 
-export class RenderVertex extends Vertex2D {
+export interface IRenderVertex {
+	x: number;
+	y: number;
+	fSmooth: boolean;
+	fSlingshot: boolean;
+	fControlPoint: boolean;
+	isVector3: boolean;
+
+	set?(x: number, y: number, z?: number): this;
+}
+
+export class RenderVertex extends Vertex2D implements IRenderVertex {
 	public fSmooth: boolean;
 	public fSlingshot: boolean;
 	public fControlPoint: boolean; // Whether this point was a control point on the curve
-	public padd: boolean;
 
 	constructor(x?: number, y?: number) {
 		super(x, y);
@@ -102,6 +112,16 @@ export class Vertex3D extends ThreeVector3 {
 
 	public xy(): Vertex2D {
 		return new Vertex2D(this.x, this.y);
+	}
+}
+
+export class RenderVertex3D extends Vertex3D implements IRenderVertex {
+	public fSmooth: boolean;
+	public fSlingshot: boolean;
+	public fControlPoint: boolean; // Whether this point was a control point on the curve
+
+	constructor(x?: number, y?: number, z?: number) {
+		super(x, y, z);
 	}
 }
 

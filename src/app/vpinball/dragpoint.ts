@@ -20,7 +20,7 @@
 import { Vector } from 'three';
 import { CatmullCurve } from './catmull-curve';
 import { GameItem } from './game-item';
-import { RenderVertex, Vertex2D, Vertex3D } from './vertex';
+import { IRenderVertex, RenderVertex, Vertex2D, Vertex3D } from './vertex';
 
 export const HIT_SHAPE_DETAIL_LEVEL = 7.0;
 
@@ -31,6 +31,7 @@ export class DragPoint extends GameItem {
 	public fSlingshot: boolean;
 	public fAutoTexture: boolean;
 	public texturecoord: number;
+	public calcHeight: number;
 
 	public static from(data: any): DragPoint {
 		const dragPoint = new DragPoint();
@@ -38,15 +39,15 @@ export class DragPoint extends GameItem {
 		return dragPoint;
 	}
 
-	public static getRgVertex(vdpoint: DragPoint[], loop: boolean = true, accuracy: number = 4.0): RenderVertex[] {
+	public static getRgVertex<T extends IRenderVertex>(vdpoint: DragPoint[], instantiateT: () => T, loop: boolean = true, accuracy: number = 4.0): T[] {
 
-		let vv: RenderVertex[] = [];
+		let vv: T[] = [];
 
 		//static const int Dim = T::Dim;    // for now, this is always 2 or 3
 		const cpoint: number = vdpoint.length;
 		const endpoint: number = loop ? cpoint : cpoint - 1;
 
-		const rendv2 = new RenderVertex();
+		const rendv2 = instantiateT();
 
 		for (let i = 0; i < endpoint; i++) {
 
@@ -73,15 +74,15 @@ export class DragPoint extends GameItem {
 
 			const cc = CatmullCurve.fromVertex3D(pdp0.vertex, pdp1.vertex, pdp2.vertex, pdp3.vertex);
 
-			const rendv1 = new RenderVertex();
+			const rendv1 = instantiateT();
 
-			rendv1.set(pdp1.vertex.x, pdp1.vertex.y);
+			rendv1.set(pdp1.vertex.x, pdp1.vertex.y, 0);
 			rendv1.fSmooth = pdp1.fSmooth;
 			rendv1.fSlingshot = pdp1.fSlingshot;
 			rendv1.fControlPoint = true;
 
 			// Properties of last point don't matter, because it won't be added to the list on this pass (it'll get added as the first point of the next curve)
-			rendv2.set(pdp2.vertex.x, pdp2.vertex.y);
+			rendv2.set(pdp2.vertex.x, pdp2.vertex.y, 0);
 
 			vv = DragPoint.recurseSmoothLine(vv, cc, 0.0, 1.0, rendv1, rendv2, accuracy);
 		}
@@ -187,11 +188,12 @@ export class DragPoint extends GameItem {
 		return ppcoords;
 	}
 
-	private static recurseSmoothLine(vv: RenderVertex[] = [], cc: CatmullCurve, t1: number, t2: number, vt1: RenderVertex, vt2: RenderVertex, accuracy: number): RenderVertex[] {
+	private static recurseSmoothLine<T extends IRenderVertex>(vv: T[] = [], cc: CatmullCurve, t1: number, t2: number, vt1: T, vt2: T, accuracy: number): T[] {
 
 		const tMid = (t1 + t2) * 0.5;
 
-		const vmid = cc.getPoint2At(tMid);
+		const vmid = (vt2.isVector3 ? cc.getPoint3At(tMid) : cc.getPoint2At(tMid)) as T;
+
 		vmid.fSmooth = true; // Generated points must always be smooth, because they are part of the curve
 		vmid.fSlingshot = false; // Slingshots can't be along curves
 		vmid.fControlPoint = false; // We created this point, so it can't be a control point
@@ -203,26 +205,22 @@ export class DragPoint extends GameItem {
 			vv.push(vt1);
 
 		} else {
-			vv = DragPoint.recurseSmoothLine(vv, cc, t1, tMid, vt1, vmid, accuracy);
-			vv = DragPoint.recurseSmoothLine(vv, cc, tMid, t2, vmid, vt2, accuracy);
+			vv = DragPoint.recurseSmoothLine<T>(vv, cc, t1, tMid, vt1, vmid, accuracy);
+			vv = DragPoint.recurseSmoothLine<T>(vv, cc, tMid, t2, vmid, vt2, accuracy);
 		}
 		return vv;
 	}
 
-	private static flatWithAccuracy(v1: Vector, v2: Vector, vMid: Vector, accuracy: number): boolean {
+	private static flatWithAccuracy(v1: IRenderVertex, v2: IRenderVertex, vMid: IRenderVertex, accuracy: number): boolean {
 
-		if ((v1 as Vertex2D).isVector2 && (v2 as Vertex2D).isVector2 && (vMid as Vertex2D).isVector2) {
-			return DragPoint.flatWithAccuracy2(v1 as Vertex2D, v2 as Vertex2D, vMid as Vertex2D, accuracy);
+		if (v1.isVector3 && v2.isVector3 && vMid.isVector3) {
+			return DragPoint.flatWithAccuracy3(v1 as any, v2 as any, vMid as any, accuracy);
+		} else {
+			return DragPoint.flatWithAccuracy2(v1, v2, vMid, accuracy);
 		}
-
-		if ((v1 as Vertex3D).isVector3 && (v2 as Vertex3D).isVector3 && (vMid as Vertex3D).isVector3) {
-			return DragPoint.flatWithAccuracy3(v1 as Vertex3D, v2 as Vertex3D, vMid as Vertex3D, accuracy);
-		}
-
-		throw new Error('Arguments must be either of Vector2 or Vector3.');
 	}
 
-	private static flatWithAccuracy2(v1: Vertex2D, v2: Vertex2D, vMid: Vertex2D, accuracy: number): boolean {
+	private static flatWithAccuracy2(v1: IRenderVertex, v2: IRenderVertex, vMid: IRenderVertex, accuracy: number): boolean {
 		// compute double the signed area of the triangle (v1, vMid, v2)
 		const dblarea = (vMid.x - v1.x) * (v2.y - v1.y) - (v2.x - v1.x) * (vMid.y - v1.y);
 		return (dblarea * dblarea < accuracy);
@@ -230,10 +228,9 @@ export class DragPoint extends GameItem {
 
 	private static flatWithAccuracy3(v1: Vertex3D, v2: Vertex3D, vMid: Vertex3D, accuracy: number): boolean {
 		// compute the square of double the signed area of the triangle (v1, vMid, v2)
-		const cross = new Vertex3D();
-		cross.cross(vMid.clone().sub(v1), v2.clone().sub(v1));
+		const cross = vMid.clone().sub(v1).cross(v2.clone().sub(v1));
 		const dblareasq = cross.lengthSq();
-		return (dblareasq < accuracy);
+		return dblareasq < accuracy;
 	}
 
 	public async fromTag(buffer: Buffer, tag: string): Promise<void> {

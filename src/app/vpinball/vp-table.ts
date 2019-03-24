@@ -231,4 +231,12 @@ export class VpTable {
 			this.textures[texture.getName()] = texture;
 		}
 	}
+
+	public getDetailLevel() {
+		return 10; // todo check if true
+	}
+
+	public getMaterial(name: string) {
+		return this.gameData.materials.find(m => m.szName === name);
+	}
 }

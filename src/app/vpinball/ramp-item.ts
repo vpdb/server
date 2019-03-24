@@ -25,8 +25,6 @@ import { GameItem } from './game-item';
 import { Mesh, Meshes } from './mesh';
 import { RenderVertex3D, Vertex2D, Vertex3D, Vertex3DNoTex2 } from './vertex';
 import { VpTable } from './vp-table';
-import { _Math } from 'three/src/math/Math';
-import floorPowerOfTwo = _Math.floorPowerOfTwo;
 
 export class RampItem extends GameItem {
 

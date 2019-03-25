@@ -17,6 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { Canvas, Image } from 'canvas';
 import { values } from 'lodash';
 import {
 	Color,
@@ -26,12 +27,14 @@ import {
 	Mesh,
 	MeshStandardMaterial,
 	PointLight,
+	RGBAFormat,
 	Scene,
+	Texture,
+	TextureLoader,
 } from 'three';
 import { BumperItem } from '../bumper-item';
 import { FlipperItem } from '../flipper-item';
 import { IRenderable, RenderInfo } from '../game-item';
-import { Material } from '../material';
 import { PrimitiveItem } from '../primitive-item';
 import { RampItem } from '../ramp-item';
 import { RubberItem } from '../rubber-item';
@@ -39,10 +42,10 @@ import { SurfaceItem } from '../surface-item';
 import { VpTable } from '../vp-table';
 import { BaseExporter } from './base-exporter';
 
-const Canvas = require('canvas');
 const { Blob, FileReader } = require('vblob');
 
 // Patch global scope to imitate browser environment.
+(global as any).Canvas = Image;
 (global as any).window = global;
 (global as any).Blob = Blob;
 (global as any).FileReader = FileReader;
@@ -53,9 +56,7 @@ const { Blob, FileReader } = require('vblob');
 		}
 		const canvas = new Canvas(256, 256);
 		// This isn't working — currently need to avoid toBlob(), so export to embedded .gltf not .glb.
-		// canvas.toBlob = function () {
-		//   return new Blob([this.toBuffer()]);
-		// };
+		(canvas as any).toBlob = () => new Blob([canvas.toBuffer()]);
 		return canvas;
 	},
 };
@@ -69,27 +70,29 @@ export class VpTableExporter extends BaseExporter {
 	private readonly scene: Scene;
 	private playfield: Group;
 
+	protected textureLoader = new TextureLoader();
+
 	constructor(table: VpTable) {
 		super();
 		this.table = table;
 		this.scene = new Scene();
 		this.playfield = new Group();
 		this.playfield.rotateX(Math.PI / 2);
-		this.playfield.rotateZ(-Math.PI / 2);
+		//this.playfield.rotateZ(-Math.PI / 2);
 		this.playfield.translateY((table.gameData.top - table.gameData.bottom) * VpTableExporter.scale / 2);
 		this.playfield.translateX(-(table.gameData.right - table.gameData.left) * VpTableExporter.scale / 2);
 		this.playfield.scale.set(VpTableExporter.scale, VpTableExporter.scale, VpTableExporter.scale);
 	}
 
-	public async exportGltf(): Promise<string> {
-		return JSON.stringify(await this.export<any>({ binary: false }));
+	public async exportGltf(fileId: string): Promise<string> {
+		return JSON.stringify(await this.export<any>(fileId, { binary: false }));
 	}
 
-	public async exportGlb(): Promise<Buffer> {
-		return this.arrayBufferToBuffer(await this.export<ArrayBuffer>({ binary: true }));
+	public async exportGlb(fileId: string): Promise<Buffer> {
+		return this.arrayBufferToBuffer(await this.export<ArrayBuffer>(fileId, { binary: true }));
 	}
 
-	private async export<T>(opts: any = {}): Promise<T> {
+	private async export<T>(fileId: string, opts: any = {}): Promise<T> {
 		const allRenderables: IRenderable[][] = [
 			values<PrimitiveItem>(this.table.primitives),
 			values<RubberItem>(this.table.rubbers),
@@ -111,7 +114,7 @@ export class VpTableExporter extends BaseExporter {
 				let obj: RenderInfo;
 				for (obj of values(objects)) {
 					const bufferGeometry = obj.mesh.getBufferGeometry();
-					const mesh = new Mesh(bufferGeometry, this.getMaterial(obj.material));
+					const mesh = new Mesh(bufferGeometry, await this.getMaterial(fileId, obj));
 					mesh.name = obj.mesh.name;
 					if (renderable.getPositionableObject) {
 						this.position(mesh, renderable as any);
@@ -132,40 +135,56 @@ export class VpTableExporter extends BaseExporter {
 		this.scene.add(this.playfield);
 
 		return await new Promise(resolve => {
-			this.gltfExporter.parse(this.scene, resolve, opts);
+			this.gltfExporter.parse(this.scene, resolve, Object.assign({}, opts, { embedImages: true }));
 		});
 	}
 
-	private getMaterial(materialInfo: Material): ThreeMaterial {
+	private async getMaterial(fileId: string, obj: RenderInfo): Promise<ThreeMaterial> {
 		const material = new MeshStandardMaterial();
-		if (!materialInfo || !VpTableExporter.applyMaterials) {
-			return material;
+		const materialInfo = obj.material;
+		if (materialInfo && VpTableExporter.applyMaterials) {
+
+			material.color = new Color(materialInfo.cBase);
+			material.roughness = 1 - materialInfo.fRoughness;
+			material.metalness = materialInfo.bIsMetal ? 0.7 : 0.0;
+			material.emissive = new Color(materialInfo.cGlossy);
+			material.emissiveIntensity = 0.1;
+
+			if (materialInfo.bOpacityActive) {
+				material.transparent = true;
+				material.opacity = materialInfo.fOpacity;
+			}
+
+			material.side = DoubleSide;
 		}
 
-		material.color = new Color(materialInfo.cBase);
-		material.roughness = 1 - materialInfo.fRoughness;
-		material.metalness = materialInfo.bIsMetal ? 0.7 : 0.0;
-		material.emissive = new Color(materialInfo.cGlossy);
-		material.emissiveIntensity = 0.1;
+		if (obj.map) {
+			const img = new Image();
+			const doc = await this.table.getDocument();
+			//img.src = 'data:image/png;base64' + (await obj.map.getImage(doc.storage('GameStg'))).toString('base64');
+			img.src = await obj.map.getImage(doc.storage('GameStg'));
+			await doc.close();
 
-		if (materialInfo.bOpacityActive) {
-			material.transparent = true;
-			material.opacity = materialInfo.fOpacity;
+			material.map = new Texture();
+			material.map.image = img;
+			material.map.format = RGBAFormat;
+			material.map.needsUpdate = true;
+			material.needsUpdate = true;
 		}
 
-		// if (primitive.normalMap) {
-		// 	const normalMap = this.vpTable.textures[primitive.normalMap];
-		// 	if (normalMap) {
-		// 		this.textureLoader.load(normalMap.url, map => {
-		// 			map.anisotropy = 16;
-		// 			material.normalMap = map;
-		// 		});
-		// 	} else {
-		// 		console.warn('Unknown normal map "%s" for primitive "%s".', primitive.normalMap, primitive.name);
-		// 	}
+		// if (obj.map) {
+		// 	this.textureLoader.load(obj.map.getUrl(fileId), map => {
+		// 		material.map = map;
+		// 		material.needsUpdate = true;
+		// 	});
 		// }
 
-		material.side = DoubleSide;
+		// if (obj.normalMap) {
+		// 	this.textureLoader.load(obj.normalMap.getUrl(fileId), map => {
+		// 		map.anisotropy = 16;
+		// 		material.normalMap = map;
+		// 	});
+		// }
 		return material;
 	}
 

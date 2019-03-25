@@ -18,9 +18,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { values } from 'lodash';
 import { logger } from '../common/logger';
 import { OleCompoundDoc, Storage } from '../common/ole-doc';
+import { settings } from '../common/settings';
 import { BumperItem } from './bumper-item';
 import { FlipperItem } from './flipper-item';
 import { GameData } from './game-data';
@@ -39,6 +39,8 @@ import { Texture } from './texture';
 import { TriggerItem } from './trigger-item';
 
 export class VpTable {
+
+	private doc: OleCompoundDoc;
 
 	public static async load(fileName: string): Promise<VpTable> {
 		const then = Date.now();
@@ -107,22 +109,20 @@ export class VpTable {
 		return this.gameData.tableheight;
 	}
 
+	public async getDocument(): Promise<OleCompoundDoc> {
+		await this.doc.read();
+		return this.doc;
+	}
+
 	public serialize(fileId: string) {
-		return {
-			game_data: this.gameData.serialize(),
-			primitives: values(this.primitives).map((p: PrimitiveItem) => p.serialize(fileId)),
-			textures: Object.keys(this.textures).reduce<{ [key: string]: any }>((textures, textureName) => {
-				textures[textureName] = this.textures[textureName].serialize(fileId);
-				return textures;
-			}, {}),
-			materials: this.gameData.materials.reduce<{ [key: string]: any }>((materials, material) => {
-				materials[material.szName] = material.serialize();
-				return materials;
-			}, {}),
-			lights: this.lights.map(l => l.serialize()),
-			rubbers: values(this.rubbers).filter(r => r.fVisible).map(r => r.serialize(fileId)),
-			flippers: values(this.flippers).filter(r => r.fVisible).map(r => r.serialize()),
-		};
+		return Object.assign({}, this.gameData.serialize(), {
+			meshGlb: settings.apiExternalUri(`/v1/vp/${fileId}/objects.glb`),
+			meshGltf: settings.apiExternalUri(`/v1/vp/${fileId}/objects.gltf`),
+		});
+		// return {
+		// 	game_data: this.gameData.serialize(),
+		// 	lights: this.lights.map(l => l.serialize()),
+		// };
 	}
 
 	public getSurfaceHeight(surface: string, x: number, y: number) {
@@ -142,27 +142,27 @@ export class VpTable {
 		return this.gameData.tableheight;
 	}
 
-	public async exportGltf(): Promise<string> {
+	public async exportGltf(fileId: string): Promise<string> {
 		const exporter = new VpTableExporter(this);
-		return await exporter.exportGltf();
+		return await exporter.exportGltf(fileId);
 	}
 
-	public async exportGlb(): Promise<Buffer> {
+	public async exportGlb(fileId: string): Promise<Buffer> {
 		const exporter = new VpTableExporter(this);
-		return await exporter.exportGlb();
+		return await exporter.exportGlb(fileId);
 	}
 
 	private async _load(fileName: string): Promise<void> {
 
-		const doc = new OleCompoundDoc(fileName);
+		this.doc = new OleCompoundDoc(fileName);
 
 		try {
 
 			// read ole-doc
-			await doc.read();
+			await this.doc.read();
 
 			// open game storage
-			const gameStorage = doc.storage('GameStg');
+			const gameStorage = this.doc.storage('GameStg');
 
 			// load game data
 			this.gameData = await GameData.fromStorage(gameStorage, 'GameData');
@@ -176,7 +176,7 @@ export class VpTable {
 			console.log(stats);
 
 		} finally {
-			await doc.close();
+			await this.doc.close();
 		}
 	}
 

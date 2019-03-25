@@ -20,13 +20,13 @@
 import { Math as M, Matrix4 } from 'three';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
-import { GameItem } from './game-item';
+import { GameItem, IRenderable, Meshes } from './game-item';
 import { Mesh } from './mesh';
 import { flipperBaseMesh } from './meshes/flipper-base-mesh';
 import { Vertex2D, Vertex3D, Vertex3DNoTex2 } from './vertex';
 import { VpTable } from './vp-table';
 
-export class FlipperItem extends GameItem {
+export class FlipperItem extends GameItem implements IRenderable {
 
 	public wzName: string;
 	public pdata: number;
@@ -65,7 +65,7 @@ export class FlipperItem extends GameItem {
 
 	public static async fromStorage(storage: Storage, itemName: string): Promise<FlipperItem> {
 		const flipperItem = new FlipperItem();
-		await storage.streamFiltered(itemName, 4, FlipperItem.createStreamHandler(flipperItem));
+		await storage.streamFiltered(itemName, 4, BiffParser.stream(flipperItem.fromTag.bind(flipperItem)));
 		return flipperItem;
 	}
 
@@ -75,28 +75,20 @@ export class FlipperItem extends GameItem {
 		return flipperItem;
 	}
 
-	private static createStreamHandler(lightItem: FlipperItem) {
-		return BiffParser.stream(lightItem.fromTag.bind(lightItem));
-	}
-
 	private constructor() {
 		super();
+	}
+
+	public isVisible(): boolean {
+		return this.fVisible;
 	}
 
 	public getName(): string {
 		return this.wzName;
 	}
 
-	public serialize() {
-		return {
-			name: this.wzName,
-			center: this.Center,
-		};
-	}
-
-	public generateMeshes(table: VpTable): { base: Mesh, rubber?: Mesh } {
-
-
+	public getMeshes(table: VpTable): Meshes {
+		const meshes: Meshes = {};
 		const matTrafo = new Matrix4();
 		const matTemp = new Matrix4();
 		matTrafo.identity();
@@ -123,12 +115,14 @@ export class FlipperItem extends GameItem {
 		}
 
 		const baseMesh = new Mesh();
-		baseMesh.name = 'Base';
+		baseMesh.name = `flipper-base:${this.getName()}`;
 		baseMesh.vertices = buf;
 		baseMesh.indices = flipperBaseMesh.indices;
 
-		const meshes: { base: Mesh, rubber?: Mesh } = {
-			base: baseMesh
+		meshes.base = {
+			mesh: baseMesh,
+			material: table.getMaterial(this.szMaterial),
+			map: table.getTexture(this.szImage),
 		};
 
 		if (this.rubberthickness > 0.0) {
@@ -149,15 +143,24 @@ export class FlipperItem extends GameItem {
 			}
 
 			const rubberMesh = new Mesh();
-			rubberMesh.name = 'Rubber';
+			baseMesh.name = `flipper-rubber:${this.getName()}`;
 			rubberMesh.vertices = buf;
 			rubberMesh.indices = flipperBaseMesh.indices;
 			rubberMesh.faceIndexOffset = flipperBaseMesh.vertices.length;
 
-			meshes.rubber = rubberMesh;
+			meshes.rubber = {
+				mesh: rubberMesh,
+				material: table.getMaterial(this.szRubberMaterial),
+			};
 		}
-
 		return meshes;
+	}
+
+	public serialize() {
+		return {
+			name: this.wzName,
+			center: this.Center,
+		};
 	}
 
 	private generateBaseMesh(table: VpTable): { base: Vertex3DNoTex2[], rubber: Vertex3DNoTex2[] } {
@@ -376,5 +379,4 @@ export class FlipperItem extends GameItem {
 		new Vertex3D(0.097329, -0.026079, 1.004253),
 		new Vertex3D(0.100762, -0.000000, 1.004253),
 	];
-
 }

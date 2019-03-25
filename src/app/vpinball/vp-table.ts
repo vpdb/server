@@ -36,6 +36,7 @@ import { HitTargetItem } from './hit-target-item';
 import { GateItem } from './gate-item';
 import { KickerItem } from './kicker-item';
 import { TriggerItem } from './trigger-item';
+import { Material } from './material';
 
 export class VpTable {
 
@@ -86,16 +87,12 @@ export class VpTable {
 		return this.textures[name];
 	}
 
+	public getMaterial(name: string): Material {
+		return this.gameData.materials.find(m => m.szName === name);
+	}
+
 	public getSurface(name: string): SurfaceItem {
 		return this.surfaces[name];
-	}
-
-	public getScaleX(): number {
-		return this.gameData.BG_scalex[this.gameData.BG_current_set] || 1.0;
-	}
-
-	public getScaleY(): number {
-		return this.gameData.BG_scaley[this.gameData.BG_current_set] || 1.0;
 	}
 
 	public getScaleZ(): number {
@@ -104,10 +101,6 @@ export class VpTable {
 
 	public getDetailLevel() {
 		return 10; // todo check if true
-	}
-
-	public getMaterial(name: string) {
-		return this.gameData.materials.find(m => m.szName === name);
 	}
 
 	public getTableHeight() {
@@ -149,9 +142,14 @@ export class VpTable {
 		return this.gameData.tableheight;
 	}
 
-	public async export() {
+	public async exportGltf(): Promise<string>{
 		const exporter = new VpTableExporter(this);
-		return await exporter.export();
+		return await exporter.exportGltf();
+	}
+
+	public async exportGlb(): Promise<Buffer>{
+		const exporter = new VpTableExporter(this);
+		return await exporter.exportGlb();
 	}
 
 	private async _load(fileName: string): Promise<void> {

@@ -291,7 +291,3 @@ export interface IPositionable {
 	getObjectRotation(): Vertex3D;
 	getScale(): Vertex3D;
 }
-
-export interface Meshes {
-	[key: string]: Mesh;
-}

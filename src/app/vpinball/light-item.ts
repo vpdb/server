@@ -21,62 +21,13 @@ import { Storage } from '../common/ole-doc';
 import { settings } from '../common/settings';
 import { BiffParser } from './biff-parser';
 import { DragPoint } from './dragpoint';
-import { GameItem } from './game-item';
-import { Mesh } from './mesh';
+import { GameItem, IRenderable, Meshes } from './game-item';
 import { bulbLightMesh } from './meshes/bulb-light-mesh';
 import { bulbSocketMesh } from './meshes/bulb-socket-mesh';
 import { Vertex2D } from './vertex';
 import { VpTable } from './vp-table';
 
-export class LightItem extends GameItem {
-
-	public static async fromStorage(storage: Storage, itemName: string): Promise<LightItem> {
-		const lightItem = new LightItem();
-		await storage.streamFiltered(itemName, 4, LightItem.createStreamHandler(lightItem));
-		return lightItem;
-	}
-
-	public static from(data: any): LightItem {
-		const lightItem = new LightItem();
-		Object.assign(lightItem, data);
-		return lightItem;
-	}
-
-	public generateMeshes(table: VpTable): LightMeshes {
-
-		const lightMesh = bulbLightMesh.clone();
-		const height = table.getSurfaceHeight(this.szSurface, this.vCenter.x, this.vCenter.y);
-		for (const vertex of lightMesh.vertices) {
-			vertex.x = vertex.x * this.meshRadius + this.vCenter.x;
-			vertex.y = vertex.y * this.meshRadius + this.vCenter.y;
-			vertex.z = vertex.z * this.meshRadius * table.getScaleZ() + height;
-		}
-
-		const socketMesh = bulbSocketMesh.clone();
-		for (const vertex of socketMesh.vertices) {
-			vertex.x = vertex.x * this.meshRadius + this.vCenter.x;
-			vertex.y = vertex.y * this.meshRadius + this.vCenter.y;
-			vertex.z = vertex.z * this.meshRadius * table.getScaleZ() + height;
-		}
-
-		return {
-			light: lightMesh,
-			socket: socketMesh,
-		}
-	}
-
-	private static createStreamHandler(lightItem: LightItem) {
-		lightItem.dragPoints = [];
-		return BiffParser.stream(lightItem.fromTag.bind(lightItem), {
-			nestedTags: {
-				DPNT: {
-					onStart: () => new DragPoint(),
-					onTag: dragPoint => dragPoint.fromTag.bind(dragPoint),
-					onEnd: dragPoint => lightItem.dragPoints.push(dragPoint),
-				},
-			},
-		});
-	}
+export class LightItem extends GameItem implements IRenderable {
 
 	public wzName: string;
 	public pdata: number;
@@ -109,12 +60,56 @@ export class LightItem extends GameItem {
 	public bulbHaloHeight: number;
 	public dragPoints: DragPoint[];
 
+	public static async fromStorage(storage: Storage, itemName: string): Promise<LightItem> {
+		const lightItem = new LightItem();
+		await storage.streamFiltered(itemName, 4, LightItem.createStreamHandler(lightItem));
+		return lightItem;
+	}
+
+	public static from(data: any): LightItem {
+		const lightItem = new LightItem();
+		Object.assign(lightItem, data);
+		return lightItem;
+	}
+
 	private constructor() {
 		super();
 	}
 
 	public getName(): string {
 		return this.wzName;
+	}
+
+	public isVisible(): boolean {
+		return this.showBulbMesh;
+	}
+
+	public getMeshes(table: VpTable): Meshes {
+		const lightMesh = bulbLightMesh.clone();
+		lightMesh.name = `bulb:light:${this.getName()}`;
+		const height = table.getSurfaceHeight(this.szSurface, this.vCenter.x, this.vCenter.y);
+		for (const vertex of lightMesh.vertices) {
+			vertex.x = vertex.x * this.meshRadius + this.vCenter.x;
+			vertex.y = vertex.y * this.meshRadius + this.vCenter.y;
+			vertex.z = vertex.z * this.meshRadius * table.getScaleZ() + height;
+		}
+
+		const socketMesh = bulbSocketMesh.clone();
+		lightMesh.name = `bulb:socket:${this.getName()}`;
+		for (const vertex of socketMesh.vertices) {
+			vertex.x = vertex.x * this.meshRadius + this.vCenter.x;
+			vertex.y = vertex.y * this.meshRadius + this.vCenter.y;
+			vertex.z = vertex.z * this.meshRadius * table.getScaleZ() + height;
+		}
+
+		return {
+			light: {
+				mesh: lightMesh,
+			},
+			socket: {
+				mesh: socketMesh,
+			},
+		}
 	}
 
 	public serialize() {
@@ -165,9 +160,17 @@ export class LightItem extends GameItem {
 				break;
 		}
 	}
-}
 
-export interface LightMeshes {
-	light: Mesh;
-	socket: Mesh;
+	private static createStreamHandler(lightItem: LightItem) {
+		lightItem.dragPoints = [];
+		return BiffParser.stream(lightItem.fromTag.bind(lightItem), {
+			nestedTags: {
+				DPNT: {
+					onStart: () => new DragPoint(),
+					onTag: dragPoint => dragPoint.fromTag.bind(dragPoint),
+					onEnd: dragPoint => lightItem.dragPoints.push(dragPoint),
+				},
+			},
+		});
+	}
 }

@@ -17,10 +17,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Vector } from 'three';
 import { CatmullCurve } from './catmull-curve';
 import { GameItem } from './game-item';
-import { IRenderVertex, RenderVertex, Vertex2D, Vertex3D } from './vertex';
+import { IRenderVertex, RenderVertex, Vertex3D } from './vertex';
 
 export const HIT_SHAPE_DETAIL_LEVEL = 7.0;
 
@@ -192,7 +191,7 @@ export class DragPoint extends GameItem {
 
 		const tMid = (t1 + t2) * 0.5;
 
-		const vmid = (vt2.isVector3 ? cc.getPoint3At(tMid) : cc.getPoint2At(tMid)) as T;
+		const vmid: T = ((vt2.isVector3 ? cc.getPoint3At(tMid) : cc.getPoint2At(tMid)) as unknown) as T;
 
 		vmid.fSmooth = true; // Generated points must always be smooth, because they are part of the curve
 		vmid.fSlingshot = false; // Slingshots can't be along curves

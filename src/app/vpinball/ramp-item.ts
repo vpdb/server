@@ -21,12 +21,12 @@
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { DragPoint } from './dragpoint';
-import { GameItem } from './game-item';
-import { Mesh, Meshes } from './mesh';
+import { GameItem, IRenderable, Meshes } from './game-item';
+import { Mesh } from './mesh';
 import { RenderVertex3D, Vertex2D, Vertex3D, Vertex3DNoTex2 } from './vertex';
 import { VpTable } from './vp-table';
 
-export class RampItem extends GameItem {
+export class RampItem extends GameItem implements IRenderable {
 
 	public static RampTypeFlat = 0;
 	public static RampType4Wire = 1;
@@ -96,53 +96,132 @@ export class RampItem extends GameItem {
 		});
 	}
 
+	private constructor() {
+		super();
+	}
+
 	public getName(): string {
 		return this.wzName;
 	}
 
-	public generateMeshes(table: VpTable): Meshes {
+	public isVisible(): boolean {
+		return this.fVisible;
+	}
+
+	public getMeshes(table: VpTable): Meshes {
+		const meshes: Meshes = {};
 		if (!this.isHabitrail()) {
-			return this.generateFlatMesh(table);
+			const flatMeshes = this.generateFlatMesh(table);
+			for (const mesh of flatMeshes) {
+				meshes[mesh.name] = {
+					mesh,
+					map: table.getTexture(this.szImage),
+					material: table.getMaterial(this.szMaterial),
+				};
+			}
 		} else {
-			const meshes: Meshes = {};
-			const [tmpBuf1, tmpBuf2] = this.generateWireMeshes(table);
+			const [wireMeshA, wireMeshB] = this.generateWireMeshes(table);
 			switch (this.rampType) {
 				case RampItem.RampType1Wire: {
-					meshes.wire1 = tmpBuf1;
+					meshes.wire1 = {
+						mesh: wireMeshA,
+						map: table.getTexture(this.szImage),
+						material: table.getMaterial(this.szMaterial),
+					};
 					break;
 				}
 				case RampItem.RampType2Wire: {
-					meshes.wire1 = tmpBuf1.makeTranslation(0, 0, 3.0);
-					meshes.wire2 = tmpBuf2.makeTranslation(0, 0, 3.0);
+					const wire1Mesh = wireMeshA.makeTranslation(0, 0, 3.0);
+					const wire2Mesh = wireMeshB.makeTranslation(0, 0, 3.0);
+					wire1Mesh.name = `ramp:wire1:${this.getName()}`;
+					wire2Mesh.name = `ramp:wire2:${this.getName()}`;
+					meshes.wire1 = {
+						mesh: wire1Mesh,
+						material: table.getMaterial(this.szMaterial),
+					};
+					meshes.wire2 = {
+						mesh: wire2Mesh,
+						material: table.getMaterial(this.szMaterial),
+					};
 					break;
 				}
 				case RampItem.RampType4Wire: {
-					meshes.wire1 = tmpBuf1.clone().makeTranslation(0, 0, this.wireDistanceY*0.5);
-					meshes.wire2 = tmpBuf2.clone().makeTranslation(0, 0, this.wireDistanceY*0.5);
-					meshes.wire3 = tmpBuf1.makeTranslation(0, 0, 3.0);
-					meshes.wire4 = tmpBuf2.makeTranslation(0, 0, 3.0);
+					const wire1Mesh = wireMeshA.clone().makeTranslation(0, 0, this.wireDistanceY*0.5);
+					const wire2Mesh = wireMeshB.clone().makeTranslation(0, 0, this.wireDistanceY*0.5);
+					const wire3Mesh = wireMeshA.makeTranslation(0, 0, 3.0);
+					const wire4Mesh = wireMeshB.makeTranslation(0, 0, 3.0);
+					wire1Mesh.name = `ramp:wire1:${this.getName()}`;
+					wire2Mesh.name = `ramp:wire2:${this.getName()}`;
+					wire3Mesh.name = `ramp:wire3:${this.getName()}`;
+					wire4Mesh.name = `ramp:wire4:${this.getName()}`;
+					meshes.wire1 = {
+						mesh: wire1Mesh,
+						material: table.getMaterial(this.szMaterial),
+					};
+					meshes.wire2 = {
+						mesh: wire2Mesh,
+						material: table.getMaterial(this.szMaterial),
+					};
+					meshes.wire3 = {
+						mesh: wire3Mesh,
+						material: table.getMaterial(this.szMaterial),
+					};
+					meshes.wire4 = {
+						mesh: wire4Mesh,
+						material: table.getMaterial(this.szMaterial),
+					};
 					break;
 				}
 				case RampItem.RampType3WireLeft: {
-					meshes.wire2 = tmpBuf2.clone().makeTranslation(0, 0, this.wireDistanceY*0.5);
-					meshes.wire3 = tmpBuf1.makeTranslation(0, 0, 3.0);
-					meshes.wire4 = tmpBuf2.makeTranslation(0, 0, 3.0);
+					const wire2Mesh = wireMeshB.clone().makeTranslation(0, 0, this.wireDistanceY*0.5);
+					const wire3Mesh = wireMeshA.makeTranslation(0, 0, 3.0);
+					const wire4Mesh = wireMeshB.makeTranslation(0, 0, 3.0);
+					wire2Mesh.name = `ramp:wire2:${this.getName()}`;
+					wire3Mesh.name = `ramp:wire3:${this.getName()}`;
+					wire4Mesh.name = `ramp:wire4:${this.getName()}`;
+					meshes.wire2 = {
+						mesh: wire2Mesh,
+						material: table.getMaterial(this.szMaterial),
+					};
+					meshes.wire3 = {
+						mesh: wire3Mesh,
+						material: table.getMaterial(this.szMaterial),
+					};
+					meshes.wire4 = {
+						mesh: wire4Mesh,
+						material: table.getMaterial(this.szMaterial),
+					};
 					break;
 				}
 				case RampItem.RampType3WireRight: {
-					meshes.wire1 = tmpBuf1.clone().makeTranslation(0, 0, this.wireDistanceY*0.5);
-					meshes.wire3 = tmpBuf1.makeTranslation(0, 0, 3.0);
-					meshes.wire4 = tmpBuf2.makeTranslation(0, 0, 3.0);
+					const wire1Mesh = wireMeshA.clone().makeTranslation(0, 0, this.wireDistanceY*0.5);
+					const wire3Mesh = wireMeshA.makeTranslation(0, 0, 3.0);
+					const wire4Mesh = wireMeshB.makeTranslation(0, 0, 3.0);
+					wire1Mesh.name = `ramp:wire1:${this.getName()}`;
+					wire3Mesh.name = `ramp:wire3:${this.getName()}`;
+					wire4Mesh.name = `ramp:wire4:${this.getName()}`;
+					meshes.wire1 = {
+						mesh: wire1Mesh,
+						material: table.getMaterial(this.szMaterial),
+					};
+					meshes.wire3 = {
+						mesh: wire3Mesh,
+						material: table.getMaterial(this.szMaterial),
+					};
+					meshes.wire4 = {
+						mesh: wire4Mesh,
+						material: table.getMaterial(this.szMaterial),
+					};
 					break;
 				}
 			}
-			return meshes;
 		}
+		return meshes;
 	}
 
-	public generateFlatMesh(table: VpTable): Meshes {
+	private generateFlatMesh(table: VpTable): Mesh[] {
 
-		const meshes: Meshes = {};
+		const meshes: Mesh[] = [];
 		const rv = this.getRampVertex(table, -1, true);
 		const rampVertex = rv.pcvertex;
 		const rgheight = rv.ppheight;
@@ -152,10 +231,9 @@ export class RampItem extends GameItem {
 		const inv_tableheight = 1.0 / (table.gameData.bottom - table.gameData.top);
 
 		const numVertices = rampVertex * 2;
-		const rgioffset = (rampVertex - 1) * 6;
-		const numIndices = rgioffset * 3; // to draw the full ramp in one go (could only use *1, and draw three times with offsets into vertices)
 
 		const floorMesh = new Mesh();
+		floorMesh.name = `ramp:floor:${this.getName()}`;
 		for (let i = 0; i < rampVertex; i++) {
 
 			const rgv3d1 = new Vertex3DNoTex2();
@@ -206,10 +284,11 @@ export class RampItem extends GameItem {
 		}
 
 		Mesh.computeNormals(floorMesh.vertices, numVertices, floorMesh.indices, (rampVertex - 1) * 6);
-		meshes.rampFloor = floorMesh;
+		meshes.push(floorMesh);
 
 		if (this.leftwallheightvisible !== 0.0) {
 			const leftMesh = new Mesh();
+			leftMesh.name = `ramp:left:${this.getName()}`;
 			for (let i = 0; i < rampVertex; i++) {
 
 				const rgv3d1 = new Vertex3DNoTex2();
@@ -257,11 +336,12 @@ export class RampItem extends GameItem {
 
 			}
 			Mesh.computeNormals(leftMesh.vertices, numVertices, leftMesh.indices, (rampVertex - 1) * 6);
-			meshes.rampLeftWall = leftMesh;
+			meshes.push(leftMesh);
 		}
 
 		if (this.rightwallheightvisible !== 0.0) {
 			const rightMesh = new Mesh();
+			rightMesh.name = `ramp:right:${this.getName()}`;
 			for (let i = 0; i < rampVertex; i++) {
 
 				const rgv3d1 = new Vertex3DNoTex2();
@@ -308,12 +388,12 @@ export class RampItem extends GameItem {
 				rightMesh.indices.push(i * 2 + 2);
 			}
 			Mesh.computeNormals(rightMesh.vertices, numVertices, rightMesh.indices, (rampVertex - 1) * 6);
-			meshes.rampRightWall = rightMesh;
+			meshes.push(rightMesh);
 		}
 		return meshes;
 	}
 
-	public generateWireMeshes(table: VpTable): Mesh[] {
+	private generateWireMeshes(table: VpTable): Mesh[] {
 		const meshes: Mesh[] = [];
 
 		let accuracy;
@@ -602,7 +682,7 @@ export class RampItem extends GameItem {
 		return DragPoint.getRgVertex<RenderVertex3D>(this.dragPoints, () => new RenderVertex3D(), false, accuracy);
 	}
 
-	public isHabitrail(): boolean {
+	private isHabitrail(): boolean {
 		return this.rampType === RampItem.RampType4Wire
 			|| this.rampType === RampItem.RampType1Wire
 			|| this.rampType === RampItem.RampType2Wire

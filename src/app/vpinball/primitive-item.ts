@@ -17,17 +17,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { logger } from '../common/logger';
 import { Storage } from '../common/ole-doc';
 import { settings } from '../common/settings';
-import { FileUtil } from '../files/file.util';
 import { BiffParser } from './biff-parser';
 import { FrameData, Vector3 } from './common';
-import { GameItem } from './game-item';
+import { GameItem, IRenderable, Meshes } from './game-item';
 import { IPositionable, Mesh } from './mesh';
 import { Vertex3D, Vertex3DNoTex2 } from './vertex';
+import { VpTable } from './vp-table';
 
-export class PrimitiveItem extends GameItem implements IPositionable {
+export class PrimitiveItem extends GameItem implements IPositionable, IRenderable {
+
+	private data: PrimitiveData = new PrimitiveData();
+	private mesh: Mesh = new Mesh();
+
+	private numVertices: number;
+	private compressedAnimationVertices: number;
+	private compressedVertices: number;
+	private pdata: number;
+	private wzName: string;
+	private numIndices: number;
+	private compressedIndices: number;
 
 	public static async fromStorage(storage: Storage, itemName: string): Promise<PrimitiveItem> {
 		const primitiveItem = new PrimitiveItem();
@@ -50,32 +60,19 @@ export class PrimitiveItem extends GameItem implements IPositionable {
 		return primitiveItem;
 	}
 
-	public data: PrimitiveData;
-	public mesh: Mesh;
-
-	public numVertices: number;
-	public compressedAnimationVertices: number;
-	public compressedVertices: number;
-	public pdata: number;
-	public wzName: string;
-	public numIndices: number;
-	public compressedIndices: number;
-
 	private constructor() {
 		super();
-		this.mesh = new Mesh();
-		this.data = new PrimitiveData();
 	}
 
 	public getName() {
 		return this.wzName;
 	}
+	public isVisible(): boolean {
+		return this.data.fVisible;
+	}
 
-	public async exportMeshToObj(fileName: string) {
-		const description = this.data.use3DMesh ? this.wzName : 'Primitive';
-		const obj = this.mesh.serializeToObj(description);
-		await FileUtil.writeFile(fileName, obj);
-		logger.info(null, '[Mesh.serializeToObj] Exported OBJ of %s to %s.', description, fileName);
+	public getPositionableObject(): IPositionable {
+		return this;
 	}
 
 	public getPosition(): Vertex3D {
@@ -96,6 +93,18 @@ export class PrimitiveItem extends GameItem implements IPositionable {
 
 	public getScale(): Vertex3D {
 		return new Vertex3D(this.data.vSize.x, this.data.vSize.y, this.data.vSize.z);
+	}
+
+	public getMeshes(vpTable: VpTable): Meshes {
+		this.mesh.name = `primitive:${this.getName()}`;
+		return {
+			primitive: {
+				mesh: this.mesh,
+				map: vpTable.getTexture(this.data.szImage),
+				normalMap: vpTable.getTexture(this.data.szNormalMap),
+				material: vpTable.getMaterial(this.data.szMaterial),
+			}
+		};
 	}
 
 	public serialize(fileId: string) {
@@ -124,11 +133,6 @@ export class PrimitiveItem extends GameItem implements IPositionable {
 			normalMap: this.data.szNormalMap,
 			material: this.data.szMaterial,
 		};
-	}
-
-	public serializeToObj() {
-		const description = this.data.use3DMesh ? this.wzName : 'Primitive';
-		return this.mesh.serializeToObj(description);
 	}
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number, storage: Storage, itemName: string): Promise<void> {
@@ -211,16 +215,10 @@ export class PrimitiveItem extends GameItem implements IPositionable {
 	private async getAnimatedVertices(buffer: Buffer, num: number): Promise<FrameData> {
 		return FrameData.get(buffer, num);
 	}
+
 }
 
 class PrimitiveData {
-
-	public static from(data: any): PrimitiveData {
-		const primitiveData: PrimitiveData = Object.assign(new PrimitiveData(), data);
-		primitiveData.vPosition = Vector3.from(data.vPosition);
-		primitiveData.vSize = Vector3.from(data.vSize);
-		return primitiveData;
-	}
 
 	public vPosition: Vector3;
 	public vSize: Vector3;
@@ -253,4 +251,11 @@ class PrimitiveData {
 	public fDisplayTexture: boolean;
 	public meshFileName: string;
 	public depthBias: number;
+
+	public static from(data: any): PrimitiveData {
+		const primitiveData: PrimitiveData = Object.assign(new PrimitiveData(), data);
+		primitiveData.vPosition = Vector3.from(data.vPosition);
+		primitiveData.vSize = Vector3.from(data.vSize);
+		return primitiveData;
+	}
 }

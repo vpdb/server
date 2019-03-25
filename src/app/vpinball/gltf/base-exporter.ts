@@ -28,7 +28,7 @@ export abstract class BaseExporter {
 	protected objLoader: any = new OBJLoader();
 	protected gltfExporter = new GLTFExporter();
 
-	protected positionPrimitive(mesh: Object3D, obj: IPositionable) {
+	protected position(mesh: Object3D, obj: IPositionable) {
 
 		const trans = obj.getTransition();
 		const pos = obj.getPosition();

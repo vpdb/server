@@ -19,15 +19,9 @@
 
 import { values } from 'lodash';
 import { Group, Mesh, MeshStandardMaterial, Scene } from 'three';
-
-import { BumperItem } from '../bumper-item';
-import { FlipperItem } from '../flipper-item';
-import { PrimitiveItem } from '../primitive-item';
-import { RampItem } from '../ramp-item';
-import { RubberItem } from '../rubber-item';
-import { SurfaceItem } from '../surface-item';
 import { VpTable } from '../vp-table';
 import { BaseExporter } from './base-exporter';
+import { IRenderable, RenderInfo } from '../game-item';
 
 const Canvas = require('canvas');
 const { Blob, FileReader } = require('vblob');
@@ -69,159 +63,59 @@ export class VpTableExporter extends BaseExporter {
 		this.playfield.scale.set(VpTableExporter.scale, VpTableExporter.scale, VpTableExporter.scale);
 	}
 
-	public async export(): Promise<object> {
+	public async exportGltf(): Promise<string> {
+		return JSON.stringify(await this.export<any>({ binary: false }));
+	}
 
-		// primitives
-		let primitive: PrimitiveItem;
-		for (primitive of values(this.table.primitives)) {
+	public async exportGlb(): Promise<Buffer> {
+		return this.arrayBufferToBuffer(await this.export<ArrayBuffer>({ binary: true }));
+	}
 
-			const bufferGeometry = primitive.mesh.getBufferGeometry();
-			const mesh = new Mesh(bufferGeometry, new MeshStandardMaterial());
-			mesh.name = 'primitive:' + primitive.getName();
+	private async export<T>(opts: any = {}): Promise<T> {
+		const allRenderables: IRenderable[][] = [
+			values(this.table.primitives),
+			values(this.table.rubbers),
+			values(this.table.surfaces),
+			values(this.table.flippers),
+			values(this.table.bumpers),
+			values(this.table.ramps),
+			this.table.lights,
+			this.table.hitTargets,
+			this.table.gates,
+			this.table.kickers,
+			this.table.triggers,
+		];
 
-			this.positionPrimitive(mesh, primitive);
-			this.playfield.add(mesh);
-		}
+		for (const renderables of allRenderables) {
+			for (const renderable of renderables.filter(i => i.isVisible())) {
+				const objects = renderable.getMeshes(this.table);
+				let obj: RenderInfo;
+				for (obj of values(objects)) {
+					const bufferGeometry = obj.mesh.getBufferGeometry();
+					const mesh = new Mesh(bufferGeometry, new MeshStandardMaterial());
+					mesh.name = obj.mesh.name;
 
-		// rubbers
-		let rubber: RubberItem;
-		for (rubber of values(this.table.rubbers).filter(r => r.fVisible)) {
-			const bufferGeometry = rubber.generateMesh(this.table).getBufferGeometry();
-			const mesh = new Mesh(bufferGeometry, new MeshStandardMaterial());
-			mesh.name = 'rubber:' + rubber.getName();
-			this.playfield.add(mesh);
-		}
-
-		// surfaces
-		let surface: SurfaceItem;
-		for (surface of values(this.table.surfaces)) {
-
-			const meshes = surface.generateMeshes(this.table);
-
-			const topMesh = new Mesh(meshes.top.getBufferGeometry(), new MeshStandardMaterial());
-			const sideMesh = new Mesh(meshes.side.getBufferGeometry(), new MeshStandardMaterial());
-			topMesh.name = 'surface-top:' + surface.getName();
-			sideMesh.name = 'surface-side:' + surface.getName();
-
-			this.playfield.add(topMesh);
-			this.playfield.add(sideMesh);
-		}
-
-		// flippers
-		let flipper: FlipperItem;
-		for (flipper of values(this.table.flippers)) {
-
-			const meshes = flipper.generateMeshes(this.table);
-
-			const baseMesh = new Mesh(meshes.base.getBufferGeometry(), new MeshStandardMaterial());
-			const rubberMesh = new Mesh(meshes.rubber.getBufferGeometry(), new MeshStandardMaterial());
-
-			baseMesh.name = 'flipper-base:' + flipper.getName();
-			this.playfield.add(baseMesh);
-
-			if (rubberMesh) {
-				rubberMesh.name = 'flipper-rubber:' + flipper.getName();
-				this.playfield.add(rubberMesh);
-			}
-		}
-
-		// light bulbs
-		for (const light of this.table.lights) {
-			if (!light.showBulbMesh) {
-				continue;
-			}
-			const meshes = light.generateMeshes(this.table);
-
-			const lightMesh = new Mesh(meshes.light.getBufferGeometry(), new MeshStandardMaterial());
-			const socketMesh = new Mesh(meshes.socket.getBufferGeometry(), new MeshStandardMaterial());
-			lightMesh.name = 'bulb-light:' + light.getName();
-			socketMesh.name = 'bulb-socket:' + light.getName();
-
-			this.playfield.add(lightMesh);
-			this.playfield.add(socketMesh);
-		}
-
-		// bumpers
-		let bumper: BumperItem;
-		for (bumper of values(this.table.bumpers)) {
-			const meshes = bumper.generateMeshes(this.table);
-			if (meshes.cap) {
-				const mesh = new Mesh(meshes.cap.getBufferGeometry(), new MeshStandardMaterial());
-				mesh.name = 'bumper-cap:' + bumper.getName();
-				this.playfield.add(mesh);
-			}
-			if (meshes.skirt) {
-				const mesh = new Mesh(meshes.skirt.getBufferGeometry(), new MeshStandardMaterial());
-				mesh.name = 'bumper-skirt:' + bumper.getName();
-				this.playfield.add(mesh);
-			}
-			if (meshes.ring) {
-				const mesh = new Mesh(meshes.ring.getBufferGeometry(), new MeshStandardMaterial());
-				mesh.name = 'bumper-ring:' + bumper.getName();
-				this.playfield.add(mesh);
-			}
-			if (meshes.base) {
-				const mesh = new Mesh(meshes.base.getBufferGeometry(), new MeshStandardMaterial());
-				mesh.name = 'bumper-base:' + bumper.getName();
-				this.playfield.add(mesh);
-			}
-		}
-
-		// bumpers
-		let ramp: RampItem;
-		for (ramp of values(this.table.ramps)) {
-			const meshes = ramp.generateMeshes(this.table);
-			for (const type of Object.keys(meshes)) {
-				const mesh = new Mesh(meshes[type].getBufferGeometry(), new MeshStandardMaterial());
-				mesh.name = `ramp-${type}: ${ramp.getName()}`;
-				this.playfield.add(mesh);
-			}
-		}
-
-		// hit targets
-		for (const hitTarget of this.table.hitTargets) {
-			const meshes = hitTarget.generateMeshes(this.table);
-			for (const type of Object.keys(meshes)) {
-				const mesh = new Mesh(meshes[type].getBufferGeometry(), new MeshStandardMaterial());
-				mesh.name = `${type}: ${hitTarget.getName()}`;
-				this.playfield.add(mesh);
-			}
-		}
-
-		// hit targets
-		for (const gate of this.table.gates) {
-			const meshes = gate.generateMeshes(this.table);
-			for (const type of Object.keys(meshes)) {
-				const mesh = new Mesh(meshes[type].getBufferGeometry(), new MeshStandardMaterial());
-				mesh.name = `gate-${type}: ${gate.getName()}`;
-				this.playfield.add(mesh);
-			}
-		}
-
-		// kickers
-		for (const kicker of this.table.kickers) {
-			const meshes = kicker.generateMeshes(this.table);
-			for (const type of Object.keys(meshes)) {
-				const mesh = new Mesh(meshes[type].getBufferGeometry(), new MeshStandardMaterial());
-				mesh.name = `${type}: ${kicker.getName()}`;
-				this.playfield.add(mesh);
-			}
-		}
-
-		// triggers
-		for (const kicker of this.table.triggers) {
-			const meshes = kicker.generateMeshes(this.table);
-			for (const type of Object.keys(meshes)) {
-				const mesh = new Mesh(meshes[type].getBufferGeometry(), new MeshStandardMaterial());
-				mesh.name = `${type}: ${kicker.getName()}`;
-				this.playfield.add(mesh);
+					if (renderable.getPositionableObject) {
+						this.position(mesh, renderable as any);
+					}
+					this.playfield.add(mesh);
+				}
 			}
 		}
 
 		this.scene.add(this.playfield);
 
 		return await new Promise(resolve => {
-			this.gltfExporter.parse(this.scene, resolve, { binary: false });
+			this.gltfExporter.parse(this.scene, resolve, opts);
 		});
+	}
+
+	private arrayBufferToBuffer(ab: ArrayBuffer) {
+		const buffer = new Buffer(ab.byteLength);
+		const view = new Uint8Array(ab);
+		for (let i = 0; i < buffer.length; ++i) {
+			buffer[i] = view[i];
+		}
+		return buffer;
 	}
 }

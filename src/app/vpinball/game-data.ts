@@ -162,8 +162,6 @@ export class GameData extends BiffParser {
 				range: this.lightRange,
 				emmission_scale: this.lightEmissionScale,
 			},
-			textureMap: this.szImage,
-			material: this.szPlayfieldMaterial,
 		};
 	}
 

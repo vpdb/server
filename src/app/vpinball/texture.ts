@@ -66,6 +66,24 @@ export class Texture extends BiffParser {
 		return this.szInternalName;
 	}
 
+	public getUrl(fileId: string): string {
+		const imageNum = this.storageName.match(/\d+$/)[0];
+		return settings.apiExternalUri(`/v1/vp/${fileId}/images/${imageNum}/${this.binary.pos.toString(16)}/${this.binary.len.toString(16)}`);
+	}
+
+	public async getImage(storage: Storage): Promise<Buffer> {
+		return new Promise<Buffer>((resolve, reject) => {
+			const strm = storage.stream(this.storageName, this.binary.pos, this.binary.len);
+			const bufs: Buffer[] = [];
+			if (!strm) {
+				return reject(new Error('No such stream "' + this.storageName + '".'));
+			}
+			strm.on('error', reject);
+			strm.on('data', (buf: Buffer) => bufs.push(buf));
+			strm.on('end', () => resolve(Buffer.concat(bufs)));
+		});
+	}
+
 	public serialize(fileId: string) {
 		const serialized: any = {
 			name: this.szName,

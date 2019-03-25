@@ -61,9 +61,9 @@ export class Material {
 	public static fromSaved(saveMaterial: SaveMaterial): Material {
 		const material = new Material();
 		material.szName = saveMaterial.szName;
-		material.cBase = saveMaterial.cBase;
-		material.cGlossy = saveMaterial.cGlossy;
-		material.cClearcoat = saveMaterial.cClearcoat;
+		material.cBase = BiffParser.bgrToRgb(saveMaterial.cBase);
+		material.cGlossy = BiffParser.bgrToRgb(saveMaterial.cGlossy);
+		material.cClearcoat = BiffParser.bgrToRgb(saveMaterial.cClearcoat);
 		material.fWrapLighting = saveMaterial.fWrapLighting;
 		material.fRoughness = saveMaterial.fRoughness;
 		material.fGlossyImageLerp = 0; //1.0f - dequantizeUnsigned<8>(mats[i].fGlossyImageLerp); //!! '1.0f -' to be compatible with previous table versions

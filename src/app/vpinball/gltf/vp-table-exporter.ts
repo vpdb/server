@@ -18,10 +18,20 @@
  */
 
 import { values } from 'lodash';
-import { Group, Mesh, MeshStandardMaterial, Scene } from 'three';
+import {
+	Color,
+	DoubleSide,
+	Group,
+	Material as ThreeMaterial,
+	Mesh,
+	MeshStandardMaterial,
+	PointLight,
+	Scene
+} from 'three';
 import { VpTable } from '../vp-table';
 import { BaseExporter } from './base-exporter';
 import { IRenderable, RenderInfo } from '../game-item';
+import { Material } from '../material';
 
 const Canvas = require('canvas');
 const { Blob, FileReader } = require('vblob');
@@ -45,6 +55,8 @@ const { Blob, FileReader } = require('vblob');
 };
 
 export class VpTableExporter extends BaseExporter {
+
+	private static readonly applyMaterials = true;
 
 	private static readonly scale = 0.05;
 	private readonly table: VpTable;
@@ -86,15 +98,15 @@ export class VpTableExporter extends BaseExporter {
 			this.table.triggers,
 		];
 
+		// meshes
 		for (const renderables of allRenderables) {
 			for (const renderable of renderables.filter(i => i.isVisible())) {
 				const objects = renderable.getMeshes(this.table);
 				let obj: RenderInfo;
 				for (obj of values(objects)) {
 					const bufferGeometry = obj.mesh.getBufferGeometry();
-					const mesh = new Mesh(bufferGeometry, new MeshStandardMaterial());
+					const mesh = new Mesh(bufferGeometry, this.getMaterial(obj.material));
 					mesh.name = obj.mesh.name;
-
 					if (renderable.getPositionableObject) {
 						this.position(mesh, renderable as any);
 					}
@@ -103,11 +115,52 @@ export class VpTableExporter extends BaseExporter {
 			}
 		}
 
+		// lights
+		for (const lightInfo of this.table.lights.filter(l => l.showBulbMesh)) {
+			const light = new PointLight(lightInfo.color, lightInfo.intensity, lightInfo.falloff * VpTableExporter.scale);
+			light.castShadow = false;
+			light.position.set(lightInfo.vCenter.x, lightInfo.vCenter.y, -10);
+			this.playfield.add(light);
+		}
+
 		this.scene.add(this.playfield);
 
 		return await new Promise(resolve => {
 			this.gltfExporter.parse(this.scene, resolve, opts);
 		});
+	}
+
+	private getMaterial(materialInfo: Material): ThreeMaterial {
+		const material = new MeshStandardMaterial();
+		if (!materialInfo || !VpTableExporter.applyMaterials) {
+			return material;
+		}
+
+		material.color = new Color(materialInfo.cBase);
+		material.roughness = 1 - materialInfo.fRoughness;
+		material.metalness = materialInfo.bIsMetal ? 0.7 : 0.0;
+		material.emissive = new Color(materialInfo.cGlossy);
+		material.emissiveIntensity = 0.1;
+
+		if (materialInfo.bOpacityActive) {
+			material.transparent = true;
+			material.opacity = materialInfo.fOpacity;
+		}
+
+		// if (primitive.normalMap) {
+		// 	const normalMap = this.vpTable.textures[primitive.normalMap];
+		// 	if (normalMap) {
+		// 		this.textureLoader.load(normalMap.url, map => {
+		// 			map.anisotropy = 16;
+		// 			material.normalMap = map;
+		// 		});
+		// 	} else {
+		// 		console.warn('Unknown normal map "%s" for primitive "%s".', primitive.normalMap, primitive.name);
+		// 	}
+		// }
+
+		material.side = DoubleSide;
+		return material;
 	}
 
 	private arrayBufferToBuffer(ab: ArrayBuffer) {

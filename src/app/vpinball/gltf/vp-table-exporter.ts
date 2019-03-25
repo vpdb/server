@@ -26,12 +26,18 @@ import {
 	Mesh,
 	MeshStandardMaterial,
 	PointLight,
-	Scene
+	Scene,
 } from 'three';
-import { VpTable } from '../vp-table';
-import { BaseExporter } from './base-exporter';
+import { BumperItem } from '../bumper-item';
+import { FlipperItem } from '../flipper-item';
 import { IRenderable, RenderInfo } from '../game-item';
 import { Material } from '../material';
+import { PrimitiveItem } from '../primitive-item';
+import { RampItem } from '../ramp-item';
+import { RubberItem } from '../rubber-item';
+import { SurfaceItem } from '../surface-item';
+import { VpTable } from '../vp-table';
+import { BaseExporter } from './base-exporter';
 
 const Canvas = require('canvas');
 const { Blob, FileReader } = require('vblob');
@@ -85,12 +91,12 @@ export class VpTableExporter extends BaseExporter {
 
 	private async export<T>(opts: any = {}): Promise<T> {
 		const allRenderables: IRenderable[][] = [
-			values(this.table.primitives),
-			values(this.table.rubbers),
-			values(this.table.surfaces),
-			values(this.table.flippers),
-			values(this.table.bumpers),
-			values(this.table.ramps),
+			values<PrimitiveItem>(this.table.primitives),
+			values<RubberItem>(this.table.rubbers),
+			values<SurfaceItem>(this.table.surfaces),
+			values<FlipperItem>(this.table.flippers),
+			values<BumperItem>(this.table.bumpers),
+			values<RampItem>(this.table.ramps),
 			this.table.lights,
 			this.table.hitTargets,
 			this.table.gates,

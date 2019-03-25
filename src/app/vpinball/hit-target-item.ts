@@ -131,11 +131,9 @@ export class HitTargetItem extends GameItem implements IRenderable {
 				mesh: hitTargetMesh,
 				map: table.getTexture(this.szImage),
 				material: table.getMaterial(this.szMaterial),
-			}
+			},
 		};
 	}
-
-
 
 	private getBaseMesh(): Mesh {
 		switch (this.targetType) {

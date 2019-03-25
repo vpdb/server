@@ -17,17 +17,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { Math as M, Matrix4 } from 'three';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { GameItem, IRenderable, Meshes } from './game-item';
 import { Mesh } from './mesh';
+import { bumperBaseMesh } from './meshes/bumper-base-mesh';
+import { bumperCapMesh } from './meshes/bumper-cap-mesh';
+import { bumperRingMesh } from './meshes/bumper-ring-mesh';
+import { bumperSocketMesh } from './meshes/bumper-socket-mesh';
 import { Vertex2D, Vertex3D } from './vertex';
 import { VpTable } from './vp-table';
-import { bumperBaseMesh } from './meshes/bumper-base-mesh';
-import { Math as M, Matrix4 } from 'three';
-import { bumperSocketMesh } from './meshes/bumper-socket-mesh';
-import { bumperRingMesh } from './meshes/bumper-ring-mesh';
-import { bumperCapMesh } from './meshes/bumper-cap-mesh';
 
 export class BumperItem extends GameItem implements IRenderable {
 
@@ -88,27 +88,27 @@ export class BumperItem extends GameItem implements IRenderable {
 		const height = table.getSurfaceHeight(this.szSurface, this.vCenter.x, this.vCenter.y) * table.getScaleZ();
 		if (this.fBaseVisible) {
 			meshes.base = {
-				mesh: this.generateMesh(bumperBaseMesh, matrix,z => z * this.heightScale * table.getScaleZ() + height),
+				mesh: this.generateMesh(bumperBaseMesh, matrix, z => z * this.heightScale * table.getScaleZ() + height),
 				material: table.getMaterial(this.szBaseMaterial),
-			}
+			};
 		}
 		if (this.fRingVisible) {
 			meshes.ring = {
-				mesh: this.generateMesh(bumperRingMesh, matrix,z => z * (this.heightScale * table.getScaleZ()) + height),
+				mesh: this.generateMesh(bumperRingMesh, matrix, z => z * (this.heightScale * table.getScaleZ()) + height),
 				material: table.getMaterial(this.szRingMaterial),
-			}
+			};
 		}
 		if (this.fSkirtVisible) {
 			meshes.skirt = {
 				mesh: this.generateMesh(bumperSocketMesh, matrix, z => z * (this.heightScale * table.getScaleZ()) + (height + 5.0)),
 				material: table.getMaterial(this.szSkirtMaterial),
-			}
+			};
 		}
 		if (this.fCapVisible) {
 			meshes.cap = {
-				mesh: this.generateMesh(bumperCapMesh, matrix,z => (z * this.heightScale + this.heightScale) * table.getScaleZ() + height),
+				mesh: this.generateMesh(bumperCapMesh, matrix, z => (z * this.heightScale + this.heightScale) * table.getScaleZ() + height),
 				material: table.getMaterial(this.szCapMaterial),
-			}
+			};
 		}
 		return meshes;
 	}

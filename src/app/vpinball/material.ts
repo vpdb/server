@@ -72,8 +72,8 @@ export class Material {
 		material.fOpacity = saveMaterial.fOpacity;
 		material.bIsMetal = saveMaterial.bIsMetal;
 		// tslint:disable-next-line:no-bitwise
-		material.bOpacityActive = !!(saveMaterial.bOpacityActive_fEdgeAlpha & 1);
-		material.fEdgeAlpha = 0; //dequantizeUnsigned<7>(mats[i].bOpacityActive_fEdgeAlpha >> 1);
+		material.bOpacityActive = !!(saveMaterial.bOpacityActiveEdgeAlpha & 1);
+		material.fEdgeAlpha = 0; //dequantizeUnsigned<7>(mats[i].bOpacityActiveEdgeAlpha >> 1);
 		return material;
 	}
 
@@ -124,7 +124,7 @@ export class SaveMaterial {
 	public fEdge: number; // edge weight/brightness for glossy and clearcoat (0(dark edges)..1(full fresnel))
 	public fThickness: number; // thickness for transparent materials (0(paper thin)..1(maximum)), stupid quantization because of legacy loading/saving
 	public fOpacity: number; // opacity (0..1)
-	public bOpacityActive_fEdgeAlpha: number;
+	public bOpacityActiveEdgeAlpha: number;
 
 	constructor(buffer: Buffer, i = 0) {
 		const offset = i * SaveMaterial.size;
@@ -139,7 +139,7 @@ export class SaveMaterial {
 		this.fEdge = buffer.readFloatLE(offset + 60);
 		this.fThickness = buffer.readInt32LE(offset + 64);
 		this.fOpacity = buffer.readFloatLE(offset + 68);
-		this.bOpacityActive_fEdgeAlpha = buffer.readInt32LE(offset + 72);
+		this.bOpacityActiveEdgeAlpha = buffer.readInt32LE(offset + 72);
 	}
 }
 

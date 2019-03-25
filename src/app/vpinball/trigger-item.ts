@@ -97,7 +97,7 @@ export class TriggerItem extends GameItem implements IRenderable {
 			trigger: {
 				mesh: this.createMesh(table),
 				material: table.getMaterial(this.szMaterial),
-			}
+			},
 		};
 	}
 

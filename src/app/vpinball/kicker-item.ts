@@ -84,7 +84,7 @@ export class KickerItem extends GameItem implements IRenderable {
 			kicker: {
 				mesh: kickerMesh,
 				material: table.getMaterial(this.szMaterial),
-			}
+			},
 		};
 	}
 

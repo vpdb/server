@@ -21,22 +21,22 @@
 import { values } from 'lodash';
 import { logger } from '../common/logger';
 import { OleCompoundDoc, Storage } from '../common/ole-doc';
+import { BumperItem } from './bumper-item';
 import { FlipperItem } from './flipper-item';
 import { GameData } from './game-data';
 import { GameItem } from './game-item';
+import { GateItem } from './gate-item';
 import { VpTableExporter } from './gltf/vp-table-exporter';
+import { HitTargetItem } from './hit-target-item';
+import { KickerItem } from './kicker-item';
 import { LightItem } from './light-item';
+import { Material } from './material';
 import { PrimitiveItem } from './primitive-item';
+import { RampItem } from './ramp-item';
 import { RubberItem } from './rubber-item';
 import { SurfaceItem } from './surface-item';
 import { Texture } from './texture';
-import { BumperItem } from './bumper-item';
-import { RampItem } from './ramp-item';
-import { HitTargetItem } from './hit-target-item';
-import { GateItem } from './gate-item';
-import { KickerItem } from './kicker-item';
 import { TriggerItem } from './trigger-item';
-import { Material } from './material';
 
 export class VpTable {
 
@@ -142,12 +142,12 @@ export class VpTable {
 		return this.gameData.tableheight;
 	}
 
-	public async exportGltf(): Promise<string>{
+	public async exportGltf(): Promise<string> {
 		const exporter = new VpTableExporter(this);
 		return await exporter.exportGltf();
 	}
 
-	public async exportGlb(): Promise<Buffer>{
+	public async exportGlb(): Promise<Buffer> {
 		const exporter = new VpTableExporter(this);
 		return await exporter.exportGlb();
 	}

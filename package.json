@@ -109,7 +109,7 @@
 		"@types/adm-zip": "0.4.32",
 		"@types/archiver": "2.1.2",
 		"@types/bluebird": "3.5.26",
-		"@types/bull": "3.5.8",
+		"@types/bull": "3.5.11",
 		"@types/busboy": "0.2.3",
 		"@types/bytes": "3.0.0",
 		"@types/cheerio": "0.22.10",

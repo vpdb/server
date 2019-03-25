@@ -109,7 +109,7 @@ export class LightItem extends GameItem implements IRenderable {
 			socket: {
 				mesh: socketMesh,
 			},
-		}
+		};
 	}
 
 	public serialize() {

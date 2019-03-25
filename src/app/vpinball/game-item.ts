@@ -19,10 +19,10 @@
 
 import { logger } from '../common/logger';
 import { BiffParser } from './biff-parser';
-import { VpTable } from './vp-table';
+import { Material } from './material';
 import { IPositionable, Mesh } from './mesh';
 import { Texture } from './texture';
-import { Material } from './material';
+import { VpTable } from './vp-table';
 
 export abstract class GameItem extends BiffParser {
 
@@ -114,4 +114,3 @@ export interface RenderInfo {
 	normalMap?: Texture;
 	material?: Material;
 }
-

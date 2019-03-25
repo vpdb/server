@@ -103,7 +103,7 @@ export class PrimitiveItem extends GameItem implements IPositionable, IRenderabl
 				map: vpTable.getTexture(this.data.szImage),
 				normalMap: vpTable.getTexture(this.data.szNormalMap),
 				material: vpTable.getMaterial(this.data.szMaterial),
-			}
+			},
 		};
 	}
 

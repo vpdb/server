@@ -20,8 +20,8 @@
 
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
-import { Vertex2D, Vertex3D } from './vertex';
 import { Material, SaveMaterial, SavePhysicsMaterial } from './material';
+import { Vertex2D, Vertex3D } from './vertex';
 
 export class GameData extends BiffParser {
 
@@ -332,4 +332,3 @@ class LightSource {
 	public emission: number;
 	public pos: Vertex3D;
 }
-

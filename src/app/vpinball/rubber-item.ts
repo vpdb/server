@@ -21,13 +21,13 @@ import { Storage } from '../common/ole-doc';
 import { settings } from '../common/settings';
 import { BiffParser } from './biff-parser';
 import { DragPoint, HIT_SHAPE_DETAIL_LEVEL } from './dragpoint';
-import { GameItem } from './game-item';
+import { GameItem, IRenderable, Meshes } from './game-item';
 import { FLT_MAX, FLT_MIN, Mesh } from './mesh';
 import { SplineVertex } from './spline-vertex';
 import { Vertex3D, Vertex3DNoTex2 } from './vertex';
 import { VpTable } from './vp-table';
 
-export class RubberItem extends GameItem {
+export class RubberItem extends GameItem implements IRenderable {
 
 	public wzName: string;
 	public pdata: number;
@@ -81,8 +81,16 @@ export class RubberItem extends GameItem {
 		});
 	}
 
+	private constructor() {
+		super();
+	}
+
 	public getName(): string {
 		return this.wzName;
+	}
+
+	public isVisible(): boolean {
+		return this.fVisible;
 	}
 
 	public serialize(fileId: string) {
@@ -93,24 +101,22 @@ export class RubberItem extends GameItem {
 		};
 	}
 
-	public serializeToObj(table: VpTable, accuracy: number = -1) {
-		const mesh = this.generateMesh(table, 10, accuracy);
-		return mesh.serializeToObj(this.wzName);
-	}
-
-	public generateMesh(table: VpTable, tableDetailLevel: number = 10, acc: number = -1, staticRendering = true): Mesh {
+	public getMeshes(table: VpTable): Meshes {
 
 		const mesh = new Mesh();
+		mesh.name = `rubber:${this.getName()}`;
+		const acc = -1;
+		const staticRendering = true;
 		const createHitShape = true;
 		let accuracy: number;
-		if (tableDetailLevel < 5) {
+		if (table.getDetailLevel() < 5) {
 			accuracy = 6;
 
-		} else if (tableDetailLevel >= 5 && tableDetailLevel < 8) {
+		} else if (table.getDetailLevel() >= 5 && table.getDetailLevel() < 8) {
 			accuracy = 8;
 
 		} else {
-			accuracy = Math.floor(tableDetailLevel * 1.3); // see also below
+			accuracy = Math.floor(table.getDetailLevel() * 1.3); // see also below
 		}
 
 		// as solid rubbers are rendered into the static buffer, always use maximum precision
@@ -122,7 +128,7 @@ export class RubberItem extends GameItem {
 			accuracy = acc;
 		}
 
-		const sv = SplineVertex.getInstance(this.dragPoints, this.thickness, tableDetailLevel, acc !== -1
+		const sv = SplineVertex.getInstance(this.dragPoints, this.thickness, table.getDetailLevel(), acc !== -1
 			? 4.0 * Math.pow(10.0, (10.0 - HIT_SHAPE_DETAIL_LEVEL) * (1.0 / 1.5))
 			: -1.0,
 		);
@@ -236,7 +242,13 @@ export class RubberItem extends GameItem {
 		this.middlePoint.y = (maxy + miny) * 0.5;
 		this.middlePoint.z = (maxz + minz) * 0.5;
 
-		return mesh;
+		return {
+			rubber: {
+				mesh,
+				map: table.getTexture(this.szImage),
+				material: table.getMaterial(this.szMaterial),
+			},
+		};
 	}
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<void> {

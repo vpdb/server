@@ -20,8 +20,8 @@
 import { Math as M, Matrix4 } from 'three';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
-import { GameItem } from './game-item';
-import { Mesh, Meshes } from './mesh';
+import { GameItem, IRenderable, Meshes } from './game-item';
+import { Mesh } from './mesh';
 import { kickerCupMesh } from './meshes/kicker-cup-mesh';
 import { kickerGottliebMesh } from './meshes/kicker-gottlieb-mesh';
 import { kickerHoleMesh } from './meshes/kicker-hole-mesh';
@@ -31,7 +31,7 @@ import { kickerWilliamsMesh } from './meshes/kicker-williams-mesh';
 import { Vertex2D, Vertex3D } from './vertex';
 import { VpTable } from './vp-table';
 
-export class KickerItem extends GameItem {
+export class KickerItem extends GameItem implements IRenderable {
 
 	public static TypeKickerInvisible = 0;
 	public static TypeKickerHole = 1;
@@ -64,19 +64,28 @@ export class KickerItem extends GameItem {
 		return kickerItem;
 	}
 
-	public generateMeshes(table: VpTable): Meshes {
-
-		const meshes: Meshes = {};
-		if (this.kickerType === KickerItem.TypeKickerInvisible) {
-			return meshes;
-		}
-		const baseHeight = table.getSurfaceHeight(this.szSurface, this.vCenter.x, this.vCenter.y) * table.getScaleZ();
-		meshes.kicker = this.generateMesh(table, baseHeight);
-		return meshes;
+	private constructor() {
+		super();
 	}
 
 	public getName(): string {
 		return this.wzName;
+	}
+
+	public isVisible(): boolean {
+		return this.kickerType !== KickerItem.TypeKickerInvisible;
+	}
+
+	public getMeshes(table: VpTable): Meshes {
+		const baseHeight = table.getSurfaceHeight(this.szSurface, this.vCenter.x, this.vCenter.y) * table.getScaleZ();
+		const kickerMesh = this.generateMesh(table, baseHeight);
+		kickerMesh.name = `kicker:${this.getName()}`;
+		return {
+			kicker: {
+				mesh: kickerMesh,
+				material: table.getMaterial(this.szMaterial),
+			}
+		};
 	}
 
 	private generateMesh(table: VpTable, baseHeight: number): Mesh {

@@ -21,8 +21,8 @@ import { Math as M, Matrix4 } from 'three';
 import { logger } from '../common/logger';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
-import { GameItem } from './game-item';
-import { Mesh, Meshes } from './mesh';
+import { GameItem, IRenderable, Meshes } from './game-item';
+import { Mesh } from './mesh';
 import { hitTargetT3Mesh } from './meshes/drop-target-t3-mesh';
 import { gateBracketMesh } from './meshes/gate-bracket-mesh';
 import { gateLongPlateMesh } from './meshes/gate-long-plate-mesh';
@@ -32,7 +32,7 @@ import { gateWireRectangleMesh } from './meshes/gate-wire-rectangle-mesh';
 import { Vertex2D, Vertex3D } from './vertex';
 import { VpTable } from './vp-table';
 
-export class GateItem extends GameItem {
+export class GateItem extends GameItem implements IRenderable {
 
 	public static TypeGateWireW = 1;
 	public static TypeGateWireRectangle = 2;
@@ -68,19 +68,36 @@ export class GateItem extends GameItem {
 		return gateItem;
 	}
 
-	public generateMeshes(table: VpTable): Meshes {
-
-		const meshes: Meshes = {};
-		const baseHeight = table.getSurfaceHeight(this.szSurface, this.vCenter.x, this.vCenter.y) * table.getScaleZ();
-		if (this.fShowBracket) {
-			meshes.bracket = this.positionMesh(gateBracketMesh.clone(), table, baseHeight);
-		}
-		meshes.wire = this.positionMesh(this.getBaseMesh(), table, baseHeight);
-		return meshes;
-	}
-
 	public getName(): string {
 		return this.wzName;
+	}
+
+	public isVisible(): boolean {
+		return this.fVisible;
+	}
+
+	public getMeshes(table: VpTable): Meshes {
+		const meshes: Meshes = {};
+		const baseHeight = table.getSurfaceHeight(this.szSurface, this.vCenter.x, this.vCenter.y) * table.getScaleZ();
+
+		// wire mesh
+		const wireMesh = this.positionMesh(this.getBaseMesh(), table, baseHeight);
+		wireMesh.name = `gate-wire:${this.getName()}`;
+		meshes.wire = {
+			mesh: wireMesh,
+			material: table.getMaterial(this.szMaterial),
+		};
+
+		// bracket mesh
+		if (this.fShowBracket) {
+			const bracketMesh = this.positionMesh(gateBracketMesh.clone(), table, baseHeight);
+			bracketMesh.name = `gate-bracket:${this.getName()}`;
+			meshes.bracket = {
+				mesh: bracketMesh,
+				material: table.getMaterial(this.szMaterial),
+			};
+		}
+		return meshes;
 	}
 
 	private getBaseMesh(): Mesh {

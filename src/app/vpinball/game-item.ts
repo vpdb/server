@@ -19,6 +19,10 @@
 
 import { logger } from '../common/logger';
 import { BiffParser } from './biff-parser';
+import { VpTable } from './vp-table';
+import { IPositionable, Mesh } from './mesh';
+import { Texture } from './texture';
+import { Material } from './material';
 
 export abstract class GameItem extends BiffParser {
 
@@ -93,3 +97,21 @@ export abstract class GameItem extends BiffParser {
 		}
 	}
 }
+
+export interface IRenderable {
+	getMeshes(table: VpTable): Meshes;
+	isVisible(): boolean;
+	getPositionableObject?(): IPositionable;
+}
+
+export interface Meshes {
+	[key: string]: RenderInfo;
+}
+
+export interface RenderInfo {
+	mesh: Mesh;
+	map?: Texture;
+	normalMap?: Texture;
+	material?: Material;
+}
+

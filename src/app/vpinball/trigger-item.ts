@@ -22,8 +22,8 @@ import { logger } from '../common/logger';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { DragPoint } from './dragpoint';
-import { GameItem } from './game-item';
-import { Mesh, Meshes } from './mesh';
+import { GameItem, IRenderable, Meshes } from './game-item';
+import { Mesh } from './mesh';
 import { triggerButtonMesh } from './meshes/trigger-button-mesh';
 import { triggerSimpleMesh } from './meshes/trigger-simple-mesh';
 import { triggerStarMesh } from './meshes/trigger-star-mesh';
@@ -31,7 +31,7 @@ import { triggerDWireMesh } from './meshes/trigger-wire-d-mesh';
 import { Vertex2D, Vertex3D } from './vertex';
 import { VpTable } from './vp-table';
 
-export class TriggerItem extends GameItem {
+export class TriggerItem extends GameItem implements IRenderable {
 
 	public static ShapeTriggerNone = 0;
 	public static ShapeTriggerWireA = 1;
@@ -67,13 +67,21 @@ export class TriggerItem extends GameItem {
 		return triggerItem;
 	}
 
-	public generateMeshes(table: VpTable): Meshes {
-		if (this.shape === TriggerItem.ShapeTriggerNone) {
-			return {};
-		}
-		return {
-			trigger: this.createMesh(table),
-		};
+	private static createStreamHandler(triggerItem: TriggerItem) {
+		triggerItem.dragPoints = [];
+		return BiffParser.stream(triggerItem.fromTag.bind(triggerItem), {
+			nestedTags: {
+				DPNT: {
+					onStart: () => new DragPoint(),
+					onTag: dragPoint => dragPoint.fromTag.bind(dragPoint),
+					onEnd: dragPoint => triggerItem.dragPoints.push(dragPoint),
+				},
+			},
+		});
+	}
+
+	private constructor() {
+		super();
 	}
 
 	public getName(): string {
@@ -82,6 +90,15 @@ export class TriggerItem extends GameItem {
 
 	public isVisible(): boolean {
 		return this.fVisible && this.shape !== TriggerItem.ShapeTriggerNone;
+	}
+
+	public getMeshes(table: VpTable): Meshes {
+		return {
+			trigger: {
+				mesh: this.createMesh(table),
+				material: table.getMaterial(this.szMaterial),
+			}
+		};
 	}
 
 	private createMesh(table: VpTable): Mesh {
@@ -150,19 +167,6 @@ export class TriggerItem extends GameItem {
 				logger.warn(null, '[TriggerItem.getBaseMesh] Unknown shape "%s".', this.shape);
 				return triggerSimpleMesh.clone();
 		}
-	}
-
-	private static createStreamHandler(triggerItem: TriggerItem) {
-		triggerItem.dragPoints = [];
-		return BiffParser.stream(triggerItem.fromTag.bind(triggerItem), {
-			nestedTags: {
-				DPNT: {
-					onStart: () => new DragPoint(),
-					onTag: dragPoint => dragPoint.fromTag.bind(dragPoint),
-					onEnd: dragPoint => triggerItem.dragPoints.push(dragPoint),
-				},
-			},
-		});
 	}
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<void> {

@@ -19,9 +19,9 @@
 
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
-import { GameItem } from './game-item';
+import { GameItem, IRenderable, Meshes } from './game-item';
 import { Mesh } from './mesh';
-import { Vertex2D, Vertex3D, Vertex3DNoTex2 } from './vertex';
+import { Vertex2D, Vertex3D } from './vertex';
 import { VpTable } from './vp-table';
 import { bumperBaseMesh } from './meshes/bumper-base-mesh';
 import { Math as M, Matrix4 } from 'three';
@@ -29,7 +29,7 @@ import { bumperSocketMesh } from './meshes/bumper-socket-mesh';
 import { bumperRingMesh } from './meshes/bumper-ring-mesh';
 import { bumperCapMesh } from './meshes/bumper-cap-mesh';
 
-export class BumperItem extends GameItem {
+export class BumperItem extends GameItem implements IRenderable {
 
 	public pdata: number;
 	public vCenter: Vertex2D;
@@ -59,7 +59,7 @@ export class BumperItem extends GameItem {
 
 	public static async fromStorage(storage: Storage, itemName: string): Promise<BumperItem> {
 		const bumperItem = new BumperItem();
-		await storage.streamFiltered(itemName, 4, BumperItem.createStreamHandler(bumperItem));
+		await storage.streamFiltered(itemName, 4, BiffParser.stream(bumperItem.fromTag.bind(bumperItem)));
 		return bumperItem;
 	}
 
@@ -67,10 +67,6 @@ export class BumperItem extends GameItem {
 		const bumperItem = new BumperItem();
 		Object.assign(bumperItem, data);
 		return bumperItem;
-	}
-
-	private static createStreamHandler(surfaceItem: BumperItem) {
-		return BiffParser.stream(surfaceItem.fromTag.bind(surfaceItem), {});
 	}
 
 	private constructor() {
@@ -81,26 +77,38 @@ export class BumperItem extends GameItem {
 		return this.wzName;
 	}
 
-	public generateMeshes(table: VpTable): BumperMeshes {
-		const meshes: BumperMeshes = {};
+	public isVisible(): boolean {
+		return this.fBaseVisible || this.fRingVisible || this.fSkirtVisible || this.fCapVisible;
+	}
+
+	public getMeshes(table: VpTable): Meshes {
+		const meshes: Meshes = {};
 		const matrix = new Matrix4();
 		matrix.makeRotationZ(M.radToDeg(this.orientation));
 		const height = table.getSurfaceHeight(this.szSurface, this.vCenter.x, this.vCenter.y) * table.getScaleZ();
 		if (this.fBaseVisible) {
-			meshes.base = this.generateMesh(bumperBaseMesh, matrix,
-				z => z * this.heightScale * table.getScaleZ() + height);
+			meshes.base = {
+				mesh: this.generateMesh(bumperBaseMesh, matrix,z => z * this.heightScale * table.getScaleZ() + height),
+				material: table.getMaterial(this.szBaseMaterial),
+			}
 		}
 		if (this.fRingVisible) {
-			meshes.ring = this.generateMesh(bumperRingMesh, matrix,
-				z => z * (this.heightScale * table.getScaleZ()) + height);
+			meshes.ring = {
+				mesh: this.generateMesh(bumperRingMesh, matrix,z => z * (this.heightScale * table.getScaleZ()) + height),
+				material: table.getMaterial(this.szRingMaterial),
+			}
 		}
 		if (this.fSkirtVisible) {
-			meshes.skirt = this.generateMesh(bumperSocketMesh, matrix,
-				z => z * (this.heightScale * table.getScaleZ()) + (height + 5.0));
+			meshes.skirt = {
+				mesh: this.generateMesh(bumperSocketMesh, matrix, z => z * (this.heightScale * table.getScaleZ()) + (height + 5.0)),
+				material: table.getMaterial(this.szSkirtMaterial),
+			}
 		}
 		if (this.fCapVisible) {
-			meshes.cap = this.generateMesh(bumperCapMesh, matrix,
-				z => (z * this.heightScale + this.heightScale) * table.getScaleZ() + height);
+			meshes.cap = {
+				mesh: this.generateMesh(bumperCapMesh, matrix,z => (z * this.heightScale + this.heightScale) * table.getScaleZ() + height),
+				material: table.getMaterial(this.szCapMaterial),
+			}
 		}
 		return meshes;
 	}
@@ -167,11 +175,4 @@ export class BumperItem extends GameItem {
 				break;
 		}
 	}
-}
-
-interface BumperMeshes {
-	base?: Mesh;
-	ring?: Mesh;
-	skirt?: Mesh;
-	cap?: Mesh;
 }

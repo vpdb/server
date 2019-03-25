@@ -20,12 +20,12 @@
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { DragPoint } from './dragpoint';
-import { GameItem } from './game-item';
+import { GameItem, IRenderable, Meshes } from './game-item';
 import { Mesh } from './mesh';
 import { RenderVertex, Vertex2D, Vertex3DNoTex2 } from './vertex';
 import { VpTable } from './vp-table';
 
-export class SurfaceItem extends GameItem {
+export class SurfaceItem extends GameItem implements IRenderable {
 
 	public pdata: number;
 	public fHitEvent: boolean;
@@ -94,18 +94,22 @@ export class SurfaceItem extends GameItem {
 		return this.wzName;
 	}
 
+	public isVisible(): boolean {
+		return this.fSideVisible || this.fTopBottomVisible;
+	}
+
 	public serialize() {
 		return {};
 	}
 
-	public generateMeshes(table: VpTable): { top: Mesh, side: Mesh } {
-		const meshes: { top: Mesh, side: Mesh } = {
-			top: new Mesh(),
-			side: new Mesh(),
-		};
+	public getMeshes(table: VpTable): Meshes {
 
-		meshes.top.name = this.getName() + ' Top';
-		meshes.side.name = this.getName() + ' Side';
+		const meshes: Meshes = {};
+		const topMesh = new Mesh();
+		const sideMesh = new Mesh();
+
+		topMesh.name = `surface:top:${this.getName()}`;
+		sideMesh.name = `surface:side:${this.getName()}`;
 
 		const vvertex: RenderVertex[] = DragPoint.getRgVertex<RenderVertex>(this.dragPoints, () => new RenderVertex());
 		const rgtexcoord = DragPoint.getTextureCoords(this.dragPoints, vvertex);
@@ -160,51 +164,51 @@ export class SurfaceItem extends GameItem {
 			vnormal[0].normalize();
 			vnormal[1].normalize();
 
-			meshes.side.vertices[offset] = new Vertex3DNoTex2();
-			meshes.side.vertices[offset + 1] = new Vertex3DNoTex2();
-			meshes.side.vertices[offset + 2] = new Vertex3DNoTex2();
-			meshes.side.vertices[offset + 3] = new Vertex3DNoTex2();
+			sideMesh.vertices[offset] = new Vertex3DNoTex2();
+			sideMesh.vertices[offset + 1] = new Vertex3DNoTex2();
+			sideMesh.vertices[offset + 2] = new Vertex3DNoTex2();
+			sideMesh.vertices[offset + 3] = new Vertex3DNoTex2();
 
-			meshes.side.vertices[offset].x = pv1.x;
-			meshes.side.vertices[offset].y = pv1.y;
-			meshes.side.vertices[offset].z = bottom;
-			meshes.side.vertices[offset + 1].x = pv1.x;
-			meshes.side.vertices[offset + 1].y = pv1.y;
-			meshes.side.vertices[offset + 1].z = top;
-			meshes.side.vertices[offset + 2].x = pv2.x;
-			meshes.side.vertices[offset + 2].y = pv2.y;
-			meshes.side.vertices[offset + 2].z = top;
-			meshes.side.vertices[offset + 3].x = pv2.x;
-			meshes.side.vertices[offset + 3].y = pv2.y;
-			meshes.side.vertices[offset + 3].z = bottom;
+			sideMesh.vertices[offset].x = pv1.x;
+			sideMesh.vertices[offset].y = pv1.y;
+			sideMesh.vertices[offset].z = bottom;
+			sideMesh.vertices[offset + 1].x = pv1.x;
+			sideMesh.vertices[offset + 1].y = pv1.y;
+			sideMesh.vertices[offset + 1].z = top;
+			sideMesh.vertices[offset + 2].x = pv2.x;
+			sideMesh.vertices[offset + 2].y = pv2.y;
+			sideMesh.vertices[offset + 2].z = top;
+			sideMesh.vertices[offset + 3].x = pv2.x;
+			sideMesh.vertices[offset + 3].y = pv2.y;
+			sideMesh.vertices[offset + 3].z = bottom;
 
-			meshes.side.vertices[offset].tu = rgtexcoord[i];
-			meshes.side.vertices[offset].tv = 1.0;
+			sideMesh.vertices[offset].tu = rgtexcoord[i];
+			sideMesh.vertices[offset].tv = 1.0;
 
-			meshes.side.vertices[offset + 1].tu = rgtexcoord[i];
-			meshes.side.vertices[offset + 1].tv = 0;
+			sideMesh.vertices[offset + 1].tu = rgtexcoord[i];
+			sideMesh.vertices[offset + 1].tv = 0;
 
-			meshes.side.vertices[offset + 2].tu = rgtexcoord[c];
-			meshes.side.vertices[offset + 2].tv = 0;
+			sideMesh.vertices[offset + 2].tu = rgtexcoord[c];
+			sideMesh.vertices[offset + 2].tv = 0;
 
-			meshes.side.vertices[offset + 3].tu = rgtexcoord[c];
-			meshes.side.vertices[offset + 3].tv = 1.0;
+			sideMesh.vertices[offset + 3].tu = rgtexcoord[c];
+			sideMesh.vertices[offset + 3].tv = 1.0;
 
-			meshes.side.vertices[offset].nx = vnormal[0].x;
-			meshes.side.vertices[offset].ny = -vnormal[0].y;
-			meshes.side.vertices[offset].nz = 0;
+			sideMesh.vertices[offset].nx = vnormal[0].x;
+			sideMesh.vertices[offset].ny = -vnormal[0].y;
+			sideMesh.vertices[offset].nz = 0;
 
-			meshes.side.vertices[offset + 1].nx = vnormal[0].x;
-			meshes.side.vertices[offset + 1].ny = -vnormal[0].y;
-			meshes.side.vertices[offset + 1].nz = 0;
+			sideMesh.vertices[offset + 1].nx = vnormal[0].x;
+			sideMesh.vertices[offset + 1].ny = -vnormal[0].y;
+			sideMesh.vertices[offset + 1].nz = 0;
 
-			meshes.side.vertices[offset + 2].nx = vnormal[1].x;
-			meshes.side.vertices[offset + 2].ny = -vnormal[1].y;
-			meshes.side.vertices[offset + 2].nz = 0;
+			sideMesh.vertices[offset + 2].nx = vnormal[1].x;
+			sideMesh.vertices[offset + 2].ny = -vnormal[1].y;
+			sideMesh.vertices[offset + 2].nz = 0;
 
-			meshes.side.vertices[offset + 3].nx = vnormal[1].x;
-			meshes.side.vertices[offset + 3].ny = -vnormal[1].y;
-			meshes.side.vertices[offset + 3].nz = 0;
+			sideMesh.vertices[offset + 3].nx = vnormal[1].x;
+			sideMesh.vertices[offset + 3].ny = -vnormal[1].y;
+			sideMesh.vertices[offset + 3].nz = 0;
 
 			offset += 4;
 		}
@@ -212,12 +216,12 @@ export class SurfaceItem extends GameItem {
 		// prepare index buffer for sides
 		let offset2 = 0;
 		for (let i = 0; i < numVertices; i++) {
-			meshes.side.indices[i * 6] = offset2;
-			meshes.side.indices[i * 6 + 1] = offset2 + 1;
-			meshes.side.indices[i * 6 + 2] = offset2 + 2;
-			meshes.side.indices[i * 6 + 3] = offset2;
-			meshes.side.indices[i * 6 + 4] = offset2 + 2;
-			meshes.side.indices[i * 6 + 5] = offset2 + 3;
+			sideMesh.indices[i * 6] = offset2;
+			sideMesh.indices[i * 6 + 1] = offset2 + 1;
+			sideMesh.indices[i * 6 + 2] = offset2 + 2;
+			sideMesh.indices[i * 6 + 3] = offset2;
+			sideMesh.indices[i * 6 + 4] = offset2 + 2;
+			sideMesh.indices[i * 6 + 5] = offset2 + 3;
 
 			offset2 += 4;
 		}
@@ -228,9 +232,9 @@ export class SurfaceItem extends GameItem {
 			vpoly[i] = i;
 		}
 
-		meshes.top.indices = Mesh.polygonToTriangles(vvertex, vpoly);
+		topMesh.indices = Mesh.polygonToTriangles(vvertex, vpoly);
 
-		const numPolys = meshes.top.indices.length / 3;
+		const numPolys = topMesh.indices.length / 3;
 		if (numPolys === 0) {
 			// no polys to render leave vertex buffer undefined
 			return;
@@ -277,9 +281,20 @@ export class SurfaceItem extends GameItem {
 			vertsTop[2][i].ny = 0;
 			vertsTop[2][i].nz = -1.0;
 		}
-		meshes.top.vertices = [...vertsTop[0], ...vertsTop[1], ...vertsTop[2]];
+		topMesh.vertices = [...vertsTop[0], ...vertsTop[1], ...vertsTop[2]];
 
-		return meshes;
+		return {
+			top: {
+				mesh: topMesh,
+				map: table.getTexture(this.szImage),
+				material: table.getMaterial(this.szTopMaterial),
+			},
+			side: {
+				mesh: sideMesh,
+				map: table.getTexture(this.szSideImage),
+				material: table.getMaterial(this.szSideMaterial),
+			},
+		};
 	}
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<void> {

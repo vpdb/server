@@ -20,8 +20,8 @@
 import { Math as M, Matrix4 } from 'three';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
-import { GameItem } from './game-item';
-import { Mesh, Meshes } from './mesh';
+import { GameItem, IRenderable, Meshes } from './game-item';
+import { Mesh } from './mesh';
 import { hitTargetT2Mesh } from './meshes/drop-target-t2-mesh';
 import { hitTargetT3Mesh } from './meshes/drop-target-t3-mesh';
 import { hitTargetT4Mesh } from './meshes/drop-target-t4-mesh';
@@ -34,7 +34,7 @@ import { hitTargetT2SlimMesh } from './meshes/hit-target-t2-slim-mesh';
 import { Vertex3D } from './vertex';
 import { VpTable } from './vp-table';
 
-export class HitTargetItem extends GameItem {
+export class HitTargetItem extends GameItem implements IRenderable {
 
 	private static TypeDropTargetBeveled = 1;
 	private static TypeDropTargetSimple = 2;
@@ -77,7 +77,7 @@ export class HitTargetItem extends GameItem {
 
 	public static async fromStorage(storage: Storage, itemName: string): Promise<HitTargetItem> {
 		const hitTargetItem = new HitTargetItem();
-		await storage.streamFiltered(itemName, 4, HitTargetItem.createStreamHandler(hitTargetItem));
+		await storage.streamFiltered(itemName, 4, BiffParser.stream(hitTargetItem.fromTag.bind(hitTargetItem), {}));
 		return hitTargetItem;
 	}
 
@@ -87,17 +87,28 @@ export class HitTargetItem extends GameItem {
 		return hitTargetItem;
 	}
 
-	public generateMeshes(table: VpTable): Meshes {
+	private constructor() {
+		super();
+	}
 
-		const meshes: Meshes = {};
-		meshes.hitTarget = this.getBaseMesh();
+	public getName(): string {
+		return this.wzName;
+	}
+
+	public isVisible(): boolean {
+		return this.fVisible;
+	}
+
+	public getMeshes(table: VpTable): Meshes {
+		const hitTargetMesh = this.getBaseMesh();
+		hitTargetMesh.name = `hit-target:${this.getName()}`;
 
 		const fullMatrix = new Matrix4();
 		const tempMatrix = new Matrix4();
 		tempMatrix.makeRotationZ(M.degToRad(this.rotZ));
 		fullMatrix.multiplyMatrices(fullMatrix, tempMatrix);
 
-		for (const vertex of meshes.hitTarget.vertices) {
+		for (const vertex of hitTargetMesh.vertices) {
 			let vert = new Vertex3D(vertex.x, vertex.y, vertex.z);
 			vert.x *= this.vSize.x;
 			vert.y *= this.vSize.y;
@@ -115,8 +126,16 @@ export class HitTargetItem extends GameItem {
 			vertex.nz = vert.z;
 		}
 
-		return meshes;
+		return {
+			hitTarget: {
+				mesh: hitTargetMesh,
+				map: table.getTexture(this.szImage),
+				material: table.getMaterial(this.szMaterial),
+			}
+		};
 	}
+
+
 
 	private getBaseMesh(): Mesh {
 		switch (this.targetType) {
@@ -131,14 +150,6 @@ export class HitTargetItem extends GameItem {
 			case HitTargetItem.TypeHitFatTargetSlim: return hitTargetT2SlimMesh.clone();
 			default: return hitTargetT3Mesh.clone();
 		}
-	}
-
-	private constructor() {
-		super();
-	}
-
-	public getName(): string {
-		return this.wzName;
 	}
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<void> {
@@ -175,9 +186,5 @@ export class HitTargetItem extends GameItem {
 				this.getUnknownBlock(buffer, tag);
 				break;
 		}
-	}
-
-	private static createStreamHandler(lightItem: HitTargetItem) {
-		return BiffParser.stream(lightItem.fromTag.bind(lightItem), {});
 	}
 }

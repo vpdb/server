@@ -18,10 +18,10 @@
  */
 
 import { Math as M, Object3D } from 'three';
-import { GLTFExporter } from './lib/GLTFExporter';
 import { OBJLoader } from './lib/OBJLoader';
 
 import { IPositionable } from '../mesh';
+import { GLTFExporter } from './gltf-exporter';
 
 export abstract class BaseExporter {
 

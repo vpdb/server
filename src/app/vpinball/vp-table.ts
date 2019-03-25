@@ -142,14 +142,14 @@ export class VpTable {
 		return this.gameData.tableheight;
 	}
 
-	public async exportGltf(fileId: string): Promise<string> {
+	public async exportGltf(): Promise<string> {
 		const exporter = new VpTableExporter(this);
-		return await exporter.exportGltf(fileId);
+		return await exporter.exportGltf();
 	}
 
-	public async exportGlb(fileId: string): Promise<Buffer> {
+	public async exportGlb(): Promise<Buffer> {
 		const exporter = new VpTableExporter(this);
-		return await exporter.exportGlb(fileId);
+		return await exporter.exportGlb();
 	}
 
 	private async _load(fileName: string): Promise<void> {

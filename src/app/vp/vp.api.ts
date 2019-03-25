@@ -54,7 +54,7 @@ export class VpApi extends Api {
 	public async viewGlb(ctx: Context) {
 		const vptFile = await this.getVpFile(ctx);
 		const vpTable = await VpTable.load(vptFile.getPath(ctx.state));
-		const glb = await vpTable.exportGlb(ctx.params.fileId);
+		const glb = await vpTable.exportGlb();
 		ctx.status = 200;
 		ctx.set('Content-Type', 'model/gltf-binary');
 		ctx.response.body = glb;
@@ -63,7 +63,7 @@ export class VpApi extends Api {
 	public async viewGltf(ctx: Context) {
 		const vptFile = await this.getVpFile(ctx);
 		const vpTable = await VpTable.load(vptFile.getPath(ctx.state));
-		const gltf = await vpTable.exportGltf(ctx.params.fileId);
+		const gltf = await vpTable.exportGltf();
 		ctx.status = 200;
 		ctx.set('Content-Type', 'model/gltf+json');
 		ctx.response.body = gltf;

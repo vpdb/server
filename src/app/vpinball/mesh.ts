@@ -129,6 +129,31 @@ export class Mesh {
 		}
 	}
 
+	public static setNormal(rgv: Vertex3DNoTex2[], rgi: number[], count: number, applycount = 0) {
+
+		const rgvApply = rgv;
+		const rgiApply = rgi;
+		const vnormal = new Vertex3D(0.0, 0.0, 0.0);
+
+		for (let i = 0; i < count; ++i) {
+			const l = rgi[i];
+			const m = rgi[(i < count - 1) ? (i + 1) : 0];
+
+			vnormal.x += (rgv[l].y - rgv[m].y) * (rgv[l].z + rgv[m].z);
+			vnormal.y += (rgv[l].z - rgv[m].z) * (rgv[l].x + rgv[m].x);
+			vnormal.z += (rgv[l].x - rgv[m].x) * (rgv[l].y + rgv[m].y);
+		}
+
+		vnormal.normalize();
+
+		for (let i = 0; i < applycount; ++i) {
+			const l = rgiApply[i];
+			rgvApply[l].nx = vnormal.x;
+			rgvApply[l].ny = vnormal.y;
+			rgvApply[l].nz = vnormal.z;
+		}
+	}
+
 	public static polygonToTriangles(rgv: RenderVertex[], pvpoly: number[]): number[] {
 		const pvtri: number[] = [];
 		// There should be this many convex triangles.

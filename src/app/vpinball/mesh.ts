@@ -20,6 +20,7 @@
 import { FrameData } from './common';
 import { MeshConverter } from './gltf/mesh-converter';
 import { RenderVertex, Vertex2D, Vertex3D, Vertex3DNoTex2 } from './vertex';
+import apply = Reflect.apply;
 
 export const FLT_MIN = 1.175494350822287507968736537222245677819e-038;
 export const FLT_MAX = 340282346638528859811704183484516925440;
@@ -129,10 +130,14 @@ export class Mesh {
 		}
 	}
 
-	public static setNormal(rgv: Vertex3DNoTex2[], rgi: number[], count: number, applycount = 0) {
+	public static setNormal(rgv: Vertex3DNoTex2[], rgi: number[], count: number, applyCount = 0): void {
 
 		const rgvApply = rgv;
 		const rgiApply = rgi;
+		if (applyCount === 0) {
+			applyCount = count;
+		}
+
 		const vnormal = new Vertex3D(0.0, 0.0, 0.0);
 
 		for (let i = 0; i < count; ++i) {
@@ -146,7 +151,7 @@ export class Mesh {
 
 		vnormal.normalize();
 
-		for (let i = 0; i < applycount; ++i) {
+		for (let i = 0; i < applyCount; ++i) {
 			const l = rgiApply[i];
 			rgvApply[l].nx = vnormal.x;
 			rgvApply[l].ny = vnormal.y;

@@ -1,4 +1,4 @@
-/* tslint:disable:no-console */
+/* tslint:disable:no-console no-bitwise */
 /*
  * VPDB - Virtual Pinball Database
  * Copyright (C) 2019 freezy <freezy@vpdb.io>
@@ -31,6 +31,7 @@ import { HitTargetItem } from './hit-target-item';
 import { KickerItem } from './kicker-item';
 import { LightItem } from './light-item';
 import { Material } from './material';
+import { Mesh } from './mesh';
 import { PrimitiveItem } from './primitive-item';
 import { RampItem } from './ramp-item';
 import { RubberItem } from './rubber-item';
@@ -38,7 +39,6 @@ import { SurfaceItem } from './surface-item';
 import { Texture } from './texture';
 import { TriggerItem } from './trigger-item';
 import { Vertex3DNoTex2 } from './vertex';
-import { Mesh } from './mesh';
 
 export class VpTable implements IRenderable {
 
@@ -182,10 +182,10 @@ export class VpTable implements IRenderable {
 		}
 	}
 
-	getMeshes(table: VpTable): Meshes {
+	public getMeshes(table: VpTable): Meshes {
 		const rgv: Vertex3DNoTex2[] = [];
 		for (let i = 0; i < 7; i++) {
-			rgv.push(new Vertex3DNoTex2())
+			rgv.push(new Vertex3DNoTex2());
 		}
 		rgv[0].x = this.gameData.left;     rgv[0].y = this.gameData.top;      rgv[0].z = this.gameData.tableheight;
 		rgv[1].x = this.gameData.right;    rgv[1].y = this.gameData.top;      rgv[1].z = this.gameData.tableheight;
@@ -204,14 +204,15 @@ export class VpTable implements IRenderable {
 			rgv[i].nz = 1.0;
 
 			rgv[i].tv = (i & 2) ? 1.0 : 0.0;
-			rgv[i].tu = (i == 1 || i == 2) ? 1.0 : 0.0;
+			rgv[i].tu = (i === 1 || i === 2) ? 1.0 : 0.0;
 		}
 
 		const playfieldPolyIndices = [ 0, 1, 3, 0, 3, 2, 2, 3, 5, 6 ];
+		Mesh.setNormal(rgv, playfieldPolyIndices.splice(6), 4);
 
 		const buffer: Vertex3DNoTex2[] = [];
 		for (let i = 0; i < 7; i++) {
-			buffer.push(new Vertex3DNoTex2())
+			buffer.push(new Vertex3DNoTex2());
 		}
 		let offs = 0;
 		for (let y = 0; y <= 1; ++y) {
@@ -226,23 +227,20 @@ export class VpTable implements IRenderable {
 				buffer[offs].nx = rgv[0].nx;
 				buffer[offs].ny = rgv[0].ny;
 				buffer[offs].nz = rgv[0].nz;
-
 				++offs;
 			}
 		}
-
-		//const normals = Mesh.setNormal(rgv, playfieldPolyIndices.splice(6), 4);
 
 		return {
 			playfield: {
 				mesh: new Mesh(buffer, playfieldPolyIndices),
 				material: this.getMaterial(this.gameData.szPlayfieldMaterial),
 				map: this.getTexture(this.gameData.szImage),
-			}
+			},
 		};
 	}
 
-	isVisible(): boolean {
+	public isVisible(): boolean {
 		return true;
 	}
 

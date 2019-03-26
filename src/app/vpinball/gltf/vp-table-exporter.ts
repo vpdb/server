@@ -65,17 +65,17 @@ export class VpTableExporter extends BaseExporter {
 	private async export<T>(opts: any = {}): Promise<T> {
 		const allRenderables: IRenderable[][] = [
 			[ this.table ],
-			// values<PrimitiveItem>(this.table.primitives),
-			// values<RubberItem>(this.table.rubbers),
-			// values<SurfaceItem>(this.table.surfaces),
-			// values<FlipperItem>(this.table.flippers),
-			// values<BumperItem>(this.table.bumpers),
-			// values<RampItem>(this.table.ramps),
-			// this.table.lights,
-			// this.table.hitTargets,
-			// this.table.gates,
-			// this.table.kickers,
-			// this.table.triggers,
+			values<PrimitiveItem>(this.table.primitives),
+			values<RubberItem>(this.table.rubbers),
+			values<SurfaceItem>(this.table.surfaces),
+			values<FlipperItem>(this.table.flippers),
+			values<BumperItem>(this.table.bumpers),
+			values<RampItem>(this.table.ramps),
+			this.table.lights,
+			this.table.hitTargets,
+			this.table.gates,
+			this.table.kickers,
+			this.table.triggers,
 		];
 
 		// meshes
@@ -150,7 +150,11 @@ export class VpTableExporter extends BaseExporter {
 	private async loadMap(name: string, objMap: VpTexture, materialMap: Texture): Promise<boolean> {
 		const doc = await this.table.getDocument();
 		try {
-			materialMap.image = await this.getImage(await objMap.getImage(doc.storage('GameStg')));
+			const data = await objMap.getImage(doc.storage('GameStg'));
+			if (!data || !data.length) {
+				return false;
+			}
+			materialMap.image = await this.getImage(data);
 			materialMap.format = RGBAFormat;
 			materialMap.needsUpdate = true;
 			return true;

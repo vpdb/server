@@ -1,3 +1,4 @@
+/* tslint:disable:no-console */
 /*
  * VPDB - Virtual Pinball Database
  * Copyright (C) 2019 freezy <freezy@vpdb.io>
@@ -17,6 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { Canvas, Image } from 'canvas';
 import {
 	AnimationClip, Bone,
 	BufferAttribute,
@@ -48,9 +50,8 @@ import {
 	Texture,
 	TriangleFanDrawMode,
 	TriangleStripDrawMode,
-	Vector3
+	Vector3,
 } from 'three';
-import { Canvas, Image } from 'canvas';
 import { Blob, FileReader } from 'vblob';
 
 /**
@@ -83,7 +84,7 @@ const WEBGL_CONSTANTS: { [key: string]: number } = {
 
 	CLAMP_TO_EDGE: 33071,
 	MIRRORED_REPEAT: 33648,
-	REPEAT: 10497
+	REPEAT: 10497,
 };
 
 const THREE_TO_WEBGL: { [key: string]: number } = {};
@@ -103,7 +104,7 @@ const PATH_PROPERTIES: { [key: string]: string } = {
 	scale: 'scale',
 	position: 'translation',
 	quaternion: 'rotation',
-	morphTargetInfluences: 'weights'
+	morphTargetInfluences: 'weights',
 };
 
 //------------------------------------------------------------------------------
@@ -117,7 +118,7 @@ export class GLTFExporter {
 	 * @param  {Function} onDone  Callback on completed
 	 * @param  {Object} options options
 	 */
-	parse(input: Scene | Scene[], onDone: (result: any) => void, options: any) {
+	public parse(input: Scene | Scene[], onDone: (result: any) => void, options: any) {
 
 		const DEFAULT_OPTIONS: ParseOptions = {
 			binary: false,
@@ -127,7 +128,7 @@ export class GLTFExporter {
 			embedImages: true,
 			animations: [],
 			forceIndices: false,
-			forcePowerOfTwoTextures: false
+			forcePowerOfTwoTextures: false,
 		};
 
 		options = Object.assign({}, DEFAULT_OPTIONS, options);
@@ -141,13 +142,13 @@ export class GLTFExporter {
 		const outputJSON: any = {
 			asset: {
 				version: '2.0',
-				generator: 'GLTFExporter'
-			}
+				generator: 'GLTFExporter',
+			},
 		};
 
 		let byteOffset = 0;
 		const buffers: ArrayBuffer[] = [];
-		const pending: Promise<void>[] = [];
+		const pending: Array<Promise<void>> = [];
 		const nodeMap = new Map();
 		const skins: Object3D[] = [];
 		const extensionsUsed: ExtensionsUsed = {};
@@ -157,7 +158,7 @@ export class GLTFExporter {
 			attributesNormalized: new Map(),
 			materials: new Map(),
 			textures: new Map(),
-			images: new Map<Image, { [key:string]: number}>()
+			images: new Map<Image, { [key: string]: number}>(),
 		};
 
 		let cachedCanvas: Canvas;
@@ -172,9 +173,8 @@ export class GLTFExporter {
 		 * @return {Boolean}        Returns true if both arrays are equal
 		 */
 		function equalArray(array1: any[], array2: any[]) {
-			return (array1.length === array2.length) && array1.every(function (element, index) {
-				return element === array2[index];
-			});
+			return (array1.length === array2.length)
+				&& array1.every((element, index) => element === array2[index]);
 		}
 
 		/**
@@ -207,7 +207,7 @@ export class GLTFExporter {
 
 			const output = {
 				min: new Array(attribute.itemSize).fill(Number.POSITIVE_INFINITY),
-				max: new Array(attribute.itemSize).fill(Number.NEGATIVE_INFINITY)
+				max: new Array(attribute.itemSize).fill(Number.NEGATIVE_INFINITY),
 			};
 
 			for (let i = start; i < start + count; i++) {
@@ -250,7 +250,7 @@ export class GLTFExporter {
 			for (; i < il; i++) {
 
 				// 0.0005 is from glTF-validator
-				if (Math.abs(v.fromArray(normal.array as number[], i * 3).length() - 1.0) > 0.0005) return false;
+				if (Math.abs(v.fromArray(normal.array as number[], i * 3).length() - 1.0) > 0.0005) { return false; }
 			}
 			return true;
 		}
@@ -374,8 +374,8 @@ export class GLTFExporter {
 
 			if (didTransform) {
 				mapDef.extensions = mapDef.extensions || {};
-				mapDef.extensions['KHR_texture_transform'] = transformDef;
-				extensionsUsed['KHR_texture_transform'] = true;
+				mapDef.extensions.KHR_texture_transform = transformDef;
+				extensionsUsed.KHR_texture_transform = true;
 			}
 		}
 
@@ -460,11 +460,11 @@ export class GLTFExporter {
 
 			const gltfBufferView: BufferView = {
 				buffer: processBuffer(dataView.buffer),
-				byteOffset: byteOffset,
-				byteLength: byteLength
+				byteOffset,
+				byteLength,
 			};
 
-			if (target !== undefined) gltfBufferView.target = target;
+			if (target !== undefined) { gltfBufferView.target = target; }
 
 			if (target === WEBGL_CONSTANTS.ARRAY_BUFFER) {
 
@@ -480,7 +480,7 @@ export class GLTFExporter {
 			// @TODO Merge bufferViews where possible.
 			const output: BufferView = {
 				id: outputJSON.bufferViews.length - 1,
-				byteLength: 0
+				byteLength: 0,
 			};
 
 			return output;
@@ -500,18 +500,18 @@ export class GLTFExporter {
 
 			}
 
-			return new Promise(function (resolve) {
+			return new Promise(resolve => {
 
 				const reader = new FileReader();
 				reader.readAsArrayBuffer(blob);
-				reader.onloadend = function () {
+				reader.onloadend = () => {
 
 					const buffer = getPaddedArrayBuffer(reader.result);
 
 					const bufferView = {
 						buffer: processBuffer(buffer),
-						byteOffset: byteOffset,
-						byteLength: buffer.byteLength
+						byteOffset,
+						byteLength: buffer.byteLength,
 					};
 
 					byteOffset += buffer.byteLength;
@@ -536,12 +536,12 @@ export class GLTFExporter {
 		 */
 		function processAccessor(attribute: BufferAttribute | InterleavedBufferAttribute, geometry?: BufferGeometry, start?: number, count?: number): number {
 
-			const types: { [key:number]: string } = {
+			const types: { [key: number]: string } = {
 				1: 'SCALAR',
 				2: 'VEC2',
 				3: 'VEC3',
 				4: 'VEC4',
-				16: 'MAT4'
+				16: 'MAT4',
 			};
 
 			let componentType;
@@ -563,8 +563,8 @@ export class GLTFExporter {
 				throw new Error('GLTFExporter: Unsupported bufferAttribute component type.');
 			}
 
-			if (start === undefined) start = 0;
-			if (count === undefined) count = attribute.count;
+			if (start === undefined) { start = 0; }
+			if (count === undefined) { count = attribute.count; }
 
 			// @TODO Indexed buffer geometry with drawRange not supported yet
 			if (options.truncateDrawRange && geometry !== undefined && geometry.index === null) {
@@ -577,7 +577,7 @@ export class GLTFExporter {
 				start = Math.max(start, geometry.drawRange.start);
 				count = Math.min(end, end2) - start;
 
-				if (count < 0) count = 0;
+				if (count < 0) { count = 0; }
 
 			}
 
@@ -601,11 +601,11 @@ export class GLTFExporter {
 			const gltfAccessor = {
 				bufferView: bufferView.id,
 				byteOffset: bufferView.byteOffset,
-				componentType: componentType,
-				count: count,
+				componentType,
+				count,
 				max: minMax.max,
 				min: minMax.min,
-				type: types[attribute.itemSize]
+				type: types[attribute.itemSize],
 			};
 
 			if (!outputJSON.accessors) {
@@ -642,7 +642,7 @@ export class GLTFExporter {
 				outputJSON.images = [];
 			}
 
-			const gltfImage: GLTFImage = { mimeType: mimeType };
+			const gltfImage: GLTFImage = { mimeType };
 
 			if (options.embedImages) {
 
@@ -665,10 +665,10 @@ export class GLTFExporter {
 				ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
 
 				if (options.binary === true) {
-					pending.push(new Promise(function (resolve) {
+					pending.push(new Promise(resolve => {
 						const buffer = canvas.toBuffer();
 						const blob = new Blob([toArrayBuffer(buffer)]);
-						processBufferViewImage(blob).then(function (bufferViewIndex) {
+						processBufferViewImage(blob).then(bufferViewIndex => {
 							gltfImage.bufferView = bufferViewIndex;
 							resolve();
 						});
@@ -707,7 +707,7 @@ export class GLTFExporter {
 				magFilter: THREE_TO_WEBGL[map.magFilter],
 				minFilter: THREE_TO_WEBGL[map.minFilter],
 				wrapS: THREE_TO_WEBGL[map.wrapS],
-				wrapT: THREE_TO_WEBGL[map.wrapT]
+				wrapT: THREE_TO_WEBGL[map.wrapT],
 
 			};
 
@@ -735,10 +735,8 @@ export class GLTFExporter {
 			}
 
 			const gltfTexture = {
-
 				sampler: processSampler(map),
-				source: processImage(map.image, map.format, map.flipY)
-
+				source: processImage(map.image, map.format, map.flipY),
 			};
 
 			outputJSON.textures.push(gltfTexture);
@@ -773,12 +771,12 @@ export class GLTFExporter {
 
 			// @QUESTION Should we avoid including any attribute that has the default value?
 			const gltfMaterial: GLTFMaterial = {
-				pbrMetallicRoughness: {}
+				pbrMetallicRoughness: {},
 			};
 
 			if (material.isMeshBasicMaterial) {
 				gltfMaterial.extensions = { KHR_materials_unlit: {} };
-				extensionsUsed['KHR_materials_unlit'] = true;
+				extensionsUsed.KHR_materials_unlit = true;
 
 			} else if (!material.isMeshStandardMaterial) {
 				console.warn('GLTFExporter: Use MeshStandardMaterial or MeshBasicMaterial for best results.');
@@ -886,7 +884,7 @@ export class GLTFExporter {
 
 				const occlusionMapDef: MapDefinition = {
 					index: processTexture(material.aoMap),
-					texCoord: 1
+					texCoord: 1,
 				};
 
 				if (material.aoMapIntensity !== 1.0) {
@@ -989,19 +987,19 @@ export class GLTFExporter {
 
 			}
 
-			const gltfMesh:GLTFMesh = {};
+			const gltfMesh: GLTFMesh = {};
 
-			const attributes: { [key:string]: BufferAttribute | number } = {};
+			const attributes: { [key: string]: BufferAttribute | number } = {};
 			const primitives: Primitive[] = [];
 			const targets: Array<{ [key: string]: BufferAttribute | number }> = [];
 
 			// Conversion between attributes names in threejs and gltf spec
-			const nameConversion: { [key:string]: string } = {
+			const nameConversion: { [key: string]: string } = {
 				uv: 'TEXCOORD_0',
 				uv2: 'TEXCOORD_1',
 				color: 'COLOR_0',
 				skinWeight: 'WEIGHTS_0',
-				skinIndex: 'JOINTS_0'
+				skinIndex: 'JOINTS_0',
 			};
 
 			const originalNormal = (geometry as BufferGeometry).getAttribute('normal');
@@ -1017,9 +1015,9 @@ export class GLTFExporter {
 			// @QUESTION Detect if .vertexColors = VertexColors?
 			// For every attribute create an accessor
 			let modifiedAttribute: BufferAttribute = null;
-			for (var attributeName in (geometry as BufferGeometry).attributes) {
+			for (let attributeName in (geometry as BufferGeometry).attributes) {
 
-				var attribute = (geometry as BufferGeometry).attributes[attributeName] as BufferAttribute;
+				const attribute = (geometry as BufferGeometry).attributes[attributeName] as BufferAttribute;
 				attributeName = nameConversion[attributeName] || attributeName.toUpperCase();
 
 				if (cachedData.attributes.has(attribute)) {
@@ -1047,7 +1045,7 @@ export class GLTFExporter {
 				}
 			}
 
-			if (originalNormal !== undefined) (geometry as BufferGeometry).addAttribute('normal', originalNormal);
+			if (originalNormal !== undefined) { (geometry as BufferGeometry).addAttribute('normal', originalNormal); }
 
 			// Skip if no exportable attributes found
 			if (Object.keys(attributes).length === 0) {
@@ -1064,18 +1062,18 @@ export class GLTFExporter {
 				const reverseDictionary: { [key: number]: string} = {};
 
 				if (mesh.morphTargetDictionary !== undefined) {
-					for (let key in mesh.morphTargetDictionary) {
+					for (const key in mesh.morphTargetDictionary) {
 						reverseDictionary[mesh.morphTargetDictionary[key]] = key;
 					}
 				}
 
-				for (var i = 0; i < mesh.morphTargetInfluences.length; ++i) {
+				for (let i = 0; i < mesh.morphTargetInfluences.length; ++i) {
 
 					const target: { [key: string]: BufferAttribute | number } = {};
 
 					let warned = false;
 
-					for (var attributeName in (geometry as BufferGeometry).morphAttributes) {
+					for (const attributeName in (geometry as BufferGeometry).morphAttributes) {
 
 						// glTF 2.0 morph supports only POSITION/NORMAL/TANGENT.
 						// js doesn't support TANGENT yet.
@@ -1093,7 +1091,7 @@ export class GLTFExporter {
 
 						}
 
-						var attribute = (geometry as BufferGeometry).morphAttributes[attributeName][i] as BufferAttribute;
+						const attribute = (geometry as BufferGeometry).morphAttributes[attributeName][i] as BufferAttribute;
 						const gltfAttributeName = attributeName.toUpperCase();
 
 						// js morph attribute has absolute values while the one of glTF has relative values.
@@ -1121,7 +1119,7 @@ export class GLTFExporter {
 								j,
 								attribute.getX(j) - baseAttribute.getX(j),
 								attribute.getY(j) - baseAttribute.getY(j),
-								attribute.getZ(j) - baseAttribute.getZ(j)
+								attribute.getZ(j) - baseAttribute.getZ(j),
 							);
 
 						}
@@ -1134,7 +1132,7 @@ export class GLTFExporter {
 					targets.push(target);
 
 					weights.push(mesh.morphTargetInfluences[i]);
-					if (mesh.morphTargetDictionary !== undefined) targetNames.push(reverseDictionary[i]);
+					if (mesh.morphTargetDictionary !== undefined) { targetNames.push(reverseDictionary[i]); }
 
 				}
 
@@ -1154,7 +1152,7 @@ export class GLTFExporter {
 			let forceIndices = options.forceIndices;
 			const isMultiMaterial = Array.isArray(mesh.material);
 
-			if (isMultiMaterial && (geometry as BufferGeometry).groups.length === 0) return null;
+			if (isMultiMaterial && (geometry as BufferGeometry).groups.length === 0) { return null; }
 
 			if (!forceIndices && (geometry as BufferGeometry).index === null && isMultiMaterial) {
 
@@ -1170,7 +1168,7 @@ export class GLTFExporter {
 
 				const indices = [];
 
-				for (var i = 0, il = (geometry as BufferGeometry).attributes.position.count; i < il; i++) {
+				for (let i = 0, il = (geometry as BufferGeometry).attributes.position.count; i < il; i++) {
 
 					indices[i] = i;
 
@@ -1186,19 +1184,19 @@ export class GLTFExporter {
 			const groups = isMultiMaterial ? (geometry as BufferGeometry).groups : [{
 				materialIndex: 0,
 				start: undefined,
-				count: undefined
+				count: undefined,
 			}];
 
-			for (var i = 0, il = groups.length; i < il; i++) {
+			for (let i = 0, il = groups.length; i < il; i++) {
 
 				const primitive: Primitive = {
-					mode: mode,
-					attributes: attributes,
+					mode,
+					attributes,
 				};
 
-				if (extras) primitive.extras = extras;
+				if (extras) { primitive.extras = extras; }
 
-				if (targets.length > 0) primitive.targets = targets;
+				if (targets.length > 0) { primitive.targets = targets; }
 
 				if ((geometry as BufferGeometry).index !== null) {
 
@@ -1255,7 +1253,7 @@ export class GLTFExporter {
 			const isOrtho = camera.isOrthographicCamera;
 
 			const gltfCamera: GLTFCamera = {
-				type: isOrtho ? 'orthographic' : 'perspective'
+				type: isOrtho ? 'orthographic' : 'perspective',
 			};
 
 			if (isOrtho) {
@@ -1263,7 +1261,7 @@ export class GLTFExporter {
 					xmag: camera.right * 2,
 					ymag: camera.top * 2,
 					zfar: camera.far <= 0 ? 0.001 : camera.far,
-					znear: camera.near < 0 ? 0 : camera.near
+					znear: camera.near < 0 ? 0 : camera.near,
 				};
 
 			} else {
@@ -1271,7 +1269,7 @@ export class GLTFExporter {
 					aspectRatio: camera.aspect,
 					yfov: M.degToRad(camera.fov),
 					zfar: camera.far <= 0 ? 0.001 : camera.far,
-					znear: camera.near < 0 ? 0 : camera.near
+					znear: camera.near < 0 ? 0 : camera.near,
 				};
 			}
 
@@ -1372,22 +1370,22 @@ export class GLTFExporter {
 				samplers.push({
 					input: processAccessor(new BufferAttribute(track.times, inputItemSize)),
 					output: processAccessor(new BufferAttribute(track.values, outputItemSize)),
-					interpolation: interpolation
+					interpolation,
 				});
 
 				channels.push({
 					sampler: samplers.length - 1,
 					target: {
 						node: nodeMap.get(trackNode),
-						path: trackProperty
-					}
+						path: trackProperty,
+					},
 				});
 			}
 
 			outputJSON.animations.push({
 				name: clip.name || 'clip_' + outputJSON.animations.length,
-				samplers: samplers,
-				channels: channels
+				samplers,
+				channels,
 			});
 
 			return outputJSON.animations.length - 1;
@@ -1401,7 +1399,7 @@ export class GLTFExporter {
 			const skeleton = object.skeleton;
 			const rootJoint = object.skeleton.bones[0];
 
-			if (rootJoint === undefined) return null;
+			if (rootJoint === undefined) { return null; }
 
 			const joints = [];
 			const inverseBindMatrices = new Float32Array(skeleton.bones.length * 16);
@@ -1417,8 +1415,8 @@ export class GLTFExporter {
 
 			outputJSON.skins.push({
 				inverseBindMatrices: processAccessor(new BufferAttribute(inverseBindMatrices, 16)),
-				joints: joints,
-				skeleton: nodeMap.get(rootJoint)
+				joints,
+				skeleton: nodeMap.get(rootJoint),
 			});
 
 			const skinIndex = node.skin = outputJSON.skins.length - 1;
@@ -1429,7 +1427,7 @@ export class GLTFExporter {
 
 			const lightDef: LightDefinition = {};
 
-			if (light.name) lightDef.name = light.name;
+			if (light.name) { lightDef.name = light.name; }
 
 			lightDef.color = light.color.toArray();
 			lightDef.intensity = light.intensity;
@@ -1439,11 +1437,11 @@ export class GLTFExporter {
 
 			} else if (light.isPointLight) {
 				lightDef.type = 'point';
-				if (light.distance > 0) lightDef.range = light.distance;
+				if (light.distance > 0) { lightDef.range = light.distance; }
 
 			} else if (light.isSpotLight) {
 				lightDef.type = 'spot';
-				if (light.distance > 0) lightDef.range = light.distance;
+				if (light.distance > 0) { lightDef.range = light.distance; }
 				lightDef.spot = {};
 				lightDef.spot.innerConeAngle = (light.penumbra - 1.0) * light.angle * -1.0;
 				lightDef.spot.outerConeAngle = light.angle;
@@ -1465,7 +1463,7 @@ export class GLTFExporter {
 
 			}
 
-			const lights = outputJSON.extensions['KHR_lights_punctual'].lights;
+			const lights = outputJSON.extensions.KHR_lights_punctual.lights;
 			lights.push(lightDef);
 			return lights.length - 1;
 		}
@@ -1529,14 +1527,14 @@ export class GLTFExporter {
 
 			} else if (object.isDirectionalLight || object.isPointLight || object.isSpotLight) {
 
-				if (!extensionsUsed['KHR_lights_punctual']) {
+				if (!extensionsUsed.KHR_lights_punctual) {
 					outputJSON.extensions = outputJSON.extensions || {};
-					outputJSON.extensions['KHR_lights_punctual'] = { lights: [] };
-					extensionsUsed['KHR_lights_punctual'] = true;
+					outputJSON.extensions.KHR_lights_punctual = { lights: [] };
+					extensionsUsed.KHR_lights_punctual = true;
 				}
 
 				gltfNode.extensions = gltfNode.extensions || {};
-				gltfNode.extensions['KHR_lights_punctual'] = { light: processLight(object as any) };
+				gltfNode.extensions.KHR_lights_punctual = { light: processLight(object as any) };
 
 			} else if (object.isLight) {
 				console.warn('GLTFExporter: Only directional, point, and spot lights are supported.');
@@ -1591,7 +1589,7 @@ export class GLTFExporter {
 			}
 
 			const gltfScene: GLTFScene = {
-				nodes: []
+				nodes: [],
 			};
 
 			if (scene.name !== '') {
@@ -1646,7 +1644,7 @@ export class GLTFExporter {
 			input = input instanceof Array ? input : [input];
 			const objectsWithoutScene = [];
 
-			for (var i = 0; i < input.length; i++) {
+			for (let i = 0; i < input.length; i++) {
 				if (input[i] instanceof Scene) {
 					processScene(input[i]);
 
@@ -1659,25 +1657,25 @@ export class GLTFExporter {
 				processObjects(objectsWithoutScene);
 			}
 
-			for (var i = 0; i < skins.length; ++i) {
+			for (let i = 0; i < skins.length; ++i) {
 				processSkin(skins[i] as any);
 			}
 
-			for (var i = 0; i < options.animations.length; ++i) {
+			for (let i = 0; i < options.animations.length; ++i) {
 				processAnimation(options.animations[i], input[0]);
 			}
 		}
 
 		processInput(input);
 
-		Promise.all(pending).then(function () {
+		Promise.all(pending).then(() => {
 
 			// Merge buffers.
 			const blob = new Blob(buffers, { type: 'application/octet-stream' });
 
 			// Declare extensions.
 			const extensionsUsedList = Object.keys(extensionsUsed);
-			if (extensionsUsedList.length > 0) outputJSON.extensionsUsed = extensionsUsedList;
+			if (extensionsUsedList.length > 0) { outputJSON.extensionsUsed = extensionsUsedList; }
 
 			if (outputJSON.buffers && outputJSON.buffers.length > 0) {
 
@@ -1699,7 +1697,7 @@ export class GLTFExporter {
 					const GLB_CHUNK_TYPE_BIN = 0x004E4942;
 
 					reader.readAsArrayBuffer(blob);
-					reader.onloadend = function () {
+					reader.onloadend = () => {
 
 						// Binary chunk.
 						const binaryChunk = getPaddedArrayBuffer(reader.result);
@@ -1728,19 +1726,19 @@ export class GLTFExporter {
 							jsonChunkPrefix,
 							jsonChunk,
 							binaryChunkPrefix,
-							binaryChunk
+							binaryChunk,
 						], { type: 'application/octet-stream' });
 
 						const glbReader = new FileReader();
 						glbReader.readAsArrayBuffer(glbBlob);
-						glbReader.onloadend = function () {
+						glbReader.onloadend = () => {
 							onDone(glbReader.result);
 						};
 					};
 
 				} else {
 					reader.readAsDataURL(blob);
-					reader.onloadend = function () {
+					reader.onloadend = () => {
 						const base64data = reader.result;
 						outputJSON.buffers[0].uri = base64data;
 						onDone(outputJSON);
@@ -1754,10 +1752,9 @@ export class GLTFExporter {
 		});
 	}
 
-
 	private static Utils = {
 
-		insertKeyframe: function (track: KeyframeTrackInternal, time: number) {
+		insertKeyframe(track: KeyframeTrackInternal, time: number) {
 
 			const tolerance = 0.001; // 1ms
 			const valueSize = track.getValueSize();
@@ -1771,7 +1768,7 @@ export class GLTFExporter {
 			if (track.times.length === 0) {
 				times[0] = time;
 
-				for (var i = 0; i < valueSize; i++) {
+				for (let i = 0; i < valueSize; i++) {
 					values[i] = 0;
 				}
 
@@ -1779,7 +1776,7 @@ export class GLTFExporter {
 
 			} else if (time < track.times[0]) {
 
-				if (Math.abs(track.times[0] - time) < tolerance) return 0;
+				if (Math.abs(track.times[0] - time) < tolerance) { return 0; }
 
 				times[0] = time;
 				times.set(track.times, 1);
@@ -1807,9 +1804,9 @@ export class GLTFExporter {
 
 			} else {
 
-				for (var i = 0; i < track.times.length; i++) {
+				for (let i = 0; i < track.times.length; i++) {
 
-					if (Math.abs(track.times[i] - time) < tolerance) return i;
+					if (Math.abs(track.times[i] - time) < tolerance) { return i; }
 
 					if (track.times[i] < time && track.times[i + 1] > time) {
 
@@ -1832,7 +1829,7 @@ export class GLTFExporter {
 			return index;
 		},
 
-		mergeMorphTargetTracks: function (clip: AnimationClipInternal, root: any) {
+		mergeMorphTargetTracks(clip: AnimationClipInternal, root: any) {
 
 			const tracks = [];
 			const mergedTracks: any = {};
@@ -1889,7 +1886,7 @@ export class GLTFExporter {
 
 					const values = new mergedTrack.ValueBufferType(targetCount * mergedTrack.times.length);
 
-					for (var j = 0; j < mergedTrack.times.length; j++) {
+					for (let j = 0; j < mergedTrack.times.length; j++) {
 
 						values[j * targetCount + targetIndex] = mergedTrack.values[j];
 
@@ -1913,7 +1910,7 @@ export class GLTFExporter {
 
 				// For every existing keyframe of the merged track, write a (possibly
 				// interpolated) value from the source track.
-				for (var j = 0; j < mergedTrack.times.length; j++) {
+				for (let j = 0; j < mergedTrack.times.length; j++) {
 
 					mergedTrack.values[j * targetCount + targetIndex] = sourceInterpolant.evaluate(mergedTrack.times[j]);
 
@@ -1922,7 +1919,7 @@ export class GLTFExporter {
 				// For every existing keyframe of the source track, write a (possibly
 				// new) keyframe to the merged track. Values from the previous loop may
 				// be written again, but keyframes are de-duplicated.
-				for (var j = 0; j < sourceTrack.times.length; j++) {
+				for (let j = 0; j < sourceTrack.times.length; j++) {
 
 					const keyframeIndex = this.insertKeyframe(mergedTrack, sourceTrack.times[j]);
 					mergedTrack.values[keyframeIndex * targetCount + targetIndex] = sourceTrack.values[j];
@@ -1935,15 +1932,15 @@ export class GLTFExporter {
 
 			return clip;
 
-		}
+		},
 
-	}
+	};
 }
 
 function toArrayBuffer(buf: Buffer): ArrayBuffer {
-	var ab = new ArrayBuffer(buf.length);
-	var view = new Uint8Array(ab);
-	for (var i = 0; i < buf.length; ++i) {
+	const ab = new ArrayBuffer(buf.length);
+	const view = new Uint8Array(ab);
+	for (let i = 0; i < buf.length; ++i) {
 		view[i] = buf[i];
 	}
 	return ab;
@@ -1966,8 +1963,8 @@ interface MapDefinition {
 	texCoord?: number;
 	strength?: number;
 	extensions?: {
-		[key:string]: TransformDefinition;
-	}
+		[key: string]: TransformDefinition;
+	};
 }
 
 interface TransformDefinition {
@@ -1985,7 +1982,7 @@ interface LightDefinition {
 	spot?: {
 		innerConeAngle?: number;
 		outerConeAngle?: number;
-	}
+	};
 }
 
 interface GLTFMesh {
@@ -2020,7 +2017,7 @@ interface GLTFMaterial {
 	name?: string;
 	extras?: any;
 	extensions?: {
-		KHR_materials_unlit: {}
+		KHR_materials_unlit: {},
 	};
 }
 
@@ -2032,13 +2029,13 @@ interface GLTFCamera {
 		ymag: number;
 		zfar: number;
 		znear: number;
-	},
+	};
 	perspective?: {
 		aspectRatio: number;
 		yfov: number;
 		zfar: number;
 		znear: number;
-	}
+	};
 }
 
 interface GLTFNode {
@@ -2054,7 +2051,7 @@ interface GLTFNode {
 		[key: string]: {
 			[key: string]: number;
 		};
-	}
+	};
 	children?: number[];
 }
 
@@ -2065,8 +2062,8 @@ interface GLTFScene {
 }
 
 interface Primitive {
-	mode: number,
-	attributes: { [key:string]: BufferAttribute | number },
+	mode: number;
+	attributes: { [key: string]: BufferAttribute | number };
 	extras?: any;
 	targets?: Array<{ [key: string]: BufferAttribute | number }>;
 	indices?: number[] | number;
@@ -2139,7 +2136,7 @@ interface AnimationClipInternal extends AnimationClip {
 interface KeyframeTrackInternal extends KeyframeTrack {
 	createInterpolant: {
 		isInterpolantFactoryMethodGLTFCubicSpline: boolean;
-	}
+	};
 	getValueSize(): number;
 }
 
@@ -2159,14 +2156,14 @@ interface LightInternal extends Light {
 			y: number;
 			z: number;
 		}
-	}
+	};
 }
 
 interface Object3DInternal extends Object3D {
 	skeleton: {
 		bones: Bone[];
 		boneInverses: Matrix4[];
-	}
+	};
 	isMesh: boolean;
 	isSkinnedMesh: boolean;
 	isLine: boolean;

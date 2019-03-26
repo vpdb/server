@@ -19,31 +19,55 @@
 
 import { Image } from 'canvas';
 import { values } from 'lodash';
-import { Color, DoubleSide, Group, Material as ThreeMaterial, Mesh, MeshStandardMaterial, PointLight, RGBAFormat, Scene, Texture, } from 'three';
+import {
+	Color,
+	DoubleSide,
+	Group,
+	Material as ThreeMaterial,
+	Mesh,
+	MeshStandardMaterial, PerspectiveCamera,
+	PointLight,
+	RGBAFormat,
+	Scene,
+	Texture,
+	Vector3
+} from 'three';
+import { logger } from '../../common/logger';
 import { BumperItem } from '../bumper-item';
-import { Texture as VpTexture } from '../texture';
 import { FlipperItem } from '../flipper-item';
 import { IRenderable, RenderInfo } from '../game-item';
 import { PrimitiveItem } from '../primitive-item';
 import { RampItem } from '../ramp-item';
 import { RubberItem } from '../rubber-item';
 import { SurfaceItem } from '../surface-item';
+import { Texture as VpTexture } from '../texture';
 import { VpTable } from '../vp-table';
 import { BaseExporter } from './base-exporter';
-import { logger } from '../../common/logger';
 
 export class VpTableExporter extends BaseExporter {
 
 	private static readonly applyMaterials = true;
 	private static readonly applyTextures = true;
 
-	private static readonly scale = 0.05;
+	private static readonly scale = 0.15;
 	private readonly table: VpTable;
 	private readonly scene: Scene;
 	private playfield: Group;
 
 	constructor(table: VpTable) {
 		super();
+
+		const cameraDefaults = {
+			posCamera: new Vector3(0, 200.0, 200.0),
+			posCameraTarget: new Vector3(0, -30, 0),
+			near: 0.1,
+			far: 100000,
+			fov: 45,
+		};
+		const camera = new PerspectiveCamera(45, 1, 0.1, 100000);
+		camera.position.set(0, 70.0, 70.0);
+		camera.lookAt(0, -10, 0);
+
 		this.table = table;
 		this.scene = new Scene();
 		this.playfield = new Group();
@@ -112,6 +136,7 @@ export class VpTableExporter extends BaseExporter {
 
 	private async getMaterial(obj: RenderInfo): Promise<ThreeMaterial> {
 		const material = new MeshStandardMaterial();
+		material.name = `material:${obj.mesh.name}`;
 		const materialInfo = obj.material;
 		if (materialInfo && VpTableExporter.applyMaterials) {
 
@@ -134,6 +159,8 @@ export class VpTableExporter extends BaseExporter {
 				material.map = new Texture();
 				if (await this.loadMap(obj.mesh.name, obj.map, material.map)) {
 					material.needsUpdate = true;
+				} else {
+					material.map = null;
 				}
 			}
 			if (obj.normalMap) {
@@ -141,6 +168,8 @@ export class VpTableExporter extends BaseExporter {
 				if (await this.loadMap(obj.mesh.name, obj.normalMap, material.normalMap)) {
 					material.normalMap.anisotropy = 16;
 					material.needsUpdate = true;
+				} else {
+					material.normalMap = null;
 				}
 			}
 		}

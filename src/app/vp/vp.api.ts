@@ -31,6 +31,7 @@ import { PrimitiveItem } from '../vpinball/primitive-item';
 import { RubberItem } from '../vpinball/rubber-item';
 import { Texture } from '../vpinball/texture';
 import { VpTable } from '../vpinball/vp-table';
+import { logger } from '../common/logger';
 
 export class VpApi extends Api {
 
@@ -52,9 +53,25 @@ export class VpApi extends Api {
 	}
 
 	public async viewGlb(ctx: Context) {
-		const vptFile = await this.getVpFile(ctx);
-		const vpTable = await VpTable.load(vptFile.getPath(ctx.state));
-		const glb = await vpTable.exportGlb();
+		let glb: Buffer = null;
+		const redisKey = `api-cache-vpt:glb:${ctx.params.fileId}`;
+		if (VpApi.cacheGlb) {
+			const data = await state.redis.get(redisKey);
+			if (data) {
+				glb = Buffer.from(data, 'base64');
+			}
+			logger.info(ctx.state, '[VpApi.viewGlb] Cache "%s" returned %s bytes', redisKey, glb ? glb.length : 0);
+		}
+		if (!glb) {
+			const vptFile = await this.getVpFile(ctx);
+			const vpTable = await VpTable.load(vptFile.getPath(ctx.state));
+			glb = await vpTable.exportGlb();
+
+			if (VpApi.cacheGlb) {
+				logger.info(ctx.state, '[VpApi.viewGlb] Saving to cache "%s"...', redisKey, glb ? glb.length : 0);
+				await state.redis.set(redisKey, glb.toString('base64'));
+			}
+		}
 		ctx.status = 200;
 		ctx.set('Content-Type', 'model/gltf-binary');
 		ctx.response.body = glb;

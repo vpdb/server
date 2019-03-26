@@ -18,27 +18,30 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { VpTable } from '../app/vpinball/vp-table';
-import { inspect } from 'util';
 import { writeFileSync } from 'fs';
+import { basename } from 'path';
+import { VpTable } from '../app/vpinball/vp-table';
 
 (async () => {
 
 	try {
 
-		const tablePath = 'C:/Development/vpdb-server/data/storage-protected/pk45rodfw.vpx';
-		//const tablePath = 'D:/Pinball/Visual Pinball/Tables/Batman Dark Knight tt&NZ 1.2.vpx';
+		//const tablePath = 'D:/Pinball/Visual Pinball/Tables/Medieval Madness Reloaded 1.0.vpx';
+		//const tablePath = 'C:/Development/vpdb-server/data/storage-protected/pk45rodfw.vpx';
+		const tablePath = 'D:/Pinball/Visual Pinball/Tables/Batman Dark Knight tt&NZ 1.2.vpx';
 
 		const vpt = await VpTable.load(tablePath);
-		await vpt.export();
-
-		//console.log(inspect(vpt.gameData, { colors: true, depth: null }));
-		//writeFileSync('test.json', JSON.stringify(vpt, null, '  '));
-
-		//await vpt.getPrimitive('Joker').exportMeshToObj('Joker.obj');
+		const name = basename(tablePath, '.vpx');
+		//writeFileSync(`${name}.gltf`, await vpt.exportGltf();
+		writeFileSync(`${name}.glb`, await vpt.exportGlb());
+		//writeFileSync(`${name}.json`, JSON.stringify(vpt, null, '  '));
 
 	} catch (err) {
 		console.error(err);
+
+	} finally {
+		console.log('done!');
+		process.exit();
 	}
 
 })();

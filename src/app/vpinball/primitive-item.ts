@@ -31,6 +31,7 @@ export class PrimitiveItem extends GameItem implements IPositionable, IRenderabl
 	private data: PrimitiveData = new PrimitiveData();
 	private mesh: Mesh = new Mesh();
 
+	public itemName: string;
 	private numVertices: number;
 	private compressedAnimationVertices: number;
 	private compressedVertices: number;
@@ -41,6 +42,7 @@ export class PrimitiveItem extends GameItem implements IPositionable, IRenderabl
 
 	public static async fromStorage(storage: Storage, itemName: string): Promise<PrimitiveItem> {
 		const primitiveItem = new PrimitiveItem();
+		primitiveItem.itemName = itemName;
 		await storage.streamFiltered(itemName, 4, BiffParser
 			.stream((buffer, tag, offset, len) => primitiveItem.fromTag(buffer, tag, offset, len, storage, itemName)));
 		return primitiveItem;
@@ -183,13 +185,25 @@ export class PrimitiveItem extends GameItem implements IPositionable, IRenderabl
 				break;
 			case 'M3DX': this.mesh.vertices = this.getVertices(buffer, this.numVertices); break;
 			case 'M3AY': this.compressedAnimationVertices = this.getInt(buffer); break;
-			case 'M3AX': this.mesh.animationFrames.push(await this.getAnimatedVertices(await BiffParser.decompress(await this.getData(buffer, offset, len, storage, itemName), len), this.numVertices)); break;
+			case 'M3AX': this.mesh.animationFrames.push(await this.getAnimatedVertices(await BiffParser.decompress(await this.getData(storage, itemName, offset, len)), this.numVertices)); break;
 			case 'M3CY': this.compressedVertices = this.getInt(buffer); break;
-			case 'M3CX': this.mesh.vertices = this.getVertices(await BiffParser.decompress(await this.getData(buffer, offset, len, storage, itemName), len), this.numVertices); break;
+			case 'M3CX': this.mesh.vertices = this.getVertices(await BiffParser.decompress(await this.getData(storage, itemName, offset, len)), this.numVertices); break;
 			case 'M3FN': this.numIndices = this.getInt(buffer); break;
-			case 'M3DI': this.mesh.indices = this.getUnsignedInt2s(buffer, this.numIndices); break;
+			case 'M3DI':
+				if (this.numVertices > 65535) {
+					this.mesh.indices = this.getUnsignedInt4s(buffer, this.numIndices);
+				} else {
+					this.mesh.indices = this.getUnsignedInt2s(buffer, this.numIndices);
+				}
+				break;
 			case 'M3CJ': this.compressedIndices = this.getInt(buffer); break;
-			case 'M3CI': this.mesh.indices = this.getUnsignedInt2s(await BiffParser.decompress(await this.getData(buffer, offset, len, storage, itemName), len), this.numIndices); break;
+			case 'M3CI':
+				if (this.numVertices > 65535) {
+					this.mesh.indices = this.getUnsignedInt4s(await BiffParser.decompress(await this.getData(storage, itemName, offset, len)), this.numIndices);
+				} else {
+					this.mesh.indices = this.getUnsignedInt2s(await BiffParser.decompress(await this.getData(storage, itemName, offset, len)), this.numIndices);
+				}
+				break;
 			case 'PIDB': this.data.depthBias = this.getFloat(buffer); break;
 			default:
 				this.getUnknownBlock(buffer, tag);
@@ -197,10 +211,7 @@ export class PrimitiveItem extends GameItem implements IPositionable, IRenderabl
 		}
 	}
 
-	private async getData(buffer: Buffer, offset: number, len: number, storage: Storage, itemName: string): Promise<Buffer> {
-		if (buffer.length === len) {
-			return buffer;
-		}
+	private async getData(storage: Storage, itemName: string, offset: number, len: number): Promise<Buffer> {
 		return storage.read(itemName, offset, len);
 	}
 

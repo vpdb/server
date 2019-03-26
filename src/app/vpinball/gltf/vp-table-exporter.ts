@@ -35,6 +35,7 @@ import { logger } from '../../common/logger';
 export class VpTableExporter extends BaseExporter {
 
 	private static readonly applyMaterials = true;
+	private static readonly applyTextures = true;
 
 	private static readonly scale = 0.05;
 	private readonly table: VpTable;
@@ -127,21 +128,21 @@ export class VpTableExporter extends BaseExporter {
 			material.side = DoubleSide;
 		}
 
-		if (obj.map) {
-			material.map = new Texture();
-			if (await this.loadMap(obj.mesh.name, obj.map, material.map)) {
-				material.needsUpdate = true;
+		if (VpTableExporter.applyTextures) {
+			if (obj.map) {
+				material.map = new Texture();
+				if (await this.loadMap(obj.mesh.name, obj.map, material.map)) {
+					material.needsUpdate = true;
+				}
+			}
+			if (obj.normalMap) {
+				material.normalMap = new Texture();
+				if (await this.loadMap(obj.mesh.name, obj.normalMap, material.normalMap)) {
+					material.normalMap.anisotropy = 16;
+					material.needsUpdate = true;
+				}
 			}
 		}
-
-		if (obj.normalMap) {
-			material.normalMap = new Texture();
-			if (await this.loadMap(obj.mesh.name, obj.normalMap, material.normalMap)) {
-				material.normalMap.anisotropy = 16;
-				material.needsUpdate = true;
-			}
-		}
-
 		return material;
 	}
 

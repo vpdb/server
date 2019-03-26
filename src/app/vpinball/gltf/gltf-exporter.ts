@@ -627,9 +627,7 @@ export class GLTFExporter {
 		function processImage(image: Image, format: PixelFormat, flipY: boolean) {
 
 			if (!cachedData.images.has(image)) {
-
 				cachedData.images.set(image, {});
-
 			}
 
 			const cachedImages = cachedData.images.get(image);

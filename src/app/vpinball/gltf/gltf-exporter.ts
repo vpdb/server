@@ -18,7 +18,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Canvas, Image } from 'canvas';
 import {
 	AnimationClip, Bone,
 	BufferAttribute,
@@ -53,6 +52,7 @@ import {
 	Vector3,
 } from 'three';
 import { Blob, FileReader } from 'vblob';
+import { Image } from './image';
 
 /**
  * @author fernandojsg / http://fernandojsg.com
@@ -160,8 +160,6 @@ export class GLTFExporter {
 			textures: new Map(),
 			images: new Map<Image, { [key: string]: number}>(),
 		};
-
-		let cachedCanvas: Canvas;
 
 		/**
 		 * Compare two arrays
@@ -422,9 +420,7 @@ export class GLTFExporter {
 				componentSize = 2;
 
 			} else {
-
 				componentSize = 4;
-
 			}
 
 			const byteLength = getPaddedBufferSize(count * attribute.itemSize * componentSize);
@@ -626,17 +622,17 @@ export class GLTFExporter {
 		 */
 		function processImage(image: Image, format: PixelFormat, flipY: boolean) {
 
-			if (!cachedData.images.has(image)) {
-				cachedData.images.set(image, {});
-			}
+			// if (!cachedData.images.has(image)) {
+			// 	cachedData.images.set(image, {});
+			// }
 
-			const cachedImages = cachedData.images.get(image);
+			//const cachedImages = cachedData.images.get(image);
 			const mimeType = format === RGBAFormat ? 'image/png' : 'image/jpeg';
 			const key = mimeType + ':flipY/' + flipY.toString();
 
-			if (cachedImages[key] !== undefined) {
-				return cachedImages[key];
-			}
+			// if (cachedImages[key] !== undefined) {
+			// 	return cachedImages[key];
+			// }
 
 			if (!outputJSON.images) {
 				outputJSON.images = [];
@@ -646,46 +642,43 @@ export class GLTFExporter {
 
 			if (options.embedImages) {
 
-				const canvas: Canvas = cachedCanvas = cachedCanvas || new Canvas(image.width, image.height);
-
-				canvas.width = image.width;
-				canvas.height = image.height;
+				// const canvas: Canvas = cachedCanvas = cachedCanvas || new Canvas(image.width, image.height);
+				//
+				// canvas.width = image.width;
+				// canvas.height = image.height;
 
 				if (options.forcePowerOfTwoTextures && !isPowerOfTwo(image)) {
 					console.warn('GLTFExporter: Resized non-power-of-two image.', image);
-					canvas.width = M.floorPowerOfTwo(canvas.width);
-					canvas.height = M.floorPowerOfTwo(canvas.height);
+					image.resize(M.floorPowerOfTwo(image.width), M.floorPowerOfTwo(image.height));
 				}
-
-				const ctx = canvas.getContext('2d');
+				//const ctx = canvas.getContext('2d');
 				if (flipY === true) {
-					ctx.translate(0, canvas.height);
-					ctx.scale(1, -1);
+					image.flipY();
 				}
-				ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
 
 				if (options.binary === true) {
 					pending.push(new Promise(resolve => {
-						const buffer = canvas.toBuffer();
-						const blob = new Blob([toArrayBuffer(buffer)]);
-						processBufferViewImage(blob).then(bufferViewIndex => {
-							gltfImage.bufferView = bufferViewIndex;
-							resolve();
+						image.getImage().then(buffer => {
+							const blob = new Blob([toArrayBuffer(buffer)]);
+							processBufferViewImage(blob).then(bufferViewIndex => {
+								gltfImage.bufferView = bufferViewIndex;
+								resolve();
+							});
 						});
 					}));
 
 				} else {
-					gltfImage.uri = canvas.toDataURL(mimeType as 'image/jpeg');
+					gltfImage.uri = 'todo';
 				}
 
 			} else {
-				gltfImage.uri = image.src;
+				gltfImage.uri = 'unsupported'; //image.src;
 			}
 
 			outputJSON.images.push(gltfImage);
 
 			const index = outputJSON.images.length - 1;
-			cachedImages[key] = index;
+			//cachedImages[key] = index;
 			return index;
 		}
 

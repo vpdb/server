@@ -17,7 +17,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Image } from 'canvas';
 import { values } from 'lodash';
 import {
 	Color,
@@ -27,7 +26,7 @@ import {
 	Mesh,
 	MeshStandardMaterial, PerspectiveCamera,
 	PointLight,
-	RGBAFormat,
+	RGBAFormat, RGBFormat,
 	Scene,
 	Texture,
 	Vector3
@@ -43,6 +42,7 @@ import { SurfaceItem } from '../surface-item';
 import { Texture as VpTexture } from '../texture';
 import { VpTable } from '../vp-table';
 import { BaseExporter } from './base-exporter';
+import { Image } from './image';
 
 export class VpTableExporter extends BaseExporter {
 
@@ -183,8 +183,9 @@ export class VpTableExporter extends BaseExporter {
 			if (!data || !data.length) {
 				return false;
 			}
-			materialMap.image = await this.getImage(data);
-			materialMap.format = RGBAFormat;
+			const image = await new Image(data).init();
+			materialMap.image = image;
+			materialMap.format = image.hasTransparency() ? RGBAFormat : RGBFormat;
 			materialMap.needsUpdate = true;
 			return true;
 		} catch (err) {
@@ -194,15 +195,6 @@ export class VpTableExporter extends BaseExporter {
 		} finally {
 			await doc.close();
 		}
-	}
-
-	private async getImage(src: Buffer): Promise<Image> {
-		const img = new Image();
-		return new Promise((resolve, reject) => {
-			img.onload = () => resolve(img);
-			img.onerror = reject;
-			img.src = src;
-		});
 	}
 
 	private arrayBufferToBuffer(ab: ArrayBuffer) {

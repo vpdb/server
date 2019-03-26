@@ -96,9 +96,9 @@ export class BiffParser {
 		return tag;
 	}
 
-	public static async decompress(buffer: Buffer, len: number): Promise<Buffer> {
+	public static async decompress(buffer: Buffer): Promise<Buffer> {
 		return new Promise((resolve, reject) => {
-			inflate(buffer.slice(0, len), (err, result) => {
+			inflate(buffer, (err, result) => {
 				if (err) {
 					return reject(err);
 				}

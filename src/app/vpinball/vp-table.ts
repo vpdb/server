@@ -24,7 +24,7 @@ import { settings } from '../common/settings';
 import { BumperItem } from './bumper-item';
 import { FlipperItem } from './flipper-item';
 import { GameData } from './game-data';
-import { GameItem } from './game-item';
+import { GameItem, IRenderable, Meshes } from './game-item';
 import { GateItem } from './gate-item';
 import { VpTableExporter } from './gltf/vp-table-exporter';
 import { HitTargetItem } from './hit-target-item';
@@ -37,8 +37,10 @@ import { RubberItem } from './rubber-item';
 import { SurfaceItem } from './surface-item';
 import { Texture } from './texture';
 import { TriggerItem } from './trigger-item';
+import { Vertex3DNoTex2 } from './vertex';
+import { Mesh } from './mesh';
 
-export class VpTable {
+export class VpTable implements IRenderable {
 
 	private doc: OleCompoundDoc;
 
@@ -180,6 +182,70 @@ export class VpTable {
 		}
 	}
 
+	getMeshes(table: VpTable): Meshes {
+		const rgv: Vertex3DNoTex2[] = [];
+		for (let i = 0; i < 7; i++) {
+			rgv.push(new Vertex3DNoTex2())
+		}
+		rgv[0].x = this.gameData.left;     rgv[0].y = this.gameData.top;      rgv[0].z = this.gameData.tableheight;
+		rgv[1].x = this.gameData.right;    rgv[1].y = this.gameData.top;      rgv[1].z = this.gameData.tableheight;
+		rgv[2].x = this.gameData.right;    rgv[2].y = this.gameData.bottom;   rgv[2].z = this.gameData.tableheight;
+		rgv[3].x = this.gameData.left;     rgv[3].y = this.gameData.bottom;   rgv[3].z = this.gameData.tableheight;
+
+		// These next 4 vertices are used just to set the extents
+		rgv[4].x = this.gameData.left;     rgv[4].y = this.gameData.top;      rgv[4].z = this.gameData.tableheight + 50.0;
+		rgv[5].x = this.gameData.left;     rgv[5].y = this.gameData.bottom;   rgv[5].z = this.gameData.tableheight + 50.0;
+		rgv[6].x = this.gameData.right;    rgv[6].y = this.gameData.bottom;   rgv[6].z = this.gameData.tableheight + 50.0;
+		//rgv[7].x=g_pplayer->m_ptable->m_right;    rgv[7].y=g_pplayer->m_ptable->m_top;      rgv[7].z=50.0f;
+
+		for (let i = 0; i < 4; ++i) {
+			rgv[i].nx = 0;
+			rgv[i].ny = 0;
+			rgv[i].nz = 1.0;
+
+			rgv[i].tv = (i & 2) ? 1.0 : 0.0;
+			rgv[i].tu = (i == 1 || i == 2) ? 1.0 : 0.0;
+		}
+
+		const playfieldPolyIndices = [ 0, 1, 3, 0, 3, 2, 2, 3, 5, 6 ];
+
+		const buffer: Vertex3DNoTex2[] = [];
+		for (let i = 0; i < 7; i++) {
+			buffer.push(new Vertex3DNoTex2())
+		}
+		let offs = 0;
+		for (let y = 0; y <= 1; ++y) {
+			for (let x = 0; x <= 1; ++x) {
+				buffer[offs].x = (x & 1) ? rgv[1].x : rgv[0].x;
+				buffer[offs].y = (y & 1) ? rgv[2].y : rgv[0].y;
+				buffer[offs].z = rgv[0].z;
+
+				buffer[offs].tu = (x & 1) ? rgv[1].tu : rgv[0].tu;
+				buffer[offs].tv = (y & 1) ? rgv[2].tv : rgv[0].tv;
+
+				buffer[offs].nx = rgv[0].nx;
+				buffer[offs].ny = rgv[0].ny;
+				buffer[offs].nz = rgv[0].nz;
+
+				++offs;
+			}
+		}
+
+		//const normals = Mesh.setNormal(rgv, playfieldPolyIndices.splice(6), 4);
+
+		return {
+			playfield: {
+				mesh: new Mesh(buffer, playfieldPolyIndices),
+				material: this.getMaterial(this.gameData.szPlayfieldMaterial),
+				map: this.getTexture(this.gameData.szImage),
+			}
+		};
+	}
+
+	isVisible(): boolean {
+		return true;
+	}
+
 	private async loadGameItems(storage: Storage, numItems: number): Promise<{[key: string]: number}> {
 		const stats: {[key: string]: number} = {};
 		for (let i = 0; i < numItems; i++) {
@@ -269,4 +335,5 @@ export class VpTable {
 			this.textures[texture.getName()] = texture;
 		}
 	}
+
 }

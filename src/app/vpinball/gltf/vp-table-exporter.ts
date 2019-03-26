@@ -64,17 +64,18 @@ export class VpTableExporter extends BaseExporter {
 
 	private async export<T>(opts: any = {}): Promise<T> {
 		const allRenderables: IRenderable[][] = [
-			values<PrimitiveItem>(this.table.primitives),
-			values<RubberItem>(this.table.rubbers),
-			values<SurfaceItem>(this.table.surfaces),
-			values<FlipperItem>(this.table.flippers),
-			values<BumperItem>(this.table.bumpers),
-			values<RampItem>(this.table.ramps),
-			this.table.lights,
-			this.table.hitTargets,
-			this.table.gates,
-			this.table.kickers,
-			this.table.triggers,
+			[ this.table ],
+			// values<PrimitiveItem>(this.table.primitives),
+			// values<RubberItem>(this.table.rubbers),
+			// values<SurfaceItem>(this.table.surfaces),
+			// values<FlipperItem>(this.table.flippers),
+			// values<BumperItem>(this.table.bumpers),
+			// values<RampItem>(this.table.ramps),
+			// this.table.lights,
+			// this.table.hitTargets,
+			// this.table.gates,
+			// this.table.kickers,
+			// this.table.triggers,
 		];
 
 		// meshes

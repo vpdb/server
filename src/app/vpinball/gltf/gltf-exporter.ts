@@ -657,47 +657,27 @@ export class GLTFExporter {
 
 	/**
 	 * Process image
-	 * @param  {Image} image to process
-	 * @param  {Integer} format of the image (e.g. RGBFormat, RGBAFormat etc)
-	 * @param  {Boolean} flipY before writing out the image
-	 * @return {Integer}     Index of the processed texture in the "images" array
+	 * @param  image image to process
+	 * @param  format of the image (e.g. RGBFormat, RGBAFormat etc)
+	 * @param  flipY before writing out the image
+	 * @return Index of the processed texture in the "images" array
 	 */
 	private processImage(image: Image, format: PixelFormat, flipY: boolean) {
 
-		// if (!cachedData.images.has(image)) {
-		// 	cachedData.images.set(image, {});
-		// }
-
-		//const cachedImages = cachedData.images.get(image);
 		const mimeType = format === RGBAFormat ? 'image/png' : 'image/jpeg';
-		const key = mimeType + ':flipY/' + flipY.toString();
-
-		// if (cachedImages[key] !== undefined) {
-		// 	return cachedImages[key];
-		// }
-
 		if (!this.outputJSON.images) {
 			this.outputJSON.images = [];
 		}
-
 		const gltfImage: GLTFImage = { mimeType };
 
 		if (this.options.embedImages) {
-
-			// const canvas: Canvas = cachedCanvas = cachedCanvas || new Canvas(image.width, image.height);
-			//
-			// canvas.width = image.width;
-			// canvas.height = image.height;
-
 			if (this.options.forcePowerOfTwoTextures && !this.isPowerOfTwo(image)) {
 				console.warn('GLTFExporter: Resized non-power-of-two image.', image);
 				image.resize(M.floorPowerOfTwo(image.width), M.floorPowerOfTwo(image.height));
 			}
-			//const ctx = canvas.getContext('2d');
 			if (flipY === true) {
 				image.flipY();
 			}
-
 			if (this.options.binary === true) {
 				this.pending.push(new Promise(resolve => {
 					image.getImage().then(buffer => {
@@ -714,10 +694,7 @@ export class GLTFExporter {
 			gltfImage.uri = 'unsupported'; //image.src;
 		}
 		this.outputJSON.images.push(gltfImage);
-
-		const index = this.outputJSON.images.length - 1;
-		//cachedImages[key] = index;
-		return index;
+		return this.outputJSON.images.length - 1;
 	}
 
 	/**

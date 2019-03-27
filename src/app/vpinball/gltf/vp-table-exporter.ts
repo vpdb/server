@@ -29,7 +29,7 @@ import {
 	RGBAFormat, RGBFormat,
 	Scene,
 	Texture,
-	Vector3
+	Vector3,
 } from 'three';
 import { logger } from '../../common/logger';
 import { BumperItem } from '../bumper-item';
@@ -43,6 +43,7 @@ import { Texture as VpTexture } from '../texture';
 import { VpTable } from '../vp-table';
 import { BaseExporter } from './base-exporter';
 import { Image } from './image';
+import { GLTFExporter } from './gltf-exporter';
 
 export class VpTableExporter extends BaseExporter {
 
@@ -134,8 +135,10 @@ export class VpTableExporter extends BaseExporter {
 
 		this.scene.add(this.playfield);
 
+		const gltfExporter = new GLTFExporter(Object.assign({}, opts, { embedImages: true }));
+
 		return await new Promise(resolve => {
-			this.gltfExporter.parse(this.scene, resolve, Object.assign({}, opts, { embedImages: true }));
+			gltfExporter.parse(this.scene, resolve);
 		});
 	}
 

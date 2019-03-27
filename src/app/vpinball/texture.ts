@@ -22,13 +22,24 @@ import { Storage } from '../common/ole-doc';
 import { settings } from '../common/settings';
 import { BiffParser } from './biff-parser';
 import { Binary } from './binary';
+import { LzwReader } from './gltf/lzw-reader';
 
 export class Texture extends BiffParser {
+
+	public storageName: string;
+	public szName: string;
+	public szInternalName: string;
+	public szPath: string;
+	public width: number;
+	public height: number;
+	public alphaTestValue: number;
+	public binary: Binary;
+	public pdsBuffer: BaseTexture;
 
 	public static async fromStorage(storage: Storage, itemName: string): Promise<Texture> {
 		const texture = new Texture();
 		texture.storageName = itemName;
-		await storage.streamFiltered(itemName, 0, Texture.createStreamHandler(texture));
+		await storage.streamFiltered(itemName, 0, Texture.createStreamHandler(storage, itemName, texture));
 		return texture;
 	}
 
@@ -39,28 +50,18 @@ export class Texture extends BiffParser {
 		return texture;
 	}
 
-	private static createStreamHandler(texture: Texture) {
+	private static createStreamHandler(storage: Storage, itemName: string, texture: Texture) {
 		texture.binary = new Binary();
-		return BiffParser.stream(texture.fromTag.bind(texture), {
+		return BiffParser.stream((buffer, tag, offset, len) => texture.fromTag(buffer, tag, offset, len, storage, itemName), {
 			nestedTags: {
 				JPEG: {
 					onStart: () => new Binary(),
 					onTag: binary => binary.fromTag.bind(binary),
 					onEnd: binary => texture.binary = binary,
 				},
-			},
-			streamedTags: ['BITS'],
+			}
 		});
 	}
-
-	public storageName: string;
-	public szName: string;
-	public szInternalName: string;
-	public szPath: string;
-	public width: number;
-	public height: number;
-	public alphaTestValue: number;
-	public binary: Binary;
 
 	public getName(): string {
 		return this.szInternalName;
@@ -97,7 +98,7 @@ export class Texture extends BiffParser {
 		return serialized;
 	}
 
-	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<void> {
+	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number, storage: Storage, itemName: string): Promise<void> {
 		switch (tag) {
 			case 'NAME': this.szName = this.getString(buffer, len); break;
 			case 'INME': this.szInternalName = this.getString(buffer, len); break;
@@ -105,9 +106,46 @@ export class Texture extends BiffParser {
 			case 'WDTH': this.width = this.getInt(buffer); break;
 			case 'HGHT': this.height = this.getInt(buffer); break;
 			case 'ALTV': this.alphaTestValue = this.getFloat(buffer); break;
-			case 'BITS': logger.warn(null, '[Texture.fromTag] Ignoring BITS tag for %s at Image%s, implement when understood what it is.', this.szName, offset); break;
-			case 'LINK': logger.warn(null, '[Texture.fromTag] Ignoring LINK tag for %s at Image%s, implement when understood what it is.', this.szName, offset); break;
+			case 'BITS': this.pdsBuffer = await BaseTexture.get(storage, itemName, offset, this.width, this.height); break;
+			//case 'BITS': logger.warn(null, '[Texture.fromTag] Ignoring BITS tag for %s at %s, width = %s, height = %s.', this.szName, this.storageName, this.width, this.height); break;
+			case 'LINK': logger.warn(null, '[Texture.fromTag] Ignoring LINK tag for %s at %s, implement when understood what it is.', this.szName, this.storageName); break;
 			default: logger.warn(null, '[Texture.fromTag] Unknown tag "%s".', tag);
 		}
+	}
+}
+
+class BaseTexture {
+
+	private static readonly RGBA = 0;
+	private static readonly RGB_FP = 1;
+
+	private width: number;
+	private height: number;
+	private realWidth: number;
+	private realHeight: number;
+	private format: number = BaseTexture.RGBA;
+	private data: Buffer;
+
+	constructor(width?: number, height?: number, realWidth?: number, realHeight?: number, format = BaseTexture.RGBA) {
+		this.width = width;
+		this.height = height;
+		this.realWidth = realWidth;
+		this.realHeight = realHeight;
+		this.format = format;
+	}
+
+	public static async get(storage: Storage, itemName: string, pos: number, width: number, height: number): Promise<BaseTexture> {
+		const pdsBuffer = new BaseTexture(width, height);
+		console.log('--- reading rest of the storage buffer...');
+		const compressedData = (await storage.read(itemName)).slice(pos);
+		console.log('--- shoving %s bytes into decompressor...', compressedData.length);
+		const lzwReader = new LzwReader(compressedData, width, height, pdsBuffer.pitch());
+		const data = lzwReader.decompress();
+		console.log('---- got %s bytes of BITS data!', data.length);
+		return pdsBuffer;
+	}
+
+	public pitch(): number {
+		return (this.format == BaseTexture.RGBA ? 4 : 3 * 4) * this.width;
 	}
 }

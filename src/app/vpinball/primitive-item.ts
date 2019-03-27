@@ -211,10 +211,6 @@ export class PrimitiveItem extends GameItem implements IPositionable, IRenderabl
 		}
 	}
 
-	private async getData(storage: Storage, itemName: string, offset: number, len: number): Promise<Buffer> {
-		return storage.read(itemName, offset, len);
-	}
-
 	private getVertices(decompressedBuffer: Buffer, num: number): Vertex3DNoTex2[] {
 		const vertices: Vertex3DNoTex2[] = [];
 		for (let i = 0; i < num; i++) {

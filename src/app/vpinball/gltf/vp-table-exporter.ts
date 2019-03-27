@@ -59,13 +59,6 @@ export class VpTableExporter extends BaseExporter {
 	constructor(table: VpTable) {
 		super();
 
-		const cameraDefaults = {
-			posCamera: new Vector3(0, 200.0, 200.0),
-			posCameraTarget: new Vector3(0, -30, 0),
-			near: 0.1,
-			far: 100000,
-			fov: 45,
-		};
 		const camera = new PerspectiveCamera(45, 1, 0.1, 100000);
 		camera.position.set(0, 70.0, 70.0);
 		camera.lookAt(0, -10, 0);
@@ -184,8 +177,9 @@ export class VpTableExporter extends BaseExporter {
 
 	private async loadMap(name: string, objMap: VpTexture, materialMap: Texture): Promise<boolean> {
 		const doc = await this.table.getDocument();
+		let data: Buffer;
 		try {
-			const data = await objMap.getImage(doc.storage('GameStg'));
+			data = await objMap.getImage(doc.storage('GameStg'));
 			if (!data || !data.length) {
 				return false;
 			}
@@ -196,7 +190,7 @@ export class VpTableExporter extends BaseExporter {
 			return true;
 		} catch (err) {
 			materialMap.image = Texture.DEFAULT_IMAGE;
-			logger.warn(null, '[VpTableExporter.getMaterial] Error loading map for %s', name);
+			logger.warn(null, '[VpTableExporter.getMaterial] Error loading map of %s bytes for %s (%s/%s): %s', data ? data.length : '<null>', name, objMap.storageName, objMap.getName(), err.message);
 			return false;
 		} finally {
 			await doc.close();

@@ -49,6 +49,7 @@ export class VpTableExporter extends BaseExporter {
 
 	private static readonly applyMaterials = true;
 	private static readonly applyTextures = true;
+	private static readonly optimize = true;
 
 	private static readonly scale = 0.05;
 	private readonly table: VpTable;

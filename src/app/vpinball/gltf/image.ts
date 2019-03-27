@@ -1,8 +1,8 @@
-
-//import {} from 'sharp';
 import sharp = require('sharp');
 import { Metadata } from 'sharp';
 
+const PngQuant = require('pngquant');
+const OptiPng = require('optipng');
 
 export class Image {
 
@@ -23,19 +23,20 @@ export class Image {
 	/** The original width of the image resource before sizing. */
 	public naturalWidth: number;
 
-	onload: (() => void) | null;
-	onerror: ((err: Error) => void) | null;
+	public onload: (() => void) | null;
+	public onerror: ((err: Error) => void) | null;
 
-	private image: Buffer;
+	private readonly sharp: sharp.Sharp;
+	private readonly optimize: boolean;
+
 	private metadata: Metadata;
-	private sharp: sharp.Sharp;
 
-	constructor(buffer: Buffer) {
-		this.image = buffer;
+	constructor(buffer: Buffer, optimize: boolean = true) {
+		this.optimize = optimize;
+		this.sharp = sharp(buffer);
 	}
 
 	public async init(): Promise<this> {
-		this.sharp = sharp(this.image);
 		const metadata = await this.sharp.metadata();
 		this.width = metadata.width;
 		this.naturalWidth = metadata.width;
@@ -62,7 +63,32 @@ export class Image {
 	}
 
 	public async getImage(): Promise<Buffer> {
-		return await this.sharp.toBuffer();
+		switch (this.metadata.format) {
+
+			case 'png': {
+				if (this.optimize) {
+					const quanter = new PngQuant([128]);
+					const optimizer = new OptiPng(['-o7']);
+					return new Promise((resolve, reject) => {
+						const buffers: Buffer[] = [];
+						this.sharp.on('error', reject)
+							.pipe(quanter).on('error', reject)
+							.pipe(optimizer).on('error', reject)
+							.on('data', (buf: Buffer) => buffers.push(buf as Buffer))
+							.on('end', () => resolve(Buffer.concat(buffers)))
+							.on('error', reject);
+					});
+				}
+				return this.sharp.toBuffer();
+			}
+
+			case 'jpeg': {
+				return this.sharp.jpeg({ quality: 70 }).toBuffer();
+			}
+
+			default:
+				return this.sharp.toBuffer();
+		}
 	}
 
 	public hasTransparency(): boolean {

@@ -26,21 +26,28 @@ import { VpTable } from '../app/vpinball/vp-table';
 
 	try {
 
+		const start = Date.now();
 		//const tablePath = 'D:/Pinball/Visual Pinball/Tables/Medieval Madness Reloaded 1.0.vpx';
 		//const tablePath = 'C:/Development/vpdb-server/data/storage-protected/pk45rodfw.vpx';
 		const tablePath = 'D:/Pinball/Visual Pinball/Tables/Batman Dark Knight tt&NZ 1.2.vpx';
 
 		const vpt = await VpTable.load(tablePath);
+		const loaded = Date.now();
+
 		const name = basename(tablePath, '.vpx');
 		//writeFileSync(`${name}.gltf`, await vpt.exportGltf();
-		writeFileSync(`${name}.glb`, await vpt.exportGlb());
+		const glb = await vpt.exportGlb();
+		const exported = Date.now();
+		writeFileSync(`${name}.glb`, glb);
 		//writeFileSync(`${name}.json`, JSON.stringify(vpt, null, '  '));
+
+		console.log('Done! Written %s MB. Load time: %sms, export time: %sms, write time: %sms.',
+			Math.round(glb.length / 100000) / 10, loaded - start, exported - loaded, Date.now() - exported);
 
 	} catch (err) {
 		console.error(err);
 
 	} finally {
-		console.log('done!');
 		process.exit();
 	}
 

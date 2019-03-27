@@ -828,11 +828,9 @@ export class GLTFExporter {
 
 			}
 
-			if (material.isMeshBasicMaterial ||
-				material.isLineBasicMaterial ||
-				material.isPointsMaterial) {
-
-			} else {
+			if (!material.isMeshBasicMaterial &&
+				!material.isLineBasicMaterial &&
+				!material.isPointsMaterial) {
 
 				// emissiveFactor
 				const emissive = material.emissive.clone().multiplyScalar(material.emissiveIntensity).toArray();
@@ -1007,8 +1005,7 @@ export class GLTFExporter {
 
 			// @QUESTION Detect if .vertexColors = VertexColors?
 			// For every attribute create an accessor
-			let modifiedAttribute: BufferAttribute = null;
-			for (let attributeName in (geometry as BufferGeometry).attributes) {
+			for (let attributeName of Object.keys((geometry as BufferGeometry).attributes)) {
 
 				const attribute = (geometry as BufferGeometry).attributes[attributeName] as BufferAttribute;
 				attributeName = nameConversion[attributeName] || attributeName.toUpperCase();
@@ -1019,7 +1016,7 @@ export class GLTFExporter {
 				}
 
 				// JOINTS_0 must be UNSIGNED_BYTE or UNSIGNED_SHORT.
-				modifiedAttribute = null;
+				let modifiedAttribute: BufferAttribute = null;
 				const array = attribute.array;
 				if (attributeName === 'JOINTS_0' &&
 					!(array instanceof Uint16Array) &&
@@ -1055,7 +1052,7 @@ export class GLTFExporter {
 				const reverseDictionary: { [key: number]: string} = {};
 
 				if (mesh.morphTargetDictionary !== undefined) {
-					for (const key in mesh.morphTargetDictionary) {
+					for (const key of Object.keys(mesh.morphTargetDictionary)) {
 						reverseDictionary[mesh.morphTargetDictionary[key]] = key;
 					}
 				}
@@ -1066,7 +1063,7 @@ export class GLTFExporter {
 
 					let warned = false;
 
-					for (const attributeName in (geometry as BufferGeometry).morphAttributes) {
+					for (const attributeName of Object.keys((geometry as BufferGeometry).morphAttributes)) {
 
 						// glTF 2.0 morph supports only POSITION/NORMAL/TANGENT.
 						// js doesn't support TANGENT yet.
@@ -1299,9 +1296,8 @@ export class GLTFExporter {
 			const channels = [];
 			const samplers = [];
 
-			for (let i = 0; i < tracks.length; ++i) {
+			for (const track of tracks) {
 
-				const track = tracks[i];
 				const trackBinding = PropertyBinding.parseTrackName(track.name);
 				let trackNode = PropertyBinding.findNode(root, trackBinding.nodeName);
 				const trackProperty = PATH_PROPERTIES[trackBinding.propertyName];
@@ -1622,27 +1618,27 @@ export class GLTFExporter {
 			const scene = new Scene();
 			scene.name = 'AuxScene';
 
-			for (let i = 0; i < objects.length; i++) {
+			for (const obj of objects) {
 
 				// We push directly to children instead of calling `add` to prevent
 				// modify the .parent and break its original scene and hierarchy
-				scene.children.push(objects[i]);
+				scene.children.push(obj);
 
 			}
 			processScene(scene);
 		}
 
-		function processInput(input: any) {
+		function processInput(pInput: any) {
 
-			input = input instanceof Array ? input : [input];
+			pInput = pInput instanceof Array ? pInput : [pInput];
 			const objectsWithoutScene = [];
 
-			for (let i = 0; i < input.length; i++) {
-				if (input[i] instanceof Scene) {
-					processScene(input[i]);
+			for (const p of pInput) {
+				if (p instanceof Scene) {
+					processScene(p);
 
 				} else {
-					objectsWithoutScene.push(input[i]);
+					objectsWithoutScene.push(p);
 				}
 			}
 
@@ -1650,12 +1646,12 @@ export class GLTFExporter {
 				processObjects(objectsWithoutScene);
 			}
 
-			for (let i = 0; i < skins.length; ++i) {
-				processSkin(skins[i] as any);
+			for (const skin of skins) {
+				processSkin(skin as any);
 			}
 
-			for (let i = 0; i < options.animations.length; ++i) {
-				processAnimation(options.animations[i], input[0]);
+			for (const animation of options.animations) {
+				processAnimation(animation, pInput[0]);
 			}
 		}
 
@@ -1828,9 +1824,8 @@ export class GLTFExporter {
 			const mergedTracks: any = {};
 			const sourceTracks = clip.tracks as any;
 
-			for (let i = 0; i < sourceTracks.length; ++i) {
+			for (let sourceTrack of sourceTracks) {
 
-				let sourceTrack = sourceTracks[i];
 				const sourceTrackBinding = PropertyBinding.parseTrackName(sourceTrack.name);
 				const sourceTrackNode = PropertyBinding.findNode(root, sourceTrackBinding.nodeName);
 

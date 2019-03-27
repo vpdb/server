@@ -51,7 +51,6 @@ import {
 	TriangleStripDrawMode,
 	Vector3,
 } from 'three';
-import { Blob, FileReader } from 'vblob';
 import { Image } from './image';
 
 /**
@@ -115,7 +114,7 @@ export class GLTFExporter {
 	private started = false;
 	private options: ParseOptions;
 	private byteOffset: number = 0;
-	private buffers: ArrayBuffer[] = [];
+	private buffers: Buffer[] = [];
 	private pending: Array<Promise<void>> = [];
 	private nodeMap = new Map();
 	private skins: Object3D[] = [];
@@ -171,7 +170,7 @@ export class GLTFExporter {
 		await Promise.all(this.pending);
 
 		// Merge buffers.
-		const blob = new Blob(this.buffers, { type: 'application/octet-stream' });
+		const blob = Buffer.concat(this.buffers);
 
 		// Declare extensions.
 		const extensionsUsedList = Object.keys(this.extensionsUsed);
@@ -180,14 +179,11 @@ export class GLTFExporter {
 		if (this.outputJSON.buffers && this.outputJSON.buffers.length > 0) {
 
 			// Update bytelength of the single buffer.
-			this.outputJSON.buffers[0].byteLength = blob.size;
-
-			const reader = new FileReader();
+			this.outputJSON.buffers[0].byteLength = blob.byteLength;
 
 			if (this.options.binary === true) {
 
 				// https://github.com/KhronosGroup/glTF/blob/master/specification/2.0/README.md#glb-file-format-specification
-
 				const GLB_HEADER_BYTES = 12;
 				const GLB_HEADER_MAGIC = 0x46546C67;
 				const GLB_VERSION = 2;
@@ -196,62 +192,38 @@ export class GLTFExporter {
 				const GLB_CHUNK_TYPE_JSON = 0x4E4F534A;
 				const GLB_CHUNK_TYPE_BIN = 0x004E4942;
 
-				return new Promise((resolve, reject) => {
-					reader.readAsArrayBuffer(blob);
-					reader.onloadend = () => {
+				// Binary chunk.
+				const binaryChunk = blob;
+				const binaryChunkPrefix = Buffer.alloc(GLB_CHUNK_PREFIX_BYTES);
+				binaryChunkPrefix.writeUInt32LE(binaryChunk.byteLength, 0);
+				binaryChunkPrefix.writeUInt32LE(GLB_CHUNK_TYPE_BIN, 4);
 
-						try {
+				// JSON chunk.
+				const jsonChunk = this.getPaddedArrayBuffer(this.stringToBuffer(JSON.stringify(this.outputJSON)), 0x20);
+				const jsonChunkPrefix = Buffer.alloc(GLB_CHUNK_PREFIX_BYTES);
+				jsonChunkPrefix.writeUInt32LE(jsonChunk.byteLength, 0);
+				jsonChunkPrefix.writeUInt32LE(GLB_CHUNK_TYPE_JSON, 4);
 
-							// Binary chunk.
-							const binaryChunk = this.getPaddedArrayBuffer(reader.result);
-							const binaryChunkPrefix = new DataView(new ArrayBuffer(GLB_CHUNK_PREFIX_BYTES));
-							binaryChunkPrefix.setUint32(0, binaryChunk.byteLength, true);
-							binaryChunkPrefix.setUint32(4, GLB_CHUNK_TYPE_BIN, true);
+				// GLB header.
+				const header = Buffer.alloc(GLB_HEADER_BYTES);
+				header.writeUInt32LE(GLB_HEADER_MAGIC, 0);
+				header.writeUInt32LE(GLB_VERSION, 4);
+				const totalByteLength = GLB_HEADER_BYTES
+					+ jsonChunkPrefix.byteLength + jsonChunk.byteLength
+					+ binaryChunkPrefix.byteLength + binaryChunk.byteLength;
+				header.writeUInt32LE(totalByteLength, 8);
 
-							// JSON chunk.
-							const jsonChunk = this.getPaddedArrayBuffer(this.stringToArrayBuffer(JSON.stringify(this.outputJSON)), 0x20);
-							const jsonChunkPrefix = new DataView(new ArrayBuffer(GLB_CHUNK_PREFIX_BYTES));
-							jsonChunkPrefix.setUint32(0, jsonChunk.byteLength, true);
-							jsonChunkPrefix.setUint32(4, GLB_CHUNK_TYPE_JSON, true);
-
-							// GLB header.
-							const header = new ArrayBuffer(GLB_HEADER_BYTES);
-							const headerView = new DataView(header);
-							headerView.setUint32(0, GLB_HEADER_MAGIC, true);
-							headerView.setUint32(4, GLB_VERSION, true);
-							const totalByteLength = GLB_HEADER_BYTES
-								+ jsonChunkPrefix.byteLength + jsonChunk.byteLength
-								+ binaryChunkPrefix.byteLength + binaryChunk.byteLength;
-							headerView.setUint32(8, totalByteLength, true);
-
-							const glbBlob = new Blob([
-								header,
-								jsonChunkPrefix,
-								jsonChunk,
-								binaryChunkPrefix,
-								binaryChunk,
-							], { type: 'application/octet-stream' });
-
-							const glbReader = new FileReader();
-							glbReader.readAsArrayBuffer(glbBlob);
-							glbReader.onloadend = () => {
-								resolve(glbReader.result);
-							};
-
-						} catch (err) {
-							return reject(err);
-						}
-					};
-				});
+				return Buffer.concat([
+					header,
+					jsonChunkPrefix,
+					jsonChunk,
+					binaryChunkPrefix,
+					binaryChunk,
+				]);
 
 			} else {
-				return new Promise(resolve => {
-					reader.readAsDataURL(blob);
-					reader.onloadend = () => {
-						this.outputJSON.buffers[0].uri = reader.result;
-						resolve(this.outputJSON);
-					};
-				});
+				this.outputJSON.buffers[0].uri = blob;
+				return this.outputJSON;
 			}
 
 		} else {
@@ -278,10 +250,8 @@ export class GLTFExporter {
 	 * @param  {string} text
 	 * @return {ArrayBuffer}
 	 */
-	private stringToArrayBuffer(text: string) {
-
-		const array = new Uint8Array(new ArrayBuffer(text.length));
-
+	private stringToBuffer(text: string): Buffer {
+		const array = Buffer.alloc(text.length);
 		let i = 0;
 		const il = text.length;
 		for (; i < il; i++) {
@@ -289,7 +259,7 @@ export class GLTFExporter {
 			// Replacing multi-byte character with space(0x20).
 			array[i] = value > 0xFF ? 0x20 : value;
 		}
-		return array.buffer;
+		return array;
 	}
 
 	/**
@@ -408,21 +378,14 @@ export class GLTFExporter {
 	 * @param {Integer} paddingByte (Optional)
 	 * @returns {ArrayBuffer} The same buffer if it's already aligned to 4-byte boundary or a new buffer
 	 */
-	private getPaddedArrayBuffer(arrayBuffer: ArrayBuffer, paddingByte?: number): ArrayBuffer {
+	private getPaddedArrayBuffer(arrayBuffer: Buffer, paddingByte: number = 0x0): Buffer {
 
-		paddingByte = paddingByte || 0;
 		const paddedLength = this.getPaddedBufferSize(arrayBuffer.byteLength);
-		if (paddedLength !== arrayBuffer.byteLength) {
-			const array = new Uint8Array(paddedLength);
-			array.set(new Uint8Array(arrayBuffer));
-			if (paddingByte !== 0) {
-				for (let i = arrayBuffer.byteLength; i < paddedLength; i++) {
-					array[i] = paddingByte;
-				}
-			}
-			return array.buffer;
+		if (paddedLength === arrayBuffer.byteLength) {
+			return arrayBuffer;
 		}
-		return arrayBuffer;
+		const fillBuffer = Buffer.alloc(paddedLength - arrayBuffer.byteLength, paddingByte);
+		return Buffer.concat([ arrayBuffer, fillBuffer ]);
 	}
 
 	/**
@@ -476,10 +439,10 @@ export class GLTFExporter {
 
 	/**
 	 * Process a buffer to append to the default one.
-	 * @param  {ArrayBuffer} buffer
-	 * @return {Integer}
+	 * @param  buffer
+	 * @return 0
 	 */
-	private processBuffer(buffer: ArrayBuffer): number {
+	private processBuffer(buffer: Buffer): number {
 
 		if (!this.outputJSON.buffers) {
 			this.outputJSON.buffers = [{ byteLength: 0 }];
@@ -520,36 +483,41 @@ export class GLTFExporter {
 		}
 
 		const byteLength = this.getPaddedBufferSize(count * attribute.itemSize * componentSize);
-		const dataView = new DataView(new ArrayBuffer(byteLength));
+		const dataView = Buffer.alloc(byteLength);
 		let offset = 0;
 
-		for (let i = start; i < start + count; i++) {
+		try {
+			for (let i = start; i < start + count; i++) {
 
-			for (let a = 0; a < attribute.itemSize; a++) {
+				for (let a = 0; a < attribute.itemSize; a++) {
 
-				// @TODO Fails on InterleavedBufferAttribute, and could probably be
-				// optimized for normal BufferAttribute.
-				const value = attribute.array[i * attribute.itemSize + a];
+					// @TODO Fails on InterleavedBufferAttribute, and could probably be
+					// optimized for normal BufferAttribute.
+					const value = attribute.array[i * attribute.itemSize + a];
 
-				if (componentType === WEBGL_CONSTANTS.FLOAT) {
-					dataView.setFloat32(offset, value, true);
+					if (componentType === WEBGL_CONSTANTS.FLOAT) {
+						dataView.writeFloatLE(value, offset);
 
-				} else if (componentType === WEBGL_CONSTANTS.UNSIGNED_INT) {
-					dataView.setUint32(offset, value, true);
+					} else if (componentType === WEBGL_CONSTANTS.UNSIGNED_INT) {
+						dataView.writeUInt32LE(value, offset);
 
-				} else if (componentType === WEBGL_CONSTANTS.UNSIGNED_SHORT) {
-					dataView.setUint16(offset, value, true);
+					} else if (componentType === WEBGL_CONSTANTS.UNSIGNED_SHORT) {
+						dataView.writeUInt16LE(value, offset);
 
-				} else if (componentType === WEBGL_CONSTANTS.UNSIGNED_BYTE) {
-					dataView.setUint8(offset, value);
+					} else if (componentType === WEBGL_CONSTANTS.UNSIGNED_BYTE) {
+						dataView.writeUInt8(value, offset);
 
+					}
+					offset += componentSize;
 				}
-				offset += componentSize;
 			}
+		} catch (err) {
+			console.error(err);
+			throw err;
 		}
 
 		const gltfBufferView: BufferView = {
-			buffer: this.processBuffer(dataView.buffer),
+			buffer: this.processBuffer(dataView),
 			byteOffset: this.byteOffset,
 			byteLength,
 		};
@@ -577,30 +545,23 @@ export class GLTFExporter {
 	/**
 	 * Process and generate a BufferView from an image Blob.
 	 * @param {Blob} blob
-	 * @return {Promise<Integer>}
+	 * @returns buffer view index
 	 */
-	private processBufferViewImage(blob: Blob): Promise<number> {
+	private processBufferViewImage(blob: Buffer): number {
 
 		if (!this.outputJSON.bufferViews) {
 			this.outputJSON.bufferViews = [];
 		}
-		return new Promise(resolve => {
-			const reader = new FileReader();
-			reader.readAsArrayBuffer(blob);
-			reader.onloadend = () => {
+		const buffer = this.getPaddedArrayBuffer(blob);
+		const bufferView = {
+			buffer: this.processBuffer(buffer),
+			byteOffset: this.byteOffset,
+			byteLength: buffer.byteLength,
+		};
 
-				const buffer = this.getPaddedArrayBuffer(reader.result);
-				const bufferView = {
-					buffer: this.processBuffer(buffer),
-					byteOffset: this.byteOffset,
-					byteLength: buffer.byteLength,
-				};
-
-				this.byteOffset += buffer.byteLength;
-				this.outputJSON.bufferViews.push(bufferView);
-				resolve(this.outputJSON.bufferViews.length - 1);
-			};
-		});
+		this.byteOffset += buffer.byteLength;
+		this.outputJSON.bufferViews.push(bufferView);
+		return this.outputJSON.bufferViews.length - 1;
 	}
 
 	/**
@@ -740,11 +701,8 @@ export class GLTFExporter {
 			if (this.options.binary === true) {
 				this.pending.push(new Promise(resolve => {
 					image.getImage().then(buffer => {
-						const blob = new Blob([Utils.toArrayBuffer(buffer)]);
-						this.processBufferViewImage(blob).then(bufferViewIndex => {
-							gltfImage.bufferView = bufferViewIndex;
-							resolve();
-						});
+						gltfImage.bufferView = this.processBufferViewImage(buffer);
+						resolve();
 					});
 				}));
 

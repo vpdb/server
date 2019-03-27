@@ -61,6 +61,7 @@
 		"chalk": "2.4.2",
 		"elastic-apm-node": "2.5.1",
 		"ent": "2.2.0",
+		"es6-promise-pool": "2.5.0",
 		"fluent-ffmpeg": "2.1.2",
 		"gm": "1.23.1",
 		"google-auth-library": "3.1.0",

@@ -3206,6 +3206,11 @@
 			"resolved": "https://registry.npmjs.org/es6-promise/-/es6-promise-4.2.5.tgz",
 			"integrity": "sha512-n6wvpdE43VFtJq+lUDYDBFUwV8TZbuGXLV4D6wKafg13ldznKsyEvatubnmUe31zcvelSzOHF+XbaT+Bl9ObDg=="
 		},
+		"es6-promise-pool": {
+			"version": "2.5.0",
+			"resolved": "https://registry.npmjs.org/es6-promise-pool/-/es6-promise-pool-2.5.0.tgz",
+			"integrity": "sha1-FHxhKza0fxBQJ/nSv1SlmKmdnMs="
+		},
 		"es6-promisify": {
 			"version": "5.0.0",
 			"resolved": "https://registry.npmjs.org/es6-promisify/-/es6-promisify-5.0.0.tgz",

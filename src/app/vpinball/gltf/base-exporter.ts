@@ -21,12 +21,10 @@ import { Math as M, Object3D } from 'three';
 import { OBJLoader } from './lib/OBJLoader';
 
 import { IPositionable } from '../mesh';
-import { GLTFExporter } from './gltf-exporter';
 
 export abstract class BaseExporter {
 
 	protected objLoader: any = new OBJLoader();
-	protected gltfExporter = new GLTFExporter();
 
 	protected position(mesh: Object3D, obj: IPositionable) {
 

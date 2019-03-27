@@ -151,14 +151,12 @@ export class GLTFExporter {
 
 	/**
 	 * Parse scenes and generate GLTF output
-	 * @param  {Scene or [Scenes]} input   Scene or Array of Scenes
-	 * @param  {Function} onDone  Callback on completed
-	 * @param  {Object} options options
+	 * @param input Scene or array of Scenes
 	 */
-	public parse(input: Scene | Scene[], onDone: (result: any) => void) {
+	public async parse(input: Scene | Scene[]): Promise<any> {
 
 		if (this.started) {
-			throw new Error('Can only process one scene at the time. Re-instantiate GLTFExporter for parellel processing.');
+			throw new Error('Can only process one scene at the time. Re-instantiate GLTFExporter for parallel processing.');
 		}
 		this.started = true;
 
@@ -169,88 +167,96 @@ export class GLTFExporter {
 
 		this.processInput(input);
 
-		Promise.all(this.pending).then(() => {
+		// do all the async shit
+		await Promise.all(this.pending);
 
-			// Merge buffers.
-			const blob = new Blob(this.buffers, { type: 'application/octet-stream' });
+		// Merge buffers.
+		const blob = new Blob(this.buffers, { type: 'application/octet-stream' });
 
-			// Declare extensions.
-			const extensionsUsedList = Object.keys(this.extensionsUsed);
-			if (extensionsUsedList.length > 0) { this.outputJSON.extensionsUsed = extensionsUsedList; }
+		// Declare extensions.
+		const extensionsUsedList = Object.keys(this.extensionsUsed);
+		if (extensionsUsedList.length > 0) { this.outputJSON.extensionsUsed = extensionsUsedList; }
 
-			if (this.outputJSON.buffers && this.outputJSON.buffers.length > 0) {
+		if (this.outputJSON.buffers && this.outputJSON.buffers.length > 0) {
 
-				// Update bytelength of the single buffer.
-				this.outputJSON.buffers[0].byteLength = blob.size;
+			// Update bytelength of the single buffer.
+			this.outputJSON.buffers[0].byteLength = blob.size;
 
-				const reader = new FileReader();
+			const reader = new FileReader();
 
-				if (this.options.binary === true) {
+			if (this.options.binary === true) {
 
-					// https://github.com/KhronosGroup/glTF/blob/master/specification/2.0/README.md#glb-file-format-specification
+				// https://github.com/KhronosGroup/glTF/blob/master/specification/2.0/README.md#glb-file-format-specification
 
-					const GLB_HEADER_BYTES = 12;
-					const GLB_HEADER_MAGIC = 0x46546C67;
-					const GLB_VERSION = 2;
+				const GLB_HEADER_BYTES = 12;
+				const GLB_HEADER_MAGIC = 0x46546C67;
+				const GLB_VERSION = 2;
 
-					const GLB_CHUNK_PREFIX_BYTES = 8;
-					const GLB_CHUNK_TYPE_JSON = 0x4E4F534A;
-					const GLB_CHUNK_TYPE_BIN = 0x004E4942;
+				const GLB_CHUNK_PREFIX_BYTES = 8;
+				const GLB_CHUNK_TYPE_JSON = 0x4E4F534A;
+				const GLB_CHUNK_TYPE_BIN = 0x004E4942;
 
+				return new Promise((resolve, reject) => {
 					reader.readAsArrayBuffer(blob);
 					reader.onloadend = () => {
 
-						// Binary chunk.
-						const binaryChunk = this.getPaddedArrayBuffer(reader.result);
-						const binaryChunkPrefix = new DataView(new ArrayBuffer(GLB_CHUNK_PREFIX_BYTES));
-						binaryChunkPrefix.setUint32(0, binaryChunk.byteLength, true);
-						binaryChunkPrefix.setUint32(4, GLB_CHUNK_TYPE_BIN, true);
+						try {
 
-						// JSON chunk.
-						const jsonChunk = this.getPaddedArrayBuffer(this.stringToArrayBuffer(JSON.stringify(this.outputJSON)), 0x20);
-						const jsonChunkPrefix = new DataView(new ArrayBuffer(GLB_CHUNK_PREFIX_BYTES));
-						jsonChunkPrefix.setUint32(0, jsonChunk.byteLength, true);
-						jsonChunkPrefix.setUint32(4, GLB_CHUNK_TYPE_JSON, true);
+							// Binary chunk.
+							const binaryChunk = this.getPaddedArrayBuffer(reader.result);
+							const binaryChunkPrefix = new DataView(new ArrayBuffer(GLB_CHUNK_PREFIX_BYTES));
+							binaryChunkPrefix.setUint32(0, binaryChunk.byteLength, true);
+							binaryChunkPrefix.setUint32(4, GLB_CHUNK_TYPE_BIN, true);
 
-						// GLB header.
-						const header = new ArrayBuffer(GLB_HEADER_BYTES);
-						const headerView = new DataView(header);
-						headerView.setUint32(0, GLB_HEADER_MAGIC, true);
-						headerView.setUint32(4, GLB_VERSION, true);
-						const totalByteLength = GLB_HEADER_BYTES
-							+ jsonChunkPrefix.byteLength + jsonChunk.byteLength
-							+ binaryChunkPrefix.byteLength + binaryChunk.byteLength;
-						headerView.setUint32(8, totalByteLength, true);
+							// JSON chunk.
+							const jsonChunk = this.getPaddedArrayBuffer(this.stringToArrayBuffer(JSON.stringify(this.outputJSON)), 0x20);
+							const jsonChunkPrefix = new DataView(new ArrayBuffer(GLB_CHUNK_PREFIX_BYTES));
+							jsonChunkPrefix.setUint32(0, jsonChunk.byteLength, true);
+							jsonChunkPrefix.setUint32(4, GLB_CHUNK_TYPE_JSON, true);
 
-						const glbBlob = new Blob([
-							header,
-							jsonChunkPrefix,
-							jsonChunk,
-							binaryChunkPrefix,
-							binaryChunk,
-						], { type: 'application/octet-stream' });
+							// GLB header.
+							const header = new ArrayBuffer(GLB_HEADER_BYTES);
+							const headerView = new DataView(header);
+							headerView.setUint32(0, GLB_HEADER_MAGIC, true);
+							headerView.setUint32(4, GLB_VERSION, true);
+							const totalByteLength = GLB_HEADER_BYTES
+								+ jsonChunkPrefix.byteLength + jsonChunk.byteLength
+								+ binaryChunkPrefix.byteLength + binaryChunk.byteLength;
+							headerView.setUint32(8, totalByteLength, true);
 
-						const glbReader = new FileReader();
-						glbReader.readAsArrayBuffer(glbBlob);
-						glbReader.onloadend = () => {
-							onDone(glbReader.result);
-						};
+							const glbBlob = new Blob([
+								header,
+								jsonChunkPrefix,
+								jsonChunk,
+								binaryChunkPrefix,
+								binaryChunk,
+							], { type: 'application/octet-stream' });
+
+							const glbReader = new FileReader();
+							glbReader.readAsArrayBuffer(glbBlob);
+							glbReader.onloadend = () => {
+								resolve(glbReader.result);
+							};
+
+						} catch (err) {
+							return reject(err);
+						}
 					};
-
-				} else {
-					reader.readAsDataURL(blob);
-					reader.onloadend = () => {
-						const base64data = reader.result;
-						this.outputJSON.buffers[0].uri = base64data;
-						onDone(this.outputJSON);
-					};
-				}
+				});
 
 			} else {
-				onDone(this.outputJSON);
-
+				return new Promise(resolve => {
+					reader.readAsDataURL(blob);
+					reader.onloadend = () => {
+						this.outputJSON.buffers[0].uri = reader.result;
+						resolve(this.outputJSON);
+					};
+				});
 			}
-		});
+
+		} else {
+			return this.outputJSON;
+		}
 	}
 
 	/**
@@ -734,7 +740,7 @@ export class GLTFExporter {
 			if (this.options.binary === true) {
 				this.pending.push(new Promise(resolve => {
 					image.getImage().then(buffer => {
-						const blob = new Blob([toArrayBuffer(buffer)]);
+						const blob = new Blob([Utils.toArrayBuffer(buffer)]);
 						this.processBufferViewImage(blob).then(bufferViewIndex => {
 							gltfImage.bufferView = bufferViewIndex;
 							resolve();
@@ -1304,7 +1310,7 @@ export class GLTFExporter {
 			this.outputJSON.animations = [];
 		}
 
-		clip = GLTFExporter.Utils.mergeMorphTargetTracks(clip.clone(), root);
+		clip = Utils.mergeMorphTargetTracks(clip.clone(), root);
 
 		const tracks = clip.tracks;
 		const channels = [];
@@ -1596,7 +1602,6 @@ export class GLTFExporter {
 		let i = 0;
 		const l = scene.children.length;
 		for (; i < l; i++) {
-
 			const child = scene.children[i];
 			if (child.visible || this.options.onlyVisible === false) {
 				const node = this.processNode(child as any);
@@ -1653,192 +1658,192 @@ export class GLTFExporter {
 			this.processAnimation(animation, pInput[0]);
 		}
 	}
-
-	private static Utils = {
-
-		insertKeyframe(track: KeyframeTrackInternal, time: number) {
-
-			const tolerance = 0.001; // 1ms
-			const valueSize = track.getValueSize();
-
-			const times = new Float32Array(track.times.length + 1);
-			const values = new Float32Array(track.values.length + valueSize);
-			const interpolant = (track as any).createInterpolant(new Float32Array(valueSize));
-
-			let index;
-
-			if (track.times.length === 0) {
-				times[0] = time;
-
-				for (let i = 0; i < valueSize; i++) {
-					values[i] = 0;
-				}
-
-				index = 0;
-
-			} else if (time < track.times[0]) {
-
-				if (Math.abs(track.times[0] - time) < tolerance) { return 0; }
-
-				times[0] = time;
-				times.set(track.times, 1);
-
-				values.set(interpolant.evaluate(time), 0);
-				values.set(track.values, valueSize);
-
-				index = 0;
-
-			} else if (time > track.times[track.times.length - 1]) {
-
-				if (Math.abs(track.times[track.times.length - 1] - time) < tolerance) {
-
-					return track.times.length - 1;
-
-				}
-
-				times[times.length - 1] = time;
-				times.set(track.times, 0);
-
-				values.set(track.values, 0);
-				values.set(interpolant.evaluate(time), track.values.length);
-
-				index = times.length - 1;
-
-			} else {
-
-				for (let i = 0; i < track.times.length; i++) {
-
-					if (Math.abs(track.times[i] - time) < tolerance) { return i; }
-
-					if (track.times[i] < time && track.times[i + 1] > time) {
-
-						times.set(track.times.slice(0, i + 1), 0);
-						times[i + 1] = time;
-						times.set(track.times.slice(i + 1), i + 2);
-
-						values.set(track.values.slice(0, (i + 1) * valueSize), 0);
-						values.set(interpolant.evaluate(time), (i + 1) * valueSize);
-						values.set(track.values.slice((i + 1) * valueSize), (i + 2) * valueSize);
-
-						index = i + 1;
-
-						break;
-					}
-				}
-			}
-			track.times = times as any;
-			track.values = values as any;
-			return index;
-		},
-
-		mergeMorphTargetTracks(clip: AnimationClipInternal, root: any) {
-
-			const tracks = [];
-			const mergedTracks: any = {};
-			const sourceTracks = clip.tracks as any;
-
-			for (let sourceTrack of sourceTracks) {
-
-				const sourceTrackBinding = PropertyBinding.parseTrackName(sourceTrack.name);
-				const sourceTrackNode = PropertyBinding.findNode(root, sourceTrackBinding.nodeName);
-
-				if (sourceTrackBinding.propertyName !== 'morphTargetInfluences' || sourceTrackBinding.propertyIndex === undefined) {
-
-					// Tracks that don't affect morph targets, or that affect all morph targets together, can be left as-is.
-					tracks.push(sourceTrack);
-					continue;
-
-				}
-
-				if (sourceTrack.createInterpolant !== sourceTrack.InterpolantFactoryMethodDiscrete
-					&& sourceTrack.createInterpolant !== sourceTrack.InterpolantFactoryMethodLinear) {
-
-					if (sourceTrack.createInterpolant.isInterpolantFactoryMethodGLTFCubicSpline) {
-
-						// This should never happen, because glTF morph target animations
-						// affect all targets already.
-						throw new Error('GLTFExporter: Cannot merge tracks with glTF CUBICSPLINE interpolation.');
-
-					}
-
-					console.warn('GLTFExporter: Morph target interpolation mode not yet supported. Using LINEAR instead.');
-
-					sourceTrack = sourceTrack.clone();
-					sourceTrack.setInterpolation(InterpolateLinear);
-
-				}
-
-				const targetCount = sourceTrackNode.morphTargetInfluences.length;
-				const targetIndex = sourceTrackNode.morphTargetDictionary[sourceTrackBinding.propertyIndex];
-
-				if (targetIndex === undefined) {
-
-					throw new Error('GLTFExporter: Morph target name not found: ' + sourceTrackBinding.propertyIndex);
-
-				}
-
-				let mergedTrack: any;
-
-				// If this is the first time we've seen this object, create a new
-				// track to store merged keyframe data for each morph target.
-				if (mergedTracks[sourceTrackNode.uuid] === undefined) {
-
-					mergedTrack = sourceTrack.clone();
-
-					const values = new mergedTrack.ValueBufferType(targetCount * mergedTrack.times.length);
-
-					for (let j = 0; j < mergedTrack.times.length; j++) {
-
-						values[j * targetCount + targetIndex] = mergedTrack.values[j];
-
-					}
-
-					mergedTrack.name = '.morphTargetInfluences';
-					mergedTrack.values = values;
-
-					mergedTracks[sourceTrackNode.uuid] = mergedTrack;
-					tracks.push(mergedTrack);
-
-					continue;
-
-				}
-
-				const mergedKeyframeIndex = 0;
-				const sourceKeyframeIndex = 0;
-				const sourceInterpolant = sourceTrack.createInterpolant(new sourceTrack.ValueBufferType(1));
-
-				mergedTrack = mergedTracks[sourceTrackNode.uuid];
-
-				// For every existing keyframe of the merged track, write a (possibly
-				// interpolated) value from the source track.
-				for (let j = 0; j < mergedTrack.times.length; j++) {
-
-					mergedTrack.values[j * targetCount + targetIndex] = sourceInterpolant.evaluate(mergedTrack.times[j]);
-
-				}
-
-				// For every existing keyframe of the source track, write a (possibly
-				// new) keyframe to the merged track. Values from the previous loop may
-				// be written again, but keyframes are de-duplicated.
-				for (let j = 0; j < sourceTrack.times.length; j++) {
-
-					const keyframeIndex = this.insertKeyframe(mergedTrack, sourceTrack.times[j]);
-					mergedTrack.values[keyframeIndex * targetCount + targetIndex] = sourceTrack.values[j];
-				}
-			}
-			clip.tracks = tracks;
-			return clip;
-		},
-	};
 }
 
-function toArrayBuffer(buf: Buffer): ArrayBuffer {
-	const ab = new ArrayBuffer(buf.length);
-	const view = new Uint8Array(ab);
-	for (let i = 0; i < buf.length; ++i) {
-		view[i] = buf[i];
+class Utils {
+
+	public static insertKeyframe(track: KeyframeTrackInternal, time: number) {
+
+		const tolerance = 0.001; // 1ms
+		const valueSize = track.getValueSize();
+
+		const times = new Float32Array(track.times.length + 1);
+		const values = new Float32Array(track.values.length + valueSize);
+		const interpolant = (track as any).createInterpolant(new Float32Array(valueSize));
+
+		let index;
+
+		if (track.times.length === 0) {
+			times[0] = time;
+
+			for (let i = 0; i < valueSize; i++) {
+				values[i] = 0;
+			}
+
+			index = 0;
+
+		} else if (time < track.times[0]) {
+
+			if (Math.abs(track.times[0] - time) < tolerance) { return 0; }
+
+			times[0] = time;
+			times.set(track.times, 1);
+
+			values.set(interpolant.evaluate(time), 0);
+			values.set(track.values, valueSize);
+
+			index = 0;
+
+		} else if (time > track.times[track.times.length - 1]) {
+
+			if (Math.abs(track.times[track.times.length - 1] - time) < tolerance) {
+
+				return track.times.length - 1;
+
+			}
+
+			times[times.length - 1] = time;
+			times.set(track.times, 0);
+
+			values.set(track.values, 0);
+			values.set(interpolant.evaluate(time), track.values.length);
+
+			index = times.length - 1;
+
+		} else {
+
+			for (let i = 0; i < track.times.length; i++) {
+
+				if (Math.abs(track.times[i] - time) < tolerance) { return i; }
+
+				if (track.times[i] < time && track.times[i + 1] > time) {
+
+					times.set(track.times.slice(0, i + 1), 0);
+					times[i + 1] = time;
+					times.set(track.times.slice(i + 1), i + 2);
+
+					values.set(track.values.slice(0, (i + 1) * valueSize), 0);
+					values.set(interpolant.evaluate(time), (i + 1) * valueSize);
+					values.set(track.values.slice((i + 1) * valueSize), (i + 2) * valueSize);
+
+					index = i + 1;
+
+					break;
+				}
+			}
+		}
+		track.times = times as any;
+		track.values = values as any;
+		return index;
 	}
-	return ab;
+
+	public static mergeMorphTargetTracks(clip: AnimationClipInternal, root: any) {
+
+		const tracks = [];
+		const mergedTracks: any = {};
+		const sourceTracks = clip.tracks as any;
+
+		for (let sourceTrack of sourceTracks) {
+
+			const sourceTrackBinding = PropertyBinding.parseTrackName(sourceTrack.name);
+			const sourceTrackNode = PropertyBinding.findNode(root, sourceTrackBinding.nodeName);
+
+			if (sourceTrackBinding.propertyName !== 'morphTargetInfluences' || sourceTrackBinding.propertyIndex === undefined) {
+
+				// Tracks that don't affect morph targets, or that affect all morph targets together, can be left as-is.
+				tracks.push(sourceTrack);
+				continue;
+
+			}
+
+			if (sourceTrack.createInterpolant !== sourceTrack.InterpolantFactoryMethodDiscrete
+				&& sourceTrack.createInterpolant !== sourceTrack.InterpolantFactoryMethodLinear) {
+
+				if (sourceTrack.createInterpolant.isInterpolantFactoryMethodGLTFCubicSpline) {
+
+					// This should never happen, because glTF morph target animations
+					// affect all targets already.
+					throw new Error('GLTFExporter: Cannot merge tracks with glTF CUBICSPLINE interpolation.');
+
+				}
+
+				console.warn('GLTFExporter: Morph target interpolation mode not yet supported. Using LINEAR instead.');
+
+				sourceTrack = sourceTrack.clone();
+				sourceTrack.setInterpolation(InterpolateLinear);
+
+			}
+
+			const targetCount = sourceTrackNode.morphTargetInfluences.length;
+			const targetIndex = sourceTrackNode.morphTargetDictionary[sourceTrackBinding.propertyIndex];
+
+			if (targetIndex === undefined) {
+
+				throw new Error('GLTFExporter: Morph target name not found: ' + sourceTrackBinding.propertyIndex);
+
+			}
+
+			let mergedTrack: any;
+
+			// If this is the first time we've seen this object, create a new
+			// track to store merged keyframe data for each morph target.
+			if (mergedTracks[sourceTrackNode.uuid] === undefined) {
+
+				mergedTrack = sourceTrack.clone();
+
+				const values = new mergedTrack.ValueBufferType(targetCount * mergedTrack.times.length);
+
+				for (let j = 0; j < mergedTrack.times.length; j++) {
+
+					values[j * targetCount + targetIndex] = mergedTrack.values[j];
+
+				}
+
+				mergedTrack.name = '.morphTargetInfluences';
+				mergedTrack.values = values;
+
+				mergedTracks[sourceTrackNode.uuid] = mergedTrack;
+				tracks.push(mergedTrack);
+
+				continue;
+
+			}
+
+			const mergedKeyframeIndex = 0;
+			const sourceKeyframeIndex = 0;
+			const sourceInterpolant = sourceTrack.createInterpolant(new sourceTrack.ValueBufferType(1));
+
+			mergedTrack = mergedTracks[sourceTrackNode.uuid];
+
+			// For every existing keyframe of the merged track, write a (possibly
+			// interpolated) value from the source track.
+			for (let j = 0; j < mergedTrack.times.length; j++) {
+
+				mergedTrack.values[j * targetCount + targetIndex] = sourceInterpolant.evaluate(mergedTrack.times[j]);
+
+			}
+
+			// For every existing keyframe of the source track, write a (possibly
+			// new) keyframe to the merged track. Values from the previous loop may
+			// be written again, but keyframes are de-duplicated.
+			for (let j = 0; j < sourceTrack.times.length; j++) {
+
+				const keyframeIndex = this.insertKeyframe(mergedTrack, sourceTrack.times[j]);
+				mergedTrack.values[keyframeIndex * targetCount + targetIndex] = sourceTrack.values[j];
+			}
+		}
+		clip.tracks = tracks;
+		return clip;
+	}
+
+	public static toArrayBuffer(buf: Buffer): ArrayBuffer {
+		const ab = new ArrayBuffer(buf.length);
+		const view = new Uint8Array(ab);
+		for (let i = 0; i < buf.length; ++i) {
+			view[i] = buf[i];
+		}
+		return ab;
+	}
 }
 
 export interface ParseOptions {

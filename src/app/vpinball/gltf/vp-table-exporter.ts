@@ -42,8 +42,8 @@ import { SurfaceItem } from '../surface-item';
 import { Texture as VpTexture } from '../texture';
 import { VpTable } from '../vp-table';
 import { BaseExporter } from './base-exporter';
-import { Image } from './image';
 import { GLTFExporter } from './gltf-exporter';
+import { Image } from './image';
 
 export class VpTableExporter extends BaseExporter {
 
@@ -136,10 +136,7 @@ export class VpTableExporter extends BaseExporter {
 		this.scene.add(this.playfield);
 
 		const gltfExporter = new GLTFExporter(Object.assign({}, opts, { embedImages: true }));
-
-		return await new Promise(resolve => {
-			gltfExporter.parse(this.scene, resolve);
-		});
+		return gltfExporter.parse(this.scene);
 	}
 
 	private async getMaterial(obj: RenderInfo): Promise<ThreeMaterial> {

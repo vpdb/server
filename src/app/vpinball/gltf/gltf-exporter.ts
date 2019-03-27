@@ -18,6 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { cpus } from 'os';
 import {
 	AnimationClip, Bone,
 	BufferAttribute,
@@ -52,6 +53,7 @@ import {
 	Vector3,
 } from 'three';
 import { Image } from './image';
+const PromisePool = require('es6-promise-pool');
 
 /**
  * @author fernandojsg / http://fernandojsg.com
@@ -167,7 +169,11 @@ export class GLTFExporter {
 		this.processInput(input);
 
 		// do all the async shit
-		await Promise.all(this.pending);
+		const pendingProducer = () => this.pending.length ? this.pending.shift() : null;
+		const pool = new PromisePool(pendingProducer, Math.max(1, cpus().length - 1));
+		await pool.start();
+
+		//await Promise.all(this.pending);
 
 		// Merge buffers.
 		const blob = Buffer.concat(this.buffers);

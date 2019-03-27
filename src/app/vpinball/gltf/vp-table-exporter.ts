@@ -49,7 +49,7 @@ export class VpTableExporter extends BaseExporter {
 
 	private static readonly applyMaterials = true;
 	private static readonly applyTextures = true;
-	private static readonly optimize = true;
+	private static readonly optimize = false;
 
 	private static readonly scale = 0.05;
 	private readonly table: VpTable;
@@ -189,7 +189,7 @@ export class VpTableExporter extends BaseExporter {
 			if (!data || !data.length) {
 				return false;
 			}
-			const image = await new Image(data).init();
+			const image = await new Image(data, VpTableExporter.optimize).init();
 			materialMap.image = image;
 			materialMap.format = image.hasTransparency() ? RGBAFormat : RGBFormat;
 			materialMap.needsUpdate = true;

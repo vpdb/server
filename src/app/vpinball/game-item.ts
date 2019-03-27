@@ -23,6 +23,7 @@ import { Material } from './material';
 import { IPositionable, Mesh } from './mesh';
 import { Texture } from './texture';
 import { VpTable } from './vp-table';
+import { Storage } from '../common/ole-doc';
 
 export abstract class GameItem extends BiffParser {
 
@@ -86,6 +87,11 @@ export abstract class GameItem extends BiffParser {
 	public layerIndex: number;
 
 	public abstract getName(): string;
+
+
+	protected async getData(storage: Storage, itemName: string, offset: number, len: number): Promise<Buffer> {
+		return storage.read(itemName, offset, len);
+	}
 
 	protected getUnknownBlock(buffer: Buffer, tag: string) {
 		switch (tag) {

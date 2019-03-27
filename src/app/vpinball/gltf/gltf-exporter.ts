@@ -982,7 +982,7 @@ export class GLTFExporter {
 
 		if (originalNormal !== undefined && !this.isNormalizedNormalAttribute(originalNormal)) {
 
-			console.warn('GLTFExporter: Creating normalized normal attribute from the non-normalized one.');
+			console.warn('GLTFExporter: Creating normalized normal attribute from the non-normalized one (%s).', mesh.name);
 
 			(geometry as BufferGeometry).addAttribute('normal', this.createNormalizedNormalAttribute(originalNormal as BufferAttribute));
 

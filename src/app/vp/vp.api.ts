@@ -19,19 +19,14 @@
 
 import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
+import { logger } from '../common/logger';
 import { OleCompoundDoc } from '../common/ole-doc';
 import { Context } from '../common/typings/context';
 import { FileDocument } from '../files/file.document';
 import { state } from '../state';
-import { GameData } from '../vpinball/game-data';
-import { GameItem } from '../vpinball/game-item';
 import { Mesh } from '../vpinball/mesh';
 import { bulbLightMesh } from '../vpinball/meshes/bulb-light-mesh';
-import { PrimitiveItem } from '../vpinball/primitive-item';
-import { RubberItem } from '../vpinball/rubber-item';
-import { Texture } from '../vpinball/texture';
 import { VpTable } from '../vpinball/vp-table';
-import { logger } from '../common/logger';
 
 export class VpApi extends Api {
 

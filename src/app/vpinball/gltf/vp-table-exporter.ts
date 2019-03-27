@@ -49,7 +49,7 @@ export class VpTableExporter extends BaseExporter {
 	private static readonly applyMaterials = true;
 	private static readonly applyTextures = true;
 
-	private static readonly scale = 0.15;
+	private static readonly scale = 0.05;
 	private readonly table: VpTable;
 	private readonly scene: Scene;
 	private playfield: Group;
@@ -87,24 +87,26 @@ export class VpTableExporter extends BaseExporter {
 	}
 
 	private async export<T>(opts: any = {}): Promise<T> {
-		const allRenderables: IRenderable[][] = [
-			[ this.table ],
-			values<PrimitiveItem>(this.table.primitives),
-			values<RubberItem>(this.table.rubbers),
-			values<SurfaceItem>(this.table.surfaces),
-			values<FlipperItem>(this.table.flippers),
-			values<BumperItem>(this.table.bumpers),
-			values<RampItem>(this.table.ramps),
-			this.table.lights,
-			this.table.hitTargets,
-			this.table.gates,
-			this.table.kickers,
-			this.table.triggers,
+		const renderGroups: IRenderGroup[] = [
+			{ name: 'playfield', meshes: [ this.table ] },
+			{ name: 'primitives', meshes: values<PrimitiveItem>(this.table.primitives) },
+			{ name: 'rubbers', meshes: values<RubberItem>(this.table.rubbers) },
+			{ name: 'surfaces', meshes: values<SurfaceItem>(this.table.surfaces) },
+			{ name: 'flippers', meshes: values<FlipperItem>(this.table.flippers) },
+			{ name: 'bumpers', meshes: values<BumperItem>(this.table.bumpers) },
+			{ name: 'ramps', meshes: values<RampItem>(this.table.ramps) },
+			{ name: 'lights', meshes: this.table.lights },
+			{ name: 'hitTargets', meshes: this.table.hitTargets },
+			{ name: 'gates', meshes: this.table.gates },
+			{ name: 'kickers', meshes: this.table.kickers },
+			{ name: 'triggers', meshes: this.table.triggers },
 		];
 
 		// meshes
-		for (const renderables of allRenderables) {
-			for (const renderable of renderables.filter(i => i.isVisible())) {
+		for (const group of renderGroups) {
+			const g = new Group();
+			g.name = group.name;
+			for (const renderable of group.meshes.filter(i => i.isVisible())) {
 				const objects = renderable.getMeshes(this.table);
 				let obj: RenderInfo;
 				for (obj of values(objects)) {
@@ -114,8 +116,11 @@ export class VpTableExporter extends BaseExporter {
 					if (renderable.getPositionableObject) {
 						this.position(mesh, renderable as any);
 					}
-					this.playfield.add(mesh);
+					g.add(mesh);
 				}
+			}
+			if (g.children.length > 0) {
+				this.playfield.add(g);
 			}
 		}
 
@@ -205,4 +210,9 @@ export class VpTableExporter extends BaseExporter {
 		}
 		return buffer;
 	}
+}
+
+interface IRenderGroup {
+	name: string;
+	meshes: IRenderable[];
 }

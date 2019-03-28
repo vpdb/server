@@ -24,6 +24,8 @@ import { BiffParser } from './biff-parser';
 import { Binary } from './binary';
 import { LzwReader } from './gltf/lzw-reader';
 
+const LZWDecoder = require('lzw-stream/decoder');
+
 export class Texture extends BiffParser {
 
 	public storageName: string;
@@ -137,15 +139,18 @@ class BaseTexture {
 	public static async get(storage: Storage, itemName: string, pos: number, width: number, height: number): Promise<BaseTexture> {
 		const pdsBuffer = new BaseTexture(width, height);
 		console.log('--- reading rest of the storage buffer...');
-		const compressedData = (await storage.read(itemName)).slice(pos);
-		console.log('--- shoving %s bytes into decompressor...', compressedData.length);
-		const lzwReader = new LzwReader(compressedData, width, height, pdsBuffer.pitch());
-		const data = lzwReader.decompress();
+		const data = await new Promise<Buffer>((resolve, reject) => {
+			const strm = storage.stream(itemName, pos); //.pipe(new LZWDecoder());
+			const bufs: Buffer[] = [];
+			strm.on('error', reject);
+			strm.on('data', (buf: Buffer) => bufs.push(buf));
+			strm.on('end', () => resolve(Buffer.concat(bufs)));
+		});
 		console.log('---- got %s bytes of BITS data!', data.length);
 		return pdsBuffer;
 	}
 
 	public pitch(): number {
-		return (this.format == BaseTexture.RGBA ? 4 : 3 * 4) * this.width;
+		return (this.format === BaseTexture.RGBA ? 4 : 3 * 4) * this.width;
 	}
 }

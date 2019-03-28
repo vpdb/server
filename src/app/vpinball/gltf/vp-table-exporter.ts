@@ -24,12 +24,13 @@ import {
 	Group,
 	Material as ThreeMaterial,
 	Mesh,
-	MeshStandardMaterial, PerspectiveCamera,
+	MeshStandardMaterial,
+	PerspectiveCamera,
 	PointLight,
-	RGBAFormat, RGBFormat,
+	RGBAFormat,
+	RGBFormat,
 	Scene,
 	Texture,
-	Vector3,
 } from 'three';
 import { logger } from '../../common/logger';
 import { BumperItem } from '../bumper-item';
@@ -145,9 +146,9 @@ export class VpTableExporter extends BaseExporter {
 			material.emissive = new Color(materialInfo.cGlossy);
 			material.emissiveIntensity = 0.1;
 
+			material.transparent = true;
 			if (materialInfo.bOpacityActive) {
-				material.transparent = true;
-				material.opacity = materialInfo.fOpacity;
+				material.opacity = materialInfo.bOpacityActive ? materialInfo.fOpacity : 1;
 			}
 
 			material.side = DoubleSide;

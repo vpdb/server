@@ -1,5 +1,5 @@
+/* tslint:disable:no-console no-bitwise */
 const MAX_CODES = 4095;
-const FILE_BUF_SIZE = 4096;
 const CODE_MASK = [
 	0,
 	0x0001, 0x0003,
@@ -7,48 +7,42 @@ const CODE_MASK = [
 	0x001F, 0x003F,
 	0x007F, 0x00FF,
 	0x01FF, 0x03FF,
-	0x07FF, 0x0FFF
+	0x07FF, 0x0FFF,
 ];
 
 export class LzwReader {
 
-	pstm: BufferPtr;
-
-	msDelayCur: number;
+	private pstm: BufferPtr;
 
 	/* output */
-	pbBitsOutCur: BufferPtr;
-	cbStride: number;
-	bad_code_count: number;
+	private readonly pbBitsOutCur: BufferPtr;
+	private readonly cbStride: number;
+	private badCodeCount: number;
 
 	/* Static variables */
-	curr_size: number;                 /* The current code size */
-	clear: number;                     /* Value for a clear code */
-	ending: number;                    /* Value for a ending code */
-	newcodes: number;                  /* First available code */
-	top_slot: number;                  /* Highest code for current size */
-	slot: number;                      /* Last read code */
+	private currSize: number;                 /* The current code size */
+	private clear: number;                     /* Value for a clear code */
+	private ending: number;                    /* Value for a ending code */
+	private newCodes: number;                  /* First available code */
+	private topSlot: number;                  /* Highest code for current size */
+	private slot: number;                      /* Last read code */
 
 	/* The following static variables are used
-	 * for seperating out codes
+	 * for separating out codes
 	 */
-	navail_bytes: number;              /* # bytes left in block */
-	nbits_left: number;                /* # bits left in current byte */
-	b1: number;                       /* Current byte */
-	byte_buff = Buffer.alloc(257);           /* Current block */
-	pbytes: BufferPtr;                  /* points to byte_buff - Pointer to next byte in block */
+	private numAvailBytes: number;              /* # bytes left in block */
+	private numBitsLeft: number;                /* # bits left in current byte */
+	private b1: number;                       /* Current byte */
+	private byteBuff = Buffer.alloc(257);           /* Current block */
+	private pBytes: BufferPtr;                  /* points to byte_buff - Pointer to next byte in block */
 
-	stack = Buffer.alloc(MAX_CODES + 1);     /* Stack for storing pixels */
-	suffix = Buffer.alloc(MAX_CODES + 1);    /* Suffix table */
-	prefix: number[] = [];   /* Prefix linked list */
+	private stack = Buffer.alloc(MAX_CODES + 1);     /* Stack for storing pixels */
+	private suffix = Buffer.alloc(MAX_CODES + 1);    /* Suffix table */
+	private prefix: number[] = [];   /* Prefix linked list */
 
-	cfilebuffer: number;
-
-	width: number;
-	height: number;
-	linesleft: number;
-
-	readahead: number; // How many
+	private readonly width: number;
+	private readonly height: number;
+	private linesLeft: number;
 
 	constructor(pstm: Buffer, width: number, height: number, pitch: number) {
 		for (let i = 0; i < MAX_CODES + 1; i++) {
@@ -57,27 +51,28 @@ export class LzwReader {
 		this.cbStride = pitch;
 		this.pbBitsOutCur = new BufferPtr(Buffer.alloc(pitch * height));
 
-		this.bad_code_count = 0;
-
-		this.cfilebuffer = FILE_BUF_SIZE - 1;
-		this.readahead = FILE_BUF_SIZE;
+		this.badCodeCount = 0;
 
 		this.pstm = new BufferPtr(pstm);
 
 		this.width = width; // 32-bit picture
 		this.height = height;
-		this.linesleft = height + 1; // +1 because 1 gets taken o
+		this.linesLeft = height + 1; // +1 because 1 gets taken o
 		console.log('+++ lzw reader initialized at %sx%s with destination of %s bytes.', this.width, this.height, this.pbBitsOutCur.getBuffer().length);
 	}
 
 	public decompress(): Buffer {
 
 		let sp: BufferPtr; // points to this.stack
-		let bufptr: BufferPtr; // points to this.buf
+		let bufPtr: BufferPtr; // points to this.buf
 		let buf: BufferPtr;
-		let bufcnt: number;
+		let bufCnt: number;
 
-		let c, oc, fc, code, size: number;
+		let c: number;
+		let oc: number;
+		let fc: number;
+		let code: number;
+		let size: number;
 
 		/* Initialize for decoding a new image...
 		 */
@@ -86,7 +81,7 @@ export class LzwReader {
 		   if (size < 2 || 9 < size)
 		   return (BAD_CODE_SIZE);*/
 		size = 8;
-		this.init_exp(size);
+		this.initExp(size);
 
 		/* Initialize in case they forgot to put in a clear code.
 		 * (This shouldn't happen, but we'll try and decode it anyway...)
@@ -100,8 +95,8 @@ export class LzwReader {
 		/* Set up the stack pointer and decode buffer pointer
 		 */
 		sp = new BufferPtr(this.stack);
-		bufptr = BufferPtr.fromPtr(buf);
-		bufcnt = this.width;
+		bufPtr = BufferPtr.fromPtr(buf);
+		bufCnt = this.width;
 
 		/* This is the main loop.  For each code we get we pass through the
 		 * linked list of prefix codes, pushing the corresponding "character" for
@@ -111,7 +106,7 @@ export class LzwReader {
 		 * included for the clear code, and the whole thing ends when we get
 		 * an ending code.
 		 */
-		while ((c = this.get_next_code()) !== this.ending) {
+		while ((c = this.getNextCode()) !== this.ending) {
 
 			/* If we had a file error, return without completing the decode
 			 */
@@ -123,14 +118,14 @@ export class LzwReader {
 			/* If the code is a clear code, reinitialize all necessary items.
 			 */
 			if (c === this.clear) {
-				this.curr_size = size + 1;
-				this.slot = this.newcodes;
-				this.top_slot = 1 << this.curr_size;
+				this.currSize = size + 1;
+				this.slot = this.newCodes;
+				this.topSlot = 1 << this.currSize;
 
 				/* Continue reading codes until we get a non-clear code
 				 * (Another unlikely, but possible case...)
 				 */
-				while ((c = this.get_next_code()) === this.clear) {
+				while ((c = this.getNextCode()) === this.clear) {
 					// do nothing
 				}
 
@@ -157,15 +152,15 @@ export class LzwReader {
 				 * of the line, we have to send the buffer to the out_line()
 				 * routine...
 				 */
-				if (bufptr.getPos()) {
-					bufptr.set(c);
-					bufptr.incr();
+				if (bufPtr.getPos()) {
+					bufPtr.set(c);
+					bufPtr.incr();
 				}
 
-				if (--bufcnt == 0) {
+				if (--bufCnt === 0) {
 					buf = this.NextLine();
-					bufptr = BufferPtr.fromPtr(buf);
-					bufcnt = this.width;
+					bufPtr = BufferPtr.fromPtr(buf);
+					bufCnt = this.width;
 				}
 
 			} else {
@@ -184,7 +179,7 @@ export class LzwReader {
 				 */
 				if (code >= this.slot) {
 					if (code > this.slot) {
-						++this.bad_code_count;
+						++this.badCodeCount;
 					}
 					code = oc;
 					sp.set(fc);
@@ -194,7 +189,7 @@ export class LzwReader {
 				/* Here we scan back along the linked list of prefixes, pushing
 				 * helpless characters (ie. suffixes) onto the stack as we do so.
 				 */
-				while (code >= this.newcodes) {
+				while (code >= this.newCodes) {
 					sp.set(this.suffix[code]);
 					sp.incr();
 					code = this.prefix[code];
@@ -209,17 +204,18 @@ export class LzwReader {
 				 */
 				sp.set(code);
 				sp.incr();
-				if (this.slot < this.top_slot) {
+				if (this.slot < this.topSlot) {
 					fc = code;
 					this.suffix[this.slot] = fc;	// = code;
 					this.prefix[this.slot++] = oc;
 					oc = c;
 				}
-				if (this.slot >= this.top_slot)
-					if (this.curr_size < 12) {
-						this.top_slot <<= 1;
-						++this.curr_size;
+				if (this.slot >= this.topSlot) {
+					if (this.currSize < 12) {
+						this.topSlot <<= 1;
+						++this.currSize;
 					}
+				}
 
 				/* Now that we've pushed the decoded string (in reverse order)
 				 * onto the stack, lets pop it off and put it into our decode
@@ -229,99 +225,96 @@ export class LzwReader {
 				while (sp.getPos() > 0) {
 
 					sp.decr();
-					bufptr.set(sp.get());
-					bufptr.incr();
-					if (--bufcnt == 0) {
+					bufPtr.set(sp.get());
+					bufPtr.incr();
+					if (--bufCnt === 0) {
 						buf = this.NextLine();
-						bufptr = buf;
-						bufcnt = this.width;
+						bufPtr = buf;
+						bufCnt = this.width;
 					}
 				}
 			}
 		}
-
-		//!! BUG - is all this necessary?  Is it correct?
-		let toofar = this.readahead - this.cfilebuffer; // bytes we already read that we shouldn't have
-		toofar--;  // m_readahead == the byte we just read, so we actually used up one more than the math shows
-
 		return this.pbBitsOutCur.getBuffer();
 	}
 
-	private init_exp(size: number): void {
-		this.curr_size = size + 1;
-		this.top_slot = 1 << this.curr_size;
+	private initExp(size: number): void {
+		this.currSize = size + 1;
+		this.topSlot = 1 << this.currSize;
 		this.clear = 1 << size;
 		this.ending = this.clear + 1;
-		this.slot = this.newcodes = this.ending + 1;
-		this.navail_bytes = this.nbits_left = 0;
+		this.slot = this.newCodes = this.ending + 1;
+		this.numAvailBytes = this.numBitsLeft = 0;
 	}
 
 	private NextLine(): BufferPtr {
 		const pbRet = BufferPtr.fromPtr(this.pbBitsOutCur);
 		this.pbBitsOutCur.incr(this.cbStride);	// fucking upside down dibs!
-		this.linesleft--;
+		this.linesLeft--;
 		return pbRet;
 	}
 
-	private get_next_code(): number {
+	private getNextCode(): number {
 		let ret: number;
-		if (this.nbits_left === 0) {
-			if (this.navail_bytes <= 0) {
+		if (this.numBitsLeft === 0) {
+			if (this.numAvailBytes <= 0) {
 
 				/* Out of bytes in current block, so read next block
 				 */
-				this.pbytes = new BufferPtr(this.byte_buff);
-				if ((this.navail_bytes = this.get_byte()) < 0) {
-					return (this.navail_bytes);
+				this.pBytes = new BufferPtr(this.byteBuff);
+				this.numAvailBytes = this.getByte();
+				if (this.numAvailBytes < 0) {
+					return (this.numAvailBytes);
 
-				} else if (this.navail_bytes) {
-					for (let i = 0; i < this.navail_bytes; ++i) {
-						let x = this.get_byte();
+				} else if (this.numAvailBytes) {
+					for (let i = 0; i < this.numAvailBytes; ++i) {
+						const x = this.getByte();
 						if (x < 0) {
 							return x;
 						}
-						this.byte_buff[i] = x;
+						this.byteBuff[i] = x;
 					}
 				}
 			}
-			this.b1 = this.pbytes.get();
-			this.pbytes.incr();
-			this.nbits_left = 8;
-			--this.navail_bytes;
+			this.b1 = this.pBytes.get();
+			this.pBytes.incr();
+			this.numBitsLeft = 8;
+			--this.numAvailBytes;
 		}
 
-		ret = this.b1 >> (8 - this.nbits_left);
-		while (this.curr_size > this.nbits_left) {
-			if (this.navail_bytes <= 0) {
+		ret = this.b1 >> (8 - this.numBitsLeft);
+		while (this.currSize > this.numBitsLeft) {
+			if (this.numAvailBytes <= 0) {
 
 				/* Out of bytes in current block, so read next block
 				 */
-				this.pbytes = new BufferPtr(this.byte_buff);
-				if ((this.navail_bytes = this.get_byte()) < 0) {
-					return this.navail_bytes;
+				this.pBytes = new BufferPtr(this.byteBuff);
+				this.numAvailBytes = this.getByte();
+				if (this.numAvailBytes < 0) {
+					return this.numAvailBytes;
 
-				} else if (this.navail_bytes) {
-					for (let i = 0; i < this.navail_bytes; ++i) {
-						let x = this.get_byte();
+				} else if (this.numAvailBytes) {
+					for (let i = 0; i < this.numAvailBytes; ++i) {
+						const x = this.getByte();
 						if (x < 0) {
 							return x;
 						}
-						this.byte_buff[i] = x;
+						this.byteBuff[i] = x;
 					}
 				}
 			}
-			this.b1 = this.pbytes.get();
-			this.pbytes.incr();
-			ret |= this.b1 << this.nbits_left;
-			this.nbits_left += 8;
-			--this.navail_bytes;
+			this.b1 = this.pBytes.get();
+			this.pBytes.incr();
+			ret |= this.b1 << this.numBitsLeft;
+			this.numBitsLeft += 8;
+			--this.numAvailBytes;
 		}
-		this.nbits_left -= this.curr_size;
-		ret &= CODE_MASK[this.curr_size];
+		this.numBitsLeft -= this.currSize;
+		ret &= CODE_MASK[this.currSize];
 		return ret;
 	}
 
-	private get_byte(): number {
+	private getByte(): number {
 		return this.pstm.next();
 	}
 }
@@ -336,7 +329,7 @@ class BufferPtr {
 	}
 
 	public static fromPtr(ptr: BufferPtr) {
-		return new BufferPtr(ptr.buf, ptr.pos)
+		return new BufferPtr(ptr.buf, ptr.pos);
 	}
 
 	public incr(offset: number = 1) {
@@ -357,10 +350,6 @@ class BufferPtr {
 
 	public set(value: number) {
 		this.buf[this.pos] = value;
-	}
-
-	public setPos(pos: number) {
-		this.pos = pos;
 	}
 
 	public getPos(): number {

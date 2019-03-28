@@ -6617,6 +6617,11 @@
 				}
 			}
 		},
+		"lzw-stream": {
+			"version": "1.0.0",
+			"resolved": "https://registry.npmjs.org/lzw-stream/-/lzw-stream-1.0.0.tgz",
+			"integrity": "sha1-kVWCCnzDjTADTxt5tp2k52Xb5Mo="
+		},
 		"macos-release": {
 			"version": "2.0.0",
 			"resolved": "https://registry.npmjs.org/macos-release/-/macos-release-2.0.0.tgz",

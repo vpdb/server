@@ -31,9 +31,14 @@ export class Image {
 
 	private metadata: Metadata;
 
-	constructor(buffer: Buffer, optimize: boolean = true) {
+	constructor(data: Buffer | sharp.Sharp, optimize: boolean) {
 		this.optimize = optimize;
-		this.sharp = sharp(buffer);
+		if (data instanceof Buffer) {
+			this.sharp = sharp(data);
+
+		} else {
+			this.sharp = data;
+		}
 	}
 
 	public async init(): Promise<this> {

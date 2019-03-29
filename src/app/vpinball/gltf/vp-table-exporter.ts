@@ -184,7 +184,7 @@ export class VpTableExporter extends BaseExporter {
 			if (!data || !data.length) {
 				return false;
 			}
-			const image = await new Image(data, VpTableExporter.optimize).init();
+			const image = await new Image(objMap.isRaw() ? objMap.getRawImage() : data, VpTableExporter.optimize).init();
 			materialMap.image = image;
 			materialMap.format = image.hasTransparency() ? RGBAFormat : RGBFormat;
 			materialMap.needsUpdate = true;

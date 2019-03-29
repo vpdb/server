@@ -20,7 +20,7 @@
 import { inflate } from 'zlib';
 import { ReadResult } from '../common/ole-doc';
 
-export type OnBiffResult = (buffer: Buffer, tag: string, offset: number, len: number) => Promise<void>;
+export type OnBiffResult = (buffer: Buffer, tag: string, offset: number, len: number) => Promise<number>;
 export interface OnBiffResultStream<T> {
 	onStart: () => T;
 	onTag: (item: T) => OnBiffResult;
@@ -74,8 +74,8 @@ export class BiffParser {
 				return -1;
 			}
 			const cb = nested ? nested.onTag(nestedItem) : callback;
-			await cb(dataResult, tag, result.storageOffset + relStartPos, len + relEndPos);
-			return len + 4;
+			const skip = await cb(dataResult, tag, result.storageOffset + relStartPos, len + relEndPos);
+			return (skip || len) + 4;
 		};
 	}
 

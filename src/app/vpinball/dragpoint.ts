@@ -232,30 +232,19 @@ export class DragPoint extends GameItem {
 		return dblareasq < accuracy;
 	}
 
-	public async fromTag(buffer: Buffer, tag: string): Promise<void> {
+	public async fromTag(buffer: Buffer, tag: string): Promise<number> {
 		switch (tag) {
-			case 'VCEN':
-				this.vertex = Vertex3D.get(buffer);
-				break;
-			case 'POSZ':
-				this.vertex.z = this.getFloat(buffer);
-				break;
-			case 'SMTH':
-				this.fSmooth = this.getBool(buffer);
-				break;
-			case 'SLNG':
-				this.fSlingshot = this.getBool(buffer);
-				break;
-			case 'ATEX':
-				this.fAutoTexture = this.getBool(buffer);
-				break;
-			case 'TEXC':
-				this.texturecoord = this.getFloat(buffer);
-				break;
+			case 'VCEN': this.vertex = Vertex3D.get(buffer); break;
+			case 'POSZ': this.vertex.z = this.getFloat(buffer); break;
+			case 'SMTH': this.fSmooth = this.getBool(buffer); break;
+			case 'SLNG': this.fSlingshot = this.getBool(buffer); break;
+			case 'ATEX': this.fAutoTexture = this.getBool(buffer); break;
+			case 'TEXC': this.texturecoord = this.getFloat(buffer); break;
 			default:
 				this.getUnknownBlock(buffer, tag);
 				break;
 		}
+		return 0;
 	}
 
 	public getName(): string {

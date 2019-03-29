@@ -132,7 +132,7 @@ export class BumperItem extends GameItem implements IRenderable {
 		return generatedMesh;
 	}
 
-	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<void> {
+	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<number> {
 		switch (tag) {
 			case 'PIID': this.pdata = this.getInt(buffer); break;
 			case 'VCEN': this.vCenter = Vertex2D.get(buffer); break;
@@ -174,5 +174,6 @@ export class BumperItem extends GameItem implements IRenderable {
 				this.getUnknownBlock(buffer, tag);
 				break;
 		}
+		return 0;
 	}
 }

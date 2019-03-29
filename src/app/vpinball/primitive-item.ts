@@ -137,7 +137,7 @@ export class PrimitiveItem extends GameItem implements IPositionable, IRenderabl
 		};
 	}
 
-	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number, storage: Storage, itemName: string): Promise<void> {
+	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number, storage: Storage, itemName: string): Promise<number> {
 		switch (tag) {
 			case 'PIID': this.pdata = this.getInt(buffer); break;
 			case 'VPOS': this.data.vPosition = Vector3.get(buffer); break;
@@ -209,6 +209,7 @@ export class PrimitiveItem extends GameItem implements IPositionable, IRenderabl
 				this.getUnknownBlock(buffer, tag);
 				break;
 		}
+		return 0;
 	}
 
 	private getVertices(decompressedBuffer: Buffer, num: number): Vertex3DNoTex2[] {

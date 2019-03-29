@@ -24,8 +24,6 @@ import { BiffParser } from './biff-parser';
 import { Binary } from './binary';
 import { LzwReader } from './gltf/lzw-reader';
 
-const LZWDecoder = require('lzw-stream/decoder');
-
 export class Texture extends BiffParser {
 
 	public storageName: string;
@@ -100,7 +98,7 @@ export class Texture extends BiffParser {
 		return serialized;
 	}
 
-	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number, storage: Storage, itemName: string): Promise<void> {
+	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number, storage: Storage, itemName: string): Promise<number> {
 		switch (tag) {
 			case 'NAME': this.szName = this.getString(buffer, len); break;
 			case 'INME': this.szInternalName = this.getString(buffer, len); break;
@@ -108,11 +106,14 @@ export class Texture extends BiffParser {
 			case 'WDTH': this.width = this.getInt(buffer); break;
 			case 'HGHT': this.height = this.getInt(buffer); break;
 			case 'ALTV': this.alphaTestValue = this.getFloat(buffer); break;
-			case 'BITS': this.pdsBuffer = await BaseTexture.get(storage, itemName, offset, this.width, this.height); break;
+			case 'BITS':
+				this.pdsBuffer = await BaseTexture.get(storage, itemName, offset, this.width, this.height);
+				return this.pdsBuffer.size();
 			//case 'BITS': logger.warn(null, '[Texture.fromTag] Ignoring BITS tag for %s at %s, width = %s, height = %s.', this.szName, this.storageName, this.width, this.height); break;
 			case 'LINK': logger.warn(null, '[Texture.fromTag] Ignoring LINK tag for %s at %s, implement when understood what it is.', this.szName, this.storageName); break;
 			default: logger.warn(null, '[Texture.fromTag] Unknown tag "%s".', tag);
 		}
+		return 0;
 	}
 }
 
@@ -136,17 +137,41 @@ class BaseTexture {
 		this.format = format;
 	}
 
+	public size(): number {
+		return this.data.length;
+	}
+
 	public static async get(storage: Storage, itemName: string, pos: number, width: number, height: number): Promise<BaseTexture> {
 		const pdsBuffer = new BaseTexture(width, height);
-		console.log('--- reading rest of the storage buffer...');
-		const data = await new Promise<Buffer>((resolve, reject) => {
-			const strm = storage.stream(itemName, pos); //.pipe(new LZWDecoder());
-			const bufs: Buffer[] = [];
-			strm.on('error', reject);
-			strm.on('data', (buf: Buffer) => bufs.push(buf));
-			strm.on('end', () => resolve(Buffer.concat(bufs)));
-		});
-		console.log('---- got %s bytes of BITS data!', data.length);
+		const compressed = await storage.read(itemName, pos);
+
+		const lzw = new LzwReader(compressed, width * 4, height, pdsBuffer.pitch());
+		pdsBuffer.data = lzw.decompress();
+
+		const lpitch = pdsBuffer.pitch();
+
+		// Assume our 32 bit color structure
+		// Find out if all alpha values are zero
+		const pch = pdsBuffer.data;
+		let allAlphaZero = true;
+		loop: for (let i = 0; i < height; i++) {
+			for (let l = 0; l < width; l++) {
+				if (pch[i * lpitch + 4 * l + 3] !== 0) {
+					allAlphaZero = false;
+					break loop;
+				}
+			}
+		}
+
+		// all alpha values are 0: set them all to 0xff
+		if (allAlphaZero) {
+			for (let i = 0; i < height; i++) {
+				for (let l = 0; l < width; l++) {
+					pch[i * lpitch + 4 * l + 3] = 0xff;
+				}
+			}
+		}
+
 		return pdsBuffer;
 	}
 

@@ -17,6 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import sharp = require('sharp');
 import { logger } from '../common/logger';
 import { Storage } from '../common/ole-doc';
 import { settings } from '../common/settings';
@@ -34,7 +35,7 @@ export class Texture extends BiffParser {
 	public height: number;
 	public alphaTestValue: number;
 	public binary: Binary;
-	public pdsBuffer: BaseTexture;
+	public pdsBuffer: BaseTexture = null;
 
 	public static async fromStorage(storage: Storage, itemName: string): Promise<Texture> {
 		const texture = new Texture();
@@ -59,7 +60,7 @@ export class Texture extends BiffParser {
 					onTag: binary => binary.fromTag.bind(binary),
 					onEnd: binary => texture.binary = binary,
 				},
-			}
+			},
 		});
 	}
 
@@ -98,6 +99,20 @@ export class Texture extends BiffParser {
 		return serialized;
 	}
 
+	public isRaw(): boolean {
+		return this.pdsBuffer !== null;
+	}
+
+	public getRawImage(): sharp.Sharp {
+		return sharp(this.pdsBuffer.getData(), {
+			raw: {
+				width: this.width,
+				height: this.height,
+				channels: 4,
+			},
+		}).jpeg();
+	}
+
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number, storage: Storage, itemName: string): Promise<number> {
 		switch (tag) {
 			case 'NAME': this.szName = this.getString(buffer, len); break;
@@ -109,7 +124,6 @@ export class Texture extends BiffParser {
 			case 'BITS':
 				this.pdsBuffer = await BaseTexture.get(storage, itemName, offset, this.width, this.height);
 				return this.pdsBuffer.size();
-			//case 'BITS': logger.warn(null, '[Texture.fromTag] Ignoring BITS tag for %s at %s, width = %s, height = %s.', this.szName, this.storageName, this.width, this.height); break;
 			case 'LINK': logger.warn(null, '[Texture.fromTag] Ignoring LINK tag for %s at %s, implement when understood what it is.', this.szName, this.storageName); break;
 			default: logger.warn(null, '[Texture.fromTag] Unknown tag "%s".', tag);
 		}
@@ -139,6 +153,10 @@ class BaseTexture {
 
 	public size(): number {
 		return this.data.length;
+	}
+
+	public getData(): Buffer {
+		return this.data;
 	}
 
 	public static async get(storage: Storage, itemName: string, pos: number, width: number, height: number): Promise<BaseTexture> {
@@ -171,7 +189,6 @@ class BaseTexture {
 				}
 			}
 		}
-
 		return pdsBuffer;
 	}
 

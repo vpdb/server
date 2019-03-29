@@ -241,7 +241,7 @@ export class Storage {
 			return null;
 		}
 
-		bytesToRead = bytesToRead || streamEntry.size;
+		bytesToRead = bytesToRead || streamEntry.size - offset;
 		const shortStream = streamEntry.size < this.doc.header.shortStreamMax;
 		const secSize = shortStream ? this.doc.header.shortSecSize : this.doc.header.secSize;
 		const allocationTable = shortStream ? this.doc.SSAT : this.doc.SAT;

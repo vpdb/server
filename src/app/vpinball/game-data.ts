@@ -165,7 +165,7 @@ export class GameData extends BiffParser {
 		};
 	}
 
-	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<void> {
+	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<number> {
 		switch (tag) {
 			case 'PIID': this.pdata[0] = this.getInt(buffer); break;
 			case 'LEFT': this.left = this.getFloat(buffer); break;
@@ -292,6 +292,7 @@ export class GameData extends BiffParser {
 			case 'MATE': this.materials = this._getMaterials(buffer, len, this.numMaterials); break;
 			case 'PHMA': this._getPhysicsMaterials(buffer, len, this.numMaterials); break;
 		}
+		return 0;
 	}
 
 	private _getMaterials(buffer: Buffer, len: number, num: number): Material[] {

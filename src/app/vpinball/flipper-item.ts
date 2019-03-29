@@ -269,7 +269,7 @@ export class FlipperItem extends GameItem implements IRenderable {
 		return result;
 	}
 
-	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<void> {
+	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<number> {
 		switch (tag) {
 			case 'PIID': this.pdata = this.getInt(buffer); break;
 			case 'VCEN': this.Center = Vertex2D.get(buffer); break;
@@ -314,6 +314,7 @@ export class FlipperItem extends GameItem implements IRenderable {
 				this.getUnknownBlock(buffer, tag);
 				break;
 		}
+		return 0;
 	}
 
 	private static vertsTipBottom = [

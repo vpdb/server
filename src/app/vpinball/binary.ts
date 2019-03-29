@@ -35,7 +35,7 @@ export class Binary extends BiffParser {
 	public pos: number;
 	public len: number;
 
-	public async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<void> {
+	public async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<number> {
 		switch (tag) {
 			case 'NAME': this.szName = this.getString(buffer, len); break;
 			case 'INME': this.szInternalName = this.getString(buffer, len); break;
@@ -47,5 +47,6 @@ export class Binary extends BiffParser {
 				break;
 			default: logger.warn(null, '[Binary.fromTag] Unknown tag "%s".', tag);
 		}
+		return 0;
 	}
 }

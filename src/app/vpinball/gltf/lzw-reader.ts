@@ -152,10 +152,8 @@ export class LzwReader {
 				 * of the line, we have to send the buffer to the out_line()
 				 * routine...
 				 */
-				if (bufPtr.getPos()) {
-					bufPtr.set(c);
-					bufPtr.incr();
-				}
+				bufPtr.set(c);
+				bufPtr.incr();
 
 				if (--bufCnt === 0) {
 					buf = this.NextLine();
@@ -345,7 +343,7 @@ class BufferPtr {
 	}
 
 	public next(): number {
-		return this.buf[++this.pos];
+		return this.buf[this.pos++];
 	}
 
 	public set(value: number) {
@@ -358,5 +356,9 @@ class BufferPtr {
 
 	public getBuffer(): Buffer {
 		return this.buf;
+	}
+
+	public toString() {
+		return `${this.pos}:[ ${this.buf.slice(this.pos).join(', ')} ]`;
 	}
 }

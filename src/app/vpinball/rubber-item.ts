@@ -27,7 +27,6 @@ import { FLT_MAX, FLT_MIN, Mesh } from './mesh';
 import { SplineVertex } from './spline-vertex';
 import { Vertex3D, Vertex3DNoTex2 } from './vertex';
 import { VpTable } from './vp-table';
-import temp = require('busboy');
 
 export class RubberItem extends GameItem implements IRenderable {
 
@@ -244,32 +243,14 @@ export class RubberItem extends GameItem implements IRenderable {
 		this.middlePoint.y = (maxy + miny) * 0.5;
 		this.middlePoint.z = (maxz + minz) * 0.5;
 
+		const [ vertexMatrix, normalMatrix ] = this.getMatrices(table);
 		return {
 			rubber: {
-				mesh: this.transform(table, mesh),
+				mesh: this.applyTransformation(mesh, vertexMatrix, normalMatrix),
 				map: table.getTexture(this.szImage),
 				material: table.getMaterial(this.szMaterial),
 			},
 		};
-	}
-
-	protected transform(table: VpTable, mesh: Mesh) {
-
-		const [ vertexMatrix, normalMatrix ] = this.getMatrices(table);
-		for (const vertex of mesh.vertices) {
-			const vert = new Vertex3D(vertex.x, vertex.y, vertex.z);
-			vert.applyMatrix4(vertexMatrix);
-			vertex.x = vert.x;
-			vertex.y = vert.y;
-			vertex.z = vert.z;
-
-			const norm = new Vertex3D(vertex.nx, vertex.ny, vertex.nz);
-			norm.applyMatrix4(normalMatrix);
-			vertex.nx = norm.x;
-			vertex.ny = norm.y;
-			vertex.nz = norm.z;
-		}
-		return mesh;
 	}
 
 	private getMatrices(table: VpTable): [Matrix4, Matrix4] {

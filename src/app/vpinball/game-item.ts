@@ -17,13 +17,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { Matrix4 } from 'three';
 import { logger } from '../common/logger';
+import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { Material } from './material';
 import { IPositionable, Mesh } from './mesh';
 import { Texture } from './texture';
+import { Vertex3D } from './vertex';
 import { VpTable } from './vp-table';
-import { Storage } from '../common/ole-doc';
 
 export abstract class GameItem extends BiffParser {
 
@@ -88,7 +90,6 @@ export abstract class GameItem extends BiffParser {
 
 	public abstract getName(): string;
 
-
 	protected async getData(storage: Storage, itemName: string, offset: number, len: number): Promise<Buffer> {
 		return storage.read(itemName, offset, len);
 	}
@@ -101,6 +102,23 @@ export abstract class GameItem extends BiffParser {
 				logger.warn(null, '[GameItem.parseUnknownBlock]: Unknown block "%s".', tag);
 				break;
 		}
+	}
+
+	protected applyTransformation(mesh: Mesh, vertexMatrix: Matrix4, normalMatrix: Matrix4, getZ?: (x: number) => number): Mesh {
+		for (const vertex of mesh.vertices) {
+			const vert = new Vertex3D(vertex.x, vertex.y, vertex.z);
+			vert.applyMatrix4(vertexMatrix);
+			vertex.x = vert.x;
+			vertex.y = vert.y;
+			vertex.z = getZ ? getZ(vert.z) : vert.z;
+
+			const norm = new Vertex3D(vertex.nx, vertex.ny, vertex.nz);
+			norm.applyMatrix4(normalMatrix);
+			vertex.nx = norm.x;
+			vertex.ny = norm.y;
+			vertex.nz = norm.z;
+		}
+		return mesh;
 	}
 }
 

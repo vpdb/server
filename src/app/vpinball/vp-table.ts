@@ -26,7 +26,7 @@ import { FlipperItem } from './flipper-item';
 import { GameData } from './game-data';
 import { GameItem, IRenderable, Meshes } from './game-item';
 import { GateItem } from './gate-item';
-import { VpTableExporter } from './gltf/vp-table-exporter';
+import { VpTableExporter, VpTableExporterOptions } from './gltf/vp-table-exporter';
 import { HitTargetItem } from './hit-target-item';
 import { KickerItem } from './kicker-item';
 import { LightItem } from './light-item';
@@ -144,13 +144,13 @@ export class VpTable implements IRenderable {
 		return this.gameData.tableheight;
 	}
 
-	public async exportGltf(): Promise<string> {
-		const exporter = new VpTableExporter(this);
+	public async exportGltf(opts?: VpTableExporterOptions): Promise<string> {
+		const exporter = new VpTableExporter(this, opts || {});
 		return await exporter.exportGltf();
 	}
 
-	public async exportGlb(): Promise<Buffer> {
-		const exporter = new VpTableExporter(this);
+	public async exportGlb(opts?: VpTableExporterOptions): Promise<Buffer> {
+		const exporter = new VpTableExporter(this, opts || {});
 		return await exporter.exportGlb();
 	}
 

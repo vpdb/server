@@ -43,7 +43,7 @@ import { SurfaceItem } from '../surface-item';
 import { Texture as VpTexture } from '../texture';
 import { VpTable } from '../vp-table';
 import { BaseExporter } from './base-exporter';
-import { GLTFExporter } from './gltf-exporter';
+import { GLTFExporter, ParseOptions } from './gltf-exporter';
 import { Image } from './image';
 
 export class VpTableExporter extends BaseExporter {
@@ -55,11 +55,13 @@ export class VpTableExporter extends BaseExporter {
 	private static readonly scale = 0.05;
 	private readonly table: VpTable;
 	private readonly scene: Scene;
-	private playfield: Group;
+	private readonly opts: VpTableExporterOptions;
+	private readonly playfield: Group;
 
-	constructor(table: VpTable) {
+	constructor(table: VpTable, opts: VpTableExporterOptions) {
 		super();
 
+		this.opts = Object.assign({}, defaultOptions, opts);
 		const camera = new PerspectiveCamera(45, 1, 0.1, 100000);
 		camera.position.set(0, 70.0, 70.0);
 		camera.lookAt(0, -10, 0);
@@ -75,31 +77,36 @@ export class VpTableExporter extends BaseExporter {
 	}
 
 	public async exportGltf(): Promise<string> {
-		return JSON.stringify(await this.export<any>({ binary: false }));
+		this.opts.gltfOptions.binary = false;
+		return JSON.stringify(await this.export<any>());
 	}
 
 	public async exportGlb(): Promise<Buffer> {
-		return this.arrayBufferToBuffer(await this.export<ArrayBuffer>({ binary: true }));
+		this.opts.gltfOptions.binary = true;
+		return this.arrayBufferToBuffer(await this.export<ArrayBuffer>());
 	}
 
-	private async export<T>(opts: any = {}): Promise<T> {
+	private async export<T>(): Promise<T> {
 		const renderGroups: IRenderGroup[] = [
-			{ name: 'playfield', meshes: [ this.table ] },
-			{ name: 'primitives', meshes: values<PrimitiveItem>(this.table.primitives) },
-			{ name: 'rubbers', meshes: values<RubberItem>(this.table.rubbers) },
-			{ name: 'surfaces', meshes: values<SurfaceItem>(this.table.surfaces) },
-			{ name: 'flippers', meshes: values<FlipperItem>(this.table.flippers) },
-			{ name: 'bumpers', meshes: values<BumperItem>(this.table.bumpers) },
-			{ name: 'ramps', meshes: values<RampItem>(this.table.ramps) },
-			{ name: 'lights', meshes: this.table.lights },
-			{ name: 'hitTargets', meshes: this.table.hitTargets },
-			{ name: 'gates', meshes: this.table.gates },
-			{ name: 'kickers', meshes: this.table.kickers },
-			{ name: 'triggers', meshes: this.table.triggers },
+			{ name: 'playfield', meshes: [ this.table ], enabled: this.opts.exportPlayfield },
+			{ name: 'primitives', meshes: values<PrimitiveItem>(this.table.primitives), enabled: this.opts.exportPrimitives },
+			{ name: 'rubbers', meshes: values<RubberItem>(this.table.rubbers), enabled: this.opts.exportRubbers },
+			{ name: 'surfaces', meshes: values<SurfaceItem>(this.table.surfaces), enabled: this.opts.exportSurfaces},
+			{ name: 'flippers', meshes: values<FlipperItem>(this.table.flippers), enabled: this.opts.exportFlippers},
+			{ name: 'bumpers', meshes: values<BumperItem>(this.table.bumpers), enabled: this.opts.exportBumpers },
+			{ name: 'ramps', meshes: values<RampItem>(this.table.ramps), enabled: this.opts.exportRamps },
+			{ name: 'lightsBulbs', meshes: this.table.lights, enabled: this.opts.exportLightBulbs },
+			{ name: 'hitTargets', meshes: this.table.hitTargets, enabled: this.opts.exportHitTargets },
+			{ name: 'gates', meshes: this.table.gates, enabled: this.opts.exportGates },
+			{ name: 'kickers', meshes: this.table.kickers, enabled: this.opts.exportKickers },
+			{ name: 'triggers', meshes: this.table.triggers, enabled: this.opts.exportTriggers },
 		];
 
 		// meshes
 		for (const group of renderGroups) {
+			if (!group.enabled) {
+				continue;
+			}
 			const g = new Group();
 			g.name = group.name;
 			for (const renderable of group.meshes.filter(i => i.isVisible())) {
@@ -121,7 +128,10 @@ export class VpTableExporter extends BaseExporter {
 		}
 
 		// lights
-		for (const lightInfo of this.table.lights.filter(l => l.showBulbMesh)) {
+		const lightInfos = this.opts.exportAllLights
+			? this.table.lights
+			: (this.opts.exportLightBulbLights ? this.table.lights.filter(l => l.showBulbMesh) : []);
+		for (const lightInfo of lightInfos) {
 			const light = new PointLight(lightInfo.color, lightInfo.intensity, lightInfo.falloff * VpTableExporter.scale);
 			light.castShadow = false;
 			light.position.set(lightInfo.vCenter.x, lightInfo.vCenter.y, -10);
@@ -130,7 +140,7 @@ export class VpTableExporter extends BaseExporter {
 
 		this.scene.add(this.playfield);
 
-		const gltfExporter = new GLTFExporter(Object.assign({}, opts, { embedImages: true }));
+		const gltfExporter = new GLTFExporter(Object.assign({}, this.opts.gltfOptions, { embedImages: true }));
 		return gltfExporter.parse(this.scene);
 	}
 
@@ -211,4 +221,47 @@ export class VpTableExporter extends BaseExporter {
 interface IRenderGroup {
 	name: string;
 	meshes: IRenderable[];
+	enabled: boolean;
 }
+
+export interface VpTableExporterOptions {
+	applyMaterials?: boolean;
+	applyTextures?: boolean;
+	optimizeTextures?: boolean;
+	exportPlayfield?: boolean;
+	exportPrimitives?: boolean;
+	exportRubbers?: boolean;
+	exportSurfaces?: boolean;
+	exportFlippers?: boolean;
+	exportBumpers?: boolean;
+	exportRamps?: boolean;
+	exportLightBulbs?: boolean;
+	exportLightBulbLights?: boolean;
+	exportAllLights?: boolean;
+	exportHitTargets?: boolean;
+	exportGates?: boolean;
+	exportKickers?: boolean;
+	exportTriggers?: boolean;
+	gltfOptions?: ParseOptions;
+}
+
+const defaultOptions: VpTableExporterOptions = {
+	applyMaterials: true,
+	applyTextures: true,
+	optimizeTextures: false,
+	exportPlayfield: true,
+	exportPrimitives: true,
+	exportRubbers: true,
+	exportSurfaces: true,
+	exportFlippers: true,
+	exportBumpers: true,
+	exportRamps: true,
+	exportLightBulbs: true,
+	exportLightBulbLights: true,
+	exportAllLights: false,
+	exportHitTargets: true,
+	exportGates: true,
+	exportKickers: true,
+	exportTriggers: true,
+	gltfOptions: {},
+};

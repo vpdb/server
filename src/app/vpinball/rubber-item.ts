@@ -17,6 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { Math as M, Matrix4, Vector3 } from 'three';
 import { Storage } from '../common/ole-doc';
 import { settings } from '../common/settings';
 import { BiffParser } from './biff-parser';
@@ -26,6 +27,7 @@ import { FLT_MAX, FLT_MIN, Mesh } from './mesh';
 import { SplineVertex } from './spline-vertex';
 import { Vertex3D, Vertex3DNoTex2 } from './vertex';
 import { VpTable } from './vp-table';
+import temp = require('busboy');
 
 export class RubberItem extends GameItem implements IRenderable {
 
@@ -244,11 +246,55 @@ export class RubberItem extends GameItem implements IRenderable {
 
 		return {
 			rubber: {
-				mesh,
+				mesh: this.transform(table, mesh),
 				map: table.getTexture(this.szImage),
 				material: table.getMaterial(this.szMaterial),
 			},
 		};
+	}
+
+	protected transform(table: VpTable, mesh: Mesh) {
+
+		const [ vertexMatrix, normalMatrix ] = this.getMatrices(table);
+		for (const vertex of mesh.vertices) {
+			const vert = new Vertex3D(vertex.x, vertex.y, vertex.z);
+			vert.applyMatrix4(vertexMatrix);
+			vertex.x = vert.x;
+			vertex.y = vert.y;
+			vertex.z = vert.z;
+
+			const norm = new Vertex3D(vertex.nx, vertex.ny, vertex.nz);
+			norm.applyMatrix4(normalMatrix);
+			vertex.nx = norm.x;
+			vertex.ny = norm.y;
+			vertex.nz = norm.z;
+		}
+		return mesh;
+	}
+
+	private getMatrices(table: VpTable): [Matrix4, Matrix4] {
+		const vertexMatrix = new Matrix4();
+		const normalMatrix = new Matrix4();
+		const tempMatrix = new Matrix4();
+
+		normalMatrix.makeRotationZ(M.degToRad(this.rotZ));
+		tempMatrix.makeRotationY(M.degToRad(this.rotY));
+		normalMatrix.multiplyMatrices(normalMatrix, tempMatrix);
+		tempMatrix.makeRotationX(M.degToRad(this.rotX));
+		normalMatrix.multiplyMatrices(normalMatrix, tempMatrix);
+
+		tempMatrix.makeTranslation(-this.middlePoint.x, -this.middlePoint.y, -this.middlePoint.z);
+		vertexMatrix.multiplyMatrices(tempMatrix, normalMatrix);
+		tempMatrix.makeScale(1.0, 1.0, table.getScaleZ());
+		vertexMatrix.multiplyMatrices(vertexMatrix, tempMatrix);
+		if (this.height === this.hitHeight) {   // do not z-scale the hit mesh
+			tempMatrix.makeTranslation(this.middlePoint.x, this.middlePoint.y, this.height + table.getTableHeight());
+		} else {
+			tempMatrix.makeTranslation(this.middlePoint.x, this.middlePoint.y, this.height * table.getScaleZ() + table.getTableHeight());
+		}
+		vertexMatrix.multiplyMatrices(vertexMatrix, tempMatrix);
+
+		return [vertexMatrix, normalMatrix];
 	}
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<number> {

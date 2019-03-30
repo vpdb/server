@@ -41,9 +41,12 @@ export class BiffParser {
 			const data = result.data;
 			if (data.length < 4) {
 				// todo why does this happen with example table?
-				return -1;
+				return null;
 			}
 			let len = data.readInt32LE(0);
+			if (len > data.length - 4) {
+				return -(len + 4);
+			}
 			let dataResult: Buffer;
 			const tag = data.slice(4, 8).toString();
 			let relStartPos = 8;
@@ -71,7 +74,7 @@ export class BiffParser {
 					nested = null;
 					return len + 4;
 				}
-				return -1;
+				return null;
 			}
 			const cb = nested ? nested.onTag(nestedItem) : callback;
 			const skip = await cb(dataResult, tag, result.storageOffset + relStartPos, len + relEndPos);

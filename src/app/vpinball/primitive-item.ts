@@ -214,6 +214,9 @@ export class PrimitiveItem extends GameItem implements IPositionable, IRenderabl
 
 	private getVertices(decompressedBuffer: Buffer, num: number): Vertex3DNoTex2[] {
 		const vertices: Vertex3DNoTex2[] = [];
+		if (decompressedBuffer.length < num * Vertex3DNoTex2.size) {
+			throw new Error(`Tried to read ${num} vertices for primitive item "${this.getName()}" (${this.itemName}), but only ${decompressedBuffer.length} bytes available.`);
+		}
 		for (let i = 0; i < num; i++) {
 			vertices.push(Vertex3DNoTex2.get(decompressedBuffer, i));
 		}

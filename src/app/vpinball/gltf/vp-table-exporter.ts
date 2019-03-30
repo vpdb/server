@@ -48,10 +48,6 @@ import { Image } from './image';
 
 export class VpTableExporter extends BaseExporter {
 
-	private static readonly applyMaterials = true;
-	private static readonly applyTextures = true;
-	private static readonly optimize = false;
-
 	private static readonly scale = 0.05;
 	private readonly table: VpTable;
 	private readonly scene: Scene;
@@ -148,7 +144,7 @@ export class VpTableExporter extends BaseExporter {
 		const material = new MeshStandardMaterial();
 		material.name = `material:${obj.mesh.name}`;
 		const materialInfo = obj.material;
-		if (materialInfo && VpTableExporter.applyMaterials) {
+		if (materialInfo && this.opts.applyMaterials) {
 
 			material.color = new Color(materialInfo.cBase);
 			material.roughness = 1 - materialInfo.fRoughness;
@@ -164,7 +160,7 @@ export class VpTableExporter extends BaseExporter {
 			material.side = DoubleSide;
 		}
 
-		if (VpTableExporter.applyTextures) {
+		if (this.opts.applyTextures) {
 			if (obj.map) {
 				material.map = new Texture();
 				if (await this.loadMap(obj.mesh.name, obj.map, material.map)) {
@@ -194,7 +190,7 @@ export class VpTableExporter extends BaseExporter {
 			if (!data || !data.length) {
 				return false;
 			}
-			const image = await new Image(objMap.isRaw() ? objMap.getRawImage() : data, VpTableExporter.optimize).init();
+			const image = await new Image(objMap.isRaw() ? objMap.getRawImage() : data, this.opts.optimizeTextures).init();
 			materialMap.image = image;
 			materialMap.format = image.hasTransparency() ? RGBAFormat : RGBFormat;
 			materialMap.needsUpdate = true;

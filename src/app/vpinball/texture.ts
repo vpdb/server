@@ -122,8 +122,9 @@ export class Texture extends BiffParser {
 			case 'HGHT': this.height = this.getInt(buffer); break;
 			case 'ALTV': this.alphaTestValue = this.getFloat(buffer); break;
 			case 'BITS':
-				this.pdsBuffer = await BaseTexture.get(storage, itemName, offset, this.width, this.height);
-				return this.pdsBuffer.size();
+				let compressedLen: number;
+				[ this.pdsBuffer, compressedLen ] = await BaseTexture.get(storage, itemName, offset, this.width, this.height);
+				return compressedLen;
 			case 'LINK': logger.warn(null, '[Texture.fromTag] Ignoring LINK tag for %s at %s, implement when understood what it is.', this.szName, this.storageName); break;
 			default: logger.warn(null, '[Texture.fromTag] Unknown tag "%s".', tag);
 		}
@@ -159,12 +160,13 @@ class BaseTexture {
 		return this.data;
 	}
 
-	public static async get(storage: Storage, itemName: string, pos: number, width: number, height: number): Promise<BaseTexture> {
+	public static async get(storage: Storage, itemName: string, pos: number, width: number, height: number): Promise<[BaseTexture, number]> {
 		const pdsBuffer = new BaseTexture(width, height);
 		const compressed = await storage.read(itemName, pos);
 
 		const lzw = new LzwReader(compressed, width * 4, height, pdsBuffer.pitch());
-		pdsBuffer.data = lzw.decompress();
+		let compressedLen: number;
+		[ pdsBuffer.data, compressedLen ] = lzw.decompress();
 
 		const lpitch = pdsBuffer.pitch();
 
@@ -189,7 +191,7 @@ class BaseTexture {
 				}
 			}
 		}
-		return pdsBuffer;
+		return [ pdsBuffer, compressedLen ];
 	}
 
 	public pitch(): number {

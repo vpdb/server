@@ -61,7 +61,7 @@ export class LzwReader {
 		console.log('+++ lzw reader initialized at %sx%s with destination of %s bytes.', this.width, this.height, this.pbBitsOutCur.getBuffer().length);
 	}
 
-	public decompress(): Buffer {
+	public decompress(): [ Buffer, number ] {
 
 		let sp: BufferPtr; // points to this.stack
 		let bufPtr: BufferPtr; // points to this.buf
@@ -233,7 +233,7 @@ export class LzwReader {
 				}
 			}
 		}
-		return this.pbBitsOutCur.getBuffer();
+		return [ this.pbBitsOutCur.getBuffer(), this.pstm.getPos() ];
 	}
 
 	private initExp(size: number): void {

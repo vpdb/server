@@ -124,7 +124,7 @@ export class Texture extends BiffParser {
 			case 'BITS':
 				let compressedLen: number;
 				[ this.pdsBuffer, compressedLen ] = await BaseTexture.get(storage, itemName, offset, this.width, this.height);
-				return compressedLen;
+				return compressedLen + 4;
 			case 'LINK': logger.warn(null, '[Texture.fromTag] Ignoring LINK tag for %s at %s, implement when understood what it is.', this.szName, this.storageName); break;
 			default: logger.warn(null, '[Texture.fromTag] Unknown tag "%s".', tag);
 		}

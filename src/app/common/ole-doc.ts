@@ -334,9 +334,9 @@ export class Storage {
 			} else if (nextSec === 1) { // if last buffer can be reused as first buffer, fetch second and shift
 				secOffset++;
 				if (shortStream) {
-					slidingBuffer = Buffer.concat([slidingBuffer.slice(secSize), await this.doc.readShortSectors(secIds.slice(secOffset + 1, secOffset + 2))], secSize * 2);
+					slidingBuffer = Buffer.concat([slidingBuffer.slice(slidingBuffer.length - secSize), await this.doc.readShortSectors(secIds.slice(secOffset + 1, secOffset + 2))], secSize * 2);
 				} else {
-					slidingBuffer = Buffer.concat([slidingBuffer.slice(secSize), await this.doc.readSectors(secIds.slice(secOffset + 1, secOffset + 2))], secSize * 2);
+					slidingBuffer = Buffer.concat([slidingBuffer.slice(slidingBuffer.length - secSize), await this.doc.readSectors(secIds.slice(secOffset + 1, secOffset + 2))], secSize * 2);
 				}
 			}
 			offset -= nextSec * secSize;
@@ -345,8 +345,27 @@ export class Storage {
 				data: resultBuffer,
 				storageOffset,
 			};
-			const len = await next(result);
-			if (len <= 0) {
+			let len = await next(result);
+
+			// if len is negative, we need to read more!
+			if (len < 0) {
+				// read missing sectors
+				const remainingLen = -len - resultBuffer.length;
+				const numSecs = Math.ceil(remainingLen / secSize);
+				if (remainingLen > bytes - storageOffset) {
+					throw new Error(`Cannot read ${remainingLen} bytes when only ${bytes - storageOffset} remain in stream.`);
+				}
+				//console.log('need %s bytes, reading remaining %s in %s sectors...', -len, remainingLen, numSecs);
+				let missingBuffer: Buffer;
+				if (shortStream) {
+					missingBuffer = await this.doc.readShortSectors(secIds.slice(secOffset + 2, secOffset + 2 + numSecs));
+				} else {
+					missingBuffer = await this.doc.readSectors(secIds.slice(secOffset + 2, secOffset + 2 + numSecs));
+				}
+				result.data = Buffer.concat([result.data, missingBuffer]);
+				len = await next(result);
+			}
+			if (len === null) {
 				stream.emit('end');
 				return Promise.resolve(null);
 			}

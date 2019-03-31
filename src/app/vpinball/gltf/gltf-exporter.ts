@@ -693,7 +693,12 @@ export class GLTFExporter {
 				}));
 
 			} else {
-				gltfImage.uri = 'todo';
+				this.pending.push(new Promise(resolve => {
+					image.getImage().then(buffer => {
+						gltfImage.uri = `data:image/${image.getFormat()};base64,${buffer.toString('base64')}`;
+						resolve();
+					});
+				}));
 			}
 
 		} else {

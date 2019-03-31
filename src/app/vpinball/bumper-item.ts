@@ -58,7 +58,6 @@ export class BumperItem extends GameItem implements IRenderable {
 	public fReflectionEnabled: boolean;
 
 	public static async fromStorage(storage: Storage, itemName: string): Promise<BumperItem> {
-		console.log('new bumper at %s', itemName);
 		const bumperItem = new BumperItem();
 		await storage.streamFiltered(itemName, 4, BiffParser.stream(bumperItem.fromTag.bind(bumperItem)));
 		return bumperItem;

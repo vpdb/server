@@ -23,7 +23,7 @@ import {
 	DoubleSide,
 	Group,
 	Material as ThreeMaterial,
-	Mesh,
+	Mesh, MeshPhongMaterial,
 	MeshStandardMaterial,
 	PerspectiveCamera,
 	PointLight,
@@ -141,23 +141,27 @@ export class VpTableExporter extends BaseExporter {
 	}
 
 	private async getMaterial(obj: RenderInfo): Promise<ThreeMaterial> {
-		const material = new MeshStandardMaterial();
+		const material = new MeshPhongMaterial();
 		material.name = `material:${obj.mesh.name}`;
 		const materialInfo = obj.material;
 		if (materialInfo && this.opts.applyMaterials) {
 
+			material.shininess = 7.843137;
 			material.color = new Color(materialInfo.cBase);
-			material.roughness = 1 - materialInfo.fRoughness;
-			material.metalness = materialInfo.bIsMetal ? 0.7 : 0.0;
-			material.emissive = new Color(materialInfo.cGlossy);
-			material.emissiveIntensity = 0.1;
+			material.specular = new Color(materialInfo.cGlossy);
+			material.opacity = materialInfo.bOpacityActive ? materialInfo.fOpacity : 1;
 
-			material.transparent = true;
-			if (materialInfo.bOpacityActive) {
-				material.opacity = materialInfo.bOpacityActive ? materialInfo.fOpacity : 1;
-			}
-
-			material.side = DoubleSide;
+			// material.roughness = 1 - materialInfo.fRoughness;
+			// material.metalness = materialInfo.bIsMetal ? 0.7 : 0.0;
+			// material.emissive = new Color(materialInfo.cGlossy);
+			// material.emissiveIntensity = 0.1;
+			//
+			// material.transparent = true;
+			// if (materialInfo.bOpacityActive) {
+			// 	material.opacity = materialInfo.bOpacityActive ? materialInfo.fOpacity : 1;
+			// }
+			//
+			// material.side = DoubleSide;
 		}
 
 		if (this.opts.applyTextures) {

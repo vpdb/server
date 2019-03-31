@@ -67,6 +67,10 @@ export class Image {
 		return this;
 	}
 
+	public getFormat(): string {
+		return this.metadata.format;
+	}
+
 	public async getImage(): Promise<Buffer> {
 		switch (this.metadata.format) {
 

@@ -33,7 +33,7 @@ export class BumperItem extends GameItem implements IRenderable {
 
 	public pdata: number;
 	public vCenter: Vertex2D;
-	public radius: number;
+	public radius: number = 1.0;
 	public szCapMaterial: string;
 	public szRingMaterial: string;
 	public szBaseMaterial: string;
@@ -43,21 +43,22 @@ export class BumperItem extends GameItem implements IRenderable {
 	public threshold: number;
 	public force: number;
 	public scatter: number;
-	public heightScale: number;
+	public heightScale: number = 1.0;
 	public ringSpeed: number;
-	public orientation: number;
+	public orientation: number = 0.0;
 	public ringDropOffset: number;
 	public szSurface: string;
 	public wzName: string;
-	public fCapVisible: boolean;
-	public fBaseVisible: boolean;
-	public fRingVisible: boolean;
-	public fSkirtVisible: boolean;
+	public fCapVisible: boolean = true;
+	public fBaseVisible: boolean = true;
+	public fRingVisible: boolean = true;
+	public fSkirtVisible: boolean = true;
 	public fHitEvent: boolean;
 	public fCollidable: boolean;
 	public fReflectionEnabled: boolean;
 
 	public static async fromStorage(storage: Storage, itemName: string): Promise<BumperItem> {
+		console.log('new bumper at %s', itemName);
 		const bumperItem = new BumperItem();
 		await storage.streamFiltered(itemName, 4, BiffParser.stream(bumperItem.fromTag.bind(bumperItem)));
 		return bumperItem;
@@ -82,6 +83,9 @@ export class BumperItem extends GameItem implements IRenderable {
 	}
 
 	public getMeshes(table: VpTable): Meshes {
+		if (!this.vCenter) {
+			throw new Error(`Cannot export bumper ${this.getName()} without vCenter.`);
+		}
 		const meshes: Meshes = {};
 		const matrix = new Matrix4();
 		matrix.makeRotationZ(M.radToDeg(this.orientation));
@@ -117,17 +121,17 @@ export class BumperItem extends GameItem implements IRenderable {
 		const scalexy = this.radius;
 		const generatedMesh = mesh.clone();
 		for (const vertex of generatedMesh.vertices) {
-			let vert = new Vertex3D(vertex.x, vertex.y, vertex.z);
+			const vert = new Vertex3D(vertex.x, vertex.y, vertex.z);
 			vert.applyMatrix4(matrix);
 			vertex.x = vert.x * scalexy + this.vCenter.x;
 			vertex.y = vert.y * scalexy + this.vCenter.y;
 			vertex.z = zPos(vert.z);
 
-			vert = new Vertex3D(vertex.nx, vertex.ny, vertex.nz);
-			vert.applyMatrix4(matrix);
-			vertex.nx = vert.x;
-			vertex.ny = vert.y;
-			vertex.nz = vert.z;
+			const normal = new Vertex3D(vertex.nx, vertex.ny, vertex.nz);
+			normal.applyMatrix4(matrix);
+			vertex.nx = normal.x;
+			vertex.ny = normal.y;
+			vertex.nz = normal.z;
 		}
 		return generatedMesh;
 	}

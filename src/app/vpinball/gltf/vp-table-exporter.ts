@@ -79,7 +79,7 @@ export class VpTableExporter extends BaseExporter {
 
 	public async exportGlb(): Promise<Buffer> {
 		this.opts.gltfOptions.binary = true;
-		return this.arrayBufferToBuffer(await this.export<ArrayBuffer>());
+		return await this.export<Buffer>();
 	}
 
 	private async export<T>(): Promise<T> {
@@ -127,14 +127,25 @@ export class VpTableExporter extends BaseExporter {
 		const lightInfos = this.opts.exportAllLights
 			? this.table.lights
 			: (this.opts.exportLightBulbLights ? this.table.lights.filter(l => l.showBulbMesh) : []);
+		const lightGroup = new Group();
+		lightGroup.name = 'lights';
+
 		for (const lightInfo of lightInfos) {
 			const light = new PointLight(lightInfo.color, lightInfo.intensity, lightInfo.falloff * VpTableExporter.scale);
-			light.castShadow = false;
+			light.castShadow = this.opts.enableShadows;
 			light.position.set(lightInfo.vCenter.x, lightInfo.vCenter.y, -10);
-			this.playfield.add(light);
+			lightGroup.add(light);
 		}
+		this.playfield.add(lightGroup);
 
 		this.scene.add(this.playfield);
+
+		if (this.opts.enableShadows) {
+			this.scene.traverse(obj => {
+				obj.receiveShadow = true;
+				obj.castShadow = true;
+			});
+		}
 
 		const gltfExporter = new GLTFExporter(Object.assign({}, this.opts.gltfOptions, { embedImages: true }));
 		return gltfExporter.parse(this.scene);
@@ -150,6 +161,8 @@ export class VpTableExporter extends BaseExporter {
 			material.color = new Color(materialInfo.cBase);
 			material.specular = new Color(materialInfo.cGlossy);
 			material.opacity = materialInfo.bOpacityActive ? materialInfo.fOpacity : 1;
+			material.transparent = true;
+			material.side = DoubleSide;
 
 			// material.roughness = 1 - materialInfo.fRoughness;
 			// material.metalness = materialInfo.bIsMetal ? 0.7 : 0.0;
@@ -207,15 +220,6 @@ export class VpTableExporter extends BaseExporter {
 			await doc.close();
 		}
 	}
-
-	private arrayBufferToBuffer(ab: ArrayBuffer) {
-		const buffer = new Buffer(ab.byteLength);
-		const view = new Uint8Array(ab);
-		for (let i = 0; i < buffer.length; ++i) {
-			buffer[i] = view[i];
-		}
-		return buffer;
-	}
 }
 
 interface IRenderGroup {
@@ -242,6 +246,7 @@ export interface VpTableExporterOptions {
 	exportGates?: boolean;
 	exportKickers?: boolean;
 	exportTriggers?: boolean;
+	enableShadows?: boolean;
 	gltfOptions?: ParseOptions;
 }
 
@@ -263,5 +268,6 @@ const defaultOptions: VpTableExporterOptions = {
 	exportGates: true,
 	exportKickers: true,
 	exportTriggers: true,
+	enableShadows: false,
 	gltfOptions: {},
 };

@@ -1890,7 +1890,7 @@ interface GLTFNode {
 	rotation?: number[];
 	translation?: number[];
 	scale?: number[];
-	matrix?: Float32Array;
+	matrix?: number[];
 	extras?: any;
 	camera?: number;
 	extensions?: {

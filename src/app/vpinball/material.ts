@@ -40,23 +40,23 @@ export class Material {
 	 * > fRoughness = exp2f(10.0f * mat->m_fRoughness + 1.0f); // map from 0..1 to 2..2048
 	 *
 	 */
-	public fRoughness: number;
-	public fGlossyImageLerp: number;
-	public fThickness: number;
-	public fEdge: number;
-	public fEdgeAlpha: number;
-	public fOpacity: number;
-	public cBase: number;
-	public cGlossy: number;
-	public cClearcoat: number;
-	public bIsMetal: boolean;
-	public bOpacityActive: boolean;
+	public fRoughness: number = 0.0;
+	public fGlossyImageLerp: number = 1.0;
+	public fThickness: number = 0.05;
+	public fEdge: number = 1.0;
+	public fEdgeAlpha: number = 1.0;
+	public fOpacity: number = 1.0;
+	public cBase: number = 0xB469FF;
+	public cGlossy: number = 0.0;
+	public cClearcoat: number = 0.0;
+	public bIsMetal: boolean = false;
+	public bOpacityActive: boolean = false;
 
 	//physics
-	public fElasticity: number;
-	public fElasticityFalloff: number;
-	public fFriction: number;
-	public fScatterAngle: number;
+	public fElasticity: number = 0.0;
+	public fElasticityFalloff: number = 0.0;
+	public fFriction: number = 0.0;
+	public fScatterAngle: number = 0.0;
 
 	public static fromSaved(saveMaterial: SaveMaterial): Material {
 		const material = new Material();

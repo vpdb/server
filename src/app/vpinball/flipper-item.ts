@@ -124,7 +124,7 @@ export class FlipperItem extends GameItem implements IRenderable {
 		const normalMatrix = new Matrix4();
 		const tempMatrix = new Matrix4();
 		vertexMatrix.makeTranslation(this.Center.x, this.Center.y, 0);
-		tempMatrix.makeRotationZ(M.radToDeg(-this.StartAngle));
+		tempMatrix.makeRotationZ(M.degToRad(this.StartAngle));
 		vertexMatrix.multiply(tempMatrix);
 		normalMatrix.multiply(tempMatrix);
 		return [vertexMatrix, normalMatrix];
@@ -133,7 +133,7 @@ export class FlipperItem extends GameItem implements IRenderable {
 	private generateMeshes(table: VpTable): { base: Mesh, rubber?: Mesh } {
 
 		const fullMatrix = new Matrix4();
-		//fullMatrix.makeRotationZ(M.degToRad(180.0));
+		fullMatrix.makeRotationZ(M.degToRad(-180.0));
 
 		const height = table.getSurfaceHeight(this.szSurface, this.Center.x, this.Center.y);
 		const baseScale = 10.0;

@@ -77,7 +77,7 @@ export class FileUtil {
 			const metadata = await Metadata.readFrom(requestState, file, originalPath);
 			if (metadata) {
 				file.metadata = metadata;
-				await state.models.File.findByIdAndUpdate(file._id, { metadata }).exec();
+				await state.models.File.findOneAndUpdate({ _id: file._id }, { metadata }).exec();
 			} else {
 				logger.warn(requestState, '[FileUtil.create] No metadata reader matched for %s, cannot validate integrity!', file.toDetailedString());
 			}

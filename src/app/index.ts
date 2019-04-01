@@ -52,6 +52,9 @@ shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 
 		// bootstrap models
 		logger.info(null, '[app] Connecting to MongoDB...');
+		mongoose.set('useNewUrlParser', true);
+		mongoose.set('useFindAndModify', false);
+		mongoose.set('useCreateIndex', true);
 		await mongoose.connect(config.vpdb.db, { useNewUrlParser: true });
 
 		// bootstrap endpoints

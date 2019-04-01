@@ -397,7 +397,7 @@ async function moderateEntity(this: ModeratedDocument, modelName: string, user: 
 	} as ModerationDataEvent;
 
 	// update entity
-	await model.findByIdAndUpdate(this._id, {
+	await model.findOneAndUpdate({ _id: this._id }, {
 		'moderation.is_approved': isApproved,
 		'moderation.is_refused': isRefused,
 		$push: { 'moderation.history': event },

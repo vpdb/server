@@ -273,8 +273,10 @@ export class ProcessorWorker {
 			const srcPath = file.getPath(requestState, createdVariation);
 			await processorManager.queueOptimization(requestState, processor, file, srcPath, destPath, createdVariation);
 		}
-		logger.debug(requestState, '[ProcessorWorker.continueCreation] Passed %s to optimization %s processor(s).',
-			file.toShortString(createdVariation), n);
+		if (n > 0) {
+			logger.debug(requestState, '[ProcessorWorker.continueCreation] Passed %s to %s optimization processor(s).',
+				file.toShortString(createdVariation), n);
+		}
 	}
 
 	/**

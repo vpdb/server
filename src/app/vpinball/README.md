@@ -46,7 +46,7 @@ thousands of vertices for screw threads that aren't visible anyways could be
 completely removed or at least simplified.
 
 VPDB might be able to provide a tool for detecting unusual amount of vertices
-in table and reduce them.
+in an uploaded table and reduce them.
 
 A Visual Pinball table consists of many different items. The exporter supports
 all items that are visually rendered on the playfield.
@@ -65,7 +65,8 @@ and end radius and the thickness of the rubber.
 
 ### Bumpers
 
-VP comes with a standard bumper mesh which contains four separate elements:
+Visual Pinball comes with a standard bumper mesh which contains four separate
+elements:
 
 - a base
 - the ring
@@ -76,7 +77,7 @@ Materials and textures may be applied to all elements separately.
 
 ### Triggers
 
-There are a few trigger meshes that VP computes:
+There are a few trigger meshes that Visual Pinball computes:
 
 - three different wire triggers
 - a "D" wire trigger (round)
@@ -95,16 +96,16 @@ Kicker holes can look quite sophisticated. There are a few types:
 
 - two "cup" types
 - two "hole" types
-- a Williams type kicker
-- a Gottlieb type kicker
+- a Williams kicker
+- a Gottlieb kicker
 
 ### Gates
 
 Gates come with a wire mesh and a bracket mesh. The bracket can be optionally 
 hidden. There are a few types of gates:
 
-- a "normal" wire gate and a rectangular once
-- a "normal" and rectangular plate gate
+- a "normal" and a rectangular wire gate
+- a "normal" and a rectangular plate gate
 
 ### Spinners
 
@@ -138,13 +139,12 @@ Visual Pinball provides several types of hit targets, namely:
 
 ### Other (non-visible)
 
-There are other non-visible elements that we currently ignore, such as:
+There are other elements that we currently ignore, such as:
 
 - Timers
 - Plungers
 - Textboxes
 - Decals
-- Tables
 - Light Centers
 - Drag Point
 - Collections

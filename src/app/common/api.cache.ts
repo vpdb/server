@@ -532,7 +532,7 @@ class ApiCache {
 			const refPairs: any[] = [];
 			for (const counter of cacheRoute.counters) {
 				for (const c of counter.counters) {
-					const counters = counter.get(body, c);
+					const counters = counter.get(body as any, c);
 					for (const id of Object.keys(counters)) {
 						refPairs.push(this.getCounterKey(counter.modelName, id, c));
 						refPairs.push(parseInt(counters[id] as any, 10));

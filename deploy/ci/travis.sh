@@ -17,5 +17,7 @@ echo "ffmpeg version: $(ffmpeg -version)"
 echo "pngquant version: $(pngquant --version)"
 echo travis_fold:end:Versions
 
+export LD_PRELOAD="/home/travis/node_modules/sharp/vendor/lib/libz.so"
+
 # Run tests
 npm run test:ci

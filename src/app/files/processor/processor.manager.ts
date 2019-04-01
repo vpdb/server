@@ -227,17 +227,8 @@ class ProcessorManager {
 	 */
 	public async queueCreation(requestState: RequestState, processor: Processor<any>, file: FileDocument, srcPath: string, destPath: string, srcVariation: FileVariation, destVariation: FileVariation): Promise<Job> {
 		const queue = this.queues.get('creation').get(file.getMimeCategory(destVariation));
-		const job = await queue.add({
-			fileId: file.id,
-			processor: processor.name,
-			srcPath,
-			destPath,
-			requestState,
-			srcVariation: srcVariation ? srcVariation.name : undefined,
-			destVariation: destVariation.name,
-		} as JobData, {
-			priority: processor.getOrder(destVariation),
-		} as JobOptions);
+		const jobData = this.getJobData(requestState, processor, file, srcPath, destPath, srcVariation, destVariation);
+		const job = await queue.add(jobData, { priority: processor.getOrder(destVariation) } as JobOptions);
 		logger.debug(requestState, '[ProcessorManager.queueCreation] Added %s based on %s to creation queue with processor %s (%s).',
 			file.toDetailedString(destVariation), file.toDetailedString(srcVariation), processor.name, job.id);
 		return job;
@@ -256,20 +247,34 @@ class ProcessorManager {
 	 */
 	public async queueOptimization(requestState: RequestState, processor: Processor<any>, file: FileDocument, srcPath: string, destPath: string, variation?: FileVariation): Promise<Job> {
 		const queue = this.queues.get('optimization').get(file.getMimeCategory(variation));
-		const job = await queue.add({
+		const jobData = this.getJobData(requestState, processor, file, srcPath, destPath, variation, variation);
+		const job = await queue.add(jobData, { priority: processor.getOrder(variation) } as JobOptions);
+		logger.debug(requestState, '[ProcessorManager.queueOptimization] Added %s to optimization queue with processor %s (%s).',
+			file.toDetailedString(variation), processor.name, job.id);
+		return job;
+	}
+
+	/**
+	 * Returns the job data object.
+	 *
+	 * @param requestState For logging
+	 * @param processor Processor to use
+	 * @param file File to process
+	 * @param srcPath Path to source file
+	 * @param destPath Path to destination file
+	 * @param srcVariation srcVariation Source variation or null if original
+	 * @param destVariation destVariation Destination variation
+	 */
+	public getJobData(requestState: RequestState, processor: Processor<any>, file: FileDocument, srcPath: string, destPath: string, srcVariation?: FileVariation, destVariation?: FileVariation): JobData {
+		return {
 			fileId: file.id,
 			processor: processor.name,
 			srcPath,
 			destPath,
 			requestState,
-			srcVariation: variation ? variation.name : undefined,
-			destVariation: variation ? variation.name : undefined,
-		} as JobData, {
-			priority: processor.getOrder(variation),
-		} as JobOptions);
-		logger.debug(requestState, '[ProcessorManager.queueOptimization] Added %s to optimization queue with processor %s (%s).',
-			file.toDetailedString(variation), processor.name, job.id);
-		return job;
+			srcVariation: srcVariation ? srcVariation.name : undefined,
+			destVariation: destVariation ? destVariation.name : undefined,
+		};
 	}
 }
 

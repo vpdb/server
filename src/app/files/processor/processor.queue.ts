@@ -31,6 +31,8 @@ import { FileDocument } from '../file.document';
 import { FileUtil } from '../file.util';
 import { FileVariation } from '../file.variations';
 import { processorManager } from './processor.manager';
+import { ProcessorWorker } from './processor.worker';
+import { OptimizationProcessor } from './processor';
 
 const renameAsync = promisify(rename);
 const unlinkAsync = promisify(unlink);
@@ -76,30 +78,70 @@ const statAsync = promisify(stat);
 class ProcessorQueue {
 
 	/**
+	 * Re-process a file. Useful in scripts or migrations.
+	 *
+	 * @param requestState For logging
+	 * @param file File to be processed
+	 * @param useWorker Use the async worker queue. If false, do it "synchronously" and resolve when done. Useful for scripts and migrations.
+	 * @param filterVariations If set, filter file variations to create.
+	 * @param filterOptimizations If set, filter optimization processors to execute. Note this only applies to the initial processors,
+	 * 	                          created variations will still go through optimization.
+	 */
+	public async reprocessFile(requestState: RequestState, file: FileDocument, useWorker = true,
+							   filterVariations?: (variation: FileVariation) => boolean,
+							   filterOptimizations?: (processor: OptimizationProcessor<any>) => boolean): Promise<void> {
+
+		const backupPath = file.getPath(null, null, { tmpSuffix: '_original' });
+		const originalPath = file.getPath(null);
+		const path = await FileUtil.exists(backupPath) ? backupPath : originalPath;
+		await processorQueue.processFile(null, file, path, useWorker, filterVariations, filterOptimizations);
+	}
+
+	/**
 	 * Adds a file and its variations to be processed to the corresponding queues.
 	 *
 	 * Note that for creation queues, the source is copied to avoid file access
 	 * conflicts.
 	 *
 	 * @param requestState For logging
-	 * @param {FileDocument} file File to be processed
-	 * @param {string} srcPath Path to source file
+	 * @param file File to be processed
+	 * @param srcPath Path to source file
+	 * @param useWorker Use the async worker queue. If false, do it "synchronously" and resolve when done. Useful for scripts and migrations.
+	 * @param filterCreations If set, filter file variations to create.
+	 * @param filterOptimizations If set, filter optimization processors to execute. Note this only applies to the initial processors,
+	 * 	                          created variations will still go through optimization.
 	 */
-	public async processFile(requestState: RequestState, file: FileDocument, srcPath: string): Promise<void> {
+	public async processFile(requestState: RequestState, file: FileDocument, srcPath: string, useWorker = true,
+							 filterCreations?: (variation: FileVariation) => boolean,
+							 filterOptimizations?: (processor: OptimizationProcessor<any>) => boolean): Promise<void> {
 
 		// add variations creation queue (those with a source will be queued when their source is available)
-		for (const variation of file.getVariations().filter(v => !v.source)) {
+		const variations = filterCreations ? file.getVariations().filter(filterCreations) : file.getVariations();
+		for (const variation of variations.filter(v => !v.source)) {
 			const processor = processorManager.getValidCreationProcessor(requestState, file, null, variation);
 			if (processor) {
 				const destPath = file.getPath(requestState, variation, { tmpSuffix: '_' + processor.name + '.processing' });
-				await processorManager.queueCreation(requestState, processor, file, srcPath, destPath, null, variation);
+				if (useWorker) {
+					await processorManager.queueCreation(requestState, processor, file, srcPath, destPath, null, variation);
+				} else {
+					const jobData = processorManager.getJobData(requestState, processor, file, srcPath, destPath, null, variation);
+					await ProcessorWorker.create({ data: jobData, id: 0 } as Job);
+				}
 			}
 		}
 
 		// add original to optimization queue
-		for (const processor of processorManager.getValidOptimizationProcessors(file)) {
+		const processors = filterOptimizations
+			? processorManager.getValidOptimizationProcessors(file).filter(filterOptimizations)
+			: processorManager.getValidOptimizationProcessors(file);
+		for (const processor of processors) {
 			const destPath = file.getPath(requestState, null, { tmpSuffix: '_' + processor.name + '.processing' });
-			await processorManager.queueOptimization(requestState, processor, file, srcPath, destPath);
+			if (useWorker) {
+				await processorManager.queueOptimization(requestState, processor, file, srcPath, destPath);
+			} else {
+				const jobData = processorManager.getJobData(requestState, processor, file, srcPath, destPath);
+				await ProcessorWorker.optimize({ data: jobData, id: 0 } as Job);
+			}
 		}
 	}
 

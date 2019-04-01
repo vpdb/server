@@ -99,7 +99,7 @@ export class ProcessorWorker {
 				bytes: (await statAsync(destPath)).size,
 				mime_type: variation.mimeType,
 			});
-			await state.models.File.findByIdAndUpdate(file._id, { $set: fileData }, { new: true }).exec();
+			await state.models.File.findOneAndUpdate({ _id: file._id }, { $set: fileData }).exec();
 
 			// abort if deleted
 			if (await ProcessorWorker.isFileDeleted(file)) {
@@ -203,7 +203,7 @@ export class ProcessorWorker {
 					fileData.metadata = await Metadata.readFrom(requestState, file, destPath);
 					fileData.bytes = (await statAsync(destPath)).size;
 				}
-				await state.models.File.findByIdAndUpdate(file._id, { $set: fileData }, { new: true }).exec();
+				await state.models.File.findOneAndUpdate({ _id: file._id }, { $set: fileData }).exec();
 
 				// abort if deleted
 				if (await ProcessorWorker.isFileDeleted(file)) {

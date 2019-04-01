@@ -118,7 +118,7 @@ export abstract class ReleaseAbstractApi extends Api {
 
 				// update metadata
 				const metadata = await Metadata.readFrom(ctx.state, file, file.getPath(ctx.state));
-				await state.models.File.findByIdAndUpdate(file._id, {
+				await state.models.File.findOneAndUpdate({ _id: file._id }, {
 					metadata,
 					file_type: 'playfield-' + (metadata.size.width > metadata.size.height ? 'ws' : 'fs'),
 					preprocessed: file.preprocessed,

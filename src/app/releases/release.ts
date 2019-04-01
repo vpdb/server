@@ -100,16 +100,16 @@ export class Release {
 	public static getLinkedFiles(release: ReleaseDocument | ReleaseDocument[]): FileDocument[] {
 		let files: FileDocument[] = [];
 		if (isArray(release)) {
-			[ files ] = release.map(Release.getLinkedFiles);
+			[files] = release.map(Release.getLinkedFiles);
 			return files || [];
 		}
 		if (release.versions && release.versions.length > 0) {
-			[[files]] = release.versions.map(v => {
+			files = flatten(flatten(release.versions.map(v => {
 				if (v.files && v.files.length > 0) {
 					return v.files.map(f => [f.playfield_image, f.playfield_video, f.file]);
 				}
 				return [];
-			});
+			})));
 		}
 		return files.filter(f => !!f);
 	}

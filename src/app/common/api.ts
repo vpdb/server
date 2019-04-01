@@ -18,7 +18,7 @@
  */
 
 import Router from 'koa-router';
-import { difference, extend, intersection, isObject, keys, map, pick, uniq, values } from 'lodash';
+import { difference, extend, intersection, isEmpty, isObject, keys, map, pick, uniq, values } from 'lodash';
 import { format as formatUrl, parse as parseUrl } from 'url';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
@@ -394,9 +394,9 @@ export abstract class Api {
 		}
 
 		// check plan config if provided
-		if (isObject(planAttrs)) {
+		if (!isEmpty(planAttrs)) {
 			for (const key of keys(planAttrs)) {
-				const val = planAttrs[key];
+				const val: any = planAttrs[key];
 				if (user.planConfig[key] !== val) {
 					throw new ApiError('User <%s> with plan "%s" tried to access `%s` but was denied access due to missing plan configuration (%s is %s instead of %s).',
 						user.email, user._plan, ctx.url, key, val, user.planConfig[key]).display('Access denied').status(403).log();

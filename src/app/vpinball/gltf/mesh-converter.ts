@@ -34,8 +34,8 @@ export class MeshConverter {
 
 		// vertices, normals, uvs
 		for (const vertex of this.mesh.vertices) {
-			state.vertices.push(vertex.x, vertex.y, -vertex.z);
-			state.normals.push(vertex.nx, vertex.ny, -vertex.nz);
+			state.vertices.push(vertex.x, vertex.y, vertex.z);
+			state.normals.push(vertex.nx, vertex.ny, vertex.nz);
 			if (vertex.hasTextureCoordinates()) {
 				state.uvs.push(vertex.tu, 1 - vertex.tv);
 			}

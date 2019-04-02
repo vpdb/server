@@ -23,7 +23,7 @@ import {
 	DoubleSide,
 	Group,
 	Material as ThreeMaterial,
-	Mesh, MeshPhongMaterial,
+	Mesh,
 	MeshStandardMaterial,
 	PerspectiveCamera,
 	PointLight,
@@ -53,6 +53,7 @@ export class VpTableExporter extends BaseExporter {
 	private readonly scene: Scene;
 	private readonly opts: VpTableExporterOptions;
 	private readonly playfield: Group;
+	private readonly images: Map<string, Image> = new Map();
 
 	constructor(table: VpTable, opts: VpTableExporterOptions) {
 		super();
@@ -191,11 +192,17 @@ export class VpTableExporter extends BaseExporter {
 		const doc = await this.table.getDocument();
 		let data: Buffer;
 		try {
-			data = await objMap.getImage(doc.storage('GameStg'));
-			if (!data || !data.length) {
-				return false;
+			let image: Image;
+			if (this.images.has(objMap.getName())) {
+				image = this.images.get(objMap.getName());
+			} else {
+				data = await objMap.getImage(doc.storage('GameStg'));
+				if (!data || !data.length) {
+					return false;
+				}
+				image = await new Image(objMap.getName(), objMap.isRaw() ? objMap.getRawImage() : data, this.opts.optimizeTextures).init();
+				this.images.set(objMap.getName(), image);
 			}
-			const image = await new Image(objMap.isRaw() ? objMap.getRawImage() : data, this.opts.optimizeTextures).init();
 			materialMap.image = image;
 			materialMap.format = image.hasTransparency() ? RGBAFormat : RGBFormat;
 			materialMap.needsUpdate = true;

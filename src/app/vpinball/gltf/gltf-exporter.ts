@@ -136,13 +136,13 @@ export class GLTFExporter {
 	private nodeMap = new Map();
 	private skins: Object3D[] = [];
 	private extensionsUsed: ExtensionsUsed = {};
+	private readonly images: Map<string, GltfId> = new Map();
 	private readonly cachedData = {
 		meshes: new Map<string, number>(),
 		attributes: new Map(),
 		attributesNormalized: new Map(),
 		materials: new Map(),
 		textures: new Map(),
-		images: new Map<Image, { [key: string]: number}>(),
 	};
 	private readonly outputJSON: GltfFile = {
 		asset: {
@@ -565,13 +565,17 @@ export class GLTFExporter {
 
 	/**
 	 * Process and generate a BufferView from an image Blob.
-	 * @param {Blob} blob
+	 * @param blob Image data
+	 * @param uri Identifier
 	 * @returns buffer view index
 	 */
-	private processBufferViewImage(blob: Buffer): number {
+	private processBufferViewImage(blob: Buffer, uri: string): number {
 
 		if (!this.outputJSON.bufferViews) {
 			this.outputJSON.bufferViews = [];
+		}
+		if (this.images.has(uri)) {
+			return this.images.get(uri);
 		}
 		const buffer = this.getPaddedArrayBuffer(blob);
 		const bufferView = {
@@ -582,7 +586,10 @@ export class GLTFExporter {
 
 		this.byteOffset += buffer.byteLength;
 		this.outputJSON.bufferViews.push(bufferView);
-		return this.outputJSON.bufferViews.length - 1;
+		const index = this.outputJSON.bufferViews.length - 1;
+		this.images.set(uri, index);
+
+		return index;
 	}
 
 	/**
@@ -685,16 +692,7 @@ export class GLTFExporter {
 	 */
 	private processImage(image: Image, format: PixelFormat, flipY: boolean) {
 
-		if (!this.cachedData.images.has(image)) {
-			this.cachedData.images.set(image, {});
-		}
-
-		const cachedImages = this.cachedData.images.get(image);
 		const mimeType = format === RGBAFormat ? 'image/png' : 'image/jpeg';
-		const key = mimeType + ':flipY/' + flipY.toString();
-		if (cachedImages[key] !== undefined) {
-			return cachedImages[key];
-		}
 		if (!this.outputJSON.images) {
 			this.outputJSON.images = [];
 		}
@@ -711,7 +709,7 @@ export class GLTFExporter {
 			if (this.options.binary === true) {
 				this.pending.push(new Promise(resolve => {
 					image.getImage().then(buffer => {
-						gltfImage.bufferView = this.processBufferViewImage(buffer);
+						gltfImage.bufferView = this.processBufferViewImage(buffer, image.src);
 						resolve();
 					});
 				}));

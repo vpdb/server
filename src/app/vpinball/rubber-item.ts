@@ -243,39 +243,38 @@ export class RubberItem extends GameItem implements IRenderable {
 		this.middlePoint.y = (maxy + miny) * 0.5;
 		this.middlePoint.z = (maxz + minz) * 0.5;
 
-		const [ vertexMatrix, normalMatrix ] = this.getMatrices(table);
+		const [vertexMatrix, fullMatrix ] = this.getMatrices(table);
 		return {
 			rubber: {
-				mesh: this.applyTransformation(mesh, vertexMatrix, normalMatrix),
+				mesh: this.applyTransformation(mesh, vertexMatrix, fullMatrix),
 				map: table.getTexture(this.szImage),
 				material: table.getMaterial(this.szMaterial),
 			},
 		};
 	}
 
-	private getMatrices(table: VpTable): [Matrix4, Matrix4] {
-		const vertexMatrix = new Matrix4();
-		const normalMatrix = new Matrix4();
-		const tempMatrix = new Matrix4();
+	private getMatrices(table: VpTable): [ Matrix4, Matrix4 ] {
+		const fullMatrix = new Matrix4();
+		const tempMat = new Matrix4();
+		fullMatrix.makeRotationZ(M.degToRad(this.rotZ));
+		tempMat.makeRotationY(M.degToRad(this.rotY));
+		fullMatrix.multiply(tempMat);
+		tempMat.makeRotationX(M.degToRad(this.rotX));
+		fullMatrix.multiply(tempMat);
 
-		normalMatrix.makeRotationZ(M.degToRad(this.rotZ));
-		tempMatrix.makeRotationY(M.degToRad(this.rotY));
-		normalMatrix.multiplyMatrices(normalMatrix, tempMatrix);
-		tempMatrix.makeRotationX(M.degToRad(this.rotX));
-		normalMatrix.multiplyMatrices(normalMatrix, tempMatrix);
-
-		tempMatrix.makeTranslation(-this.middlePoint.x, -this.middlePoint.y, -this.middlePoint.z);
-		vertexMatrix.multiplyMatrices(tempMatrix, normalMatrix);
-		tempMatrix.makeScale(1.0, 1.0, table.getScaleZ());
-		vertexMatrix.multiplyMatrices(vertexMatrix, tempMatrix);
+		const vertMatrix = new Matrix4();
+		tempMat.makeTranslation(-this.middlePoint.x, -this.middlePoint.y, -this.middlePoint.z);
+		vertMatrix.multiplyMatrices(tempMat, fullMatrix);
+		tempMat.makeScale(1.0, 1.0, table.getScaleZ());
+		vertMatrix.multiply(tempMat);
 		if (this.height === this.hitHeight) {   // do not z-scale the hit mesh
-			tempMatrix.makeTranslation(this.middlePoint.x, this.middlePoint.y, this.height + table.getTableHeight());
+			tempMat.makeTranslation(this.middlePoint.x, this.middlePoint.y, this.height + table.getTableHeight());
 		} else {
-			tempMatrix.makeTranslation(this.middlePoint.x, this.middlePoint.y, this.height * table.getScaleZ() + table.getTableHeight());
+			tempMat.makeTranslation(this.middlePoint.x, this.middlePoint.y, this.height * table.getScaleZ() + table.getTableHeight());
 		}
-		vertexMatrix.multiplyMatrices(vertexMatrix, tempMatrix);
+		vertMatrix.multiply(tempMat);
 
-		return [vertexMatrix, normalMatrix];
+		return [ vertMatrix, fullMatrix ];
 	}
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<number> {

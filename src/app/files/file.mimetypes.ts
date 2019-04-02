@@ -73,6 +73,11 @@ export const mimeTypes: { [key: string]: MimeType } = {
 		ext: 'vpx',
 		category: 'table',
 	},
+	'model/gltf-binary': {
+		name: 'GLTF Model',
+		ext: 'glb',
+		category: 'model',
+	},
 	'application/vbscript': {
 		name: 'Visual Basic Script',
 		ext: 'vbs',
@@ -121,5 +126,5 @@ export const mimeTypeCategories = uniq(values(mimeTypes).map(m => m.category));
 export interface MimeType {
 	name: string;
 	ext: string;
-	category: 'image' | 'text' | 'video' | 'audio' | 'script' | 'archive' | 'directb2s' | 'table';
+	category: 'image' | 'text' | 'video' | 'audio' | 'script' | 'archive' | 'directb2s' | 'table' | 'model';
 }

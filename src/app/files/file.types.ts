@@ -124,7 +124,9 @@ class FileTypes {
 	private readonly releaseTable: FileType<FileVariation> = {
 		name: 'release',
 		mimeTypes: ['application/x-visual-pinball-table', 'application/x-visual-pinball-table-x'],
-		variations: [],
+		variations: [
+			{ name: 'gltf', mimeType: 'model/gltf-binary' },
+		],
 	};
 
 	private readonly release: FileType<FileVariation> = {

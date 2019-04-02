@@ -131,50 +131,38 @@ export class VpTableExporter extends BaseExporter {
 		lightGroup.name = 'lights';
 
 		for (const lightInfo of lightInfos) {
-			const light = new PointLight(lightInfo.color, lightInfo.intensity, lightInfo.falloff * VpTableExporter.scale);
+			const light = new PointLight(lightInfo.color, lightInfo.intensity, lightInfo.falloff * VpTableExporter.scale, 2);
+			light.name = 'light:' + lightInfo.getName();
 			light.castShadow = this.opts.enableShadows;
 			light.position.set(lightInfo.vCenter.x, lightInfo.vCenter.y, -10);
 			lightGroup.add(light);
 		}
 		this.playfield.add(lightGroup);
-
-		this.scene.add(this.playfield);
-
 		if (this.opts.enableShadows) {
-			this.scene.traverse(obj => {
+			this.playfield.traverse(obj => {
 				obj.receiveShadow = true;
 				obj.castShadow = true;
 			});
 		}
+
+		this.scene.add(this.playfield);
 
 		const gltfExporter = new GLTFExporter(Object.assign({}, this.opts.gltfOptions, { embedImages: true }));
 		return gltfExporter.parse(this.scene);
 	}
 
 	private async getMaterial(obj: RenderInfo): Promise<ThreeMaterial> {
-		const material = new MeshPhongMaterial();
+		const material = new MeshStandardMaterial();
 		material.name = `material:${obj.mesh.name}`;
 		const materialInfo = obj.material;
 		if (materialInfo && this.opts.applyMaterials) {
 
-			material.shininess = 7.843137;
+			material.metalness = materialInfo.bIsMetal ? 1.0 : 0.0;
+			material.roughness = 1 - materialInfo.fRoughness;
 			material.color = new Color(materialInfo.cBase);
-			material.specular = new Color(materialInfo.cGlossy);
 			material.opacity = materialInfo.bOpacityActive ? materialInfo.fOpacity : 1;
 			material.transparent = true;
 			material.side = DoubleSide;
-
-			// material.roughness = 1 - materialInfo.fRoughness;
-			// material.metalness = materialInfo.bIsMetal ? 0.7 : 0.0;
-			// material.emissive = new Color(materialInfo.cGlossy);
-			// material.emissiveIntensity = 0.1;
-			//
-			// material.transparent = true;
-			// if (materialInfo.bOpacityActive) {
-			// 	material.opacity = materialInfo.bOpacityActive ? materialInfo.fOpacity : 1;
-			// }
-			//
-			// material.side = DoubleSide;
 		}
 
 		if (this.opts.applyTextures) {
@@ -214,7 +202,7 @@ export class VpTableExporter extends BaseExporter {
 			return true;
 		} catch (err) {
 			materialMap.image = Texture.DEFAULT_IMAGE;
-			logger.warn(null, '[VpTableExporter.getMaterial] Error loading map of %s bytes for %s (%s/%s): %s', data ? data.length : '<null>', name, objMap.storageName, objMap.getName(), err.message);
+			logger.warn(null, '[VpTableExporter.loadMap] Error loading map of %s bytes for %s (%s/%s): %s', data ? data.length : '<null>', name, objMap.storageName, objMap.getName(), err.message);
 			return false;
 		} finally {
 			await doc.close();

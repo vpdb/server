@@ -30,9 +30,9 @@ import { state } from '../../state';
 import { FileDocument } from '../file.document';
 import { FileUtil } from '../file.util';
 import { FileVariation } from '../file.variations';
+import { OptimizationProcessor } from './processor';
 import { processorManager } from './processor.manager';
 import { ProcessorWorker } from './processor.worker';
-import { OptimizationProcessor } from './processor';
 
 const renameAsync = promisify(rename);
 const unlinkAsync = promisify(unlink);

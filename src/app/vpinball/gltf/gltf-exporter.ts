@@ -20,7 +20,8 @@
 
 import { cpus } from 'os';
 import {
-	AnimationClip, Bone,
+	AnimationClip,
+	Bone,
 	BufferAttribute,
 	BufferGeometry,
 	Camera,
@@ -30,12 +31,15 @@ import {
 	Geometry,
 	InterleavedBufferAttribute,
 	InterpolateDiscrete,
-	InterpolateLinear, KeyframeTrack, Light,
+	InterpolateLinear,
+	KeyframeTrack,
+	Light,
 	LinearFilter,
 	LinearMipMapLinearFilter,
 	LinearMipMapNearestFilter,
 	Material,
-	Math as M, Matrix4,
+	Math as M,
+	Matrix4,
 	Mesh,
 	MirroredRepeatWrapping,
 	NearestFilter,
@@ -52,7 +56,18 @@ import {
 	TriangleStripDrawMode,
 	Vector3,
 } from 'three';
+import {
+	GltfBufferView,
+	GltfCamera,
+	GltfFile,
+	GltfId,
+	GltfImage,
+	GltfMaterial,
+	GltfMesh,
+	GltfMeshPrimitive, GltfNode, GltfScene,
+} from './gltf';
 import { Image } from './image';
+
 const PromisePool = require('es6-promise-pool');
 
 /**
@@ -129,7 +144,7 @@ export class GLTFExporter {
 		textures: new Map(),
 		images: new Map<Image, { [key: string]: number}>(),
 	};
-	private readonly outputJSON: any = {
+	private readonly outputJSON: GltfFile = {
 		asset: {
 			version: '2.0',
 			generator: 'GLTFExporter',
@@ -522,7 +537,7 @@ export class GLTFExporter {
 			throw err;
 		}
 
-		const gltfBufferView: BufferView = {
+		const gltfBufferView: GltfBufferView = {
 			buffer: this.processBuffer(dataView),
 			byteOffset: this.byteOffset,
 			byteLength,
@@ -670,11 +685,20 @@ export class GLTFExporter {
 	 */
 	private processImage(image: Image, format: PixelFormat, flipY: boolean) {
 
+		if (!this.cachedData.images.has(image)) {
+			this.cachedData.images.set(image, {});
+		}
+
+		const cachedImages = this.cachedData.images.get(image);
 		const mimeType = format === RGBAFormat ? 'image/png' : 'image/jpeg';
+		const key = mimeType + ':flipY/' + flipY.toString();
+		if (cachedImages[key] !== undefined) {
+			return cachedImages[key];
+		}
 		if (!this.outputJSON.images) {
 			this.outputJSON.images = [];
 		}
-		const gltfImage: GLTFImage = { mimeType };
+		const gltfImage: GltfImage = { mimeType };
 
 		if (this.options.embedImages) {
 			if (this.options.forcePowerOfTwoTextures && !this.isPowerOfTwo(image)) {
@@ -782,7 +806,7 @@ export class GLTFExporter {
 		}
 
 		// @QUESTION Should we avoid including any attribute that has the default value?
-		const gltfMaterial: GLTFMaterial = {
+		const gltfMaterial: GltfMaterial = {
 			pbrMetallicRoughness: {},
 		};
 
@@ -968,11 +992,11 @@ export class GLTFExporter {
 			}
 		}
 
-		const gltfMesh: GLTFMesh = {};
+		const gltfMesh: GltfMesh = { primitives: [] };
 
-		const attributes: { [key: string]: BufferAttribute | number } = {};
-		const primitives: Primitive[] = [];
-		const targets: Array<{ [key: string]: BufferAttribute | number }> = [];
+		const attributes: { [key: string]: GltfId } = {};
+		const primitives: GltfMeshPrimitive[] = [];
+		const targets: Array<{ [key: string]: GltfId }> = [];
 
 		// Conversion between attributes names in threejs and gltf spec
 		const nameConversion: { [key: string]: string } = {
@@ -1048,7 +1072,7 @@ export class GLTFExporter {
 			}
 
 			for (let i = 0; i < mesh.morphTargetInfluences.length; ++i) {
-				const target: { [key: string]: BufferAttribute | number } = {};
+				const target: { [key: string]: GltfId } = {};
 				let warned = false;
 				for (const attributeName of Object.keys((geometry as BufferGeometry).morphAttributes)) {
 
@@ -1148,7 +1172,7 @@ export class GLTFExporter {
 		}];
 
 		for (let i = 0, il = groups.length; i < il; i++) {
-			const primitive: Primitive = {
+			const primitive: GltfMeshPrimitive = {
 				mode,
 				attributes,
 			};
@@ -1210,7 +1234,7 @@ export class GLTFExporter {
 
 		const isOrtho = camera.isOrthographicCamera;
 
-		const gltfCamera: GLTFCamera = {
+		const gltfCamera: GltfCamera = {
 			type: isOrtho ? 'orthographic' : 'perspective',
 		};
 
@@ -1365,8 +1389,7 @@ export class GLTFExporter {
 			skeleton: this.nodeMap.get(rootJoint),
 		});
 
-		const skinIndex = node.skin = this.outputJSON.skins.length - 1;
-		return skinIndex;
+		return node.skin = this.outputJSON.skins.length - 1;
 	}
 
 	private processLight(light: LightInternal): number {
@@ -1427,7 +1450,7 @@ export class GLTFExporter {
 			this.outputJSON.nodes = [];
 		}
 
-		const gltfNode: GLTFNode = {};
+		const gltfNode: GltfNode = {};
 
 		if (this.options.trs) {
 			const rotation = object.quaternion.toArray();
@@ -1531,7 +1554,7 @@ export class GLTFExporter {
 			this.outputJSON.scene = 0;
 		}
 
-		const gltfScene: GLTFScene = {
+		const gltfScene: GltfScene = {
 			nodes: [],
 		};
 
@@ -1781,15 +1804,6 @@ class Utils {
 		clip.tracks = tracks;
 		return clip;
 	}
-
-	public static toArrayBuffer(buf: Buffer): ArrayBuffer {
-		const ab = new ArrayBuffer(buf.length);
-		const view = new Uint8Array(ab);
-		for (let i = 0; i < buf.length; ++i) {
-			view[i] = buf[i];
-		}
-		return ab;
-	}
 }
 
 export interface ParseOptions {
@@ -1829,91 +1843,6 @@ interface LightDefinition {
 		innerConeAngle?: number;
 		outerConeAngle?: number;
 	};
-}
-
-interface GLTFMesh {
-	weights?: number[];
-	extras?: any;
-	primitives?: Primitive[];
-}
-
-interface GLTFImage {
-	mimeType?: string;
-	bufferView?: number;
-	uri?: string | Buffer;
-}
-
-interface GLTFMaterial {
-
-	pbrMetallicRoughness: {
-		baseColorFactor?: number[];
-		metallicFactor?: number;
-		roughnessFactor?: number;
-		emissiveFactor?: number;
-		baseColorTexture?: MapDefinition;
-		metallicRoughnessTexture?: MapDefinition;
-	};
-	emissiveFactor?: number[];
-	emissiveTexture?: MapDefinition;
-	normalTexture?: MapDefinition;
-	occlusionTexture?: MapDefinition;
-	alphaMode?: 'BLEND' | 'MASK';
-	alphaCutoff?: number;
-	doubleSided?: boolean;
-	name?: string;
-	extras?: any;
-	extensions?: {
-		KHR_materials_unlit: {},
-	};
-}
-
-interface GLTFCamera {
-	name?: string;
-	type: 'orthographic' | 'perspective';
-	orthographic?: {
-		xmag: number;
-		ymag: number;
-		zfar: number;
-		znear: number;
-	};
-	perspective?: {
-		aspectRatio: number;
-		yfov: number;
-		zfar: number;
-		znear: number;
-	};
-}
-
-interface GLTFNode {
-	name?: string;
-	mesh?: number;
-	rotation?: number[];
-	translation?: number[];
-	scale?: number[];
-	matrix?: number[];
-	extras?: any;
-	camera?: number;
-	extensions?: {
-		[key: string]: {
-			[key: string]: number;
-		};
-	};
-	children?: number[];
-}
-
-interface GLTFScene {
-	name?: string;
-	nodes: number[];
-	extras?: any;
-}
-
-interface Primitive {
-	mode: number;
-	attributes: { [key: string]: BufferAttribute | number };
-	extras?: any;
-	targets?: Array<{ [key: string]: BufferAttribute | number }>;
-	indices?: number[] | number;
-	material?: number;
 }
 
 interface ExtensionsUsed {

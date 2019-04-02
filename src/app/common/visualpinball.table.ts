@@ -194,7 +194,9 @@ class VisualPinballTable {
 			return tableBlocks;
 
 		} finally {
-			await doc.close();
+			if (doc) {
+				await doc.close();
+			}
 		}
 	}
 

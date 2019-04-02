@@ -88,8 +88,8 @@ class ProcessorQueue {
 	 * 	                          created variations will still go through optimization.
 	 */
 	public async reprocessFile(requestState: RequestState, file: FileDocument, useWorker = true,
-							   filterVariations?: (variation: FileVariation) => boolean,
-							   filterOptimizations?: (processor: OptimizationProcessor<any>) => boolean): Promise<void> {
+							filterVariations?: (variation: FileVariation) => boolean,
+							filterOptimizations?: (processor: OptimizationProcessor<any>) => boolean): Promise<void> {
 
 		const backupPath = file.getPath(null, null, { tmpSuffix: '_original' });
 		const originalPath = file.getPath(null);
@@ -112,8 +112,8 @@ class ProcessorQueue {
 	 * 	                          created variations will still go through optimization.
 	 */
 	public async processFile(requestState: RequestState, file: FileDocument, srcPath: string, useWorker = true,
-							 filterCreations?: (variation: FileVariation) => boolean,
-							 filterOptimizations?: (processor: OptimizationProcessor<any>) => boolean): Promise<void> {
+							filterCreations?: (variation: FileVariation) => boolean,
+							filterOptimizations?: (processor: OptimizationProcessor<any>) => boolean): Promise<void> {
 
 		// add variations creation queue (those with a source will be queued when their source is available)
 		const variations = filterCreations ? file.getVariations().filter(filterCreations) : file.getVariations();

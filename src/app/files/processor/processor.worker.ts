@@ -92,13 +92,16 @@ export class ProcessorWorker {
 			await unlinkAsync(srcPath);
 
 			// update metadata
-			const metadataReader = Metadata.getReader(file, variation);
-			const metadata = await metadataReader.getMetadata(requestState, file, destPath, variation);
-			const fileData: any = {};
-			fileData['variations.' + variation.name] = assign(metadataReader.serializeVariation(metadata), {
+			const commonMetadata: any = {
 				bytes: (await statAsync(destPath)).size,
 				mime_type: variation.mimeType,
-			});
+			};
+			const metadataReader = Metadata.getReader(file, variation);
+			if (metadataReader) {
+				const metadata = await metadataReader.getMetadata(requestState, file, destPath, variation);
+				Object.assign(commonMetadata, metadataReader.serializeVariation(metadata));
+			}
+			const fileData = { [`variations.${variation.name}`]: commonMetadata };
 			await state.models.File.findOneAndUpdate({ _id: file._id }, { $set: fileData }).exec();
 
 			// abort if deleted

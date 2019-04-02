@@ -100,7 +100,7 @@ export class VpTable implements IRenderable {
 	}
 
 	public getScaleZ(): number {
-		return this.gameData.BG_scalez[this.gameData.BG_current_set] || 1.0;
+		return 1.0; //this.gameData.BG_scalez[this.gameData.BG_current_set] || 1.0;
 	}
 
 	public getDetailLevel() {

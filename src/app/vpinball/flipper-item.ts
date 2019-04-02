@@ -90,22 +90,20 @@ export class FlipperItem extends GameItem implements IRenderable {
 	public getMeshes(table: VpTable): Meshes {
 		const meshes: Meshes = {};
 
-		const [ vertexMatrix, normalMatrix ] = this.getMatrices();
+		const matrix = this.getMatrix();
 		const flipper = this.generateMeshes(table);
 
 		// base mesh
-		this.applyTransformation(flipper.base, vertexMatrix, normalMatrix);
 		meshes.base = {
-			mesh: flipper.base,
+			mesh: this.applyTransformation(flipper.base, matrix),
 			material: table.getMaterial(this.szMaterial),
 			map: table.getTexture(this.szImage),
 		};
 
 		// rubber mesh
 		if (this.rubberthickness > 0.0) {
-			this.applyTransformation(flipper.rubber, vertexMatrix, normalMatrix);
 			meshes.rubber = {
-				mesh: flipper.rubber,
+				mesh: this.applyTransformation(flipper.rubber, matrix),
 				material: table.getMaterial(this.szRubberMaterial),
 			};
 		}
@@ -119,15 +117,13 @@ export class FlipperItem extends GameItem implements IRenderable {
 		};
 	}
 
-	private getMatrices(): [Matrix4, Matrix4] {
+	private getMatrix(): Matrix4 {
 		const vertexMatrix = new Matrix4();
-		const normalMatrix = new Matrix4();
 		const tempMatrix = new Matrix4();
 		vertexMatrix.makeTranslation(this.Center.x, this.Center.y, 0);
 		tempMatrix.makeRotationZ(M.degToRad(this.StartAngle));
 		vertexMatrix.multiply(tempMatrix);
-		normalMatrix.multiply(tempMatrix);
-		return [vertexMatrix, normalMatrix];
+		return vertexMatrix;
 	}
 
 	private generateMeshes(table: VpTable): { base: Mesh, rubber?: Mesh } {
@@ -167,7 +163,7 @@ export class FlipperItem extends GameItem implements IRenderable {
 				}
 			}
 		}
-		this.applyTransformation(baseMesh, fullMatrix, fullMatrix, z => z * this.height * table.getScaleZ() + height);
+		this.applyTransformation(baseMesh, fullMatrix, null, z => z * this.height * table.getScaleZ() + height);
 
 		//rubber
 		if (this.rubberthickness > 0.0) {
@@ -197,7 +193,7 @@ export class FlipperItem extends GameItem implements IRenderable {
 					}
 				}
 			}
-			this.applyTransformation(rubberMesh, fullMatrix, fullMatrix, z => z * this.rubberwidth * table.getScaleZ() + (height + this.rubberheight));
+			this.applyTransformation(rubberMesh, fullMatrix, null, z => z * this.rubberwidth * table.getScaleZ() + (height + this.rubberheight));
 			return { base: baseMesh, rubber: rubberMesh };
 		}
 		return { base: baseMesh };

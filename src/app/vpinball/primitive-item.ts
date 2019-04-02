@@ -17,16 +17,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { Math as M, Matrix4, Object3D } from 'three';
 import { Storage } from '../common/ole-doc';
 import { settings } from '../common/settings';
 import { BiffParser } from './biff-parser';
 import { FrameData, Vector3 } from './common';
 import { GameItem, IRenderable, Meshes } from './game-item';
 import { IPositionable, Mesh } from './mesh';
-import { Vertex3D, Vertex3DNoTex2 } from './vertex';
+import { Vertex3DNoTex2 } from './vertex';
 import { VpTable } from './vp-table';
 
-export class PrimitiveItem extends GameItem implements IPositionable, IRenderable {
+export class PrimitiveItem extends GameItem implements IRenderable {
 
 	private data: PrimitiveData = new PrimitiveData();
 	private mesh: Mesh = new Mesh();
@@ -73,35 +74,13 @@ export class PrimitiveItem extends GameItem implements IPositionable, IRenderabl
 		return this.data.fVisible;
 	}
 
-	public getPositionableObject(): IPositionable {
-		return this;
-	}
-
-	public getPosition(): Vertex3D {
-		return new Vertex3D(this.data.vPosition.x, this.data.vPosition.y, this.data.vPosition.z);
-	}
-
-	public getRotation(): Vertex3D {
-		return new Vertex3D(this.data.aRotAndTra[0], this.data.aRotAndTra[1], this.data.aRotAndTra[2]);
-	}
-
-	public getTransition(): Vertex3D {
-		return new Vertex3D(this.data.aRotAndTra[3], this.data.aRotAndTra[4], this.data.aRotAndTra[5]);
-	}
-
-	public getObjectRotation(): Vertex3D {
-		return new Vertex3D(this.data.aRotAndTra[6], this.data.aRotAndTra[7], this.data.aRotAndTra[8]);
-	}
-
-	public getScale(): Vertex3D {
-		return new Vertex3D(this.data.vSize.x, this.data.vSize.y, this.data.vSize.z);
-	}
-
 	public getMeshes(vpTable: VpTable): Meshes {
-		this.mesh.name = `primitive:${this.getName()}`;
+		const mesh = this.mesh.clone();
+		mesh.name = `primitive:${this.getName()}`;
+		const matrix = this.getMatrix(vpTable);
 		return {
 			primitive: {
-				mesh: this.mesh,
+				mesh: this.applyTransformation(mesh, matrix),
 				map: vpTable.getTexture(this.data.szImage),
 				normalMap: vpTable.getTexture(this.data.szNormalMap),
 				material: vpTable.getMaterial(this.data.szMaterial),
@@ -135,6 +114,44 @@ export class PrimitiveItem extends GameItem implements IPositionable, IRenderabl
 			normalMap: this.data.szNormalMap,
 			material: this.data.szMaterial,
 		};
+	}
+
+	private getMatrix(table: VpTable): Matrix4 {
+
+		// scale matrix
+		const scaleMatrix = new Matrix4();
+		scaleMatrix.makeScale(this.data.vSize.x, this.data.vSize.y, this.data.vSize.z);
+
+		// translation matrix
+		const transMatrix = new Matrix4();
+		transMatrix.makeTranslation(this.data.vPosition.x, this.data.vPosition.y, this.data.vPosition.z);
+
+		// translation + rotation matrix
+		const rotTransMatrix = new Matrix4();
+		rotTransMatrix.makeTranslation(this.data.aRotAndTra[3], this.data.aRotAndTra[4], this.data.aRotAndTra[5]);
+
+		const tempMatrix = new Matrix4();
+		tempMatrix.makeRotationZ(M.degToRad(this.data.aRotAndTra[2]));
+		rotTransMatrix.multiply(tempMatrix);
+		tempMatrix.makeRotationY(M.degToRad(this.data.aRotAndTra[1]));
+		rotTransMatrix.multiply(tempMatrix);
+		tempMatrix.makeRotationX(M.degToRad(this.data.aRotAndTra[0]));
+		rotTransMatrix.multiply(tempMatrix);
+
+		tempMatrix.makeRotationZ(M.degToRad(this.data.aRotAndTra[8]));
+		rotTransMatrix.multiply(tempMatrix);
+		tempMatrix.makeRotationY(M.degToRad(this.data.aRotAndTra[7]));
+		rotTransMatrix.multiply(tempMatrix);
+		tempMatrix.makeRotationX(M.degToRad(this.data.aRotAndTra[6]));
+		rotTransMatrix.multiply(tempMatrix);
+
+		const fullMatrix = scaleMatrix;
+		fullMatrix.multiply(rotTransMatrix);
+		fullMatrix.multiply(transMatrix);        // fullMatrix = Smatrix * RTmatrix * Tmatrix
+		scaleMatrix.makeScale(1.0, 1.0, table.getScaleZ());
+		fullMatrix.multiply(scaleMatrix);
+
+		return fullMatrix;
 	}
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number, storage: Storage, itemName: string): Promise<number> {

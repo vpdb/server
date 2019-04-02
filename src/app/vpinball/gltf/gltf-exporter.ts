@@ -337,7 +337,9 @@ export class GLTFExporter {
 		for (; i < il; i++) {
 
 			// 0.0005 is from glTF-validator
-			if (Math.abs(v.fromArray(normal.array as number[], i * 3).length() - 1.0) > 0.0005) { return false; }
+			if (Math.abs(v.fromArray(normal.array as number[], i * 3).length() - 1.0) > 0.0005) {
+				return false;
+			}
 		}
 		return true;
 	}
@@ -1008,11 +1010,8 @@ export class GLTFExporter {
 		const originalNormal = (geometry as BufferGeometry).getAttribute('normal');
 
 		if (originalNormal !== undefined && !this.isNormalizedNormalAttribute(originalNormal)) {
-
 			console.warn('GLTFExporter: Creating normalized normal attribute from the non-normalized one (%s).', mesh.name);
-
 			(geometry as BufferGeometry).addAttribute('normal', this.createNormalizedNormalAttribute(originalNormal as BufferAttribute));
-
 		}
 
 		// @QUESTION Detect if .vertexColors = VertexColors?
@@ -1047,13 +1046,13 @@ export class GLTFExporter {
 			}
 		}
 
-		if (originalNormal !== undefined) { (geometry as BufferGeometry).addAttribute('normal', originalNormal); }
+		if (originalNormal !== undefined) {
+			(geometry as BufferGeometry).addAttribute('normal', originalNormal);
+		}
 
 		// Skip if no exportable attributes found
 		if (Object.keys(attributes).length === 0) {
-
 			return null;
-
 		}
 
 		// Morph targets

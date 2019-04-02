@@ -17,15 +17,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Math as M, Matrix4, Object3D } from 'three';
+import { Math as M } from 'three';
 import { Storage } from '../common/ole-doc';
 import { settings } from '../common/settings';
 import { BiffParser } from './biff-parser';
 import { FrameData, Vector3 } from './common';
 import { GameItem, IRenderable, Meshes } from './game-item';
-import { IPositionable, Mesh } from './mesh';
+import { Mesh } from './mesh';
 import { Vertex3DNoTex2 } from './vertex';
 import { VpTable } from './vp-table';
+import { Matrix3D } from './matrix3d';
 
 export class PrimitiveItem extends GameItem implements IRenderable {
 
@@ -80,7 +81,7 @@ export class PrimitiveItem extends GameItem implements IRenderable {
 		const matrix = this.getMatrix(vpTable);
 		return {
 			primitive: {
-				mesh: this.applyTransformation(mesh, matrix),
+				mesh: this.apply3DTransformation(mesh, matrix),
 				map: vpTable.getTexture(this.data.szImage),
 				normalMap: vpTable.getTexture(this.data.szNormalMap),
 				material: vpTable.getMaterial(this.data.szMaterial),
@@ -116,39 +117,39 @@ export class PrimitiveItem extends GameItem implements IRenderable {
 		};
 	}
 
-	private getMatrix(table: VpTable): Matrix4 {
+	private getMatrix(table: VpTable): Matrix3D {
 
 		// scale matrix
-		const scaleMatrix = new Matrix4();
-		scaleMatrix.makeScale(this.data.vSize.x, this.data.vSize.y, this.data.vSize.z);
+		const scaleMatrix = new Matrix3D();
+		scaleMatrix.setScaling(this.data.vSize.x, this.data.vSize.y, this.data.vSize.z);
 
 		// translation matrix
-		const transMatrix = new Matrix4();
-		transMatrix.makeTranslation(this.data.vPosition.x, this.data.vPosition.y, this.data.vPosition.z);
+		const transMatrix = new Matrix3D();
+		transMatrix.setTranslation(this.data.vPosition.x, this.data.vPosition.y, this.data.vPosition.z);
 
 		// translation + rotation matrix
-		const rotTransMatrix = new Matrix4();
-		rotTransMatrix.makeTranslation(this.data.aRotAndTra[3], this.data.aRotAndTra[4], this.data.aRotAndTra[5]);
+		const rotTransMatrix = new Matrix3D();
+		rotTransMatrix.setTranslation(this.data.aRotAndTra[3], this.data.aRotAndTra[4], this.data.aRotAndTra[5]);
 
-		const tempMatrix = new Matrix4();
-		tempMatrix.makeRotationZ(M.degToRad(this.data.aRotAndTra[2]));
+		const tempMatrix = new Matrix3D();
+		tempMatrix.rotateZMatrix(M.degToRad(this.data.aRotAndTra[2]));
 		rotTransMatrix.multiply(tempMatrix);
-		tempMatrix.makeRotationY(M.degToRad(this.data.aRotAndTra[1]));
+		tempMatrix.rotateYMatrix(M.degToRad(this.data.aRotAndTra[1]));
 		rotTransMatrix.multiply(tempMatrix);
-		tempMatrix.makeRotationX(M.degToRad(this.data.aRotAndTra[0]));
-		rotTransMatrix.multiply(tempMatrix);
-
-		tempMatrix.makeRotationZ(M.degToRad(this.data.aRotAndTra[8]));
-		rotTransMatrix.multiply(tempMatrix);
-		tempMatrix.makeRotationY(M.degToRad(this.data.aRotAndTra[7]));
-		rotTransMatrix.multiply(tempMatrix);
-		tempMatrix.makeRotationX(M.degToRad(this.data.aRotAndTra[6]));
+		tempMatrix.rotateXMatrix(M.degToRad(this.data.aRotAndTra[0]));
 		rotTransMatrix.multiply(tempMatrix);
 
-		const fullMatrix = scaleMatrix;
+		tempMatrix.rotateZMatrix(M.degToRad(this.data.aRotAndTra[8]));
+		rotTransMatrix.multiply(tempMatrix);
+		tempMatrix.rotateYMatrix(M.degToRad(this.data.aRotAndTra[7]));
+		rotTransMatrix.multiply(tempMatrix);
+		tempMatrix.rotateXMatrix(M.degToRad(this.data.aRotAndTra[6]));
+		rotTransMatrix.multiply(tempMatrix);
+
+		const fullMatrix = scaleMatrix.clone();
 		fullMatrix.multiply(rotTransMatrix);
 		fullMatrix.multiply(transMatrix);        // fullMatrix = Smatrix * RTmatrix * Tmatrix
-		scaleMatrix.makeScale(1.0, 1.0, table.getScaleZ());
+		scaleMatrix.setScaling(1.0, 1.0, table.getScaleZ());
 		fullMatrix.multiply(scaleMatrix);
 
 		return fullMatrix;

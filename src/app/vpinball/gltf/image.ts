@@ -1,5 +1,6 @@
+import gm, { State } from 'gm';
 import sharp = require('sharp');
-import { Metadata } from 'sharp';
+import { logger } from '../../common/logger';
 
 const PngQuant = require('pngquant');
 const OptiPng = require('optipng');
@@ -23,18 +24,22 @@ export class Image {
 	/** The original width of the image resource before sizing. */
 	public naturalWidth: number;
 
+	private format: string;
+
 	public onload: (() => void) | null;
 	public onerror: ((err: Error) => void) | null;
 
-	private readonly sharp: sharp.Sharp;
+	private sharp: sharp.Sharp;
+	private readonly data: Buffer;
 	private readonly optimize: boolean;
 
-	private metadata: Metadata;
+	private gm: State;
 
 	constructor(data: Buffer | sharp.Sharp, optimize: boolean) {
 		this.optimize = optimize;
 		if (data instanceof Buffer) {
 			this.sharp = sharp(data);
+			this.data = data;
 
 		} else {
 			this.sharp = data;
@@ -42,16 +47,33 @@ export class Image {
 	}
 
 	public async init(): Promise<this> {
-		const metadata = await this.sharp.metadata();
-		this.width = metadata.width;
-		this.naturalWidth = metadata.width;
-		this.height = metadata.height;
-		this.naturalHeight = metadata.height;
-		this.metadata = metadata;
-		this.complete = true;
-		if (this.onload) {
-			this.onload();
+		try {
+			const metadata = await this.sharp.metadata();
+			this.width = metadata.width;
+			this.height = metadata.height;
+			this.format = metadata.format;
+			this.complete = true;
+			if (this.onload) {
+				this.onload();
+			}
+		} catch (err) {
+			logger.warn(null, '[Image.init] Could not read metadata from buffer (%s), using GM to read image.', err.message);
+			this.gm = gm(this.data);
+			const metadata = await this.gmIdentify();
+			this.format = metadata.format.toLowerCase();
+			this.width = metadata.size.width;
+			this.height = metadata.size.height;
+			const data = await new Promise((resolve, reject) => {
+				const buffers: Buffer[] = [];
+				this.gm.setFormat('jpeg').stream().on('error', reject)
+					.on('data', (buf: Buffer) => buffers.push(buf as Buffer))
+					.on('end', () => resolve(Buffer.concat(buffers)))
+					.on('error', reject);
+			});
+			this.sharp = sharp(data);
 		}
+		this.naturalWidth = this.width;
+		this.naturalHeight = this.height;
 		return this;
 	}
 
@@ -68,11 +90,12 @@ export class Image {
 	}
 
 	public getFormat(): string {
-		return this.metadata.format;
+		return this.format;
 	}
 
 	public async getImage(): Promise<Buffer> {
-		switch (this.metadata.format) {
+
+		switch (this.format) {
 
 			case 'png': {
 				if (this.optimize) {
@@ -91,16 +114,24 @@ export class Image {
 				return this.sharp.toBuffer();
 			}
 
-			case 'jpeg': {
+			default: {
 				return this.sharp.jpeg({ quality: 70 }).toBuffer();
 			}
-
-			default:
-				return this.sharp.toBuffer();
 		}
 	}
 
 	public hasTransparency(): boolean {
-		return ['png', 'webp', 'gif'].includes(this.metadata.format);
+		return ['png', 'webp', 'gif'].includes(this.format);
+	}
+
+	private async gmIdentify(): Promise<any> {
+		return new Promise((resolve, reject) => {
+			this.gm.identify((err, value) => {
+				if (err) {
+					return reject(err);
+				}
+				resolve(value);
+			});
+		});
 	}
 }

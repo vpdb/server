@@ -17,12 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Math as M, Matrix4, Vector3 } from 'three';
+import { Math as M } from 'three';
 import { Storage } from '../common/ole-doc';
 import { settings } from '../common/settings';
 import { BiffParser } from './biff-parser';
 import { DragPoint, HIT_SHAPE_DETAIL_LEVEL } from './dragpoint';
 import { GameItem, IRenderable, Meshes } from './game-item';
+import { Matrix3D } from './matrix3d';
 import { FLT_MAX, FLT_MIN, Mesh } from './mesh';
 import { SplineVertex } from './spline-vertex';
 import { Vertex3D, Vertex3DNoTex2 } from './vertex';
@@ -246,35 +247,35 @@ export class RubberItem extends GameItem implements IRenderable {
 		const [vertexMatrix, fullMatrix ] = this.getMatrices(table);
 		return {
 			rubber: {
-				mesh: this.applyTransformation(mesh, vertexMatrix, fullMatrix),
+				mesh: mesh.transform(vertexMatrix, fullMatrix),
 				map: table.getTexture(this.szImage),
 				material: table.getMaterial(this.szMaterial),
 			},
 		};
 	}
 
-	private getMatrices(table: VpTable): [ Matrix4, Matrix4 ] {
-		const fullMatrix = new Matrix4();
-		const tempMat = new Matrix4();
-		fullMatrix.makeRotationZ(M.degToRad(this.rotZ));
-		tempMat.makeRotationY(M.degToRad(this.rotY));
+	private getMatrices(table: VpTable): [ Matrix3D, Matrix3D ] {
+		const fullMatrix = new Matrix3D();
+		const tempMat = new Matrix3D();
+		fullMatrix.rotateZMatrix(M.degToRad(this.rotZ));
+		tempMat.rotateYMatrix(M.degToRad(this.rotY));
 		fullMatrix.multiply(tempMat);
-		tempMat.makeRotationX(M.degToRad(this.rotX));
+		tempMat.rotateXMatrix(M.degToRad(this.rotX));
 		fullMatrix.multiply(tempMat);
 
-		const vertMatrix = new Matrix4();
-		tempMat.makeTranslation(-this.middlePoint.x, -this.middlePoint.y, -this.middlePoint.z);
-		vertMatrix.multiplyMatrices(tempMat, fullMatrix);
-		tempMat.makeScale(1.0, 1.0, table.getScaleZ());
+		const vertMatrix = new Matrix3D();
+		tempMat.setTranslation(-this.middlePoint.x, -this.middlePoint.y, -this.middlePoint.z);
+		vertMatrix.multiply(tempMat, fullMatrix);
+		tempMat.setScaling(1.0, 1.0, table.getScaleZ());
 		vertMatrix.multiply(tempMat);
 		if (this.height === this.hitHeight) {   // do not z-scale the hit mesh
-			tempMat.makeTranslation(this.middlePoint.x, this.middlePoint.y, this.height + table.getTableHeight());
+			tempMat.setTranslation(this.middlePoint.x, this.middlePoint.y, this.height + table.getTableHeight());
 		} else {
-			tempMat.makeTranslation(this.middlePoint.x, this.middlePoint.y, this.height * table.getScaleZ() + table.getTableHeight());
+			tempMat.setTranslation(this.middlePoint.x, this.middlePoint.y, this.height * table.getScaleZ() + table.getTableHeight());
 		}
 		vertMatrix.multiply(tempMat);
 
-		return [ vertMatrix, fullMatrix ];
+		return [ this.leftHandedToRightHanded(vertMatrix), this.leftHandedToRightHanded(fullMatrix) ];
 	}
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<number> {

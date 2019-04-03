@@ -110,18 +110,38 @@ export class Matrix3D {
 		return new Vertex3D(xp, yp, zp);
 	}
 
-	public multiply(mult: Matrix3D): void {
-		const matrixT = new Matrix3D();
+	public multiply(a: Matrix3D, b?: Matrix3D): this {
+		if (b) {
+			Object.assign(this.matrix, Matrix3D.multiplyMatrices(a, b).matrix);
+		} else {
+			Object.assign(this.matrix, Matrix3D.multiplyMatrices(this, a).matrix);
+		}
+		return this;
+	}
+
+	public preMultiply(a: Matrix3D): this {
+		Object.assign(this.matrix, Matrix3D.multiplyMatrices(a, this).matrix);
+		return this;
+	}
+
+	public toRightHanded(): Matrix3D {
+		const tempMat = new Matrix3D();
+		tempMat.setScaling(1, 1, -1);
+		return this.clone().multiply(tempMat);
+	}
+
+	private static multiplyMatrices(a: Matrix3D, b: Matrix3D): Matrix3D {
+		const result = new Matrix3D();
 		for (let i = 0; i < 4; ++i) {
 			for (let l = 0; l < 4; ++l) {
-				matrixT.matrix[i][l] =
-					(this.matrix[0][l] * mult.matrix[i][0]) +
-					(this.matrix[1][l] * mult.matrix[i][1]) +
-					(this.matrix[2][l] * mult.matrix[i][2]) +
-					(this.matrix[3][l] * mult.matrix[i][3]);
+				result.matrix[i][l] =
+					(a.matrix[0][l] * b.matrix[i][0]) +
+					(a.matrix[1][l] * b.matrix[i][1]) +
+					(a.matrix[2][l] * b.matrix[i][2]) +
+					(a.matrix[3][l] * b.matrix[i][3]);
 			}
 		}
-		Object.assign(this.matrix, matrixT.matrix);
+		return result;
 	}
 
 	public clone(): Matrix3D {

@@ -21,6 +21,7 @@ import { FrameData } from './common';
 import { MeshConverter } from './gltf/mesh-converter';
 import { RenderVertex, Vertex2D, Vertex3D, Vertex3DNoTex2 } from './vertex';
 import apply = Reflect.apply;
+import { Matrix3D } from './matrix3d';
 
 export const FLT_MIN = 1.175494350822287507968736537222245677819e-038;
 export const FLT_MAX = 340282346638528859811704183484516925440;
@@ -79,6 +80,23 @@ export class Mesh {
 		return converter.convertToBufferGeometry();
 	}
 
+	public transform(matrix: Matrix3D, normalMatrix?: Matrix3D, getZ?: (x: number) => number): this {
+		for (const vertex of this.vertices) {
+			let vert = new Vertex3D(vertex.x, vertex.y, vertex.z);
+			vert = matrix.multiplyVector(vert);
+			vertex.x = vert.x;
+			vertex.y = vert.y;
+			vertex.z = getZ ? getZ(vert.z) : vert.z;
+
+			let norm = new Vertex3D(vertex.nx, vertex.ny, vertex.nz);
+			norm = (normalMatrix || matrix).multiplyVectorNoTranslate(norm);
+			vertex.nx = norm.x;
+			vertex.ny = norm.y;
+			vertex.nz = norm.z;
+		}
+		return this;
+	}
+
 	public makeTranslation(x: number, y: number, z: number) {
 		for (const vertex of this.vertices) {
 			vertex.x += x;
@@ -88,9 +106,9 @@ export class Mesh {
 		return this;
 	}
 
-	public clone(): Mesh {
+	public clone(name?: string): Mesh {
 		const mesh = new Mesh();
-		mesh.name = this.name;
+		mesh.name = name || this.name;
 		mesh.vertices = this.vertices.map(v => v.clone());
 		mesh.animationFrames = this.animationFrames.map(a => a.clone());
 		mesh.indices = this.indices.slice();

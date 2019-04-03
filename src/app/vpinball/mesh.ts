@@ -313,11 +313,3 @@ export class Mesh {
 		}
 	}
 }
-
-export interface IPositionable {
-	getPosition(): Vertex3D;
-	getRotation(): Vertex3D;
-	getTransition(): Vertex3D;
-	getObjectRotation(): Vertex3D;
-	getScale(): Vertex3D;
-}

@@ -1,5 +1,30 @@
+/*
+ * VPDB - Virtual Pinball Database
+ * Copyright (C) 2019 freezy <freezy@vpdb.io>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 import { Vertex3D } from './vertex';
 
+/**
+ * Three's Matrix4.multiply() gives different results than VPinball's. Duh.
+ * Here's an implementation that does the same thing.
+ *
+ * @see https://github.com/vpinball/vpinball/blob/master/math/matrix.h#L160
+ */
 export class Matrix3D {
 
 	private readonly matrix = [
@@ -73,8 +98,8 @@ export class Matrix3D {
 		const yp = this._12 * v.x + this._22 * v.y + this._32 * v.z + this._42;
 		const zp = this._13 * v.x + this._23 * v.y + this._33 * v.z + this._43;
 		const wp = this._14 * v.x + this._24 * v.y + this._34 * v.z + this._44;
-		const inv_wp = 1.0 / wp;
-		return new Vertex3D(xp * inv_wp, yp * inv_wp, zp * inv_wp);
+		const invWp = 1.0 / wp;
+		return new Vertex3D(xp * invWp, yp * invWp, zp * invWp);
 	}
 
 	public multiplyVectorNoTranslate(v: Vertex3D): Vertex3D {
@@ -86,7 +111,7 @@ export class Matrix3D {
 	}
 
 	public multiply(mult: Matrix3D): void {
-		const matrixT = new Matrix3D;
+		const matrixT = new Matrix3D();
 		for (let i = 0; i < 4; ++i) {
 			for (let l = 0; l < 4; ++l) {
 				matrixT.matrix[i][l] =
@@ -127,36 +152,35 @@ export class Matrix3D {
 	}
 
 	get _11() { return this.matrix[0][0]; }
-	get _12() { return this.matrix[1][0]; }
-	get _13() { return this.matrix[2][0]; }
-	get _14() { return this.matrix[3][0]; }
-	get _21() { return this.matrix[0][1]; }
-	get _22() { return this.matrix[1][1]; }
-	get _23() { return this.matrix[2][1]; }
-	get _24() { return this.matrix[3][1]; }
-	get _31() { return this.matrix[0][2]; }
-	get _32() { return this.matrix[1][2]; }
-	get _33() { return this.matrix[2][2]; }
-	get _34() { return this.matrix[3][2]; }
-	get _41() { return this.matrix[0][3]; }
-	get _42() { return this.matrix[1][3]; }
-	get _43() { return this.matrix[2][3]; }
-	get _44() { return this.matrix[3][3]; }
-
 	set _11(v) { this.matrix[0][0] = v; }
+	get _12() { return this.matrix[1][0]; }
 	set _12(v) { this.matrix[1][0] = v; }
+	get _13() { return this.matrix[2][0]; }
 	set _13(v) { this.matrix[2][0] = v; }
+	get _14() { return this.matrix[3][0]; }
 	set _14(v) { this.matrix[3][0] = v; }
+	get _21() { return this.matrix[0][1]; }
 	set _21(v) { this.matrix[0][1] = v; }
+	get _22() { return this.matrix[1][1]; }
 	set _22(v) { this.matrix[1][1] = v; }
+	get _23() { return this.matrix[2][1]; }
 	set _23(v) { this.matrix[2][1] = v; }
+	get _24() { return this.matrix[3][1]; }
 	set _24(v) { this.matrix[3][1] = v; }
+	get _31() { return this.matrix[0][2]; }
 	set _31(v) { this.matrix[0][2] = v; }
+	get _32() { return this.matrix[1][2]; }
 	set _32(v) { this.matrix[1][2] = v; }
+	get _33() { return this.matrix[2][2]; }
 	set _33(v) { this.matrix[2][2] = v; }
+	get _34() { return this.matrix[3][2]; }
 	set _34(v) { this.matrix[3][2] = v; }
+	get _41() { return this.matrix[0][3]; }
 	set _41(v) { this.matrix[0][3] = v; }
+	get _42() { return this.matrix[1][3]; }
 	set _42(v) { this.matrix[1][3] = v; }
+	get _43() { return this.matrix[2][3]; }
 	set _43(v) { this.matrix[2][3] = v; }
+	get _44() { return this.matrix[3][3]; }
 	set _44(v) { this.matrix[3][3] = v; }
 }

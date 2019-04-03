@@ -23,10 +23,10 @@ import { settings } from '../common/settings';
 import { BiffParser } from './biff-parser';
 import { FrameData, Vector3 } from './common';
 import { GameItem, IRenderable, Meshes } from './game-item';
+import { Matrix3D } from './matrix3d';
 import { Mesh } from './mesh';
 import { Vertex3DNoTex2 } from './vertex';
 import { VpTable } from './vp-table';
-import { Matrix3D } from './matrix3d';
 
 export class PrimitiveItem extends GameItem implements IRenderable {
 
@@ -149,7 +149,7 @@ export class PrimitiveItem extends GameItem implements IRenderable {
 		const fullMatrix = scaleMatrix.clone();
 		fullMatrix.multiply(rotTransMatrix);
 		fullMatrix.multiply(transMatrix);        // fullMatrix = Smatrix * RTmatrix * Tmatrix
-		scaleMatrix.setScaling(1.0, 1.0, table.getScaleZ());
+		scaleMatrix.setScaling(1.0, 1.0, -table.getScaleZ());
 		fullMatrix.multiply(scaleMatrix);
 
 		return fullMatrix;

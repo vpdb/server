@@ -42,11 +42,10 @@ import { RubberItem } from '../rubber-item';
 import { SurfaceItem } from '../surface-item';
 import { Texture as VpTexture } from '../texture';
 import { VpTable } from '../vp-table';
-import { BaseExporter } from './base-exporter';
 import { GLTFExporter, ParseOptions } from './gltf-exporter';
 import { Image } from './image';
 
-export class VpTableExporter extends BaseExporter {
+export class VpTableExporter {
 
 	private static readonly scale = 0.05;
 	private readonly table: VpTable;
@@ -56,8 +55,6 @@ export class VpTableExporter extends BaseExporter {
 	private readonly images: Map<string, Image> = new Map();
 
 	constructor(table: VpTable, opts: VpTableExporterOptions) {
-		super();
-
 		this.opts = Object.assign({}, defaultOptions, opts);
 		const camera = new PerspectiveCamera(45, 1, 0.1, 100000);
 		camera.position.set(0, 70.0, 70.0);
@@ -67,7 +64,6 @@ export class VpTableExporter extends BaseExporter {
 		this.scene = new Scene();
 		this.playfield = new Group();
 		this.playfield.rotateX(Math.PI / 2);
-		//this.playfield.rotateZ(-Math.PI / 2);
 		this.playfield.translateY((table.gameData.top - table.gameData.bottom) * VpTableExporter.scale / 2);
 		this.playfield.translateX(-(table.gameData.right - table.gameData.left) * VpTableExporter.scale / 2);
 		this.playfield.scale.set(VpTableExporter.scale, VpTableExporter.scale, VpTableExporter.scale);
@@ -113,9 +109,6 @@ export class VpTableExporter extends BaseExporter {
 					const bufferGeometry = obj.mesh.getBufferGeometry();
 					const mesh = new Mesh(bufferGeometry, await this.getMaterial(obj));
 					mesh.name = obj.mesh.name;
-					if (renderable.getPositionableObject) {
-						this.position(mesh, renderable as any);
-					}
 					g.add(mesh);
 				}
 			}
@@ -146,6 +139,7 @@ export class VpTableExporter extends BaseExporter {
 			});
 		}
 
+		//this.playfield.scale.set(1, 1, -1);
 		this.scene.add(this.playfield);
 
 		const gltfExporter = new GLTFExporter(Object.assign({}, this.opts.gltfOptions, { embedImages: true }));

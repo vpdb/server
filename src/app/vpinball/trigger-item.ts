@@ -144,7 +144,7 @@ export class TriggerItem extends GameItem implements IRenderable {
 			}
 
 			vert = new Vertex3D(vertex.nx, vertex.ny, vertex.nz);
-			vert = fullMatrix.multiplyVector(vert);
+			vert = fullMatrix.multiplyVectorNoTranslate(vert);
 			vertex.nx = vert.x;
 			vertex.ny = vert.y;
 			vertex.nz = vert.z;
@@ -153,20 +153,21 @@ export class TriggerItem extends GameItem implements IRenderable {
 	}
 
 	private getBaseMesh(): Mesh {
+		const name = `trigger:${this.getName()}`;
 		switch (this.shape) {
 			case TriggerItem.ShapeTriggerWireA:
 			case TriggerItem.ShapeTriggerWireB:
 			case TriggerItem.ShapeTriggerWireC:
-				return triggerSimpleMesh.clone();
+				return triggerSimpleMesh.clone(name);
 			case TriggerItem.ShapeTriggerWireD:
-				return triggerDWireMesh.clone();
+				return triggerDWireMesh.clone(name);
 			case TriggerItem.ShapeTriggerButton:
-				return triggerButtonMesh.clone();
+				return triggerButtonMesh.clone(name);
 			case TriggerItem.ShapeTriggerStar:
-				return triggerStarMesh.clone();
+				return triggerStarMesh.clone(name);
 			default:
 				logger.warn(null, '[TriggerItem.getBaseMesh] Unknown shape "%s".', this.shape);
-				return triggerSimpleMesh.clone();
+				return triggerSimpleMesh.clone(name);
 		}
 	}
 

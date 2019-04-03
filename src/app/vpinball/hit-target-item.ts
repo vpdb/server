@@ -17,10 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Math as M, Matrix4 } from 'three';
+import { Math as M } from 'three';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { GameItem, IRenderable, Meshes } from './game-item';
+import { Matrix3D } from './matrix3d';
 import { Mesh } from './mesh';
 import { hitTargetT2Mesh } from './meshes/drop-target-t2-mesh';
 import { hitTargetT3Mesh } from './meshes/drop-target-t3-mesh';
@@ -103,24 +104,24 @@ export class HitTargetItem extends GameItem implements IRenderable {
 		const hitTargetMesh = this.getBaseMesh();
 		hitTargetMesh.name = `hit-target:${this.getName()}`;
 
-		const fullMatrix = new Matrix4();
-		const tempMatrix = new Matrix4();
-		tempMatrix.makeRotationZ(M.degToRad(this.rotZ));
-		fullMatrix.multiplyMatrices(fullMatrix, tempMatrix);
+		const fullMatrix = new Matrix3D();
+		const tempMatrix = new Matrix3D();
+		tempMatrix.rotateZMatrix(M.degToRad(this.rotZ));
+		fullMatrix.multiply(tempMatrix);
 
 		for (const vertex of hitTargetMesh.vertices) {
 			let vert = new Vertex3D(vertex.x, vertex.y, vertex.z);
 			vert.x *= this.vSize.x;
 			vert.y *= this.vSize.y;
 			vert.z *= this.vSize.z;
-			vert.applyMatrix4(fullMatrix);
+			vert = fullMatrix.multiplyVector(vert);
 
 			vertex.x = vert.x + this.vPosition.x;
 			vertex.y = vert.y + this.vPosition.y;
 			vertex.z = vert.z * table.getScaleZ() + this.vPosition.z + table.getTableHeight();
 
 			vert = new Vertex3D(vertex.nx, vertex.ny, vertex.nz);
-			vert.applyMatrix4(fullMatrix);
+			vert = fullMatrix.multiplyVectorNoTranslate(vert);
 			vertex.nx = vert.x;
 			vertex.ny = vert.y;
 			vertex.nz = vert.z;
@@ -128,7 +129,7 @@ export class HitTargetItem extends GameItem implements IRenderable {
 
 		return {
 			hitTarget: {
-				mesh: hitTargetMesh,
+				mesh: hitTargetMesh.transform(new Matrix3D().toRightHanded()),
 				map: table.getTexture(this.szImage),
 				material: table.getMaterial(this.szMaterial),
 			},

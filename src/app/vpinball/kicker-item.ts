@@ -119,7 +119,7 @@ export class KickerItem extends GameItem implements IRenderable {
 			vertex.z = vert.z * this.radius * table.getScaleZ() + baseHeight;
 
 			vert = new Vertex3D(vertex.nx, vertex.ny, vertex.nz);
-			vert = fullMatrix.multiplyVector(vert);
+			vert = fullMatrix.multiplyVectorNoTranslate(vert);
 			vertex.nx = vert.x;
 			vertex.ny = vert.y;
 			vertex.nz = vert.z;

@@ -17,13 +17,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Math as M, Matrix4 } from 'three';
+import { Math as M } from 'three';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { GameItem, IRenderable, Meshes } from './game-item';
+import { Matrix3D } from './matrix3d';
 import { Mesh } from './mesh';
 import { flipperBaseMesh } from './meshes/flipper-base-mesh';
-import { Vertex2D, Vertex3D, Vertex3DNoTex2 } from './vertex';
+import { Vertex2D, Vertex3D } from './vertex';
 import { VpTable } from './vp-table';
 
 export class FlipperItem extends GameItem implements IRenderable {
@@ -95,15 +96,15 @@ export class FlipperItem extends GameItem implements IRenderable {
 
 		// base mesh
 		meshes.base = {
-			mesh: this.applyTransformation(flipper.base, matrix),
+			mesh: flipper.base.transform(matrix.toRightHanded()),
 			material: table.getMaterial(this.szMaterial),
 			map: table.getTexture(this.szImage),
 		};
 
 		// rubber mesh
-		if (this.rubberthickness > 0.0) {
+		if (flipper.rubber) {
 			meshes.rubber = {
-				mesh: this.applyTransformation(flipper.rubber, matrix),
+				mesh: flipper.rubber.transform(matrix.toRightHanded()),
 				material: table.getMaterial(this.szRubberMaterial),
 			};
 		}
@@ -117,19 +118,19 @@ export class FlipperItem extends GameItem implements IRenderable {
 		};
 	}
 
-	private getMatrix(): Matrix4 {
-		const vertexMatrix = new Matrix4();
-		const tempMatrix = new Matrix4();
-		vertexMatrix.makeTranslation(this.Center.x, this.Center.y, 0);
-		tempMatrix.makeRotationZ(M.degToRad(this.StartAngle));
-		vertexMatrix.multiply(tempMatrix);
-		return vertexMatrix;
+	private getMatrix(): Matrix3D {
+		const trafoMatrix = new Matrix3D();
+		const tempMatrix = new Matrix3D();
+		trafoMatrix.setTranslation(this.Center.x, this.Center.y, 0);
+		tempMatrix.rotateZMatrix(M.degToRad(this.StartAngle));
+		trafoMatrix.preMultiply(tempMatrix);
+		return trafoMatrix;
 	}
 
 	private generateMeshes(table: VpTable): { base: Mesh, rubber?: Mesh } {
 
-		const fullMatrix = new Matrix4();
-		fullMatrix.makeRotationZ(M.degToRad(-180.0));
+		const fullMatrix = new Matrix3D();
+		fullMatrix.rotateZMatrix(M.degToRad(180.0));
 
 		const height = table.getSurfaceHeight(this.szSurface, this.Center.x, this.Center.y);
 		const baseScale = 10.0;
@@ -137,10 +138,8 @@ export class FlipperItem extends GameItem implements IRenderable {
 		const baseRadius = this.BaseRadius - this.rubberthickness;
 		const endRadius = this.EndRadius - this.rubberthickness;
 
-		const baseMesh = flipperBaseMesh.clone();
-		baseMesh.name = `flipper-base:${this.getName()}`;
-
-		// scale the base and tip
+		// base and tip
+		const baseMesh = flipperBaseMesh.clone(`flipper-base:${this.getName()}`);
 		for (let t = 0; t < 13; t++) {
 			for (const v of baseMesh.vertices) {
 				if (v.x === FlipperItem.vertsBaseBottom[t].x && v.y === FlipperItem.vertsBaseBottom[t].y && v.z === FlipperItem.vertsBaseBottom[t].z) {
@@ -163,14 +162,13 @@ export class FlipperItem extends GameItem implements IRenderable {
 				}
 			}
 		}
-		this.applyTransformation(baseMesh, fullMatrix, null, z => z * this.height * table.getScaleZ() + height);
+		baseMesh.transform(fullMatrix, null, z => z * this.height * table.getScaleZ() + height);
 
 		//rubber
 		if (this.rubberthickness > 0.0) {
 			const rubberBaseScale = 10.0;
 			const rubberTipScale = 10.0;
-			const rubberMesh = flipperBaseMesh.clone();
-			rubberMesh.name = `flipper-rubber:${this.getName()}`;
+			const rubberMesh = flipperBaseMesh.clone(`flipper-rubber:${this.getName()}`);
 			for (let t = 0; t < 13; t++) {
 				for (const v of rubberMesh.vertices) {
 					if (v.x === FlipperItem.vertsBaseBottom[t].x && v.y === FlipperItem.vertsBaseBottom[t].y && v.z === FlipperItem.vertsBaseBottom[t].z) {
@@ -193,7 +191,7 @@ export class FlipperItem extends GameItem implements IRenderable {
 					}
 				}
 			}
-			this.applyTransformation(rubberMesh, fullMatrix, null, z => z * this.rubberwidth * table.getScaleZ() + (height + this.rubberheight));
+			rubberMesh.transform(fullMatrix, null, z => z * this.rubberwidth * table.getScaleZ() + (height + this.rubberheight));
 			return { base: baseMesh, rubber: rubberMesh };
 		}
 		return { base: baseMesh };

@@ -81,7 +81,7 @@ export class PrimitiveItem extends GameItem implements IRenderable {
 		const matrix = this.getMatrix(vpTable);
 		return {
 			primitive: {
-				mesh: this.apply3DTransformation(mesh, matrix),
+				mesh: mesh.transform(matrix),
 				map: vpTable.getTexture(this.data.szImage),
 				normalMap: vpTable.getTexture(this.data.szNormalMap),
 				material: vpTable.getMaterial(this.data.szMaterial),
@@ -149,10 +149,10 @@ export class PrimitiveItem extends GameItem implements IRenderable {
 		const fullMatrix = scaleMatrix.clone();
 		fullMatrix.multiply(rotTransMatrix);
 		fullMatrix.multiply(transMatrix);        // fullMatrix = Smatrix * RTmatrix * Tmatrix
-		scaleMatrix.setScaling(1.0, 1.0, -table.getScaleZ());
+		scaleMatrix.setScaling(1.0, 1.0, table.getScaleZ());
 		fullMatrix.multiply(scaleMatrix);
 
-		return fullMatrix;
+		return this.leftHandedToRightHanded(fullMatrix);
 	}
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number, storage: Storage, itemName: string): Promise<number> {

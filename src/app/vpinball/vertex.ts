@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Matrix4, Vector2 as ThreeVector2, Vector3 as ThreeVector3 } from 'three';
+import { Vector2 as ThreeVector2, Vector3 as ThreeVector3 } from 'three';
 import { isUndefined } from 'util';
 
 export class Vertex2D extends ThreeVector2 {
@@ -112,16 +112,6 @@ export class Vertex3D extends ThreeVector3 {
 
 	public xy(): Vertex2D {
 		return new Vertex2D(this.x, this.y);
-	}
-
-	public applyMatrix4NoTranslate(matrix: Matrix4) {
-		const x = this.x;
-		const y = this.y;
-		const z = this.z;
-		const e = matrix.elements;
-		this.x = e[0] * x + e[4] * y + e[8] * z + e[12];
-		this.y = e[1] * x + e[5] * y + e[9] * z + e[13];
-		this.z = e[2] * x + e[6] * y + e[10] * z + e[14];
 	}
 }
 

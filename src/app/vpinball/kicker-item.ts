@@ -32,6 +32,11 @@ import { kickerWilliamsMesh } from './meshes/kicker-williams-mesh';
 import { Vertex2D, Vertex3D } from './vertex';
 import { VpTable } from './vp-table';
 
+/**
+ * VPinball's kickers.
+ *
+ * @see https://github.com/vpinball/vpinball/blob/master/kicker.cpp
+ */
 export class KickerItem extends GameItem implements IRenderable {
 
 	public static TypeKickerInvisible = 0;

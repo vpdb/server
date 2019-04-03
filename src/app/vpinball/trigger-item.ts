@@ -32,6 +32,11 @@ import { triggerDWireMesh } from './meshes/trigger-wire-d-mesh';
 import { Vertex2D, Vertex3D } from './vertex';
 import { VpTable } from './vp-table';
 
+/**
+ * VPinball's triggers.
+ *
+ * @see https://github.com/vpinball/vpinball/blob/master/trigger.cpp
+ */
 export class TriggerItem extends GameItem implements IRenderable {
 
 	public static ShapeTriggerNone = 0;

@@ -19,6 +19,11 @@
 
 import { IRenderVertex, RenderVertex, RenderVertex3D, Vertex2D, Vertex3D } from './vertex';
 
+/**
+ * VPinball's implementation of the Catmull Curve.
+ *
+ * @see https://github.com/vpinball/vpinball/blob/master/mesh.h#L55
+ */
 export class CatmullCurve {
 
 	private c: { x: number[], y: number[], z?: number[] } = { x: [0, 0, 0, 0], y: [0, 0, 0, 0], z: [0, 0, 0, 0] };

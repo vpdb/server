@@ -17,16 +17,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Matrix4 } from 'three';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { Material } from './material';
-import { Matrix3D } from './matrix3d';
 import { Mesh } from './mesh';
 import { Texture } from './texture';
-import { Vertex3D } from './vertex';
 import { VpTable } from './vp-table';
 
+/**
+ * The parent class for all game items.
+ */
 export abstract class GameItem extends BiffParser {
 
 	public static TypeSurface = 0;

@@ -26,6 +26,11 @@ import { Mesh } from './mesh';
 import { RenderVertex, Vertex2D, Vertex3DNoTex2 } from './vertex';
 import { VpTable } from './vp-table';
 
+/**
+ * VPinball's surfaces, a.k.a as "walls".
+ *
+ * @see https://github.com/vpinball/vpinball/blob/master/surface.cpp
+ */
 export class SurfaceItem extends GameItem implements IRenderable {
 
 	public pdata: number;

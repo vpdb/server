@@ -7,6 +7,8 @@ const OptiPng = require('optipng');
 
 export class Image {
 
+	private static readonly jpegQuality = 70;
+
 	public readonly src: string;
 	public height: number;
 	public width: number;
@@ -17,6 +19,7 @@ export class Image {
 	private readonly optimize: boolean;
 
 	private gm: State;
+	private stats: sharp.Stats;
 
 	constructor(src: string, data: Buffer | sharp.Sharp, optimize: boolean) {
 		this.src = src;
@@ -53,6 +56,7 @@ export class Image {
 			this.data = undefined;
 			this.sharp = sharp(data);
 		}
+		this.stats = await this.sharp.stats();
 		return this;
 	}
 
@@ -74,8 +78,14 @@ export class Image {
 
 	public async getImage(): Promise<Buffer> {
 
-		switch (this.format) {
+		if (this.stats.isOpaque) {
+			if (this.format === 'png') {
+				logger.debug(null, '[Image.getImage]: Converting opaque png to jpeg.');
+			}
+			return this.sharp.jpeg({ quality: Image.jpegQuality }).toBuffer();
+		}
 
+		switch (this.format) {
 			case 'png': {
 				if (this.optimize) {
 					const quanter = new PngQuant([128]);
@@ -94,7 +104,7 @@ export class Image {
 			}
 
 			default: {
-				return this.sharp.jpeg({ quality: 70 }).toBuffer();
+				return this.sharp.jpeg({ quality: Image.jpegQuality }).toBuffer();
 			}
 		}
 	}

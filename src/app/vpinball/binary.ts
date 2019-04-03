@@ -20,6 +20,11 @@
 import { logger } from '../common/logger';
 import { BiffParser } from './biff-parser';
 
+/**
+ * A binary usually contains image data for a texture.
+ *
+ * @see https://github.com/vpinball/vpinball/blob/master/pinbinary.cpp
+ */
 export class Binary extends BiffParser {
 
 	public static from(data: any): Binary {

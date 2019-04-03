@@ -27,6 +27,11 @@ import { flipperBaseMesh } from './meshes/flipper-base-mesh';
 import { Vertex2D, Vertex3D } from './vertex';
 import { VpTable } from './vp-table';
 
+/**
+ * VPinball's flippers
+ *
+ * @see https://github.com/vpinball/vpinball/blob/master/flipper.cpp
+ */
 export class FlipperItem extends GameItem implements IRenderable {
 
 	public wzName: string;

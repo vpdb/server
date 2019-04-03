@@ -35,6 +35,11 @@ import { hitTargetT2SlimMesh } from './meshes/hit-target-t2-slim-mesh';
 import { Vertex3D } from './vertex';
 import { VpTable } from './vp-table';
 
+/**
+ * VPinball's hit- and drop targets.
+ *
+ * @see https://github.com/vpinball/vpinball/blob/master/hittarget.cpp
+ */
 export class HitTargetItem extends GameItem implements IRenderable {
 
 	private static TypeDropTargetBeveled = 1;

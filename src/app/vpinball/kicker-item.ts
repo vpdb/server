@@ -17,10 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Math as M, Matrix4 } from 'three';
+import { Math as M } from 'three';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { GameItem, IRenderable, Meshes } from './game-item';
+import { Matrix3D } from './matrix3d';
 import { Mesh } from './mesh';
 import { kickerCupMesh } from './meshes/kicker-cup-mesh';
 import { kickerGottliebMesh } from './meshes/kicker-gottlieb-mesh';
@@ -79,10 +80,9 @@ export class KickerItem extends GameItem implements IRenderable {
 	public getMeshes(table: VpTable): Meshes {
 		const baseHeight = table.getSurfaceHeight(this.szSurface, this.vCenter.x, this.vCenter.y) * table.getScaleZ();
 		const kickerMesh = this.generateMesh(table, baseHeight);
-		kickerMesh.name = `kicker:${this.getName()}`;
 		return {
 			kicker: {
-				mesh: kickerMesh,
+				mesh: kickerMesh.transform(new Matrix3D().toRightHanded()),
 				material: table.getMaterial(this.szMaterial),
 			},
 		};
@@ -106,20 +106,20 @@ export class KickerItem extends GameItem implements IRenderable {
 				zRot = 0.0;
 				break;
 		}
-
-		const fullMatrix = new Matrix4();
-		fullMatrix.makeRotationZ(M.degToRad(zRot));
+		const fullMatrix = new Matrix3D();
+		fullMatrix.rotateZMatrix(M.degToRad(zRot));
 
 		const mesh = this.getBaseMesh();
 		for (const vertex of mesh.vertices) {
 			let vert = new Vertex3D(vertex.x, vertex.y, vertex.z + zOffset);
-			vert.applyMatrix4(fullMatrix);
+			vert = fullMatrix.multiplyVector(vert);
 
 			vertex.x = vert.x * this.radius + this.vCenter.x;
 			vertex.y = vert.y * this.radius + this.vCenter.y;
 			vertex.z = vert.z * this.radius * table.getScaleZ() + baseHeight;
+
 			vert = new Vertex3D(vertex.nx, vertex.ny, vertex.nz);
-			vert.applyMatrix4(fullMatrix);
+			vert = fullMatrix.multiplyVector(vert);
 			vertex.nx = vert.x;
 			vertex.ny = vert.y;
 			vertex.nz = vert.z;
@@ -128,15 +128,16 @@ export class KickerItem extends GameItem implements IRenderable {
 	}
 
 	private getBaseMesh(): Mesh {
+		const name = `kicker:${this.getName()}`;
 		switch (this.kickerType) {
-			case KickerItem.TypeKickerCup: return kickerCupMesh.clone();
-			case KickerItem.TypeKickerWilliams: return kickerWilliamsMesh.clone();
-			case KickerItem.TypeKickerGottlieb: return kickerGottliebMesh.clone();
-			case KickerItem.TypeKickerCup2: return kickerT1Mesh.clone();
-			case KickerItem.TypeKickerHole: return kickerHoleMesh.clone();
+			case KickerItem.TypeKickerCup: return kickerCupMesh.clone(name);
+			case KickerItem.TypeKickerWilliams: return kickerWilliamsMesh.clone(name);
+			case KickerItem.TypeKickerGottlieb: return kickerGottliebMesh.clone(name);
+			case KickerItem.TypeKickerCup2: return kickerT1Mesh.clone(name);
+			case KickerItem.TypeKickerHole: return kickerHoleMesh.clone(name);
 			case KickerItem.TypeKickerHoleSimple:
 			default:
-				return kickerSimpleHoleMesh.clone();
+				return kickerSimpleHoleMesh.clone(name);
 		}
 	}
 

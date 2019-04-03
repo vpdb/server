@@ -17,12 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Math as M, Matrix4 } from 'three';
+import { Math as M } from 'three';
 import { logger } from '../common/logger';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { DragPoint } from './dragpoint';
 import { GameItem, IRenderable, Meshes } from './game-item';
+import { Matrix3D } from './matrix3d';
 import { Mesh } from './mesh';
 import { triggerButtonMesh } from './meshes/trigger-button-mesh';
 import { triggerSimpleMesh } from './meshes/trigger-simple-mesh';
@@ -95,7 +96,7 @@ export class TriggerItem extends GameItem implements IRenderable {
 	public getMeshes(table: VpTable): Meshes {
 		return {
 			trigger: {
-				mesh: this.createMesh(table),
+				mesh: this.createMesh(table).transform(new Matrix3D().toRightHanded()),
 				material: table.getMaterial(this.szMaterial),
 			},
 		};
@@ -109,28 +110,28 @@ export class TriggerItem extends GameItem implements IRenderable {
 			zOffset = -19.0;
 		}
 
-		const fullMatrix = new Matrix4();
+		const fullMatrix = new Matrix3D();
 		if (this.shape === TriggerItem.ShapeTriggerWireB) {
-			const tempMatrix = new Matrix4();
-			fullMatrix.makeRotationX(M.degToRad(-23.0));
-			tempMatrix.makeRotationZ(M.degToRad(this.rotation));
-			fullMatrix.multiplyMatrices(fullMatrix, tempMatrix);
+			const tempMatrix = new Matrix3D();
+			fullMatrix.rotateXMatrix(M.degToRad(-23.0));
+			tempMatrix.rotateZMatrix(M.degToRad(this.rotation));
+			fullMatrix.multiply(tempMatrix);
 
 		} else if (this.shape === TriggerItem.ShapeTriggerWireC) {
-			const tempMatrix = new Matrix4();
-			fullMatrix.makeRotationX(M.degToRad(140.0));
-			tempMatrix.makeRotationZ(M.degToRad(this.rotation));
-			fullMatrix.multiplyMatrices(fullMatrix, tempMatrix);
+			const tempMatrix = new Matrix3D();
+			fullMatrix.rotateXMatrix(M.degToRad(140.0));
+			tempMatrix.rotateZMatrix(M.degToRad(this.rotation));
+			fullMatrix.multiply(tempMatrix);
 
 		} else {
-			fullMatrix.makeRotationZ(M.degToRad(this.rotation));
+			fullMatrix.rotateZMatrix(M.degToRad(this.rotation));
 		}
 
 		const mesh = this.getBaseMesh();
 		for (const vertex of mesh.vertices) {
 
 			let vert = new Vertex3D(vertex.x, vertex.y, vertex.z);
-			vert.applyMatrix4(fullMatrix);
+			vert = fullMatrix.multiplyVector(vert);
 
 			if (this.shape === TriggerItem.ShapeTriggerButton || this.shape === TriggerItem.ShapeTriggerStar) {
 				vertex.x = (vert.x * this.radius) + this.vCenter.x;
@@ -143,7 +144,7 @@ export class TriggerItem extends GameItem implements IRenderable {
 			}
 
 			vert = new Vertex3D(vertex.nx, vertex.ny, vertex.nz);
-			vert.applyMatrix4(fullMatrix);
+			vert = fullMatrix.multiplyVector(vert);
 			vertex.nx = vert.x;
 			vertex.ny = vert.y;
 			vertex.nz = vert.z;

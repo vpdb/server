@@ -23,11 +23,11 @@ import { BiffParser } from './biff-parser';
 import { DragPoint } from './dragpoint';
 import { GameItem, IRenderable, Meshes } from './game-item';
 import { Material } from './material';
+import { Matrix3D } from './matrix3d';
 import { bulbLightMesh } from './meshes/bulb-light-mesh';
 import { bulbSocketMesh } from './meshes/bulb-socket-mesh';
 import { Vertex2D } from './vertex';
 import { VpTable } from './vp-table';
-import { Matrix3D } from './matrix3d';
 
 export class LightItem extends GameItem implements IRenderable {
 

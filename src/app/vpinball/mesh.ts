@@ -19,9 +19,9 @@
 
 import { FrameData } from './common';
 import { MeshConverter } from './gltf/mesh-converter';
-import { RenderVertex, Vertex2D, Vertex3D, Vertex3DNoTex2 } from './vertex';
 import apply = Reflect.apply;
 import { Matrix3D } from './matrix3d';
+import { RenderVertex, Vertex2D, Vertex3D, Vertex3DNoTex2 } from './vertex';
 
 export const FLT_MIN = 1.175494350822287507968736537222245677819e-038;
 export const FLT_MAX = 340282346638528859811704183484516925440;

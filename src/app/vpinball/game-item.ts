@@ -103,30 +103,6 @@ export abstract class GameItem extends BiffParser {
 				break;
 		}
 	}
-
-	protected applyTransformation(mesh: Mesh, matrix: Matrix4, normalMatrix?: Matrix4, getZ?: (x: number) => number): Mesh {
-		for (const vertex of mesh.vertices) {
-			const vert = new Vertex3D(vertex.x, vertex.y, vertex.z);
-			vert.applyMatrix4(matrix);
-			vertex.x = vert.x;
-			vertex.y = vert.y;
-			vertex.z = getZ ? getZ(vert.z) : vert.z;
-
-			const norm = new Vertex3D(vertex.nx, vertex.ny, vertex.nz);
-			norm.applyMatrix4NoTranslate(normalMatrix || matrix);
-			vertex.nx = norm.x;
-			vertex.ny = norm.y;
-			vertex.nz = norm.z;
-		}
-		return mesh;
-	}
-
-	protected leftHandedToRightHanded(matrix: Matrix3D): Matrix3D {
-		const tempMat = new Matrix3D();
-		tempMat.setScaling(1, 1, -1);
-		matrix.multiply(tempMat);
-		return matrix;
-	}
 }
 
 export interface IRenderable {

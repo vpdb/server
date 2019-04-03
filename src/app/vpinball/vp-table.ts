@@ -31,6 +31,7 @@ import { HitTargetItem } from './hit-target-item';
 import { KickerItem } from './kicker-item';
 import { LightItem } from './light-item';
 import { Material } from './material';
+import { Matrix3D } from './matrix3d';
 import { Mesh } from './mesh';
 import { PrimitiveItem } from './primitive-item';
 import { RampItem } from './ramp-item';
@@ -39,7 +40,6 @@ import { SurfaceItem } from './surface-item';
 import { Texture } from './texture';
 import { TriggerItem } from './trigger-item';
 import { Vertex3DNoTex2 } from './vertex';
-import { Matrix3D } from './matrix3d';
 
 export class VpTable implements IRenderable {
 

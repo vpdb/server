@@ -21,10 +21,10 @@ import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { DragPoint } from './dragpoint';
 import { GameItem, IRenderable, Meshes } from './game-item';
+import { Matrix3D } from './matrix3d';
 import { Mesh } from './mesh';
 import { RenderVertex, Vertex2D, Vertex3DNoTex2 } from './vertex';
 import { VpTable } from './vp-table';
-import { Matrix3D } from './matrix3d';
 
 export class SurfaceItem extends GameItem implements IRenderable {
 

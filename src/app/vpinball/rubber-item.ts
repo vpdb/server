@@ -247,7 +247,7 @@ export class RubberItem extends GameItem implements IRenderable {
 		const [vertexMatrix, fullMatrix ] = this.getMatrices(table);
 		return {
 			rubber: {
-				mesh: mesh.transform(vertexMatrix, fullMatrix),
+				mesh: mesh.transform(vertexMatrix.toRightHanded(), fullMatrix.toRightHanded()),
 				map: table.getTexture(this.szImage),
 				material: table.getMaterial(this.szMaterial),
 			},
@@ -275,7 +275,7 @@ export class RubberItem extends GameItem implements IRenderable {
 		}
 		vertMatrix.multiply(tempMat);
 
-		return [ this.leftHandedToRightHanded(vertMatrix), this.leftHandedToRightHanded(fullMatrix) ];
+		return [ vertMatrix, fullMatrix ];
 	}
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<number> {

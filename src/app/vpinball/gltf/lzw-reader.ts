@@ -106,7 +106,8 @@ export class LzwReader {
 		 * included for the clear code, and the whole thing ends when we get
 		 * an ending code.
 		 */
-		while ((c = this.getNextCode()) !== this.ending) {
+		c = this.getNextCode();
+		while (c !== this.ending) {
 
 			/* If we had a file error, return without completing the decode
 			 */
@@ -125,8 +126,9 @@ export class LzwReader {
 				/* Continue reading codes until we get a non-clear code
 				 * (Another unlikely, but possible case...)
 				 */
-				while ((c = this.getNextCode()) === this.clear) {
-					// do nothing
+				c = this.getNextCode();
+				while (c === this.clear) {
+					c = this.getNextCode();
 				}
 
 				/* If we get an ending code immediately after a clear code
@@ -232,6 +234,7 @@ export class LzwReader {
 					}
 				}
 			}
+			c = this.getNextCode();
 		}
 		return [ this.pbBitsOutCur.getBuffer(), this.pstm.getPos() ];
 	}

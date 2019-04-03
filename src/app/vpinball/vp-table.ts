@@ -39,8 +39,23 @@ import { SurfaceItem } from './surface-item';
 import { Texture } from './texture';
 import { TriggerItem } from './trigger-item';
 import { Vertex3DNoTex2 } from './vertex';
+import { Matrix3D } from './matrix3d';
 
 export class VpTable implements IRenderable {
+
+	public gameData: GameData;
+	public surfaces: { [key: string]: SurfaceItem } = {};
+	public primitives: { [key: string]: PrimitiveItem } = {};
+	public textures: { [key: string]: Texture } = {};
+	public rubbers: { [key: string]: RubberItem } = {};
+	public flippers: { [key: string]: FlipperItem } = {};
+	public bumpers: { [key: string]: BumperItem } = {};
+	public ramps: { [key: string]: RampItem } = {};
+	public lights: LightItem[] = [];
+	public hitTargets: HitTargetItem[] = [];
+	public gates: GateItem[] = [];
+	public kickers: KickerItem[] = [];
+	public triggers: TriggerItem[] = [];
 
 	private doc: OleCompoundDoc;
 
@@ -64,20 +79,6 @@ export class VpTable implements IRenderable {
 		vpTable.lights = data.lights.map((light: any) => LightItem.from(light));
 		return vpTable;
 	}
-
-	public gameData: GameData;
-	public surfaces: { [key: string]: SurfaceItem } = {};
-	public primitives: { [key: string]: PrimitiveItem } = {};
-	public textures: { [key: string]: Texture } = {};
-	public rubbers: { [key: string]: RubberItem } = {};
-	public flippers: { [key: string]: FlipperItem } = {};
-	public bumpers: { [key: string]: BumperItem } = {};
-	public ramps: { [key: string]: RampItem } = {};
-	public lights: LightItem[] = [];
-	public hitTargets: HitTargetItem[] = [];
-	public gates: GateItem[] = [];
-	public kickers: KickerItem[] = [];
-	public triggers: TriggerItem[] = [];
 
 	public getPrimitive(name: string): PrimitiveItem {
 		return this.primitives[name];
@@ -233,7 +234,7 @@ export class VpTable implements IRenderable {
 
 		return {
 			playfield: {
-				mesh: new Mesh(buffer, playfieldPolyIndices),
+				mesh: new Mesh(buffer, playfieldPolyIndices).transform(new Matrix3D().toRightHanded()),
 				material: this.getMaterial(this.gameData.szPlayfieldMaterial),
 				map: this.getTexture(this.gameData.szImage),
 			},

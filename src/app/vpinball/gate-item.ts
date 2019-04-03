@@ -17,11 +17,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Math as M, Matrix4 } from 'three';
+import { Math as M } from 'three';
 import { logger } from '../common/logger';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { GameItem, IRenderable, Meshes } from './game-item';
+import { Matrix3D } from './matrix3d';
 import { Mesh } from './mesh';
 import { hitTargetT3Mesh } from './meshes/drop-target-t3-mesh';
 import { gateBracketMesh } from './meshes/gate-bracket-mesh';
@@ -84,7 +85,7 @@ export class GateItem extends GameItem implements IRenderable {
 		const wireMesh = this.positionMesh(this.getBaseMesh(), table, baseHeight);
 		wireMesh.name = `gate-wire:${this.getName()}`;
 		meshes.wire = {
-			mesh: wireMesh,
+			mesh: wireMesh.transform(new Matrix3D().toRightHanded()),
 			material: table.getMaterial(this.szMaterial),
 		};
 
@@ -93,7 +94,7 @@ export class GateItem extends GameItem implements IRenderable {
 			const bracketMesh = this.positionMesh(gateBracketMesh.clone(), table, baseHeight);
 			bracketMesh.name = `gate-bracket:${this.getName()}`;
 			meshes.bracket = {
-				mesh: bracketMesh,
+				mesh: bracketMesh.transform(new Matrix3D().toRightHanded()),
 				material: table.getMaterial(this.szMaterial),
 			};
 		}
@@ -113,18 +114,18 @@ export class GateItem extends GameItem implements IRenderable {
 	}
 
 	private positionMesh(mesh: Mesh, table: VpTable, baseHeight: number): Mesh {
-		const fullMatrix = new Matrix4();
-		fullMatrix.makeRotationZ(M.degToRad(this.rotation));
+		const fullMatrix = new Matrix3D();
+		fullMatrix.rotateZMatrix(M.degToRad(this.rotation));
 		for (const vertex of mesh.vertices) {
 
 			let vert = new Vertex3D(vertex.x, vertex.y, vertex.z);
-			vert.applyMatrix4(fullMatrix);
+			vert = fullMatrix.multiplyVector(vert);
 			vertex.x = vert.x * this.length + this.vCenter.x;
 			vertex.y = vert.y * this.length + this.vCenter.y;
 			vertex.z = vert.z * this.length * table.getScaleZ() + (this.height * table.getScaleZ() + baseHeight);
 
 			vert = new Vertex3D(vertex.nx, vertex.ny, vertex.nz);
-			vert.applyMatrix4(fullMatrix);
+			vert = fullMatrix.multiplyVectorNoTranslate(vert);
 			vertex.nx = vert.x;
 			vertex.ny = vert.y;
 			vertex.nz = vert.z;

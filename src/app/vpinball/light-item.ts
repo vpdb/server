@@ -22,11 +22,12 @@ import { settings } from '../common/settings';
 import { BiffParser } from './biff-parser';
 import { DragPoint } from './dragpoint';
 import { GameItem, IRenderable, Meshes } from './game-item';
+import { Material } from './material';
 import { bulbLightMesh } from './meshes/bulb-light-mesh';
 import { bulbSocketMesh } from './meshes/bulb-socket-mesh';
 import { Vertex2D } from './vertex';
 import { VpTable } from './vp-table';
-import { Material } from './material';
+import { Matrix3D } from './matrix3d';
 
 export class LightItem extends GameItem implements IRenderable {
 
@@ -86,17 +87,15 @@ export class LightItem extends GameItem implements IRenderable {
 	}
 
 	public getMeshes(table: VpTable): Meshes {
-		const lightMesh = bulbLightMesh.clone();
-		lightMesh.name = `bulb:light:${this.getName()}`;
-		const height = this.bulbHaloHeight + table.getSurfaceHeight(this.szSurface, this.vCenter.x, this.vCenter.y);
+		const lightMesh = bulbLightMesh.clone(`bulb:light:${this.getName()}`);
+		const height = table.getSurfaceHeight(this.szSurface, this.vCenter.x, this.vCenter.y) * table.getScaleZ();
 		for (const vertex of lightMesh.vertices) {
 			vertex.x = vertex.x * this.meshRadius + this.vCenter.x;
 			vertex.y = vertex.y * this.meshRadius + this.vCenter.y;
 			vertex.z = vertex.z * this.meshRadius * table.getScaleZ() + height;
 		}
 
-		const socketMesh = bulbSocketMesh.clone();
-		lightMesh.name = `bulb:socket:${this.getName()}`;
+		const socketMesh = bulbSocketMesh.clone(`bulb:socket:${this.getName()}`);
 		for (const vertex of socketMesh.vertices) {
 			vertex.x = vertex.x * this.meshRadius + this.vCenter.x;
 			vertex.y = vertex.y * this.meshRadius + this.vCenter.y;
@@ -133,11 +132,11 @@ export class LightItem extends GameItem implements IRenderable {
 
 		return {
 			light: {
-				mesh: lightMesh,
+				mesh: lightMesh.transform(new Matrix3D().toRightHanded()),
 				material: lightMaterial,
 			},
 			socket: {
-				mesh: socketMesh,
+				mesh: socketMesh.transform(new Matrix3D().toRightHanded()),
 				material: socketMaterial,
 			},
 		};

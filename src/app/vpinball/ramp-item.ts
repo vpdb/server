@@ -25,6 +25,7 @@ import { GameItem, IRenderable, Meshes } from './game-item';
 import { Mesh } from './mesh';
 import { RenderVertex3D, Vertex2D, Vertex3D, Vertex3DNoTex2 } from './vertex';
 import { VpTable } from './vp-table';
+import { Matrix3D } from './matrix3d';
 
 export class RampItem extends GameItem implements IRenderable {
 
@@ -114,7 +115,7 @@ export class RampItem extends GameItem implements IRenderable {
 			const flatMeshes = this.generateFlatMesh(table);
 			for (const mesh of flatMeshes) {
 				meshes[mesh.name] = {
-					mesh,
+					mesh: mesh.transform(new Matrix3D().toRightHanded()),
 					map: table.getTexture(this.szImage),
 					material: table.getMaterial(this.szMaterial),
 				};
@@ -124,7 +125,7 @@ export class RampItem extends GameItem implements IRenderable {
 			switch (this.rampType) {
 				case RampItem.RampType1Wire: {
 					meshes.wire1 = {
-						mesh: wireMeshA,
+						mesh: wireMeshA.transform(new Matrix3D().toRightHanded()),
 						map: table.getTexture(this.szImage),
 						material: table.getMaterial(this.szMaterial),
 					};
@@ -136,80 +137,76 @@ export class RampItem extends GameItem implements IRenderable {
 					wire1Mesh.name = `ramp:wire1:${this.getName()}`;
 					wire2Mesh.name = `ramp:wire2:${this.getName()}`;
 					meshes.wire1 = {
-						mesh: wire1Mesh,
+						mesh: wire1Mesh.transform(new Matrix3D().toRightHanded()),
 						material: table.getMaterial(this.szMaterial),
 					};
 					meshes.wire2 = {
-						mesh: wire2Mesh,
+						mesh: wire2Mesh.transform(new Matrix3D().toRightHanded()),
 						material: table.getMaterial(this.szMaterial),
 					};
 					break;
 				}
 				case RampItem.RampType4Wire: {
-					const wire1Mesh = wireMeshA.clone().makeTranslation(0, 0, this.wireDistanceY*0.5);
-					const wire2Mesh = wireMeshB.clone().makeTranslation(0, 0, this.wireDistanceY*0.5);
+					const wire1Mesh = wireMeshA.clone(`ramp:wire1:${this.getName()}`).makeTranslation(0, 0, this.wireDistanceY*0.5);
+					const wire2Mesh = wireMeshB.clone(`ramp:wire2:${this.getName()}`).makeTranslation(0, 0, this.wireDistanceY*0.5);
 					const wire3Mesh = wireMeshA.makeTranslation(0, 0, 3.0);
 					const wire4Mesh = wireMeshB.makeTranslation(0, 0, 3.0);
-					wire1Mesh.name = `ramp:wire1:${this.getName()}`;
-					wire2Mesh.name = `ramp:wire2:${this.getName()}`;
 					wire3Mesh.name = `ramp:wire3:${this.getName()}`;
 					wire4Mesh.name = `ramp:wire4:${this.getName()}`;
 					meshes.wire1 = {
-						mesh: wire1Mesh,
+						mesh: wire1Mesh.transform(new Matrix3D().toRightHanded()),
 						material: table.getMaterial(this.szMaterial),
 					};
 					meshes.wire2 = {
-						mesh: wire2Mesh,
+						mesh: wire2Mesh.transform(new Matrix3D().toRightHanded()),
 						material: table.getMaterial(this.szMaterial),
 					};
 					meshes.wire3 = {
-						mesh: wire3Mesh,
+						mesh: wire3Mesh.transform(new Matrix3D().toRightHanded()),
 						material: table.getMaterial(this.szMaterial),
 					};
 					meshes.wire4 = {
-						mesh: wire4Mesh,
+						mesh: wire4Mesh.transform(new Matrix3D().toRightHanded()),
 						material: table.getMaterial(this.szMaterial),
 					};
 					break;
 				}
 				case RampItem.RampType3WireLeft: {
-					const wire2Mesh = wireMeshB.clone().makeTranslation(0, 0, this.wireDistanceY*0.5);
+					const wire2Mesh = wireMeshB.clone(`ramp:wire2:${this.getName()}`).makeTranslation(0, 0, this.wireDistanceY*0.5);
 					const wire3Mesh = wireMeshA.makeTranslation(0, 0, 3.0);
 					const wire4Mesh = wireMeshB.makeTranslation(0, 0, 3.0);
-					wire2Mesh.name = `ramp:wire2:${this.getName()}`;
 					wire3Mesh.name = `ramp:wire3:${this.getName()}`;
 					wire4Mesh.name = `ramp:wire4:${this.getName()}`;
 					meshes.wire2 = {
-						mesh: wire2Mesh,
+						mesh: wire2Mesh.transform(new Matrix3D().toRightHanded()),
 						material: table.getMaterial(this.szMaterial),
 					};
 					meshes.wire3 = {
-						mesh: wire3Mesh,
+						mesh: wire3Mesh.transform(new Matrix3D().toRightHanded()),
 						material: table.getMaterial(this.szMaterial),
 					};
 					meshes.wire4 = {
-						mesh: wire4Mesh,
+						mesh: wire4Mesh.transform(new Matrix3D().toRightHanded()),
 						material: table.getMaterial(this.szMaterial),
 					};
 					break;
 				}
 				case RampItem.RampType3WireRight: {
-					const wire1Mesh = wireMeshA.clone().makeTranslation(0, 0, this.wireDistanceY*0.5);
+					const wire1Mesh = wireMeshA.clone(`ramp:wire1:${this.getName()}`).makeTranslation(0, 0, this.wireDistanceY*0.5);
 					const wire3Mesh = wireMeshA.makeTranslation(0, 0, 3.0);
 					const wire4Mesh = wireMeshB.makeTranslation(0, 0, 3.0);
-					wire1Mesh.name = `ramp:wire1:${this.getName()}`;
 					wire3Mesh.name = `ramp:wire3:${this.getName()}`;
 					wire4Mesh.name = `ramp:wire4:${this.getName()}`;
 					meshes.wire1 = {
-						mesh: wire1Mesh,
+						mesh: wire1Mesh.transform(new Matrix3D().toRightHanded()),
 						material: table.getMaterial(this.szMaterial),
 					};
 					meshes.wire3 = {
-						mesh: wire3Mesh,
+						mesh: wire3Mesh.transform(new Matrix3D().toRightHanded()),
 						material: table.getMaterial(this.szMaterial),
 					};
 					meshes.wire4 = {
-						mesh: wire4Mesh,
+						mesh: wire4Mesh.transform(new Matrix3D().toRightHanded()),
 						material: table.getMaterial(this.szMaterial),
 					};
 					break;

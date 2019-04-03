@@ -17,10 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Math as M, Matrix4 } from 'three';
+import { Math as M } from 'three';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { GameItem, IRenderable, Meshes } from './game-item';
+import { Matrix3D } from './matrix3d';
 import { Mesh } from './mesh';
 import { bumperBaseMesh } from './meshes/bumper-base-mesh';
 import { bumperCapMesh } from './meshes/bumper-cap-mesh';
@@ -86,48 +87,48 @@ export class BumperItem extends GameItem implements IRenderable {
 			throw new Error(`Cannot export bumper ${this.getName()} without vCenter.`);
 		}
 		const meshes: Meshes = {};
-		const matrix = new Matrix4();
-		matrix.makeRotationZ(M.radToDeg(this.orientation));
+		const matrix = new Matrix3D();
+		matrix.rotateZMatrix(M.radToDeg(this.orientation));
 		const height = table.getSurfaceHeight(this.szSurface, this.vCenter.x, this.vCenter.y) * table.getScaleZ();
 		if (this.fBaseVisible) {
 			meshes.base = {
-				mesh: this.generateMesh(bumperBaseMesh, matrix, z => z * this.heightScale * table.getScaleZ() + height),
+				mesh: this.generateMesh(bumperBaseMesh, matrix, z => z * this.heightScale * table.getScaleZ() + height).transform(new Matrix3D().toRightHanded()),
 				material: table.getMaterial(this.szBaseMaterial),
 			};
 		}
 		if (this.fRingVisible) {
 			meshes.ring = {
-				mesh: this.generateMesh(bumperRingMesh, matrix, z => z * (this.heightScale * table.getScaleZ()) + height),
+				mesh: this.generateMesh(bumperRingMesh, matrix, z => z * (this.heightScale * table.getScaleZ()) + height).transform(new Matrix3D().toRightHanded()),
 				material: table.getMaterial(this.szRingMaterial),
 			};
 		}
 		if (this.fSkirtVisible) {
 			meshes.skirt = {
-				mesh: this.generateMesh(bumperSocketMesh, matrix, z => z * (this.heightScale * table.getScaleZ()) + (height + 5.0)),
+				mesh: this.generateMesh(bumperSocketMesh, matrix, z => z * (this.heightScale * table.getScaleZ()) + (height + 5.0)).transform(new Matrix3D().toRightHanded()),
 				material: table.getMaterial(this.szSkirtMaterial),
 			};
 		}
 		if (this.fCapVisible) {
 			meshes.cap = {
-				mesh: this.generateMesh(bumperCapMesh, matrix, z => (z * this.heightScale + this.heightScale) * table.getScaleZ() + height),
+				mesh: this.generateMesh(bumperCapMesh, matrix, z => (z * this.heightScale + this.heightScale) * table.getScaleZ() + height).transform(new Matrix3D().toRightHanded()),
 				material: table.getMaterial(this.szCapMaterial),
 			};
 		}
 		return meshes;
 	}
 
-	private generateMesh(mesh: Mesh, matrix: Matrix4, zPos: (z: number) => number): Mesh {
+	private generateMesh(mesh: Mesh, matrix: Matrix3D, zPos: (z: number) => number): Mesh {
 		const scalexy = this.radius;
 		const generatedMesh = mesh.clone();
 		for (const vertex of generatedMesh.vertices) {
-			const vert = new Vertex3D(vertex.x, vertex.y, vertex.z);
-			vert.applyMatrix4(matrix);
+			let vert = new Vertex3D(vertex.x, vertex.y, vertex.z);
+			vert = matrix.multiplyVector(vert);
 			vertex.x = vert.x * scalexy + this.vCenter.x;
 			vertex.y = vert.y * scalexy + this.vCenter.y;
 			vertex.z = zPos(vert.z);
 
-			const normal = new Vertex3D(vertex.nx, vertex.ny, vertex.nz);
-			normal.applyMatrix4(matrix);
+			let normal = new Vertex3D(vertex.nx, vertex.ny, vertex.nz);
+			normal = matrix.multiplyVectorNoTranslate(normal);
 			vertex.nx = normal.x;
 			vertex.ny = normal.y;
 			vertex.nz = normal.z;

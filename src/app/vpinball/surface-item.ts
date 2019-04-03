@@ -24,6 +24,7 @@ import { GameItem, IRenderable, Meshes } from './game-item';
 import { Mesh } from './mesh';
 import { RenderVertex, Vertex2D, Vertex3DNoTex2 } from './vertex';
 import { VpTable } from './vp-table';
+import { Matrix3D } from './matrix3d';
 
 export class SurfaceItem extends GameItem implements IRenderable {
 
@@ -104,7 +105,6 @@ export class SurfaceItem extends GameItem implements IRenderable {
 
 	public getMeshes(table: VpTable): Meshes {
 
-		const meshes: Meshes = {};
 		const topMesh = new Mesh();
 		const sideMesh = new Mesh();
 
@@ -135,6 +135,7 @@ export class SurfaceItem extends GameItem implements IRenderable {
 		const top = this.heighttop + table.gameData.tableheight;
 
 		let offset = 0;
+
 		// Render side
 		for (let i = 0; i < numVertices; i++) {
 
@@ -285,12 +286,12 @@ export class SurfaceItem extends GameItem implements IRenderable {
 
 		return {
 			top: {
-				mesh: topMesh,
+				mesh: topMesh.transform(new Matrix3D().toRightHanded()),
 				map: table.getTexture(this.szImage),
 				material: table.getMaterial(this.szTopMaterial),
 			},
 			side: {
-				mesh: sideMesh,
+				mesh: sideMesh.transform(new Matrix3D().toRightHanded()),
 				map: table.getTexture(this.szSideImage),
 				material: table.getMaterial(this.szSideMaterial),
 			},

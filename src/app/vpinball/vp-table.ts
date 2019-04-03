@@ -1,4 +1,4 @@
-/* tslint:disable:no-console no-bitwise */
+/* tslint:disable: no-bitwise */
 /*
  * VPDB - Virtual Pinball Database
  * Copyright (C) 2019 freezy <freezy@vpdb.io>
@@ -41,6 +41,12 @@ import { Texture } from './texture';
 import { TriggerItem } from './trigger-item';
 import { Vertex3DNoTex2 } from './vertex';
 
+/**
+ * A Visual Pinball table.
+ *
+ * This holds together all table elements of a .vpt/.vpx file. It's also
+ * the entry point for parsing the file.
+ */
 export class VpTable implements IRenderable {
 
 	public gameData: GameData;
@@ -101,7 +107,7 @@ export class VpTable implements IRenderable {
 	}
 
 	public getScaleZ(): number {
-		return 1.0; //this.gameData.BG_scalez[this.gameData.BG_current_set] || 1.0;
+		return this.gameData.BG_scalez[this.gameData.BG_current_set] || 1.0;
 	}
 
 	public getDetailLevel() {
@@ -137,10 +143,9 @@ export class VpTable implements IRenderable {
 			return this.gameData.tableheight + this.surfaces[surface].heighttop;
 		}
 
-		// todo ramps
-		// if (this.ramps[surface]) {
-		// 	return this.gameData.tableheight + this.ramps[surface].getSurfaceHeight();
-		// }
+		if (this.ramps[surface]) {
+			return this.gameData.tableheight + this.ramps[surface].getSurfaceHeight();
+		}
 		logger.warn(null, '[VpTable.getSurfaceHeight] Unknown surface %s.', surface);
 		return this.gameData.tableheight;
 	}
@@ -171,12 +176,10 @@ export class VpTable implements IRenderable {
 			this.gameData = await GameData.fromStorage(gameStorage, 'GameData');
 
 			// load items
-			const stats = await this.loadGameItems(gameStorage, this.gameData.numGameItems);
+			await this.loadGameItems(gameStorage, this.gameData.numGameItems);
 
 			// load images
 			await this.loadTextures(gameStorage, this.gameData.numTextures);
-
-			console.log(stats);
 
 		} finally {
 			await this.doc.close();

@@ -33,6 +33,11 @@ import { gateWireRectangleMesh } from './meshes/gate-wire-rectangle-mesh';
 import { Vertex2D, Vertex3D } from './vertex';
 import { VpTable } from './vp-table';
 
+/**
+ * VPinball's gates.
+ *
+ * @see https://github.com/vpinball/vpinball/blob/master/gate.cpp
+ */
 export class GateItem extends GameItem implements IRenderable {
 
 	public static TypeGateWireW = 1;

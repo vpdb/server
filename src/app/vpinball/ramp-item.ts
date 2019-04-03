@@ -27,6 +27,11 @@ import { RenderVertex3D, Vertex2D, Vertex3D, Vertex3DNoTex2 } from './vertex';
 import { VpTable } from './vp-table';
 import { Matrix3D } from './matrix3d';
 
+/**
+ * VPinball's ramps.
+ *
+ * @see https://github.com/vpinball/vpinball/blob/master/ramp.cpp
+ */
 export class RampItem extends GameItem implements IRenderable {
 
 	public static RampTypeFlat = 0;
@@ -214,6 +219,10 @@ export class RampItem extends GameItem implements IRenderable {
 			}
 		}
 		return meshes;
+	}
+
+	public getSurfaceHeight() {
+		return 0; // FIXME
 	}
 
 	private generateFlatMesh(table: VpTable): Mesh[] {

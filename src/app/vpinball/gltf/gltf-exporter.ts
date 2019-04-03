@@ -1,4 +1,3 @@
-/* tslint:disable:no-console */
 /*
  * VPDB - Virtual Pinball Database
  * Copyright (C) 2019 freezy <freezy@vpdb.io>
@@ -67,6 +66,8 @@ import {
 	GltfMeshPrimitive, GltfNode, GltfScene,
 } from './gltf';
 import { Image } from './image';
+import { RequestState } from '../../common/typings/context';
+import { logger } from '../../common/logger';
 
 const PromisePool = require('es6-promise-pool');
 
@@ -423,8 +424,7 @@ export class GLTFExporter {
 			return JSON.parse(JSON.stringify(object.userData));
 
 		} catch (error) {
-			console.warn('GLTFExporter: userData of \'' + object.name + '\' ' +
-				'won\'t be serialized because of JSON.stringify error - ' + error.message);
+			logger.warn(this.options.state,`[GLTFExporter.serializeUserData]: userData of '${object.name}' won't be serialized because of JSON.stringify error - ${error.message}`);
 			return {};
 		}
 	}
@@ -535,7 +535,7 @@ export class GLTFExporter {
 				}
 			}
 		} catch (err) {
-			console.error(err);
+			logger.error(this.options.state,'[GLTFExporter.processBufferView]: %s', err.message, err);
 			throw err;
 		}
 
@@ -702,7 +702,7 @@ export class GLTFExporter {
 
 		if (this.options.embedImages) {
 			if (this.options.forcePowerOfTwoTextures && !this.isPowerOfTwo(image)) {
-				console.warn('GLTFExporter: Resized non-power-of-two image.', image);
+				logger.warn(this.options.state,'[GLTFExporter.processImage]: Resized non-power-of-two image.', image);
 				image.resize(M.floorPowerOfTwo(image.width), M.floorPowerOfTwo(image.height));
 			}
 			if (flipY === true) {
@@ -800,9 +800,8 @@ export class GLTFExporter {
 		}
 
 		if (material.isShaderMaterial) {
-			console.warn('GLTFExporter: ShaderMaterial not supported.');
+			logger.warn(this.options.state,'[GLTFExporter.processMaterial] ShaderMaterial not supported.');
 			return null;
-
 		}
 
 		// @QUESTION Should we avoid including any attribute that has the default value?
@@ -815,8 +814,7 @@ export class GLTFExporter {
 			this.extensionsUsed.KHR_materials_unlit = true;
 
 		} else if (!material.isMeshStandardMaterial) {
-			console.warn('GLTFExporter: Use MeshStandardMaterial or MeshBasicMaterial for best results.');
-
+			logger.warn(this.options.state,'[GLTFExporter.processMaterial] Use MeshStandardMaterial or MeshBasicMaterial for best results.');
 		}
 
 		// pbrMetallicRoughness.baseColorFactor
@@ -849,7 +847,7 @@ export class GLTFExporter {
 				gltfMaterial.pbrMetallicRoughness.metallicRoughnessTexture = metalRoughMapDef;
 
 			} else {
-				console.warn('GLTFExporter: Ignoring metalnessMap and roughnessMap because they are not the same Texture.');
+				logger.warn(this.options.state,'[GLTFExporter.processMaterial] Ignoring metalnessMap and roughnessMap because they are not the same Texture.');
 			}
 		}
 
@@ -884,7 +882,7 @@ export class GLTFExporter {
 			const normalMapDef: MapDefinition = { index: this.processTexture(material.normalMap) };
 			if (material.normalScale.x !== -1) {
 				if (material.normalScale.x !== material.normalScale.y) {
-					console.warn('GLTFExporter: Normal scale components are different, ignoring Y and exporting X.');
+					logger.warn(this.options.state,'[GLTFExporter.processMaterial] Normal scale components are different, ignoring Y and exporting X.');
 				}
 				normalMapDef.scale = material.normalScale.x;
 			}
@@ -972,7 +970,7 @@ export class GLTFExporter {
 		} else {
 			if (!(geometry as GeometryInternal).isBufferGeometry) {
 
-				console.warn('GLTFExporter: Exporting Geometry will increase file size. Use BufferGeometry instead.');
+				logger.warn(this.options.state,'[GLTFExporter.processMesh] Exporting Geometry will increase file size. Use BufferGeometry instead.');
 
 				const geometryTemp = new BufferGeometry();
 				geometryTemp.fromGeometry(geometry as Geometry);
@@ -981,7 +979,7 @@ export class GLTFExporter {
 
 			if (mesh.drawMode === TriangleFanDrawMode) {
 
-				console.warn('GLTFExporter: TriangleFanDrawMode and wireframe incompatible.');
+				logger.warn(this.options.state,'[GLTFExporter.processMesh] TriangleFanDrawMode and wireframe incompatible.');
 				mode = WEBGL_CONSTANTS.TRIANGLE_FAN;
 
 			} else if (mesh.drawMode === TriangleStripDrawMode) {
@@ -1010,7 +1008,7 @@ export class GLTFExporter {
 		const originalNormal = (geometry as BufferGeometry).getAttribute('normal');
 
 		if (originalNormal !== undefined && !this.isNormalizedNormalAttribute(originalNormal)) {
-			console.warn('GLTFExporter: Creating normalized normal attribute from the non-normalized one (%s).', mesh.name);
+			logger.warn(this.options.state,'[GLTFExporter.processMesh] Creating normalized normal attribute from the non-normalized one (%s).', mesh.name);
 			(geometry as BufferGeometry).addAttribute('normal', this.createNormalizedNormalAttribute(originalNormal as BufferAttribute));
 		}
 
@@ -1033,7 +1031,7 @@ export class GLTFExporter {
 				!(array instanceof Uint16Array) &&
 				!(array instanceof Uint8Array)) {
 
-				console.warn('GLTFExporter: Attribute "skinIndex" converted to type UNSIGNED_SHORT.');
+				logger.warn(this.options.state,'[GLTFExporter.processMesh] Attribute "skinIndex" converted to type UNSIGNED_SHORT.');
 				modifiedAttribute = new BufferAttribute(new Uint16Array(array), attribute.itemSize, attribute.normalized);
 			}
 
@@ -1078,7 +1076,7 @@ export class GLTFExporter {
 
 					if (attributeName !== 'position' && attributeName !== 'normal') {
 						if (!warned) {
-							console.warn('GLTFExporter: Only POSITION and NORMAL morph are supported.');
+							logger.warn(this.options.state,'[GLTFExporter.processMesh] Only POSITION and NORMAL morph are supported.');
 							warned = true;
 						}
 						continue;
@@ -1142,7 +1140,7 @@ export class GLTFExporter {
 
 		if (!forceIndices && (geometry as BufferGeometry).index === null && isMultiMaterial) {
 			// temporal workaround.
-			console.warn('GLTFExporter: Creating index for non-indexed multi-material mesh.');
+			logger.warn(this.options.state,'[GLTFExporter.processMesh] Creating index for non-indexed multi-material mesh.');
 			forceIndices = true;
 
 		}
@@ -1188,7 +1186,6 @@ export class GLTFExporter {
 				} else {
 					primitive.indices = this.processAccessor((geometry as BufferGeometry).index, (geometry as BufferGeometry), groups[i].start, groups[i].count);
 					this.cachedData.attributes.set((geometry as BufferGeometry).index, primitive.indices);
-
 				}
 			}
 
@@ -1300,7 +1297,7 @@ export class GLTFExporter {
 			}
 
 			if (!trackNode || !trackProperty) {
-				console.warn('GLTFExporter: Could not export animation track "%s".', track.name);
+				logger.warn(this.options.state,'[GLTFExporter.processAnimation] Could not export animation track "%s".', track.name);
 				return null;
 			}
 
@@ -1416,7 +1413,7 @@ export class GLTFExporter {
 		}
 
 		if (light.decay !== undefined && light.decay !== 2) {
-			console.warn('GLTFExporter: Light decay may be lost. glTF is physically-based, '
+			logger.warn(this.options.state,'[GLTFExporter.processLight] Light decay may be lost. glTF is physically-based, '
 				+ 'and expects light.decay=2.');
 		}
 
@@ -1426,7 +1423,7 @@ export class GLTFExporter {
 				|| light.target.position.y !== 0
 				|| light.target.position.z !== -1)) {
 
-			console.warn('GLTFExporter: Light direction may be lost. For best results, '
+			logger.warn(this.options.state,'[GLTFExporter.processLight] Light direction may be lost. For best results, '
 				+ 'make light.target a child of the light with position 0,0,-1.');
 
 		}
@@ -1504,7 +1501,7 @@ export class GLTFExporter {
 			gltfNode.extensions.KHR_lights_punctual = { light: this.processLight(object as any) };
 
 		} else if (object.isLight) {
-			console.warn('GLTFExporter: Only directional, point, and spot lights are supported.');
+			logger.warn(this.options.state,'[GLTFExporter.processNode] Only directional, point, and spot lights are supported.');
 			return null;
 		}
 
@@ -1663,9 +1660,7 @@ class Utils {
 		} else if (time > track.times[track.times.length - 1]) {
 
 			if (Math.abs(track.times[track.times.length - 1] - time) < tolerance) {
-
 				return track.times.length - 1;
-
 			}
 
 			times[times.length - 1] = time;
@@ -1680,10 +1675,11 @@ class Utils {
 
 			for (let i = 0; i < track.times.length; i++) {
 
-				if (Math.abs(track.times[i] - time) < tolerance) { return i; }
+				if (Math.abs(track.times[i] - time) < tolerance) {
+					return i;
+				}
 
 				if (track.times[i] < time && track.times[i + 1] > time) {
-
 					times.set(track.times.slice(0, i + 1), 0);
 					times[i + 1] = time;
 					times.set(track.times.slice(i + 1), i + 2);
@@ -1719,7 +1715,6 @@ class Utils {
 				// Tracks that don't affect morph targets, or that affect all morph targets together, can be left as-is.
 				tracks.push(sourceTrack);
 				continue;
-
 			}
 
 			if (sourceTrack.createInterpolant !== sourceTrack.InterpolantFactoryMethodDiscrete
@@ -1730,10 +1725,9 @@ class Utils {
 					// This should never happen, because glTF morph target animations
 					// affect all targets already.
 					throw new Error('GLTFExporter: Cannot merge tracks with glTF CUBICSPLINE interpolation.');
-
 				}
 
-				console.warn('GLTFExporter: Morph target interpolation mode not yet supported. Using LINEAR instead.');
+				logger.warn(null,'[GLTFExporter.mergeMorphTargetTracks]: Morph target interpolation mode not yet supported. Using LINEAR instead.');
 
 				sourceTrack = sourceTrack.clone();
 				sourceTrack.setInterpolation(InterpolateLinear);
@@ -1744,9 +1738,7 @@ class Utils {
 			const targetIndex = sourceTrackNode.morphTargetDictionary[sourceTrackBinding.propertyIndex];
 
 			if (targetIndex === undefined) {
-
 				throw new Error('GLTFExporter: Morph target name not found: ' + sourceTrackBinding.propertyIndex);
-
 			}
 
 			let mergedTrack: any;
@@ -1756,13 +1748,9 @@ class Utils {
 			if (mergedTracks[sourceTrackNode.uuid] === undefined) {
 
 				mergedTrack = sourceTrack.clone();
-
 				const values = new mergedTrack.ValueBufferType(targetCount * mergedTrack.times.length);
-
 				for (let j = 0; j < mergedTrack.times.length; j++) {
-
 					values[j * targetCount + targetIndex] = mergedTrack.values[j];
-
 				}
 
 				mergedTrack.name = '.morphTargetInfluences';
@@ -1770,9 +1758,7 @@ class Utils {
 
 				mergedTracks[sourceTrackNode.uuid] = mergedTrack;
 				tracks.push(mergedTrack);
-
 				continue;
-
 			}
 
 			const mergedKeyframeIndex = 0;
@@ -1784,16 +1770,13 @@ class Utils {
 			// For every existing keyframe of the merged track, write a (possibly
 			// interpolated) value from the source track.
 			for (let j = 0; j < mergedTrack.times.length; j++) {
-
 				mergedTrack.values[j * targetCount + targetIndex] = sourceInterpolant.evaluate(mergedTrack.times[j]);
-
 			}
 
 			// For every existing keyframe of the source track, write a (possibly
 			// new) keyframe to the merged track. Values from the previous loop may
 			// be written again, but keyframes are de-duplicated.
 			for (let j = 0; j < sourceTrack.times.length; j++) {
-
 				const keyframeIndex = this.insertKeyframe(mergedTrack, sourceTrack.times[j]);
 				mergedTrack.values[keyframeIndex * targetCount + targetIndex] = sourceTrack.values[j];
 			}
@@ -1812,6 +1795,7 @@ export interface ParseOptions {
 	animations?: any[];
 	forceIndices?: boolean;
 	forcePowerOfTwoTextures?: boolean;
+	state?: RequestState;
 }
 
 interface MapDefinition {

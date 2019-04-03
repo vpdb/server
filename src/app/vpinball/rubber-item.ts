@@ -29,6 +29,11 @@ import { SplineVertex } from './spline-vertex';
 import { Vertex3D, Vertex3DNoTex2 } from './vertex';
 import { VpTable } from './vp-table';
 
+/**
+ * VPinball's rubber item.
+ *
+ * @see https://github.com/vpinball/vpinball/blob/master/rubber.cpp
+ */
 export class RubberItem extends GameItem implements IRenderable {
 
 	public wzName: string;

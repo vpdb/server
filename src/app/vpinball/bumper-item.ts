@@ -30,6 +30,11 @@ import { bumperSocketMesh } from './meshes/bumper-socket-mesh';
 import { Vertex2D, Vertex3D } from './vertex';
 import { VpTable } from './vp-table';
 
+/**
+ * VPinball's bumper item.
+ *
+ * @see https://github.com/vpinball/vpinball/blob/master/bumper.cpp
+ */
 export class BumperItem extends GameItem implements IRenderable {
 
 	public pdata: number;

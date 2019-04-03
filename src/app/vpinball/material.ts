@@ -19,6 +19,11 @@
 
 import { BiffParser } from './biff-parser';
 
+/**
+ * VPinball's material definition.
+ *
+ * @see https://github.com/vpinball/vpinball/blob/master/Material.h
+ */
 export class Material {
 
 	public szName: string;

@@ -23,6 +23,12 @@ import { IRenderVertex, RenderVertex, Vertex3D } from './vertex';
 
 export const HIT_SHAPE_DETAIL_LEVEL = 7.0;
 
+/**
+ * Used for game items that contain some kind of editable splice, like rubbers,
+ * walls, etc.
+ *
+ * @see https://github.com/vpinball/vpinball/blob/master/dragpoint.cpp
+ */
 export class DragPoint extends GameItem {
 
 	public vertex: Vertex3D;

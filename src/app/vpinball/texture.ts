@@ -25,6 +25,13 @@ import { BiffParser } from './biff-parser';
 import { Binary } from './binary';
 import { LzwReader } from './gltf/lzw-reader';
 
+/**
+ * VPinball's texture.
+ *
+ * These are read from the "Image*" storage items.
+ *
+ * @see https://github.com/vpinball/vpinball/blob/master/Texture.cpp
+ */
 export class Texture extends BiffParser {
 
 	public storageName: string;

@@ -29,6 +29,11 @@ import { bulbSocketMesh } from './meshes/bulb-socket-mesh';
 import { Vertex2D } from './vertex';
 import { VpTable } from './vp-table';
 
+/**
+ * VPinball's lights.
+ *
+ * @see https://github.com/vpinball/vpinball/blob/master/light.cpp
+ */
 export class LightItem extends GameItem implements IRenderable {
 
 	public wzName: string;

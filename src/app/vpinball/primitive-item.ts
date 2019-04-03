@@ -28,6 +28,11 @@ import { Mesh } from './mesh';
 import { Vertex3DNoTex2 } from './vertex';
 import { VpTable } from './vp-table';
 
+/**
+ * VPinball's primitive.
+ *
+ * @see https://github.com/vpinball/vpinball/blob/master/primitive.cpp
+ */
 export class PrimitiveItem extends GameItem implements IRenderable {
 
 	private data: PrimitiveData = new PrimitiveData();

@@ -23,25 +23,12 @@ import { BiffParser } from './biff-parser';
 import { Material, SaveMaterial, SavePhysicsMaterial } from './material';
 import { Vertex2D, Vertex3D } from './vertex';
 
+/**
+ * Global data about the table.
+ *
+ * @see https://github.com/vpinball/vpinball/blob/master/pintable.cpp
+ */
 export class GameData extends BiffParser {
-
-	public static async fromStorage(storage: Storage, itemName: string): Promise<GameData> {
-		const gameData = new GameData();
-		await storage.streamFiltered(itemName, 0, BiffParser.stream(gameData.fromTag.bind(gameData), {
-			streamedTags: [ 'CODE' ],
-		}));
-		return gameData;
-	}
-
-	public static from(data: any): GameData {
-		const gameData = new GameData();
-		Object.assign(gameData, data);
-		gameData.materials = [];
-		for (const material of data.materials) {
-			gameData.materials.push(Material.fromCached(material));
-		}
-		return gameData;
-	}
 
 	private static BG_DESKTOP = 0;
 	private static BG_FULLSCREEN = 1;
@@ -142,6 +129,24 @@ export class GameData extends BiffParser {
 	public userDetailLevel: number;
 	public numMaterials: number;
 	public materials: Material[] = [];
+
+	public static async fromStorage(storage: Storage, itemName: string): Promise<GameData> {
+		const gameData = new GameData();
+		await storage.streamFiltered(itemName, 0, BiffParser.stream(gameData.fromTag.bind(gameData), {
+			streamedTags: [ 'CODE' ],
+		}));
+		return gameData;
+	}
+
+	public static from(data: any): GameData {
+		const gameData = new GameData();
+		Object.assign(gameData, data);
+		gameData.materials = [];
+		for (const material of data.materials) {
+			gameData.materials.push(Material.fromCached(material));
+		}
+		return gameData;
+	}
 
 	public getName(): string {
 		return this.wzName;

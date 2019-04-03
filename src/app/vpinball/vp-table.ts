@@ -144,8 +144,9 @@ export class VpTable implements IRenderable {
 		}
 
 		if (this.ramps[surface]) {
-			return this.gameData.tableheight + this.ramps[surface].getSurfaceHeight();
+			return this.gameData.tableheight + this.ramps[surface].getSurfaceHeight(x, y, this);
 		}
+
 		logger.warn(null, '[VpTable.getSurfaceHeight] Unknown surface %s.', surface);
 		return this.gameData.tableheight;
 	}

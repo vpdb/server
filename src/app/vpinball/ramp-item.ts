@@ -221,8 +221,41 @@ export class RampItem extends GameItem implements IRenderable {
 		return meshes;
 	}
 
-	public getSurfaceHeight() {
-		return 0; // FIXME
+	public getSurfaceHeight(x: number, y: number, table: VpTable) {
+		const vVertex = this.getCentralCurve(table);
+
+		let iSeg: number;
+		let vOut: Vertex2D;
+		[vOut, iSeg] = Mesh.closestPointOnPolygon(vVertex, new Vertex2D(x, y), false);
+
+		if (iSeg == -1) {
+			return 0.0; // Object is not on ramp path
+		}
+
+		// Go through vertices (including iSeg itself) counting control points until iSeg
+		let totalLength = 0.0;
+		let startLength = 0.0;
+
+		const cVertex = vVertex.length;
+		for (let i2 = 1; i2 < cVertex; i2++) {
+			const dx = vVertex[i2].x - vVertex[i2 - 1].x;
+			const dy = vVertex[i2].y - vVertex[i2 - 1].y;
+			const len = Math.sqrt(dx * dx + dy * dy);
+			if (i2 <= iSeg) {
+				startLength += len;
+			}
+			totalLength += len;
+		}
+
+		const dx = vOut.x - vVertex[iSeg].x;
+		const dy = vOut.y - vVertex[iSeg].y;
+		const len = Math.sqrt(dx * dx + dy * dy);
+		startLength += len; // Add the distance the object is between the two closest polyline segments.  Matters mostly for straight edges. Z does not respect that yet!
+
+		const topHeight = this.heighttop + table.getTableHeight();
+		const bottomHeight = this.heightbottom + table.getTableHeight();
+
+		return vVertex[iSeg].z + (startLength / totalLength) * (topHeight - bottomHeight) + bottomHeight;
 	}
 
 	private generateFlatMesh(table: VpTable): Mesh[] {

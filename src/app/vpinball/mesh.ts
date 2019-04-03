@@ -20,7 +20,7 @@
 import { FrameData } from './common';
 import { MeshConverter } from './gltf/mesh-converter';
 import { Matrix3D } from './matrix3d';
-import { RenderVertex, Vertex2D, Vertex3D, Vertex3DNoTex2 } from './vertex';
+import { RenderVertex, RenderVertex3D, Vertex2D, Vertex3D, Vertex3DNoTex2 } from './vertex';
 
 export const FLT_MIN = 1.175494350822287507968736537222245677819e-038;
 export const FLT_MAX = 340282346638528859811704183484516925440;
@@ -182,6 +182,61 @@ export class Mesh {
 			rgvApply[l].ny = vnormal.y;
 			rgvApply[l].nz = vnormal.z;
 		}
+	}
+
+	public static closestPointOnPolygon(rgv: RenderVertex3D[], pvin: Vertex2D, fClosed: boolean): [Vertex2D, number] {
+
+		const count = rgv.length;
+		let mindist = FLT_MAX;
+		let piseg = -1; // in case we are not next to the line
+		let pvout = new Vertex2D();
+		let cloop = count;
+		if (!fClosed) {
+			--cloop; // Don't check segment running from the end point to the beginning point
+		}
+
+		// Go through line segment, calculate distance from point to the line
+		// then pick the shortest distance
+		for (let i = 0; i < cloop; ++i) {
+			const p2 = (i < count - 1) ? (i + 1) : 0;
+
+			const rgvi = rgv[i];
+			const rgvp2 = rgv[p2];
+			const A = rgvi.y - rgvp2.y;
+			const B = rgvp2.x - rgvi.x;
+			const C = -(A * rgvi.x + B * rgvi.y);
+
+			const dist = Math.abs(A * pvin.x + B * pvin.y + C) / Math.sqrt(A * A + B * B);
+
+			if (dist < mindist) {
+				// Assuming we got a segment that we are closet to, calculate the intersection
+				// of the line with the perpenticular line projected from the point,
+				// to find the closest point on the line
+				const D = -B;
+				const F = -(D * pvin.x + A * pvin.y);
+
+				const det = A * A - B * D;
+				const inv_det = (det != 0.0) ? 1.0 / det : 0.0;
+				const intersectx = (B * F - A * C) * inv_det;
+				const intersecty = (C * D - A * F) * inv_det;
+
+				// If the intersect point lies on the polygon segment
+				// (not out in space), then make this the closest known point
+				if (intersectx >= (Math.min(rgvi.x, rgvp2.x) - 0.1) &&
+					intersectx <= (Math.max(rgvi.x, rgvp2.x) + 0.1) &&
+					intersecty >= (Math.min(rgvi.y, rgvp2.y) - 0.1) &&
+					intersecty <= (Math.max(rgvi.y, rgvp2.y) + 0.1)) {
+
+					mindist = dist;
+					const seg = i;
+
+					pvout.x = intersectx;
+					pvout.y = intersecty;
+					piseg = seg;
+				}
+			}
+		}
+		return [pvin, piseg];
 	}
 
 	public static polygonToTriangles(rgv: RenderVertex[], pvpoly: number[]): number[] {

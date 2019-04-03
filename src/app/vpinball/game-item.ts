@@ -18,15 +18,14 @@
  */
 
 import { Matrix4 } from 'three';
-import { logger } from '../common/logger';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { Material } from './material';
-import { IPositionable, Mesh } from './mesh';
+import { Matrix3D } from './matrix3d';
+import { Mesh } from './mesh';
 import { Texture } from './texture';
 import { Vertex3D } from './vertex';
 import { VpTable } from './vp-table';
-import { Matrix3D } from './matrix3d';
 
 export abstract class GameItem extends BiffParser {
 
@@ -143,7 +142,6 @@ export abstract class GameItem extends BiffParser {
 export interface IRenderable {
 	getMeshes(table: VpTable): Meshes;
 	isVisible(): boolean;
-	getPositionableObject?(): IPositionable;
 }
 
 export interface Meshes {

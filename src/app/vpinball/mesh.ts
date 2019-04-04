@@ -43,8 +43,12 @@ export class Mesh {
 	public indices: number[] = [];
 	public faceIndexOffset = 0;
 
-	constructor(vertices: Vertex3DNoTex2[] = [], indices: number[] = []) {
-		this.vertices = vertices;
+	constructor(vertices: Vertex3DNoTex2[]|string = [], indices: number[] = []) {
+		if (typeof vertices === 'string') {
+			this.name = vertices;
+		} else {
+			this.vertices = vertices;
+		}
 		this.indices = indices;
 	}
 

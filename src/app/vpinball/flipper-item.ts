@@ -37,13 +37,13 @@ export class FlipperItem extends GameItem implements IRenderable {
 	public wzName: string;
 	public pdata: number;
 	public Center: Vertex2D;
-	public BaseRadius: number;
-	public EndRadius: number;
-	public FlipperRadiusMax: number;
-	public FlipperRadius: number;
+	public BaseRadius: number = 21.5;
+	public EndRadius: number = 13.0;
+	public FlipperRadiusMax: number = 130.0;
+	public FlipperRadius: number = 130.0;
 	public return: number;
-	public StartAngle: number;
-	public EndAngle: number;
+	public StartAngle: number = 121.0;
+	public EndAngle: number = 70.0;
 	public OverridePhysics: number;
 	public mass: number;
 	public fTimerEnabled: boolean;
@@ -51,10 +51,10 @@ export class FlipperItem extends GameItem implements IRenderable {
 	public szSurface: string;
 	public szMaterial: string;
 	public szRubberMaterial: string;
-	public rubberthickness: number;
-	public rubberheight: number;
-	public rubberwidth: number;
-	public height: number;
+	public rubberthickness: number = 7.0;
+	public rubberheight: number = 19.0;
+	public rubberwidth: number = 24.0;
+	public height: number = 50.0;
 	public strength: number;
 	public elasticity: number;
 	public elasticityFalloff: number;
@@ -64,9 +64,9 @@ export class FlipperItem extends GameItem implements IRenderable {
 	public torqueDamping: number;
 	public torqueDampingAngle: number;
 	public FlipperRadiusMin: number;
-	public fVisible: boolean;
-	public fEnabled: boolean;
-	public fReflectionEnabled: boolean;
+	public fVisible: boolean = true;
+	public fEnabled: boolean = true;
+	public fReflectionEnabled: boolean = true;
 	public szImage: string;
 
 	public static async fromStorage(storage: Storage, itemName: string): Promise<FlipperItem> {

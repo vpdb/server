@@ -179,7 +179,7 @@ export class PrimitiveItem extends GameItem implements IRenderable {
 			case 'SIDS': this.data.Sides = this.getInt(buffer); break;
 			case 'NAME': this.wzName = this.getWideString(buffer, len); break;
 			case 'MATR': this.data.szMaterial = this.getString(buffer, len); break;
-			case 'SCOL': this.data.SideColor = this.getString(buffer, len); break;
+			case 'SCOL': this.data.SideColor = this.getInt(buffer); break;
 			case 'TVIS': this.data.fVisible = this.getBool(buffer); break;
 			case 'REEN': this.data.fReflectionEnabled = this.getBool(buffer); break;
 			case 'DTXI': this.data.DrawTexturesInside = this.getBool(buffer); break;
@@ -255,34 +255,34 @@ export class PrimitiveItem extends GameItem implements IRenderable {
 class PrimitiveData {
 
 	public vPosition: Vector3;
-	public vSize: Vector3;
-	public aRotAndTra: number[] = [];
+	public vSize: Vector3 = new Vector3(100, 100, 100);
+	public aRotAndTra: number[] = [ 0, 0, 0, 0, 0, 0, 0, 0, 0];
 	public szImage: string;
 	public szNormalMap: string;
 	public Sides: number;
 	public szMaterial: string;
-	public SideColor: string;
+	public SideColor: number = 0x969696;
 	public fVisible: boolean;
-	public fReflectionEnabled: boolean;
-	public DrawTexturesInside: boolean;
+	public fReflectionEnabled: boolean = true;
+	public DrawTexturesInside: boolean = false;
 	public fHitEvent: boolean;
 	public threshold: number;
 	public elasticity: number;
 	public elasticityFalloff: number;
 	public friction: number;
 	public scatter: number;
-	public edgeFactorUI: number;
+	public edgeFactorUI: number = 0.25;
 	public collisionReductionFactor: number;
-	public fCollidable: boolean;
-	public fToy: boolean;
+	public fCollidable: boolean = true;
+	public fToy: boolean = false;
 	public szPhysicsMaterial: string;
 	public fOverwritePhysics: boolean;
-	public staticRendering: boolean;
+	public staticRendering: boolean = true;
 	public fDisableLightingTop: number;
 	public fDisableLightingBelow: number;
-	public use3DMesh: boolean;
-	public fBackfacesEnabled: boolean;
-	public fDisplayTexture: boolean;
+	public use3DMesh: boolean = false;
+	public fBackfacesEnabled: boolean = false;
+	public fDisplayTexture: boolean = false;
 	public meshFileName: string;
 	public depthBias: number;
 

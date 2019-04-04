@@ -50,21 +50,21 @@ export class TriggerItem extends GameItem implements IRenderable {
 	public dragPoints: DragPoint[];
 	private pdata: number;
 	private vCenter: Vertex2D;
-	private radius: number;
-	private rotation: number;
-	private wireThickness: number;
-	private scaleX: number;
-	private scaleY: number;
+	private radius: number = 25;
+	private rotation: number = 0;
+	private wireThickness: number = 0;
+	private scaleX: number = 1;
+	private scaleY: number = 1;
 	private szMaterial: string;
 	private fTimerEnabled: boolean;
 	private TimerInterval: number;
 	private szSurface: string;
-	private fEnabled: boolean;
-	private hitHeight: number;
-	private fVisible: boolean;
-	private fReflectionEnabled: boolean;
-	private shape: number;
-	private animSpeed: number;
+	private fEnabled: boolean = true;
+	private hitHeight: number = 50;
+	private fVisible: boolean = true;
+	private fReflectionEnabled: boolean = true;
+	private shape: number = TriggerItem.ShapeTriggerWireA;
+	private animSpeed: number = 1;
 	private wzName: string;
 
 	public static async fromStorage(storage: Storage, itemName: string): Promise<TriggerItem> {

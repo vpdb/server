@@ -34,11 +34,11 @@ import { VpTable } from './vp-table';
 export class SurfaceItem extends GameItem implements IRenderable {
 
 	public pdata: number;
-	public fHitEvent: boolean;
-	public fDroppable: boolean;
-	public fFlipbook: boolean;
-	public fIsBottomSolid: boolean;
-	public fCollidable: boolean;
+	public fHitEvent: boolean = false;
+	public fDroppable: boolean = false;
+	public fFlipbook: boolean = false;
+	public fIsBottomSolid: boolean = false;
+	public fCollidable: boolean = true;
 	public fTimerEnabled: boolean;
 	public TimerInterval: number;
 	public threshold: number;
@@ -48,23 +48,23 @@ export class SurfaceItem extends GameItem implements IRenderable {
 	public szTopMaterial: string;
 	public szPhysicsMaterial: string;
 	public szSlingShotMaterial: string;
-	public heightbottom: number;
-	public heighttop: number;
+	public heightbottom: number = 0;
+	public heighttop: number = 50;
 	public fInner: boolean;
 	public wzName: string;
-	public fDisplayTexture: boolean;
-	public slingshotforce: number;
-	public slingshotThreshold: number;
+	public fDisplayTexture: boolean = false;
+	public slingshotforce: number = 80;
+	public slingshotThreshold: number = 0;
 	public elasticity: number;
 	public friction: number;
 	public scatter: number;
-	public fTopBottomVisible: boolean;
+	public fTopBottomVisible: boolean = true;
 	public fOverwritePhysics: boolean;
-	public fSlingshotAnimation: boolean;
+	public fSlingshotAnimation: boolean = true;
 	public fDisableLightingTop: number;
 	public fDisableLightingBelow: number;
-	public fSideVisible: boolean;
-	public fReflectionEnabled: boolean;
+	public fSideVisible: boolean = true;
+	public fReflectionEnabled: boolean = true;
 	public dragPoints: DragPoint[];
 
 	public static async fromStorage(storage: Storage, itemName: string): Promise<SurfaceItem> {

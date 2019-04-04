@@ -48,20 +48,20 @@ export class KickerItem extends GameItem implements IRenderable {
 	public static TypeKickerCup2 = 6;
 
 	private pdata: number;
-	private kickerType: number;
+	private kickerType: number = KickerItem.TypeKickerHole;
 	private vCenter: Vertex2D;
-	private radius: number;
+	private radius: number = 25;
 	private scatter: number;
-	private hitAccuracy: number;
-	private hitHeight: number;
-	private orientation: number;
+	private hitAccuracy: number = 0.7;
+	private hitHeight: number = 40;
+	private orientation: number = 0;
 	private szMaterial: string;
 	private fTimerEnabled: boolean;
-	private fEnabled: boolean;
+	private fEnabled: boolean = true;
 	private TimerInterval: number;
 	private szSurface: string;
 	private wzName: string;
-	private fFallThrough: boolean;
+	private fFallThrough: boolean = false;
 	private legacyMode: boolean;
 
 	public static async fromStorage(storage: Storage, itemName: string): Promise<KickerItem> {

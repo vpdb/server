@@ -36,35 +36,39 @@ import { VpTable } from './vp-table';
  */
 export class LightItem extends GameItem implements IRenderable {
 
+	public static readonly StateOff = 0;
+	public static readonly StateOn = 1;
+	public static readonly StateBlinking = 2;
+
 	public wzName: string;
 	public pdata: number;
 	public vCenter: Vertex2D;
-	public falloff: number;
-	public falloffPower: number;
-	public state: number;
-	public color: number;
-	public color2: number;
+	public falloff: number = 50;
+	public falloffPower: number = 2;
+	public state: number = LightItem.StateOff;
+	public color: number = 0xffff00;
+	public color2: number = 0xffffff;
 	public szOffImage: string;
 	public fTimerEnabled: boolean;
 	public TimerInterval: number;
 	public roundLight: boolean;
 	public rgblinkpattern: string;
-	public blinkinterval: number;
-	public intensity: number;
-	public transmissionScale: number;
+	public blinkinterval: number = 125;
+	public intensity: number = 1;
+	public transmissionScale: number = 0;
 	public szSurface: string;
 	public fBackglass: boolean;
 	public depthBias: number;
-	public fadeSpeedUp: number;
-	public fadeSpeedDown: number;
-	public BulbLight: boolean;
-	public imageMode: boolean;
-	public showBulbMesh: boolean;
-	public staticBulbMesh: boolean;
-	public showReflectionOnBall: boolean;
-	public meshRadius: number;
-	public modulateVsAdd: number;
-	public bulbHaloHeight: number;
+	public fadeSpeedUp: number = 0.2;
+	public fadeSpeedDown: number = 0.2;
+	public BulbLight: boolean = false;
+	public imageMode: boolean = false;
+	public showBulbMesh: boolean = false;
+	public staticBulbMesh: boolean = false;
+	public showReflectionOnBall: boolean = true;
+	public meshRadius: number = 20;
+	public modulateVsAdd: number = 0.9;
+	public bulbHaloHeight: number = 28;
 	public dragPoints: DragPoint[];
 
 	public static async fromStorage(storage: Storage, itemName: string): Promise<LightItem> {
@@ -210,3 +214,4 @@ export class LightItem extends GameItem implements IRenderable {
 		});
 	}
 }
+

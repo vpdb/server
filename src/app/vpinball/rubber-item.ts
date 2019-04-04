@@ -38,10 +38,10 @@ export class RubberItem extends GameItem implements IRenderable {
 
 	public wzName: string;
 	public pdata: number;
-	public height: number;
-	public hitHeight: number;
-	public thickness: number;
-	public fHitEvent: boolean;
+	public height: number = 25;
+	public hitHeight: number = -1.0;
+	public thickness: number = 8;
+	public fHitEvent: boolean = false;
 	public szMaterial: string;
 	public timer: TimerDataRoot = new TimerDataRoot();
 	public szImage: string;
@@ -49,14 +49,14 @@ export class RubberItem extends GameItem implements IRenderable {
 	public elasticityFalloff: number;
 	public friction: number;
 	public scatter: number;
-	public fCollidable: boolean;
-	public fVisible: boolean;
-	public fReflectionEnabled: boolean;
-	public staticRendering: boolean;
-	public showInEditor: boolean;
-	public rotX: number;
-	public rotY: number;
-	public rotZ: number;
+	public fCollidable: boolean = true;
+	public fVisible: boolean = true;
+	public fReflectionEnabled: boolean = true;
+	public staticRendering: boolean = true;
+	public showInEditor: boolean = true;
+	public rotX: number = 0;
+	public rotY: number = 0;
+	public rotZ: number = 0;
 	public szPhysicsMaterial: string;
 	public fOverwritePhysics: boolean;
 	public dragPoints: DragPoint[];
@@ -110,8 +110,7 @@ export class RubberItem extends GameItem implements IRenderable {
 
 	public getMeshes(table: VpTable): Meshes {
 
-		const mesh = new Mesh();
-		mesh.name = `rubber:${this.getName()}`;
+		const mesh = new Mesh(`rubber:${this.getName()}`);
 		const acc = -1;
 		const staticRendering = true;
 		const createHitShape = true;
@@ -146,7 +145,7 @@ export class RubberItem extends GameItem implements IRenderable {
 		const numVertices = numRings * numSegments;
 		const numIndices = 6 * numVertices; //m_numVertices*2+2;
 
-		const height = this.hitHeight + table.gameData.tableheight;
+		const height = this.hitHeight + table.getTableHeight();
 
 		let prevB = new Vertex3D();
 		const invNR = 1.0 / numRings;

@@ -45,23 +45,23 @@ export class BumperItem extends GameItem implements IRenderable {
 	public szBaseMaterial: string;
 	public szSkirtMaterial: string;
 	public TimerInterval: number;
-	public fTimerEnabled: boolean;
-	public threshold: number;
+	public fTimerEnabled: boolean = false;
+	public threshold: number = 1.0;
 	public force: number;
 	public scatter: number;
 	public heightScale: number = 1.0;
-	public ringSpeed: number;
+	public ringSpeed: number = 0.5;
 	public orientation: number = 0.0;
-	public ringDropOffset: number;
+	public ringDropOffset: number = 0.0;
 	public szSurface: string;
 	public wzName: string;
 	public fCapVisible: boolean = true;
 	public fBaseVisible: boolean = true;
 	public fRingVisible: boolean = true;
 	public fSkirtVisible: boolean = true;
-	public fHitEvent: boolean;
-	public fCollidable: boolean;
-	public fReflectionEnabled: boolean;
+	public fHitEvent: boolean = true;
+	public fCollidable: boolean = true;
+	public fReflectionEnabled: boolean = true;
 
 	public static async fromStorage(storage: Storage, itemName: string): Promise<BumperItem> {
 		const bumperItem = new BumperItem();

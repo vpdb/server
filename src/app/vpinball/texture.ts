@@ -73,7 +73,7 @@ export class Texture extends BiffParser {
 	}
 
 	public getName(): string {
-		return this.szInternalName;
+		return this.binary && this.binary.szName ? this.binary.szName.toLowerCase() : this.szInternalName.toLowerCase();
 	}
 
 	public getUrl(fileId: string): string {

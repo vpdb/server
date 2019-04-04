@@ -57,12 +57,15 @@ export class VpTableExporter {
 	constructor(table: VpTable, opts: VpTableExporterOptions) {
 		this.opts = Object.assign({}, defaultOptions, opts);
 		const camera = new PerspectiveCamera(45, 1, 0.1, 100000);
+		camera.name = 'playfield-camera';
 		camera.position.set(0, 70.0, 70.0);
 		camera.lookAt(0, -10, 0);
 
 		this.table = table;
 		this.scene = new Scene();
+		this.scene.name = 'vpdb-table';
 		this.playfield = new Group();
+		this.playfield.name = 'playfield';
 		this.playfield.rotateX(Math.PI / 2);
 		this.playfield.translateY((table.gameData.top - table.gameData.bottom) * VpTableExporter.scale / 2);
 		this.playfield.translateX(-(table.gameData.right - table.gameData.left) * VpTableExporter.scale / 2);
@@ -142,7 +145,7 @@ export class VpTableExporter {
 		//this.playfield.scale.set(1, 1, -1);
 		this.scene.add(this.playfield);
 
-		const gltfExporter = new GLTFExporter(Object.assign({}, this.opts.gltfOptions, { embedImages: true }));
+		const gltfExporter = new GLTFExporter(Object.assign({}, { embedImages: true }, this.opts.gltfOptions));
 		return gltfExporter.parse(this.scene);
 	}
 
@@ -163,14 +166,17 @@ export class VpTableExporter {
 		if (this.opts.applyTextures) {
 			if (obj.map) {
 				material.map = new Texture();
+				material.map.name = 'texture:' + obj.map.getName();
 				if (await this.loadMap(obj.mesh.name, obj.map, material.map)) {
 					material.needsUpdate = true;
 				} else {
+					logger.warn(null, '[VpTableExporter.getMaterial] Error getting map.');
 					material.map = null;
 				}
 			}
 			if (obj.normalMap) {
 				material.normalMap = new Texture();
+				material.normalMap.name = 'normal-map:' + obj.map.getName();
 				if (await this.loadMap(obj.mesh.name, obj.normalMap, material.normalMap)) {
 					material.normalMap.anisotropy = 16;
 					material.needsUpdate = true;

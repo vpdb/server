@@ -113,6 +113,10 @@ export class Image {
 		return ['png', 'webp', 'gif'].includes(this.format);
 	}
 
+	public containsTransparency(): boolean {
+		return !this.stats.isOpaque;
+	}
+
 	private async gmIdentify(): Promise<any> {
 		return new Promise((resolve, reject) => {
 			this.gm.identify((err, value) => {

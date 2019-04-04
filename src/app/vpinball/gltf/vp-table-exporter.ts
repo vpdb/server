@@ -159,7 +159,7 @@ export class VpTableExporter {
 			material.roughness = 1 - materialInfo.fRoughness;
 			material.color = new Color(materialInfo.cBase);
 			material.opacity = materialInfo.bOpacityActive ? materialInfo.fOpacity : 1;
-			material.transparent = true;
+			material.transparent = materialInfo.bOpacityActive && materialInfo.fOpacity < 0.98;
 			material.side = DoubleSide;
 		}
 
@@ -168,6 +168,9 @@ export class VpTableExporter {
 				material.map = new Texture();
 				material.map.name = 'texture:' + obj.map.getName();
 				if (await this.loadMap(obj.mesh.name, obj.map, material.map)) {
+					if ((material.map.image as Image).containsTransparency()) {
+						material.transparent = true;
+					}
 					material.needsUpdate = true;
 				} else {
 					logger.warn(null, '[VpTableExporter.getMaterial] Error getting map.');
@@ -176,7 +179,7 @@ export class VpTableExporter {
 			}
 			if (obj.normalMap) {
 				material.normalMap = new Texture();
-				material.normalMap.name = 'normal-map:' + obj.map.getName();
+				material.normalMap.name = 'normal-map:' + obj.normalMap.getName();
 				if (await this.loadMap(obj.mesh.name, obj.normalMap, material.normalMap)) {
 					material.normalMap.anisotropy = 16;
 					material.needsUpdate = true;

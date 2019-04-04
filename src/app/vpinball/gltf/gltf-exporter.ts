@@ -70,12 +70,6 @@ import {
 import { Image } from './image';
 
 const PromisePool = require('es6-promise-pool');
-
-/**
- * @author fernandojsg / http://fernandojsg.com
- * @author Don McCurdy / https://www.donmccurdy.com
- * @author Takahiro / https://github.com/takahirox
- */
 const WEBGL_CONSTANTS: { [key: string]: number } = {
 	POINTS: 0x0000,
 	LINES: 0x0001,
@@ -124,9 +118,22 @@ const PATH_PROPERTIES: { [key: string]: string } = {
 	morphTargetInfluences: 'weights',
 };
 
-//------------------------------------------------------------------------------
-// GLTF Exporter
-//------------------------------------------------------------------------------
+/**
+ * This is a modified version of Three's GLTF exporter that runs better
+ * on Node.js.
+ *
+ * Changes:
+ *
+ *  - Port to Typescript (and make it a module)
+ *  - Don't use Canvas but ~20x faster sharp.js for image manipulation
+ *  - Don't resolve all pending promises at once but use a pool
+ *  - Be intelligent about re-using images
+ *
+ * @see https://github.com/mrdoob/three.js/blob/master/examples/js/exporters/GLTFExporter.js
+ * @author fernandojsg / http://fernandojsg.com
+ * @author Don McCurdy / https://www.donmccurdy.com
+ * @author Takahiro / https://github.com/takahirox
+ */
 export class GLTFExporter {
 
 	private started = false;
@@ -139,11 +146,11 @@ export class GLTFExporter {
 	private extensionsUsed: ExtensionsUsed = {};
 	private readonly images: Map<string, GltfId> = new Map();
 	private readonly cachedData = {
-		meshes: new Map<string, number>(),
-		attributes: new Map(),
-		attributesNormalized: new Map(),
-		materials: new Map(),
-		textures: new Map(),
+		meshes:               new Map<string, number>(),
+		attributes:           new Map<BufferAttribute | InterleavedBufferAttribute, number>(),
+		attributesNormalized: new Map<BufferAttribute | InterleavedBufferAttribute, BufferAttribute>(),
+		materials:            new Map<MaterialInternal, number>(),
+		textures:             new Map<Texture, number>(),
 	};
 	private readonly outputJSON: GltfFile = {
 		asset: {
@@ -349,7 +356,7 @@ export class GLTFExporter {
 	 * @returns {BufferAttribute}
 	 *
 	 */
-	private createNormalizedNormalAttribute(normal: BufferAttribute) {
+	private createNormalizedNormalAttribute(normal: BufferAttribute): BufferAttribute {
 
 		if (this.cachedData.attributesNormalized.has(normal)) {
 			return this.cachedData.attributesNormalized.get(normal);

@@ -55,6 +55,8 @@ import {
 	TriangleStripDrawMode,
 	Vector3,
 } from 'three';
+import { logger } from '../../common/logger';
+import { RequestState } from '../../common/typings/context';
 import {
 	GltfBufferView,
 	GltfCamera,
@@ -66,8 +68,6 @@ import {
 	GltfMeshPrimitive, GltfNode, GltfScene,
 } from './gltf';
 import { Image } from './image';
-import { RequestState } from '../../common/typings/context';
-import { logger } from '../../common/logger';
 
 const PromisePool = require('es6-promise-pool');
 
@@ -148,7 +148,7 @@ export class GLTFExporter {
 	private readonly outputJSON: GltfFile = {
 		asset: {
 			version: '2.0',
-			generator: 'GLTFExporter',
+			generator: 'VPDB',
 		},
 	};
 
@@ -254,10 +254,7 @@ export class GLTFExporter {
 	}
 
 	/**
-	 * Compare two arrays
-	 */
-	/**
-	 * Compare two arrays
+	 * Compares two arrays
 	 * @param  {Array} array1 Array 1 to compare
 	 * @param  {Array} array2 Array 2 to compare
 	 * @return {Boolean}        Returns true if both arrays are equal
@@ -359,7 +356,6 @@ export class GLTFExporter {
 		}
 
 		const attribute = normal.clone();
-
 		const v = new Vector3();
 
 		let i = 0;
@@ -376,11 +372,8 @@ export class GLTFExporter {
 			}
 			v.toArray(attribute.array, i * 3);
 		}
-
 		this.cachedData.attributesNormalized.set(normal, attribute);
-
 		return attribute;
-
 	}
 
 	/**
@@ -424,7 +417,7 @@ export class GLTFExporter {
 			return JSON.parse(JSON.stringify(object.userData));
 
 		} catch (error) {
-			logger.warn(this.options.state,`[GLTFExporter.serializeUserData]: userData of '${object.name}' won't be serialized because of JSON.stringify error - ${error.message}`);
+			logger.warn(this.options.state, `[GLTFExporter.serializeUserData]: userData of '${object.name}' won't be serialized because of JSON.stringify error - ${error.message}`);
 			return {};
 		}
 	}
@@ -535,7 +528,7 @@ export class GLTFExporter {
 				}
 			}
 		} catch (err) {
-			logger.error(this.options.state,'[GLTFExporter.processBufferView]: %s', err.message, err);
+			logger.error(this.options.state, '[GLTFExporter.processBufferView]: %s', err.message, err);
 			throw err;
 		}
 
@@ -702,7 +695,7 @@ export class GLTFExporter {
 
 		if (this.options.embedImages) {
 			if (this.options.forcePowerOfTwoTextures && !this.isPowerOfTwo(image)) {
-				logger.warn(this.options.state,'[GLTFExporter.processImage]: Resized non-power-of-two image.', image);
+				logger.warn(this.options.state, '[GLTFExporter.processImage]: Resized non-power-of-two image.', image);
 				image.resize(M.floorPowerOfTwo(image.width), M.floorPowerOfTwo(image.height));
 			}
 			if (flipY === true) {
@@ -726,7 +719,7 @@ export class GLTFExporter {
 			}
 
 		} else {
-			gltfImage.uri = 'unsupported'; //image.src;
+			gltfImage.uri = image.src; //image.src;
 		}
 		this.outputJSON.images.push(gltfImage);
 		return this.outputJSON.images.length - 1;
@@ -800,7 +793,7 @@ export class GLTFExporter {
 		}
 
 		if (material.isShaderMaterial) {
-			logger.warn(this.options.state,'[GLTFExporter.processMaterial] ShaderMaterial not supported.');
+			logger.warn(this.options.state, '[GLTFExporter.processMaterial] ShaderMaterial not supported.');
 			return null;
 		}
 
@@ -814,7 +807,7 @@ export class GLTFExporter {
 			this.extensionsUsed.KHR_materials_unlit = true;
 
 		} else if (!material.isMeshStandardMaterial) {
-			logger.warn(this.options.state,'[GLTFExporter.processMaterial] Use MeshStandardMaterial or MeshBasicMaterial for best results.');
+			logger.warn(this.options.state, '[GLTFExporter.processMaterial] Use MeshStandardMaterial or MeshBasicMaterial for best results.');
 		}
 
 		// pbrMetallicRoughness.baseColorFactor
@@ -847,7 +840,7 @@ export class GLTFExporter {
 				gltfMaterial.pbrMetallicRoughness.metallicRoughnessTexture = metalRoughMapDef;
 
 			} else {
-				logger.warn(this.options.state,'[GLTFExporter.processMaterial] Ignoring metalnessMap and roughnessMap because they are not the same Texture.');
+				logger.warn(this.options.state, '[GLTFExporter.processMaterial] Ignoring metalnessMap and roughnessMap because they are not the same Texture.');
 			}
 		}
 
@@ -882,7 +875,7 @@ export class GLTFExporter {
 			const normalMapDef: MapDefinition = { index: this.processTexture(material.normalMap) };
 			if (material.normalScale.x !== -1) {
 				if (material.normalScale.x !== material.normalScale.y) {
-					logger.warn(this.options.state,'[GLTFExporter.processMaterial] Normal scale components are different, ignoring Y and exporting X.');
+					logger.warn(this.options.state, '[GLTFExporter.processMaterial] Normal scale components are different, ignoring Y and exporting X.');
 				}
 				normalMapDef.scale = material.normalScale.x;
 			}
@@ -970,7 +963,7 @@ export class GLTFExporter {
 		} else {
 			if (!(geometry as GeometryInternal).isBufferGeometry) {
 
-				logger.warn(this.options.state,'[GLTFExporter.processMesh] Exporting Geometry will increase file size. Use BufferGeometry instead.');
+				logger.warn(this.options.state, '[GLTFExporter.processMesh] Exporting Geometry will increase file size. Use BufferGeometry instead.');
 
 				const geometryTemp = new BufferGeometry();
 				geometryTemp.fromGeometry(geometry as Geometry);
@@ -979,7 +972,7 @@ export class GLTFExporter {
 
 			if (mesh.drawMode === TriangleFanDrawMode) {
 
-				logger.warn(this.options.state,'[GLTFExporter.processMesh] TriangleFanDrawMode and wireframe incompatible.');
+				logger.warn(this.options.state, '[GLTFExporter.processMesh] TriangleFanDrawMode and wireframe incompatible.');
 				mode = WEBGL_CONSTANTS.TRIANGLE_FAN;
 
 			} else if (mesh.drawMode === TriangleStripDrawMode) {
@@ -1008,7 +1001,7 @@ export class GLTFExporter {
 		const originalNormal = (geometry as BufferGeometry).getAttribute('normal');
 
 		if (originalNormal !== undefined && !this.isNormalizedNormalAttribute(originalNormal)) {
-			logger.warn(this.options.state,'[GLTFExporter.processMesh] Creating normalized normal attribute from the non-normalized one (%s).', mesh.name);
+			logger.warn(this.options.state, '[GLTFExporter.processMesh] Creating normalized normal attribute from the non-normalized one (%s).', mesh.name);
 			(geometry as BufferGeometry).addAttribute('normal', this.createNormalizedNormalAttribute(originalNormal as BufferAttribute));
 		}
 
@@ -1031,7 +1024,7 @@ export class GLTFExporter {
 				!(array instanceof Uint16Array) &&
 				!(array instanceof Uint8Array)) {
 
-				logger.warn(this.options.state,'[GLTFExporter.processMesh] Attribute "skinIndex" converted to type UNSIGNED_SHORT.');
+				logger.warn(this.options.state, '[GLTFExporter.processMesh] Attribute "skinIndex" converted to type UNSIGNED_SHORT.');
 				modifiedAttribute = new BufferAttribute(new Uint16Array(array), attribute.itemSize, attribute.normalized);
 			}
 
@@ -1076,7 +1069,7 @@ export class GLTFExporter {
 
 					if (attributeName !== 'position' && attributeName !== 'normal') {
 						if (!warned) {
-							logger.warn(this.options.state,'[GLTFExporter.processMesh] Only POSITION and NORMAL morph are supported.');
+							logger.warn(this.options.state, '[GLTFExporter.processMesh] Only POSITION and NORMAL morph are supported.');
 							warned = true;
 						}
 						continue;
@@ -1140,7 +1133,7 @@ export class GLTFExporter {
 
 		if (!forceIndices && (geometry as BufferGeometry).index === null && isMultiMaterial) {
 			// temporal workaround.
-			logger.warn(this.options.state,'[GLTFExporter.processMesh] Creating index for non-indexed multi-material mesh.');
+			logger.warn(this.options.state, '[GLTFExporter.processMesh] Creating index for non-indexed multi-material mesh.');
 			forceIndices = true;
 
 		}
@@ -1297,7 +1290,7 @@ export class GLTFExporter {
 			}
 
 			if (!trackNode || !trackProperty) {
-				logger.warn(this.options.state,'[GLTFExporter.processAnimation] Could not export animation track "%s".', track.name);
+				logger.warn(this.options.state, '[GLTFExporter.processAnimation] Could not export animation track "%s".', track.name);
 				return null;
 			}
 
@@ -1413,7 +1406,7 @@ export class GLTFExporter {
 		}
 
 		if (light.decay !== undefined && light.decay !== 2) {
-			logger.warn(this.options.state,'[GLTFExporter.processLight] Light decay may be lost. glTF is physically-based, '
+			logger.warn(this.options.state, '[GLTFExporter.processLight] Light decay may be lost. glTF is physically-based, '
 				+ 'and expects light.decay=2.');
 		}
 
@@ -1423,7 +1416,7 @@ export class GLTFExporter {
 				|| light.target.position.y !== 0
 				|| light.target.position.z !== -1)) {
 
-			logger.warn(this.options.state,'[GLTFExporter.processLight] Light direction may be lost. For best results, '
+			logger.warn(this.options.state, '[GLTFExporter.processLight] Light direction may be lost. For best results, '
 				+ 'make light.target a child of the light with position 0,0,-1.');
 
 		}
@@ -1501,7 +1494,7 @@ export class GLTFExporter {
 			gltfNode.extensions.KHR_lights_punctual = { light: this.processLight(object as any) };
 
 		} else if (object.isLight) {
-			logger.warn(this.options.state,'[GLTFExporter.processNode] Only directional, point, and spot lights are supported.');
+			logger.warn(this.options.state, '[GLTFExporter.processNode] Only directional, point, and spot lights are supported.');
 			return null;
 		}
 
@@ -1727,7 +1720,7 @@ class Utils {
 					throw new Error('GLTFExporter: Cannot merge tracks with glTF CUBICSPLINE interpolation.');
 				}
 
-				logger.warn(null,'[GLTFExporter.mergeMorphTargetTracks]: Morph target interpolation mode not yet supported. Using LINEAR instead.');
+				logger.warn(null, '[GLTFExporter.mergeMorphTargetTracks]: Morph target interpolation mode not yet supported. Using LINEAR instead.');
 
 				sourceTrack = sourceTrack.clone();
 				sourceTrack.setInterpolation(InterpolateLinear);

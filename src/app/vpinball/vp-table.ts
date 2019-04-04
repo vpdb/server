@@ -95,7 +95,10 @@ export class VpTable implements IRenderable {
 	}
 
 	public getTexture(name: string): Texture {
-		return this.textures[name];
+		if (!name) {
+			return undefined;
+		}
+		return this.textures[name.toLowerCase()];
 	}
 
 	public getMaterial(name: string): Material {
@@ -164,7 +167,6 @@ export class VpTable implements IRenderable {
 	private async _load(fileName: string): Promise<void> {
 
 		this.doc = new OleCompoundDoc(fileName);
-
 		try {
 
 			// read ole-doc

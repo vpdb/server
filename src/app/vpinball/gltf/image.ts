@@ -3,7 +3,6 @@ import sharp = require('sharp');
 import { logger } from '../../common/logger';
 
 const PngQuant = require('pngquant');
-const OptiPng = require('optipng');
 
 export class Image {
 
@@ -89,12 +88,10 @@ export class Image {
 			case 'png': {
 				if (this.optimize) {
 					const quanter = new PngQuant([128]);
-					const optimizer = new OptiPng(['-o7']);
 					return new Promise((resolve, reject) => {
 						const buffers: Buffer[] = [];
 						this.sharp.on('error', reject)
 							.pipe(quanter).on('error', reject)
-							.pipe(optimizer).on('error', reject)
 							.on('data', (buf: Buffer) => buffers.push(buf as Buffer))
 							.on('end', () => resolve(Buffer.concat(buffers)))
 							.on('error', reject);

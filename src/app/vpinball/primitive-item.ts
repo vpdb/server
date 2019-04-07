@@ -169,8 +169,8 @@ export class PrimitiveItem extends GameItem implements IRenderable {
 			bottomVert.z = -0.5;
 
 			// calculate sides
-			mesh.vertices[this.data.Sides * 2 + 2 + i] = topVert; // sideTopVert
-			mesh.vertices[this.data.Sides * 3 + 2 + i] = bottomVert; // sideBottomVert
+			mesh.vertices[this.data.Sides * 2 + 2 + i] = topVert.clone(); // sideTopVert
+			mesh.vertices[this.data.Sides * 3 + 2 + i] = bottomVert.clone(); // sideBottomVert
 
 			// calculate bounds for X and Y
 			if (topVert.x < minX) {

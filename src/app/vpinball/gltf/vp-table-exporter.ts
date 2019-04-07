@@ -20,7 +20,7 @@
 import { values } from 'lodash';
 import {
 	Color,
-	FrontSide,
+	DoubleSide,
 	Group,
 	Material as ThreeMaterial,
 	Mesh,
@@ -159,7 +159,7 @@ export class VpTableExporter {
 			material.color = new Color(materialInfo.cBase);
 			material.opacity = materialInfo.bOpacityActive ? Math.min(1, Math.max(0, materialInfo.fOpacity)) : 1;
 			material.transparent = materialInfo.bOpacityActive && materialInfo.fOpacity < 0.98;
-			material.side = FrontSide;
+			material.side = DoubleSide;
 		}
 
 		if (this.opts.applyTextures) {

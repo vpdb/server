@@ -40,6 +40,7 @@ import { SurfaceItem } from './surface-item';
 import { Texture } from './texture';
 import { TriggerItem } from './trigger-item';
 import { Vertex3DNoTex2 } from './vertex';
+import { SpinnerItem } from './spinner-item';
 
 /**
  * A Visual Pinball table.
@@ -62,6 +63,7 @@ export class VpTable implements IRenderable {
 	public gates: GateItem[] = [];
 	public kickers: KickerItem[] = [];
 	public triggers: TriggerItem[] = [];
+	public spinners: SpinnerItem[] = [];
 
 	private doc: OleCompoundDoc;
 
@@ -317,6 +319,11 @@ export class VpTable implements IRenderable {
 
 				case GameItem.TypeTrigger: {
 					this.triggers.push(await TriggerItem.fromStorage(storage, itemName));
+					break;
+				}
+
+				case GameItem.TypeSpinner: {
+					this.spinners.push(await SpinnerItem.fromStorage(storage, itemName));
 					break;
 				}
 

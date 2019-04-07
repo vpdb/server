@@ -192,8 +192,10 @@ export class GLTFExporter {
 		this.processInput(input);
 
 		// do all the async shit
+		const numConcurrent = Math.floor(cpus().length / 2);
 		const pendingProducer = () => this.pending.length ? this.pending.shift() : null;
-		const pool = new PromisePool(pendingProducer, Math.max(1, cpus().length - 1));
+		logger.info(this.options.state, '[GLTFExporter.parse] Processing images with %s threads..', numConcurrent);
+		const pool = new PromisePool(pendingProducer, Math.max(1, numConcurrent));
 		await pool.start();
 
 		//await Promise.all(this.pending);

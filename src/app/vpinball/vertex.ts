@@ -129,16 +129,16 @@ export class Vertex3DNoTex2 {
 
 	public static size = 32;
 
-	public x: number;
-	public y: number;
-	public z: number;
+	public x: number = 0;
+	public y: number = 0;
+	public z: number = 0;
 
-	public nx: number;
-	public ny: number;
-	public nz: number;
+	public nx: number = 0;
+	public ny: number = 0;
+	public nz: number = 0;
 
-	public tu: number;
-	public tv: number;
+	public tu: number = 0;
+	public tv: number = 0;
 
 	public static get(buffer: Buffer, pos: number): Vertex3DNoTex2 {
 		const offset = pos * Vertex3DNoTex2.size;

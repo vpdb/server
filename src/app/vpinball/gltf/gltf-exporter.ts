@@ -69,7 +69,9 @@ import {
 } from './gltf';
 import { Image } from './image';
 
+const gltfPipeline = require('gltf-pipeline');
 const PromisePool = require('es6-promise-pool');
+
 const WEBGL_CONSTANTS: { [key: string]: number } = {
 	POINTS: 0x0000,
 	LINES: 0x0001,
@@ -169,6 +171,16 @@ export class GLTFExporter {
 			animations: [],
 			forceIndices: false,
 			forcePowerOfTwoTextures: false,
+			compressVertices: true,
+			dracoOptions: {
+				compressionLevel: 7,
+				quantizePosition: 14,
+				quantizeNormal: 10,
+				quantizeTexcoord: 12,
+				quantizeColor: 8,
+				quantizeSkin: 12,
+				unifiedQuantization: false
+			},
 		};
 		this.options = Object.assign({}, DEFAULT_OPTIONS, options);
 	}
@@ -244,7 +256,7 @@ export class GLTFExporter {
 					+ binaryChunkPrefix.byteLength + binaryChunk.byteLength;
 				header.writeUInt32LE(totalByteLength, 8);
 
-				return Buffer.concat([
+				const glb = Buffer.concat([
 					header,
 					jsonChunkPrefix,
 					jsonChunk,
@@ -252,9 +264,43 @@ export class GLTFExporter {
 					binaryChunk,
 				]);
 
+				if (this.options.compressVertices) {
+					logger.info(this.options.state, '[GLTFExporter.parse] Compressing vertices...');
+					const result = await gltfPipeline.processGlb(glb, {
+						dracoOptions: {
+							compressionLevel: this.options.dracoOptions.compressionLevel,
+							quantizePositionBits: this.options.dracoOptions.quantizePosition,
+							quantizeNormalBits: this.options.dracoOptions.quantizeNormal,
+							quantizeTexcoordBits: this.options.dracoOptions.quantizeTexcoord,
+							quantizeColorBits: this.options.dracoOptions.quantizeColor,
+							unifiedQuantization: this.options.dracoOptions.unifiedQuantization,
+						}
+					});
+					return result.glb;
+
+				} else {
+					return glb;
+				}
+
 			} else {
 				this.outputJSON.buffers[0].uri = blob;
-				return this.outputJSON;
+				if (this.options.compressVertices) {
+					logger.info(this.options.state, '[GLTFExporter.parse] Compressing vertices...');
+					const result = await gltfPipeline.processGltf(this.outputJSON, {
+						dracoOptions: {
+							compressionLevel: this.options.dracoOptions.compressionLevel,
+							quantizePositionBits: this.options.dracoOptions.quantizePosition,
+							quantizeNormalBits: this.options.dracoOptions.quantizeNormal,
+							quantizeTexcoordBits: this.options.dracoOptions.quantizeTexcoord,
+							quantizeColorBits: this.options.dracoOptions.quantizeColor,
+							unifiedQuantization: this.options.dracoOptions.unifiedQuantization,
+						}
+					});
+					return result.gltf;
+
+				} else {
+					return this.outputJSON;
+				}
 			}
 
 		} else {
@@ -633,8 +679,12 @@ export class GLTFExporter {
 			throw new Error('GLTFExporter: Unsupported bufferAttribute component type.');
 		}
 
-		if (start === undefined) { start = 0; }
-		if (count === undefined) { count = attribute.count; }
+		if (start === undefined) {
+			start = 0;
+		}
+		if (count === undefined) {
+			count = attribute.count;
+		}
 
 		// @TODO Indexed buffer geometry with drawRange not supported yet
 		if (this.options.truncateDrawRange && geometry !== undefined && geometry.index === null) {
@@ -1798,6 +1848,16 @@ export interface ParseOptions {
 	forceIndices?: boolean;
 	forcePowerOfTwoTextures?: boolean;
 	state?: RequestState;
+	compressVertices?: boolean;
+	dracoOptions?: {
+		compressionLevel?: number;
+		quantizePosition?: number;
+		quantizeNormal?: number;
+		quantizeTexcoord?: number;
+		quantizeColor?: number;
+		quantizeSkin?: number;
+		unifiedQuantization?: boolean;
+	}
 }
 
 interface MapDefinition {

@@ -44,7 +44,7 @@ export class VptGltfProcessor implements CreationProcessor<FileVariation> {
 			// texture and material
 			applyTextures: true,
 			applyMaterials: true,
-			optimizeTextures: false,
+			optimizeTextures: true,
 
 			// lights
 			exportLightBulbLights: true,

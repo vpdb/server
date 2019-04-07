@@ -1,0 +1,157 @@
+/*
+ * VPDB - Virtual Pinball Database
+ * Copyright (C) 2019 freezy <freezy@vpdb.io>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+import { Math as M } from 'three';
+import { Storage } from '../common/ole-doc';
+import { BiffParser } from './biff-parser';
+import { GameItem, IRenderable, Meshes } from './game-item';
+import { Vertex2D, Vertex3D } from './vertex';
+import { VpTable } from './vp-table';
+import { Matrix3D } from './matrix3d';
+import { spinnerBracketMesh } from './meshes/spinner-bracket-mesh';
+import { Mesh } from './mesh';
+import { spinnerPlateMesh } from './meshes/spinner-plate-mesh';
+
+/**
+ * VPinball's spinners.
+ *
+ * @see https://github.com/vpinball/vpinball/blob/master/spinner.cpp
+ */
+export class SpinnerItem extends GameItem implements IRenderable {
+
+	private pdata: number;
+	private vCenter: Vertex2D;
+	private rotation: number;
+	private szMaterial: string;
+	private fTimerEnabled: boolean;
+	private TimerInterval: number;
+	private fShowBracket: boolean;
+	private height: number;
+	private length: number;
+	private damping: number;
+	private angleMax: number;
+	private angleMin: number;
+	private elasticity: number;
+	private fVisible: boolean;
+	private szImage: string;
+	private szSurface: string;
+	private wzName: string;
+
+	public static async fromStorage(storage: Storage, itemName: string): Promise<SpinnerItem> {
+		const spinnerItem = new SpinnerItem();
+		await storage.streamFiltered(itemName, 4, BiffParser.stream(spinnerItem.fromTag.bind(spinnerItem), {}));
+		return spinnerItem;
+	}
+
+	public getName(): string {
+		return this.wzName;
+	}
+
+	public isVisible(): boolean {
+		return this.fVisible;
+	}
+
+	public getMeshes(table: VpTable): Meshes {
+		const meshes: Meshes = {};
+
+		const height = table.getSurfaceHeight(this.szSurface, this.vCenter.x, this.vCenter.y) * table.getScaleZ();
+		const posZ = height + this.height;
+
+		meshes.plate = {
+			mesh: this.getPlateMesh(table, posZ).transform(new Matrix3D().toRightHanded()),
+			map: table.getTexture(this.szImage),
+			material: table.getMaterial(this.szMaterial),
+		};
+		if (this.fShowBracket) {
+			meshes.bracket = {
+				mesh: this.getBracketMesh(table, posZ).transform(new Matrix3D().toRightHanded()),
+				map: table.getTexture(this.szImage),
+				material: table.getMaterial(this.szMaterial),
+			}
+		}
+		return meshes;
+	}
+
+	private getPlateMesh(table: VpTable, posZ: number): Mesh {
+		const fullMatrix = new Matrix3D();
+		fullMatrix.rotateZMatrix(M.degToRad(this.rotation));
+		const mesh = spinnerPlateMesh.clone(`spinner:plate:${this.getName()}`);
+
+		for (const vertex of mesh.vertices) {
+			let vert = new Vertex3D(vertex.x, vertex.y, vertex.z);
+			vert = fullMatrix.multiplyVector(vert);
+			vertex.x = vert.x * this.length + this.vCenter.x;
+			vertex.y = vert.y * this.length + this.vCenter.y;
+			vertex.z = vert.z * this.length * table.getScaleZ() + posZ;
+
+			let norm = new Vertex3D(vertex.nx, vertex.ny, vertex.nz);
+			norm = fullMatrix.multiplyVectorNoTranslate(norm);
+			vertex.nx = vert.x;
+			vertex.ny = vert.y;
+			vertex.nz = vert.z;
+		}
+		return mesh;
+	}
+
+	private getBracketMesh(table: VpTable, posZ: number): Mesh {
+		const fullMatrix = new Matrix3D();
+		fullMatrix.rotateZMatrix(M.degToRad(this.rotation));
+		const bracketMesh = spinnerBracketMesh.clone(`spinner:mesh:${this.getName()}`);
+		for (const vertex of bracketMesh.vertices) {
+			let vert = new Vertex3D(vertex.x, vertex.y, vertex.z);
+			vert = fullMatrix.multiplyVector(vert);
+			vertex.x = vert.x * this.length + this.vCenter.x;
+			vertex.y = vert.y * this.length + this.vCenter.y;
+			vertex.z = vert.z * this.length * table.getScaleZ() + posZ;
+
+			let norm = new Vertex3D(vertex.nx, vertex.ny, vertex.nz);
+			norm = fullMatrix.multiplyVectorNoTranslate(vert);
+			vertex.nx = norm.x;
+			vertex.ny = norm.y;
+			vertex.nz = norm.z;
+		}
+		return bracketMesh;
+	}
+
+	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<number> {
+		switch (tag) {
+			case 'PIID': this.pdata = this.getInt(buffer); break;
+			case 'VCEN': this.vCenter = Vertex2D.get(buffer); break;
+			case 'ROTA': this.rotation = this.getFloat(buffer); break;
+			case 'MATR': this.szMaterial = this.getString(buffer, len); break;
+			case 'TMON': this.fTimerEnabled = this.getBool(buffer); break;
+			case 'TMIN': this.TimerInterval = this.getInt(buffer); break;
+			case 'SSUP': this.fShowBracket = this.getBool(buffer); break;
+			case 'HIGH': this.height = this.getFloat(buffer); break;
+			case 'LGTH': this.length = this.getFloat(buffer); break;
+			case 'AFRC': this.damping = this.getFloat(buffer); break;
+			case 'SMAX': this.angleMax = this.getFloat(buffer); break;
+			case 'SMIN': this.angleMin = this.getFloat(buffer); break;
+			case 'SELA': this.elasticity = this.getFloat(buffer); break;
+			case 'SVIS': this.fVisible = this.getBool(buffer); break;
+			case 'IMGF': this.szImage = this.getString(buffer, len); break;
+			case 'SURF': this.szSurface = this.getString(buffer, len); break;
+			case 'NAME': this.wzName = this.getString(buffer, len); break;
+			default:
+				this.getUnknownBlock(buffer, tag);
+				break;
+		}
+		return 0;
+	}
+}

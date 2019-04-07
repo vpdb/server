@@ -109,7 +109,7 @@ hidden. There are a few types of gates:
 
 ### Spinners
 
-TODO
+Spinners are built out of a plate and a bracket, where the latter is optional.
 
 ### Ramps
 

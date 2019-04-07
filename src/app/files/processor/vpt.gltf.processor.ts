@@ -49,7 +49,6 @@ export class VptGltfProcessor implements CreationProcessor<FileVariation> {
 			// lights
 			exportLightBulbLights: true,
 			exportAllLights: false,
-			enableShadows: true,
 
 			// meshes
 			exportPrimitives: true,
@@ -64,6 +63,7 @@ export class VptGltfProcessor implements CreationProcessor<FileVariation> {
 			exportRubbers: true,
 			exportLightBulbs: true,
 			exportPlayfield: true,
+			exportSpinners: true,
 		});
 		await FileUtil.writeFile(dest, glb);
 		return dest;

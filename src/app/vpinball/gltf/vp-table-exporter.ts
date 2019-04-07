@@ -96,6 +96,7 @@ export class VpTableExporter {
 			{ name: 'gates', meshes: this.table.gates, enabled: this.opts.exportGates },
 			{ name: 'kickers', meshes: this.table.kickers, enabled: this.opts.exportKickers },
 			{ name: 'triggers', meshes: this.table.triggers, enabled: this.opts.exportTriggers },
+			{ name: 'spinners', meshes: this.table.spinners, enabled: this.opts.exportSpinners },
 		];
 
 		// meshes
@@ -130,17 +131,10 @@ export class VpTableExporter {
 		for (const lightInfo of lightInfos) {
 			const light = new PointLight(lightInfo.color, lightInfo.intensity, lightInfo.falloff * VpTableExporter.scale, 2);
 			light.name = 'light:' + lightInfo.getName();
-			light.castShadow = this.opts.enableShadows;
 			light.position.set(lightInfo.vCenter.x, lightInfo.vCenter.y, -10);
 			lightGroup.add(light);
 		}
 		this.playfield.add(lightGroup);
-		if (this.opts.enableShadows) {
-			this.playfield.traverse(obj => {
-				obj.receiveShadow = true;
-				obj.castShadow = true;
-			});
-		}
 
 		//this.playfield.scale.set(1, 1, -1);
 		this.scene.add(this.playfield);
@@ -243,7 +237,7 @@ export interface VpTableExporterOptions {
 	exportGates?: boolean;
 	exportKickers?: boolean;
 	exportTriggers?: boolean;
-	enableShadows?: boolean;
+	exportSpinners?: boolean;
 	gltfOptions?: ParseOptions;
 }
 
@@ -265,6 +259,6 @@ const defaultOptions: VpTableExporterOptions = {
 	exportGates: true,
 	exportKickers: true,
 	exportTriggers: true,
-	enableShadows: false,
+	exportSpinners: true,
 	gltfOptions: {},
 };

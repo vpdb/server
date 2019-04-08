@@ -117,7 +117,12 @@ export class ProcessorWorker {
 			if (!(await FileUtil.exists(dirname(finalPath)))) {
 				await FileUtil.mkdirp(dirname(finalPath));
 			}
+			if (await FileUtil.exists(finalPath)) {
+				logger.debug(requestState, '[ProcessorWorker.create] Overwriting existing file at %s', FileUtil.log(finalPath));
+				await unlinkAsync(finalPath);
+			}
 			await renameAsync(destPath, finalPath);
+
 			logger.debug(requestState, '[ProcessorWorker.create] [%s | #%s] done: %s at %s', data.processor, job.id, file.toDetailedString(variation), FileUtil.log(finalPath));
 
 			// continue with dependents (and fresh data)

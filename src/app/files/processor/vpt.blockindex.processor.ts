@@ -34,7 +34,7 @@ export class VptBlockindexProcessor implements OptimizationProcessor<FileVariati
 	public name: string = 'vpt.blockindex';
 
 	public canProcess(file: FileDocument, variation?: FileVariation): boolean {
-		return file.getMimeCategory() === 'table';
+		return file.getMimeCategory() === 'table' && !variation;
 	}
 
 	public modifiesFile(): boolean {

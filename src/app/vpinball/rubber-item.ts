@@ -110,7 +110,7 @@ export class RubberItem extends GameItem implements IRenderable {
 
 	public getMeshes(table: VpTable): Meshes {
 
-		const mesh = new Mesh(`rubber:${this.getName()}`);
+		const mesh = new Mesh(`rubber-${this.getName()}`);
 		const acc = -1;
 		const staticRendering = true;
 		const createHitShape = true;

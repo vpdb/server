@@ -133,7 +133,7 @@ export class KickerItem extends GameItem implements IRenderable {
 	}
 
 	private getBaseMesh(): Mesh {
-		const name = `kicker:${this.getName()}`;
+		const name = `kicker-${this.getName()}`;
 		switch (this.kickerType) {
 			case KickerItem.TypeKickerCup: return kickerCupMesh.clone(name);
 			case KickerItem.TypeKickerWilliams: return kickerWilliamsMesh.clone(name);

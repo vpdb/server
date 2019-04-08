@@ -107,7 +107,7 @@ export class HitTargetItem extends GameItem implements IRenderable {
 
 	public getMeshes(table: VpTable): Meshes {
 		const hitTargetMesh = this.getBaseMesh();
-		hitTargetMesh.name = `hit-target:${this.getName()}`;
+		hitTargetMesh.name = `hit.target-${this.getName()}`;
 
 		const fullMatrix = new Matrix3D();
 		const tempMatrix = new Matrix3D();

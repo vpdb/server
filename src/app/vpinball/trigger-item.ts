@@ -158,7 +158,7 @@ export class TriggerItem extends GameItem implements IRenderable {
 	}
 
 	private getBaseMesh(): Mesh {
-		const name = `trigger:${this.getName()}`;
+		const name = `trigger-${this.getName()}`;
 		switch (this.shape) {
 			case TriggerItem.ShapeTriggerWireA:
 			case TriggerItem.ShapeTriggerWireB:

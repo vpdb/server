@@ -124,7 +124,7 @@ export class BumperItem extends GameItem implements IRenderable {
 
 	private generateMesh(mesh: Mesh, matrix: Matrix3D, zPos: (z: number) => number): Mesh {
 		const scalexy = this.radius;
-		const generatedMesh = mesh.clone();
+		const generatedMesh = mesh.clone(`bumper-${this.getName()}`);
 		for (const vertex of generatedMesh.vertices) {
 			let vert = new Vertex3D(vertex.x, vertex.y, vertex.z);
 			vert = matrix.multiplyVector(vert);

@@ -139,8 +139,8 @@ export class RampItem extends GameItem implements IRenderable {
 				case RampItem.RampType2Wire: {
 					const wire1Mesh = wireMeshA.makeTranslation(0, 0, 3.0);
 					const wire2Mesh = wireMeshB.makeTranslation(0, 0, 3.0);
-					wire1Mesh.name = `ramp:wire1:${this.getName()}`;
-					wire2Mesh.name = `ramp:wire2:${this.getName()}`;
+					wire1Mesh.name = `ramp.wire1-${this.getName()}`;
+					wire2Mesh.name = `ramp.wire2-${this.getName()}`;
 					meshes.wire1 = {
 						mesh: wire1Mesh.transform(new Matrix3D().toRightHanded()),
 						material: table.getMaterial(this.szMaterial),
@@ -152,12 +152,12 @@ export class RampItem extends GameItem implements IRenderable {
 					break;
 				}
 				case RampItem.RampType4Wire: {
-					const wire1Mesh = wireMeshA.clone(`ramp:wire1:${this.getName()}`).makeTranslation(0, 0, this.wireDistanceY*0.5);
-					const wire2Mesh = wireMeshB.clone(`ramp:wire2:${this.getName()}`).makeTranslation(0, 0, this.wireDistanceY*0.5);
+					const wire1Mesh = wireMeshA.clone(`ramp.wire1-${this.getName()}`).makeTranslation(0, 0, this.wireDistanceY*0.5);
+					const wire2Mesh = wireMeshB.clone(`ramp.wire2-${this.getName()}`).makeTranslation(0, 0, this.wireDistanceY*0.5);
 					const wire3Mesh = wireMeshA.makeTranslation(0, 0, 3.0);
 					const wire4Mesh = wireMeshB.makeTranslation(0, 0, 3.0);
-					wire3Mesh.name = `ramp:wire3:${this.getName()}`;
-					wire4Mesh.name = `ramp:wire4:${this.getName()}`;
+					wire3Mesh.name = `ramp.wire3-${this.getName()}`;
+					wire4Mesh.name = `ramp.wire4-${this.getName()}`;
 					meshes.wire1 = {
 						mesh: wire1Mesh.transform(new Matrix3D().toRightHanded()),
 						material: table.getMaterial(this.szMaterial),
@@ -177,11 +177,11 @@ export class RampItem extends GameItem implements IRenderable {
 					break;
 				}
 				case RampItem.RampType3WireLeft: {
-					const wire2Mesh = wireMeshB.clone(`ramp:wire2:${this.getName()}`).makeTranslation(0, 0, this.wireDistanceY*0.5);
+					const wire2Mesh = wireMeshB.clone(`ramp.wire2-${this.getName()}`).makeTranslation(0, 0, this.wireDistanceY*0.5);
 					const wire3Mesh = wireMeshA.makeTranslation(0, 0, 3.0);
 					const wire4Mesh = wireMeshB.makeTranslation(0, 0, 3.0);
-					wire3Mesh.name = `ramp:wire3:${this.getName()}`;
-					wire4Mesh.name = `ramp:wire4:${this.getName()}`;
+					wire3Mesh.name = `ramp.wire3-${this.getName()}`;
+					wire4Mesh.name = `ramp.wire4-${this.getName()}`;
 					meshes.wire2 = {
 						mesh: wire2Mesh.transform(new Matrix3D().toRightHanded()),
 						material: table.getMaterial(this.szMaterial),
@@ -197,11 +197,11 @@ export class RampItem extends GameItem implements IRenderable {
 					break;
 				}
 				case RampItem.RampType3WireRight: {
-					const wire1Mesh = wireMeshA.clone(`ramp:wire1:${this.getName()}`).makeTranslation(0, 0, this.wireDistanceY*0.5);
+					const wire1Mesh = wireMeshA.clone(`ramp.wire1-${this.getName()}`).makeTranslation(0, 0, this.wireDistanceY*0.5);
 					const wire3Mesh = wireMeshA.makeTranslation(0, 0, 3.0);
 					const wire4Mesh = wireMeshB.makeTranslation(0, 0, 3.0);
-					wire3Mesh.name = `ramp:wire3:${this.getName()}`;
-					wire4Mesh.name = `ramp:wire4:${this.getName()}`;
+					wire3Mesh.name = `ramp.wire3-${this.getName()}`;
+					wire4Mesh.name = `ramp.wire4-${this.getName()}`;
 					meshes.wire1 = {
 						mesh: wire1Mesh.transform(new Matrix3D().toRightHanded()),
 						material: table.getMaterial(this.szMaterial),
@@ -271,8 +271,7 @@ export class RampItem extends GameItem implements IRenderable {
 
 		const numVertices = rampVertex * 2;
 
-		const floorMesh = new Mesh();
-		floorMesh.name = `ramp:floor:${this.getName()}`;
+		const floorMesh = new Mesh(`ramp.floor-${this.getName()}`);
 		for (let i = 0; i < rampVertex; i++) {
 
 			const rgv3d1 = new Vertex3DNoTex2();
@@ -326,8 +325,7 @@ export class RampItem extends GameItem implements IRenderable {
 		meshes.push(floorMesh);
 
 		if (this.leftwallheightvisible !== 0.0) {
-			const leftMesh = new Mesh();
-			leftMesh.name = `ramp:left:${this.getName()}`;
+			const leftMesh = new Mesh(`ramp.left-${this.getName()}`);
 			for (let i = 0; i < rampVertex; i++) {
 
 				const rgv3d1 = new Vertex3DNoTex2();
@@ -379,8 +377,7 @@ export class RampItem extends GameItem implements IRenderable {
 		}
 
 		if (this.rightwallheightvisible !== 0.0) {
-			const rightMesh = new Mesh();
-			rightMesh.name = `ramp:right:${this.getName()}`;
+			const rightMesh = new Mesh(`ramp.right-${this.getName()}`);
 			for (let i = 0; i < rampVertex; i++) {
 
 				const rgv3d1 = new Vertex3DNoTex2();

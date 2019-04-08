@@ -82,7 +82,7 @@ export class PrimitiveItem extends GameItem implements IRenderable {
 
 	public getMeshes(vpTable: VpTable): Meshes {
 		const mesh = this.data.use3DMesh
-			? this.mesh.clone(`primitive:${this.getName()}`)
+			? this.mesh.clone(`primitive-${this.getName()}`)
 			: this.calculateBuiltinOriginal();
 
 		const matrix = this.getMatrix(vpTable);
@@ -126,7 +126,7 @@ export class PrimitiveItem extends GameItem implements IRenderable {
 
 	private calculateBuiltinOriginal(): Mesh {
 
-		const mesh = new Mesh(`primitive:${this.getName()}`);
+		const mesh = new Mesh(`primitive-${this.getName()}`);
 
 		// this recalculates the Original Vertices -> should be only called, when sides are altered.
 		const outerRadius = -0.5 / (Math.cos(Math.PI / this.data.Sides));

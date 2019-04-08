@@ -113,8 +113,8 @@ export class SurfaceItem extends GameItem implements IRenderable {
 		const topMesh = new Mesh();
 		const sideMesh = new Mesh();
 
-		topMesh.name = `surface:top:${this.getName()}`;
-		sideMesh.name = `surface:side:${this.getName()}`;
+		topMesh.name = `surface.top-${this.getName()}`;
+		sideMesh.name = `surface.side-${this.getName()}`;
 
 		const vvertex: RenderVertex[] = DragPoint.getRgVertex<RenderVertex>(this.dragPoints, () => new RenderVertex());
 		const rgtexcoord = DragPoint.getTextureCoords(this.dragPoints, vvertex);

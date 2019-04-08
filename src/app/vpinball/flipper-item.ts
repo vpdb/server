@@ -144,7 +144,7 @@ export class FlipperItem extends GameItem implements IRenderable {
 		const endRadius = this.EndRadius - this.rubberthickness;
 
 		// base and tip
-		const baseMesh = flipperBaseMesh.clone(`flipper-base:${this.getName()}`);
+		const baseMesh = flipperBaseMesh.clone(`flipper.base-${this.getName()}`);
 		for (let t = 0; t < 13; t++) {
 			for (const v of baseMesh.vertices) {
 				if (v.x === FlipperItem.vertsBaseBottom[t].x && v.y === FlipperItem.vertsBaseBottom[t].y && v.z === FlipperItem.vertsBaseBottom[t].z) {
@@ -173,7 +173,7 @@ export class FlipperItem extends GameItem implements IRenderable {
 		if (this.rubberthickness > 0.0) {
 			const rubberBaseScale = 10.0;
 			const rubberTipScale = 10.0;
-			const rubberMesh = flipperBaseMesh.clone(`flipper-rubber:${this.getName()}`);
+			const rubberMesh = flipperBaseMesh.clone(`flipper.rubber-${this.getName()}`);
 			for (let t = 0; t < 13; t++) {
 				for (const v of rubberMesh.vertices) {
 					if (v.x === FlipperItem.vertsBaseBottom[t].x && v.y === FlipperItem.vertsBaseBottom[t].y && v.z === FlipperItem.vertsBaseBottom[t].z) {

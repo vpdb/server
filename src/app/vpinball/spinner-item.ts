@@ -147,7 +147,7 @@ export class SpinnerItem extends GameItem implements IRenderable {
 			case 'SVIS': this.fVisible = this.getBool(buffer); break;
 			case 'IMGF': this.szImage = this.getString(buffer, len); break;
 			case 'SURF': this.szSurface = this.getString(buffer, len); break;
-			case 'NAME': this.wzName = this.getString(buffer, len); break;
+			case 'NAME': this.wzName = this.getWideString(buffer, len); break;
 			default:
 				this.getUnknownBlock(buffer, tag);
 				break;

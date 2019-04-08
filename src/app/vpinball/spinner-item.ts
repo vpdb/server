@@ -91,7 +91,7 @@ export class SpinnerItem extends GameItem implements IRenderable {
 	private getPlateMesh(table: VpTable, posZ: number): Mesh {
 		const fullMatrix = new Matrix3D();
 		fullMatrix.rotateZMatrix(M.degToRad(this.rotation));
-		const mesh = spinnerPlateMesh.clone(`spinner:plate:${this.getName()}`);
+		const mesh = spinnerPlateMesh.clone(`spinner.plate-${this.getName()}`);
 
 		for (const vertex of mesh.vertices) {
 			let vert = new Vertex3D(vertex.x, vertex.y, vertex.z);
@@ -112,7 +112,7 @@ export class SpinnerItem extends GameItem implements IRenderable {
 	private getBracketMesh(table: VpTable, posZ: number): Mesh {
 		const fullMatrix = new Matrix3D();
 		fullMatrix.rotateZMatrix(M.degToRad(this.rotation));
-		const bracketMesh = spinnerBracketMesh.clone(`spinner:mesh:${this.getName()}`);
+		const bracketMesh = spinnerBracketMesh.clone(`spinner.mesh-${this.getName()}`);
 		for (const vertex of bracketMesh.vertices) {
 			let vert = new Vertex3D(vertex.x, vertex.y, vertex.z);
 			vert = fullMatrix.multiplyVector(vert);

@@ -171,7 +171,7 @@ export class GLTFExporter {
 			animations: [],
 			forceIndices: false,
 			forcePowerOfTwoTextures: false,
-			compressVertices: true,
+			compressVertices: false,
 			dracoOptions: {
 				compressionLevel: 7,
 				quantizePosition: 14,
@@ -814,26 +814,20 @@ export class GLTFExporter {
 
 		if (this.cachedData.textures.has(map)) {
 			return this.cachedData.textures.get(map);
-
 		}
 
 		if (!this.outputJSON.textures) {
 			this.outputJSON.textures = [];
-
 		}
 
 		const gltfTexture = {
 			sampler: this.processSampler(map),
 			source: this.processImage(map.image, map.format, map.flipY),
 		};
-
 		this.outputJSON.textures.push(gltfTexture);
-
 		const index = this.outputJSON.textures.length - 1;
 		this.cachedData.textures.set(map, index);
-
 		return index;
-
 	}
 
 	/**

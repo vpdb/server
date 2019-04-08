@@ -96,7 +96,7 @@ export class LightItem extends GameItem implements IRenderable {
 	}
 
 	public getMeshes(table: VpTable): Meshes {
-		const lightMesh = bulbLightMesh.clone(`bulb:light:${this.getName()}`);
+		const lightMesh = bulbLightMesh.clone(`bulb.light-${this.getName()}`);
 		const height = table.getSurfaceHeight(this.szSurface, this.vCenter.x, this.vCenter.y) * table.getScaleZ();
 		for (const vertex of lightMesh.vertices) {
 			vertex.x = vertex.x * this.meshRadius + this.vCenter.x;
@@ -104,7 +104,7 @@ export class LightItem extends GameItem implements IRenderable {
 			vertex.z = vertex.z * this.meshRadius * table.getScaleZ() + height;
 		}
 
-		const socketMesh = bulbSocketMesh.clone(`bulb:socket:${this.getName()}`);
+		const socketMesh = bulbSocketMesh.clone(`bulb.socket-${this.getName()}`);
 		for (const vertex of socketMesh.vertices) {
 			vertex.x = vertex.x * this.meshRadius + this.vCenter.x;
 			vertex.y = vertex.y * this.meshRadius + this.vCenter.y;

@@ -88,7 +88,7 @@ export class GateItem extends GameItem implements IRenderable {
 
 		// wire mesh
 		const wireMesh = this.positionMesh(this.getBaseMesh(), table, baseHeight);
-		wireMesh.name = `gate-wire:${this.getName()}`;
+		wireMesh.name = `gate.wire-${this.getName()}`;
 		meshes.wire = {
 			mesh: wireMesh.transform(new Matrix3D().toRightHanded()),
 			material: table.getMaterial(this.szMaterial),
@@ -97,7 +97,7 @@ export class GateItem extends GameItem implements IRenderable {
 		// bracket mesh
 		if (this.fShowBracket) {
 			const bracketMesh = this.positionMesh(gateBracketMesh.clone(), table, baseHeight);
-			bracketMesh.name = `gate-bracket:${this.getName()}`;
+			bracketMesh.name = `gate.bracket-${this.getName()}`;
 			meshes.bracket = {
 				mesh: bracketMesh.transform(new Matrix3D().toRightHanded()),
 				material: table.getMaterial(this.szMaterial),

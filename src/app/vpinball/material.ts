@@ -138,7 +138,7 @@ export class SaveMaterial {
 		this.cGlossy = buffer.readInt32LE(offset + 36);
 		this.cClearcoat = buffer.readInt32LE(offset + 40);
 		this.fWrapLighting = buffer.readFloatLE(offset + 44);
-		this.bIsMetal = buffer.readInt32LE(offset + 48) > 0;
+		this.bIsMetal = buffer.readInt8(offset + 48) > 0;
 		this.fRoughness = buffer.readFloatLE(offset + 52);
 		this.fGlossyImageLerp = buffer.readInt32LE(offset + 56);
 		this.fEdge = buffer.readFloatLE(offset + 60);

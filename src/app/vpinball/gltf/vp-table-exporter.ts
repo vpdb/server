@@ -148,8 +148,8 @@ export class VpTableExporter {
 		material.name = `material:${obj.mesh.name}`;
 		const materialInfo = obj.material;
 		if (materialInfo && this.opts.applyMaterials) {
-			material.metalness = materialInfo.bIsMetal ? 0.8 : 0.0;
-			material.roughness = Math.max(0, 1 - materialInfo.fRoughness);
+			material.metalness = materialInfo.bIsMetal ? 1.0 : 0.0;
+			material.roughness = Math.max(0, 1 - (materialInfo.fRoughness / 1.5));
 			material.color = new Color(materialInfo.cBase);
 			material.opacity = materialInfo.bOpacityActive ? Math.min(1, Math.max(0, materialInfo.fOpacity)) : 1;
 			material.transparent = materialInfo.bOpacityActive && materialInfo.fOpacity < 0.98;

@@ -317,7 +317,7 @@ export class RampItem extends GameItem implements IRenderable {
 
 		Mesh.computeNormals(floorMesh.vertices, numVertices, floorMesh.indices, (rampVertex - 1) * 6);
 		meshes.floor = {
-			mesh: floorMesh,
+			mesh: floorMesh.transform(new Matrix3D().toRightHanded()),
 			map: table.getTexture(this.szImage),
 			material: table.getMaterial(this.szMaterial),
 		};
@@ -372,7 +372,7 @@ export class RampItem extends GameItem implements IRenderable {
 			}
 			Mesh.computeNormals(leftMesh.vertices, numVertices, leftMesh.indices, (rampVertex - 1) * 6);
 			meshes.left = {
-				mesh: leftMesh,
+				mesh: leftMesh.transform(new Matrix3D().toRightHanded()),
 				map: table.getTexture(this.szImage),
 				material: table.getMaterial(this.szMaterial),
 			};
@@ -427,7 +427,7 @@ export class RampItem extends GameItem implements IRenderable {
 			}
 			Mesh.computeNormals(rightMesh.vertices, numVertices, rightMesh.indices, (rampVertex - 1) * 6);
 			meshes.right = {
-				mesh: rightMesh,
+				mesh: rightMesh.transform(new Matrix3D().toRightHanded()),
 				map: table.getTexture(this.szImage),
 				material: table.getMaterial(this.szMaterial),
 			};

@@ -179,7 +179,7 @@ export class GLTFExporter {
 				quantizeTexcoord: 12,
 				quantizeColor: 8,
 				quantizeSkin: 12,
-				unifiedQuantization: false
+				unifiedQuantization: false,
 			},
 		};
 		this.options = Object.assign({}, DEFAULT_OPTIONS, options);
@@ -210,14 +210,14 @@ export class GLTFExporter {
 		const pool = new PromisePool(pendingProducer, Math.max(1, numConcurrent));
 		await pool.start();
 
-		//await Promise.all(this.pending);
-
 		// Merge buffers.
 		const blob = Buffer.concat(this.buffers);
 
 		// Declare extensions.
 		const extensionsUsedList = Object.keys(this.extensionsUsed);
-		if (extensionsUsedList.length > 0) { this.outputJSON.extensionsUsed = extensionsUsedList; }
+		if (extensionsUsedList.length > 0) {
+			this.outputJSON.extensionsUsed = extensionsUsedList;
+		}
 
 		if (this.outputJSON.buffers && this.outputJSON.buffers.length > 0) {
 
@@ -274,7 +274,7 @@ export class GLTFExporter {
 							quantizeTexcoordBits: this.options.dracoOptions.quantizeTexcoord,
 							quantizeColorBits: this.options.dracoOptions.quantizeColor,
 							unifiedQuantization: this.options.dracoOptions.unifiedQuantization,
-						}
+						},
 					});
 					return result.glb;
 
@@ -294,7 +294,7 @@ export class GLTFExporter {
 							quantizeTexcoordBits: this.options.dracoOptions.quantizeTexcoord,
 							quantizeColorBits: this.options.dracoOptions.quantizeColor,
 							unifiedQuantization: this.options.dracoOptions.unifiedQuantization,
-						}
+						},
 					});
 					return result.gltf;
 
@@ -593,7 +593,9 @@ export class GLTFExporter {
 			byteLength,
 		};
 
-		if (target !== undefined) { gltfBufferView.target = target; }
+		if (target !== undefined) {
+			gltfBufferView.target = target;
+		}
 
 		if (target === WEBGL_CONSTANTS.ARRAY_BUFFER) {
 
@@ -697,8 +699,9 @@ export class GLTFExporter {
 			start = Math.max(start, geometry.drawRange.start);
 			count = Math.min(end, end2) - start;
 
-			if (count < 0) { count = 0; }
-
+			if (count < 0) {
+				count = 0;
+			}
 		}
 
 		// Skip creating an accessor if the attribute doesn't have data to export
@@ -1166,7 +1169,9 @@ export class GLTFExporter {
 
 				targets.push(target);
 				weights.push(mesh.morphTargetInfluences[i]);
-				if (mesh.morphTargetDictionary !== undefined) { targetNames.push(reverseDictionary[i]); }
+				if (mesh.morphTargetDictionary !== undefined) {
+					targetNames.push(reverseDictionary[i]);
+				}
 
 			}
 
@@ -1184,7 +1189,9 @@ export class GLTFExporter {
 		let forceIndices = this.options.forceIndices;
 		const isMultiMaterial = Array.isArray(mesh.material);
 
-		if (isMultiMaterial && (geometry as BufferGeometry).groups.length === 0) { return null; }
+		if (isMultiMaterial && (geometry as BufferGeometry).groups.length === 0) {
+			return null;
+		}
 
 		if (!forceIndices && (geometry as BufferGeometry).index === null && isMultiMaterial) {
 			// temporal workaround.
@@ -1450,11 +1457,15 @@ export class GLTFExporter {
 
 		} else if (light.isPointLight) {
 			lightDef.type = 'point';
-			if (light.distance > 0) { lightDef.range = light.distance; }
+			if (light.distance > 0) {
+				lightDef.range = light.distance;
+			}
 
 		} else if (light.isSpotLight) {
 			lightDef.type = 'spot';
-			if (light.distance > 0) { lightDef.range = light.distance; }
+			if (light.distance > 0) {
+				lightDef.range = light.distance;
+			}
 			lightDef.spot = {};
 			lightDef.spot.innerConeAngle = (light.penumbra - 1.0) * light.angle * -1.0;
 			lightDef.spot.outerConeAngle = light.angle;
@@ -1695,7 +1706,9 @@ class Utils {
 
 		} else if (time < track.times[0]) {
 
-			if (Math.abs(track.times[0] - time) < tolerance) { return 0; }
+			if (Math.abs(track.times[0] - time) < tolerance) {
+				return 0;
+			}
 
 			times[0] = time;
 			times.set(track.times, 1);
@@ -1853,7 +1866,7 @@ export interface ParseOptions {
 		quantizeColor?: number;
 		quantizeSkin?: number;
 		unifiedQuantization?: boolean;
-	}
+	};
 }
 
 interface MapDefinition {

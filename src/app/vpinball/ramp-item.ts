@@ -117,14 +117,8 @@ export class RampItem extends GameItem implements IRenderable {
 	public getMeshes(table: VpTable): Meshes {
 		const meshes: Meshes = {};
 		if (!this.isHabitrail()) {
-			const flatMeshes = this.generateFlatMesh(table);
-			for (const mesh of flatMeshes) {
-				meshes[mesh.name] = {
-					mesh: mesh.transform(new Matrix3D().toRightHanded()),
-					map: table.getTexture(this.szImage),
-					material: table.getMaterial(this.szMaterial),
-				};
-			}
+			return this.generateFlatMesh(table);
+
 		} else {
 			const [wireMeshA, wireMeshB] = this.generateWireMeshes(table);
 			switch (this.rampType) {
@@ -258,9 +252,9 @@ export class RampItem extends GameItem implements IRenderable {
 		return vVertex[iSeg].z + (startLength / totalLength) * (topHeight - bottomHeight) + bottomHeight;
 	}
 
-	private generateFlatMesh(table: VpTable): Mesh[] {
+	private generateFlatMesh(table: VpTable): Meshes {
 
-		const meshes: Mesh[] = [];
+		const meshes: Meshes = {};
 		const rv = this.getRampVertex(table, -1, true);
 		const rampVertex = rv.pcvertex;
 		const rgheight = rv.ppheight;
@@ -322,7 +316,11 @@ export class RampItem extends GameItem implements IRenderable {
 		}
 
 		Mesh.computeNormals(floorMesh.vertices, numVertices, floorMesh.indices, (rampVertex - 1) * 6);
-		meshes.push(floorMesh);
+		meshes.floor = {
+			mesh: floorMesh,
+			map: table.getTexture(this.szImage),
+			material: table.getMaterial(this.szMaterial),
+		};
 
 		if (this.leftwallheightvisible > 0.0) {
 			const leftMesh = new Mesh(`ramp.left-${this.getName()}`);
@@ -337,7 +335,7 @@ export class RampItem extends GameItem implements IRenderable {
 
 				rgv3d2.x = rv.rgvLocal[i].x;
 				rgv3d2.y = rv.rgvLocal[i].y;
-				rgv3d2.z = (rgheight[i] + this.rightwallheightvisible) * table.getScaleZ();
+				rgv3d2.z = (rgheight[i] + this.leftwallheightvisible) * table.getScaleZ();
 
 				if (this.szImage && this.fImageWalls) {
 					if (this.imagealignment == RampItem.RampImageAlignmentWorld) {
@@ -373,7 +371,11 @@ export class RampItem extends GameItem implements IRenderable {
 
 			}
 			Mesh.computeNormals(leftMesh.vertices, numVertices, leftMesh.indices, (rampVertex - 1) * 6);
-			meshes.push(leftMesh);
+			meshes.left = {
+				mesh: leftMesh,
+				map: table.getTexture(this.szImage),
+				material: table.getMaterial(this.szMaterial),
+			};
 		}
 
 		if (this.rightwallheightvisible > 0.0) {
@@ -389,7 +391,7 @@ export class RampItem extends GameItem implements IRenderable {
 
 				rgv3d2.x = rgv3d1.x;
 				rgv3d2.y = rgv3d1.y;
-				rgv3d2.z = (rgheight[i] + this.leftwallheightvisible) * table.getScaleZ();
+				rgv3d2.z = (rgheight[i] + this.rightwallheightvisible) * table.getScaleZ();
 
 				if (this.szImage && this.fImageWalls) {
 					if (this.imagealignment == RampItem.RampImageAlignmentWorld) {
@@ -424,7 +426,11 @@ export class RampItem extends GameItem implements IRenderable {
 				rightMesh.indices.push(i * 2 + 2);
 			}
 			Mesh.computeNormals(rightMesh.vertices, numVertices, rightMesh.indices, (rampVertex - 1) * 6);
-			meshes.push(rightMesh);
+			meshes.right = {
+				mesh: rightMesh,
+				map: table.getTexture(this.szImage),
+				material: table.getMaterial(this.szMaterial),
+			};
 		}
 		return meshes;
 	}

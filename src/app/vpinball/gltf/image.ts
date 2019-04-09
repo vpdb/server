@@ -6,7 +6,7 @@ const PngQuant = require('pngquant');
 
 export class Image {
 
-	private static readonly jpegQuality = 70;
+	private static readonly jpegQuality = 65;
 
 	public readonly src: string;
 	public height: number;

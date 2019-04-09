@@ -45,7 +45,7 @@ export class VptGltfProcessor implements CreationProcessor<FileVariation> {
 			applyTextures: true,
 			applyMaterials: true,
 			optimizeTextures: true,
-			gltfOptions: { compressVertices: true },
+			gltfOptions: { compressVertices: true, forcePowerOfTwoTextures: true },
 
 			// lights
 			exportLightBulbLights: true,

@@ -324,7 +324,7 @@ export class RampItem extends GameItem implements IRenderable {
 		Mesh.computeNormals(floorMesh.vertices, numVertices, floorMesh.indices, (rampVertex - 1) * 6);
 		meshes.push(floorMesh);
 
-		if (this.leftwallheightvisible !== 0.0) {
+		if (this.leftwallheightvisible > 0.0) {
 			const leftMesh = new Mesh(`ramp.left-${this.getName()}`);
 			for (let i = 0; i < rampVertex; i++) {
 
@@ -376,7 +376,7 @@ export class RampItem extends GameItem implements IRenderable {
 			meshes.push(leftMesh);
 		}
 
-		if (this.rightwallheightvisible !== 0.0) {
+		if (this.rightwallheightvisible > 0.0) {
 			const rightMesh = new Mesh(`ramp.right-${this.getName()}`);
 			for (let i = 0; i < rampVertex; i++) {
 

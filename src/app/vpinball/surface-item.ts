@@ -138,7 +138,7 @@ export class SurfaceItem extends GameItem implements IRenderable {
 		}
 
 		const bottom = this.heightbottom * table.getScaleZ() + table.getTableHeight();
-		const top = this.heighttop  * table.getScaleZ() + table.getTableHeight();
+		const top = this.heighttop * table.getScaleZ() + table.getTableHeight();
 
 		let offset = 0;
 
@@ -189,17 +189,19 @@ export class SurfaceItem extends GameItem implements IRenderable {
 			sideMesh.vertices[offset + 3].y = pv2.y;
 			sideMesh.vertices[offset + 3].z = bottom;
 
-			sideMesh.vertices[offset].tu = rgtexcoord[i];
-			sideMesh.vertices[offset].tv = 1.0;
+			if (this.szSideImage) {
+				sideMesh.vertices[offset].tu = rgtexcoord[i];
+				sideMesh.vertices[offset].tv = 1.0;
 
-			sideMesh.vertices[offset + 1].tu = rgtexcoord[i];
-			sideMesh.vertices[offset + 1].tv = 0;
+				sideMesh.vertices[offset + 1].tu = rgtexcoord[i];
+				sideMesh.vertices[offset + 1].tv = 0;
 
-			sideMesh.vertices[offset + 2].tu = rgtexcoord[c];
-			sideMesh.vertices[offset + 2].tv = 0;
+				sideMesh.vertices[offset + 2].tu = rgtexcoord[c];
+				sideMesh.vertices[offset + 2].tv = 0;
 
-			sideMesh.vertices[offset + 3].tu = rgtexcoord[c];
-			sideMesh.vertices[offset + 3].tv = 1.0;
+				sideMesh.vertices[offset + 3].tu = rgtexcoord[c];
+				sideMesh.vertices[offset + 3].tv = 1.0;
+			}
 
 			sideMesh.vertices[offset].nx = vnormal[0].x;
 			sideMesh.vertices[offset].ny = -vnormal[0].y;
@@ -247,8 +249,8 @@ export class SurfaceItem extends GameItem implements IRenderable {
 			return;
 		}
 
-		const heightNotDropped = this.heighttop;
-		const heightDropped = this.heightbottom + 0.1;
+		const heightNotDropped = this.heighttop * table.getScaleZ();
+		const heightDropped = this.heightbottom * table.getScaleZ() + 0.1;
 
 		const invTablewidth = 1.0 / (table.gameData.right - table.gameData.left);
 		const invTableheight = 1.0 / (table.gameData.bottom - table.gameData.top);
@@ -288,7 +290,7 @@ export class SurfaceItem extends GameItem implements IRenderable {
 			vertsTop[2][i].ny = 0;
 			vertsTop[2][i].nz = -1.0;
 		}
-		topMesh.vertices = [...vertsTop[0], ...vertsTop[1], ...vertsTop[2]];
+		topMesh.vertices = vertsTop[0];
 
 		if (topMesh.vertices.length > 0 && this.fTopBottomVisible) {
 			meshes.top = {
@@ -298,7 +300,7 @@ export class SurfaceItem extends GameItem implements IRenderable {
 			};
 		}
 
-		if (sideMesh.vertices.length > 0 && this.fSideVisible) {
+		if (top !== bottom && this.fSideVisible) {
 			meshes.side = {
 				mesh: sideMesh.transform(new Matrix3D().toRightHanded()),
 				map: table.getTexture(this.szSideImage),

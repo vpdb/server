@@ -754,8 +754,10 @@ export class GLTFExporter {
 
 		if (this.options.embedImages) {
 			if (this.options.forcePowerOfTwoTextures && !this.isPowerOfTwo(image)) {
-				logger.warn(this.options.state, '[GLTFExporter.processImage]: Resized non-power-of-two image.', image);
-				image.resize(M.floorPowerOfTwo(image.width), M.floorPowerOfTwo(image.height));
+				const po2Width = M.floorPowerOfTwo(image.width);
+				const po2Height = M.floorPowerOfTwo(image.height);
+				logger.warn(this.options.state, '[GLTFExporter.processImage]: Resized non-power-of-two image %s from %sx%s to %sx%s', image.src, image.width, image.height, po2Width, po2Height);
+				image.resize(po2Width, po2Height);
 			}
 			if (flipY === true) {
 				image.flipY();

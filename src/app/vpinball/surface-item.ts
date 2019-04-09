@@ -66,9 +66,11 @@ export class SurfaceItem extends GameItem implements IRenderable {
 	public fSideVisible: boolean = true;
 	public fReflectionEnabled: boolean = true;
 	public dragPoints: DragPoint[];
+	public itemName: string;
 
 	public static async fromStorage(storage: Storage, itemName: string): Promise<SurfaceItem> {
 		const surfaceItem = new SurfaceItem();
+		surfaceItem.itemName = itemName;
 		await storage.streamFiltered(itemName, 4, SurfaceItem.createStreamHandler(surfaceItem));
 		return surfaceItem;
 	}
@@ -110,11 +112,10 @@ export class SurfaceItem extends GameItem implements IRenderable {
 
 	public getMeshes(table: VpTable): Meshes {
 
-		const topMesh = new Mesh();
-		const sideMesh = new Mesh();
+		const meshes: Meshes = {};
 
-		topMesh.name = `surface.top-${this.getName()}`;
-		sideMesh.name = `surface.side-${this.getName()}`;
+		const topMesh = new Mesh(`surface.top-${this.getName()}`);
+		const sideMesh = new Mesh(`surface.side-${this.getName()}`);
 
 		const vvertex: RenderVertex[] = DragPoint.getRgVertex<RenderVertex>(this.dragPoints, () => new RenderVertex());
 		const rgtexcoord = DragPoint.getTextureCoords(this.dragPoints, vvertex);
@@ -136,8 +137,8 @@ export class SurfaceItem extends GameItem implements IRenderable {
 			rgnormal[i].y = dx * invLen;
 		}
 
-		const bottom = this.heightbottom + table.gameData.tableheight;
-		const top = this.heighttop + table.gameData.tableheight;
+		const bottom = this.heightbottom * table.getScaleZ() + table.getTableHeight();
+		const top = this.heighttop  * table.getScaleZ() + table.getTableHeight();
 
 		let offset = 0;
 
@@ -289,18 +290,23 @@ export class SurfaceItem extends GameItem implements IRenderable {
 		}
 		topMesh.vertices = [...vertsTop[0], ...vertsTop[1], ...vertsTop[2]];
 
-		return {
-			top: {
+		if (topMesh.vertices.length > 0 && this.fTopBottomVisible) {
+			meshes.top = {
 				mesh: topMesh.transform(new Matrix3D().toRightHanded()),
 				map: table.getTexture(this.szImage),
 				material: table.getMaterial(this.szTopMaterial),
-			},
-			side: {
+			};
+		}
+
+		if (sideMesh.vertices.length > 0 && this.fSideVisible) {
+			meshes.side = {
 				mesh: sideMesh.transform(new Matrix3D().toRightHanded()),
 				map: table.getTexture(this.szSideImage),
 				material: table.getMaterial(this.szSideMaterial),
-			},
-		};
+			};
+		}
+
+		return meshes;
 	}
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<number> {

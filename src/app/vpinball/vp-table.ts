@@ -104,6 +104,9 @@ export class VpTable implements IRenderable {
 	}
 
 	public getMaterial(name: string): Material {
+		if (!name) {
+			return undefined;
+		}
 		return this.gameData.materials.find(m => m.szName === name);
 	}
 

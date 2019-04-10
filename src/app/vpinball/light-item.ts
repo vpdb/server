@@ -26,8 +26,8 @@ import { Material } from './material';
 import { Matrix3D } from './matrix3d';
 import { bulbLightMesh } from './meshes/bulb-light-mesh';
 import { bulbSocketMesh } from './meshes/bulb-socket-mesh';
+import { Table } from './table';
 import { Vertex2D } from './vertex';
-import { VpTable } from './vp-table';
 
 /**
  * VPinball's lights.
@@ -95,7 +95,7 @@ export class LightItem extends GameItem implements IRenderable {
 		return this.showBulbMesh;
 	}
 
-	public getMeshes(table: VpTable): Meshes {
+	public getMeshes(table: Table): Meshes {
 		const lightMesh = bulbLightMesh.clone(`bulb.light-${this.getName()}`);
 		const height = table.getSurfaceHeight(this.szSurface, this.vCenter.x, this.vCenter.y) * table.getScaleZ();
 		for (const vertex of lightMesh.vertices) {
@@ -214,4 +214,3 @@ export class LightItem extends GameItem implements IRenderable {
 		});
 	}
 }
-

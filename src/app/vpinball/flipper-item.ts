@@ -24,8 +24,8 @@ import { GameItem, IRenderable, Meshes } from './game-item';
 import { Matrix3D } from './matrix3d';
 import { Mesh } from './mesh';
 import { flipperBaseMesh } from './meshes/flipper-base-mesh';
+import { Table } from './table';
 import { Vertex2D, Vertex3D } from './vertex';
-import { VpTable } from './vp-table';
 
 /**
  * VPinball's flippers
@@ -93,7 +93,7 @@ export class FlipperItem extends GameItem implements IRenderable {
 		return this.wzName;
 	}
 
-	public getMeshes(table: VpTable): Meshes {
+	public getMeshes(table: Table): Meshes {
 		const meshes: Meshes = {};
 
 		const matrix = this.getMatrix();
@@ -132,7 +132,7 @@ export class FlipperItem extends GameItem implements IRenderable {
 		return trafoMatrix;
 	}
 
-	private generateMeshes(table: VpTable): { base: Mesh, rubber?: Mesh } {
+	private generateMeshes(table: Table): { base: Mesh, rubber?: Mesh } {
 
 		const fullMatrix = new Matrix3D();
 		fullMatrix.rotateZMatrix(M.degToRad(180.0));

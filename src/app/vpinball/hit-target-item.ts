@@ -32,8 +32,8 @@ import { hitTargetRectangleMesh } from './meshes/hit-target-rectangle-mesh';
 import { hitTargetRoundMesh } from './meshes/hit-target-round-mesh';
 import { hitTargetT1SlimMesh } from './meshes/hit-target-t1-slim-mesh';
 import { hitTargetT2SlimMesh } from './meshes/hit-target-t2-slim-mesh';
+import { Table } from './table';
 import { Vertex3D } from './vertex';
-import { VpTable } from './vp-table';
 
 /**
  * VPinball's hit- and drop targets.
@@ -105,7 +105,7 @@ export class HitTargetItem extends GameItem implements IRenderable {
 		return this.fVisible;
 	}
 
-	public getMeshes(table: VpTable): Meshes {
+	public getMeshes(table: Table): Meshes {
 		const hitTargetMesh = this.getBaseMesh();
 		hitTargetMesh.name = `hit.target-${this.getName()}`;
 

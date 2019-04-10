@@ -29,8 +29,8 @@ import { kickerHoleMesh } from './meshes/kicker-hole-mesh';
 import { kickerSimpleHoleMesh } from './meshes/kicker-simple-hole-mesh';
 import { kickerT1Mesh } from './meshes/kicker-t1-mesh';
 import { kickerWilliamsMesh } from './meshes/kicker-williams-mesh';
+import { Table } from './table';
 import { Vertex2D, Vertex3D } from './vertex';
-import { VpTable } from './vp-table';
 
 /**
  * VPinball's kickers.
@@ -82,7 +82,7 @@ export class KickerItem extends GameItem implements IRenderable {
 		return this.kickerType !== KickerItem.TypeKickerInvisible;
 	}
 
-	public getMeshes(table: VpTable): Meshes {
+	public getMeshes(table: Table): Meshes {
 		const baseHeight = table.getSurfaceHeight(this.szSurface, this.vCenter.x, this.vCenter.y) * table.getScaleZ();
 		const kickerMesh = this.generateMesh(table, baseHeight);
 		return {
@@ -93,7 +93,7 @@ export class KickerItem extends GameItem implements IRenderable {
 		};
 	}
 
-	private generateMesh(table: VpTable, baseHeight: number): Mesh {
+	private generateMesh(table: Table, baseHeight: number): Mesh {
 		let zOffset = 0.0;
 		let zRot = this.orientation;
 		switch (this.kickerType) {

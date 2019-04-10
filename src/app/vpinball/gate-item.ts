@@ -30,8 +30,8 @@ import { gateLongPlateMesh } from './meshes/gate-long-plate-mesh';
 import { gatePlateMesh } from './meshes/gate-plate-mesh';
 import { gateWireMesh } from './meshes/gate-wire-mesh';
 import { gateWireRectangleMesh } from './meshes/gate-wire-rectangle-mesh';
+import { Table } from './table';
 import { Vertex2D, Vertex3D } from './vertex';
-import { VpTable } from './vp-table';
 
 /**
  * VPinball's gates.
@@ -82,7 +82,7 @@ export class GateItem extends GameItem implements IRenderable {
 		return this.fVisible;
 	}
 
-	public getMeshes(table: VpTable): Meshes {
+	public getMeshes(table: Table): Meshes {
 		const meshes: Meshes = {};
 		const baseHeight = table.getSurfaceHeight(this.szSurface, this.vCenter.x, this.vCenter.y) * table.getScaleZ();
 
@@ -118,7 +118,7 @@ export class GateItem extends GameItem implements IRenderable {
 		}
 	}
 
-	private positionMesh(mesh: Mesh, table: VpTable, baseHeight: number): Mesh {
+	private positionMesh(mesh: Mesh, table: Table, baseHeight: number): Mesh {
 		const fullMatrix = new Matrix3D();
 		fullMatrix.rotateZMatrix(M.degToRad(this.rotation));
 		for (const vertex of mesh.vertices) {

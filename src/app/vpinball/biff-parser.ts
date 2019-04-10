@@ -20,18 +20,9 @@
 import { inflate } from 'zlib';
 import { ReadResult } from '../common/ole-doc';
 
-export type OnBiffResult = (buffer: Buffer, tag: string, offset: number, len: number) => Promise<number>;
-export interface OnBiffResultStream<T> {
-	onStart: () => T;
-	onTag: (item: T) => OnBiffResult;
-	onEnd: (item: T) => void;
-}
-
-export interface BiffStreamOptions {
-	streamedTags?: string[];
-	nestedTags?: { [key: string]: OnBiffResultStream<any> };
-}
-
+/**
+ * A class that comes with set of utilities for parsing the BIFF structure.
+ */
 export class BiffParser {
 
 	public static stream(callback: OnBiffResult, opts: BiffStreamOptions = {}) {
@@ -80,23 +71,6 @@ export class BiffParser {
 			const skip = await cb(dataResult, tag, result.storageOffset + relStartPos, len + relEndPos);
 			return (skip || len) + 4;
 		};
-	}
-
-	/* istanbul ignore next: currently not used */
-	private static getTag(buffer: Buffer): string {
-
-		const tags5 = [ 'CLDRP' ];
-
-		const tag = buffer.slice(4, 8).toString('utf8');
-
-		if (tags5.map(t => t.substr(0, 4)).includes(tag)) {
-			const tag5 = buffer.slice(4, 9).toString('utf8');
-			if (tags5.includes(tag5)) {
-				return tag5;
-			}
-		}
-
-		return tag;
 	}
 
 	public static async decompress(buffer: Buffer): Promise<Buffer> {
@@ -181,5 +155,43 @@ export class BiffParser {
 	private isAscii(str: string): boolean {
 		return /^[\x00-\x7F]*$/.test(str);
 	}
+}
 
+/**
+ * A function executed when a BIFF tag is read from the stream.
+ */
+export type OnBiffResult = (buffer: Buffer, tag: string, offset: number, len: number) => Promise<number>;
+
+/**
+ * Callbacks to provide to a nested BIFF stream.
+ */
+export interface OnBiffResultStream<T> {
+
+	/**
+	 * Run before the first tag is sent. What's returned is passed to [[onTag]]
+	 * and [[onEnd]].
+	 *
+	 * This is used to instantiate the nested object that is going to be read.
+	 */
+	onStart: () => T;
+
+	/**
+	 * A tag was read.
+	 * @param item The object created in [[onStart]].
+	 */
+	onTag: (item: T) => OnBiffResult;
+
+	/**
+	 * The nested tag has finished reading (and ENDV tag came along).
+	 * @param item
+	 */
+	onEnd: (item: T) => void;
+}
+
+/**
+ * Options to provide to a BIFF stream.
+ */
+export interface BiffStreamOptions {
+	streamedTags?: string[];
+	nestedTags?: { [key: string]: OnBiffResultStream<any> };
 }

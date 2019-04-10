@@ -23,8 +23,8 @@ import { DragPoint } from './dragpoint';
 import { GameItem, IRenderable, Meshes } from './game-item';
 import { Matrix3D } from './matrix3d';
 import { Mesh } from './mesh';
+import { Table } from './table';
 import { RenderVertex, Vertex2D, Vertex3DNoTex2 } from './vertex';
-import { VpTable } from './vp-table';
 
 /**
  * VPinball's surfaces, a.k.a as "walls".
@@ -110,7 +110,7 @@ export class SurfaceItem extends GameItem implements IRenderable {
 		return {};
 	}
 
-	public getMeshes(table: VpTable): Meshes {
+	public getMeshes(table: Table): Meshes {
 
 		const meshes: Meshes = {};
 

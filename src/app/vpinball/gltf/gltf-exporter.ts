@@ -130,6 +130,7 @@ const PATH_PROPERTIES: { [key: string]: string } = {
  *  - Don't use Canvas but ~20x faster sharp.js for image manipulation
  *  - Don't resolve all pending promises at once but use a pool
  *  - Be intelligent about re-using images
+ *  - Adds Draco compression support
  *
  * @see https://github.com/mrdoob/three.js/blob/master/examples/js/exporters/GLTFExporter.js
  * @author fernandojsg / http://fernandojsg.com

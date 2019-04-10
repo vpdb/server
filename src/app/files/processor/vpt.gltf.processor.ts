@@ -18,7 +18,7 @@
  */
 
 import { RequestState } from '../../common/typings/context';
-import { VpTable } from '../../vpinball/vp-table';
+import { Table } from '../../vpinball/table';
 import { FileDocument } from '../file.document';
 import { FileUtil } from '../file.util';
 import { FileVariation } from '../file.variations';
@@ -38,7 +38,7 @@ export class VptGltfProcessor implements CreationProcessor<FileVariation> {
 
 	public async process(requestState: RequestState, file: FileDocument, src: string, dest: string, variation?: FileVariation): Promise<string> {
 
-		const vpt = await VpTable.load(src);
+		const vpt = await Table.load(src);
 		const glb = await vpt.exportGlb({
 
 			// texture and material

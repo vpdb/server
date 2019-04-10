@@ -17,6 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+/* tslint:disable:no-bitwise */
 const MAX_CODES = 4095;
 const CODE_MASK = [
 	0,
@@ -28,6 +29,12 @@ const CODE_MASK = [
 	0x07FF, 0x0FFF,
 ];
 
+/**
+ * This is a 1:1 port of VPinball's lzwreader which is used to decompress
+ * bitmaps.
+ *
+ * @see https://github.com/vpinball/vpinball/blob/master/media/lzwreader.cpp
+ */
 export class LzwReader {
 
 	private pstm: BufferPtr;
@@ -39,24 +46,24 @@ export class LzwReader {
 
 	/* Static variables */
 	private currSize: number;                 /* The current code size */
-	private clear: number;                     /* Value for a clear code */
-	private ending: number;                    /* Value for a ending code */
-	private newCodes: number;                  /* First available code */
+	private clear: number;                    /* Value for a clear code */
+	private ending: number;                   /* Value for a ending code */
+	private newCodes: number;                 /* First available code */
 	private topSlot: number;                  /* Highest code for current size */
-	private slot: number;                      /* Last read code */
+	private slot: number;                     /* Last read code */
 
 	/* The following static variables are used
 	 * for separating out codes
 	 */
 	private numAvailBytes: number;              /* # bytes left in block */
 	private numBitsLeft: number;                /* # bits left in current byte */
-	private b1: number;                       /* Current byte */
-	private byteBuff = Buffer.alloc(257);           /* Current block */
+	private b1: number;                         /* Current byte */
+	private byteBuff = Buffer.alloc(257);  /* Current block */
 	private pBytes: BufferPtr;                  /* points to byte_buff - Pointer to next byte in block */
 
 	private stack = Buffer.alloc(MAX_CODES + 1);     /* Stack for storing pixels */
 	private suffix = Buffer.alloc(MAX_CODES + 1);    /* Suffix table */
-	private prefix: number[] = [];   /* Prefix linked list */
+	private prefix: number[] = [];                        /* Prefix linked list */
 
 	private readonly width: number;
 	private readonly height: number;
@@ -76,7 +83,6 @@ export class LzwReader {
 		this.width = width; // 32-bit picture
 		this.height = height;
 		this.linesLeft = height + 1; // +1 because 1 gets taken o
-		//console.log('+++ lzw reader initialized at %sx%s with destination of %s bytes.', this.width, this.height, this.pbBitsOutCur.getBuffer().length);
 	}
 
 	public decompress(): [ Buffer, number ] {
@@ -94,10 +100,6 @@ export class LzwReader {
 
 		/* Initialize for decoding a new image...
 		 */
-		/*if ((size = get_byte()) < 0)
-		   return (size);
-		   if (size < 2 || 9 < size)
-		   return (BAD_CODE_SIZE);*/
 		size = 8;
 		this.initExp(size);
 
@@ -131,7 +133,6 @@ export class LzwReader {
 			 */
 			if (c < 0) {
 				break;
-				//return (0);
 			}
 
 			/* If the code is a clear code, reinitialize all necessary items.
@@ -338,6 +339,10 @@ export class LzwReader {
 	}
 }
 
+/**
+ * Simulates a C pointer to some data. Data is never copied,
+ * only the pointer is updated.
+ */
 class BufferPtr {
 	private readonly buf: Buffer;
 	private pos: number;

@@ -27,8 +27,8 @@ import { bumperBaseMesh } from './meshes/bumper-base-mesh';
 import { bumperCapMesh } from './meshes/bumper-cap-mesh';
 import { bumperRingMesh } from './meshes/bumper-ring-mesh';
 import { bumperSocketMesh } from './meshes/bumper-socket-mesh';
+import { Table } from './table';
 import { Vertex2D, Vertex3D } from './vertex';
-import { VpTable } from './vp-table';
 
 /**
  * VPinball's bumper item.
@@ -87,7 +87,7 @@ export class BumperItem extends GameItem implements IRenderable {
 		return this.fBaseVisible || this.fRingVisible || this.fSkirtVisible || this.fCapVisible;
 	}
 
-	public getMeshes(table: VpTable): Meshes {
+	public getMeshes(table: Table): Meshes {
 		if (!this.vCenter) {
 			throw new Error(`Cannot export bumper ${this.getName()} without vCenter.`);
 		}

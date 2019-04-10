@@ -3,7 +3,7 @@
 VPDB can read the VPX/VPT file format and generate a 3D mesh including 
 materials, textures and lights.
 
-Using [threej.js](https://threejs.org/), the mesh can be exported to a standard
+Using [three.js](https://threejs.org/), the mesh can be exported to a standard
 format such as [GLTF](https://www.khronos.org/gltf/), where it then can be 
 loaded into basically any 3D modeller, but more importantly, into the browser.
 
@@ -40,16 +40,15 @@ run through a PNG crusher and image optimizer, which cuts the size
 approximately in half. Textures are also streamed from the table file directly,
 so it's the export which takes the most time to complete.
 
-The exported GLBs are still relatively large, and further optimizations could 
-get them down lot, but they are difficult to apply automatically. For instance,
-thousands of vertices for screw threads that aren't visible anyways could be
-completely removed or at least simplified.
+In order to furthermore reduce the size of the exported model, we apply 
+Google's [Draco compression](https://github.com/google/draco), which gets the
+geometry size down to under 10%.
 
-VPDB might be able to provide a tool for detecting unusual amount of vertices
-in an uploaded table and reduce them.
+In short, we're able to get a VPX file of 190M down to just over 12M. Average
+size is under 10MB, varying from 1.7M (Robo-War) to 17M (TWD).
 
 A Visual Pinball table consists of many different items. The exporter supports
-all items that are visually rendered on the playfield.
+all items that are visually rendered on the playfield:
 
 ### Surfaces
 

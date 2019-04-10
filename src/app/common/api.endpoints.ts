@@ -36,7 +36,6 @@ import { StarEndPoint } from '../stars';
 import { TagApiEndPoint } from '../tags';
 import { TokenEndPoint } from '../tokens';
 import { UserEndPoint } from '../users';
-import { VpApiEndPoint } from '../vp';
 import { EndPoint } from './api.endpoint';
 
 export const endPoints: EndPoint[] = [
@@ -63,5 +62,4 @@ export const endPoints: EndPoint[] = [
 	new TagApiEndPoint(),
 	new TokenEndPoint(),
 	new UserEndPoint(),
-	new VpApiEndPoint(),
 ];

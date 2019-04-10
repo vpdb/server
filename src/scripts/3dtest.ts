@@ -20,26 +20,44 @@
 
 import { writeFileSync } from 'fs';
 import { basename } from 'path';
-import { VpTable } from '../app/vpinball/vp-table';
+import { Table } from '../app/vpinball/table';
 
 (async () => {
 
 	try {
 
 		const start = Date.now();
-		//const tablePath = 'D:/Pinball/Visual Pinball/Tables/Medieval Madness Reloaded 1.0.vpx';
-		//const tablePath = 'C:/Development/vpdb-server/data/storage-protected/pk45rodfw.vpx';
-		const tablePath = 'D:/Pinball/Visual Pinball/Tables/Batman Dark Knight tt&NZ 1.2.vpx';
+		//const tablePath = 'D:/Pinball/Visual Pinball/Tables/vpdb/e2na558ew.vpx'; // has animation frames
+		const tablePath = 'D:/Pinball/Visual Pinball/Tables/vpdb/e27butb5w.vpx';
 
-		const vpt = await VpTable.load(tablePath);
+		const vpt = await Table.load(tablePath);
 		const loaded = Date.now();
 
 		const name = basename(tablePath, '.vpx');
-		//writeFileSync(`${name}.gltf`, await vpt.exportGltf();
-		const glb = await vpt.exportGlb();
+		const glb = await vpt.exportGlb({
+
+			applyTextures: true,
+			applyMaterials: true,
+			exportLightBulbLights: false,
+			exportAllLights: false,
+			optimizeTextures: true,
+			gltfOptions: { compressVertices: true, forcePowerOfTwoTextures: true },
+
+			exportPrimitives: true,
+			exportTriggers: true,
+			exportKickers: true,
+			exportGates: true,
+			exportHitTargets: true,
+			exportFlippers: true,
+			exportBumpers: true,
+			exportRamps: true,
+			exportSurfaces: true,
+			exportRubbers: true,
+			exportLightBulbs: true,
+			exportPlayfield: true,
+		});
 		const exported = Date.now();
 		writeFileSync(`${name}.glb`, glb);
-		//writeFileSync(`${name}.json`, JSON.stringify(vpt, null, '  '));
 
 		console.log('Done! Written %s MB. Load time: %sms, export time: %sms, write time: %sms.',
 			Math.round(glb.length / 100000) / 10, loaded - start, exported - loaded, Date.now() - exported);

@@ -29,8 +29,8 @@ import { triggerButtonMesh } from './meshes/trigger-button-mesh';
 import { triggerSimpleMesh } from './meshes/trigger-simple-mesh';
 import { triggerStarMesh } from './meshes/trigger-star-mesh';
 import { triggerDWireMesh } from './meshes/trigger-wire-d-mesh';
+import { Table } from './table';
 import { Vertex2D, Vertex3D } from './vertex';
-import { VpTable } from './vp-table';
 
 /**
  * VPinball's triggers.
@@ -98,7 +98,7 @@ export class TriggerItem extends GameItem implements IRenderable {
 		return this.fVisible && this.shape !== TriggerItem.ShapeTriggerNone;
 	}
 
-	public getMeshes(table: VpTable): Meshes {
+	public getMeshes(table: Table): Meshes {
 		return {
 			trigger: {
 				mesh: this.createMesh(table).transform(new Matrix3D().toRightHanded()),
@@ -107,7 +107,7 @@ export class TriggerItem extends GameItem implements IRenderable {
 		};
 	}
 
-	private createMesh(table: VpTable): Mesh {
+	private createMesh(table: Table): Mesh {
 		const baseHeight = table.getSurfaceHeight(this.szSurface, this.vCenter.x, this.vCenter.y) * table.getScaleZ();
 
 		let zOffset = (this.shape === TriggerItem.ShapeTriggerButton) ? 5.0 : 0.0;

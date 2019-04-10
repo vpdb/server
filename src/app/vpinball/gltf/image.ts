@@ -4,6 +4,12 @@ import { logger } from '../../common/logger';
 
 const PngQuant = require('pngquant');
 
+/**
+ * Holds a physical image that can be processed by GLTFExporter.
+ *
+ * It uses Sharp for reprocessing, crushes PNGs with PngQuant and converts
+ * PNGs to JPEGs when no alpha channel is found.
+ */
 export class Image {
 
 	private static readonly jpegQuality = 65;

@@ -24,7 +24,7 @@ import { DragPoint } from './dragpoint';
 import { GameItem, IRenderable, Meshes } from './game-item';
 import { Mesh } from './mesh';
 import { RenderVertex3D, Vertex2D, Vertex3D, Vertex3DNoTex2 } from './vertex';
-import { VpTable } from './vp-table';
+import { Table } from './table';
 import { Matrix3D } from './matrix3d';
 
 /**
@@ -114,7 +114,7 @@ export class RampItem extends GameItem implements IRenderable {
 		return this.fVisible;
 	}
 
-	public getMeshes(table: VpTable): Meshes {
+	public getMeshes(table: Table): Meshes {
 		const meshes: Meshes = {};
 		if (!this.isHabitrail()) {
 			return this.generateFlatMesh(table);
@@ -215,7 +215,7 @@ export class RampItem extends GameItem implements IRenderable {
 		return meshes;
 	}
 
-	public getSurfaceHeight(x: number, y: number, table: VpTable) {
+	public getSurfaceHeight(x: number, y: number, table: Table) {
 		const vVertex = this.getCentralCurve(table);
 
 		let iSeg: number;
@@ -252,7 +252,7 @@ export class RampItem extends GameItem implements IRenderable {
 		return vVertex[iSeg].z + (startLength / totalLength) * (topHeight - bottomHeight) + bottomHeight;
 	}
 
-	private generateFlatMesh(table: VpTable): Meshes {
+	private generateFlatMesh(table: Table): Meshes {
 
 		const meshes: Meshes = {};
 		const rv = this.getRampVertex(table, -1, true);
@@ -435,7 +435,7 @@ export class RampItem extends GameItem implements IRenderable {
 		return meshes;
 	}
 
-	private generateWireMeshes(table: VpTable): Mesh[] {
+	private generateWireMeshes(table: Table): Mesh[] {
 		const meshes: Mesh[] = [];
 
 		let accuracy;
@@ -578,7 +578,7 @@ export class RampItem extends GameItem implements IRenderable {
 		return rgvbuf;
 	}
 
-	private getRampVertex(table: VpTable, _accuracy: number, inc_width: boolean): RampVertexResult {
+	private getRampVertex(table: Table, _accuracy: number, inc_width: boolean): RampVertexResult {
 
 		const ppheight: number[] = [];
 		const ppfCross: boolean[] = [];
@@ -706,7 +706,7 @@ export class RampItem extends GameItem implements IRenderable {
 		return { rgvLocal, pcvertex, ppheight, ppfCross, ppratio, pMiddlePoints };
 	}
 
-	private getCentralCurve(table: VpTable, acc: number = -1.0): RenderVertex3D[] {
+	private getCentralCurve(table: Table, acc: number = -1.0): RenderVertex3D[] {
 		let accuracy: number;
 
 		// as solid ramps are rendered into the static buffer, always use maximum precision

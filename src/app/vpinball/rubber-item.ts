@@ -26,8 +26,8 @@ import { GameItem, IRenderable, Meshes } from './game-item';
 import { Matrix3D } from './matrix3d';
 import { FLT_MAX, FLT_MIN, Mesh } from './mesh';
 import { SplineVertex } from './spline-vertex';
+import { Table } from './table';
 import { Vertex3D, Vertex3DNoTex2 } from './vertex';
-import { VpTable } from './vp-table';
 
 /**
  * VPinball's rubber item.
@@ -108,7 +108,7 @@ export class RubberItem extends GameItem implements IRenderable {
 		};
 	}
 
-	public getMeshes(table: VpTable): Meshes {
+	public getMeshes(table: Table): Meshes {
 
 		const mesh = new Mesh(`rubber-${this.getName()}`);
 		const acc = -1;
@@ -258,7 +258,7 @@ export class RubberItem extends GameItem implements IRenderable {
 		};
 	}
 
-	private getMatrices(table: VpTable): [ Matrix3D, Matrix3D ] {
+	private getMatrices(table: Table): [ Matrix3D, Matrix3D ] {
 		const fullMatrix = new Matrix3D();
 		const tempMat = new Matrix3D();
 		fullMatrix.rotateZMatrix(M.degToRad(this.rotZ));

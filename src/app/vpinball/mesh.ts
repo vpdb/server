@@ -193,7 +193,7 @@ export class Mesh {
 		const count = rgv.length;
 		let mindist = FLT_MAX;
 		let piseg = -1; // in case we are not next to the line
-		let pvout = new Vertex2D();
+		const pvout = new Vertex2D();
 		let cloop = count;
 		if (!fClosed) {
 			--cloop; // Don't check segment running from the end point to the beginning point
@@ -220,9 +220,9 @@ export class Mesh {
 				const F = -(D * pvin.x + A * pvin.y);
 
 				const det = A * A - B * D;
-				const inv_det = (det != 0.0) ? 1.0 / det : 0.0;
-				const intersectx = (B * F - A * C) * inv_det;
-				const intersecty = (C * D - A * F) * inv_det;
+				const invDet = (det !== 0.0) ? 1.0 / det : 0.0;
+				const intersectx = (B * F - A * C) * invDet;
+				const intersecty = (C * D - A * F) * invDet;
 
 				// If the intersect point lies on the polygon segment
 				// (not out in space), then make this the closest known point

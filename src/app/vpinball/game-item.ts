@@ -21,8 +21,8 @@ import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { Material } from './material';
 import { Mesh } from './mesh';
+import { Table } from './table';
 import { Texture } from './texture';
-import { VpTable } from './vp-table';
 
 /**
  * The parent class for all game items.
@@ -106,7 +106,7 @@ export abstract class GameItem extends BiffParser {
 }
 
 export interface IRenderable {
-	getMeshes(table: VpTable): Meshes;
+	getMeshes(table: Table): Meshes;
 	isVisible(): boolean;
 }
 

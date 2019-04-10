@@ -40,21 +40,21 @@ import { PrimitiveItem } from '../primitive-item';
 import { RampItem } from '../ramp-item';
 import { RubberItem } from '../rubber-item';
 import { SurfaceItem } from '../surface-item';
+import { Table } from '../table';
 import { Texture as VpTexture } from '../texture';
-import { VpTable } from '../vp-table';
 import { GLTFExporter, ParseOptions } from './gltf-exporter';
 import { Image } from './image';
 
-export class VpTableExporter {
+export class TableExporter {
 
 	private static readonly scale = 0.05;
-	private readonly table: VpTable;
+	private readonly table: Table;
 	private readonly scene: Scene;
 	private readonly opts: VpTableExporterOptions;
 	private readonly playfield: Group;
 	private readonly images: Map<string, Image> = new Map();
 
-	constructor(table: VpTable, opts: VpTableExporterOptions) {
+	constructor(table: Table, opts: VpTableExporterOptions) {
 		this.opts = Object.assign({}, defaultOptions, opts);
 		const camera = new PerspectiveCamera(45, 1, 0.1, 100000);
 		camera.name = 'playfield-camera';
@@ -67,9 +67,9 @@ export class VpTableExporter {
 		this.playfield = new Group();
 		this.playfield.name = 'playfield';
 		this.playfield.rotateX(Math.PI / 2);
-		this.playfield.translateY((table.gameData.top - table.gameData.bottom) * VpTableExporter.scale / 2);
-		this.playfield.translateX(-(table.gameData.right - table.gameData.left) * VpTableExporter.scale / 2);
-		this.playfield.scale.set(VpTableExporter.scale, VpTableExporter.scale, VpTableExporter.scale);
+		this.playfield.translateY((table.gameData.top - table.gameData.bottom) * TableExporter.scale / 2);
+		this.playfield.translateX(-(table.gameData.right - table.gameData.left) * TableExporter.scale / 2);
+		this.playfield.scale.set(TableExporter.scale, TableExporter.scale, TableExporter.scale);
 	}
 
 	public async exportGltf(): Promise<string> {
@@ -129,7 +129,7 @@ export class VpTableExporter {
 		lightGroup.name = 'lights';
 
 		for (const lightInfo of lightInfos) {
-			const light = new PointLight(lightInfo.color, lightInfo.intensity, lightInfo.falloff * VpTableExporter.scale, 2);
+			const light = new PointLight(lightInfo.color, lightInfo.intensity, lightInfo.falloff * TableExporter.scale, 2);
 			light.name = 'light:' + lightInfo.getName();
 			light.position.set(lightInfo.vCenter.x, lightInfo.vCenter.y, -10);
 			lightGroup.add(light);

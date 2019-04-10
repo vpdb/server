@@ -26,7 +26,7 @@ import { FlipperItem } from './flipper-item';
 import { GameData } from './game-data';
 import { GameItem, IRenderable, Meshes } from './game-item';
 import { GateItem } from './gate-item';
-import { VpTableExporter, VpTableExporterOptions } from './gltf/vp-table-exporter';
+import { TableExporter, VpTableExporterOptions } from './gltf/table-exporter';
 import { HitTargetItem } from './hit-target-item';
 import { KickerItem } from './kicker-item';
 import { LightItem } from './light-item';
@@ -36,11 +36,11 @@ import { Mesh } from './mesh';
 import { PrimitiveItem } from './primitive-item';
 import { RampItem } from './ramp-item';
 import { RubberItem } from './rubber-item';
+import { SpinnerItem } from './spinner-item';
 import { SurfaceItem } from './surface-item';
 import { Texture } from './texture';
 import { TriggerItem } from './trigger-item';
 import { Vertex3DNoTex2 } from './vertex';
-import { SpinnerItem } from './spinner-item';
 
 /**
  * A Visual Pinball table.
@@ -48,7 +48,7 @@ import { SpinnerItem } from './spinner-item';
  * This holds together all table elements of a .vpt/.vpx file. It's also
  * the entry point for parsing the file.
  */
-export class VpTable implements IRenderable {
+export class Table implements IRenderable {
 
 	public gameData: GameData;
 	public surfaces: { [key: string]: SurfaceItem } = {};
@@ -67,16 +67,16 @@ export class VpTable implements IRenderable {
 
 	private doc: OleCompoundDoc;
 
-	public static async load(fileName: string): Promise<VpTable> {
+	public static async load(fileName: string): Promise<Table> {
 		const then = Date.now();
-		const vpTable = new VpTable();
+		const vpTable = new Table();
 		await vpTable._load(fileName);
-		logger.info(null, '[VpTable.load] Table loaded in %sms.', Date.now() - then);
+		logger.info(null, '[Table.load] Table loaded in %sms.', Date.now() - then);
 		return vpTable;
 	}
 
-	public static from(data: any): VpTable {
-		const vpTable = new VpTable();
+	public static from(data: any): Table {
+		const vpTable = new Table();
 		vpTable.gameData = GameData.from(data.gameData);
 		for (const name of Object.keys(data.primitives)) {
 			vpTable.primitives[name] = PrimitiveItem.from(data.primitives[name]);
@@ -155,17 +155,17 @@ export class VpTable implements IRenderable {
 			return this.gameData.tableheight + this.ramps[surface].getSurfaceHeight(x, y, this);
 		}
 
-		logger.warn(null, '[VpTable.getSurfaceHeight] Unknown surface %s.', surface);
+		logger.warn(null, '[Table.getSurfaceHeight] Unknown surface %s.', surface);
 		return this.gameData.tableheight;
 	}
 
 	public async exportGltf(opts?: VpTableExporterOptions): Promise<string> {
-		const exporter = new VpTableExporter(this, opts || {});
+		const exporter = new TableExporter(this, opts || {});
 		return await exporter.exportGltf();
 	}
 
 	public async exportGlb(opts?: VpTableExporterOptions): Promise<Buffer> {
-		const exporter = new VpTableExporter(this, opts || {});
+		const exporter = new TableExporter(this, opts || {});
 		return await exporter.exportGlb();
 	}
 
@@ -194,7 +194,7 @@ export class VpTable implements IRenderable {
 		}
 	}
 
-	public getMeshes(table: VpTable): Meshes {
+	public getMeshes(table: Table): Meshes {
 		const rgv: Vertex3DNoTex2[] = [];
 		for (let i = 0; i < 7; i++) {
 			rgv.push(new Vertex3DNoTex2());

@@ -25,8 +25,8 @@ import { FrameData, Vector3 } from './common';
 import { GameItem, IRenderable, Meshes } from './game-item';
 import { Matrix3D } from './matrix3d';
 import { FLT_MAX, Mesh } from './mesh';
+import { Table } from './table';
 import { Vertex3DNoTex2 } from './vertex';
-import { VpTable } from './vp-table';
 
 /**
  * VPinball's primitive.
@@ -80,7 +80,7 @@ export class PrimitiveItem extends GameItem implements IRenderable {
 		return this.data.fVisible;
 	}
 
-	public getMeshes(vpTable: VpTable): Meshes {
+	public getMeshes(vpTable: Table): Meshes {
 		const mesh = this.data.use3DMesh
 			? this.mesh.clone(`primitive-${this.getName()}`)
 			: this.calculateBuiltinOriginal();
@@ -304,7 +304,7 @@ export class PrimitiveItem extends GameItem implements IRenderable {
 		return mesh;
 	}
 
-	private getMatrix(table: VpTable): Matrix3D {
+	private getMatrix(table: Table): Matrix3D {
 
 		// scale matrix
 		const scaleMatrix = new Matrix3D();

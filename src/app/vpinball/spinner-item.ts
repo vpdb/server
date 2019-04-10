@@ -21,12 +21,12 @@ import { Math as M } from 'three';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { GameItem, IRenderable, Meshes } from './game-item';
-import { Vertex2D, Vertex3D } from './vertex';
-import { VpTable } from './vp-table';
 import { Matrix3D } from './matrix3d';
-import { spinnerBracketMesh } from './meshes/spinner-bracket-mesh';
 import { Mesh } from './mesh';
+import { spinnerBracketMesh } from './meshes/spinner-bracket-mesh';
 import { spinnerPlateMesh } from './meshes/spinner-plate-mesh';
+import { Table } from './table';
+import { Vertex2D, Vertex3D } from './vertex';
 
 /**
  * VPinball's spinners.
@@ -67,7 +67,7 @@ export class SpinnerItem extends GameItem implements IRenderable {
 		return this.fVisible;
 	}
 
-	public getMeshes(table: VpTable): Meshes {
+	public getMeshes(table: Table): Meshes {
 		const meshes: Meshes = {};
 
 		const height = table.getSurfaceHeight(this.szSurface, this.vCenter.x, this.vCenter.y) * table.getScaleZ();
@@ -83,12 +83,12 @@ export class SpinnerItem extends GameItem implements IRenderable {
 				mesh: this.getBracketMesh(table, posZ).transform(new Matrix3D().toRightHanded()),
 				map: table.getTexture(this.szImage),
 				material: table.getMaterial(this.szMaterial),
-			}
+			};
 		}
 		return meshes;
 	}
 
-	private getPlateMesh(table: VpTable, posZ: number): Mesh {
+	private getPlateMesh(table: Table, posZ: number): Mesh {
 		const fullMatrix = new Matrix3D();
 		fullMatrix.rotateZMatrix(M.degToRad(this.rotation));
 		const mesh = spinnerPlateMesh.clone(`spinner.plate-${this.getName()}`);
@@ -109,7 +109,7 @@ export class SpinnerItem extends GameItem implements IRenderable {
 		return mesh;
 	}
 
-	private getBracketMesh(table: VpTable, posZ: number): Mesh {
+	private getBracketMesh(table: Table, posZ: number): Mesh {
 		const fullMatrix = new Matrix3D();
 		fullMatrix.rotateZMatrix(M.degToRad(this.rotation));
 		const bracketMesh = spinnerBracketMesh.clone(`spinner.mesh-${this.getName()}`);

@@ -20,6 +20,12 @@
 import { BufferGeometry, Float32BufferAttribute } from 'three';
 import { Mesh } from '../mesh';
 
+/**
+ * A class that converts the meshes we read from VPinball to Three.js meshes.
+ *
+ * It takes a similar approach as Three's OBJLoader, e.g. first read data into
+ * a "state" and then convert it into BufferGeometries.
+ */
 export class MeshConverter {
 
 	private mesh: Mesh;

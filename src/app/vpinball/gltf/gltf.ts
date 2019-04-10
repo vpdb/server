@@ -24,7 +24,6 @@ interface GltfNamedElement extends GltfElement {
 }
 
 interface GltfElement {
-
 	extensions?: any;
 	extras?: any;
 	[k: string]: any;

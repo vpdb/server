@@ -1,0 +1,29 @@
+set $cors_allow_methods "GET,POST,PUT,PATCH,DELETE,OPTIONS";
+set $cors_allow_headers "Accept,Accept-Encoding,Accept-Language,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,Link,Referer,User-Agent,X-Authorization,X-Requested-With";
+set $cors_expose_headers "Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size";
+
+if ($http_origin ~* ((https://.*\.vpdb\.io(:[0-9]+)?$)|(https?://localhost(:[0-9]+)?$))) {
+	set $cors "1";
+}
+# pre-flight request (wtf syntax because nginx can't do AND conditions in IFs)
+if ($request_method = 'OPTIONS') {
+	set $cors "${cors}o";
+}
+if ($cors = "1") {
+	add_header Access-Control-Allow-Origin $http_origin;
+	add_header Access-Control-Allow-Credentials true;
+	add_header Access-Control-Allow-Headers $cors_allow_headers;
+	add_header Access-Control-Allow-Methods $cors_allow_methods;
+	add_header Access-Control-Expose-Headers $cors_expose_headers;
+}
+if ($cors = "1o") {
+	add_header Access-Control-Allow-Origin $http_origin;
+	add_header Access-Control-Allow-Credentials true;
+	add_header Access-Control-Allow-Headers $cors_allow_headers;
+	add_header Access-Control-Allow-Methods $cors_allow_methods;
+	add_header Access-Control-Expose-Headers $cors_expose_headers;
+	add_header Access-Control-Max-Age 10;
+	add_header Content-Type text/plain;
+	add_header Content-Length 0;
+	return 204;
+}

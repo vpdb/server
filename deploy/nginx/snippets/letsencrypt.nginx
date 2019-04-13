@@ -1,0 +1,6 @@
+# letsencrypt challenge
+location ~ /.well-known {
+	root /etc/nginx/ssl/letsencrypt;
+	auth_basic "off";
+	allow all;
+}

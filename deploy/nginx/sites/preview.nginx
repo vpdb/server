@@ -1,0 +1,37 @@
+server {
+
+	listen 443 ssl http2;
+	server_name preview.vpdb.io;
+	root /var/data/storage-public;
+
+	charset utf-8;
+
+	# path to your certs and chain of trust of OCSP response using Root CA and Intermediate certs
+	ssl_certificate         /etc/letsencrypt/live/preview.vpdb.io/fullchain.pem;
+	ssl_certificate_key     /etc/letsencrypt/live/preview.vpdb.io/privkey.pem;
+	ssl_trusted_certificate /etc/letsencrypt/live/preview.vpdb.io/chain.pem;
+
+	include /etc/nginx/snippets/ssl.nginx;
+
+	# logs
+	error_log /var/log/nginx/preview.vpdb.io-error.log;
+	access_log /var/log/nginx/preview.vpdb.io-access.log extended;
+
+	# letsencrypt challenge
+	include /etc/nginx/snippets/letsencrypt.nginx;
+
+	# map public assets
+	location /files {
+		alias /var/data/storage-public;
+		add_header Cache-Control "no-transform,public,max-age=2592000" always;
+		include /etc/nginx/snippets/cors.nginx;
+		etag on;
+	}
+}
+
+# redirect to https
+server {
+	listen 80;
+	server_name preview.vpdb.io;
+	return 301 https://preview.vpdb.io$request_uri;
+}

@@ -1,0 +1,10 @@
+types {
+
+	# your current ones...
+
+	application/x-directb2s               directb2s;
+	application/x-visual-pinball-table    vpt;
+	application/x-visual-pinball-table-x  vpx;
+	model/gltf-binary                     glb;
+	model/gltf+json                       gltf;
+}

@@ -270,6 +270,32 @@ class FileHelper {
 	}
 
 	/**
+	 * Uploads a VPX file.
+	 *
+	 * @param user Uploader
+	 * @param {string} fileName Filename of the VPX file.
+	 * @param opts Options
+	 * @param {boolean} [opts.keep=false] If true, don't teardown.
+	 * @return Promise<Object> Uploaded file
+	 */
+	async createVpx(user, fileName, opts) {
+		opts = opts || {};
+		const teardown = opts.keep ? false : undefined;
+		const filePath = resolve(__dirname, '../../data/test/files', fileName);
+		const data = readFileSync(filePath);
+		const res = await this.api.onStorage()
+			.as(user)
+			.markTeardown(teardown)
+			.withQuery({ type: 'release' })
+			.withContentType('application/x-visual-pinball-table-x')
+			.withHeader('Content-Disposition', `attachment; filename="${fileName}"`)
+			.withHeader('Content-Length', data.length)
+			.post('/v1/files', data)
+			.then(res => res.expectStatus(201));
+		return res.data;
+	}
+
+	/**
 	 * Uploads multiple VPT files.
 	 *
 	 * @param user Uploader

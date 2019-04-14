@@ -75,12 +75,6 @@ export class SurfaceItem extends GameItem implements IRenderable {
 		return surfaceItem;
 	}
 
-	public static from(data: any): SurfaceItem {
-		const surfaceItem = new SurfaceItem();
-		Object.assign(surfaceItem, data);
-		return surfaceItem;
-	}
-
 	private static createStreamHandler(surfaceItem: SurfaceItem) {
 		surfaceItem.dragPoints = [];
 		return BiffParser.stream(surfaceItem.fromTag.bind(surfaceItem), {
@@ -104,10 +98,6 @@ export class SurfaceItem extends GameItem implements IRenderable {
 
 	public isVisible(): boolean {
 		return this.fSideVisible || this.fTopBottomVisible;
-	}
-
-	public serialize() {
-		return {};
 	}
 
 	public getMeshes(table: Table): Meshes {

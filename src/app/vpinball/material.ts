@@ -86,30 +86,6 @@ export class Material {
 		return material;
 	}
 
-	public static fromCached(data: any): Material {
-		const material = new Material();
-		Object.assign(material, data);
-		return material;
-	}
-
-	public serialize() {
-		return {
-			name: this.szName,
-			wrap_lighting: this.fWrapLighting,
-			roughness: this.fRoughness,
-			//glossy_image_lerp: this.fGlossyImageLerp,
-			//thickness: this.fThickness,
-			edge: this.fEdge,
-			//edge_alpha: this.fEdgeAlpha,
-			opacity: this.fOpacity,
-			base_color: BiffParser.bgrToRgb(this.cBase),
-			glossy_color: BiffParser.bgrToRgb(this.cGlossy),
-			clearcoat_color: BiffParser.bgrToRgb(this.cClearcoat),
-			is_metal: this.bIsMetal,
-			is_opacity_enabled: this.bOpacityActive,
-		};
-	}
-
 	public physUpdate(savePhysMat: SavePhysicsMaterial) {
 		this.fElasticity = savePhysMat.fElasticity;
 		this.fElasticityFalloff = savePhysMat.fElasticityFallOff;

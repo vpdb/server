@@ -75,27 +75,6 @@ export class Table implements IRenderable {
 		return vpTable;
 	}
 
-	public static from(data: any): Table {
-		const vpTable = new Table();
-		vpTable.gameData = GameData.from(data.gameData);
-		for (const name of Object.keys(data.primitives)) {
-			vpTable.primitives[name] = PrimitiveItem.from(data.primitives[name]);
-		}
-		for (const name of Object.keys(data.textures)) {
-			vpTable.textures[name] = Texture.from(data.textures[name]);
-		}
-		vpTable.lights = data.lights.map((light: any) => LightItem.from(light));
-		return vpTable;
-	}
-
-	public getPrimitive(name: string): PrimitiveItem {
-		return this.primitives[name];
-	}
-
-	public getRubber(name: string): RubberItem {
-		return this.rubbers[name];
-	}
-
 	public getTexture(name: string): Texture {
 		if (!name) {
 			return undefined;
@@ -108,10 +87,6 @@ export class Table implements IRenderable {
 			return undefined;
 		}
 		return this.gameData.materials.find(m => m.szName === name);
-	}
-
-	public getSurface(name: string): SurfaceItem {
-		return this.surfaces[name];
 	}
 
 	public getScaleZ(): number {
@@ -129,17 +104,6 @@ export class Table implements IRenderable {
 	public async getDocument(): Promise<OleCompoundDoc> {
 		await this.doc.read();
 		return this.doc;
-	}
-
-	public serialize(fileId: string) {
-		return Object.assign({}, this.gameData.serialize(), {
-			meshGlb: settings.apiExternalUri(`/v1/vp/${fileId}/objects.glb`),
-			meshGltf: settings.apiExternalUri(`/v1/vp/${fileId}/objects.gltf`),
-		});
-		// return {
-		// 	game_data: this.gameData.serialize(),
-		// 	lights: this.lights.map(l => l.serialize()),
-		// };
 	}
 
 	public getSurfaceHeight(surface: string, x: number, y: number) {

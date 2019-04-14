@@ -138,36 +138,12 @@ export class GameData extends BiffParser {
 		return gameData;
 	}
 
-	public static from(data: any): GameData {
-		const gameData = new GameData();
-		Object.assign(gameData, data);
-		gameData.materials = [];
-		for (const material of data.materials) {
-			gameData.materials.push(Material.fromCached(material));
-		}
-		return gameData;
+	private constructor() {
+		super();
 	}
 
 	public getName(): string {
 		return this.wzName;
-	}
-
-	public serialize() {
-		return {
-			table_height: this.tableheight,
-			size: {
-				width: this.right - this.left,
-				height: this.bottom - this.top,
-			},
-			glass_height: this.glassheight,
-			offset: this.offset,
-			light: {
-				ambient: this.lightAmbient,
-				height: this.lightHeight,
-				range: this.lightRange,
-				emmission_scale: this.lightEmissionScale,
-			},
-		};
 	}
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<number> {

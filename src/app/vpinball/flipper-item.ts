@@ -75,12 +75,6 @@ export class FlipperItem extends GameItem implements IRenderable {
 		return flipperItem;
 	}
 
-	public static from(data: any): FlipperItem {
-		const flipperItem = new FlipperItem();
-		Object.assign(flipperItem, data);
-		return flipperItem;
-	}
-
 	private constructor() {
 		super();
 	}
@@ -114,13 +108,6 @@ export class FlipperItem extends GameItem implements IRenderable {
 			};
 		}
 		return meshes;
-	}
-
-	public serialize() {
-		return {
-			name: this.wzName,
-			center: this.Center,
-		};
 	}
 
 	private getMatrix(): Matrix3D {

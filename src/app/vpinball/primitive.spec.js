@@ -24,10 +24,7 @@ const ThreeHelper = require('../../test/three.helper');
 const api = new ApiClient();
 const three = new ThreeHelper(api);
 
-const tableWidth = 1111;
-const tableHeight = 2222;
-
-describe('The VPinball table parser', () => {
+describe('The VPinball primitive parser', () => {
 
 	before(async () => {
 		await api.setupUsers({
@@ -37,13 +34,13 @@ describe('The VPinball table parser', () => {
 
 	after(async () => await api.teardown());
 
-	it('should generate the correct playfield mesh', async () => {
-		const vpxFile = await api.fileHelper.createVpx('member', 'table-empty.vpx');
+	it('should generate the correct primitive mesh', async () => {
+		const vpxFile = await api.fileHelper.createVpx('member', 'table-primitive.vpx');
 		const gltf = await three.loadGlb('member', vpxFile.variations.gltf);
-		const playfieldMesh = three.first(gltf, 'playfield');
-		const playfieldVertices = playfieldMesh.geometry.attributes.position;
-		const expectedVertices = [ tableWidth, tableHeight, 0, tableWidth, 0, 0, 0, 0, 0, 0, tableHeight, 0, tableWidth, tableHeight, 0, 0, 0, 0 ];
-		expect(compareArray(playfieldVertices.array, expectedVertices)).to.be(true);
+		const cubeMesh = three.find(gltf, 'primitives', 'primitive-Cube');
+		const cubeMeshVertices = cubeMesh.geometry.attributes.position;
+		const expectedVertices = [400, 600, -100, 400, 600, 100, 600, 600, 100, 600, 600, -100, 400, 600, -100, 600, 600, 100, 400, 600, -100, 600, 600, -100, 600, 400, -100, 400, 400, -100, 400, 600, -100, 600, 400, -100, 400, 600, 100, 400, 600, -100, 400, 400, -100, 400, 400, 100, 400, 600, 100, 400, 400, -100, 600, 400, -100, 600, 400, 100, 400, 400, 100, 400, 400, -100, 600, 400, -100, 400, 400, 100, 600, 600, -100, 600, 600, 100, 600, 400, 100, 600, 400, -100, 600, 600, -100, 600, 400, 100, 600, 600, 100, 400, 600, 100, 400, 400, 100, 600, 400, 100, 600, 600, 100, 400, 400, 100];
+		expect(compareArray(cubeMeshVertices.array, expectedVertices)).to.be(true);
 	});
 });
 

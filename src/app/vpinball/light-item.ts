@@ -124,6 +124,8 @@ export class LightItem extends GameItem implements IRenderable {
 		lightMaterial.fGlossyImageLerp = 1.0;
 		lightMaterial.fThickness = 0.05;
 		lightMaterial.cClearcoat = 0xFFFFFF;
+		lightMaterial.emissiveColor = this.color;
+		lightMaterial.emissiveIntensity = 1;
 
 		const socketMaterial = new Material();
 		socketMaterial.cBase = 0x181818;

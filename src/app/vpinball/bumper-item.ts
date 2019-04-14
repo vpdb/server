@@ -29,6 +29,7 @@ import { bumperRingMesh } from './meshes/bumper-ring-mesh';
 import { bumperSocketMesh } from './meshes/bumper-socket-mesh';
 import { Table } from './table';
 import { Vertex2D, Vertex3D } from './vertex';
+import { Texture } from './texture';
 
 /**
  * VPinball's bumper item.
@@ -117,6 +118,7 @@ export class BumperItem extends GameItem implements IRenderable {
 			meshes.cap = {
 				mesh: this.generateMesh(bumperCapMesh, matrix, z => (z * this.heightScale + this.heightScale) * table.getScaleZ() + height).transform(new Matrix3D().toRightHanded()),
 				material: table.getMaterial(this.szCapMaterial),
+				map: Texture.fromFilesystem('bumperCap.bmp'),
 			};
 		}
 		return meshes;

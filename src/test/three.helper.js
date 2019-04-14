@@ -17,12 +17,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-// require('babel-register')({presets: [ 'env' ]});
-//
-// const { parse } = require('url');
-//
-// const {GLBLoader, smartFetch} = require('loaders.gl');
-
 const { parse } = require('url');
 const axios = require('axios');
 const THREE = global.THREE = require('three');
@@ -52,18 +46,63 @@ class ThreeHelper {
 		}
 		const response = await axios.get(link.url + token, { responseType: 'arraybuffer' });
 		return new Promise((resolve, reject) => {
-			this.loader.parse(this.toArrayBuffer(response.data), '', resolve, reject);
+			this.loader.parse(toArrayBuffer(response.data), '', resolve, reject);
 		});
 	}
 
-	toArrayBuffer(buf) {
-		const ab = new ArrayBuffer(buf.length);
-		const view = new Uint8Array(ab);
-		for (let i = 0; i < buf.length; ++i) {
-			view[i] = buf[i];
+	first(gltf, groupName) {
+		const table = this.getTable(gltf);
+		if (!table.children || !table.children.length) {
+			throw new Error('GLTF table has no children!');
 		}
-		return ab;
+		const objects = table.children.find(c => c.name === groupName);
+		if (!objects) {
+			throw new Error('GLTF table has no "' + groupName + '" group!');
+		}
+		if (!objects.children || !objects.children.length) {
+			throw new Error('The "' + groupName + '" group of the GLTF table has no children.');
+		}
+		return objects.children[0];
 	}
+
+	find(gltf, groupName, objectName) {
+		const table = this.getTable(gltf);
+		if (!table.children || !table.children.length) {
+			throw new Error('GLTF table has no children!');
+		}
+		const objects = table.children.find(c => c.name === groupName);
+		if (!objects) {
+			throw new Error('GLTF table has no "' + groupName + '" group!');
+		}
+		if (!objects.children || !objects.children.length) {
+			throw new Error('The "' + groupName + '" group of the GLTF table has no children.');
+		}
+		const object = objects.children.find(c => c.name === objectName);
+		if (!object) {
+			throw new Error('The "' + groupName + '" group of the GLTF table has no child named "' + objectName + '" ([' + objects.children.map(c => c.name).join(', ') + '])');
+		}
+		return object;
+	}
+
+	getTable(gltf) {
+		if (!gltf || !gltf.scene || !gltf.scene.children || !gltf.scene.children.length) {
+			throw new Error('Cannot find scene in GLTF.');
+		}
+		const table = gltf.scene.children.find(c => c.name === 'playfield');
+		if (!table) {
+			throw new Error('Cannot find table in GLTF.');
+		}
+		return table;
+	}
+}
+
+function toArrayBuffer(buf) {
+	const ab = new ArrayBuffer(buf.length);
+	const view = new Uint8Array(ab);
+	for (let i = 0; i < buf.length; ++i) {
+		view[i] = buf[i];
+	}
+	return ab;
 }
 
 module.exports = ThreeHelper;

@@ -42,10 +42,13 @@ export class VptGltfProcessor implements CreationProcessor<FileVariation> {
 		const glb = await vpt.exportGlb({
 
 			// texture and material
-			applyTextures: true,
+			applyTextures: process.env.NODE_ENV !== 'test', // gltf loader in tests can't handle textures
 			applyMaterials: true,
 			optimizeTextures: true,
-			gltfOptions: { compressVertices: process.env.NODE_ENV !== 'test', forcePowerOfTwoTextures: true }, // dont compress in tests
+			gltfOptions: {
+				compressVertices: process.env.NODE_ENV !== 'test', // don't compress in tests
+				forcePowerOfTwoTextures: true
+			},
 
 			// lights
 			exportLightBulbLights: true,

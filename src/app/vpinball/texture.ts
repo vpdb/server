@@ -17,6 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import gm from 'gm';
 import sharp = require('sharp');
 import { logger } from '../common/logger';
 import { Storage } from '../common/ole-doc';
@@ -24,6 +25,8 @@ import { settings } from '../common/settings';
 import { BiffParser } from './biff-parser';
 import { Binary } from './binary';
 import { LzwReader } from './gltf/lzw-reader';
+import { resolve } from 'path';
+import { Stream } from 'stream';
 
 /**
  * VPinball's texture.
@@ -42,6 +45,7 @@ export class Texture extends BiffParser {
 	public height: number;
 	public alphaTestValue: number;
 	public binary: Binary;
+	public localPath: string;
 	public pdsBuffer: BaseTexture = null;
 	private rgbTransparent: number = 0xffffff;
 
@@ -49,6 +53,12 @@ export class Texture extends BiffParser {
 		const texture = new Texture();
 		texture.storageName = itemName;
 		await storage.streamFiltered(itemName, 0, Texture.createStreamHandler(storage, itemName, texture));
+		return texture;
+	}
+
+	public static fromFilesystem(resFileName: string): Texture {
+		const texture = new Texture();
+		texture.localPath = resolve(__dirname, 'res', resFileName);
 		return texture;
 	}
 
@@ -79,8 +89,13 @@ export class Texture extends BiffParser {
 	}
 
 	public async getImage(storage: Storage): Promise<Buffer> {
+		let strm: Stream;
+		if (this.localPath) {
+			strm = gm(this.localPath).stream();
+		} else {
+			strm = storage.stream(this.storageName, this.binary.pos, this.binary.len);
+		}
 		return new Promise<Buffer>((resolve, reject) => {
-			const strm = storage.stream(this.storageName, this.binary.pos, this.binary.len);
 			const bufs: Buffer[] = [];
 			if (!strm) {
 				return reject(new Error('No such stream "' + this.storageName + '".'));

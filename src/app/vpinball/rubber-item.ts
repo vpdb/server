@@ -69,12 +69,6 @@ export class RubberItem extends GameItem implements IRenderable {
 		return rubberItem;
 	}
 
-	public static from(data: any): RubberItem {
-		const rubberItem = new RubberItem();
-		Object.assign(rubberItem, data);
-		return rubberItem;
-	}
-
 	private static createStreamHandler(rubberItem: RubberItem) {
 		rubberItem.dragPoints = [];
 		return BiffParser.stream(rubberItem.fromTag.bind(rubberItem), {
@@ -98,14 +92,6 @@ export class RubberItem extends GameItem implements IRenderable {
 
 	public isVisible(): boolean {
 		return this.fVisible;
-	}
-
-	public serialize(fileId: string) {
-		return {
-			name: this.wzName,
-			mesh: settings.apiExternalUri(`/v1/vp/${fileId}/rubbers/${encodeURI(this.wzName)}.obj`),
-			material: this.szMaterial,
-		};
 	}
 
 	public getMeshes(table: Table): Meshes {

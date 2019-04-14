@@ -52,13 +52,6 @@ export class Texture extends BiffParser {
 		return texture;
 	}
 
-	public static from(data: any): Texture {
-		const texture = new Texture();
-		Object.assign(texture, data);
-		texture.binary = Binary.from(data.binary);
-		return texture;
-	}
-
 	private static createStreamHandler(storage: Storage, itemName: string, texture: Texture) {
 		texture.binary = new Binary();
 		return BiffParser.stream((buffer, tag, offset, len) => texture.fromTag(buffer, tag, offset, len, storage, itemName), {
@@ -70,6 +63,10 @@ export class Texture extends BiffParser {
 				},
 			},
 		});
+	}
+
+	private constructor() {
+		super();
 	}
 
 	public getName(): string {
@@ -92,19 +89,6 @@ export class Texture extends BiffParser {
 			strm.on('data', (buf: Buffer) => bufs.push(buf));
 			strm.on('end', () => resolve(Buffer.concat(bufs)));
 		});
-	}
-
-	public serialize(fileId: string) {
-		const serialized: any = {
-			name: this.szName,
-			width: this.width,
-			height: this.height,
-		};
-		if (this.binary) {
-			serialized.url = settings.apiExternalUri(`/v1/vp/${fileId}/textures/${encodeURI(this.getName())}`);
-			serialized.size = this.binary.cdata;
-		}
-		return serialized;
 	}
 
 	public isRaw(): boolean {

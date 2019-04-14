@@ -19,7 +19,6 @@
 
 import { Math as M } from 'three';
 import { Storage } from '../common/ole-doc';
-import { settings } from '../common/settings';
 import { BiffParser } from './biff-parser';
 import { FrameData, Vector3 } from './common';
 import { GameItem, IRenderable, Meshes } from './game-item';
@@ -55,20 +54,6 @@ export class PrimitiveItem extends GameItem implements IRenderable {
 		return primitiveItem;
 	}
 
-	public static from(data: any): PrimitiveItem {
-		const primitiveItem = new PrimitiveItem();
-		primitiveItem.data = PrimitiveData.from(data.data);
-		primitiveItem.mesh = Mesh.from(data.mesh);
-		primitiveItem.numVertices = data.numVertices;
-		primitiveItem.compressedAnimationVertices = data.compressedAnimationVertices;
-		primitiveItem.compressedVertices = data.compressedVertices;
-		primitiveItem.pdata = data.pdata;
-		primitiveItem.wzName = data.wzName;
-		primitiveItem.numIndices = data.numIndices;
-		primitiveItem.compressedIndices = data.compressedIndices;
-		return primitiveItem;
-	}
-
 	private constructor() {
 		super();
 	}
@@ -93,34 +78,6 @@ export class PrimitiveItem extends GameItem implements IRenderable {
 				normalMap: vpTable.getTexture(this.data.szNormalMap),
 				material: vpTable.getMaterial(this.data.szMaterial),
 			},
-		};
-	}
-
-	public serialize(fileId: string) {
-		return {
-			name: this.wzName,
-			mesh: settings.apiExternalUri(`/v1/vp/${fileId}/meshes/${encodeURI(this.wzName)}.obj`),
-			pos: this.data.vPosition,
-			size: this.data.vSize,
-			rot: {
-				x: this.data.aRotAndTra[0],
-				y: this.data.aRotAndTra[1],
-				z: this.data.aRotAndTra[2],
-			},
-			trans: {
-				x: this.data.aRotAndTra[3],
-				y: this.data.aRotAndTra[4],
-				z: this.data.aRotAndTra[5],
-			},
-			obj_rot: {
-				x: this.data.aRotAndTra[6],
-				y: this.data.aRotAndTra[7],
-				z: this.data.aRotAndTra[8],
-			},
-			is_visible: this.data.fVisible,
-			textureMap: this.data.szImage,
-			normalMap: this.data.szNormalMap,
-			material: this.data.szMaterial,
 		};
 	}
 
@@ -468,10 +425,4 @@ class PrimitiveData {
 	public meshFileName: string;
 	public depthBias: number;
 
-	public static from(data: any): PrimitiveData {
-		const primitiveData: PrimitiveData = Object.assign(new PrimitiveData(), data);
-		primitiveData.vPosition = Vector3.from(data.vPosition);
-		primitiveData.vSize = Vector3.from(data.vSize);
-		return primitiveData;
-	}
 }

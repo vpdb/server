@@ -77,12 +77,6 @@ export class LightItem extends GameItem implements IRenderable {
 		return lightItem;
 	}
 
-	public static from(data: any): LightItem {
-		const lightItem = new LightItem();
-		Object.assign(lightItem, data);
-		return lightItem;
-	}
-
 	private constructor() {
 		super();
 	}
@@ -150,18 +144,6 @@ export class LightItem extends GameItem implements IRenderable {
 				mesh: socketMesh.transform(new Matrix3D().toRightHanded()),
 				material: socketMaterial,
 			},
-		};
-	}
-
-	public serialize() {
-		return {
-			name: this.wzName,
-			center: this.vCenter,
-			intensity: this.intensity,
-			color: this.color,
-			falloff: this.falloff,
-			mesh: this.showBulbMesh ? settings.apiExternalUri(`/v1/meshes/bulbLightMess.obj`) : undefined,
-			meshRadius: this.meshRadius,
 		};
 	}
 

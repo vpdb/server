@@ -57,6 +57,10 @@ export class Material {
 	public bIsMetal: boolean = false;
 	public bOpacityActive: boolean = false;
 
+	// these are a additional props
+	public emissiveColor: number;
+	public emissiveIntensity: number = 0;
+
 	//physics
 	public fElasticity: number = 0.0;
 	public fElasticityFalloff: number = 0.0;

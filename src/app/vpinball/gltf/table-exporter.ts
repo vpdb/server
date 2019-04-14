@@ -154,6 +154,11 @@ export class TableExporter {
 			material.opacity = materialInfo.bOpacityActive ? Math.min(1, Math.max(0, materialInfo.fOpacity)) : 1;
 			material.transparent = materialInfo.bOpacityActive && materialInfo.fOpacity < 0.98;
 			material.side = DoubleSide;
+
+			if (materialInfo.emissiveIntensity > 0) {
+				material.emissive = new Color(materialInfo.emissiveColor);
+				material.emissiveIntensity = materialInfo.emissiveIntensity;
+			}
 		}
 
 		if (this.opts.applyTextures) {

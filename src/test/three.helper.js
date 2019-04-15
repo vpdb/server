@@ -18,6 +18,7 @@
  */
 
 const { parse } = require('url');
+const { createHash } = require('crypto');
 const axios = require('axios');
 const THREE = global.THREE = require('three');
 global.TextDecoder = require('util').TextDecoder;
@@ -96,18 +97,22 @@ class ThreeHelper {
 	}
 
 	expectVerticesInArray(vertices, array) {
+		// create hash map of vertices
+		let vertexHashes = {};
+		for (let i = 0; i < array.length; i +=3) {
+			vertexHashes[this.hashVertex(array.slice(i, i + 3))] = true;
+		}
 		for (const expectedVertex of vertices) {
-			let found = false;
-			for (let j = 0; j < array.length; j +=3) {
-				if (this.vertexEquals(expectedVertex, array.slice(j, j + 3))) {
-					found = true;
-					break;
-				}
-			}
-			if (!found) {
+			const vertexHash = this.hashVertex(expectedVertex);
+			if (!vertexHashes[vertexHash]) {
 				throw new Error('Vertex { ' + expectedVertex.join(', ') + ' } not found in array (' + array.join(', ') + ').');
 			}
 		}
+	}
+
+	hashVertex(vertex) {
+		const trim = 1000;
+		return `${Math.floor(vertex[0] * trim)},${Math.floor(vertex[1] * trim)},${Math.floor(vertex[2] * trim)}`;
 	}
 
 	vertexEquals(v1, v2) {

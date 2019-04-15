@@ -54,7 +54,7 @@ module.exports = {
 				'logo': { category: 0, variation: -1 },
 				'playfield-fs': { category: { video: 1, image: 0 }, variation: -1 },
 				'playfield-ws': { category: { video: 1, image: 0 }, variation: -1 },
-				'release': { category: { table: 1, '*': 0 } },
+				'release': { category: { table: 1, '*': 0 }, variation: -1 },
 				'rom': 0
 			}
 		},

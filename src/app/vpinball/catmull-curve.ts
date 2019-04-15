@@ -18,6 +18,7 @@
  */
 
 import { IRenderVertex, RenderVertex, RenderVertex3D, Vertex2D, Vertex3D } from './vertex';
+import { BiffParser } from './biff-parser';
 
 /**
  * VPinball's implementation of the Catmull Curve.
@@ -26,17 +27,21 @@ import { IRenderVertex, RenderVertex, RenderVertex3D, Vertex2D, Vertex3D } from 
  */
 export class CatmullCurve {
 
-	private c: { x: number[], y: number[], z?: number[] } = { x: [0, 0, 0, 0], y: [0, 0, 0, 0], z: [0, 0, 0, 0] };
+	private c: { x: number[], y: number[], z?: number[] } = {
+		x: [0, 0, 0, 0],
+		y: [0, 0, 0, 0],
+		z: [0, 0, 0, 0]
+	};
 
 	public static fromVertex3D(v0: Vertex3D, v1: Vertex3D, v2: Vertex3D, v3: Vertex3D): CatmullCurve {
-		return this.fromVertex2D(v0.xy(), v1.xy(), v2.xy(), v3.xy());
+		return CatmullCurve.fromVertex2D(v0.xy(), v1.xy(), v2.xy(), v3.xy());
 	}
 
 	public static fromVertex2D(v0: Vertex2D, v1: Vertex2D, v2: Vertex2D, v3: Vertex2D): CatmullCurve {
 
-		let dt0 = Math.sqrt(v1.clone().sub(v0).length());
-		let dt1 = Math.sqrt(v2.clone().sub(v1).length());
-		let dt2 = Math.sqrt(v3.clone().sub(v2).length());
+		let dt0 = BiffParser.toFloat4(Math.sqrt(v1.clone().sub(v0).length()));
+		let dt1 = BiffParser.toFloat4(Math.sqrt(v2.clone().sub(v1).length()));
+		let dt2 = BiffParser.toFloat4(Math.sqrt(v3.clone().sub(v2).length()));
 
 		// check for repeated control points
 		if (dt1 < 1e-4) {
@@ -78,22 +83,22 @@ export class CatmullCurve {
 	private static initNonuniformCatmullCoeffs(x0: number, x1: number, x2: number, x3: number, dt0: number, dt1: number, dt2: number): number[] {
 
 		// compute tangents when parameterized in [t1,t2]
-		let t1 = (x1 - x0) / dt0 - (x2 - x0) / (dt0 + dt1) + (x2 - x1) / dt1;
-		let t2 = (x2 - x1) / dt1 - (x3 - x1) / (dt1 + dt2) + (x3 - x2) / dt2;
+		let t1 = BiffParser.toFloat4((x1 - x0) / dt0 - (x2 - x0) / (dt0 + dt1) + (x2 - x1) / dt1);
+		let t2 = BiffParser.toFloat4((x2 - x1) / dt1 - (x3 - x1) / (dt1 + dt2) + (x3 - x2) / dt2);
 
 		// rescale tangents for parametrization in [0,1]
 		t1 *= dt1;
 		t2 *= dt1;
 
-		return CatmullCurve.initCubicSplineCoeffs(x1, x2, t1, t2);
+		return CatmullCurve.initCubicSplineCoeffs(x1, x2, BiffParser.toFloat4(t1), BiffParser.toFloat4(t2));
 	}
 
 	private static initCubicSplineCoeffs(x0: number, x1: number, t0: number, t1: number) {
 		const out: number[] = [];
-		out[0] = x0;
-		out[1] = t0;
-		out[2] = -3.0 * x0 + 3.0 * x1 - 2.0 * t0 - t1;
-		out[3] = 2.0 * x0 - 2.0 * x1 + t0 + t1;
+		out[0] = BiffParser.toFloat4(x0);
+		out[1] = BiffParser.toFloat4(t0);
+		out[2] = BiffParser.toFloat4(BiffParser.toFloat4(-3.0 * x0) + BiffParser.toFloat4(3.0 * x1) - BiffParser.toFloat4(2.0 * t0) - t1);
+		out[3] = BiffParser.toFloat4(BiffParser.toFloat4(2.0 * x0) - BiffParser.toFloat4(2.0 * x1) + t0 + t1);
 		return out;
 	}
 }

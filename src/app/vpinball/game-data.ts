@@ -254,7 +254,7 @@ export class GameData extends BiffParser {
 			case 'UAAL': this.useAA = this.getInt(buffer); break;
 			case 'UAOC': this.useAO = this.getInt(buffer); break;
 			case 'USSR': this.useSSR = this.getInt(buffer); break;
-			case 'UFXA': this.useFXAA = this.getFloat(buffer); break;
+			case 'UFXA': this.useFXAA = this.getFloat(buffer); break; // TODO getting NaN here
 			case 'BLST': this.bloom_strength = this.getFloat(buffer); break;
 			case 'BCLR': this.colorbackdrop = this.getInt(buffer); break;
 			case 'CCUS': this.rgcolorcustom = this.getUnsignedInt4s(buffer, 16); break;

@@ -105,9 +105,13 @@ export class BiffParser {
 	}
 
 	public static toFloat4(float8: number): number {
+		if (float8 === 0) {
+			return 0;
+		}
 		const exp = Math.floor(Math.log10(Math.abs(float8)));
 		const f = Math.pow(10, 8 - exp);
-		return Math.round(Math.fround(float8) * f) / f;
+		const float4 = Math.round(Math.fround(float8) * f) / f;
+		return float4;
 	}
 
 	protected getString(buffer: Buffer, len: number, dropIfNotAscii = false): string {

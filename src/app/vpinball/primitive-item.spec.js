@@ -90,4 +90,6 @@ describe('The VPinball primitive parser', () => {
 		];
 		three.expectVerticesInArray(expectedVertices, triangleMeshVertices.array);
 	});
+
+	it('should assign the correct material');
 });

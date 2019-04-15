@@ -94,6 +94,31 @@ class ThreeHelper {
 		}
 		return table;
 	}
+
+	expectVerticesInArray(vertices, array) {
+		for (const expectedVertex of vertices) {
+			let found = false;
+			for (let j = 0; j < array.length; j +=3) {
+				if (this.vertexEquals(expectedVertex, array.slice(j, j + 3))) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				throw new Error('Vertex { ' + expectedVertex.join(', ') + ' } not found in array (' + array.join(', ') + ').');
+			}
+		}
+	}
+
+	vertexEquals(v1, v2) {
+		for (let i = 0; i < 3; i++) {
+			if (Math.floor(v1[i] * 1000) !== Math.floor(v2[i] * 1000)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 }
 
 function toArrayBuffer(buf) {

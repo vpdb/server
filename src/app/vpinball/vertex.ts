@@ -19,10 +19,20 @@
 
 import { Vector2 as ThreeVector2, Vector3 as ThreeVector3 } from 'three';
 import { isUndefined } from 'util';
+import { BiffParser } from './biff-parser';
 
 export class Vertex2D extends ThreeVector2 {
 
 	public readonly isVector3 = false;
+
+	set x(_x: number) { this._x = BiffParser.toFloat4(_x) }
+	set y(_y: number) { this._y = BiffParser.toFloat4(_y) }
+
+	get x() { return this._x };
+	get y() { return this._y };
+
+	private _x: number;
+	private _y: number;
 
 	public static get(buffer: Buffer) {
 		const v2 = new Vertex2D();
@@ -38,13 +48,6 @@ export class Vertex2D extends ThreeVector2 {
 	constructor(x?: number, y?: number) {
 		super(x, y);
 	}
-
-	public roundTo(exp: number): this {
-		const p = Math.pow(10, exp);
-		this.x = Math.round(this.x * p) / p;
-		this.y = Math.round(this.y * p) / p;
-		return this;
-	}
 }
 
 export interface IRenderVertex {
@@ -56,7 +59,6 @@ export interface IRenderVertex {
 	isVector3: boolean;
 
 	set?(x: number, y: number, z?: number): this;
-	roundTo?(exp: number): this;
 }
 
 export class RenderVertex extends Vertex2D implements IRenderVertex {
@@ -70,6 +72,18 @@ export class RenderVertex extends Vertex2D implements IRenderVertex {
 }
 
 export class Vertex3D extends ThreeVector3 {
+
+	set x(_x: number) { this._x = BiffParser.toFloat4(_x) }
+	set y(_y: number) { this._y = BiffParser.toFloat4(_y) }
+	set z(_z: number) { this._z = BiffParser.toFloat4(_z) }
+
+	get x() { return this._x };
+	get y() { return this._y };
+	get z() { return this._z };
+
+	private _x: number;
+	private _y: number;
+	private _z: number;
 
 	public static get(buffer: Buffer) {
 		const v3 = new Vertex3D();
@@ -120,14 +134,6 @@ export class Vertex3D extends ThreeVector3 {
 
 	public xy(): Vertex2D {
 		return new Vertex2D(this.x, this.y);
-	}
-
-	public roundTo(exp: number): this {
-		const p = Math.pow(10, exp);
-		this.x = Math.round(this.x * p) / p;
-		this.y = Math.round(this.y * p) / p;
-		this.z = Math.round(this.z * p) / p;
-		return this;
 	}
 }
 

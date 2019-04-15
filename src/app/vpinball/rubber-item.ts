@@ -19,7 +19,6 @@
 
 import { Math as M } from 'three';
 import { Storage } from '../common/ole-doc';
-import { settings } from '../common/settings';
 import { BiffParser } from './biff-parser';
 import { DragPoint, HIT_SHAPE_DETAIL_LEVEL } from './dragpoint';
 import { GameItem, IRenderable, Meshes } from './game-item';

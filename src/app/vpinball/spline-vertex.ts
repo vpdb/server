@@ -58,16 +58,16 @@ export class SplineVertex {
 
 			// not needed special start/end handling as rubbers always loop, except for the case where there are only 2 control points
 			if (cvertex === 2 && i === (cvertex - 1)) {
-				v1normal.normalize().roundTo(6);
+				v1normal.normalize();
 				vnormal = v1normal;
 
 			} else if (cvertex === 2 && i === 0) {
-				v2normal.normalize().roundTo(6);
+				v2normal.normalize();
 				vnormal = v2normal;
 
 			} else {
-				v1normal.normalize().roundTo(6);
-				v2normal.normalize().roundTo(6);
+				v1normal.normalize();
+				v2normal.normalize();
 
 				if (Math.abs(v1normal.x - v2normal.x) < 0.0001 && Math.abs(v1normal.y - v2normal.y) < 0.0001) {
 					// Two parallel segments
@@ -97,7 +97,7 @@ export class SplineVertex {
 					const intersectx = (B * F - E * C) * invDet;
 					const intersecty = (C * D - A * F) * invDet;
 
-					vnormal = new Vertex2D(vmiddle.x - intersectx, vmiddle.y - intersecty).roundTo(6);
+					vnormal = new Vertex2D(vmiddle.x - intersectx, vmiddle.y - intersecty);
 				}
 			}
 
@@ -106,10 +106,10 @@ export class SplineVertex {
 			v.pMiddlePoints[i] = vmiddle;
 
 			// vmiddle + (widthcur * 0.5) * vnormal;
-			v.rgvLocal[i] = vmiddle.clone().add(vnormal.clone().multiplyScalar(widthcur * 0.5)).roundTo(6);
+			v.rgvLocal[i] = vmiddle.clone().add(vnormal.clone().multiplyScalar(widthcur * 0.5));
 
 			//vmiddle - (widthcur*0.5f) * vnormal;
-			v.rgvLocal[(cvertex + 1) * 2 - i - 1] = vmiddle.clone().sub(vnormal.clone().multiplyScalar(widthcur * 0.5)).roundTo(6);
+			v.rgvLocal[(cvertex + 1) * 2 - i - 1] = vmiddle.clone().sub(vnormal.clone().multiplyScalar(widthcur * 0.5));
 
 			if (i === 0) {
 				v.rgvLocal[cvertex] = v.rgvLocal[0];

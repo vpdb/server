@@ -104,6 +104,12 @@ export class BiffParser {
 		return r + g + b;
 	}
 
+	public static toFloat4(float8: number): number {
+		const exp = Math.floor(Math.log10(Math.abs(float8)));
+		const f = Math.pow(10, 8 - exp);
+		return Math.round(Math.fround(float8) * f) / f;
+	}
+
 	protected getString(buffer: Buffer, len: number, dropIfNotAscii = false): string {
 		const str = buffer.slice(4, len).toString('utf8');
 		if (!dropIfNotAscii || this.isAscii(str)) {
@@ -127,7 +133,7 @@ export class BiffParser {
 	}
 
 	protected getFloat(buffer: Buffer): number {
-		return buffer.readFloatLE(0);
+		return BiffParser.toFloat4(buffer.readFloatLE(0));
 	}
 
 	protected getBool(buffer: Buffer): boolean {

@@ -38,6 +38,13 @@ export class Vertex2D extends ThreeVector2 {
 	constructor(x?: number, y?: number) {
 		super(x, y);
 	}
+
+	public roundTo(exp: number): this {
+		const p = Math.pow(10, exp);
+		this.x = Math.round(this.x * p) / p;
+		this.y = Math.round(this.y * p) / p;
+		return this;
+	}
 }
 
 export interface IRenderVertex {
@@ -49,6 +56,7 @@ export interface IRenderVertex {
 	isVector3: boolean;
 
 	set?(x: number, y: number, z?: number): this;
+	roundTo?(exp: number): this;
 }
 
 export class RenderVertex extends Vertex2D implements IRenderVertex {
@@ -112,6 +120,14 @@ export class Vertex3D extends ThreeVector3 {
 
 	public xy(): Vertex2D {
 		return new Vertex2D(this.x, this.y);
+	}
+
+	public roundTo(exp: number): this {
+		const p = Math.pow(10, exp);
+		this.x = Math.round(this.x * p) / p;
+		this.y = Math.round(this.y * p) / p;
+		this.z = Math.round(this.z * p) / p;
+		return this;
 	}
 }
 

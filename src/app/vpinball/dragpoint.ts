@@ -38,12 +38,6 @@ export class DragPoint extends GameItem {
 	public texturecoord: number;
 	public calcHeight: number;
 
-	public static from(data: any): DragPoint {
-		const dragPoint = new DragPoint();
-		Object.assign(dragPoint, data);
-		return dragPoint;
-	}
-
 	public static getRgVertex<T extends IRenderVertex>(vdpoint: DragPoint[], instantiateT: () => T, loop: boolean = true, accuracy: number = 4.0): T[] {
 
 		let vv: T[] = [];
@@ -56,8 +50,8 @@ export class DragPoint extends GameItem {
 
 		for (let i = 0; i < endpoint; i++) {
 
-			const pdp1: DragPoint = vdpoint[i];
-			const pdp2: DragPoint = vdpoint[(i < cpoint - 1) ? (i + 1) : 0];
+			const pdp1: DragPoint = vdpoint[i].roundTo(6);
+			const pdp2: DragPoint = vdpoint[(i < cpoint - 1) ? (i + 1) : 0].roundTo(6);
 
 			if ((pdp1.vertex.x === pdp2.vertex.x) && (pdp1.vertex.y === pdp2.vertex.y) && (pdp1.vertex.z === pdp2.vertex.z)) {
 				// Special case - two points coincide
@@ -74,20 +68,20 @@ export class DragPoint extends GameItem {
 				inext = (loop ? inext - cpoint : cpoint - 1);
 			}
 
-			const pdp0: DragPoint = vdpoint[iprev];
-			const pdp3: DragPoint = vdpoint[inext];
+			const pdp0: DragPoint = vdpoint[iprev].roundTo(6);
+			const pdp3: DragPoint = vdpoint[inext].roundTo(6);
 
 			const cc = CatmullCurve.fromVertex3D(pdp0.vertex, pdp1.vertex, pdp2.vertex, pdp3.vertex);
 
 			const rendv1 = instantiateT();
 
-			rendv1.set(pdp1.vertex.x, pdp1.vertex.y, 0);
+			rendv1.set(pdp1.vertex.x, pdp1.vertex.y, 0).roundTo(6);
 			rendv1.fSmooth = pdp1.fSmooth;
 			rendv1.fSlingshot = pdp1.fSlingshot;
 			rendv1.fControlPoint = true;
 
 			// Properties of last point don't matter, because it won't be added to the list on this pass (it'll get added as the first point of the next curve)
-			rendv2.set(pdp2.vertex.x, pdp2.vertex.y, 0);
+			rendv2.set(pdp2.vertex.x, pdp2.vertex.y, 0).roundTo(6);
 
 			vv = DragPoint.recurseSmoothLine(vv, cc, 0.0, 1.0, rendv1, rendv2, accuracy);
 		}
@@ -197,7 +191,7 @@ export class DragPoint extends GameItem {
 
 		const tMid = (t1 + t2) * 0.5;
 
-		const vmid: T = ((vt2.isVector3 ? cc.getPoint3At(tMid) : cc.getPoint2At(tMid)) as unknown) as T;
+		const vmid: T = ((vt2.isVector3 ? cc.getPoint3At(tMid).roundTo(6) : cc.getPoint2At(tMid).roundTo(6)) as unknown) as T;
 
 		vmid.fSmooth = true; // Generated points must always be smooth, because they are part of the curve
 		vmid.fSlingshot = false; // Slingshots can't be along curves
@@ -255,5 +249,10 @@ export class DragPoint extends GameItem {
 
 	public getName(): string {
 		return null;
+	}
+
+	public roundTo(exp: number): this {
+		this.vertex = this.vertex.roundTo(exp);
+		return this;
 	}
 }

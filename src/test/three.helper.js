@@ -105,7 +105,7 @@ class ThreeHelper {
 		for (const expectedVertex of vertices) {
 			const vertexHash = this.hashVertex(expectedVertex);
 			if (!vertexHashes[vertexHash]) {
-				throw new Error('Vertex { ' + expectedVertex.join(', ') + ' } not found in array (' + array.join(', ') + ').');
+				throw new Error('Vertex { ' + expectedVertex.join(', ') + ' } not found in array.');
 			}
 		}
 	}

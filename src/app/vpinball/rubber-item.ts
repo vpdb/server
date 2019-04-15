@@ -113,7 +113,7 @@ export class RubberItem extends GameItem implements IRenderable {
 
 		// as solid rubbers are rendered into the static buffer, always use maximum precision
 		if (staticRendering) {
-			accuracy = Math.floor(10.0 * 1.3); // see also above
+			accuracy = Math.floor(10.0 * 1.2); // see also above
 		}
 
 		if (acc !== -1) { // hit shapes and UI display have the same, static, precision

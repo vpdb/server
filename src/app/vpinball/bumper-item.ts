@@ -100,18 +100,21 @@ export class BumperItem extends GameItem implements IRenderable {
 			meshes.base = {
 				mesh: this.generateMesh(bumperBaseMesh, matrix, z => z * this.heightScale * table.getScaleZ() + height).transform(new Matrix3D().toRightHanded()),
 				material: table.getMaterial(this.szBaseMaterial),
+				map: Texture.fromFilesystem('bumperbase.bmp'),
 			};
 		}
 		if (this.fRingVisible) {
 			meshes.ring = {
 				mesh: this.generateMesh(bumperRingMesh, matrix, z => z * (this.heightScale * table.getScaleZ()) + height).transform(new Matrix3D().toRightHanded()),
 				material: table.getMaterial(this.szRingMaterial),
+				map: Texture.fromFilesystem('bumperring.bmp'),
 			};
 		}
 		if (this.fSkirtVisible) {
 			meshes.skirt = {
 				mesh: this.generateMesh(bumperSocketMesh, matrix, z => z * (this.heightScale * table.getScaleZ()) + (height + 5.0)).transform(new Matrix3D().toRightHanded()),
 				material: table.getMaterial(this.szSkirtMaterial),
+				map: Texture.fromFilesystem('bumperskirt.bmp'),
 			};
 		}
 		if (this.fCapVisible) {

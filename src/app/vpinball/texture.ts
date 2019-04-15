@@ -18,15 +18,15 @@
  */
 
 import gm from 'gm';
+import { basename, resolve as resolvePath } from 'path';
 import sharp = require('sharp');
+import { Stream } from 'stream';
 import { logger } from '../common/logger';
 import { Storage } from '../common/ole-doc';
 import { settings } from '../common/settings';
 import { BiffParser } from './biff-parser';
 import { Binary } from './binary';
 import { LzwReader } from './gltf/lzw-reader';
-import { resolve } from 'path';
-import { Stream } from 'stream';
 
 /**
  * VPinball's texture.
@@ -58,7 +58,7 @@ export class Texture extends BiffParser {
 
 	public static fromFilesystem(resFileName: string): Texture {
 		const texture = new Texture();
-		texture.localPath = resolve(__dirname, 'res', resFileName);
+		texture.localPath = resolvePath(__dirname, 'res', resFileName);
 		return texture;
 	}
 
@@ -80,7 +80,7 @@ export class Texture extends BiffParser {
 	}
 
 	public getName(): string {
-		return this.szInternalName.toLowerCase();
+		return this.localPath ? basename(this.localPath) : this.szInternalName.toLowerCase();
 	}
 
 	public getUrl(fileId: string): string {

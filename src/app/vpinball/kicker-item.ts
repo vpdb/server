@@ -30,6 +30,7 @@ import { kickerSimpleHoleMesh } from './meshes/kicker-simple-hole-mesh';
 import { kickerT1Mesh } from './meshes/kicker-t1-mesh';
 import { kickerWilliamsMesh } from './meshes/kicker-williams-mesh';
 import { Table } from './table';
+import { Texture } from './texture';
 import { Vertex2D, Vertex3D } from './vertex';
 
 /**
@@ -89,6 +90,7 @@ export class KickerItem extends GameItem implements IRenderable {
 			kicker: {
 				mesh: kickerMesh.transform(new Matrix3D().toRightHanded()),
 				material: table.getMaterial(this.szMaterial),
+				map: this.getTexture(),
 			},
 		};
 	}
@@ -143,6 +145,19 @@ export class KickerItem extends GameItem implements IRenderable {
 			case KickerItem.TypeKickerHoleSimple:
 			default:
 				return kickerSimpleHoleMesh.clone(name);
+		}
+	}
+
+	private getTexture(): Texture {
+		switch (this.kickerType) {
+			case KickerItem.TypeKickerCup: return Texture.fromFilesystem('kickerCup.bmp');
+			case KickerItem.TypeKickerWilliams: return Texture.fromFilesystem('kickerWilliams.bmp');
+			case KickerItem.TypeKickerGottlieb: return Texture.fromFilesystem('kickerGottlieb.bmp');
+			case KickerItem.TypeKickerCup2: return Texture.fromFilesystem('kickerT1.bmp');
+			case KickerItem.TypeKickerHole: return Texture.fromFilesystem('kickerHoleWood.bmp');
+			case KickerItem.TypeKickerHoleSimple:
+			default:
+				Texture.fromFilesystem('kickerHoleWood.bmp');
 		}
 	}
 

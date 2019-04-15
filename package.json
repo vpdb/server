@@ -23,9 +23,10 @@
 		"serve:dev": "nodemon --config deploy/nodemon/dev.json --inspect -r ts-node/register src/app",
 		"serve:test": "nyc node build/app",
 		"serve:test:debug": "node --inspect -r ts-node/register src/app",
-		"serve:test:debug:compiled": "cp -r src/app/common/email-templates build/app/common && node --inspect build/app",
+		"serve:test:debug:compiled": "npm run copy:resources && node --inspect build/app",
 		"serve:protractor": "cross-env NODE_ENV=test APP_SETTINGS=config/settings.protractor.js PORT=7357 APP_NAME=local run-s test:dropdbs start",
-		"build": "rimraf build && tsc",
+		"build": "rimraf build && tsc && npm run copy:resources",
+		"copy:resources": "cp -r src/app/common/email-templates build/app/common && cp -r src/app/vpinball/res build/app/vpinball",
 		"lint": "tslint src/app/**/*.ts",
 		"test:dropdbs": "node deploy/tools/dropdb",
 		"test:rimraf": "rimraf .nyc_output coverage data/storage-test-protected/**/* data/storage-test-public/**/*",
@@ -185,9 +186,7 @@
 			"build/app/common/settings.validator.js",
 			"build/app/common/middleware/website.middleware.js",
 			"build/app/common/profiler.js",
-			"build/app/authentication/strategies/**",
-			"build/app/vp/**",
-			"build/app/vpinball/**"
+			"build/app/authentication/strategies/**"
 		],
 		"reporter": [
 			"lcov",

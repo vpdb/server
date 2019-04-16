@@ -21,6 +21,7 @@ import { FrameData } from './common';
 import { MeshConverter } from './gltf/mesh-converter';
 import { Matrix3D } from './matrix3d';
 import { RenderVertex, RenderVertex3D, Vertex2D, Vertex3D, Vertex3DNoTex2 } from './vertex';
+import { fr } from './float';
 
 export const FLT_MIN = 1.175494350822287507968736537222245677819e-038;
 export const FLT_MAX = 340282346638528859811704183484516925440;
@@ -367,7 +368,7 @@ export class Mesh {
 
 	private _writeVertexInfo(objFile: string[]): void {
 		for (const vert of this.vertices) {
-			objFile.push(`v ${vert.x.toFixed(Mesh.exportPrecision)} ${vert.y.toFixed(Mesh.exportPrecision)} ${(-vert.z).toFixed(Mesh.exportPrecision)}`);
+			objFile.push(`v ${fr(vert.x).toFixed(Mesh.exportPrecision)} ${fr(vert.y).toFixed(Mesh.exportPrecision)} ${fr(vert.z).toFixed(Mesh.exportPrecision)}`);
 		}
 		for (const vert of this.vertices) {
 			if (!vert.hasTextureCoordinates()) {
@@ -375,13 +376,13 @@ export class Mesh {
 			}
 			const tu = vert.tu;
 			const tv = 1 - vert.tv;
-			objFile.push(`vt ${tu.toFixed(Mesh.exportPrecision)} ${tv.toFixed(Mesh.exportPrecision)}`);
+			objFile.push(`vt ${fr(tu).toFixed(Mesh.exportPrecision)} ${fr(tv).toFixed(Mesh.exportPrecision)}`);
 		}
 		for (const vert of this.vertices) {
 			const nx = vert.nx;
 			const ny = vert.ny;
 			const nz = vert.nz;
-			objFile.push(`vn ${nx.toFixed(Mesh.exportPrecision)} ${ny.toFixed(Mesh.exportPrecision)} ${(-nz).toFixed(Mesh.exportPrecision)}`);
+			objFile.push(`vn ${fr(nx).toFixed(Mesh.exportPrecision)} ${fr(ny).toFixed(Mesh.exportPrecision)} ${fr(nz).toFixed(Mesh.exportPrecision)}`);
 		}
 	}
 

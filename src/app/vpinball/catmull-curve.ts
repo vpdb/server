@@ -19,6 +19,7 @@
 
 import { IRenderVertex, RenderVertex, RenderVertex3D, Vertex2D, Vertex3D } from './vertex';
 import { BiffParser } from './biff-parser';
+import { f4 } from './float';
 
 /**
  * VPinball's implementation of the Catmull Curve.
@@ -39,9 +40,9 @@ export class CatmullCurve {
 
 	public static fromVertex2D(v0: Vertex2D, v1: Vertex2D, v2: Vertex2D, v3: Vertex2D): CatmullCurve {
 
-		let dt0 = BiffParser.toFloat4(Math.sqrt(v1.clone().sub(v0).length()));
-		let dt1 = BiffParser.toFloat4(Math.sqrt(v2.clone().sub(v1).length()));
-		let dt2 = BiffParser.toFloat4(Math.sqrt(v3.clone().sub(v2).length()));
+		let dt0 = f4(Math.sqrt(v1.clone().sub(v0).length()));
+		let dt1 = f4(Math.sqrt(v2.clone().sub(v1).length()));
+		let dt2 = f4(Math.sqrt(v3.clone().sub(v2).length()));
 
 		// check for repeated control points
 		if (dt1 < 1e-4) {
@@ -83,22 +84,22 @@ export class CatmullCurve {
 	private static initNonuniformCatmullCoeffs(x0: number, x1: number, x2: number, x3: number, dt0: number, dt1: number, dt2: number): number[] {
 
 		// compute tangents when parameterized in [t1,t2]
-		let t1 = BiffParser.toFloat4((x1 - x0) / dt0 - (x2 - x0) / (dt0 + dt1) + (x2 - x1) / dt1);
-		let t2 = BiffParser.toFloat4((x2 - x1) / dt1 - (x3 - x1) / (dt1 + dt2) + (x3 - x2) / dt2);
+		let t1 = f4((x1 - x0) / dt0 - (x2 - x0) / (dt0 + dt1) + (x2 - x1) / dt1);
+		let t2 = f4((x2 - x1) / dt1 - (x3 - x1) / (dt1 + dt2) + (x3 - x2) / dt2);
 
 		// rescale tangents for parametrization in [0,1]
 		t1 *= dt1;
 		t2 *= dt1;
 
-		return CatmullCurve.initCubicSplineCoeffs(x1, x2, BiffParser.toFloat4(t1), BiffParser.toFloat4(t2));
+		return CatmullCurve.initCubicSplineCoeffs(x1, x2, f4(t1), f4(t2));
 	}
 
 	private static initCubicSplineCoeffs(x0: number, x1: number, t0: number, t1: number) {
 		const out: number[] = [];
-		out[0] = BiffParser.toFloat4(x0);
-		out[1] = BiffParser.toFloat4(t0);
-		out[2] = BiffParser.toFloat4(BiffParser.toFloat4(-3.0 * x0) + BiffParser.toFloat4(3.0 * x1) - BiffParser.toFloat4(2.0 * t0) - t1);
-		out[3] = BiffParser.toFloat4(BiffParser.toFloat4(2.0 * x0) - BiffParser.toFloat4(2.0 * x1) + t0 + t1);
+		out[0] = f4(x0);
+		out[1] = f4(t0);
+		out[2] = f4(f4(-3.0 * x0) + f4(3.0 * x1) - f4(2.0 * t0) - t1);
+		out[3] = f4(f4(2.0 * x0) - f4(2.0 * x1) + t0 + t1);
 		return out;
 	}
 }

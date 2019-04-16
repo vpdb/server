@@ -19,7 +19,7 @@
 
 import { IRenderVertex, RenderVertex, RenderVertex3D, Vertex2D, Vertex3D } from './vertex';
 import { BiffParser } from './biff-parser';
-import { f4 } from './float';
+import { f4, fr } from './float';
 
 /**
  * VPinball's implementation of the Catmull Curve.
@@ -84,8 +84,8 @@ export class CatmullCurve {
 	private static initNonuniformCatmullCoeffs(x0: number, x1: number, x2: number, x3: number, dt0: number, dt1: number, dt2: number): number[] {
 
 		// compute tangents when parameterized in [t1,t2]
-		let t1 = f4((x1 - x0) / dt0 - (x2 - x0) / (dt0 + dt1) + (x2 - x1) / dt1);
-		let t2 = f4((x2 - x1) / dt1 - (x3 - x1) / (dt1 + dt2) + (x3 - x2) / dt2);
+		let t1 = f4(f4(f4(f4(x1 - x0) / dt0) - f4(f4(x2 - x0) / f4(dt0 + dt1))) + f4(f4(x2 - x1) / dt1));
+		let t2 = f4(f4(f4(f4(x2 - x1) / dt1) - f4(f4(x3 - x1) / f4(dt1 + dt2))) + f4(f4(x3 - x2) / dt2));
 
 		// rescale tangents for parametrization in [0,1]
 		t1 *= dt1;
@@ -98,8 +98,8 @@ export class CatmullCurve {
 		const out: number[] = [];
 		out[0] = f4(x0);
 		out[1] = f4(t0);
-		out[2] = f4(f4(-3.0 * x0) + f4(3.0 * x1) - f4(2.0 * t0) - t1);
-		out[3] = f4(f4(2.0 * x0) - f4(2.0 * x1) + t0 + t1);
+		out[2] = f4(f4(f4(-3.0 * x0) + f4(3.0 * x1)) - f4(2.0 * t0) - t1);
+		out[3] = f4(f4(f4(f4(2.0 * x0) - f4(2.0 * x1)) + t0) + t1);
 		return out;
 	}
 }

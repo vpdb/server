@@ -18,16 +18,39 @@
  */
 
 /**
- * Converts a 64-bit floating point number (Node.js) to a 32-bit
+ * Rounds a 64-bit floating point number (Node.js) to a 32-bit
  * float used in C.
  *
- * @param float8
+ * When transcribing single precision floats from C to JavaScript,
+ * we need to deal with three different conversions:
+ *
+ * 1. double precision float: this is the standard in JavaScript and every
+ *    math operation will return it.
+ * 2. single precision float: this is what we should be using when doing math
+ *    operations, i.e. every result should be converted into this using
+ *    Math.fround() or [[f4]] below before using it in the next operation.
+ * 3. rounded single precision float: like 2., but the additional digits are
+ *    removed, i.e. the amount is rounded to 9 significant digits.
+ *
+ * This function does is return case 3.
+ *
+ * @param f8 Double-precision float
+ * @return Rounded single-precision float
  */
-export function f4(float8: number): number {
-	if (float8 === 0) {
+export function fr(f8: number): number {
+	if (f8 === 0) {
 		return 0;
 	}
-	const exp = Math.floor(Math.log10(Math.abs(float8)));
+	const exp = Math.floor(Math.log10(Math.abs(f8)));
 	const f = Math.pow(10, 8 - exp);
-	return Math.round(Math.fround(float8) * f) / f;
+	return Math.round(f8 * f) / f;
+}
+
+/**
+ * Converts a double-precision float to a single precision
+ * float. Use this before applying math operations.
+ * @param f8
+ */
+export function f4(f8: number): number {
+	return Math.fround(f8);
 }

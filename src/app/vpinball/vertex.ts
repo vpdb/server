@@ -17,19 +17,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+/* tslint:disable:variable-name adjacent-overload-signatures */
 import { Vector2 as ThreeVector2, Vector3 as ThreeVector3 } from 'three';
 import { isUndefined } from 'util';
 import { BiffParser } from './biff-parser';
+import { f4 } from './float';
 
 export class Vertex2D extends ThreeVector2 {
 
 	public readonly isVector3 = false;
 
-	set x(_x: number) { this._x = BiffParser.toFloat4(_x) }
-	set y(_y: number) { this._y = BiffParser.toFloat4(_y) }
+	set x(_x: number) { this._x = f4(_x); }
+	set y(_y: number) { this._y = f4(_y); }
 
-	get x() { return this._x };
-	get y() { return this._y };
+	get x() { return this._x; }
+	get y() { return this._y; }
 
 	private _x: number;
 	private _y: number;
@@ -73,13 +75,13 @@ export class RenderVertex extends Vertex2D implements IRenderVertex {
 
 export class Vertex3D extends ThreeVector3 {
 
-	set x(_x: number) { this._x = BiffParser.toFloat4(_x) }
-	set y(_y: number) { this._y = BiffParser.toFloat4(_y) }
-	set z(_z: number) { this._z = BiffParser.toFloat4(_z) }
+	set x(_x: number) { this._x = f4(_x); }
+	set y(_y: number) { this._y = f4(_y); }
+	set z(_z: number) { this._z = f4(_z); }
 
-	get x() { return this._x };
-	get y() { return this._y };
-	get z() { return this._z };
+	get x() { return this._x; }
+	get y() { return this._y; }
+	get z() { return this._z; }
 
 	private _x: number;
 	private _y: number;

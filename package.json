@@ -157,7 +157,7 @@
 		"superagent": "4.1.0",
 		"treeify": "1.1.0",
 		"ts-node": "8.0.2",
-		"tslint": "5.13.0",
+		"tslint": "5.16.0",
 		"typescript": "3.3.3333",
 		"yargs": "13.2.1",
 		"yauzl": "2.10.0"

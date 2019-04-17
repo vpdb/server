@@ -22,10 +22,10 @@ import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { FrameData, Vector3 } from './common';
 import { GameItem, IRenderable, Meshes } from './game-item';
-import { Matrix3D } from './matrix3d';
 import { FLT_MAX, Mesh } from './mesh';
 import { Table } from './table';
-import { Vertex3DNoTex2 } from './vertex';
+import { Vertex3DNoTex2 } from './math/vertex';
+import { Matrix3D } from './math/matrix3d';
 
 /**
  * VPinball's primitive.

@@ -19,9 +19,11 @@
 
 import { FrameData } from './common';
 import { MeshConverter } from './gltf/mesh-converter';
-import { Matrix3D } from './matrix3d';
-import { RenderVertex, RenderVertex3D, Vertex2D, Vertex3D, Vertex3DNoTex2 } from './vertex';
-import { fr } from './float';
+import { fr } from './math/float';
+import { Matrix3D } from './math/matrix3d';
+import { Vertex2D } from './math/vertex2d';
+import { Vertex3D } from './math/vertex3d';
+import { RenderVertex, RenderVertex3D, Vertex3DNoTex2 } from './math/vertex';
 
 export const FLT_MIN = 1.175494350822287507968736537222245677819e-038;
 export const FLT_MAX = 340282346638528859811704183484516925440;

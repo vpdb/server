@@ -18,16 +18,15 @@
  */
 
 import { Storage } from '../common/ole-doc';
-import { settings } from '../common/settings';
 import { BiffParser } from './biff-parser';
-import { DragPoint } from './dragpoint';
+import { DragPoint } from './math/dragpoint';
 import { GameItem, IRenderable, Meshes } from './game-item';
 import { Material } from './material';
-import { Matrix3D } from './matrix3d';
+import { Matrix3D } from './math/matrix3d';
+import { Vertex2D } from './math/vertex2d';
 import { bulbLightMesh } from './meshes/bulb-light-mesh';
 import { bulbSocketMesh } from './meshes/bulb-socket-mesh';
 import { Table } from './table';
-import { Vertex2D } from './vertex';
 
 /**
  * VPinball's lights.

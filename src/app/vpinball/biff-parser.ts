@@ -19,7 +19,7 @@
 
 import { inflate } from 'zlib';
 import { ReadResult } from '../common/ole-doc';
-import { f4 } from './float';
+import { f4 } from './math/float';
 
 /**
  * A class that comes with set of utilities for parsing the BIFF structure.

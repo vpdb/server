@@ -17,9 +17,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { IRenderVertex, RenderVertex, RenderVertex3D, Vertex2D, Vertex3D } from './vertex';
-import { BiffParser } from './biff-parser';
-import { f4, fr } from './float';
+import { f4 } from './float';
+import { IRenderVertex, RenderVertex, RenderVertex3D } from './vertex';
+import { Vertex2D } from './vertex2d';
+import { Vertex3D } from './vertex3d';
 
 /**
  * VPinball's implementation of the Catmull Curve.
@@ -31,7 +32,7 @@ export class CatmullCurve {
 	private c: { x: number[], y: number[], z?: number[] } = {
 		x: [0, 0, 0, 0],
 		y: [0, 0, 0, 0],
-		z: [0, 0, 0, 0]
+		z: [0, 0, 0, 0],
 	};
 
 	public static fromVertex3D(v0: Vertex3D, v1: Vertex3D, v2: Vertex3D, v3: Vertex3D): CatmullCurve {
@@ -66,8 +67,8 @@ export class CatmullCurve {
 		const t2 = t * t;
 		const t3 = t2 * t;
 		return new RenderVertex(
-			this.c.x[3] * t3 + this.c.x[2] * t2 + this.c.x[1] * t + this.c.x[0],
-			this.c.y[3] * t3 + this.c.y[2] * t2 + this.c.y[1] * t + this.c.y[0],
+			f4(f4(f4(this.c.x[3] * t3) + f4(this.c.x[2] * t2)) + f4(this.c.x[1] * t)) + this.c.x[0],
+			f4(f4(f4(this.c.y[3] * t3) + f4(this.c.y[2] * t2)) + f4(this.c.y[1] * t)) + this.c.y[0],
 		);
 	}
 
@@ -75,9 +76,9 @@ export class CatmullCurve {
 		const t2 = t * t;
 		const t3 = t2 * t;
 		return new RenderVertex3D(
-			this.c.x[3] * t3 + this.c.x[2] * t2 + this.c.x[1] * t + this.c.x[0],
-			this.c.y[3] * t3 + this.c.y[2] * t2 + this.c.y[1] * t + this.c.y[0],
-			this.c.z[3] * t3 + this.c.z[2] * t2 + this.c.z[1] * t + this.c.z[0],
+			f4(f4(f4(this.c.x[3] * t3) + f4(this.c.x[2] * t2)) + f4(this.c.x[1] * t)) + this.c.x[0],
+			f4(f4(f4(this.c.y[3] * t3) + f4(this.c.y[2] * t2)) + f4(this.c.y[1] * t)) + this.c.y[0],
+			f4(f4(f4(this.c.z[3] * t3) + f4(this.c.z[2] * t2)) + f4(this.c.z[1] * t)) + this.c.z[0],
 		);
 	}
 
@@ -88,8 +89,8 @@ export class CatmullCurve {
 		let t2 = f4(f4(f4(f4(x2 - x1) / dt1) - f4(f4(x3 - x1) / f4(dt1 + dt2))) + f4(f4(x3 - x2) / dt2));
 
 		// rescale tangents for parametrization in [0,1]
-		t1 *= dt1;
-		t2 *= dt1;
+		t1 = f4(t1 * dt1);
+		t2 = f4(t2 * dt1);
 
 		return CatmullCurve.initCubicSplineCoeffs(x1, x2, f4(t1), f4(t2));
 	}

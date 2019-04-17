@@ -21,7 +21,8 @@
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { Material, SaveMaterial, SavePhysicsMaterial } from './material';
-import { Vertex2D, Vertex3D } from './vertex';
+import { Vertex2D } from './math/vertex2d';
+import { Vertex3D } from './math/vertex3d';
 
 /**
  * Global data about the table.

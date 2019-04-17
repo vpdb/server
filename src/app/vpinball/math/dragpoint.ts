@@ -18,8 +18,9 @@
  */
 
 import { CatmullCurve } from './catmull-curve';
-import { GameItem } from './game-item';
-import { IRenderVertex, RenderVertex, Vertex3D } from './vertex';
+import { GameItem } from '../game-item';
+import { Vertex3D } from './vertex3d';
+import { IRenderVertex, RenderVertex } from './vertex';
 
 export const HIT_SHAPE_DETAIL_LEVEL = 7.0;
 

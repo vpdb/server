@@ -21,16 +21,17 @@ import { Math as M } from 'three';
 import { logger } from '../common/logger';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
-import { DragPoint } from './dragpoint';
+import { DragPoint } from './math/dragpoint';
 import { GameItem, IRenderable, Meshes } from './game-item';
-import { Matrix3D } from './matrix3d';
+import { Matrix3D } from './math/matrix3d';
+import { Vertex2D } from './math/vertex2d';
+import { Vertex3D } from './math/vertex3d';
 import { Mesh } from './mesh';
 import { triggerButtonMesh } from './meshes/trigger-button-mesh';
 import { triggerSimpleMesh } from './meshes/trigger-simple-mesh';
 import { triggerStarMesh } from './meshes/trigger-star-mesh';
 import { triggerDWireMesh } from './meshes/trigger-wire-d-mesh';
 import { Table } from './table';
-import { Vertex2D, Vertex3D } from './vertex';
 
 /**
  * VPinball's triggers.

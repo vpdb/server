@@ -18,9 +18,9 @@
  */
 
 import { DragPoint } from './dragpoint';
-import { Vertex2D } from './vertex2d';
-import { RenderVertex } from './vertex';
 import { f4 } from './float';
+import { RenderVertex } from './vertex';
+import { Vertex2D } from './vertex2d';
 
 export class SplineVertex {
 

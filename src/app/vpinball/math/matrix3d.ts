@@ -19,7 +19,6 @@
 
 import { f4, fr } from './float';
 import { Vertex3D } from './vertex3d';
-import { Math as M } from 'three';
 
 /**
  * Three's Matrix4.multiply() gives different results than VPinball's. Duh.

@@ -64,8 +64,8 @@ export class CatmullCurve {
 	}
 
 	public getPoint2At(t: number): IRenderVertex {
-		const t2 = t * t;
-		const t3 = t2 * t;
+		const t2 = f4(t * t);
+		const t3 = f4(t2 * t);
 		return new RenderVertex(
 			f4(f4(f4(this.c.x[3] * t3) + f4(this.c.x[2] * t2)) + f4(this.c.x[1] * t)) + this.c.x[0],
 			f4(f4(f4(this.c.y[3] * t3) + f4(this.c.y[2] * t2)) + f4(this.c.y[1] * t)) + this.c.y[0],
@@ -73,8 +73,8 @@ export class CatmullCurve {
 	}
 
 	public getPoint3At(t: number): IRenderVertex {
-		const t2 = t * t;
-		const t3 = t2 * t;
+		const t2 = f4(t * t);
+		const t3 = f4(t2 * t);
 		return new RenderVertex3D(
 			f4(f4(f4(this.c.x[3] * t3) + f4(this.c.x[2] * t2)) + f4(this.c.x[1] * t)) + this.c.x[0],
 			f4(f4(f4(this.c.y[3] * t3) + f4(this.c.y[2] * t2)) + f4(this.c.y[1] * t)) + this.c.y[0],

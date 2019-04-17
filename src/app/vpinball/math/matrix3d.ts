@@ -19,6 +19,7 @@
 
 import { f4, fr } from './float';
 import { Vertex3D } from './vertex3d';
+import { Math as M } from 'three';
 
 /**
  * Three's Matrix4.multiply() gives different results than VPinball's. Duh.
@@ -62,44 +63,44 @@ export class Matrix3D {
 
 	public rotateXMatrix(x: number) {
 		this.setIdentity();
-		this._22 = this._33 = Math.cos(x);
-		this._23 = Math.sin(x);
+		this._22 = this._33 = Math.cos(f4(x));
+		this._23 = Math.sin(f4(x));
 		this._32 = -this._23;
 	}
 
 	public rotateYMatrix(y: number) {
 		this.setIdentity();
-		this._11 = this._33 = Math.cos(y);
-		this._31 = Math.sin(y);
+		this._11 = this._33 = Math.cos(f4(y));
+		this._31 = Math.sin(f4(y));
 		this._13 = -this._31;
 	}
 
 	public rotateZMatrix(z: number) {
 		this.setIdentity();
-		this._11 = this._22 = Math.cos(z);
-		this._12 = Math.sin(z);
+		this._11 = this._22 = Math.cos(f4(z));
+		this._12 = Math.sin(f4(z));
 		this._21 = -this._12;
 	}
 
 	public scale(x: number, y: number, z: number) {
-		this._11 *= x;
-		this._12 *= x;
-		this._13 *= x;
-		this._21 *= y;
-		this._22 *= y;
-		this._23 *= y;
-		this._31 *= z;
-		this._32 *= z;
-		this._33 *= z;
+		this._11 *= f4(x);
+		this._12 *= f4(x);
+		this._13 *= f4(x);
+		this._21 *= f4(y);
+		this._22 *= f4(y);
+		this._23 *= f4(y);
+		this._31 *= f4(z);
+		this._32 *= f4(z);
+		this._33 *= f4(z);
 	}
 
 	public multiplyVector(v: Vertex3D): Vertex3D {
 		// Transform it through the current matrix set
-		const xp = f4(f4(f4(this._11 * v.x) + f4(this._21 * v.y)) + f4(this._31 * v.z)) + this._41;
-		const yp = f4(f4(f4(this._12 * v.x) + f4(this._22 * v.y)) + f4(this._32 * v.z)) + this._42;
-		const zp = f4(f4(f4(this._13 * v.x) + f4(this._23 * v.y)) + f4(this._33 * v.z)) + this._43;
-		const wp = f4(f4(f4(this._14 * v.x) + f4(this._24 * v.y)) + f4(this._34 * v.z)) + this._44;
-		const invWp = 1.0 / wp;
+		const xp = f4(f4(f4(f4(this._11 * v.x) + f4(this._21 * v.y)) + f4(this._31 * v.z)) + this._41);
+		const yp = f4(f4(f4(f4(this._12 * v.x) + f4(this._22 * v.y)) + f4(this._32 * v.z)) + this._42);
+		const zp = f4(f4(f4(f4(this._13 * v.x) + f4(this._23 * v.y)) + f4(this._33 * v.z)) + this._43);
+		const wp = f4(f4(f4(f4(this._14 * v.x) + f4(this._24 * v.y)) + f4(this._34 * v.z)) + this._44);
+		const invWp = f4(1.0 / wp);
 		return new Vertex3D(xp * invWp, yp * invWp, zp * invWp);
 	}
 

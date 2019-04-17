@@ -21,6 +21,7 @@ import { CatmullCurve } from './catmull-curve';
 import { GameItem } from '../game-item';
 import { Vertex3D } from './vertex3d';
 import { IRenderVertex, RenderVertex } from './vertex';
+import { f4 } from './float';
 
 export const HIT_SHAPE_DETAIL_LEVEL = 7.0;
 
@@ -137,52 +138,52 @@ export class DragPoint extends GameItem {
 			const startrenderpoint = virenderpoints[i] % cpoints;
 			let endrenderpoint = virenderpoints[(i < cpoints - 1) ? (i + 1) : 0] % cpoints;
 
-			let starttexcoord: number;
+			let startTexCoord: number;
 			let endtexcoord: number;
 			if (fNoCoords) {
-				starttexcoord = 0.0;
+				startTexCoord = 0.0;
 				endtexcoord = 1.0;
 
 			} else {
-				starttexcoord = dragPoints[vitexpoints[i] % dragPoints.length].texturecoord;
+				startTexCoord = dragPoints[vitexpoints[i] % dragPoints.length].texturecoord;
 				endtexcoord = dragPoints[vitexpoints[i + 1] % dragPoints.length].texturecoord;
 			}
 
-			const deltacoord = endtexcoord - starttexcoord;
+			const deltacoord = endtexcoord - startTexCoord;
 
 			if (endrenderpoint <= startrenderpoint) {
 				endrenderpoint += cpoints;
 			}
 
-			let totallength = 0.0;
+			let totalLength = 0.0;
 			for (let l = startrenderpoint; l < endrenderpoint; ++l) {
 
 				const pv1 = vv[l % cpoints];
 				const pv2 = vv[(l + 1) % cpoints];
 
-				const dx = pv1.x - pv2.x;
-				const dy = pv1.y - pv2.y;
-				const length = Math.sqrt(dx * dx + dy * dy);
+				const dx = f4(pv1.x - pv2.x);
+				const dy = f4(pv1.y - pv2.y);
+				const length = f4(Math.sqrt(f4(dx * dx) + f4(dy * dy)));
 
-				totallength += length;
+				totalLength = f4(totalLength + length);
 			}
 
-			let partiallength = 0.0;
+			let partialLength = 0.0;
 			for (let l = startrenderpoint; l < endrenderpoint; ++l) {
 
 				const pv1 = vv[l % cpoints];
 				const pv2 = vv[(l + 1) % cpoints];
 
-				const dx = pv1.x - pv2.x;
-				const dy = pv1.y - pv2.y;
-				const length = Math.sqrt(dx * dx + dy * dy);
-				if (totallength === 0.0) {
-					totallength = 1.0;
+				const dx = f4(pv1.x - pv2.x);
+				const dy = f4(pv1.y - pv2.y);
+				const length = f4(Math.sqrt(f4(dx * dx) + f4(dy * dy)));
+				if (totalLength === 0.0) {
+					totalLength = 1.0;
 				}
-				const texcoord = partiallength / totallength;
+				const texCoord = f4(partialLength / totalLength);
 
-				ppcoords[l % cpoints] = (texcoord * deltacoord) + starttexcoord;
-				partiallength += length;
+				ppcoords[l % cpoints] = (texCoord * deltacoord) + startTexCoord;
+				partialLength = f4(partialLength + length);
 			}
 		}
 		return ppcoords;
@@ -190,7 +191,7 @@ export class DragPoint extends GameItem {
 
 	private static recurseSmoothLine<T extends IRenderVertex>(vv: T[] = [], cc: CatmullCurve, t1: number, t2: number, vt1: T, vt2: T, accuracy: number): T[] {
 
-		const tMid = (t1 + t2) * 0.5;
+		const tMid = f4(f4(t1 + t2) * 0.5);
 
 		const vmid: T = ((vt2.isVector3 ? cc.getPoint3At(tMid) : cc.getPoint2At(tMid)) as unknown) as T;
 
@@ -222,8 +223,8 @@ export class DragPoint extends GameItem {
 
 	private static flatWithAccuracy2(v1: IRenderVertex, v2: IRenderVertex, vMid: IRenderVertex, accuracy: number): boolean {
 		// compute double the signed area of the triangle (v1, vMid, v2)
-		const dblarea = (vMid.x - v1.x) * (v2.y - v1.y) - (v2.x - v1.x) * (vMid.y - v1.y);
-		return (dblarea * dblarea < accuracy);
+		const dblArea = f4(f4(vMid.x - v1.x) * f4(v2.y - v1.y)) - f4(f4(v2.x - v1.x) * f4(vMid.y - v1.y));
+		return f4(dblArea * dblArea) < accuracy;
 	}
 
 	private static flatWithAccuracy3(v1: Vertex3D, v2: Vertex3D, vMid: Vertex3D, accuracy: number): boolean {

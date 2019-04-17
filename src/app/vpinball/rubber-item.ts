@@ -20,14 +20,15 @@
 import { Math as M } from 'three';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
-import { DragPoint, HIT_SHAPE_DETAIL_LEVEL } from './math/dragpoint';
 import { GameItem, IRenderable, Meshes } from './game-item';
+import { DragPoint, HIT_SHAPE_DETAIL_LEVEL } from './math/dragpoint';
+import { f4 } from './math/float';
 import { Matrix3D } from './math/matrix3d';
+import { SplineVertex } from './math/spline-vertex';
+import { Vertex3DNoTex2 } from './math/vertex';
 import { Vertex3D } from './math/vertex3d';
 import { FLT_MAX, FLT_MIN, Mesh } from './mesh';
-import { SplineVertex } from './math/spline-vertex';
 import { Table } from './table';
-import { Vertex3DNoTex2 } from './math/vertex';
 
 /**
  * VPinball's rubber item.
@@ -38,9 +39,9 @@ export class RubberItem extends GameItem implements IRenderable {
 
 	public wzName: string;
 	public pdata: number;
-	public height: number = 25;
-	public hitHeight: number = -1.0;
-	public thickness: number = 8;
+	public height: number = f4(25);
+	public hitHeight: number = f4(-1.0);
+	public thickness: number = f4(8);
 	public fHitEvent: boolean = false;
 	public szMaterial: string;
 	public timer: TimerDataRoot = new TimerDataRoot();
@@ -99,7 +100,7 @@ export class RubberItem extends GameItem implements IRenderable {
 		const mesh = new Mesh(`rubber-${this.getName()}`);
 		const acc = -1;
 		const staticRendering = true;
-		const createHitShape = true;
+		const createHitShape = false;
 		let accuracy: number;
 		if (table.getDetailLevel() < 5) {
 			accuracy = 6;
@@ -146,9 +147,9 @@ export class RubberItem extends GameItem implements IRenderable {
 			let binorm: Vertex3D;
 			let normal: Vertex3D;
 			if (i === 0) {
-				const up = new Vertex3D(sv.pMiddlePoints[i2].x + sv.pMiddlePoints[i].x, sv.pMiddlePoints[i2].y + sv.pMiddlePoints[i].y, height * 2.0);
-				normal = new Vertex3D(tangent.y * up.z, - tangent.x * up.z, tangent.x * up.y - tangent.y * up.x); // = CrossProduct(tangent, up)
-				binorm = new Vertex3D(tangent.y * normal.z, - tangent.x * normal.z, tangent.x * normal.y - tangent.y * normal.x); // = CrossProduct(tangent, normal)
+				const up = new Vertex3D(sv.pMiddlePoints[i2].x + sv.pMiddlePoints[i].x, sv.pMiddlePoints[i2].y + sv.pMiddlePoints[i].y, f4(height * 2.0));
+				normal = new Vertex3D(tangent.y * up.z, -tangent.x * up.z, f4(tangent.x * up.y) - f4(tangent.y * up.x)); // = CrossProduct(tangent, up)
+				binorm = new Vertex3D(tangent.y * normal.z, -tangent.x * normal.z, f4(tangent.x * normal.y) - f4(tangent.y * normal.x)); // = CrossProduct(tangent, normal)
 
 			} else {
 				normal = prevB.clone().cross(tangent);
@@ -164,13 +165,13 @@ export class RubberItem extends GameItem implements IRenderable {
 				const tmp = Vertex3D.getRotatedAxis(j * (360.0 * invNS), tangent, normal).multiplyScalar(this.thickness * 0.5);
 
 				mesh.vertices[index] = new Vertex3DNoTex2();
-				mesh.vertices[index].x = sv.pMiddlePoints[i].x + tmp.x;
-				mesh.vertices[index].y = sv.pMiddlePoints[i].y + tmp.y;
+				mesh.vertices[index].x = f4(sv.pMiddlePoints[i].x + tmp.x);
+				mesh.vertices[index].y = f4(sv.pMiddlePoints[i].y + tmp.y);
 				if (createHitShape && (j === 0 || j === 3)) { //!! hack, adapt if changing detail level for hitshape
 					// for a hit shape create a more rectangle mesh and not a smooth one
 					tmp.z *= 0.6;
 				}
-				mesh.vertices[index].z = height + tmp.z;
+				mesh.vertices[index].z = (height + tmp.z);
 				//texel
 				mesh.vertices[index].tu = u;
 				mesh.vertices[index].tv = v;
@@ -230,9 +231,9 @@ export class RubberItem extends GameItem implements IRenderable {
 			if (maxz < mesh.vertices[i].z) { maxz = mesh.vertices[i].z; }
 			if (minz > mesh.vertices[i].z) { minz = mesh.vertices[i].z; }
 		}
-		this.middlePoint.x = (maxx + minx) * 0.5;
-		this.middlePoint.y = (maxy + miny) * 0.5;
-		this.middlePoint.z = (maxz + minz) * 0.5;
+		this.middlePoint.x = f4(maxx + minx) * 0.5;
+		this.middlePoint.y = f4(maxy + miny) * 0.5;
+		this.middlePoint.z = f4(maxz + minz) * 0.5;
 
 		const [vertexMatrix, fullMatrix ] = this.getMatrices(table);
 		return {
@@ -261,7 +262,7 @@ export class RubberItem extends GameItem implements IRenderable {
 		if (this.height === this.hitHeight) {   // do not z-scale the hit mesh
 			tempMat.setTranslation(this.middlePoint.x, this.middlePoint.y, this.height + table.getTableHeight());
 		} else {
-			tempMat.setTranslation(this.middlePoint.x, this.middlePoint.y, this.height * table.getScaleZ() + table.getTableHeight());
+			tempMat.setTranslation(this.middlePoint.x, this.middlePoint.y, f4(this.height * table.getScaleZ()) + table.getTableHeight());
 		}
 		vertMatrix.multiply(tempMat);
 

@@ -19,7 +19,7 @@
 
 import { FrameData } from './common';
 import { MeshConverter } from './gltf/mesh-converter';
-import { fr } from './math/float';
+import { f4, fr } from './math/float';
 import { Matrix3D } from './math/matrix3d';
 import { Vertex2D } from './math/vertex2d';
 import { Vertex3D } from './math/vertex3d';
@@ -154,8 +154,8 @@ export class Mesh {
 
 		for (let i = 0; i < numVertices; i++) {
 			const v = vertices[i];
-			const l = v.nx * v.nx + v.ny * v.ny + v.nz * v.nz;
-			const invL = (l >= FLT_MIN) ? 1.0 / Math.sqrt(l) : 0.0;
+			const l = f4(f4(f4(v.nx * v.nx) + f4(v.ny * v.ny)) + f4(v.nz * v.nz));
+			const invL = (l >= FLT_MIN) ? f4(1.0 / f4(Math.sqrt(l))) : 0.0;
 			v.nx *= invL;
 			v.ny *= invL;
 			v.nz *= invL;
@@ -176,9 +176,9 @@ export class Mesh {
 			const l = rgi[i];
 			const m = rgi[(i < count - 1) ? (i + 1) : 0];
 
-			vnormal.x += (rgv[l].y - rgv[m].y) * (rgv[l].z + rgv[m].z);
-			vnormal.y += (rgv[l].z - rgv[m].z) * (rgv[l].x + rgv[m].x);
-			vnormal.z += (rgv[l].x - rgv[m].x) * (rgv[l].y + rgv[m].y);
+			vnormal.x += f4(rgv[l].y - rgv[m].y) * f4(rgv[l].z + rgv[m].z);
+			vnormal.y += f4(rgv[l].z - rgv[m].z) * f4(rgv[l].x + rgv[m].x);
+			vnormal.z += f4(rgv[l].x - rgv[m].x) * f4(rgv[l].y + rgv[m].y);
 		}
 
 		vnormal.normalize();

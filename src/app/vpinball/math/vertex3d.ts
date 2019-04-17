@@ -56,25 +56,25 @@ export class Vertex3D {
 		const u = axis.clone();
 		u.normalize();
 
-		const sinAngle = Math.sin((Math.PI / 180.0) * angle);
-		const cosAngle = Math.cos((Math.PI / 180.0) * angle);
-		const oneMinusCosAngle = 1.0 - cosAngle;
+		const sinAngle = f4(Math.sin(f4(f4(Math.PI / 180.0) * angle)));
+		const cosAngle = f4(Math.cos(f4(f4(Math.PI / 180.0) * angle)));
+		const oneMinusCosAngle = f4(1.0 - cosAngle);
 
 		const rotMatrixRow0 = new Vertex3D();
 		const rotMatrixRow1 = new Vertex3D();
 		const rotMatrixRow2 = new Vertex3D();
 
-		rotMatrixRow0.x = u.x * u.x + cosAngle * (1.0 - u.x * u.x);
-		rotMatrixRow0.y = u.x * u.y * oneMinusCosAngle - sinAngle * u.z;
-		rotMatrixRow0.z = u.x * u.z * oneMinusCosAngle + sinAngle * u.y;
+		rotMatrixRow0.x = f4(u.x * u.x) + f4(cosAngle * f4(1.0 - f4(u.x * u.x)));
+		rotMatrixRow0.y = f4(f4(u.x * u.y) * oneMinusCosAngle) - f4(sinAngle * u.z);
+		rotMatrixRow0.z = f4(f4(u.x * u.z) * oneMinusCosAngle) + f4(sinAngle * u.y);
 
-		rotMatrixRow1.x = u.x * u.y * oneMinusCosAngle + sinAngle * u.z;
-		rotMatrixRow1.y = u.y * u.y + cosAngle * (1.0 - u.y * u.y);
-		rotMatrixRow1.z = u.y * u.z * oneMinusCosAngle - sinAngle * u.x;
+		rotMatrixRow1.x = f4(f4(u.x * u.y) * oneMinusCosAngle) + f4(sinAngle * u.z);
+		rotMatrixRow1.y = f4(u.y * u.y) + f4(cosAngle * (1.0 - f4(u.y * u.y)));
+		rotMatrixRow1.z = f4(f4(u.y * u.z) * oneMinusCosAngle) - f4(sinAngle * u.x);
 
-		rotMatrixRow2.x = u.x * u.z * oneMinusCosAngle - sinAngle * u.y;
-		rotMatrixRow2.y = u.y * u.z * oneMinusCosAngle + sinAngle * u.x;
-		rotMatrixRow2.z = u.z * u.z + cosAngle * (1.0 - u.z * u.z);
+		rotMatrixRow2.x = f4(f4(u.x * u.z) * oneMinusCosAngle) - f4(sinAngle * u.y);
+		rotMatrixRow2.y = f4(f4(u.y * u.z) * oneMinusCosAngle) + f4(sinAngle * u.x);
+		rotMatrixRow2.z = f4(u.z * u.z) + f4(cosAngle * f4(1.0 - f4(u.z * u.z)));
 
 		return new Vertex3D(temp.dot(rotMatrixRow0), temp.dot(rotMatrixRow1), temp.dot(rotMatrixRow2));
 	}

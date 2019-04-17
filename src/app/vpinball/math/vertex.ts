@@ -21,6 +21,7 @@
 import { isUndefined } from 'util';
 import { Vertex2D } from './vertex2d';
 import { Vertex3D } from './vertex3d';
+import { f4 } from './float';
 
 export interface IRenderVertex {
 	x: number;
@@ -57,28 +58,50 @@ export class Vertex3DNoTex2 {
 
 	public static size = 32;
 
-	public x: number = 0;
-	public y: number = 0;
-	public z: number = 0;
+	set x(x: number) { this._x = f4(x); }
+	set y(y: number) { this._y = f4(y); }
+	set z(z: number) { this._z = f4(z); }
 
-	public nx: number = 0;
-	public ny: number = 0;
-	public nz: number = 0;
+	set nx(nx: number) { this._nx = f4(nx); }
+	set ny(ny: number) { this._ny = f4(ny); }
+	set nz(nz: number) { this._nz = f4(nz); }
 
-	public tu: number = 0;
-	public tv: number = 0;
+	set tu(tu: number) { this._tu = f4(tu); }
+	set tv(tv: number) { this._tu = f4(tv); }
+
+	get x() { return this._x; }
+	get y() { return this._y; }
+	get z() { return this._z; }
+
+	get nx() { return this._nx; }
+	get ny() { return this._ny; }
+	get nz() { return this._nz; }
+
+	get tu() { return this._tu; }
+	get tv() { return this._tv; }
+
+	public _x: number = 0;
+	public _y: number = 0;
+	public _z: number = 0;
+
+	public _nx: number = 0;
+	public _ny: number = 0;
+	public _nz: number = 0;
+
+	public _tu: number = 0;
+	public _tv: number = 0;
 
 	public static get(buffer: Buffer, pos: number): Vertex3DNoTex2 {
 		const offset = pos * Vertex3DNoTex2.size;
 		const vertex = new Vertex3DNoTex2();
-		vertex.x = buffer.readFloatLE(offset);
-		vertex.y = buffer.readFloatLE(offset + 4);
-		vertex.z = buffer.readFloatLE(offset + 8);
-		vertex.nx = buffer.readFloatLE(offset + 12);
-		vertex.ny = buffer.readFloatLE(offset + 16);
-		vertex.nz = buffer.readFloatLE(offset + 20);
-		vertex.tu = buffer.readFloatLE(offset + 24);
-		vertex.tv = buffer.readFloatLE(offset + 28);
+		vertex.x = f4(buffer.readFloatLE(offset));
+		vertex.y = f4(buffer.readFloatLE(offset + 4));
+		vertex.z = f4(buffer.readFloatLE(offset + 8));
+		vertex.nx = f4(buffer.readFloatLE(offset + 12));
+		vertex.ny = f4(buffer.readFloatLE(offset + 16));
+		vertex.nz = f4(buffer.readFloatLE(offset + 20));
+		vertex.tu = f4(buffer.readFloatLE(offset + 24));
+		vertex.tv = f4(buffer.readFloatLE(offset + 28));
 		return vertex;
 	}
 

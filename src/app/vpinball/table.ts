@@ -40,6 +40,8 @@ import { Texture } from './texture';
 import { TriggerItem } from './trigger-item';
 import { Vertex3DNoTex2 } from './math/vertex';
 import { Matrix3D } from './math/matrix3d';
+import { f4 } from './math/float';
+import { Math as M } from 'three';
 
 /**
  * A Visual Pinball table.
@@ -89,7 +91,7 @@ export class Table implements IRenderable {
 	}
 
 	public getScaleZ(): number {
-		return this.gameData.BG_scalez[this.gameData.BG_current_set] || 1.0;
+		return f4(this.gameData.BG_scalez[this.gameData.BG_current_set]) || 1.0;
 	}
 
 	public getDetailLevel() {

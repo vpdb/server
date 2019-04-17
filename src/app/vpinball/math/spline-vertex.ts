@@ -20,6 +20,7 @@
 import { DragPoint } from './dragpoint';
 import { Vertex2D } from './vertex2d';
 import { RenderVertex } from './vertex';
+import { f4 } from './float';
 
 export class SplineVertex {
 
@@ -49,56 +50,56 @@ export class SplineVertex {
 
 			v.ppfCross[i] = vmiddle.fControlPoint;
 
-			let vnormal: Vertex2D;
+			let vNormal: Vertex2D;
 
 			// Get normal at this point
 			// Notice that these values equal the ones in the line
 			// equation and could probably be substituted by them.
-			const v1normal = new Vertex2D(vprev.y - vmiddle.y, vmiddle.x - vprev.x);   // vector vmiddle-vprev rotated RIGHT
-			const v2normal = new Vertex2D(vmiddle.y - vnext.y, vnext.x - vmiddle.x);   // vector vnext-vmiddle rotated RIGHT
+			const v1Normal = new Vertex2D(vprev.y - vmiddle.y, vmiddle.x - vprev.x);   // vector vmiddle-vprev rotated RIGHT
+			const v2Normal = new Vertex2D(vmiddle.y - vnext.y, vnext.x - vmiddle.x);   // vector vnext-vmiddle rotated RIGHT
 
 			// not needed special start/end handling as rubbers always loop, except for the case where there are only 2 control points
 			if (cvertex === 2 && i === (cvertex - 1)) {
-				v1normal.normalize();
-				vnormal = v1normal;
+				v1Normal.normalize();
+				vNormal = v1Normal;
 
 			} else if (cvertex === 2 && i === 0) {
-				v2normal.normalize();
-				vnormal = v2normal;
+				v2Normal.normalize();
+				vNormal = v2Normal;
 
 			} else {
-				v1normal.normalize();
-				v2normal.normalize();
+				v1Normal.normalize();
+				v2Normal.normalize();
 
-				if (Math.abs(v1normal.x - v2normal.x) < 0.0001 && Math.abs(v1normal.y - v2normal.y) < 0.0001) {
+				if (Math.abs(v1Normal.x - v2Normal.x) < 0.0001 && Math.abs(v1Normal.y - v2Normal.y) < 0.0001) {
 					// Two parallel segments
-					vnormal = v1normal;
+					vNormal = v1Normal;
 
 				} else {
 					// Find intersection of the two edges meeting this points, but
 					// shift those lines outwards along their normals
 
 					// First line
-					const A = vprev.y - vmiddle.y;
-					const B = vmiddle.x - vprev.x;
+					const A = f4(vprev.y - vmiddle.y);
+					const B = f4(vmiddle.x - vprev.x);
 
 					// Shift line along the normal
-					const C = A * (v1normal.x - vprev.x) + B * (v1normal.y - vprev.y);
+					const C = f4(f4(A * f4(v1Normal.x - vprev.x)) + f4(B * f4(v1Normal.y - vprev.y)));
 
 					// Second line
-					const D = vnext.y - vmiddle.y;
-					const E = vmiddle.x - vnext.x;
+					const D = f4(vnext.y - vmiddle.y);
+					const E = f4(vmiddle.x - vnext.x);
 
 					// Shift line along the normal
-					const F = D * (v2normal.x - vnext.x) + E * (v2normal.y - vnext.y);
+					const F = f4(f4(D * f4(v2Normal.x - vnext.x)) + f4(E * f4(v2Normal.y - vnext.y)));
 
-					const det = A * E - B * D;
-					const invDet = (det !== 0.0) ? 1.0 / det : 0.0;
+					const det = f4(f4(A * E) - f4(B * D));
+					const invDet = (det !== 0.0) ? f4(1.0 / det) : 0.0;
 
-					const intersectx = (B * F - E * C) * invDet;
-					const intersecty = (C * D - A * F) * invDet;
+					const intersectX = f4(f4(f4(B * F) - f4(E * C)) * invDet);
+					const intersectY = f4(f4(f4(C * D) - f4(A * F)) * invDet);
 
-					vnormal = new Vertex2D(vmiddle.x - intersectx, vmiddle.y - intersecty);
+					vNormal = new Vertex2D(vmiddle.x - intersectX, vmiddle.y - intersectY);
 				}
 			}
 
@@ -107,10 +108,10 @@ export class SplineVertex {
 			v.pMiddlePoints[i] = vmiddle;
 
 			// vmiddle + (widthcur * 0.5) * vnormal;
-			v.rgvLocal[i] = vmiddle.clone().add(vnormal.clone().multiplyScalar(widthcur * 0.5));
+			v.rgvLocal[i] = vmiddle.clone().add(vNormal.clone().multiplyScalar(widthcur * 0.5));
 
 			//vmiddle - (widthcur*0.5f) * vnormal;
-			v.rgvLocal[(cvertex + 1) * 2 - i - 1] = vmiddle.clone().sub(vnormal.clone().multiplyScalar(widthcur * 0.5));
+			v.rgvLocal[(cvertex + 1) * 2 - i - 1] = vmiddle.clone().sub(vNormal.clone().multiplyScalar(widthcur * 0.5));
 
 			if (i === 0) {
 				v.rgvLocal[cvertex] = v.rgvLocal[0];

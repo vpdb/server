@@ -19,9 +19,9 @@
 
 /* tslint:disable:variable-name adjacent-overload-signatures */
 import { isUndefined } from 'util';
+import { f4 } from './float';
 import { Vertex2D } from './vertex2d';
 import { Vertex3D } from './vertex3d';
-import { f4 } from './float';
 
 export interface IRenderVertex {
 	x: number;

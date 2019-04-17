@@ -17,11 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { CatmullCurve } from './catmull-curve';
 import { GameItem } from '../game-item';
-import { Vertex3D } from './vertex3d';
-import { IRenderVertex, RenderVertex } from './vertex';
+import { CatmullCurve } from './catmull-curve';
 import { f4 } from './float';
+import { IRenderVertex, RenderVertex } from './vertex';
+import { Vertex3D } from './vertex3d';
 
 export const HIT_SHAPE_DETAIL_LEVEL = 7.0;
 

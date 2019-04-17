@@ -21,12 +21,13 @@ import { Math as M } from 'three';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { GameItem, IRenderable, Meshes } from './game-item';
-import { Matrix3D } from './matrix3d';
+import { Matrix3D } from './math/matrix3d';
+import { Vertex2D } from './math/vertex2d';
+import { Vertex3D } from './math/vertex3d';
 import { Mesh } from './mesh';
 import { spinnerBracketMesh } from './meshes/spinner-bracket-mesh';
 import { spinnerPlateMesh } from './meshes/spinner-plate-mesh';
 import { Table } from './table';
-import { Vertex2D, Vertex3D } from './vertex';
 
 /**
  * VPinball's spinners.

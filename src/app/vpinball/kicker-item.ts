@@ -21,7 +21,9 @@ import { Math as M } from 'three';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { GameItem, IRenderable, Meshes } from './game-item';
-import { Matrix3D } from './matrix3d';
+import { Matrix3D } from './math/matrix3d';
+import { Vertex2D } from './math/vertex2d';
+import { Vertex3D } from './math/vertex3d';
 import { Mesh } from './mesh';
 import { kickerCupMesh } from './meshes/kicker-cup-mesh';
 import { kickerGottliebMesh } from './meshes/kicker-gottlieb-mesh';
@@ -31,7 +33,6 @@ import { kickerT1Mesh } from './meshes/kicker-t1-mesh';
 import { kickerWilliamsMesh } from './meshes/kicker-williams-mesh';
 import { Table } from './table';
 import { Texture } from './texture';
-import { Vertex2D, Vertex3D } from './vertex';
 
 /**
  * VPinball's kickers.

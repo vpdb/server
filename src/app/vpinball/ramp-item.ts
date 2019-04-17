@@ -20,12 +20,14 @@
 
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
-import { DragPoint } from './dragpoint';
+import { DragPoint } from './math/dragpoint';
 import { GameItem, IRenderable, Meshes } from './game-item';
 import { Mesh } from './mesh';
-import { RenderVertex3D, Vertex2D, Vertex3D, Vertex3DNoTex2 } from './vertex';
+import { RenderVertex3D, Vertex3DNoTex2 } from './math/vertex';
 import { Table } from './table';
-import { Matrix3D } from './matrix3d';
+import { Vertex2D } from './math/vertex2d';
+import { Matrix3D } from './math/matrix3d';
+import { Vertex3D } from './math/vertex3d';
 
 /**
  * VPinball's ramps.

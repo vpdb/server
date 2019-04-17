@@ -20,13 +20,14 @@
 import { Math as M } from 'three';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
-import { DragPoint, HIT_SHAPE_DETAIL_LEVEL } from './dragpoint';
+import { DragPoint, HIT_SHAPE_DETAIL_LEVEL } from './math/dragpoint';
 import { GameItem, IRenderable, Meshes } from './game-item';
-import { Matrix3D } from './matrix3d';
+import { Matrix3D } from './math/matrix3d';
+import { Vertex3D } from './math/vertex3d';
 import { FLT_MAX, FLT_MIN, Mesh } from './mesh';
-import { SplineVertex } from './spline-vertex';
+import { SplineVertex } from './math/spline-vertex';
 import { Table } from './table';
-import { Vertex3D, Vertex3DNoTex2 } from './vertex';
+import { Vertex3DNoTex2 } from './math/vertex';
 
 /**
  * VPinball's rubber item.

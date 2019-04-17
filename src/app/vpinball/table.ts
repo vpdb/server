@@ -20,7 +20,6 @@
 
 import { logger } from '../common/logger';
 import { OleCompoundDoc, Storage } from '../common/ole-doc';
-import { settings } from '../common/settings';
 import { BumperItem } from './bumper-item';
 import { FlipperItem } from './flipper-item';
 import { GameData } from './game-data';
@@ -31,7 +30,6 @@ import { HitTargetItem } from './hit-target-item';
 import { KickerItem } from './kicker-item';
 import { LightItem } from './light-item';
 import { Material } from './material';
-import { Matrix3D } from './matrix3d';
 import { Mesh } from './mesh';
 import { PrimitiveItem } from './primitive-item';
 import { RampItem } from './ramp-item';
@@ -40,7 +38,8 @@ import { SpinnerItem } from './spinner-item';
 import { SurfaceItem } from './surface-item';
 import { Texture } from './texture';
 import { TriggerItem } from './trigger-item';
-import { Vertex3DNoTex2 } from './vertex';
+import { Vertex3DNoTex2 } from './math/vertex';
+import { Matrix3D } from './math/matrix3d';
 
 /**
  * A Visual Pinball table.

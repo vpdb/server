@@ -19,12 +19,13 @@
 
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
-import { DragPoint } from './dragpoint';
+import { DragPoint } from './math/dragpoint';
 import { GameItem, IRenderable, Meshes } from './game-item';
-import { Matrix3D } from './matrix3d';
+import { Matrix3D } from './math/matrix3d';
+import { Vertex2D } from './math/vertex2d';
 import { Mesh } from './mesh';
 import { Table } from './table';
-import { RenderVertex, Vertex2D, Vertex3DNoTex2 } from './vertex';
+import { RenderVertex, Vertex3DNoTex2 } from './math/vertex';
 
 /**
  * VPinball's surfaces, a.k.a as "walls".

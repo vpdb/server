@@ -18,39 +18,9 @@
  */
 
 /* tslint:disable:variable-name adjacent-overload-signatures */
-import { Vector2 as ThreeVector2, Vector3 as ThreeVector3 } from 'three';
 import { isUndefined } from 'util';
-import { BiffParser } from './biff-parser';
-import { f4 } from './float';
-
-export class Vertex2D extends ThreeVector2 {
-
-	public readonly isVector3 = false;
-
-	set x(_x: number) { this._x = f4(_x); }
-	set y(_y: number) { this._y = f4(_y); }
-
-	get x() { return this._x; }
-	get y() { return this._y; }
-
-	private _x: number;
-	private _y: number;
-
-	public static get(buffer: Buffer) {
-		const v2 = new Vertex2D();
-		v2.x = buffer.readFloatLE(0);
-		v2.y = buffer.readFloatLE(4);
-		return v2;
-	}
-
-	public static from(data: any): Vertex2D {
-		return Object.assign(new Vertex2D(), data);
-	}
-
-	constructor(x?: number, y?: number) {
-		super(x, y);
-	}
-}
+import { Vertex2D } from './vertex2d';
+import { Vertex3D } from './vertex3d';
 
 export interface IRenderVertex {
 	x: number;
@@ -70,72 +40,6 @@ export class RenderVertex extends Vertex2D implements IRenderVertex {
 
 	constructor(x?: number, y?: number) {
 		super(x, y);
-	}
-}
-
-export class Vertex3D extends ThreeVector3 {
-
-	set x(_x: number) { this._x = f4(_x); }
-	set y(_y: number) { this._y = f4(_y); }
-	set z(_z: number) { this._z = f4(_z); }
-
-	get x() { return this._x; }
-	get y() { return this._y; }
-	get z() { return this._z; }
-
-	private _x: number;
-	private _y: number;
-	private _z: number;
-
-	public static get(buffer: Buffer) {
-		const v3 = new Vertex3D();
-		v3.x = buffer.readFloatLE(0);
-		v3.y = buffer.readFloatLE(4);
-		if (buffer.length >= 12) {
-			v3.z = buffer.readFloatLE(8);
-		}
-		return v3;
-	}
-
-	public static from(data: any): Vertex3D {
-		return Object.assign(new Vertex3D(), data);
-	}
-
-	public static getRotatedAxis(angle: number, axis: Vertex3D, temp: Vertex3D): Vertex3D {
-		const u = axis.clone();
-		u.normalize();
-
-		const sinAngle = Math.sin((Math.PI / 180.0) * angle);
-		const cosAngle = Math.cos((Math.PI / 180.0) * angle);
-		const oneMinusCosAngle = 1.0 - cosAngle;
-
-		const rotMatrixRow0 = new Vertex3D();
-		const rotMatrixRow1 = new Vertex3D();
-		const rotMatrixRow2 = new Vertex3D();
-
-		rotMatrixRow0.x = u.x * u.x + cosAngle * (1.0 - u.x * u.x);
-		rotMatrixRow0.y = u.x * u.y * oneMinusCosAngle - sinAngle * u.z;
-		rotMatrixRow0.z = u.x * u.z * oneMinusCosAngle + sinAngle * u.y;
-
-		rotMatrixRow1.x = u.x * u.y * oneMinusCosAngle + sinAngle * u.z;
-		rotMatrixRow1.y = u.y * u.y + cosAngle * (1.0 - u.y * u.y);
-		rotMatrixRow1.z = u.y * u.z * oneMinusCosAngle - sinAngle * u.x;
-
-		rotMatrixRow2.x = u.x * u.z * oneMinusCosAngle - sinAngle * u.y;
-		rotMatrixRow2.y = u.y * u.z * oneMinusCosAngle + sinAngle * u.x;
-		rotMatrixRow2.z = u.z * u.z + cosAngle * (1.0 - u.z * u.z);
-
-		return new Vertex3D(temp.dot(rotMatrixRow0), temp.dot(rotMatrixRow1), temp.dot(rotMatrixRow2));
-	}
-
-	public readonly isVector2 = false;
-
-	constructor(x?: number, y?: number, z?: number) {
-		super(x, y, z);
-	}
-
-	public xy(): Vertex2D {
-		return new Vertex2D(this.x, this.y);
 	}
 }
 

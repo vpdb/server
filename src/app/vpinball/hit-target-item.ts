@@ -21,7 +21,8 @@ import { Math as M } from 'three';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { GameItem, IRenderable, Meshes } from './game-item';
-import { Matrix3D } from './matrix3d';
+import { Matrix3D } from './math/matrix3d';
+import { Vertex3D } from './math/vertex3d';
 import { Mesh } from './mesh';
 import { hitTargetT2Mesh } from './meshes/drop-target-t2-mesh';
 import { hitTargetT3Mesh } from './meshes/drop-target-t3-mesh';
@@ -33,7 +34,6 @@ import { hitTargetRoundMesh } from './meshes/hit-target-round-mesh';
 import { hitTargetT1SlimMesh } from './meshes/hit-target-t1-slim-mesh';
 import { hitTargetT2SlimMesh } from './meshes/hit-target-t2-slim-mesh';
 import { Table } from './table';
-import { Vertex3D } from './vertex';
 
 /**
  * VPinball's hit- and drop targets.

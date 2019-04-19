@@ -135,8 +135,8 @@ export class RubberItem extends GameItem implements IRenderable {
 		const height = this.hitHeight + table.getTableHeight();
 
 		let prevB = new Vertex3D();
-		const invNR = 1.0 / numRings;
-		const invNS = 1.0 / numSegments;
+		const invNR = f4(1.0 / numRings);
+		const invNS = f4(1.0 / numSegments);
 		let index = 0;
 		for (let i = 0; i < numRings; i++) {
 
@@ -161,7 +161,7 @@ export class RubberItem extends GameItem implements IRenderable {
 			const u = i * invNR;
 			for (let j = 0; j < numSegments; j++) {
 
-				const v = (j + u) * invNS;
+				const v = f4(j + u) * invNS;
 				const tmp = Vertex3D.getRotatedAxis(j * (360.0 * invNS), tangent, normal).multiplyScalar(this.thickness * 0.5);
 
 				mesh.vertices[index] = new Vertex3DNoTex2();
@@ -171,7 +171,7 @@ export class RubberItem extends GameItem implements IRenderable {
 					// for a hit shape create a more rectangle mesh and not a smooth one
 					tmp.z *= 0.6;
 				}
-				mesh.vertices[index].z = (height + tmp.z);
+				mesh.vertices[index].z = height + tmp.z;
 				//texel
 				mesh.vertices[index].tu = u;
 				mesh.vertices[index].tv = v;

@@ -42,7 +42,7 @@ export function fr(f8: number): number {
 		return 0;
 	}
 	const exp = Math.floor(Math.log10(Math.abs(f8)));
-	const f = Math.pow(10, 8 - exp);
+	const f = Math.pow(10, 9 - exp);
 	return Math.round(f8 * f) / f;
 }
 

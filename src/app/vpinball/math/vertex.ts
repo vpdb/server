@@ -67,7 +67,7 @@ export class Vertex3DNoTex2 {
 	set nz(nz: number) { this._nz = f4(nz); }
 
 	set tu(tu: number) { this._tu = f4(tu); }
-	set tv(tv: number) { this._tu = f4(tv); }
+	set tv(tv: number) { this._tv = f4(tv); }
 
 	get x() { return this._x; }
 	get y() { return this._y; }

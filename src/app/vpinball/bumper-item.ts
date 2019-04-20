@@ -17,10 +17,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Math as M } from 'three';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { GameItem, IRenderable, Meshes } from './game-item';
+import { degToRad, f4 } from './math/float';
 import { Matrix3D } from './math/matrix3d';
 import { Vertex2D } from './math/vertex2d';
 import { Vertex3D } from './math/vertex3d';
@@ -70,12 +70,6 @@ export class BumperItem extends GameItem implements IRenderable {
 		return bumperItem;
 	}
 
-	public static from(data: any): BumperItem {
-		const bumperItem = new BumperItem();
-		Object.assign(bumperItem, data);
-		return bumperItem;
-	}
-
 	private constructor() {
 		super();
 	}
@@ -89,37 +83,38 @@ export class BumperItem extends GameItem implements IRenderable {
 	}
 
 	public getMeshes(table: Table): Meshes {
+		/* istanbul ignore if */
 		if (!this.vCenter) {
 			throw new Error(`Cannot export bumper ${this.getName()} without vCenter.`);
 		}
 		const meshes: Meshes = {};
 		const matrix = new Matrix3D();
-		matrix.rotateZMatrix(M.radToDeg(this.orientation));
+		matrix.rotateZMatrix(degToRad(this.orientation));
 		const height = table.getSurfaceHeight(this.szSurface, this.vCenter.x, this.vCenter.y) * table.getScaleZ();
 		if (this.fBaseVisible) {
 			meshes.base = {
-				mesh: this.generateMesh(bumperBaseMesh, matrix, z => z * this.heightScale * table.getScaleZ() + height).transform(new Matrix3D().toRightHanded()),
+				mesh: this.generateMesh(`bumper-base-${this.getName()}`, bumperBaseMesh, matrix, z => f4(f4(z * this.heightScale) * table.getScaleZ()) + height).transform(new Matrix3D().toRightHanded()),
 				material: table.getMaterial(this.szBaseMaterial),
 				map: Texture.fromFilesystem('bumperbase.bmp'),
 			};
 		}
 		if (this.fRingVisible) {
 			meshes.ring = {
-				mesh: this.generateMesh(bumperRingMesh, matrix, z => z * (this.heightScale * table.getScaleZ()) + height).transform(new Matrix3D().toRightHanded()),
+				mesh: this.generateMesh(`bumper-ring-${this.getName()}`, bumperRingMesh, matrix, z => f4(z * f4(this.heightScale * table.getScaleZ())) + height).transform(new Matrix3D().toRightHanded()),
 				material: table.getMaterial(this.szRingMaterial),
 				map: Texture.fromFilesystem('bumperring.bmp'),
 			};
 		}
 		if (this.fSkirtVisible) {
 			meshes.skirt = {
-				mesh: this.generateMesh(bumperSocketMesh, matrix, z => z * (this.heightScale * table.getScaleZ()) + (height + 5.0)).transform(new Matrix3D().toRightHanded()),
+				mesh: this.generateMesh(`bumper-socket-${this.getName()}`, bumperSocketMesh, matrix, z => f4(z * f4(this.heightScale * table.getScaleZ())) + (height + 5.0)).transform(new Matrix3D().toRightHanded()),
 				material: table.getMaterial(this.szSkirtMaterial),
 				map: Texture.fromFilesystem('bumperskirt.bmp'),
 			};
 		}
 		if (this.fCapVisible) {
 			meshes.cap = {
-				mesh: this.generateMesh(bumperCapMesh, matrix, z => (z * this.heightScale + this.heightScale) * table.getScaleZ() + height).transform(new Matrix3D().toRightHanded()),
+				mesh: this.generateMesh(`bumper-cap-${this.getName()}`, bumperCapMesh, matrix, z => f4(f4(f4(z * this.heightScale) + this.heightScale) * table.getScaleZ()) + height).transform(new Matrix3D().toRightHanded()),
 				material: table.getMaterial(this.szCapMaterial),
 				map: Texture.fromFilesystem('bumperCap.bmp'),
 			};
@@ -127,14 +122,14 @@ export class BumperItem extends GameItem implements IRenderable {
 		return meshes;
 	}
 
-	private generateMesh(mesh: Mesh, matrix: Matrix3D, zPos: (z: number) => number): Mesh {
+	private generateMesh(name: string, mesh: Mesh, matrix: Matrix3D, zPos: (z: number) => number): Mesh {
 		const scalexy = this.radius;
-		const generatedMesh = mesh.clone(`bumper-${this.getName()}`);
+		const generatedMesh = mesh.clone(name);
 		for (const vertex of generatedMesh.vertices) {
 			let vert = new Vertex3D(vertex.x, vertex.y, vertex.z);
 			vert = matrix.multiplyVector(vert);
-			vertex.x = vert.x * scalexy + this.vCenter.x;
-			vertex.y = vert.y * scalexy + this.vCenter.y;
+			vertex.x = f4(vert.x * scalexy) + this.vCenter.x;
+			vertex.y = f4(vert.y * scalexy) + this.vCenter.y;
 			vertex.z = zPos(vert.z);
 
 			let normal = new Vertex3D(vertex.nx, vertex.ny, vertex.nz);
@@ -165,6 +160,7 @@ export class BumperItem extends GameItem implements IRenderable {
 			case 'RDLI': this.ringDropOffset = this.getFloat(buffer); break;
 			case 'SURF': this.szSurface = this.getString(buffer, len); break;
 			case 'NAME': this.wzName = this.getWideString(buffer, len); break;
+			/* istanbul ignore next: legacy */
 			case 'BVIS':
 				const isVisible = this.getBool(buffer);
 				this.fCapVisible = isVisible;

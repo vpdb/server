@@ -23,7 +23,7 @@ const ThreeHelper = require('../../test/three.helper');
 const api = new ApiClient();
 const three = new ThreeHelper(api);
 
-describe.only('The VPinball rubber parser', () => {
+describe('The VPinball rubber parser', () => {
 
 	before(async () => {
 		await api.setupUsers({

@@ -17,10 +17,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Math as M } from 'three';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { GameItem, IRenderable, Meshes } from './game-item';
+import { degToRad } from './math/float';
 import { Matrix3D } from './math/matrix3d';
 import { Vertex3D } from './math/vertex3d';
 import { Mesh } from './mesh';
@@ -110,7 +110,7 @@ export class HitTargetItem extends GameItem implements IRenderable {
 
 		const fullMatrix = new Matrix3D();
 		const tempMatrix = new Matrix3D();
-		tempMatrix.rotateZMatrix(M.degToRad(this.rotZ));
+		tempMatrix.rotateZMatrix(degToRad(this.rotZ));
 		fullMatrix.multiply(tempMatrix);
 
 		for (const vertex of hitTargetMesh.vertices) {

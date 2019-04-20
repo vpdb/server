@@ -17,15 +17,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Math as M } from 'three';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { FrameData, Vector3 } from './common';
 import { GameItem, IRenderable, Meshes } from './game-item';
+import { degToRad } from './math/float';
+import { Matrix3D } from './math/matrix3d';
+import { Vertex3DNoTex2 } from './math/vertex';
 import { FLT_MAX, Mesh } from './mesh';
 import { Table } from './table';
-import { Vertex3DNoTex2 } from './math/vertex';
-import { Matrix3D } from './math/matrix3d';
 
 /**
  * VPinball's primitive.
@@ -275,18 +275,18 @@ export class PrimitiveItem extends GameItem implements IRenderable {
 		rotTransMatrix.setTranslation(this.data.aRotAndTra[3], this.data.aRotAndTra[4], this.data.aRotAndTra[5]);
 
 		const tempMatrix = new Matrix3D();
-		tempMatrix.rotateZMatrix(M.degToRad(this.data.aRotAndTra[2]));
+		tempMatrix.rotateZMatrix(degToRad(this.data.aRotAndTra[2]));
 		rotTransMatrix.multiply(tempMatrix);
-		tempMatrix.rotateYMatrix(M.degToRad(this.data.aRotAndTra[1]));
+		tempMatrix.rotateYMatrix(degToRad(this.data.aRotAndTra[1]));
 		rotTransMatrix.multiply(tempMatrix);
-		tempMatrix.rotateXMatrix(M.degToRad(this.data.aRotAndTra[0]));
+		tempMatrix.rotateXMatrix(degToRad(this.data.aRotAndTra[0]));
 		rotTransMatrix.multiply(tempMatrix);
 
-		tempMatrix.rotateZMatrix(M.degToRad(this.data.aRotAndTra[8]));
+		tempMatrix.rotateZMatrix(degToRad(this.data.aRotAndTra[8]));
 		rotTransMatrix.multiply(tempMatrix);
-		tempMatrix.rotateYMatrix(M.degToRad(this.data.aRotAndTra[7]));
+		tempMatrix.rotateYMatrix(degToRad(this.data.aRotAndTra[7]));
 		rotTransMatrix.multiply(tempMatrix);
-		tempMatrix.rotateXMatrix(M.degToRad(this.data.aRotAndTra[6]));
+		tempMatrix.rotateXMatrix(degToRad(this.data.aRotAndTra[6]));
 		rotTransMatrix.multiply(tempMatrix);
 
 		const fullMatrix = scaleMatrix.clone();

@@ -17,12 +17,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Math as M } from 'three';
 import { logger } from '../common/logger';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
-import { DragPoint } from './math/dragpoint';
 import { GameItem, IRenderable, Meshes } from './game-item';
+import { DragPoint } from './math/dragpoint';
+import { degToRad } from './math/float';
 import { Matrix3D } from './math/matrix3d';
 import { Vertex2D } from './math/vertex2d';
 import { Vertex3D } from './math/vertex3d';
@@ -118,18 +118,18 @@ export class TriggerItem extends GameItem implements IRenderable {
 		const fullMatrix = new Matrix3D();
 		if (this.shape === TriggerItem.ShapeTriggerWireB) {
 			const tempMatrix = new Matrix3D();
-			fullMatrix.rotateXMatrix(M.degToRad(-23.0));
-			tempMatrix.rotateZMatrix(M.degToRad(this.rotation));
+			fullMatrix.rotateXMatrix(degToRad(-23.0));
+			tempMatrix.rotateZMatrix(degToRad(this.rotation));
 			fullMatrix.multiply(tempMatrix);
 
 		} else if (this.shape === TriggerItem.ShapeTriggerWireC) {
 			const tempMatrix = new Matrix3D();
-			fullMatrix.rotateXMatrix(M.degToRad(140.0));
-			tempMatrix.rotateZMatrix(M.degToRad(this.rotation));
+			fullMatrix.rotateXMatrix(degToRad(140.0));
+			tempMatrix.rotateZMatrix(degToRad(this.rotation));
 			fullMatrix.multiply(tempMatrix);
 
 		} else {
-			fullMatrix.rotateZMatrix(M.degToRad(this.rotation));
+			fullMatrix.rotateZMatrix(degToRad(this.rotation));
 		}
 
 		const mesh = this.getBaseMesh();

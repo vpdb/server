@@ -17,11 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Math as M } from 'three';
 import { logger } from '../common/logger';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { GameItem, IRenderable, Meshes } from './game-item';
+import { degToRad } from './math/float';
 import { Matrix3D } from './math/matrix3d';
 import { Vertex2D } from './math/vertex2d';
 import { Vertex3D } from './math/vertex3d';
@@ -120,7 +120,7 @@ export class GateItem extends GameItem implements IRenderable {
 
 	private positionMesh(mesh: Mesh, table: Table, baseHeight: number): Mesh {
 		const fullMatrix = new Matrix3D();
-		fullMatrix.rotateZMatrix(M.degToRad(this.rotation));
+		fullMatrix.rotateZMatrix(degToRad(this.rotation));
 		for (const vertex of mesh.vertices) {
 
 			let vert = new Vertex3D(vertex.x, vertex.y, vertex.z);

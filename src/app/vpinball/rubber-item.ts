@@ -17,12 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Math as M } from 'three';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { GameItem, IRenderable, Meshes } from './game-item';
 import { DragPoint, HIT_SHAPE_DETAIL_LEVEL } from './math/dragpoint';
-import { f4 } from './math/float';
+import { degToRad, f4 } from './math/float';
 import { Matrix3D } from './math/matrix3d';
 import { SplineVertex } from './math/spline-vertex';
 import { Vertex3DNoTex2 } from './math/vertex';
@@ -247,10 +246,10 @@ export class RubberItem extends GameItem implements IRenderable {
 	private getMatrices(table: Table): [ Matrix3D, Matrix3D ] {
 		const fullMatrix = new Matrix3D();
 		const tempMat = new Matrix3D();
-		fullMatrix.rotateZMatrix(M.degToRad(this.rotZ));
-		tempMat.rotateYMatrix(M.degToRad(this.rotY));
+		fullMatrix.rotateZMatrix(degToRad(this.rotZ));
+		tempMat.rotateYMatrix(degToRad(this.rotY));
 		fullMatrix.multiply(tempMat);
-		tempMat.rotateXMatrix(M.degToRad(this.rotX));
+		tempMat.rotateXMatrix(degToRad(this.rotX));
 		fullMatrix.multiply(tempMat);
 
 		const vertMatrix = new Matrix3D();

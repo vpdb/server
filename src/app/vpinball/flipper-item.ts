@@ -17,10 +17,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Math as M } from 'three';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { GameItem, IRenderable, Meshes } from './game-item';
+import { degToRad } from './math/float';
 import { Matrix3D } from './math/matrix3d';
 import { Vertex2D } from './math/vertex2d';
 import { Vertex3D } from './math/vertex3d';
@@ -114,7 +114,7 @@ export class FlipperItem extends GameItem implements IRenderable {
 		const trafoMatrix = new Matrix3D();
 		const tempMatrix = new Matrix3D();
 		trafoMatrix.setTranslation(this.Center.x, this.Center.y, 0);
-		tempMatrix.rotateZMatrix(M.degToRad(this.StartAngle));
+		tempMatrix.rotateZMatrix(degToRad(this.StartAngle));
 		trafoMatrix.preMultiply(tempMatrix);
 		return trafoMatrix;
 	}
@@ -122,7 +122,7 @@ export class FlipperItem extends GameItem implements IRenderable {
 	private generateMeshes(table: Table): { base: Mesh, rubber?: Mesh } {
 
 		const fullMatrix = new Matrix3D();
-		fullMatrix.rotateZMatrix(M.degToRad(180.0));
+		fullMatrix.rotateZMatrix(degToRad(180.0));
 
 		const height = table.getSurfaceHeight(this.szSurface, this.Center.x, this.Center.y);
 		const baseScale = 10.0;

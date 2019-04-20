@@ -40,7 +40,6 @@ export class LightItem extends GameItem implements IRenderable {
 	public static readonly StateBlinking = 2;
 
 	public wzName: string;
-	public pdata: number;
 	public vCenter: Vertex2D;
 	public falloff: number = 50;
 	public falloffPower: number = 2;
@@ -148,7 +147,6 @@ export class LightItem extends GameItem implements IRenderable {
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<number> {
 		switch (tag) {
-			case 'PIID': this.pdata = this.getInt(buffer); break;
 			case 'VCEN': this.vCenter = Vertex2D.get(buffer); break;
 			case 'RADI': this.falloff = this.getFloat(buffer); break;
 			case 'FAPO': this.falloffPower = this.getFloat(buffer); break;

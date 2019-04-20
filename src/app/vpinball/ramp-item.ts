@@ -48,7 +48,6 @@ export class RampItem extends GameItem implements IRenderable {
 
 	public wzName: string;
 	public dragPoints: DragPoint[];
-	public pdata: number;
 	public heightbottom: number = 0;
 	public heighttop: number = 50;
 	public widthbottom: number = 75;
@@ -744,7 +743,6 @@ export class RampItem extends GameItem implements IRenderable {
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<number> {
 		switch (tag) {
-			case 'PIID': this.pdata = this.getInt(buffer); break;
 			case 'HTBT': this.heightbottom = this.getFloat(buffer); break;
 			case 'HTTP': this.heighttop = this.getFloat(buffer); break;
 			case 'WDBT': this.widthbottom = this.getFloat(buffer); break;

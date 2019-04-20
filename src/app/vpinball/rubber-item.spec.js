@@ -17,14 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-const expect = require('expect.js');
 const ApiClient = require('../../test/api.client');
 const ThreeHelper = require('../../test/three.helper');
 
 const api = new ApiClient();
 const three = new ThreeHelper(api);
 
-describe('The VPinball rubber parser', () => {
+describe.only('The VPinball rubber parser', () => {
 
 	before(async () => {
 		await api.setupUsers({

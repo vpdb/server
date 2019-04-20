@@ -21,12 +21,12 @@ import { Math as M } from 'three';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { GameItem, IRenderable, Meshes } from './game-item';
+import { Matrix3D } from './math/matrix3d';
 import { Vertex2D } from './math/vertex2d';
 import { Vertex3D } from './math/vertex3d';
 import { Mesh } from './mesh';
 import { flipperBaseMesh } from './meshes/flipper-base-mesh';
 import { Table } from './table';
-import { Matrix3D } from './math/matrix3d';
 
 /**
  * VPinball's flippers
@@ -36,7 +36,6 @@ import { Matrix3D } from './math/matrix3d';
 export class FlipperItem extends GameItem implements IRenderable {
 
 	public wzName: string;
-	public pdata: number;
 	public Center: Vertex2D;
 	public BaseRadius: number = 21.5;
 	public EndRadius: number = 13.0;
@@ -192,7 +191,6 @@ export class FlipperItem extends GameItem implements IRenderable {
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<number> {
 		switch (tag) {
-			case 'PIID': this.pdata = this.getInt(buffer); break;
 			case 'VCEN': this.Center = Vertex2D.get(buffer); break;
 			case 'BASR': this.BaseRadius = this.getFloat(buffer); break;
 			case 'ENDR': this.EndRadius = this.getFloat(buffer); break;

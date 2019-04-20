@@ -34,7 +34,6 @@ import { RenderVertex, Vertex3DNoTex2 } from './math/vertex';
  */
 export class SurfaceItem extends GameItem implements IRenderable {
 
-	public pdata: number;
 	public fHitEvent: boolean = false;
 	public fDroppable: boolean = false;
 	public fFlipbook: boolean = false;
@@ -304,7 +303,6 @@ export class SurfaceItem extends GameItem implements IRenderable {
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<number> {
 		switch (tag) {
-			case 'PIID': this.pdata = this.getInt(buffer); break;
 			case 'HTEV': this.fHitEvent = this.getBool(buffer); break;
 			case 'DROP': this.fDroppable = this.getBool(buffer); break;
 			case 'FLIP': this.fFlipbook = this.getBool(buffer); break;

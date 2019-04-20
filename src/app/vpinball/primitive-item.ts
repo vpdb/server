@@ -41,7 +41,6 @@ export class PrimitiveItem extends GameItem implements IRenderable {
 	public numVertices: number;
 	public compressedAnimationVertices: number;
 	public compressedVertices: number;
-	private pdata: number;
 	private wzName: string;
 	private numIndices: number;
 	public compressedIndices: number;
@@ -301,7 +300,6 @@ export class PrimitiveItem extends GameItem implements IRenderable {
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number, storage: Storage, itemName: string): Promise<number> {
 		switch (tag) {
-			case 'PIID': this.pdata = this.getInt(buffer); break;
 			case 'VPOS': this.data.vPosition = Vector3.get(buffer); break;
 			case 'VSIZ': this.data.vSize = Vector3.get(buffer); break;
 			case 'RTV0': this.data.aRotAndTra[0] = this.getFloat(buffer); break;

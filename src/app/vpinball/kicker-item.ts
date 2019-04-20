@@ -49,7 +49,6 @@ export class KickerItem extends GameItem implements IRenderable {
 	public static TypeKickerGottlieb = 5;
 	public static TypeKickerCup2 = 6;
 
-	private pdata: number;
 	private kickerType: number = KickerItem.TypeKickerHole;
 	private vCenter: Vertex2D;
 	private radius: number = 25;
@@ -164,7 +163,6 @@ export class KickerItem extends GameItem implements IRenderable {
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<number> {
 		switch (tag) {
-			case 'PIID': this.pdata = this.getInt(buffer); break;
 			case 'VCEN': this.vCenter = Vertex2D.get(buffer); break;
 			case 'RADI': this.radius = this.getFloat(buffer); break;
 			case 'KSCT': this.scatter = this.getFloat(buffer); break;

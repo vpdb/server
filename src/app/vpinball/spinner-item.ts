@@ -36,7 +36,6 @@ import { Table } from './table';
  */
 export class SpinnerItem extends GameItem implements IRenderable {
 
-	private pdata: number;
 	private vCenter: Vertex2D;
 	private rotation: number;
 	private szMaterial: string;
@@ -132,7 +131,6 @@ export class SpinnerItem extends GameItem implements IRenderable {
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<number> {
 		switch (tag) {
-			case 'PIID': this.pdata = this.getInt(buffer); break;
 			case 'VCEN': this.vCenter = Vertex2D.get(buffer); break;
 			case 'ROTA': this.rotation = this.getFloat(buffer); break;
 			case 'MATR': this.szMaterial = this.getString(buffer, len); break;

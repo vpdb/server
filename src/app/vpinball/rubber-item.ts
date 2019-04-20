@@ -38,7 +38,6 @@ import { Table } from './table';
 export class RubberItem extends GameItem implements IRenderable {
 
 	public wzName: string;
-	public pdata: number;
 	public height: number = f4(25);
 	public hitHeight: number = f4(-1.0);
 	public thickness: number = f4(8);
@@ -271,7 +270,6 @@ export class RubberItem extends GameItem implements IRenderable {
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<number> {
 		switch (tag) {
-			case 'PIID': this.pdata = this.getInt(buffer); break;
 			case 'HTTP': this.height = this.getFloat(buffer); break;
 			case 'HTHI': this.hitHeight = this.getFloat(buffer); break;
 			case 'WDTP': this.thickness = this.getInt(buffer); break;

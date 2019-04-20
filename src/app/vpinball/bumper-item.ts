@@ -39,7 +39,6 @@ import { Texture } from './texture';
  */
 export class BumperItem extends GameItem implements IRenderable {
 
-	public pdata: number;
 	public vCenter: Vertex2D;
 	public radius: number = 1.0;
 	public szCapMaterial: string;
@@ -149,7 +148,6 @@ export class BumperItem extends GameItem implements IRenderable {
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<number> {
 		switch (tag) {
-			case 'PIID': this.pdata = this.getInt(buffer); break;
 			case 'VCEN': this.vCenter = Vertex2D.get(buffer); break;
 			case 'RADI': this.radius = this.getFloat(buffer); break;
 			case 'MATR': this.szCapMaterial = this.getString(buffer, len); break;

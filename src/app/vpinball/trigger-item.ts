@@ -49,7 +49,6 @@ export class TriggerItem extends GameItem implements IRenderable {
 	public static ShapeTriggerWireD = 6;
 
 	public dragPoints: DragPoint[];
-	private pdata: number;
 	private vCenter: Vertex2D;
 	private radius: number = 25;
 	private rotation: number = 0;
@@ -179,7 +178,6 @@ export class TriggerItem extends GameItem implements IRenderable {
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<number> {
 		switch (tag) {
-			case 'PIID': this.pdata = this.getInt(buffer); break;
 			case 'VCEN': this.vCenter = Vertex2D.get(buffer); break;
 			case 'RADI': this.radius = this.getFloat(buffer); break;
 			case 'ROTA': this.rotation = this.getFloat(buffer); break;

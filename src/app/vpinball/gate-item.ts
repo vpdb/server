@@ -46,7 +46,6 @@ export class GateItem extends GameItem implements IRenderable {
 	public static TypeGatePlate = 3;
 	public static TypeGateLongPlate = 4;
 
-	private pdata: number;
 	private gateType: number = GateItem.TypeGateWireW;
 	private vCenter: Vertex2D;
 	private length: number = 100;
@@ -141,7 +140,6 @@ export class GateItem extends GameItem implements IRenderable {
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<number> {
 		switch (tag) {
-			case 'PIID': this.pdata = this.getInt(buffer); break;
 			case 'GATY':
 				this.gateType = this.getInt(buffer);
 				if (this.gateType < GateItem.TypeGateWireW || this.gateType > GateItem.TypeGateLongPlate) {// for tables that were saved in the phase where m_type could've been undefined

@@ -52,7 +52,6 @@ export class HitTargetItem extends GameItem implements IRenderable {
 	private static TypeHitFatTargetSlim = 8;
 	private static TypeHitTargetSlim = 9;
 
-	private pdata: number;
 	private vPosition: Vertex3D;
 	private vSize: Vertex3D = new Vertex3D(32, 32, 32);
 	private rotZ: number = 0;
@@ -158,7 +157,6 @@ export class HitTargetItem extends GameItem implements IRenderable {
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<number> {
 		switch (tag) {
-			case 'PIID': this.pdata = this.getInt(buffer); break;
 			case 'VPOS': this.vPosition = Vertex3D.get(buffer); break;
 			case 'VSIZ': this.vSize = Vertex3D.get(buffer); break;
 			case 'ROTZ': this.rotZ = this.getFloat(buffer); break;

@@ -85,8 +85,9 @@ export abstract class GameItem extends BiffParser {
 		}
 	}
 
-	public fLocked: boolean;
-	public layerIndex: number;
+	private pdata: number;
+	private fLocked: boolean;
+	private layerIndex: number;
 
 	public abstract getName(): string;
 
@@ -96,6 +97,7 @@ export abstract class GameItem extends BiffParser {
 
 	protected getUnknownBlock(buffer: Buffer, tag: string) {
 		switch (tag) {
+			case 'PIID': this.pdata = this.getInt(buffer); break;
 			case 'LOCK': this.fLocked = this.getBool(buffer); break;
 			case 'LAYR': this.layerIndex = this.getInt(buffer); break;
 			default:

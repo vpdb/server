@@ -35,7 +35,6 @@ export class GameData extends BiffParser {
 	private static BG_FULLSCREEN = 1;
 	private static BG_FSS = 2;
 
-	public pdata: number[] = [];
 	public left: number;
 	public top: number;
 	public right: number;
@@ -149,7 +148,6 @@ export class GameData extends BiffParser {
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<number> {
 		switch (tag) {
-			case 'PIID': this.pdata[0] = this.getInt(buffer); break;
 			case 'LEFT': this.left = this.getFloat(buffer); break;
 			case 'TOPX': this.top = this.getFloat(buffer); break;
 			case 'RGHT': this.right = this.getFloat(buffer); break;

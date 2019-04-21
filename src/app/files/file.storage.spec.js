@@ -30,7 +30,7 @@ shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 const ApiClient = require('../../test/api.client');
 const api = new ApiClient();
 
-const pngPath = resolve(__dirname, '../../../data/test/files/backglass.png');
+const pngPath = resolve(__dirname, '../../test/fixtures/backglass.png');
 
 let res;
 

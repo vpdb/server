@@ -27,12 +27,6 @@ import { BiffParser } from './biff-parser';
  */
 export class Binary extends BiffParser {
 
-	public static from(data: any): Binary {
-		const binary = new Binary();
-		Object.assign(binary, data);
-		return binary;
-	}
-
 	public szName: string;
 	public szInternalName: string;
 	public szPath: string;

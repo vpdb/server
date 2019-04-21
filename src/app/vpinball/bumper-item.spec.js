@@ -23,7 +23,7 @@ const ThreeHelper = require('../../test/three.helper');
 const api = new ApiClient();
 const three = new ThreeHelper(api);
 
-describe('The VPinball bumper parser', () => {
+describe.only('The VPinball bumper parser', () => {
 
 	before(async () => {
 		await api.setupUsers({
@@ -1018,6 +1018,12 @@ describe('The VPinball bumper parser', () => {
 			[497.988068, 858.847900, -60.098320],
 		];
 		three.expectVerticesInArray(expectedVertices, bumperMeshVertices.array);
+	});
+
+	it('should not generate a bumper with no visible elements', async () => {
+		const vpxFile = await api.fileHelper.createVpx('member', 'table-bumper.vpx');
+		const gltf = await three.loadGlb('member', vpxFile.variations.gltf);
+		three.expectNoObject(gltf, 'bumpers', 'bumper-socket-Bumper3');
 	});
 
 });

@@ -96,6 +96,25 @@ class ThreeHelper {
 		return table;
 	}
 
+	expectNoObject(gltf, groupName, objectName) {
+		const table = this.getTable(gltf);
+		if (!table.children || !table.children.length) {
+			throw new Error('GLTF table has no children!');
+		}
+		const objects = table.children.find(c => c.name === groupName);
+		if (!objects) {
+			throw new Error('GLTF table has no "' + groupName + '" group!');
+		}
+		if (!objects.children || !objects.children.length) {
+			throw new Error('The "' + groupName + '" group of the GLTF table has no children.');
+		}
+		const object = objects.children.find(c => c.name === objectName);
+		if (object) {
+			throw new Error('The "' + groupName + '" group of the GLTF table has a child named "' + objectName + '" but none was expected.');
+		}
+		return object;
+	}
+
 	expectVerticesInArray(vertices, array) {
 		// create hash map of vertices
 		let vertexHashes = {};

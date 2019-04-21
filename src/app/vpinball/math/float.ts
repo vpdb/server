@@ -56,6 +56,5 @@ export function f4(f8: number): number {
 }
 
 export function degToRad(deg: number): number {
-	return f4(f4(f4(deg) * f4(Math.PI)) / f4(180.0));
+	return deg * f4(Math.PI / 180.0);
 }
-

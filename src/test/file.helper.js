@@ -24,12 +24,12 @@ const pleasejs = require('pleasejs');
 
 require('bluebird').promisifyAll(gm.prototype);
 
-const rom = resolve(__dirname, '../../data/test/files/hulk.zip');
-const vpt = resolve(__dirname, '../../data/test/files/empty.vpt');
-const vpt2 = resolve(__dirname, '../../data/test/files/table.vpt');
-const mp3 = resolve(__dirname, '../../data/test/files/test.mp3');
-const mp4 = resolve(__dirname, '../../data/test/files/afm.f4v');
-const avi = resolve(__dirname, '../../data/test/files/afm.avi');
+const rom = resolve(__dirname, 'fixtures/hulk.zip');
+const vpt = resolve(__dirname, 'fixtures/empty.vpt');
+const vpt2 = resolve(__dirname, 'fixtures/table.vpt');
+const mp3 = resolve(__dirname, 'fixtures/test.mp3');
+const mp4 = resolve(__dirname, 'fixtures/afm.f4v');
+const avi = resolve(__dirname, 'fixtures/afm.avi');
 
 class FileHelper {
 
@@ -147,7 +147,7 @@ class FileHelper {
 		opts = opts || {};
 		const file = opts.file || 'dmd.rar';
 		const teardown = opts.keep ? false : undefined;
-		const rar = resolve(__dirname, '../../data/test/files', file);
+		const rar = resolve(__dirname, 'fixtures', file);
 		const data = readFileSync(rar);
 		const res = await this.api.onStorage()
 			.as(user)
@@ -165,7 +165,7 @@ class FileHelper {
 		opts = opts || {};
 		const file = opts.file || 'dmd.zip';
 		const teardown = opts.keep ? false : undefined;
-		const zip = resolve(__dirname, '../../data/test/files', file);
+		const zip = resolve(__dirname, 'fixtures', file);
 		const data = readFileSync(zip);
 		const res = await this.api.onStorage()
 			.as(user)
@@ -281,7 +281,7 @@ class FileHelper {
 	async createVpx(user, fileName, opts) {
 		opts = opts || {};
 		const teardown = opts.keep ? false : undefined;
-		const filePath = resolve(__dirname, '../../data/test/files', fileName);
+		const filePath = resolve(__dirname, 'fixtures', fileName);
 		const data = readFileSync(filePath);
 		const res = await this.api.onStorage()
 			.as(user)

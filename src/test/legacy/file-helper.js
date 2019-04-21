@@ -27,13 +27,13 @@ var async = require('async');
 var expect = require('expect.js');
 var pleasejs = require('pleasejs');
 
-var mp4 = path.resolve(__dirname, '../../../data/test/files/afm.f4v');
-var avi = path.resolve(__dirname, '../../../data/test/files/afm.avi');
-var vpt = path.resolve(__dirname, '../../../data/test/files/empty.vpt');
-var vpt2 = path.resolve(__dirname, '../../../data/test/files/table.vpt');
-var rom = path.resolve(__dirname, '../../../data/test/files/hulk.zip');
-var zip = path.resolve(__dirname, '../../../data/test/files/dmd.zip');
-var rar = path.resolve(__dirname, '../../../data/test/files/dmd.rar');
+var mp4 = path.resolve(__dirname, '../fixtures/afm.f4v');
+var avi = path.resolve(__dirname, '../fixtures/afm.avi');
+var vpt = path.resolve(__dirname, '../fixtures/empty.vpt');
+var vpt2 = path.resolve(__dirname, '../fixtures/table.vpt');
+var rom = path.resolve(__dirname, '../fixtures/hulk.zip');
+var zip = path.resolve(__dirname, '../fixtures/dmd.zip');
+var rar = path.resolve(__dirname, '../fixtures/dmd.rar');
 
 exports.createBackglass = function(user, request, done) {
 

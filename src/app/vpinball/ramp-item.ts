@@ -327,7 +327,7 @@ export class RampItem extends GameItem implements IRenderable {
 		};
 	}
 
-	private generateFlatLeftWall(table: Table, rv: RampVertexResult): RenderInfo {
+	private generateFlatRightWall(table: Table, rv: RampVertexResult): RenderInfo {
 		const rampVertex = rv.pcvertex;
 		const rgHeight = rv.ppheight;
 		const rgRatio = rv.ppratio;
@@ -335,7 +335,7 @@ export class RampItem extends GameItem implements IRenderable {
 		const invTableHeight = f4(1.0 / f4(table.gameData.bottom - table.gameData.top));
 		const numVertices = rampVertex * 2;
 
-		const leftMesh = new Mesh(`ramp.left-${this.getName()}`);
+		const mesh = new Mesh(`ramp.right-${this.getName()}`);
 		for (let i = 0; i < rampVertex; i++) {
 
 			const rgv3d1 = new Vertex3DNoTex2();
@@ -347,6 +347,69 @@ export class RampItem extends GameItem implements IRenderable {
 
 			rgv3d2.x = rv.rgvLocal[i].x;
 			rgv3d2.y = rv.rgvLocal[i].y;
+			rgv3d2.z = f4(rgHeight[i] + this.rightWallHeightVisible) * table.getScaleZ();
+
+			if (this.szImage && this.imageWalls) {
+				if (this.imageAlignment === RampItem.RampImageAlignmentWorld) {
+					rgv3d1.tu = rgv3d1.x * invTableWidth;
+					rgv3d1.tv = rgv3d1.y * invTableHeight;
+
+				} else {
+					rgv3d1.tu = 0;
+					rgv3d1.tv = rgRatio[i];
+				}
+				rgv3d2.tu = rgv3d1.tu;
+				rgv3d2.tv = rgv3d1.tv;
+			} else {
+				rgv3d1.tu = 0.0;
+				rgv3d1.tv = 0.0;
+				rgv3d2.tu = 0.0;
+				rgv3d2.tv = 0.0;
+			}
+
+			mesh.vertices.push(rgv3d1);
+			mesh.vertices.push(rgv3d2);
+
+			if (i === rampVertex - 1) {
+				break;
+			}
+
+			mesh.indices.push(i * 2);
+			mesh.indices.push(i * 2 + 1);
+			mesh.indices.push(i * 2 + 3);
+			mesh.indices.push(i * 2);
+			mesh.indices.push(i * 2 + 3);
+			mesh.indices.push(i * 2 + 2);
+
+		}
+		Mesh.computeNormals(mesh.vertices, numVertices, mesh.indices, (rampVertex - 1) * 6);
+		return {
+			mesh: mesh.transform(new Matrix3D().toRightHanded()),
+			map: table.getTexture(this.szImage),
+			material: table.getMaterial(this.szMaterial),
+		};
+	}
+
+	private generateFlatLeftWall(table: Table, rv: RampVertexResult): RenderInfo {
+		const rampVertex = rv.pcvertex;
+		const rgHeight = rv.ppheight;
+		const rgRatio = rv.ppratio;
+		const invTableWidth = f4(1.0 / f4(table.gameData.right - table.gameData.left));
+		const invTableHeight = f4(1.0 / f4(table.gameData.bottom - table.gameData.top));
+		const numVertices = rampVertex * 2;
+
+		const mesh = new Mesh(`ramp.left-${this.getName()}`);
+		for (let i = 0; i < rampVertex; i++) {
+
+			const rgv3d1 = new Vertex3DNoTex2();
+			const rgv3d2 = new Vertex3DNoTex2();
+
+			rgv3d1.x = rv.rgvLocal[rampVertex * 2 - i - 1].x;
+			rgv3d1.y = rv.rgvLocal[rampVertex * 2 - i - 1].y;
+			rgv3d1.z = rgHeight[i] * table.getScaleZ();
+
+			rgv3d2.x = rgv3d1.x;
+			rgv3d2.y = rgv3d1.y;
 			rgv3d2.z = f4(rgHeight[i] + this.leftWallHeightVisible) * table.getScaleZ();
 
 			if (this.szImage && this.imageWalls) {
@@ -367,86 +430,23 @@ export class RampItem extends GameItem implements IRenderable {
 				rgv3d2.tv = 0.0;
 			}
 
-			leftMesh.vertices.push(rgv3d1);
-			leftMesh.vertices.push(rgv3d2);
+			mesh.vertices.push(rgv3d1);
+			mesh.vertices.push(rgv3d2);
 
 			if (i === rampVertex - 1) {
 				break;
 			}
 
-			leftMesh.indices.push(i * 2);
-			leftMesh.indices.push(i * 2 + 1);
-			leftMesh.indices.push(i * 2 + 3);
-			leftMesh.indices.push(i * 2);
-			leftMesh.indices.push(i * 2 + 3);
-			leftMesh.indices.push(i * 2 + 2);
-
+			mesh.indices.push(i * 2);
+			mesh.indices.push(i * 2 + 1);
+			mesh.indices.push(i * 2 + 3);
+			mesh.indices.push(i * 2);
+			mesh.indices.push(i * 2 + 3);
+			mesh.indices.push(i * 2 + 2);
 		}
-		Mesh.computeNormals(leftMesh.vertices, numVertices, leftMesh.indices, (rampVertex - 1) * 6);
+		Mesh.computeNormals(mesh.vertices, numVertices, mesh.indices, (rampVertex - 1) * 6);
 		return {
-			mesh: leftMesh.transform(new Matrix3D().toRightHanded()),
-			map: table.getTexture(this.szImage),
-			material: table.getMaterial(this.szMaterial),
-		};
-	}
-
-	private generateFlatRightWall(table: Table, rv: RampVertexResult): RenderInfo {
-		const rampVertex = rv.pcvertex;
-		const rgHeight = rv.ppheight;
-		const rgRatio = rv.ppratio;
-		const invTableWidth = f4(1.0 / f4(table.gameData.right - table.gameData.left));
-		const invTableHeight = f4(1.0 / f4(table.gameData.bottom - table.gameData.top));
-		const numVertices = rampVertex * 2;
-
-		const rightMesh = new Mesh(`ramp.right-${this.getName()}`);
-		for (let i = 0; i < rampVertex; i++) {
-
-			const rgv3d1 = new Vertex3DNoTex2();
-			const rgv3d2 = new Vertex3DNoTex2();
-
-			rgv3d1.x = rv.rgvLocal[rampVertex * 2 - i - 1].x;
-			rgv3d1.y = rv.rgvLocal[rampVertex * 2 - i - 1].y;
-			rgv3d1.z = rgHeight[i] * table.getScaleZ();
-
-			rgv3d2.x = rgv3d1.x;
-			rgv3d2.y = rgv3d1.y;
-			rgv3d2.z = f4(rgHeight[i] + this.rightWallHeightVisible) * table.getScaleZ();
-
-			if (this.szImage && this.imageWalls) {
-				if (this.imageAlignment === RampItem.RampImageAlignmentWorld) {
-					rgv3d1.tu = rgv3d1.x * invTableWidth;
-					rgv3d1.tv = rgv3d1.y * invTableHeight;
-				} else {
-					rgv3d1.tu = 0;
-					rgv3d1.tv = rgRatio[i];
-				}
-
-				rgv3d2.tu = rgv3d1.tu;
-				rgv3d2.tv = rgv3d1.tv;
-			} else {
-				rgv3d1.tu = 0.0;
-				rgv3d1.tv = 0.0;
-				rgv3d2.tu = 0.0;
-				rgv3d2.tv = 0.0;
-			}
-
-			rightMesh.vertices.push(rgv3d1);
-			rightMesh.vertices.push(rgv3d2);
-
-			if (i === rampVertex - 1) {
-				break;
-			}
-
-			rightMesh.indices.push(i * 2);
-			rightMesh.indices.push(i * 2 + 1);
-			rightMesh.indices.push(i * 2 + 3);
-			rightMesh.indices.push(i * 2);
-			rightMesh.indices.push(i * 2 + 3);
-			rightMesh.indices.push(i * 2 + 2);
-		}
-		Mesh.computeNormals(rightMesh.vertices, numVertices, rightMesh.indices, (rampVertex - 1) * 6);
-		return {
-			mesh: rightMesh.transform(new Matrix3D().toRightHanded()),
+			mesh: mesh.transform(new Matrix3D().toRightHanded()),
 			map: table.getTexture(this.szImage),
 			material: table.getMaterial(this.szMaterial),
 		};

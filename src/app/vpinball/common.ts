@@ -28,10 +28,6 @@ export class Vector3 extends ThreeVector3 {
 		v3.z = buffer.readFloatLE(8);
 		return v3;
 	}
-
-	public static from(data: any): Vector3 {
-		return Object.assign(new Vector3(), data);
-	}
 }
 
 export class FrameData {

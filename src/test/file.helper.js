@@ -274,7 +274,7 @@ class FileHelper {
 	 *
 	 * @param user Uploader
 	 * @param {string} fileName Filename of the VPX file.
-	 * @param opts Options
+	 * @param [opts] Options
 	 * @param {boolean} [opts.keep=false] If true, don't teardown.
 	 * @return Promise<Object> Uploaded file
 	 */

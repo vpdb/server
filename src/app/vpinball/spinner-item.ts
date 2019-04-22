@@ -20,7 +20,7 @@
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { GameItem, IRenderable, Meshes } from './game-item';
-import { degToRad } from './math/float';
+import { degToRad, f4 } from './math/float';
 import { Matrix3D } from './math/matrix3d';
 import { Vertex2D } from './math/vertex2d';
 import { Vertex3D } from './math/vertex3d';
@@ -71,7 +71,7 @@ export class SpinnerItem extends GameItem implements IRenderable {
 		const meshes: Meshes = {};
 
 		const height = table.getSurfaceHeight(this.szSurface, this.vCenter.x, this.vCenter.y) * table.getScaleZ();
-		const posZ = height + this.height;
+		const posZ = f4(height + this.height);
 
 		meshes.plate = {
 			mesh: this.getPlateMesh(table, posZ).transform(new Matrix3D().toRightHanded()),
@@ -96,9 +96,9 @@ export class SpinnerItem extends GameItem implements IRenderable {
 		for (const vertex of mesh.vertices) {
 			let vert = new Vertex3D(vertex.x, vertex.y, vertex.z);
 			vert = fullMatrix.multiplyVector(vert);
-			vertex.x = vert.x * this.length + this.vCenter.x;
-			vertex.y = vert.y * this.length + this.vCenter.y;
-			vertex.z = vert.z * this.length * table.getScaleZ() + posZ;
+			vertex.x = f4(vert.x * this.length) + this.vCenter.x;
+			vertex.y = f4(vert.y * this.length) + this.vCenter.y;
+			vertex.z = f4(f4(vert.z * this.length) * table.getScaleZ()) + posZ;
 
 			let norm = new Vertex3D(vertex.nx, vertex.ny, vertex.nz);
 			norm = fullMatrix.multiplyVectorNoTranslate(norm);
@@ -112,13 +112,13 @@ export class SpinnerItem extends GameItem implements IRenderable {
 	private getBracketMesh(table: Table, posZ: number): Mesh {
 		const fullMatrix = new Matrix3D();
 		fullMatrix.rotateZMatrix(degToRad(this.rotation));
-		const bracketMesh = spinnerBracketMesh.clone(`spinner.mesh-${this.getName()}`);
+		const bracketMesh = spinnerBracketMesh.clone(`spinner.bracket-${this.getName()}`);
 		for (const vertex of bracketMesh.vertices) {
 			let vert = new Vertex3D(vertex.x, vertex.y, vertex.z);
 			vert = fullMatrix.multiplyVector(vert);
-			vertex.x = vert.x * this.length + this.vCenter.x;
-			vertex.y = vert.y * this.length + this.vCenter.y;
-			vertex.z = vert.z * this.length * table.getScaleZ() + posZ;
+			vertex.x = f4(vert.x * this.length) + this.vCenter.x;
+			vertex.y = f4(vert.y * this.length) + this.vCenter.y;
+			vertex.z = f4(f4(vert.z * this.length) * table.getScaleZ()) + posZ;
 
 			let norm = new Vertex3D(vertex.nx, vertex.ny, vertex.nz);
 			norm = fullMatrix.multiplyVectorNoTranslate(vert);

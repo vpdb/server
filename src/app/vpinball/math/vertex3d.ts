@@ -113,9 +113,9 @@ export class Vertex3D {
 	}
 
 	public multiplyScalar(scalar: number) {
-		this.x *= scalar;
-		this.y *= scalar;
-		this.z *= scalar;
+		this.x *= f4(scalar);
+		this.y *= f4(scalar);
+		this.z *= f4(scalar);
 		return this;
 	}
 

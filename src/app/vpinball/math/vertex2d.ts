@@ -77,8 +77,8 @@ export class Vertex2D {
 	}
 
 	public multiplyScalar(scalar: number): this {
-		this.x *= scalar;
-		this.y *= scalar;
+		this.x *= f4(scalar);
+		this.y *= f4(scalar);
 		return this;
 	}
 

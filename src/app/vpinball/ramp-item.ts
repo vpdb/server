@@ -48,45 +48,39 @@ export class RampItem extends GameItem implements IRenderable {
 
 	public wzName: string;
 	public dragPoints: DragPoint[];
-	public heightbottom: number = 0;
-	public heighttop: number = 50;
-	public widthbottom: number = 75;
-	public widthtop: number = 60;
+	public heightBottom: number = 0;
+	public heightTop: number = f4(50);
+	public widthBottom: number = f4(75);
+	public widthTop: number = f4(60);
 	public szMaterial: string;
-	public fTimerEnabled: number;
-	public TimerInterval: number;
+	public isTimerEnabled: number;
+	public timerInterval: number;
 	public rampType: number = RampItem.RampTypeFlat;
 	public szImage: string;
-	public imagealignment: number = RampItem.RampImageAlignmentWorld;
-	public fImageWalls: boolean = true;
-	public leftwallheight: number = 62;
-	public rightwallheight: number = 62;
-	public leftwallheightvisible: number = 30;
-	public rightwallheightvisible: number = 30;
-	public fHitEvent: boolean;
+	public imageAlignment: number = RampItem.RampImageAlignmentWorld;
+	public imageWalls: boolean = true;
+	public leftWallHeight: number = f4(62);
+	public rightWallHeight: number = f4(62);
+	public leftWallHeightVisible: number = f4(30);
+	public rightWallHeightVisible: number = f4(30);
+	public hasHitEvent: boolean;
 	public threshold: number;
 	public elasticity: number;
 	public friction: number;
 	public scatter: number;
-	public fCollidable: boolean = true;
+	public isCollidable: boolean = true;
 	public fVisible: boolean = true;
 	public fReflectionEnabled: boolean = true;
 	public depthBias: number;
-	public wireDiameter: number = 8;
-	public wireDistanceX: number = 38;
-	public wireDistanceY: number = 88;
+	public wireDiameter: number = f4(8);
+	public wireDistanceX: number = f4(38);
+	public wireDistanceY: number = f4(88);
 	public szPhysicsMaterial: string;
 	public fOverwritePhysics: boolean;
 
 	public static async fromStorage(storage: Storage, itemName: string): Promise<RampItem> {
 		const rampItem = new RampItem();
 		await storage.streamFiltered(itemName, 4, RampItem.createStreamHandler(rampItem));
-		return rampItem;
-	}
-
-	public static from(data: any): RampItem {
-		const rampItem = new RampItem();
-		Object.assign(rampItem, data);
 		return rampItem;
 	}
 
@@ -233,24 +227,24 @@ export class RampItem extends GameItem implements IRenderable {
 
 		const cVertex = vVertex.length;
 		for (let i2 = 1; i2 < cVertex; i2++) {
-			const vDx = vVertex[i2].x - vVertex[i2 - 1].x;
-			const vDy = vVertex[i2].y - vVertex[i2 - 1].y;
-			const vLen = f4(Math.sqrt(vDx * vDx + vDy * vDy));
+			const vDx = f4(vVertex[i2].x - vVertex[i2 - 1].x);
+			const vDy = f4(vVertex[i2].y - vVertex[i2 - 1].y);
+			const vLen = f4(Math.sqrt(f4(f4(vDx * vDx) + f4(vDy * vDy))));
 			if (i2 <= iSeg) {
 				startLength += vLen;
 			}
 			totalLength += vLen;
 		}
 
-		const dx = vOut.x - vVertex[iSeg].x;
-		const dy = vOut.y - vVertex[iSeg].y;
-		const len = Math.sqrt(dx * dx + dy * dy);
+		const dx = f4(vOut.x - vVertex[iSeg].x);
+		const dy = f4(vOut.y - vVertex[iSeg].y);
+		const len = f4(Math.sqrt(f4(f4(dx * dx) + f4(dy * dy))));
 		startLength += len; // Add the distance the object is between the two closest polyline segments.  Matters mostly for straight edges. Z does not respect that yet!
 
-		const topHeight = this.heighttop + table.getTableHeight();
-		const bottomHeight = this.heightbottom + table.getTableHeight();
+		const topHeight = f4(this.heightTop + table.getTableHeight());
+		const bottomHeight = f4(this.heightBottom + table.getTableHeight());
 
-		return vVertex[iSeg].z + (startLength / totalLength) * (topHeight - bottomHeight) + bottomHeight;
+		return f4(vVertex[iSeg].z + f4(f4(startLength / totalLength) * f4(topHeight - bottomHeight))) + bottomHeight;
 	}
 
 	private generateFlatMesh(table: Table): Meshes {
@@ -261,8 +255,8 @@ export class RampItem extends GameItem implements IRenderable {
 		const rgheight = rv.ppheight;
 		const rgratio = rv.ppratio;
 
-		const invTableWidth = 1.0 / (table.gameData.right - table.gameData.left);
-		const invTableHeight = 1.0 / (table.gameData.bottom - table.gameData.top);
+		const invTableWidth = f4(1.0 / f4(table.gameData.right - table.gameData.left));
+		const invTableHeight = f4(1.0 / f4(table.gameData.bottom - table.gameData.top));
 
 		const numVertices = rampVertex * 2;
 
@@ -274,14 +268,14 @@ export class RampItem extends GameItem implements IRenderable {
 
 			rgv3d1.x = rv.rgvLocal[i].x;
 			rgv3d1.y = rv.rgvLocal[i].y;
-			rgv3d1.z = rgheight[i] * table.getScaleZ();
+			rgv3d1.z = f4(rgheight[i] * table.getScaleZ());
 
 			rgv3d2.x = rv.rgvLocal[rampVertex * 2 - i - 1].x;
 			rgv3d2.y = rv.rgvLocal[rampVertex * 2 - i - 1].y;
 			rgv3d2.z = rgv3d1.z;
 
 			if (this.szImage) {
-				if (this.imagealignment === RampItem.RampImageAlignmentWorld) {
+				if (this.imageAlignment === RampItem.RampImageAlignmentWorld) {
 					rgv3d1.tu = rgv3d1.x * invTableWidth;
 					rgv3d1.tv = rgv3d1.y * invTableHeight;
 					rgv3d2.tu = rgv3d2.x * invTableWidth;
@@ -323,7 +317,7 @@ export class RampItem extends GameItem implements IRenderable {
 			material: table.getMaterial(this.szMaterial),
 		};
 
-		if (this.leftwallheightvisible > 0.0) {
+		if (this.leftWallHeightVisible > 0.0) {
 			const leftMesh = new Mesh(`ramp.left-${this.getName()}`);
 			for (let i = 0; i < rampVertex; i++) {
 
@@ -336,10 +330,10 @@ export class RampItem extends GameItem implements IRenderable {
 
 				rgv3d2.x = rv.rgvLocal[i].x;
 				rgv3d2.y = rv.rgvLocal[i].y;
-				rgv3d2.z = (rgheight[i] + this.leftwallheightvisible) * table.getScaleZ();
+				rgv3d2.z = f4(rgheight[i] + this.leftWallHeightVisible) * table.getScaleZ();
 
-				if (this.szImage && this.fImageWalls) {
-					if (this.imagealignment === RampItem.RampImageAlignmentWorld) {
+				if (this.szImage && this.imageWalls) {
+					if (this.imageAlignment === RampItem.RampImageAlignmentWorld) {
 						rgv3d1.tu = rgv3d1.x * invTableWidth;
 						rgv3d1.tv = rgv3d1.y * invTableHeight;
 
@@ -379,7 +373,7 @@ export class RampItem extends GameItem implements IRenderable {
 			};
 		}
 
-		if (this.rightwallheightvisible > 0.0) {
+		if (this.rightWallHeightVisible > 0.0) {
 			const rightMesh = new Mesh(`ramp.right-${this.getName()}`);
 			for (let i = 0; i < rampVertex; i++) {
 
@@ -392,10 +386,10 @@ export class RampItem extends GameItem implements IRenderable {
 
 				rgv3d2.x = rgv3d1.x;
 				rgv3d2.y = rgv3d1.y;
-				rgv3d2.z = (rgheight[i] + this.rightwallheightvisible) * table.getScaleZ();
+				rgv3d2.z = f4(rgheight[i] + this.rightWallHeightVisible) * table.getScaleZ();
 
-				if (this.szImage && this.fImageWalls) {
-					if (this.imagealignment === RampItem.RampImageAlignmentWorld) {
+				if (this.szImage && this.imageWalls) {
+					if (this.imageAlignment === RampItem.RampImageAlignmentWorld) {
 						rgv3d1.tu = rgv3d1.x * invTableWidth;
 						rgv3d1.tv = rgv3d1.y * invTableHeight;
 					} else {
@@ -555,12 +549,12 @@ export class RampItem extends GameItem implements IRenderable {
 			normal.normalize();
 			prevB = binorm;
 
-			const invNumRings = 1.0 / numRings;
-			const invNumSegments = 1.0 / numSegments;
-			const u = i * invNumRings;
+			const invNumRings = f4(1.0 / f4(numRings));
+			const invNumSegments = f4(1.0 / f4(numSegments));
+			const u = f4(i * invNumRings);
 			for (let j = 0; j < numSegments; j++, index++) {
 				const v = (j + u) * invNumSegments;
-				const tmp: Vertex3D = Vertex3D.getRotatedAxis(j * (360.0 * invNumSegments), tangent, normal).multiplyScalar(this.wireDiameter * 0.5);
+				const tmp: Vertex3D = Vertex3D.getRotatedAxis(f4(j * f4(360.0 * invNumSegments)), tangent, normal).multiplyScalar(this.wireDiameter * f4(0.5));
 				rgvbuf[index] = new Vertex3DNoTex2();
 				rgvbuf[index].x = midPoints[i].x + tmp.x;
 				rgvbuf[index].y = midPoints[i].y + tmp.y;
@@ -569,7 +563,7 @@ export class RampItem extends GameItem implements IRenderable {
 				rgvbuf[index].tu = u;
 				rgvbuf[index].tv = v;
 				const n = new Vertex3D(rgvbuf[index].x - midPoints[i].x, rgvbuf[index].y - midPoints[i].y, rgvbuf[index].z - height);
-				const len = 1.0 / Math.sqrt(n.x * n.x + n.y * n.y + n.z * n.z);
+				const len = f4(1.0 / f4(Math.sqrt(f4(f4(f4(n.x * n.x) + f4(n.y * n.y)) + f4(n.z * n.z)))));
 				rgvbuf[index].nx = n.x * len;
 				rgvbuf[index].ny = n.y * len;
 				rgvbuf[index].nz = n.z * len;
@@ -594,23 +588,23 @@ export class RampItem extends GameItem implements IRenderable {
 
 		// Compute an approximation to the length of the central curve
 		// by adding up the lengths of the line segments.
-		let totallength = 0;
-		const bottomHeight = this.heightbottom + table.gameData.tableheight;
-		const topHeight = this.heighttop + table.gameData.tableheight;
+		let totalLength = 0;
+		const bottomHeight = this.heightBottom + table.gameData.tableheight;
+		const topHeight = this.heightTop + table.gameData.tableheight;
 
 		for (let i = 0; i < (cvertex - 1); i++) {
 
 			const v1 = vvertex[i];
 			const v2 = vvertex[i + 1];
 
-			const dx = v1.x - v2.x;
-			const dy = v1.y - v2.y;
-			const length = Math.sqrt(dx * dx + dy * dy);
+			const dx = f4(v1.x - v2.x);
+			const dy = f4(v1.y - v2.y);
+			const length = f4(Math.sqrt(f4(dx * dx) + f4(dy * dy)));
 
-			totallength += length;
+			totalLength = f4(totalLength + length);
 		}
 
-		let currentlength = 0;
+		let currentLength = 0;
 		for (let i = 0; i < cvertex; i++) {
 
 			// clamp next and prev as ramps do not loop
@@ -640,7 +634,7 @@ export class RampItem extends GameItem implements IRenderable {
 				v1normal.normalize();
 				v2normal.normalize();
 
-				if (Math.abs(v1normal.x - v2normal.x) < 0.0001 && Math.abs(v1normal.y - v2normal.y) < 0.0001) {
+				if (Math.abs(f4(v1normal.x - v2normal.x)) < 0.0001 && Math.abs(f4(v1normal.y - v2normal.y)) < 0.0001) {
 					// Two parallel segments
 					vnormal = v1normal;
 
@@ -649,58 +643,58 @@ export class RampItem extends GameItem implements IRenderable {
 					// shift those lines outwards along their normals
 
 					// First line
-					const A = vprev.y - vmiddle.y;
-					const B = vmiddle.x - vprev.x;
+					const A = f4(vprev.y - vmiddle.y);
+					const B = f4(vmiddle.x - vprev.x);
 
 					// Shift line along the normal
-					const C = -(A * (vprev.x - v1normal.x) + B * (vprev.y - v1normal.y));
+					const C = -f4(f4(A * f4(vprev.x - v1normal.x)) + f4(B * f4(vprev.y - v1normal.y)));
 
 					// Second line
-					const D = vnext.y - vmiddle.y;
-					const E = vmiddle.x - vnext.x;
+					const D = f4(vnext.y - vmiddle.y);
+					const E = f4(vmiddle.x - vnext.x);
 
 					// Shift line along the normal
-					const F = -(D * (vnext.x - v2normal.x) + E * (vnext.y - v2normal.y));
+					const F = -f4(f4(D * f4(vnext.x - v2normal.x)) + f4(E * f4(vnext.y - v2normal.y)));
 
-					const det = A * E - B * D;
-					const invDet = (det !== 0.0) ? 1.0 / det : 0.0;
+					const det = f4(f4(A * E) - f4(B * D));
+					const invDet = (det !== 0.0) ? f4(1.0 / det) : 0.0;
 
-					const intersectx = (B * F - E * C) * invDet;
-					const intersecty = (C * D - A * F) * invDet;
+					const intersectX = f4(f4(f4(B * F) - f4(E * C)) * invDet);
+					const intersectY = f4(f4(f4(C * D) - f4(A * F)) * invDet);
 
-					vnormal.x = vmiddle.x - intersectx;
-					vnormal.y = vmiddle.y - intersecty;
+					vnormal.x = vmiddle.x - intersectX;
+					vnormal.y = vmiddle.y - intersectY;
 				}
 			}
 
 			// Update current length along the ramp.
-			const dx = vprev.x - vmiddle.x;
-			const dy = vprev.y - vmiddle.y;
-			const length = Math.sqrt(dx * dx + dy * dy);
+			const dx = f4(vprev.x - vmiddle.x);
+			const dy = f4(vprev.y - vmiddle.y);
+			const length = f4(Math.sqrt(f4(dx * dx) + f4(dy * dy)));
 
-			currentlength += length;
+			currentLength = f4(currentLength + length);
 
-			const percentage = currentlength / totallength;
-			let widthcur = percentage * (this.widthtop - this.widthbottom) + this.widthbottom;
-			ppheight[i] = vmiddle.z + percentage * (topHeight - bottomHeight) + bottomHeight;
+			const percentage = f4(currentLength / totalLength);
+			let currentWidth = f4(f4(percentage * f4(this.widthTop - this.widthBottom)) + this.widthBottom);
+			ppheight[i] = f4(f4(vmiddle.z + f4(percentage * f4(topHeight - bottomHeight))) + bottomHeight);
 
-			this.assignHeightToControlPoint(vvertex[i], vmiddle.z + percentage * (topHeight - bottomHeight) + bottomHeight);
-			ppratio[i] = 1.0 - percentage;
+			this.assignHeightToControlPoint(vvertex[i], f4(f4(vmiddle.z + f4(percentage * f4(topHeight - bottomHeight))) + bottomHeight));
+			ppratio[i] = f4(1.0 - percentage);
 
 			// only change the width if we want to create vertices for rendering or for the editor
 			// the collision engine uses flat type ramps
 			if (this.isHabitrail() && this.rampType !== RampItem.RampType1Wire) {
-				widthcur = this.wireDistanceX;
+				currentWidth = this.wireDistanceX;
 				if (incWidth) {
-					widthcur += 20.0;
+					currentWidth = f4(currentWidth + 20.0);
 				}
 			} else if (this.rampType === RampItem.RampType1Wire) {
-				widthcur = this.wireDiameter;
+				currentWidth = this.wireDiameter;
 			}
 
 			pMiddlePoints[i] = new Vertex2D(vmiddle.x, vmiddle.y).add(vnormal);
-			rgvLocal[i] = new Vertex2D(vmiddle.x, vmiddle.y).add(vnormal.clone().multiplyScalar(widthcur * 0.5));
-			rgvLocal[cvertex * 2 - i - 1] = new Vertex2D(vmiddle.x, vmiddle.y).sub(vnormal.clone().multiplyScalar(widthcur * 0.5));
+			rgvLocal[i] = new Vertex2D(vmiddle.x, vmiddle.y).add(vnormal.clone().multiplyScalar(currentWidth * f4(0.5)));
+			rgvLocal[cvertex * 2 - i - 1] = new Vertex2D(vmiddle.x, vmiddle.y).sub(vnormal.clone().multiplyScalar(currentWidth * f4(0.5)));
 		}
 
 		return { rgvLocal, pcvertex, ppheight, ppfCross, ppratio, pMiddlePoints };
@@ -720,7 +714,7 @@ export class RampItem extends GameItem implements IRenderable {
 				accuracy = table.getDetailLevel();
 			}
 		}
-		accuracy = 4.0 * Math.pow(10.0, (10.0 - accuracy) * (1.0 / 1.5)); // min = 4 (highest accuracy/detail level), max = 4 * 10^(10/1.5) = ~18.000.000 (lowest accuracy/detail level)
+		accuracy = f4(f4(4.0) * f4(Math.pow(10.0, f4(f4(10.0 - accuracy) * f4(f4(1.0) / f4(1.5)))))); // min = 4 (highest accuracy/detail level), max = 4 * 10^(10/1.5) = ~18.000.000 (lowest accuracy/detail level)
 		return DragPoint.getRgVertex<RenderVertex3D>(this.dragPoints, () => new RenderVertex3D(), false, accuracy);
 	}
 
@@ -742,28 +736,28 @@ export class RampItem extends GameItem implements IRenderable {
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<number> {
 		switch (tag) {
-			case 'HTBT': this.heightbottom = this.getFloat(buffer); break;
-			case 'HTTP': this.heighttop = this.getFloat(buffer); break;
-			case 'WDBT': this.widthbottom = this.getFloat(buffer); break;
-			case 'WDTP': this.widthtop = this.getFloat(buffer); break;
+			case 'HTBT': this.heightBottom = this.getFloat(buffer); break;
+			case 'HTTP': this.heightTop = this.getFloat(buffer); break;
+			case 'WDBT': this.widthBottom = this.getFloat(buffer); break;
+			case 'WDTP': this.widthTop = this.getFloat(buffer); break;
 			case 'MATR': this.szMaterial = this.getString(buffer, len); break;
-			case 'TMON': this.fTimerEnabled = this.getInt(buffer); break;
-			case 'TMIN': this.TimerInterval = this.getInt(buffer); break;
+			case 'TMON': this.isTimerEnabled = this.getInt(buffer); break;
+			case 'TMIN': this.timerInterval = this.getInt(buffer); break;
 			case 'TYPE': this.rampType = this.getInt(buffer); break;
 			case 'IMAG': this.szImage = this.getString(buffer, len); break;
-			case 'ALGN': this.imagealignment = this.getInt(buffer); break;
-			case 'IMGW': this.fImageWalls = this.getBool(buffer); break;
+			case 'ALGN': this.imageAlignment = this.getInt(buffer); break;
+			case 'IMGW': this.imageWalls = this.getBool(buffer); break;
 			case 'NAME': this.wzName = this.getWideString(buffer, len); break;
-			case 'WLHL': this.leftwallheight = this.getFloat(buffer); break;
-			case 'WLHR': this.rightwallheight = this.getFloat(buffer); break;
-			case 'WVHL': this.leftwallheightvisible = this.getFloat(buffer); break;
-			case 'WVHR': this.rightwallheightvisible = this.getFloat(buffer); break;
-			case 'HTEV': this.fHitEvent = this.getBool(buffer); break;
+			case 'WLHL': this.leftWallHeight = this.getFloat(buffer); break;
+			case 'WLHR': this.rightWallHeight = this.getFloat(buffer); break;
+			case 'WVHL': this.leftWallHeightVisible = this.getFloat(buffer); break;
+			case 'WVHR': this.rightWallHeightVisible = this.getFloat(buffer); break;
+			case 'HTEV': this.hasHitEvent = this.getBool(buffer); break;
 			case 'THRS': this.threshold = this.getFloat(buffer); break;
 			case 'ELAS': this.elasticity = this.getFloat(buffer); break;
 			case 'RFCT': this.friction = this.getFloat(buffer); break;
 			case 'RSCT': this.scatter = this.getFloat(buffer); break;
-			case 'CLDR': this.fCollidable = this.getBool(buffer); break;
+			case 'CLDR': this.isCollidable = this.getBool(buffer); break;
 			case 'RVIS': this.fVisible = this.getBool(buffer); break;
 			case 'REEN': this.fReflectionEnabled = this.getBool(buffer); break;
 			case 'RADB': this.depthBias = this.getFloat(buffer); break;

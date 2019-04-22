@@ -132,7 +132,7 @@ export class Vertex3D implements Vertex {
 	}
 
 	public cross(v: Vertex3D): this {
-		return this.crossVectors( this, v );
+		return this.crossVectors(this, v);
 	}
 
 	public crossVectors(a: Vertex3D, b: Vertex3D) {

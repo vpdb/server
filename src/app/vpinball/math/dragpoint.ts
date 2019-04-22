@@ -83,13 +83,13 @@ export class DragPoint extends GameItem {
 
 			const rendv1 = instantiateT();
 
-			rendv1.set(pdp1.vertex.x, pdp1.vertex.y, 0);
+			rendv1.set(pdp1.vertex.x, pdp1.vertex.y, pdp1.vertex.z);
 			rendv1.fSmooth = pdp1.fSmooth;
 			rendv1.fSlingshot = pdp1.fSlingshot;
 			rendv1.fControlPoint = true;
 
 			// Properties of last point don't matter, because it won't be added to the list on this pass (it'll get added as the first point of the next curve)
-			rendv2.set(pdp2.vertex.x, pdp2.vertex.y, 0);
+			rendv2.set(pdp2.vertex.x, pdp2.vertex.y, pdp2.vertex.z);
 
 			vv = DragPoint.recurseSmoothLine(vv, cc, 0.0, 1.0, rendv1, rendv2, accuracy);
 		}

@@ -40,7 +40,7 @@ describe.only('The VPinball ramp parser', () => {
 	});
 
 	it('should generate a flat ramp mesh', async () => {
-		const vertices = concatMeshes(gltf, ['rampfloor-Flat', 'rampleft-Flat', 'rampright-Flat']);
+		const vertices = three.concatMeshes(gltf, 'ramps', ['rampfloor-Flat', 'rampleft-Flat', 'rampright-Flat']);
 		let expectedVertices = [
 			[217.559097, 1201.483398, -0.000000],
 			[125.305038, 1240.588623, -0.000000],
@@ -222,7 +222,7 @@ describe.only('The VPinball ramp parser', () => {
 
 	it('should generate a flat ramp mesh with only left wall', async () => {
 		three.expectNoObject(gltf, 'ramps', 'rampright-FlatL');
-		const vertices = concatMeshes(gltf, ['rampfloor-FlatL', 'rampleft-FlatL']);
+		const vertices = three.concatMeshes(gltf, 'ramps', ['rampfloor-FlatL', 'rampleft-FlatL']);
 		let expectedVertices = [
 			[353.603241, 1076.285522, -0.000000],
 			[280.025848, 1090.824097, -0.000000],
@@ -380,7 +380,7 @@ describe.only('The VPinball ramp parser', () => {
 
 	it('should generate a flat ramp mesh with only right wall', async () => {
 		three.expectNoObject(gltf, 'ramps', 'rampleft-FlatR');
-		const vertices = concatMeshes(gltf, ['rampfloor-FlatR', 'rampright-FlatR']);
+		const vertices = three.concatMeshes(gltf, 'ramps', ['rampfloor-FlatR', 'rampright-FlatR']);
 		let expectedVertices = [
 			[270.290283, 1102.751343, -5.500000],
 			[205.314346, 1140.209839, -5.500000],
@@ -568,7 +568,7 @@ describe.only('The VPinball ramp parser', () => {
 	});
 
 	it('should generate a wire ramp with one wire', async () => {
-		const vertices = concatMeshes(gltf, ['rampwire1-Wire1']);
+		const vertices = three.concatMeshes(gltf, 'ramps', ['rampwire1-Wire1']);
 		let expectedVertices = [
 			[402.053558, 1000.492188, -3.833626],
 			[400.337463, 999.845276, -2.872509],
@@ -853,7 +853,7 @@ describe.only('The VPinball ramp parser', () => {
 	it('should generate a wire ramp with two wires', async () => {
 		three.expectNoObject(gltf, 'ramps', 'rampwire3-Wire2');
 		three.expectNoObject(gltf, 'ramps', 'rampwire4-Wire2');
-		const vertices = concatMeshes(gltf, ['rampwire1-Wire2', 'rampwire2-Wire2']);
+		const vertices = three.concatMeshes(gltf, 'ramps', ['rampwire1-Wire2', 'rampwire2-Wire2']);
 		let expectedVertices = [
 			[599.545166, 1000.018738, -25.248489],
 			[596.605652, 1000.570435, -22.773182],
@@ -1654,7 +1654,7 @@ describe.only('The VPinball ramp parser', () => {
 
 	it('should generate a wire ramp with three wires, third at left', async () => {
 		three.expectNoObject(gltf, 'ramps', 'rampwire1-Wire3L');
-		const vertices = concatMeshes(gltf, ['rampwire2-Wire3L', 'rampwire3-Wire3L', 'rampwire4-Wire3L']);
+		const vertices = three.concatMeshes(gltf, 'ramps', ['rampwire2-Wire3L', 'rampwire3-Wire3L', 'rampwire4-Wire3L']);
 		let expectedVertices = [
 			[655.798157, 975.216125, -53.536175],
 			[654.051819, 974.289429, -52.920765],
@@ -3427,7 +3427,7 @@ describe.only('The VPinball ramp parser', () => {
 
 	it('should generate a wire ramp with three wires, third at right', async () => {
 		three.expectNoObject(gltf, 'ramps', 'rampwire2-Wire3R');
-		const vertices = concatMeshes(gltf, ['rampwire1-Wire3R', 'rampwire3-Wire3R', 'rampwire4-Wire3R']);
+		const vertices = three.concatMeshes(gltf, 'ramps', ['rampwire1-Wire3R', 'rampwire3-Wire3R', 'rampwire4-Wire3R']);
 		let expectedVertices = [
 			[679.283569, 1189.179688, -44.999237],
 			[678.895996, 1188.866943, -44.858063],
@@ -5055,7 +5055,7 @@ describe.only('The VPinball ramp parser', () => {
 	});
 
 	it('should generate a wire ramp with four wires', async () => {
-		const vertices = concatMeshes(gltf, ['rampwire1-Wire4', 'rampwire2-Wire4', 'rampwire3-Wire4', 'rampwire4-Wire4']);
+		const vertices = three.concatMeshes(gltf, 'ramps', ['rampwire1-Wire4', 'rampwire2-Wire4', 'rampwire3-Wire4', 'rampwire4-Wire4']);
 		let expectedVertices = [
 			[657.640747, 1371.505615, -48.039097],
 			[656.193237, 1370.111084, -47.443428],
@@ -7325,12 +7325,3 @@ describe.only('The VPinball ramp parser', () => {
 	});
 
 });
-
-function concatMeshes(gltf, objectNames) {
-	const arr = [];
-	for (const objName of objectNames) {
-		const mesh = three.find(gltf, 'ramps', objName);
-		arr.push(...mesh.geometry.attributes.position.array);
-	}
-	return arr;
-}

@@ -152,6 +152,15 @@ class ThreeHelper {
 		const trim = Math.pow(10, accuracy);
 		return `${Math.round(vertex[0] * trim)},${Math.round(vertex[1] * trim)},${Math.round(vertex[2] * trim)}`;
 	}
+
+	concatMeshes(gltf, groupName, objectNames) {
+		const arr = [];
+		for (const objName of objectNames) {
+			const mesh = this.find(gltf, groupName, objName);
+			arr.push(...mesh.geometry.attributes.position.array);
+		}
+		return arr;
+	}
 }
 
 function toArrayBuffer(buf) {

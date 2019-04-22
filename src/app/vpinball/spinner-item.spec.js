@@ -39,7 +39,7 @@ describe.only('The VPinball spinner parser', () => {
 		await api.teardown();
 	});
 
-	it('should generate standard spinner mesh', async () => {
+	it('should generate a standard spinner mesh', async () => {
 		const plateMesh = three.find(gltf, 'spinners', 'spinnerplate-Spinner');
 		const plateMeshVertices = plateMesh.geometry.attributes.position;
 		let expectedVertices = [

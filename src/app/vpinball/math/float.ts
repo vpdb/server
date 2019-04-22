@@ -55,6 +55,11 @@ export function f4(f8: number): number {
 	return Math.fround(f8);
 }
 
+/**
+ * Converts degree to radian.
+ * @param deg Degree (i.e. 0-360)
+ * @return Radian angle
+ */
 export function degToRad(deg: number): number {
-	return deg * f4(Math.PI / 180.0);
+	return f4(f4(deg) * f4(Math.PI / 180.0));
 }

@@ -20,7 +20,7 @@
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { GameItem, IRenderable, Meshes } from './game-item';
-import { degToRad } from './math/float';
+import { degToRad, f4 } from './math/float';
 import { Matrix3D } from './math/matrix3d';
 import { Vertex3D } from './math/vertex3d';
 import { Mesh } from './mesh';
@@ -51,6 +51,8 @@ export class HitTargetItem extends GameItem implements IRenderable {
 	private static TypeDropTargetFlatSimple = 7;
 	private static TypeHitFatTargetSlim = 8;
 	private static TypeHitTargetSlim = 9;
+
+	private static DROP_TARGET_LIMIT = f4(52.0);
 
 	private vPosition: Vertex3D;
 	private vSize: Vertex3D = new Vertex3D(32, 32, 32);
@@ -86,12 +88,6 @@ export class HitTargetItem extends GameItem implements IRenderable {
 		return hitTargetItem;
 	}
 
-	public static from(data: any): HitTargetItem {
-		const hitTargetItem = new HitTargetItem();
-		Object.assign(hitTargetItem, data);
-		return hitTargetItem;
-	}
-
 	private constructor() {
 		super();
 	}
@@ -113,6 +109,11 @@ export class HitTargetItem extends GameItem implements IRenderable {
 		tempMatrix.rotateZMatrix(degToRad(this.rotZ));
 		fullMatrix.multiply(tempMatrix);
 
+		let dropOffset = 0;
+		if (this.isDropped && (this.targetType === HitTargetItem.TypeDropTargetBeveled || this.targetType === HitTargetItem.TypeDropTargetSimple || this.targetType === HitTargetItem.TypeDropTargetFlatSimple)) {
+			dropOffset = -f4(HitTargetItem.DROP_TARGET_LIMIT * table.getScaleZ());
+		}
+
 		for (const vertex of hitTargetMesh.vertices) {
 			let vert = new Vertex3D(vertex.x, vertex.y, vertex.z);
 			vert.x *= this.vSize.x;
@@ -122,7 +123,7 @@ export class HitTargetItem extends GameItem implements IRenderable {
 
 			vertex.x = vert.x + this.vPosition.x;
 			vertex.y = vert.y + this.vPosition.y;
-			vertex.z = vert.z * table.getScaleZ() + this.vPosition.z + table.getTableHeight();
+			vertex.z = f4(f4(f4(vert.z * table.getScaleZ()) + this.vPosition.z) + table.getTableHeight())  + dropOffset;
 
 			vert = new Vertex3D(vertex.nx, vertex.ny, vertex.nz);
 			vert = fullMatrix.multiplyVectorNoTranslate(vert);
@@ -151,6 +152,7 @@ export class HitTargetItem extends GameItem implements IRenderable {
 			case HitTargetItem.TypeHitFatTargetSquare: return hitFatTargetSquareMesh.clone();
 			case HitTargetItem.TypeHitTargetSlim: return hitTargetT1SlimMesh.clone();
 			case HitTargetItem.TypeHitFatTargetSlim: return hitTargetT2SlimMesh.clone();
+			/* istanbul ignore next: currently all implemented */
 			default: return hitTargetT3Mesh.clone();
 		}
 	}

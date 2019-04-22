@@ -28,20 +28,26 @@ import { Table } from '../app/vpinball/table';
 
 		const start = Date.now();
 		//const tablePath = 'D:/Pinball/Visual Pinball/Tables/vpdb/e2na558ew.vpx'; // has animation frames
-		const tablePath = 'D:/Pinball/Visual Pinball/Tables/vpdb/e27butb5w.vpx';
+		//const tablePath = 'D:/Pinball/Visual Pinball/Tables/Batman Dark Knight tt&NZ 1.2.vpx';
+		//const tablePath = 'D:/Pinball/Visual Pinball/Tables/Materials.vpx';
+		//const tablePath = 'C:/Development/vpdb-server/bumpertest.vpx';
+		const tablePath = 'C:/Development/vpdb-server/src/test/fixtures/table-hit-target.vpx';
 
 		const vpt = await Table.load(tablePath);
 		const loaded = Date.now();
+
+		// const obj = vpt.gates.find(g => g.getName() === 'WireW');
+		// writeFileSync('gate-vpdb.obj', obj.getMeshes(vpt).wire.mesh.serializeToObj());
 
 		const name = basename(tablePath, '.vpx');
 		const glb = await vpt.exportGlb({
 
 			applyTextures: true,
 			applyMaterials: true,
-			exportLightBulbLights: false,
+			exportLightBulbLights: true,
 			exportAllLights: false,
 			optimizeTextures: true,
-			gltfOptions: { compressVertices: true, forcePowerOfTwoTextures: true },
+			gltfOptions: { compressVertices: false, forcePowerOfTwoTextures: true },
 
 			exportPrimitives: true,
 			exportTriggers: true,

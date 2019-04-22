@@ -19,8 +19,9 @@
 
 /* tslint:disable:variable-name adjacent-overload-signatures */
 import { f4 } from './float';
+import { IRenderVertex, Vertex } from './vertex';
 
-export class Vertex2D {
+export class Vertex2D implements Vertex {
 
 	public readonly isVector2 = true;
 	public readonly isVector3 = false;
@@ -82,7 +83,17 @@ export class Vertex2D {
 		return this;
 	}
 
-	public length() {
+	public length(): number {
 		return f4(Math.sqrt( f4(f4(this.x * this.x) + f4(this.y * this.y))));
+	}
+}
+
+export class RenderVertex extends Vertex2D implements IRenderVertex {
+	public fSmooth: boolean;
+	public fSlingshot: boolean;
+	public fControlPoint: boolean; // Whether this point was a control point on the curve
+
+	constructor(x?: number, y?: number) {
+		super(x, y);
 	}
 }

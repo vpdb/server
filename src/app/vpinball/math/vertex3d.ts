@@ -19,9 +19,10 @@
 
 /* tslint:disable:variable-name adjacent-overload-signatures */
 import { f4 } from './float';
+import { IRenderVertex, Vertex } from './vertex';
 import { Vertex2D } from './vertex2d';
 
-export class Vertex3D {
+export class Vertex3D implements Vertex {
 
 	public readonly isVector2 = false;
 	public readonly isVector3 = true;
@@ -101,7 +102,7 @@ export class Vertex3D {
 	}
 
 	public length(): number {
-		return f4(Math.sqrt( f4(f4(this.x * this.x) + f4(this.y * this.y)) + f4(this.z * this.z)));
+		return f4(Math.sqrt( f4(f4(f4(this.x * this.x) + f4(this.y * this.y)) + f4(this.z * this.z))));
 	}
 
 	public lengthSq(): number {
@@ -152,5 +153,15 @@ export class Vertex3D {
 
 	public xy(): Vertex2D {
 		return new Vertex2D(this.x, this.y);
+	}
+}
+
+export class RenderVertex3D extends Vertex3D implements IRenderVertex {
+	public fSmooth: boolean;
+	public fSlingshot: boolean;
+	public fControlPoint: boolean; // Whether this point was a control point on the curve
+
+	constructor(x?: number, y?: number, z?: number) {
+		super(x, y, z);
 	}
 }

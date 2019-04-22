@@ -375,7 +375,7 @@ describe.only('The VPinball ramp parser', () => {
 			[274.384521, 666.356201, -75.099998],
 			[274.384521, 666.356201, -110.099998],
 		];
-		three.expectVerticesInArray(expectedVertices, vertices, 2);
+		three.expectVerticesInArray(expectedVertices, vertices);
 	});
 });
 

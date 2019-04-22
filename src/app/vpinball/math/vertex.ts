@@ -20,8 +20,14 @@
 /* tslint:disable:variable-name adjacent-overload-signatures */
 import { isUndefined } from 'util';
 import { f4 } from './float';
-import { Vertex2D } from './vertex2d';
-import { Vertex3D } from './vertex3d';
+
+export interface Vertex {
+	x: number;
+	y: number;
+	clone(): Vertex;
+	sub(v: Vertex): this;
+	length(): number;
+}
 
 export interface IRenderVertex {
 	x: number;
@@ -32,26 +38,6 @@ export interface IRenderVertex {
 	isVector3: boolean;
 
 	set?(x: number, y: number, z?: number): this;
-}
-
-export class RenderVertex extends Vertex2D implements IRenderVertex {
-	public fSmooth: boolean;
-	public fSlingshot: boolean;
-	public fControlPoint: boolean; // Whether this point was a control point on the curve
-
-	constructor(x?: number, y?: number) {
-		super(x, y);
-	}
-}
-
-export class RenderVertex3D extends Vertex3D implements IRenderVertex {
-	public fSmooth: boolean;
-	public fSlingshot: boolean;
-	public fControlPoint: boolean; // Whether this point was a control point on the curve
-
-	constructor(x?: number, y?: number, z?: number) {
-		super(x, y, z);
-	}
 }
 
 export class Vertex3DNoTex2 {

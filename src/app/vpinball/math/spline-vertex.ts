@@ -19,8 +19,8 @@
 
 import { DragPoint } from './dragpoint';
 import { f4 } from './float';
-import { RenderVertex } from './vertex';
-import { Vertex2D } from './vertex2d';
+import { RenderVertex, Vertex2D } from './vertex2d';
+import { CatmullCurve2D } from './catmull-curve';
 
 export class SplineVertex {
 
@@ -141,6 +141,6 @@ export class SplineVertex {
 			}
 			accuracy = 4.0 * Math.pow(10.0, (10.0 - accuracy) * (1.0 / 1.5)); // min = 4 (highest accuracy/detail level), max = 4 * 10^(10/1.5) = ~18.000.000 (lowest accuracy/detail level)
 		}
-		return DragPoint.getRgVertex<RenderVertex>(dragPoints, () => new RenderVertex(), true, accuracy);
+		return DragPoint.getRgVertex<RenderVertex>(dragPoints, () => new RenderVertex(), CatmullCurve2D.fromVertex2D, true, accuracy);
 	}
 }

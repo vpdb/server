@@ -18,10 +18,11 @@
  */
 
 import { GameItem } from '../game-item';
-import { CatmullCurve } from './catmull-curve';
 import { f4 } from './float';
-import { IRenderVertex, RenderVertex } from './vertex';
+import { IRenderVertex, Vertex } from './vertex';
 import { Vertex3D } from './vertex3d';
+import { RenderVertex } from './vertex2d';
+import { CatmullCurve } from './catmull-curve';
 
 export const HIT_SHAPE_DETAIL_LEVEL = 7.0;
 
@@ -40,7 +41,12 @@ export class DragPoint extends GameItem {
 	public texturecoord: number;
 	public calcHeight: number;
 
-	public static getRgVertex<T extends IRenderVertex>(vdpoint: DragPoint[], instantiateT: () => T, loop: boolean = true, accuracy: number = 4.0): T[] {
+	public static getRgVertex<T extends IRenderVertex>(
+		vdpoint: DragPoint[],
+		instantiateT: () => T,
+		instantiateCatmullCurve: (pdp0: Vertex, pdp1: Vertex, pdp2: Vertex, pdp3: Vertex) => CatmullCurve,
+		loop: boolean = true,
+		accuracy: number = 4.0): T[] {
 
 		let vv: T[] = [];
 
@@ -73,7 +79,7 @@ export class DragPoint extends GameItem {
 			const pdp0: DragPoint = vdpoint[iprev];
 			const pdp3: DragPoint = vdpoint[inext];
 
-			const cc = CatmullCurve.fromVertex3D(pdp0.vertex, pdp1.vertex, pdp2.vertex, pdp3.vertex);
+			const cc = instantiateCatmullCurve(pdp0.vertex, pdp1.vertex, pdp2.vertex, pdp3.vertex);
 
 			const rendv1 = instantiateT();
 
@@ -193,7 +199,7 @@ export class DragPoint extends GameItem {
 
 		const tMid = f4(f4(t1 + t2) * 0.5);
 
-		const vmid: T = ((vt2.isVector3 ? cc.getPoint3At(tMid) : cc.getPoint2At(tMid)) as unknown) as T;
+		const vmid: T = cc.getPointAt(tMid) as T;
 
 		vmid.fSmooth = true; // Generated points must always be smooth, because they are part of the curve
 		vmid.fSlingshot = false; // Slingshots can't be along curves

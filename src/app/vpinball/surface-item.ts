@@ -22,10 +22,11 @@ import { BiffParser } from './biff-parser';
 import { DragPoint } from './math/dragpoint';
 import { GameItem, IRenderable, Meshes } from './game-item';
 import { Matrix3D } from './math/matrix3d';
-import { Vertex2D } from './math/vertex2d';
+import { RenderVertex, Vertex2D } from './math/vertex2d';
 import { Mesh } from './mesh';
 import { Table } from './table';
-import { RenderVertex, Vertex3DNoTex2 } from './math/vertex';
+import { Vertex3DNoTex2 } from './math/vertex';
+import { CatmullCurve2D } from './math/catmull-curve';
 
 /**
  * VPinball's surfaces, a.k.a as "walls".
@@ -107,7 +108,7 @@ export class SurfaceItem extends GameItem implements IRenderable {
 		const topMesh = new Mesh(`surface.top-${this.getName()}`);
 		const sideMesh = new Mesh(`surface.side-${this.getName()}`);
 
-		const vvertex: RenderVertex[] = DragPoint.getRgVertex<RenderVertex>(this.dragPoints, () => new RenderVertex());
+		const vvertex: RenderVertex[] = DragPoint.getRgVertex<RenderVertex>(this.dragPoints, () => new RenderVertex(), CatmullCurve2D.fromVertex2D);
 		const rgtexcoord = DragPoint.getTextureCoords(this.dragPoints, vvertex);
 
 		const numVertices = vvertex.length;

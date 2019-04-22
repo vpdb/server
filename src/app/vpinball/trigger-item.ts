@@ -22,7 +22,7 @@ import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { GameItem, IRenderable, Meshes } from './game-item';
 import { DragPoint } from './math/dragpoint';
-import { degToRad } from './math/float';
+import { degToRad, f4 } from './math/float';
 import { Matrix3D } from './math/matrix3d';
 import { Vertex2D } from './math/vertex2d';
 import { Vertex3D } from './math/vertex3d';
@@ -139,13 +139,13 @@ export class TriggerItem extends GameItem implements IRenderable {
 			vert = fullMatrix.multiplyVector(vert);
 
 			if (this.shape === TriggerItem.ShapeTriggerButton || this.shape === TriggerItem.ShapeTriggerStar) {
-				vertex.x = (vert.x * this.radius) + this.vCenter.x;
-				vertex.y = (vert.y * this.radius) + this.vCenter.y;
-				vertex.z = (vert.z * this.radius * table.getScaleZ()) + baseHeight + zOffset;
+				vertex.x = f4(vert.x * this.radius) + this.vCenter.x;
+				vertex.y = f4(vert.y * this.radius) + this.vCenter.y;
+				vertex.z = f4(f4(f4(vert.z * this.radius) * table.getScaleZ()) + baseHeight) + zOffset;
 			} else {
-				vertex.x = (vert.x * this.scaleX) + this.vCenter.x;
-				vertex.y = (vert.y * this.scaleY) + this.vCenter.y;
-				vertex.z = (vert.z * table.getScaleZ()) + baseHeight + zOffset;
+				vertex.x = f4(vert.x * this.scaleX) + this.vCenter.x;
+				vertex.y = f4(vert.y * this.scaleY) + this.vCenter.y;
+				vertex.z = f4(f4(vert.z * table.getScaleZ()) + baseHeight) + zOffset;
 			}
 
 			vert = new Vertex3D(vertex.nx, vertex.ny, vertex.nz);
@@ -170,6 +170,7 @@ export class TriggerItem extends GameItem implements IRenderable {
 				return triggerButtonMesh.clone(name);
 			case TriggerItem.ShapeTriggerStar:
 				return triggerStarMesh.clone(name);
+			/* istanbul ignore next */
 			default:
 				logger.warn(null, '[TriggerItem.getBaseMesh] Unknown shape "%s".', this.shape);
 				return triggerSimpleMesh.clone(name);

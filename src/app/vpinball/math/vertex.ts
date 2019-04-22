@@ -128,14 +128,14 @@ export class Vertex3DNoTex2 {
 
 	public static fromArray(arr: number[]): Vertex3DNoTex2 {
 		const vertex = new Vertex3DNoTex2();
-		vertex.x = f4(arr[0]);
-		vertex.y = f4(arr[1]);
-		vertex.z = f4(arr[2]);
-		vertex.nx = f4(arr[3]);
-		vertex.ny = f4(arr[4]);
-		vertex.nz = f4(arr[5]);
-		vertex.tu = f4(arr[6]);
-		vertex.tv = f4(arr[7]);
+		vertex.x = arr[0];
+		vertex.y = arr[1];
+		vertex.z = arr[2];
+		vertex.nx = arr[3];
+		vertex.ny = arr[4];
+		vertex.nz = arr[5];
+		vertex.tu = arr[6];
+		vertex.tv = arr[7];
 		return vertex;
 	}
 }

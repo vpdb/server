@@ -20,7 +20,7 @@
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { GameItem, IRenderable, Meshes } from './game-item';
-import { degToRad } from './math/float';
+import { degToRad, f4 } from './math/float';
 import { Matrix3D } from './math/matrix3d';
 import { Vertex2D } from './math/vertex2d';
 import { Vertex3D } from './math/vertex3d';
@@ -36,24 +36,24 @@ import { Table } from './table';
 export class FlipperItem extends GameItem implements IRenderable {
 
 	public wzName: string;
-	public Center: Vertex2D;
-	public BaseRadius: number = 21.5;
-	public EndRadius: number = 13.0;
-	public FlipperRadiusMax: number = 130.0;
-	public FlipperRadius: number = 130.0;
+	public center: Vertex2D;
+	public baseRadius: number = 21.5;
+	public endRadius: number = 13.0;
+	public flipperRadiusMax: number = 130.0;
+	public flipperRadius: number = 130.0;
 	public return: number;
-	public StartAngle: number = 121.0;
-	public EndAngle: number = 70.0;
-	public OverridePhysics: number;
+	public startAngle: number = 121.0;
+	public endAngle: number = 70.0;
+	public overridePhysics: number;
 	public mass: number;
-	public fTimerEnabled: boolean;
-	public TimerInterval: number;
+	public isTimerEnabled: boolean;
+	public timerInterval: number;
 	public szSurface: string;
 	public szMaterial: string;
 	public szRubberMaterial: string;
-	public rubberthickness: number = 7.0;
-	public rubberheight: number = 19.0;
-	public rubberwidth: number = 24.0;
+	public rubberThickness: number = 7.0;
+	public rubberHeight: number = 19.0;
+	public rubberWidth: number = 24.0;
 	public height: number = 50.0;
 	public strength: number;
 	public elasticity: number;
@@ -63,7 +63,7 @@ export class FlipperItem extends GameItem implements IRenderable {
 	public scatter: number;
 	public torqueDamping: number;
 	public torqueDampingAngle: number;
-	public FlipperRadiusMin: number;
+	public flipperRadiusMin: number;
 	public fVisible: boolean = true;
 	public fEnabled: boolean = true;
 	public fReflectionEnabled: boolean = true;
@@ -113,8 +113,8 @@ export class FlipperItem extends GameItem implements IRenderable {
 	private getMatrix(): Matrix3D {
 		const trafoMatrix = new Matrix3D();
 		const tempMatrix = new Matrix3D();
-		trafoMatrix.setTranslation(this.Center.x, this.Center.y, 0);
-		tempMatrix.rotateZMatrix(degToRad(this.StartAngle));
+		trafoMatrix.setTranslation(this.center.x, this.center.y, 0);
+		tempMatrix.rotateZMatrix(degToRad(this.startAngle));
 		trafoMatrix.preMultiply(tempMatrix);
 		return trafoMatrix;
 	}
@@ -124,66 +124,66 @@ export class FlipperItem extends GameItem implements IRenderable {
 		const fullMatrix = new Matrix3D();
 		fullMatrix.rotateZMatrix(degToRad(180.0));
 
-		const height = table.getSurfaceHeight(this.szSurface, this.Center.x, this.Center.y);
-		const baseScale = 10.0;
-		const tipScale = 10.0;
-		const baseRadius = this.BaseRadius - this.rubberthickness;
-		const endRadius = this.EndRadius - this.rubberthickness;
+		const height = table.getSurfaceHeight(this.szSurface, this.center.x, this.center.y);
+		const baseScale = f4(10.0);
+		const tipScale = f4(10.0);
+		const baseRadius = f4(this.baseRadius - this.rubberThickness);
+		const endRadius = f4(this.endRadius - this.rubberThickness);
 
 		// base and tip
 		const baseMesh = flipperBaseMesh.clone(`flipper.base-${this.getName()}`);
 		for (let t = 0; t < 13; t++) {
 			for (const v of baseMesh.vertices) {
 				if (v.x === FlipperItem.vertsBaseBottom[t].x && v.y === FlipperItem.vertsBaseBottom[t].y && v.z === FlipperItem.vertsBaseBottom[t].z) {
-					v.x *= baseRadius * baseScale;
-					v.y *= baseRadius * baseScale;
+					v.x *= f4( baseRadius * baseScale);
+					v.y *= f4(baseRadius * baseScale);
 				}
 				if (v.x === FlipperItem.vertsTipBottom[t].x && v.y === FlipperItem.vertsTipBottom[t].y && v.z === FlipperItem.vertsTipBottom[t].z) {
-					v.x *= endRadius * tipScale;
-					v.y *= endRadius * tipScale;
-					v.y += this.FlipperRadius - endRadius * 7.9;
+					v.x *= f4(endRadius * tipScale);
+					v.y *= f4(endRadius * tipScale);
+					v.y += this.flipperRadius - f4(endRadius * f4(7.9));
 				}
 				if (v.x === FlipperItem.vertsBaseTop[t].x && v.y === FlipperItem.vertsBaseTop[t].y && v.z === FlipperItem.vertsBaseTop[t].z) {
-					v.x *= baseRadius * baseScale;
-					v.y *= baseRadius * baseScale;
+					v.x *= f4(baseRadius * baseScale);
+					v.y *= f4(baseRadius * baseScale);
 				}
 				if (v.x === FlipperItem.vertsTipTop[t].x && v.y === FlipperItem.vertsTipTop[t].y && v.z === FlipperItem.vertsTipTop[t].z) {
-					v.x *= endRadius * tipScale;
-					v.y *= endRadius * tipScale;
-					v.y += this.FlipperRadius - endRadius * 7.9;
+					v.x *= f4(endRadius * tipScale);
+					v.y *= f4(endRadius * tipScale);
+					v.y += this.flipperRadius - f4(endRadius * f4(7.9));
 				}
 			}
 		}
-		baseMesh.transform(fullMatrix, null, z => z * this.height * table.getScaleZ() + height);
+		baseMesh.transform(fullMatrix, null, z => f4(f4(z * this.height) * table.getScaleZ()) + height);
 
-		//rubber
-		if (this.rubberthickness > 0.0) {
-			const rubberBaseScale = 10.0;
-			const rubberTipScale = 10.0;
+		// rubber
+		if (this.rubberThickness > 0.0) {
+			const rubberBaseScale = f4(10.0);
+			const rubberTipScale = f4(10.0);
 			const rubberMesh = flipperBaseMesh.clone(`flipper.rubber-${this.getName()}`);
 			for (let t = 0; t < 13; t++) {
 				for (const v of rubberMesh.vertices) {
 					if (v.x === FlipperItem.vertsBaseBottom[t].x && v.y === FlipperItem.vertsBaseBottom[t].y && v.z === FlipperItem.vertsBaseBottom[t].z) {
-						v.x *= this.BaseRadius * rubberBaseScale;
-						v.y *= this.BaseRadius * rubberBaseScale;
+						v.x = f4(v.x * this.baseRadius) * rubberBaseScale;
+						v.y = f4(v.y * this.baseRadius) * rubberBaseScale;
 					}
 					if (v.x === FlipperItem.vertsTipBottom[t].x && v.y === FlipperItem.vertsTipBottom[t].y && v.z === FlipperItem.vertsTipBottom[t].z) {
-						v.x *= this.EndRadius * rubberTipScale;
-						v.y *= this.EndRadius * rubberTipScale;
-						v.y += this.FlipperRadius - this.EndRadius * 7.9;
+						v.x = f4(v.x * this.endRadius) * rubberTipScale;
+						v.y = f4(v.y * this.endRadius) * rubberTipScale;
+						v.y = f4(v.y + this.flipperRadius) - f4(this.endRadius * f4(7.9));
 					}
 					if (v.x === FlipperItem.vertsBaseTop[t].x && v.y === FlipperItem.vertsBaseTop[t].y && v.z === FlipperItem.vertsBaseTop[t].z) {
-						v.x *= this.BaseRadius * rubberBaseScale;
-						v.y *= this.BaseRadius * rubberBaseScale;
+						v.x = f4(v.x * this.baseRadius) * rubberBaseScale;
+						v.y = f4(v.y * this.baseRadius) * rubberBaseScale;
 					}
 					if (v.x === FlipperItem.vertsTipTop[t].x && v.y === FlipperItem.vertsTipTop[t].y && v.z === FlipperItem.vertsTipTop[t].z) {
-						v.x *= this.EndRadius * rubberTipScale;
-						v.y *= this.EndRadius * rubberTipScale;
-						v.y += this.FlipperRadius - this.EndRadius * 7.9;
+						v.x = f4(v.x * this.endRadius) * rubberTipScale;
+						v.y = f4(v.y * this.endRadius) * rubberTipScale;
+						v.y = f4(v.y + this.flipperRadius) - f4(this.endRadius * f4(7.9));
 					}
 				}
 			}
-			rubberMesh.transform(fullMatrix, null, z => z * this.rubberwidth * table.getScaleZ() + (height + this.rubberheight));
+			rubberMesh.transform(fullMatrix, null, z => f4(f4(z * this.rubberWidth) * table.getScaleZ()) + f4(height + this.rubberHeight));
 			return { base: baseMesh, rubber: rubberMesh };
 		}
 		return { base: baseMesh };
@@ -191,30 +191,30 @@ export class FlipperItem extends GameItem implements IRenderable {
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<number> {
 		switch (tag) {
-			case 'VCEN': this.Center = Vertex2D.get(buffer); break;
-			case 'BASR': this.BaseRadius = this.getFloat(buffer); break;
-			case 'ENDR': this.EndRadius = this.getFloat(buffer); break;
+			case 'VCEN': this.center = Vertex2D.get(buffer); break;
+			case 'BASR': this.baseRadius = this.getFloat(buffer); break;
+			case 'ENDR': this.endRadius = this.getFloat(buffer); break;
 			case 'FLPR':
-				this.FlipperRadiusMax = this.getFloat(buffer);
-				this.FlipperRadius = this.FlipperRadiusMax;
+				this.flipperRadiusMax = this.getFloat(buffer);
+				this.flipperRadius = this.flipperRadiusMax;
 				break;
 			case 'FRTN': this.return = this.getFloat(buffer); break;
-			case 'ANGS': this.StartAngle = this.getFloat(buffer); break;
-			case 'ANGE': this.EndAngle = this.getFloat(buffer); break;
-			case 'OVRP': this.OverridePhysics = this.getInt(buffer); break;
+			case 'ANGS': this.startAngle = this.getFloat(buffer); break;
+			case 'ANGE': this.endAngle = this.getFloat(buffer); break;
+			case 'OVRP': this.overridePhysics = this.getInt(buffer); break;
 			case 'FORC': this.mass = this.getFloat(buffer); break;
-			case 'TMON': this.fTimerEnabled = this.getBool(buffer); break;
-			case 'TMIN': this.TimerInterval = this.getInt(buffer); break;
+			case 'TMON': this.isTimerEnabled = this.getBool(buffer); break;
+			case 'TMIN': this.timerInterval = this.getInt(buffer); break;
 			case 'SURF': this.szSurface = this.getString(buffer, len); break;
 			case 'MATR': this.szMaterial = this.getString(buffer, len); break;
 			case 'RUMA': this.szRubberMaterial = this.getString(buffer, len); break;
 			case 'NAME': this.wzName = this.getWideString(buffer, len); break;
-			case 'RTHK': this.rubberthickness = this.getInt(buffer); break;
-			case 'RTHF': this.rubberthickness = this.getFloat(buffer); break;
-			case 'RHGT': this.rubberheight = this.getInt(buffer); break;
-			case 'RHGF': this.rubberheight = this.getFloat(buffer); break;
-			case 'RWDT': this.rubberwidth = this.getInt(buffer); break;
-			case 'RWDF': this.rubberwidth = this.getFloat(buffer); break;
+			case 'RTHK': this.rubberThickness = this.getInt(buffer); break;
+			case 'RTHF': this.rubberThickness = this.getFloat(buffer); break;
+			case 'RHGT': this.rubberHeight = this.getInt(buffer); break;
+			case 'RHGF': this.rubberHeight = this.getFloat(buffer); break;
+			case 'RWDT': this.rubberWidth = this.getInt(buffer); break;
+			case 'RWDF': this.rubberWidth = this.getFloat(buffer); break;
 			case 'FHGT': this.height = this.getFloat(buffer); break;
 			case 'STRG': this.strength = this.getFloat(buffer); break;
 			case 'ELAS': this.elasticity = this.getFloat(buffer); break;
@@ -224,7 +224,7 @@ export class FlipperItem extends GameItem implements IRenderable {
 			case 'SCTR': this.scatter = this.getFloat(buffer); break;
 			case 'TODA': this.torqueDamping = this.getFloat(buffer); break;
 			case 'TDAA': this.torqueDampingAngle = this.getFloat(buffer); break;
-			case 'FRMN': this.FlipperRadiusMin = this.getFloat(buffer); break;
+			case 'FRMN': this.flipperRadiusMin = this.getFloat(buffer); break;
 			case 'VSBL': this.fVisible = this.getBool(buffer); break;
 			case 'ENBL': this.fEnabled = this.getBool(buffer); break;
 			case 'REEN': this.fReflectionEnabled = this.getBool(buffer); break;

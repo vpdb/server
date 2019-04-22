@@ -23,7 +23,7 @@ const ThreeHelper = require('../../test/three.helper');
 const api = new ApiClient();
 const three = new ThreeHelper(api);
 
-describe('The VPinball bumper parser', () => {
+describe.only('The VPinball bumper parser', () => {
 
 	before(async () => {
 		await api.setupUsers({
@@ -1017,7 +1017,7 @@ describe('The VPinball bumper parser', () => {
 			[495.965302, 863.956299, -60.371559],
 			[497.988068, 858.847900, -60.098320],
 		];
-		three.expectVerticesInArray(expectedVertices, bumperMeshVertices.array);
+		three.expectVerticesInArray(expectedVertices, bumperMeshVertices.array, 2);
 	});
 
 	it('should not generate a bumper with no visible elements', async () => {

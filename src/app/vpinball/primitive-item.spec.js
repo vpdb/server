@@ -25,17 +25,19 @@ const three = new ThreeHelper(api);
 
 describe.only('The VPinball primitive parser', () => {
 
+	let vpxFile, gltf;
+
 	before(async () => {
 		await api.setupUsers({
 			member: { roles: ['member'] },
 		});
+		vpxFile = await api.fileHelper.createVpx('member', 'table-primitive.vpx');
+		gltf = await three.loadGlb('member', vpxFile.variations.gltf);
 	});
 
 	after(async () => await api.teardown());
 
 	it('should generate a simple primitive mesh', async () => {
-		const vpxFile = await api.fileHelper.createVpx('member', 'table-primitive.vpx');
-		const gltf = await three.loadGlb('member', vpxFile.variations.gltf);
 		const cubeMesh = three.find(gltf, 'primitives', 'primitive-Cube');
 		const cubeMeshVertices = cubeMesh.geometry.attributes.position;
 		const expectedVertices = [
@@ -68,8 +70,6 @@ describe.only('The VPinball primitive parser', () => {
 	});
 
 	it('should generate a simple generated mesh', async () => {
-		const vpxFile = await api.fileHelper.createVpx('member', 'table-primitive.vpx');
-		const gltf = await three.loadGlb('member', vpxFile.variations.gltf);
 		const triangleMesh = three.find(gltf, 'primitives', 'primitive-Triangle');
 		const triangleMeshVertices = triangleMesh.geometry.attributes.position;
 		const expectedVertices = [

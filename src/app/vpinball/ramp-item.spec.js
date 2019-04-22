@@ -7318,6 +7318,12 @@ describe.only('The VPinball ramp parser', () => {
 		three.expectVerticesInArray(expectedVertices, vertices, 2);
 	});
 
+	it('should not generate an invisible ramp', async () => {
+		three.expectNoObject(gltf, 'ramps', 'rampfloor-Invisible');
+		three.expectNoObject(gltf, 'ramps', 'rampleft-Invisible');
+		three.expectNoObject(gltf, 'ramps', 'rampright-Invisible');
+	});
+
 });
 
 function concatMeshes(gltf, objectNames) {

@@ -20,7 +20,7 @@
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { GameItem, IRenderable, Meshes } from './game-item';
-import { degToRad } from './math/float';
+import { degToRad, f4 } from './math/float';
 import { Matrix3D } from './math/matrix3d';
 import { Vertex2D } from './math/vertex2d';
 import { Vertex3D } from './math/vertex3d';
@@ -100,10 +100,10 @@ export class KickerItem extends GameItem implements IRenderable {
 		let zRot = this.orientation;
 		switch (this.kickerType) {
 			case KickerItem.TypeKickerCup:
-				zOffset = -0.18;
+				zOffset = f4(-0.18);
 				break;
 			case KickerItem.TypeKickerWilliams:
-				zRot = this.orientation + 90.0;
+				zRot = f4(this.orientation + 90.0);
 				break;
 			case KickerItem.TypeKickerHole:
 				zRot = 0.0;
@@ -121,9 +121,9 @@ export class KickerItem extends GameItem implements IRenderable {
 			let vert = new Vertex3D(vertex.x, vertex.y, vertex.z + zOffset);
 			vert = fullMatrix.multiplyVector(vert);
 
-			vertex.x = vert.x * this.radius + this.vCenter.x;
-			vertex.y = vert.y * this.radius + this.vCenter.y;
-			vertex.z = vert.z * this.radius * table.getScaleZ() + baseHeight;
+			vertex.x = f4(vert.x * this.radius) + this.vCenter.x;
+			vertex.y = f4(vert.y * this.radius) + this.vCenter.y;
+			vertex.z = f4(f4(vert.z * this.radius) * table.getScaleZ()) + baseHeight;
 
 			vert = new Vertex3D(vertex.nx, vertex.ny, vertex.nz);
 			vert = fullMatrix.multiplyVectorNoTranslate(vert);
@@ -175,7 +175,7 @@ export class KickerItem extends GameItem implements IRenderable {
 			case 'TMIN': this.TimerInterval = this.getInt(buffer); break;
 			case 'TYPE':
 				this.kickerType = this.getInt(buffer);
-				//legacy handling:
+				/* istanbul ignore if: legacy handling */
 				if (this.kickerType > KickerItem.TypeKickerCup2) {
 					this.kickerType = KickerItem.TypeKickerInvisible;
 				}

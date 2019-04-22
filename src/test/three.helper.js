@@ -73,14 +73,14 @@ class ThreeHelper {
 		}
 		const objects = table.children.find(c => c.name === groupName);
 		if (!objects) {
-			throw new Error('GLTF table has no "' + groupName + '" group!');
+			throw new Error('GLTF table has no "' + groupName + '" group! (available: [' + table.children.map(c => c.name).join(', ') + '])');
 		}
 		if (!objects.children || !objects.children.length) {
 			throw new Error('The "' + groupName + '" group of the GLTF table has no children.');
 		}
 		const object = objects.children.find(c => c.name === objectName);
 		if (!object) {
-			throw new Error('The "' + groupName + '" group of the GLTF table has no child named "' + objectName + '" ([' + objects.children.map(c => c.name).join(', ') + '])');
+			throw new Error('The "' + groupName + '" group of the GLTF table has no child named "' + objectName + '". (available: [' + objects.children.map(c => c.name).join(', ') + '])');
 		}
 		return object;
 	}
@@ -152,16 +152,6 @@ class ThreeHelper {
 		const trim = Math.pow(10, accuracy);
 		return `${Math.round(vertex[0] * trim)},${Math.round(vertex[1] * trim)},${Math.round(vertex[2] * trim)}`;
 	}
-
-	vertexEquals(v1, v2) {
-		for (let i = 0; i < 3; i++) {
-			if (Math.round(v1[i] * 1000) !== Math.round(v2[i] * 1000)) {
-				return false;
-			}
-		}
-		return true;
-	}
-
 }
 
 function toArrayBuffer(buf) {

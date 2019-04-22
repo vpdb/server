@@ -1,4 +1,3 @@
-/* tslint:disable */
 /*
  * VPDB - Virtual Pinball Database
  * Copyright (C) 2019 freezy <freezy@vpdb.io>
@@ -20,14 +19,15 @@
 
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
-import { DragPoint } from './math/dragpoint';
 import { GameItem, IRenderable, Meshes } from './game-item';
-import { Mesh } from './mesh';
-import { RenderVertex3D, Vertex3DNoTex2 } from './math/vertex';
-import { Table } from './table';
-import { Vertex2D } from './math/vertex2d';
+import { DragPoint } from './math/dragpoint';
+import { f4 } from './math/float';
 import { Matrix3D } from './math/matrix3d';
+import { RenderVertex3D, Vertex3DNoTex2 } from './math/vertex';
+import { Vertex2D } from './math/vertex2d';
 import { Vertex3D } from './math/vertex3d';
+import { Mesh } from './mesh';
+import { Table } from './table';
 
 /**
  * VPinball's ramps.
@@ -147,8 +147,8 @@ export class RampItem extends GameItem implements IRenderable {
 					break;
 				}
 				case RampItem.RampType4Wire: {
-					const wire1Mesh = wireMeshA.clone(`ramp.wire1-${this.getName()}`).makeTranslation(0, 0, this.wireDistanceY*0.5);
-					const wire2Mesh = wireMeshB.clone(`ramp.wire2-${this.getName()}`).makeTranslation(0, 0, this.wireDistanceY*0.5);
+					const wire1Mesh = wireMeshA.clone(`ramp.wire1-${this.getName()}`).makeTranslation(0, 0, this.wireDistanceY * 0.5);
+					const wire2Mesh = wireMeshB.clone(`ramp.wire2-${this.getName()}`).makeTranslation(0, 0, this.wireDistanceY * 0.5);
 					const wire3Mesh = wireMeshA.makeTranslation(0, 0, 3.0);
 					const wire4Mesh = wireMeshB.makeTranslation(0, 0, 3.0);
 					wire3Mesh.name = `ramp.wire3-${this.getName()}`;
@@ -172,7 +172,7 @@ export class RampItem extends GameItem implements IRenderable {
 					break;
 				}
 				case RampItem.RampType3WireLeft: {
-					const wire2Mesh = wireMeshB.clone(`ramp.wire2-${this.getName()}`).makeTranslation(0, 0, this.wireDistanceY*0.5);
+					const wire2Mesh = wireMeshB.clone(`ramp.wire2-${this.getName()}`).makeTranslation(0, 0, this.wireDistanceY * 0.5);
 					const wire3Mesh = wireMeshA.makeTranslation(0, 0, 3.0);
 					const wire4Mesh = wireMeshB.makeTranslation(0, 0, 3.0);
 					wire3Mesh.name = `ramp.wire3-${this.getName()}`;
@@ -192,7 +192,7 @@ export class RampItem extends GameItem implements IRenderable {
 					break;
 				}
 				case RampItem.RampType3WireRight: {
-					const wire1Mesh = wireMeshA.clone(`ramp.wire1-${this.getName()}`).makeTranslation(0, 0, this.wireDistanceY*0.5);
+					const wire1Mesh = wireMeshA.clone(`ramp.wire1-${this.getName()}`).makeTranslation(0, 0, this.wireDistanceY * 0.5);
 					const wire3Mesh = wireMeshA.makeTranslation(0, 0, 3.0);
 					const wire4Mesh = wireMeshB.makeTranslation(0, 0, 3.0);
 					wire3Mesh.name = `ramp.wire3-${this.getName()}`;
@@ -223,7 +223,7 @@ export class RampItem extends GameItem implements IRenderable {
 		let vOut: Vertex2D;
 		[vOut, iSeg] = Mesh.closestPointOnPolygon(vVertex, new Vertex2D(x, y), false);
 
-		if (iSeg == -1) {
+		if (iSeg === -1) {
 			return 0.0; // Object is not on ramp path
 		}
 
@@ -233,13 +233,13 @@ export class RampItem extends GameItem implements IRenderable {
 
 		const cVertex = vVertex.length;
 		for (let i2 = 1; i2 < cVertex; i2++) {
-			const dx = vVertex[i2].x - vVertex[i2 - 1].x;
-			const dy = vVertex[i2].y - vVertex[i2 - 1].y;
-			const len = Math.sqrt(dx * dx + dy * dy);
+			const vDx = vVertex[i2].x - vVertex[i2 - 1].x;
+			const vDy = vVertex[i2].y - vVertex[i2 - 1].y;
+			const vLen = f4(Math.sqrt(vDx * vDx + vDy * vDy));
 			if (i2 <= iSeg) {
-				startLength += len;
+				startLength += vLen;
 			}
-			totalLength += len;
+			totalLength += vLen;
 		}
 
 		const dx = vOut.x - vVertex[iSeg].x;
@@ -261,8 +261,8 @@ export class RampItem extends GameItem implements IRenderable {
 		const rgheight = rv.ppheight;
 		const rgratio = rv.ppratio;
 
-		const inv_tablewidth = 1.0 / (table.gameData.right - table.gameData.left);
-		const inv_tableheight = 1.0 / (table.gameData.bottom - table.gameData.top);
+		const invTableWidth = 1.0 / (table.gameData.right - table.gameData.left);
+		const invTableHeight = 1.0 / (table.gameData.bottom - table.gameData.top);
 
 		const numVertices = rampVertex * 2;
 
@@ -281,11 +281,11 @@ export class RampItem extends GameItem implements IRenderable {
 			rgv3d2.z = rgv3d1.z;
 
 			if (this.szImage) {
-				if (this.imagealignment == RampItem.RampImageAlignmentWorld) {
-					rgv3d1.tu = rgv3d1.x * inv_tablewidth;
-					rgv3d1.tv = rgv3d1.y * inv_tableheight;
-					rgv3d2.tu = rgv3d2.x * inv_tablewidth;
-					rgv3d2.tv = rgv3d2.y * inv_tableheight;
+				if (this.imagealignment === RampItem.RampImageAlignmentWorld) {
+					rgv3d1.tu = rgv3d1.x * invTableWidth;
+					rgv3d1.tv = rgv3d1.y * invTableHeight;
+					rgv3d2.tu = rgv3d2.x * invTableWidth;
+					rgv3d2.tv = rgv3d2.y * invTableHeight;
 
 				} else {
 					rgv3d1.tu = 1.0;
@@ -304,7 +304,7 @@ export class RampItem extends GameItem implements IRenderable {
 			floorMesh.vertices.push(rgv3d1);
 			floorMesh.vertices.push(rgv3d2);
 
-			if (i == rampVertex - 1) {
+			if (i === rampVertex - 1) {
 				break;
 			}
 
@@ -339,9 +339,9 @@ export class RampItem extends GameItem implements IRenderable {
 				rgv3d2.z = (rgheight[i] + this.leftwallheightvisible) * table.getScaleZ();
 
 				if (this.szImage && this.fImageWalls) {
-					if (this.imagealignment == RampItem.RampImageAlignmentWorld) {
-						rgv3d1.tu = rgv3d1.x * inv_tablewidth;
-						rgv3d1.tv = rgv3d1.y * inv_tableheight;
+					if (this.imagealignment === RampItem.RampImageAlignmentWorld) {
+						rgv3d1.tu = rgv3d1.x * invTableWidth;
+						rgv3d1.tv = rgv3d1.y * invTableHeight;
 
 					} else {
 						rgv3d1.tu = 0;
@@ -359,7 +359,7 @@ export class RampItem extends GameItem implements IRenderable {
 				leftMesh.vertices.push(rgv3d1);
 				leftMesh.vertices.push(rgv3d2);
 
-				if (i == rampVertex - 1) {
+				if (i === rampVertex - 1) {
 					break;
 				}
 
@@ -395,9 +395,9 @@ export class RampItem extends GameItem implements IRenderable {
 				rgv3d2.z = (rgheight[i] + this.rightwallheightvisible) * table.getScaleZ();
 
 				if (this.szImage && this.fImageWalls) {
-					if (this.imagealignment == RampItem.RampImageAlignmentWorld) {
-						rgv3d1.tu = rgv3d1.x * inv_tablewidth;
-						rgv3d1.tv = rgv3d1.y * inv_tableheight;
+					if (this.imagealignment === RampItem.RampImageAlignmentWorld) {
+						rgv3d1.tu = rgv3d1.x * invTableWidth;
+						rgv3d1.tv = rgv3d1.y * invTableHeight;
 					} else {
 						rgv3d1.tu = 0;
 						rgv3d1.tv = rgratio[i];
@@ -415,7 +415,7 @@ export class RampItem extends GameItem implements IRenderable {
 				rightMesh.vertices.push(rgv3d1);
 				rightMesh.vertices.push(rgv3d2);
 
-				if (i == rampVertex - 1) {
+				if (i === rampVertex - 1) {
 					break;
 				}
 
@@ -471,8 +471,7 @@ export class RampItem extends GameItem implements IRenderable {
 		let vertBuffer: Vertex3DNoTex2[] = [];
 		let vertBuffer2: Vertex3DNoTex2[] = [];
 
-		if (this.rampType != RampItem.RampType1Wire)
-		{
+		if (this.rampType !== RampItem.RampType1Wire) {
 			vertBuffer = this.createWire(numRings, numSegments, rv.rgvLocal, rgheightInit);
 			vertBuffer2 = this.createWire(numRings, numSegments, tmpPoints, rgheightInit);
 		} else {
@@ -486,22 +485,22 @@ export class RampItem extends GameItem implements IRenderable {
 				const quad: number[] = [];
 				quad[0] = i * numSegments + j;
 
-				if (j != numSegments - 1) {
+				if (j !== numSegments - 1) {
 					quad[1] = i * numSegments + j + 1;
 				} else {
 					quad[1] = i * numSegments;
 				}
 
-				if (i != numRings - 1) {
+				if (i !== numRings - 1) {
 					quad[2] = (i + 1) * numSegments + j;
-					if (j != numSegments - 1) {
+					if (j !== numSegments - 1) {
 						quad[3] = (i + 1) * numSegments + j + 1;
 					} else {
 						quad[3] = (i + 1) * numSegments;
 					}
 				} else {
 					quad[2] = j;
-					if (j != numSegments - 1) {
+					if (j !== numSegments - 1) {
 						quad[3] = j + 1;
 					} else {
 						quad[3] = 0;
@@ -520,7 +519,7 @@ export class RampItem extends GameItem implements IRenderable {
 
 		meshes.push(new Mesh(vertBuffer, indices));
 
-		if (this.rampType != RampItem.RampType1Wire) {
+		if (this.rampType !== RampItem.RampType1Wire) {
 			meshes.push(new Mesh(vertBuffer2, indices));
 		}
 
@@ -533,18 +532,18 @@ export class RampItem extends GameItem implements IRenderable {
 		let index = 0;
 		for (let i = 0; i < numRings; i++) {
 
-			const i2 = (i == (numRings - 1)) ? i : i + 1;
+			const i2 = (i === (numRings - 1)) ? i : i + 1;
 			const height = rgheightInit[i];
 
 			const tangent = new Vertex3D(midPoints[i2].x - midPoints[i].x, midPoints[i2].y - midPoints[i].y, rgheightInit[i2] - rgheightInit[i]);
-			if (i == numRings - 1) {
+			if (i === numRings - 1) {
 				// for the last spline point use the previous tangent again, otherwise we won't see the complete wire (it stops one control point too early)
 				tangent.x = midPoints[i].x - midPoints[i - 1].x;
 				tangent.y = midPoints[i].y - midPoints[i - 1].y;
 			}
 			let binorm: Vertex3D;
 			let normal: Vertex3D;
-			if (i == 0) {
+			if (i === 0) {
 				const up = new Vertex3D(midPoints[i2].x + midPoints[i].x, midPoints[i2].y + midPoints[i].y, rgheightInit[i2] - height);
 				normal = tangent.clone().cross(up);     //normal
 				binorm = tangent.clone().cross(normal);
@@ -556,12 +555,12 @@ export class RampItem extends GameItem implements IRenderable {
 			normal.normalize();
 			prevB = binorm;
 
-			const inv_numRings = 1.0 / numRings;
-			const inv_numSegments = 1.0 / numSegments;
-			const u = i * inv_numRings;
+			const invNumRings = 1.0 / numRings;
+			const invNumSegments = 1.0 / numSegments;
+			const u = i * invNumRings;
 			for (let j = 0; j < numSegments; j++, index++) {
-				const v = (j + u) * inv_numSegments;
-				const tmp: Vertex3D = Vertex3D.getRotatedAxis(j * (360.0 * inv_numSegments), tangent, normal).multiplyScalar(this.wireDiameter * 0.5);
+				const v = (j + u) * invNumSegments;
+				const tmp: Vertex3D = Vertex3D.getRotatedAxis(j * (360.0 * invNumSegments), tangent, normal).multiplyScalar(this.wireDiameter * 0.5);
 				rgvbuf[index] = new Vertex3DNoTex2();
 				rgvbuf[index].x = midPoints[i].x + tmp.x;
 				rgvbuf[index].y = midPoints[i].y + tmp.y;
@@ -579,7 +578,7 @@ export class RampItem extends GameItem implements IRenderable {
 		return rgvbuf;
 	}
 
-	private getRampVertex(table: Table, _accuracy: number, inc_width: boolean): RampVertexResult {
+	private getRampVertex(table: Table, accuracy: number, incWidth: boolean): RampVertexResult {
 
 		const ppheight: number[] = [];
 		const ppfCross: boolean[] = [];
@@ -587,7 +586,7 @@ export class RampItem extends GameItem implements IRenderable {
 		const pMiddlePoints: Vertex2D[] = [];
 
 		// vvertex are the 2D vertices forming the central curve of the ramp as seen from above
-		const vvertex = this.getCentralCurve(table, _accuracy);
+		const vvertex = this.getCentralCurve(table, accuracy);
 
 		const cvertex = vvertex.length;
 		const pcvertex = cvertex;
@@ -629,11 +628,11 @@ export class RampItem extends GameItem implements IRenderable {
 			const v2normal = new Vertex2D(vmiddle.y - vnext.y, vnext.x - vmiddle.x);   // vector vnext-vmiddle rotated RIGHT
 
 			// special handling for beginning and end of the ramp, as ramps do not loop
-			if (i == (cvertex - 1)) {
+			if (i === (cvertex - 1)) {
 				v1normal.normalize();
 				vnormal = v1normal;
 
-			} else if (i == 0) {
+			} else if (i === 0) {
 				v2normal.normalize();
 				vnormal = v2normal;
 
@@ -664,10 +663,10 @@ export class RampItem extends GameItem implements IRenderable {
 					const F = -(D * (vnext.x - v2normal.x) + E * (vnext.y - v2normal.y));
 
 					const det = A * E - B * D;
-					const inv_det = (det != 0.0) ? 1.0 / det : 0.0;
+					const invDet = (det !== 0.0) ? 1.0 / det : 0.0;
 
-					const intersectx = (B * F - E * C) * inv_det;
-					const intersecty = (C * D - A * F) * inv_det;
+					const intersectx = (B * F - E * C) * invDet;
+					const intersecty = (C * D - A * F) * invDet;
 
 					vnormal.x = vmiddle.x - intersectx;
 					vnormal.y = vmiddle.y - intersecty;
@@ -690,12 +689,12 @@ export class RampItem extends GameItem implements IRenderable {
 
 			// only change the width if we want to create vertices for rendering or for the editor
 			// the collision engine uses flat type ramps
-			if (this.isHabitrail() && this.rampType != RampItem.RampType1Wire) {
+			if (this.isHabitrail() && this.rampType !== RampItem.RampType1Wire) {
 				widthcur = this.wireDistanceX;
-				if (inc_width) {
+				if (incWidth) {
 					widthcur += 20.0;
 				}
-			} else if (this.rampType == RampItem.RampType1Wire) {
+			} else if (this.rampType === RampItem.RampType1Wire) {
 				widthcur = this.wireDiameter;
 			}
 

@@ -19,7 +19,7 @@
 
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
-import { GameItem, IRenderable, Meshes } from './game-item';
+import { GameItem, IRenderable, Meshes, RenderInfo } from './game-item';
 import { DragPoint } from './math/dragpoint';
 import { f4 } from './math/float';
 import { Matrix3D } from './math/matrix3d';
@@ -248,17 +248,26 @@ export class RampItem extends GameItem implements IRenderable {
 	}
 
 	private generateFlatMesh(table: Table): Meshes {
-
-		const meshes: Meshes = {};
 		const rv = this.getRampVertex(table, -1, true);
-		const rampVertex = rv.pcvertex;
-		const rgheight = rv.ppheight;
-		const rgratio = rv.ppratio;
+		const meshes: Meshes = {
+			floor: this.generateFlatFloorMesh(table, rv),
+		};
+		if (this.leftWallHeightVisible > 0.0) {
+			meshes.left = this.generateFlatLeftWall(table, rv);
+		}
+		if (this.rightWallHeightVisible > 0.0) {
+			meshes.right = this.generateFlatRightWall(table, rv);
+		}
+		return meshes;
+	}
 
+	private generateFlatFloorMesh(table: Table, rv: RampVertexResult): RenderInfo {
+		const rampVertex = rv.pcvertex;
+		const rgHeight = rv.ppheight;
+		const rgRatio = rv.ppratio;
 		const invTableWidth = f4(1.0 / f4(table.gameData.right - table.gameData.left));
 		const invTableHeight = f4(1.0 / f4(table.gameData.bottom - table.gameData.top));
-
-		const numVertices = rampVertex * 2;
+		const numVertices = rv.pcvertex * 2;
 
 		const floorMesh = new Mesh(`ramp.floor-${this.getName()}`);
 		for (let i = 0; i < rampVertex; i++) {
@@ -268,7 +277,7 @@ export class RampItem extends GameItem implements IRenderable {
 
 			rgv3d1.x = rv.rgvLocal[i].x;
 			rgv3d1.y = rv.rgvLocal[i].y;
-			rgv3d1.z = f4(rgheight[i] * table.getScaleZ());
+			rgv3d1.z = f4(rgHeight[i] * table.getScaleZ());
 
 			rgv3d2.x = rv.rgvLocal[rampVertex * 2 - i - 1].x;
 			rgv3d2.y = rv.rgvLocal[rampVertex * 2 - i - 1].y;
@@ -283,9 +292,9 @@ export class RampItem extends GameItem implements IRenderable {
 
 				} else {
 					rgv3d1.tu = 1.0;
-					rgv3d1.tv = rgratio[i];
+					rgv3d1.tv = rgRatio[i];
 					rgv3d2.tu = 0.0;
-					rgv3d2.tv = rgratio[i];
+					rgv3d2.tv = rgRatio[i];
 				}
 
 			} else {
@@ -311,123 +320,136 @@ export class RampItem extends GameItem implements IRenderable {
 		}
 
 		Mesh.computeNormals(floorMesh.vertices, numVertices, floorMesh.indices, (rampVertex - 1) * 6);
-		meshes.floor = {
+		return {
 			mesh: floorMesh.transform(new Matrix3D().toRightHanded()),
 			map: table.getTexture(this.szImage),
 			material: table.getMaterial(this.szMaterial),
 		};
+	}
 
-		if (this.leftWallHeightVisible > 0.0) {
-			const leftMesh = new Mesh(`ramp.left-${this.getName()}`);
-			for (let i = 0; i < rampVertex; i++) {
+	private generateFlatLeftWall(table: Table, rv: RampVertexResult): RenderInfo {
+		const rampVertex = rv.pcvertex;
+		const rgHeight = rv.ppheight;
+		const rgRatio = rv.ppratio;
+		const invTableWidth = f4(1.0 / f4(table.gameData.right - table.gameData.left));
+		const invTableHeight = f4(1.0 / f4(table.gameData.bottom - table.gameData.top));
+		const numVertices = rampVertex * 2;
 
-				const rgv3d1 = new Vertex3DNoTex2();
-				const rgv3d2 = new Vertex3DNoTex2();
+		const leftMesh = new Mesh(`ramp.left-${this.getName()}`);
+		for (let i = 0; i < rampVertex; i++) {
 
-				rgv3d1.x = rv.rgvLocal[i].x;
-				rgv3d1.y = rv.rgvLocal[i].y;
-				rgv3d1.z = rgheight[i] * table.getScaleZ();
+			const rgv3d1 = new Vertex3DNoTex2();
+			const rgv3d2 = new Vertex3DNoTex2();
 
-				rgv3d2.x = rv.rgvLocal[i].x;
-				rgv3d2.y = rv.rgvLocal[i].y;
-				rgv3d2.z = f4(rgheight[i] + this.leftWallHeightVisible) * table.getScaleZ();
+			rgv3d1.x = rv.rgvLocal[i].x;
+			rgv3d1.y = rv.rgvLocal[i].y;
+			rgv3d1.z = rgHeight[i] * table.getScaleZ();
 
-				if (this.szImage && this.imageWalls) {
-					if (this.imageAlignment === RampItem.RampImageAlignmentWorld) {
-						rgv3d1.tu = rgv3d1.x * invTableWidth;
-						rgv3d1.tv = rgv3d1.y * invTableHeight;
+			rgv3d2.x = rv.rgvLocal[i].x;
+			rgv3d2.y = rv.rgvLocal[i].y;
+			rgv3d2.z = f4(rgHeight[i] + this.leftWallHeightVisible) * table.getScaleZ();
 
-					} else {
-						rgv3d1.tu = 0;
-						rgv3d1.tv = rgratio[i];
-					}
-					rgv3d2.tu = rgv3d1.tu;
-					rgv3d2.tv = rgv3d1.tv;
+			if (this.szImage && this.imageWalls) {
+				if (this.imageAlignment === RampItem.RampImageAlignmentWorld) {
+					rgv3d1.tu = rgv3d1.x * invTableWidth;
+					rgv3d1.tv = rgv3d1.y * invTableHeight;
+
 				} else {
-					rgv3d1.tu = 0.0;
-					rgv3d1.tv = 0.0;
-					rgv3d2.tu = 0.0;
-					rgv3d2.tv = 0.0;
+					rgv3d1.tu = 0;
+					rgv3d1.tv = rgRatio[i];
 				}
-
-				leftMesh.vertices.push(rgv3d1);
-				leftMesh.vertices.push(rgv3d2);
-
-				if (i === rampVertex - 1) {
-					break;
-				}
-
-				leftMesh.indices.push(i * 2);
-				leftMesh.indices.push(i * 2 + 1);
-				leftMesh.indices.push(i * 2 + 3);
-				leftMesh.indices.push(i * 2);
-				leftMesh.indices.push(i * 2 + 3);
-				leftMesh.indices.push(i * 2 + 2);
-
+				rgv3d2.tu = rgv3d1.tu;
+				rgv3d2.tv = rgv3d1.tv;
+			} else {
+				rgv3d1.tu = 0.0;
+				rgv3d1.tv = 0.0;
+				rgv3d2.tu = 0.0;
+				rgv3d2.tv = 0.0;
 			}
-			Mesh.computeNormals(leftMesh.vertices, numVertices, leftMesh.indices, (rampVertex - 1) * 6);
-			meshes.left = {
-				mesh: leftMesh.transform(new Matrix3D().toRightHanded()),
-				map: table.getTexture(this.szImage),
-				material: table.getMaterial(this.szMaterial),
-			};
+
+			leftMesh.vertices.push(rgv3d1);
+			leftMesh.vertices.push(rgv3d2);
+
+			if (i === rampVertex - 1) {
+				break;
+			}
+
+			leftMesh.indices.push(i * 2);
+			leftMesh.indices.push(i * 2 + 1);
+			leftMesh.indices.push(i * 2 + 3);
+			leftMesh.indices.push(i * 2);
+			leftMesh.indices.push(i * 2 + 3);
+			leftMesh.indices.push(i * 2 + 2);
+
 		}
+		Mesh.computeNormals(leftMesh.vertices, numVertices, leftMesh.indices, (rampVertex - 1) * 6);
+		return {
+			mesh: leftMesh.transform(new Matrix3D().toRightHanded()),
+			map: table.getTexture(this.szImage),
+			material: table.getMaterial(this.szMaterial),
+		};
+	}
 
-		if (this.rightWallHeightVisible > 0.0) {
-			const rightMesh = new Mesh(`ramp.right-${this.getName()}`);
-			for (let i = 0; i < rampVertex; i++) {
+	private generateFlatRightWall(table: Table, rv: RampVertexResult): RenderInfo {
+		const rampVertex = rv.pcvertex;
+		const rgHeight = rv.ppheight;
+		const rgRatio = rv.ppratio;
+		const invTableWidth = f4(1.0 / f4(table.gameData.right - table.gameData.left));
+		const invTableHeight = f4(1.0 / f4(table.gameData.bottom - table.gameData.top));
+		const numVertices = rampVertex * 2;
 
-				const rgv3d1 = new Vertex3DNoTex2();
-				const rgv3d2 = new Vertex3DNoTex2();
+		const rightMesh = new Mesh(`ramp.right-${this.getName()}`);
+		for (let i = 0; i < rampVertex; i++) {
 
-				rgv3d1.x = rv.rgvLocal[rampVertex * 2 - i - 1].x;
-				rgv3d1.y = rv.rgvLocal[rampVertex * 2 - i - 1].y;
-				rgv3d1.z = rgheight[i] * table.getScaleZ();
+			const rgv3d1 = new Vertex3DNoTex2();
+			const rgv3d2 = new Vertex3DNoTex2();
 
-				rgv3d2.x = rgv3d1.x;
-				rgv3d2.y = rgv3d1.y;
-				rgv3d2.z = f4(rgheight[i] + this.rightWallHeightVisible) * table.getScaleZ();
+			rgv3d1.x = rv.rgvLocal[rampVertex * 2 - i - 1].x;
+			rgv3d1.y = rv.rgvLocal[rampVertex * 2 - i - 1].y;
+			rgv3d1.z = rgHeight[i] * table.getScaleZ();
 
-				if (this.szImage && this.imageWalls) {
-					if (this.imageAlignment === RampItem.RampImageAlignmentWorld) {
-						rgv3d1.tu = rgv3d1.x * invTableWidth;
-						rgv3d1.tv = rgv3d1.y * invTableHeight;
-					} else {
-						rgv3d1.tu = 0;
-						rgv3d1.tv = rgratio[i];
-					}
+			rgv3d2.x = rgv3d1.x;
+			rgv3d2.y = rgv3d1.y;
+			rgv3d2.z = f4(rgHeight[i] + this.rightWallHeightVisible) * table.getScaleZ();
 
-					rgv3d2.tu = rgv3d1.tu;
-					rgv3d2.tv = rgv3d1.tv;
+			if (this.szImage && this.imageWalls) {
+				if (this.imageAlignment === RampItem.RampImageAlignmentWorld) {
+					rgv3d1.tu = rgv3d1.x * invTableWidth;
+					rgv3d1.tv = rgv3d1.y * invTableHeight;
 				} else {
-					rgv3d1.tu = 0.0;
-					rgv3d1.tv = 0.0;
-					rgv3d2.tu = 0.0;
-					rgv3d2.tv = 0.0;
+					rgv3d1.tu = 0;
+					rgv3d1.tv = rgRatio[i];
 				}
 
-				rightMesh.vertices.push(rgv3d1);
-				rightMesh.vertices.push(rgv3d2);
-
-				if (i === rampVertex - 1) {
-					break;
-				}
-
-				rightMesh.indices.push(i * 2);
-				rightMesh.indices.push(i * 2 + 1);
-				rightMesh.indices.push(i * 2 + 3);
-				rightMesh.indices.push(i * 2);
-				rightMesh.indices.push(i * 2 + 3);
-				rightMesh.indices.push(i * 2 + 2);
+				rgv3d2.tu = rgv3d1.tu;
+				rgv3d2.tv = rgv3d1.tv;
+			} else {
+				rgv3d1.tu = 0.0;
+				rgv3d1.tv = 0.0;
+				rgv3d2.tu = 0.0;
+				rgv3d2.tv = 0.0;
 			}
-			Mesh.computeNormals(rightMesh.vertices, numVertices, rightMesh.indices, (rampVertex - 1) * 6);
-			meshes.right = {
-				mesh: rightMesh.transform(new Matrix3D().toRightHanded()),
-				map: table.getTexture(this.szImage),
-				material: table.getMaterial(this.szMaterial),
-			};
+
+			rightMesh.vertices.push(rgv3d1);
+			rightMesh.vertices.push(rgv3d2);
+
+			if (i === rampVertex - 1) {
+				break;
+			}
+
+			rightMesh.indices.push(i * 2);
+			rightMesh.indices.push(i * 2 + 1);
+			rightMesh.indices.push(i * 2 + 3);
+			rightMesh.indices.push(i * 2);
+			rightMesh.indices.push(i * 2 + 3);
+			rightMesh.indices.push(i * 2 + 2);
 		}
-		return meshes;
+		Mesh.computeNormals(rightMesh.vertices, numVertices, rightMesh.indices, (rampVertex - 1) * 6);
+		return {
+			mesh: rightMesh.transform(new Matrix3D().toRightHanded()),
+			map: table.getTexture(this.szImage),
+			material: table.getMaterial(this.szMaterial),
+		};
 	}
 
 	private generateWireMeshes(table: Table): Mesh[] {

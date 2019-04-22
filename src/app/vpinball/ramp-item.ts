@@ -119,6 +119,7 @@ export class RampItem extends GameItem implements IRenderable {
 			const [wireMeshA, wireMeshB] = this.generateWireMeshes(table);
 			switch (this.rampType) {
 				case RampItem.RampType1Wire: {
+					wireMeshA.name = `ramp.wire1-${this.getName()}`;
 					meshes.wire1 = {
 						mesh: wireMeshA.transform(new Matrix3D().toRightHanded()),
 						map: table.getTexture(this.szImage),
@@ -462,13 +463,13 @@ export class RampItem extends GameItem implements IRenderable {
 		} else if (table.getDetailLevel() >= 5 && table.getDetailLevel() < 8) {
 			accuracy = 8;
 		} else {
-			accuracy = Math.floor(table.getDetailLevel() * 1.3); // see below
+			accuracy = Math.floor(table.getDetailLevel() * f4(1.3)); // see below
 		}
 
 		// as solid ramps are rendered into the static buffer, always use maximum precision
 		const mat = table.getMaterial(this.szMaterial);
 		if (!mat || !mat.bOpacityActive) {
-			accuracy = Math.floor(10.0 * 1.3); // see above
+			accuracy = f4(12.0); // see above
 		}
 
 		const rv = this.getRampVertex(table, -1, false);
@@ -576,7 +577,7 @@ export class RampItem extends GameItem implements IRenderable {
 			const invNumSegments = f4(1.0 / f4(numSegments));
 			const u = f4(i * invNumRings);
 			for (let j = 0; j < numSegments; j++, index++) {
-				const v = (j + u) * invNumSegments;
+				const v = f4(f4(j + u) * invNumSegments);
 				const tmp: Vertex3D = Vertex3D.getRotatedAxis(f4(j * f4(360.0 * invNumSegments)), tangent, normal).multiplyScalar(this.wireDiameter * f4(0.5));
 				rgvbuf[index] = new Vertex3DNoTex2();
 				rgvbuf[index].x = midPoints[i].x + tmp.x;

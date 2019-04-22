@@ -113,9 +113,9 @@ export class Mesh {
 
 	public makeTranslation(x: number, y: number, z: number) {
 		for (const vertex of this.vertices) {
-			vertex.x += x;
-			vertex.y += y;
-			vertex.z += z;
+			vertex.x += f4(x);
+			vertex.y += f4(y);
+			vertex.z += f4(z);
 		}
 		return this;
 	}

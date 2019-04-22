@@ -103,7 +103,7 @@ class ThreeHelper {
 		}
 		const objects = table.children.find(c => c.name === groupName);
 		if (!objects) {
-			throw new Error('GLTF table has no "' + groupName + '" group!');
+			throw new Error('GLTF table has no "' + groupName + '" group! (available: [' + table.children.map(c => c.name).join(', ') + '])');
 		}
 		if (!objects.children || !objects.children.length) {
 			throw new Error('The "' + groupName + '" group of the GLTF table has no children.');
@@ -122,14 +122,14 @@ class ThreeHelper {
 		}
 		const objects = table.children.find(c => c.name === groupName);
 		if (!objects) {
-			throw new Error('GLTF table has no "' + groupName + '" group!');
+			throw new Error('GLTF table has no "' + groupName + '" group! (available: [' + table.children.map(c => c.name).join(', ') + '])');
 		}
 		if (!objects.children || !objects.children.length) {
 			throw new Error('The "' + groupName + '" group of the GLTF table has no children.');
 		}
 		const object = objects.children.find(c => c.name === objectName);
 		if (!object) {
-			throw new Error('The "' + groupName + '" group of the GLTF table has no child named "' + objectName + '" ([' + objects.children.map(c => c.name).join(', ') + '])');
+			throw new Error('The "' + groupName + '" group of the GLTF table has no child named "' + objectName + '". (available: [' + objects.children.map(c => c.name).join(', ') + '])');
 		}
 	}
 

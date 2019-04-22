@@ -23,7 +23,7 @@ const ThreeHelper = require('../../test/three.helper');
 const api = new ApiClient();
 const three = new ThreeHelper(api);
 
-describe('The VPinball rubber parser', () => {
+describe.only('The VPinball rubber parser', () => {
 
 	before(async () => {
 		await api.setupUsers({
@@ -904,7 +904,7 @@ describe('The VPinball rubber parser', () => {
 			[512.101379, 1039.314697, 63.613770],
 			[513.166321, 1038.822388, 61.907593],
 		];
-		three.expectVerticesInArray(expectedVertices, rubberMeshVertices.array);
+		three.expectVerticesInArray(expectedVertices, rubberMeshVertices.array, 2);
 	});
 
 });

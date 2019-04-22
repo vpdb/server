@@ -115,28 +115,47 @@ class ThreeHelper {
 		return object;
 	}
 
-	expectVerticesInArray(vertices, array) {
+	expectObject(gltf, groupName, objectName) {
+		const table = this.getTable(gltf);
+		if (!table.children || !table.children.length) {
+			throw new Error('GLTF table has no children!');
+		}
+		const objects = table.children.find(c => c.name === groupName);
+		if (!objects) {
+			throw new Error('GLTF table has no "' + groupName + '" group!');
+		}
+		if (!objects.children || !objects.children.length) {
+			throw new Error('The "' + groupName + '" group of the GLTF table has no children.');
+		}
+		const object = objects.children.find(c => c.name === objectName);
+		if (!object) {
+			throw new Error('The "' + groupName + '" group of the GLTF table has no child named "' + objectName + '" ([' + objects.children.map(c => c.name).join(', ') + '])');
+		}
+	}
+
+	expectVerticesInArray(vertices, array, accuracy) {
+		accuracy = accuracy || 3;
 		// create hash map of vertices
 		let vertexHashes = {};
 		for (let i = 0; i < array.length; i +=3) {
-			vertexHashes[this.hashVertex(array.slice(i, i + 3))] = true;
+			vertexHashes[this.hashVertex(array.slice(i, i + 3), accuracy)] = true;
 		}
 		for (const expectedVertex of vertices) {
-			const vertexHash = this.hashVertex(expectedVertex);
+			const vertexHash = this.hashVertex(expectedVertex, accuracy);
 			if (!vertexHashes[vertexHash]) {
 				throw new Error('Vertex { ' + expectedVertex.join(', ') + ' } not found in array.');
 			}
 		}
 	}
 
-	hashVertex(vertex) {
-		const trim = 1000;
-		return `${Math.floor(vertex[0] * trim)},${Math.floor(vertex[1] * trim)},${Math.floor(vertex[2] * trim)}`;
+	hashVertex(vertex, accuracy) {
+		const trim = Math.pow(10, accuracy);
+		return `${Math.round(vertex[0] * trim)},${Math.round(vertex[1] * trim)},${Math.round(vertex[2] * trim)}`;
 	}
 
 	vertexEquals(v1, v2) {
 		for (let i = 0; i < 3; i++) {
-			if (Math.floor(v1[i] * 1000) !== Math.floor(v2[i] * 1000)) {
+			if (Math.round(v1[i] * 1000) !== Math.round(v2[i] * 1000)) {
 				return false;
 			}
 		}

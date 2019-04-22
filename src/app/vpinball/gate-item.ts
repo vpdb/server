@@ -21,7 +21,7 @@ import { logger } from '../common/logger';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { GameItem, IRenderable, Meshes } from './game-item';
-import { degToRad } from './math/float';
+import { degToRad, f4 } from './math/float';
 import { Matrix3D } from './math/matrix3d';
 import { Vertex2D } from './math/vertex2d';
 import { Vertex3D } from './math/vertex3d';
@@ -112,6 +112,7 @@ export class GateItem extends GameItem implements IRenderable {
 			case GateItem.TypeGateWireRectangle: return gateWireRectangleMesh.clone();
 			case GateItem.TypeGatePlate: return gatePlateMesh.clone();
 			case GateItem.TypeGateLongPlate: return gateLongPlateMesh.clone();
+			/* istanbul ignore next */
 			default:
 				logger.warn(null, '[GateItem.getBaseMesh] Unknown gate type "%s".', this.gateType);
 				return hitTargetT3Mesh.clone();
@@ -125,9 +126,9 @@ export class GateItem extends GameItem implements IRenderable {
 
 			let vert = new Vertex3D(vertex.x, vertex.y, vertex.z);
 			vert = fullMatrix.multiplyVector(vert);
-			vertex.x = vert.x * this.length + this.vCenter.x;
-			vertex.y = vert.y * this.length + this.vCenter.y;
-			vertex.z = vert.z * this.length * table.getScaleZ() + (this.height * table.getScaleZ() + baseHeight);
+			vertex.x = f4(vert.x * this.length) + this.vCenter.x;
+			vertex.y = f4(vert.y * this.length) + this.vCenter.y;
+			vertex.z = f4(f4(f4(vert.z * this.length) * table.getScaleZ()) + f4(this.height * table.getScaleZ())) + baseHeight;
 
 			vert = new Vertex3D(vertex.nx, vertex.ny, vertex.nz);
 			vert = fullMatrix.multiplyVectorNoTranslate(vert);
@@ -142,6 +143,7 @@ export class GateItem extends GameItem implements IRenderable {
 		switch (tag) {
 			case 'GATY':
 				this.gateType = this.getInt(buffer);
+				/* istanbul ignore if: Legacy format */
 				if (this.gateType < GateItem.TypeGateWireW || this.gateType > GateItem.TypeGateLongPlate) {// for tables that were saved in the phase where m_type could've been undefined
 					this.gateType = GateItem.TypeGateWireW;
 				}

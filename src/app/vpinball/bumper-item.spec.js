@@ -25,10 +25,14 @@ const three = new ThreeHelper(api);
 
 describe.only('The VPinball bumper parser', () => {
 
+	let vpxFile, gltf;
+
 	before(async () => {
 		await api.setupUsers({
 			member: { roles: ['member'] },
 		});
+		vpxFile = await api.fileHelper.createVpx('member', 'table-bumper.vpx');
+		gltf = await three.loadGlb('member', vpxFile.variations.gltf);
 	});
 
 	after(async () => {
@@ -36,8 +40,6 @@ describe.only('The VPinball bumper parser', () => {
 	});
 
 	it('should generate a scaled and rotated bumper mesh', async () => {
-		const vpxFile = await api.fileHelper.createVpx('member', 'table-bumper.vpx');
-		const gltf = await three.loadGlb('member', vpxFile.variations.gltf);
 		const bumperMesh = three.find(gltf, 'bumpers', 'bumper-socket-Bumper1');
 		const bumperMeshVertices = bumperMesh.geometry.attributes.position;
 		const expectedVertices = [
@@ -529,8 +531,6 @@ describe.only('The VPinball bumper parser', () => {
 	});
 
 	it('should generate a bumper mesh on a surface', async () => {
-		const vpxFile = await api.fileHelper.createVpx('member', 'table-bumper.vpx');
-		const gltf = await three.loadGlb('member', vpxFile.variations.gltf);
 		const bumperMesh = three.find(gltf, 'bumpers', 'bumper-socket-Bumper2');
 		const bumperMeshVertices = bumperMesh.geometry.attributes.position;
 		const expectedVertices = [
@@ -1021,8 +1021,6 @@ describe.only('The VPinball bumper parser', () => {
 	});
 
 	it('should not generate a bumper with no visible elements', async () => {
-		const vpxFile = await api.fileHelper.createVpx('member', 'table-bumper.vpx');
-		const gltf = await three.loadGlb('member', vpxFile.variations.gltf);
 		three.expectNoObject(gltf, 'bumpers', 'bumper-socket-Bumper3');
 	});
 

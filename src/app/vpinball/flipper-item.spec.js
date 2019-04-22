@@ -24,11 +24,14 @@ const api = new ApiClient();
 const three = new ThreeHelper(api);
 
 describe.only('The VPinball flipper parser', () => {
+	let vpxFile, gltf;
 
 	before(async () => {
 		await api.setupUsers({
 			member: { roles: ['member'] },
 		});
+		vpxFile = await api.fileHelper.createVpx('member', 'table-flipper.vpx');
+		gltf = await three.loadGlb('member', vpxFile.variations.gltf);
 	});
 
 	after(async () => {
@@ -36,8 +39,6 @@ describe.only('The VPinball flipper parser', () => {
 	});
 
 	it('should generate a default flipper mesh', async () => {
-		const vpxFile = await api.fileHelper.createVpx('member', 'table-flipper.vpx');
-		const gltf = await three.loadGlb('member', vpxFile.variations.gltf);
 		const flipperBaseMesh = three.find(gltf, 'flippers', 'flipperbase-DefaultFlipper');
 		const flipperBaseMeshVertices = flipperBaseMesh.geometry.attributes.position;
 		let expectedVertices = [
@@ -260,8 +261,6 @@ describe.only('The VPinball flipper parser', () => {
 	});
 
 	it('should generate a rotated flipper mesh', async () => {
-		const vpxFile = await api.fileHelper.createVpx('member', 'table-flipper.vpx');
-		const gltf = await three.loadGlb('member', vpxFile.variations.gltf);
 		const flipperBaseMesh = three.find(gltf, 'flippers', 'flipperbase-FlipperR');
 		const flipperBaseMeshVertices = flipperBaseMesh.geometry.attributes.position;
 		let expectedVertices = [
@@ -484,8 +483,6 @@ describe.only('The VPinball flipper parser', () => {
 	});
 
 	it('should generate a resized flipper mesh', async () => {
-		const vpxFile = await api.fileHelper.createVpx('member', 'table-flipper.vpx');
-		const gltf = await three.loadGlb('member', vpxFile.variations.gltf);
 		const flipperBaseMesh = three.find(gltf, 'flippers', 'flipperbase-FatFlipper');
 		const flipperBaseMeshVertices = flipperBaseMesh.geometry.attributes.position;
 		let expectedVertices = [
@@ -708,8 +705,6 @@ describe.only('The VPinball flipper parser', () => {
 	});
 
 	it('should generate a flipper mesh with a thick rubber', async () => {
-		const vpxFile = await api.fileHelper.createVpx('member', 'table-flipper.vpx');
-		const gltf = await three.loadGlb('member', vpxFile.variations.gltf);
 		const flipperBaseMesh = three.find(gltf, 'flippers', 'flipperbase-FatRubberFlipper');
 		const flipperBaseMeshVertices = flipperBaseMesh.geometry.attributes.position;
 		let expectedVertices = [
@@ -933,8 +928,6 @@ describe.only('The VPinball flipper parser', () => {
 	});
 
 	it('should generate a flipper mesh with no rubber', async () => {
-		const vpxFile = await api.fileHelper.createVpx('member', 'table-flipper.vpx');
-		const gltf = await three.loadGlb('member', vpxFile.variations.gltf);
 		const flipperBaseMesh = three.find(gltf, 'flippers', 'flipperbase-NoRubberFlipper');
 		const flipperBaseMeshVertices = flipperBaseMesh.geometry.attributes.position;
 		let expectedVertices = [
@@ -1048,15 +1041,11 @@ describe.only('The VPinball flipper parser', () => {
 	});
 
 	it('should not generate an invisible flipper', async () => {
-		const vpxFile = await api.fileHelper.createVpx('member', 'table-flipper.vpx');
-		const gltf = await three.loadGlb('member', vpxFile.variations.gltf);
 		three.expectNoObject(gltf, 'flippers', 'flipperbase-InvisibleFlipper');
 		three.expectNoObject(gltf, 'flippers', 'flipperrubber-InvisibleFlipper');
 	});
 
 	it('should generate a flipper located on a surface', async () => {
-		const vpxFile = await api.fileHelper.createVpx('member', 'table-flipper.vpx');
-		const gltf = await three.loadGlb('member', vpxFile.variations.gltf);
 		const flipperBaseMesh = three.find(gltf, 'flippers', 'flipperbase-SurfaceFlipper');
 		const flipperBaseMeshVertices = flipperBaseMesh.geometry.attributes.position;
 		let expectedVertices = [

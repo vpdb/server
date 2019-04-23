@@ -81,18 +81,6 @@ export class Matrix3D {
 		this._21 = -this._12;
 	}
 
-	public scale(x: number, y: number, z: number) {
-		this._11 *= f4(x);
-		this._12 *= f4(x);
-		this._13 *= f4(x);
-		this._21 *= f4(y);
-		this._22 *= f4(y);
-		this._23 *= f4(y);
-		this._31 *= f4(z);
-		this._32 *= f4(z);
-		this._33 *= f4(z);
-	}
-
 	public multiplyVector(v: Vertex3D): Vertex3D {
 		// Transform it through the current matrix set
 		const xp = f4(f4(f4(f4(this._11 * v.x) + f4(this._21 * v.y)) + f4(this._31 * v.z)) + this._41);
@@ -151,6 +139,7 @@ export class Matrix3D {
 		return matrix;
 	}
 
+	/** istanbul ignore next */
 	public debug(): string[] {
 		return [
 			`_11: ${fr(this._11)}`,

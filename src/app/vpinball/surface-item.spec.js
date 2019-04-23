@@ -23,7 +23,7 @@ const ThreeHelper = require('../../test/three.helper');
 const api = new ApiClient();
 const three = new ThreeHelper(api);
 
-describe.only('The VPinball surface generator', () => {
+describe('The VPinball surface generator', () => {
 
 	let vpxFile, gltf;
 

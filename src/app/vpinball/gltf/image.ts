@@ -81,6 +81,10 @@ export class Image {
 		return this.format;
 	}
 
+	public getMimeType(): string {
+		return !this.stats.isOpaque ? 'image/png' : 'image/jpeg';
+	}
+
 	public async getImage(): Promise<Buffer> {
 
 		if (this.stats.isOpaque) {

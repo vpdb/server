@@ -233,20 +233,20 @@ export class RampItem extends GameItem implements IRenderable {
 			const vDy = f4(vVertex[i2].y - vVertex[i2 - 1].y);
 			const vLen = f4(Math.sqrt(f4(f4(vDx * vDx) + f4(vDy * vDy))));
 			if (i2 <= iSeg) {
-				startLength += vLen;
+				startLength = f4(startLength + vLen);
 			}
-			totalLength += vLen;
+			totalLength = f4(totalLength + vLen);
 		}
 
 		const dx = f4(vOut.x - vVertex[iSeg].x);
 		const dy = f4(vOut.y - vVertex[iSeg].y);
 		const len = f4(Math.sqrt(f4(f4(dx * dx) + f4(dy * dy))));
-		startLength += len; // Add the distance the object is between the two closest polyline segments.  Matters mostly for straight edges. Z does not respect that yet!
+		startLength = f4(startLength + len); // Add the distance the object is between the two closest polyline segments.  Matters mostly for straight edges. Z does not respect that yet!
 
 		const topHeight = f4(this.heightTop + table.getTableHeight());
 		const bottomHeight = f4(this.heightBottom + table.getTableHeight());
 
-		return f4(vVertex[iSeg].z + f4(f4(startLength / totalLength) * f4(topHeight - bottomHeight))) + bottomHeight;
+		return f4(f4(vVertex[iSeg].z + f4(f4(startLength / totalLength) * f4(topHeight - bottomHeight))) + bottomHeight);
 	}
 
 	private generateFlatMesh(table: Table): Meshes {

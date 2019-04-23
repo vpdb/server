@@ -21,9 +21,9 @@ import { FrameData } from './common';
 import { MeshConverter } from './gltf/mesh-converter';
 import { f4, fr } from './math/float';
 import { Matrix3D } from './math/matrix3d';
+import { Vertex3DNoTex2 } from './math/vertex';
 import { RenderVertex, Vertex2D } from './math/vertex2d';
 import { RenderVertex3D, Vertex3D } from './math/vertex3d';
-import { Vertex3DNoTex2 } from './math/vertex';
 
 export const FLT_MIN = 1.175494350822287507968736537222245677819e-038;
 export const FLT_MAX = 340282346638528859811704183484516925440;
@@ -195,8 +195,8 @@ export class Mesh {
 
 		const count = rgv.length;
 		let mindist = FLT_MAX;
-		let piseg = -1; // in case we are not next to the line
-		const pvout = new Vertex2D();
+		let piSeg = -1; // in case we are not next to the line
+		const pvOut = new Vertex2D();
 		let cloop = count;
 		if (!fClosed) {
 			--cloop; // Don't check segment running from the end point to the beginning point
@@ -207,43 +207,45 @@ export class Mesh {
 		for (let i = 0; i < cloop; ++i) {
 			const p2 = (i < count - 1) ? (i + 1) : 0;
 
-			const rgvi = rgv[i];
-			const rgvp2 = rgv[p2];
-			const A = rgvi.y - rgvp2.y;
-			const B = rgvp2.x - rgvi.x;
-			const C = -(A * rgvi.x + B * rgvi.y);
+			const rgvi = new RenderVertex3D();
+			rgvi.set(rgv[i].x, rgv[i].y, rgv[i].z);
+			const rgvp2 = new RenderVertex3D();
+			rgvp2.set(rgv[p2].x, rgv[p2].y, rgv[p2].z);
+			const A = f4(rgvi.y - rgvp2.y);
+			const B = f4(rgvp2.x - rgvi.x);
+			const C = -f4(f4(A * rgvi.x) + f4(B * rgvi.y));
 
-			const dist = Math.abs(A * pvin.x + B * pvin.y + C) / Math.sqrt(A * A + B * B);
+			const dist = f4(f4(Math.abs(f4(f4(f4(A * pvin.x) + f4(B * pvin.y)) + C))) / f4(Math.sqrt(f4(f4(A * A) + f4(B * B)))));
 
 			if (dist < mindist) {
 				// Assuming we got a segment that we are closet to, calculate the intersection
 				// of the line with the perpenticular line projected from the point,
 				// to find the closest point on the line
 				const D = -B;
-				const F = -(D * pvin.x + A * pvin.y);
+				const F = -f4(f4(D * pvin.x) + f4(A * pvin.y));
 
-				const det = A * A - B * D;
-				const invDet = (det !== 0.0) ? 1.0 / det : 0.0;
-				const intersectx = (B * F - A * C) * invDet;
-				const intersecty = (C * D - A * F) * invDet;
+				const det = f4(f4(A * A) - f4(B * D));
+				const invDet = (det !== 0.0) ? f4(1.0 / det) : 0.0;
+				const intersectX = f4(f4(f4(B * F) - f4(A * C)) * invDet);
+				const intersectY = f4(f4(f4(C * D) - f4(A * F)) * invDet);
 
 				// If the intersect point lies on the polygon segment
 				// (not out in space), then make this the closest known point
-				if (intersectx >= (Math.min(rgvi.x, rgvp2.x) - 0.1) &&
-					intersectx <= (Math.max(rgvi.x, rgvp2.x) + 0.1) &&
-					intersecty >= (Math.min(rgvi.y, rgvp2.y) - 0.1) &&
-					intersecty <= (Math.max(rgvi.y, rgvp2.y) + 0.1)) {
+				if (intersectX >= f4(Math.min(rgvi.x, rgvp2.x) - f4(0.1)) &&
+					intersectX <= f4(Math.max(rgvi.x, rgvp2.x) + f4(0.1)) &&
+					intersectY >= f4(Math.min(rgvi.y, rgvp2.y) - f4(0.1)) &&
+					intersectY <= f4(Math.max(rgvi.y, rgvp2.y) + f4(0.1))) {
 
 					mindist = dist;
 					const seg = i;
 
-					pvout.x = intersectx;
-					pvout.y = intersecty;
-					piseg = seg;
+					pvOut.x = intersectX;
+					pvOut.y = intersectY;
+					piSeg = seg;
 				}
 			}
 		}
-		return [pvin, piseg];
+		return [pvOut, piSeg];
 	}
 
 	public static polygonToTriangles(rgv: RenderVertex[], pvpoly: number[]): number[] {
@@ -333,13 +335,13 @@ export class Mesh {
 		const x4 = End2.x;
 		const y4 = End2.y;
 
-		const d123 = (x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1);
+		const d123 = f4(f4(f4(x2 - x1) * f4(y3 - y1)) - f4(f4(x3 - x1) * f4(y2 - y1)));
 
 		if (d123 === 0.0) { // p3 lies on the same line as p1 and p2
 			return (x3 >= Math.min(x1, x2) && x3 <= Math.max(x2, x1));
 		}
 
-		const d124 = (x2 - x1) * (y4 - y1) - (x4 - x1) * (y2 - y1);
+		const d124 = f4(f4(f4(x2 - x1) * f4(y4 - y1)) - f4(f4(x4 - x1) * f4(y2 - y1)));
 
 		if (d124 === 0.0) { // p4 lies on the same line as p1 and p2
 			return (x4 >= Math.min(x1, x2) && x4 <= Math.max(x2, x1));
@@ -349,13 +351,13 @@ export class Mesh {
 			return false;
 		}
 
-		const d341 = (x3 - x1) * (y4 - y1) - (x4 - x1) * (y3 - y1);
+		const d341 = f4(f4(f4(x3 - x1) * f4(y4 - y1)) - f4(f4(x4 - x1) * f4(y3 - y1)));
 
 		if (d341 === 0.0) { // p1 lies on the same line as p3 and p4
 			return (x1 >= Math.min(x3, x4) && x1 <= Math.max(x3, x4));
 		}
 
-		const d342 = d123 - d124 + d341;
+		const d342 = f4(f4(d123 - d124) + d341);
 
 		if (d342 === 0.0) { // p1 lies on the same line as p3 and p4
 			return (x2 >= Math.min(x3, x4) && x2 <= Math.max(x3, x4));

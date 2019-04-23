@@ -17,19 +17,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Vector3 as ThreeVector3 } from 'three';
-
-export class Vector3 extends ThreeVector3 {
-
-	public static get(buffer: Buffer) {
-		const v3 = new Vector3();
-		v3.x = buffer.readFloatLE(0);
-		v3.y = buffer.readFloatLE(4);
-		v3.z = buffer.readFloatLE(8);
-		return v3;
-	}
-}
-
 export class FrameData {
 
 	public frameVerts: VertData[] = [];

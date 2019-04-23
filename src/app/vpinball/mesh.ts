@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { FrameData } from './common';
+import { FrameData } from './animation';
 import { MeshConverter } from './gltf/mesh-converter';
 import { f4, fr } from './math/float';
 import { Matrix3D } from './math/matrix3d';
@@ -55,18 +55,6 @@ export class Mesh {
 		this.indices = indices;
 	}
 
-	public static from(data: any): Mesh {
-		const mesh = new Mesh();
-		for (const vertex of data.vertices) {
-			mesh.vertices.push(Vertex3DNoTex2.from(vertex));
-		}
-		for (const animationFrame of data.animationFrames) {
-			mesh.animationFrames.push(FrameData.from(animationFrame));
-		}
-		mesh.indices = data.indices;
-		return mesh;
-	}
-
 	public static fromArray(vertices: number[][], indices: number[]): Mesh {
 		const mesh = new Mesh();
 		for (const vertex of vertices) {
@@ -76,6 +64,7 @@ export class Mesh {
 		return mesh;
 	}
 
+	/* istanbul ignore next: Only used for debugging */
 	public serializeToObj(description?: string): string {
 
 		const objFile: string[] = [];
@@ -366,10 +355,12 @@ export class Mesh {
 		return (d341 * d342 < 0.0);
 	}
 
+	/* istanbul ignore next: Only used for debugging */
 	private _writeObjectName(objFile: string[], objName: string): void {
 		objFile.push(`o ${objName}`);
 	}
 
+	/* istanbul ignore next: Only used for debugging */
 	private _writeVertexInfo(objFile: string[]): void {
 		for (const vert of this.vertices) {
 			objFile.push(`v ${fr(vert.x).toFixed(Mesh.exportPrecision)} ${fr(vert.y).toFixed(Mesh.exportPrecision)} ${fr(vert.z).toFixed(Mesh.exportPrecision)}`);
@@ -390,6 +381,7 @@ export class Mesh {
 		}
 	}
 
+	/* istanbul ignore next: Only used for debugging */
 	private _writeFaceInfoLong(objFile: string[]): void {
 		const faces = this.indices;
 		for (let i = 0; i < this.indices.length; i += 3) {

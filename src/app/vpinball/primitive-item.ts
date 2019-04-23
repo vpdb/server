@@ -19,13 +19,14 @@
 
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
-import { FrameData, Vector3 } from './common';
+import { FrameData } from './animation';
 import { GameItem, IRenderable, Meshes } from './game-item';
 import { degToRad } from './math/float';
 import { Matrix3D } from './math/matrix3d';
 import { Vertex3DNoTex2 } from './math/vertex';
 import { FLT_MAX, Mesh } from './mesh';
 import { Table } from './table';
+import { Vertex3D } from './math/vertex3d';
 
 /**
  * VPinball's primitive.
@@ -300,8 +301,8 @@ export class PrimitiveItem extends GameItem implements IRenderable {
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number, storage: Storage, itemName: string): Promise<number> {
 		switch (tag) {
-			case 'VPOS': this.data.vPosition = Vector3.get(buffer); break;
-			case 'VSIZ': this.data.vSize = Vector3.get(buffer); break;
+			case 'VPOS': this.data.vPosition = Vertex3D.get(buffer); break;
+			case 'VSIZ': this.data.vSize = Vertex3D.get(buffer); break;
 			case 'RTV0': this.data.aRotAndTra[0] = this.getFloat(buffer); break;
 			case 'RTV1': this.data.aRotAndTra[1] = this.getFloat(buffer); break;
 			case 'RTV2': this.data.aRotAndTra[2] = this.getFloat(buffer); break;
@@ -391,8 +392,8 @@ export class PrimitiveItem extends GameItem implements IRenderable {
 
 class PrimitiveData {
 
-	public vPosition: Vector3;
-	public vSize: Vector3 = new Vector3(100, 100, 100);
+	public vPosition: Vertex3D;
+	public vSize: Vertex3D = new Vertex3D(100, 100, 100);
 	public aRotAndTra: number[] = [ 0, 0, 0, 0, 0, 0, 0, 0, 0];
 	public szImage: string;
 	public szNormalMap: string;

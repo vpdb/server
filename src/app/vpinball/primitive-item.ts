@@ -18,15 +18,15 @@
  */
 
 import { Storage } from '../common/ole-doc';
-import { BiffParser } from './biff-parser';
 import { FrameData } from './animation';
+import { BiffParser } from './biff-parser';
 import { GameItem, IRenderable, Meshes } from './game-item';
 import { degToRad } from './math/float';
 import { Matrix3D } from './math/matrix3d';
 import { Vertex3DNoTex2 } from './math/vertex';
+import { Vertex3D } from './math/vertex3d';
 import { FLT_MAX, Mesh } from './mesh';
 import { Table } from './table';
-import { Vertex3D } from './math/vertex3d';
 
 /**
  * VPinball's primitive.

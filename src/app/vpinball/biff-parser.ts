@@ -77,6 +77,7 @@ export class BiffParser {
 	public static async decompress(buffer: Buffer): Promise<Buffer> {
 		return new Promise((resolve, reject) => {
 			inflate(buffer, (err, result) => {
+				/* istanbul ignore if */
 				if (err) {
 					return reject(err);
 				}
@@ -110,6 +111,7 @@ export class BiffParser {
 		if (!dropIfNotAscii || this.isAscii(str)) {
 			return str;
 		}
+		/* istanbul ignore next */
 		return '';
 	}
 

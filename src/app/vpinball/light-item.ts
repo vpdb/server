@@ -19,9 +19,9 @@
 
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
-import { DragPoint } from './math/dragpoint';
 import { GameItem, IRenderable, Meshes } from './game-item';
 import { Material } from './material';
+import { DragPoint } from './math/dragpoint';
 import { Matrix3D } from './math/matrix3d';
 import { Vertex2D } from './math/vertex2d';
 import { bulbLightMesh } from './meshes/bulb-light-mesh';

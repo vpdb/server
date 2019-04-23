@@ -44,6 +44,7 @@ export class Binary extends BiffParser {
 				this.pos = offset;
 				this.len = len;
 				break;
+			/* istanbul ignore next */
 			default: logger.warn(null, '[Binary.fromTag] Unknown tag "%s".', tag);
 		}
 		return 0;

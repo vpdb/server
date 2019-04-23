@@ -23,7 +23,7 @@ const ThreeHelper = require('../../test/three.helper');
 const api = new ApiClient();
 const three = new ThreeHelper(api);
 
-describe.only('The VPinball flipper parser', () => {
+describe.only('The VPinball flipper generator', () => {
 	let vpxFile, gltf;
 
 	before(async () => {
@@ -922,7 +922,6 @@ describe.only('The VPinball flipper parser', () => {
 			[687.842285, 1266.430420, -5.150120],
 			[588.208618, 1364.891724, -5.150120],
 			[588.208618, 1364.891724, -45.170120],
-
 		];
 		three.expectVerticesInArray(expectedVertices, flipperRubberMeshVertices.array);
 	});

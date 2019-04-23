@@ -23,7 +23,7 @@ const ThreeHelper = require('../../test/three.helper');
 const api = new ApiClient();
 const three = new ThreeHelper(api);
 
-describe.only('The VPinball hit target parser', () => {
+describe.only('The VPinball hit target generator', () => {
 
 	let vpxFile, gltf;
 
@@ -1720,7 +1720,6 @@ describe.only('The VPinball hit target parser', () => {
 			[913.718811, 1060.774658, -63.096191],
 			[913.718811, 1060.774658, 3.303808],
 			[931.318787, 1060.774658, 3.303808],
-
 		];
 		three.expectVerticesInArray(expectedVertices, targetMeshVertices.array);
 	});

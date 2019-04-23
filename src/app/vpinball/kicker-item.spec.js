@@ -23,7 +23,7 @@ const ThreeHelper = require('../../test/three.helper');
 const api = new ApiClient();
 const three = new ThreeHelper(api);
 
-describe.only('The VPinball kicker parser', () => {
+describe.only('The VPinball kicker generator', () => {
 
 	let vpxFile, gltf;
 
@@ -416,7 +416,6 @@ describe.only('The VPinball kicker parser', () => {
 			[121.252930, 1348.939819, 15.432900],
 			[127.666756, 1349.784302, 15.432900],
 			[117.237679, 1347.270874, 15.432900],
-
 		];
 		three.expectVerticesInArray(expectedVertices, kickerMeshVertices.array);
 	});
@@ -552,7 +551,6 @@ describe.only('The VPinball kicker parser', () => {
 			[248.520447, 1328.859131, 14.267450],
 			[249.529648, 1328.475952, 13.640475],
 			[250.451416, 1327.795166, 14.274875],
-
 		];
 		three.expectVerticesInArray(expectedVertices, kickerMeshVertices.array);
 	});

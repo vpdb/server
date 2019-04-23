@@ -23,7 +23,7 @@ const ThreeHelper = require('../../test/three.helper');
 const api = new ApiClient();
 const three = new ThreeHelper(api);
 
-describe.only('The VPinball spinner parser', () => {
+describe.only('The VPinball spinner generator', () => {
 
 	let vpxFile, gltf;
 
@@ -271,7 +271,6 @@ describe.only('The VPinball spinner parser', () => {
 			[254.878632, 1168.287598, -59.287601],
 			[254.878632, 1167.992432, -60.000080],
 			[254.878632, 1168.287598, -60.712639],
-
 		];
 		three.expectVerticesInArray(expectedVertices, plateMeshVertices.array);
 

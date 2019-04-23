@@ -750,7 +750,7 @@ export class GLTFExporter {
 	 */
 	private processImage(image: Image, format: PixelFormat, flipY: boolean) {
 
-		const mimeType = format === RGBAFormat ? 'image/png' : 'image/jpeg';
+		const mimeType = image.getMimeType();
 		if (!this.outputJSON.images) {
 			this.outputJSON.images = [];
 		}

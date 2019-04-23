@@ -23,7 +23,7 @@ const ThreeHelper = require('../../test/three.helper');
 const api = new ApiClient();
 const three = new ThreeHelper(api);
 
-describe.only('The VPinball trigger parser', () => {
+describe.only('The VPinball trigger generator', () => {
 
 	let vpxFile, gltf;
 
@@ -571,7 +571,6 @@ describe.only('The VPinball trigger parser', () => {
 			[186.927963, 1444.820801, -2.342225],
 			[189.140259, 1442.470703, -5.273575],
 			[189.006088, 1443.276245, -2.342225],
-
 		];
 		three.expectVerticesInArray(expectedVertices, triggerMeshVertices.array);
 	});
@@ -819,7 +818,6 @@ describe.only('The VPinball trigger parser', () => {
 			[417.408844, 1456.070557, 1.005070],
 			[417.408844, 1456.070557, 1.005070],
 			[416.408264, 1457.000366, 1.005070],
-
 		];
 		three.expectVerticesInArray(expectedVertices, triggerMeshVertices.array, 2);
 	});
@@ -934,7 +932,6 @@ describe.only('The VPinball trigger parser', () => {
 			[629.754761, 1439.587280, 43.112274],
 			[630.396545, 1440.588135, 43.537109],
 			[631.680054, 1440.588135, 43.537109],
-
 		];
 		three.expectVerticesInArray(expectedVertices, triggerMeshVertices.array, 2);
 	});
@@ -992,7 +989,6 @@ describe.only('The VPinball trigger parser', () => {
 			[865.738281, 1403.187988, -30.111996],
 			[866.380066, 1402.355103, -30.810886],
 			[867.663574, 1402.355103, -30.810886],
-
 		];
 		three.expectVerticesInArray(expectedVertices, triggerMeshVertices.array);
 	});
@@ -1204,7 +1200,6 @@ describe.only('The VPinball trigger parser', () => {
 			[501.130310, 1589.219604, -16.585102],
 			[500.636475, 1566.172241, 6.930429],
 			[502.662628, 1566.647461, 7.272000],
-
 		];
 		three.expectVerticesInArray(expectedVertices, triggerMeshVertices.array);
 	});
@@ -1416,7 +1411,6 @@ describe.only('The VPinball trigger parser', () => {
 			[299.811066, 1581.923706, -16.585102],
 			[305.373352, 1559.552246, 6.930429],
 			[307.204224, 1560.541748, 7.272000],
-
 		];
 		three.expectVerticesInArray(expectedVertices, triggerMeshVertices.array);
 	});

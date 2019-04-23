@@ -23,7 +23,7 @@ const ThreeHelper = require('../../test/three.helper');
 const api = new ApiClient();
 const three = new ThreeHelper(api);
 
-describe.only('The VPinball bumper parser', () => {
+describe.only('The VPinball bumper generator', () => {
 
 	let vpxFile, gltf;
 
@@ -525,7 +525,6 @@ describe.only('The VPinball bumper parser', () => {
 			[494.820099, 1245.620605, -9.774720],
 			[497.628021, 1243.520020, -9.774720],
 			[499.492676, 1240.367310, -9.531840],
-
 		];
 		three.expectVerticesInArray(expectedVertices, bumperMeshVertices.array);
 	});

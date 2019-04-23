@@ -17,10 +17,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { CatmullCurve2D } from './catmull-curve';
 import { DragPoint } from './dragpoint';
 import { f4 } from './float';
 import { RenderVertex, Vertex2D } from './vertex2d';
-import { CatmullCurve2D } from './catmull-curve';
 
 export class SplineVertex {
 

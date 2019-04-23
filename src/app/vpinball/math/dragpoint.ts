@@ -18,11 +18,11 @@
  */
 
 import { GameItem } from '../game-item';
+import { CatmullCurve } from './catmull-curve';
 import { f4 } from './float';
 import { IRenderVertex, Vertex } from './vertex';
-import { Vertex3D } from './vertex3d';
 import { RenderVertex } from './vertex2d';
-import { CatmullCurve } from './catmull-curve';
+import { Vertex3D } from './vertex3d';
 
 export const HIT_SHAPE_DETAIL_LEVEL = 7.0;
 

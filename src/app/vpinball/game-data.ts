@@ -184,6 +184,7 @@ export class GameData extends BiffParser {
 			case 'XLZS': this.BG_xlatez[GameData.BG_FSS] = this.getFloat(buffer); break;
 			case 'EFSS':
 				this.BG_enable_FSS = this.getBool(buffer);
+				/* istanbul ignore if: legacy */
 				if (this.BG_enable_FSS) {
 					this.BG_current_set = GameData.BG_FSS;
 				}
@@ -276,6 +277,7 @@ export class GameData extends BiffParser {
 	}
 
 	private _getMaterials(buffer: Buffer, len: number, num: number): Material[] {
+		/* istanbul ignore if */
 		if (len < num * SaveMaterial.size) {
 			throw new Error('Cannot parse ' + num + ' materials of ' + (num * SaveMaterial.size) + ' bytes from a ' + len + ' bytes buffer.');
 		}
@@ -288,12 +290,14 @@ export class GameData extends BiffParser {
 	}
 
 	private _getPhysicsMaterials(buffer: Buffer, len: number, num: number): void {
+		/* istanbul ignore if */
 		if (len < num * SavePhysicsMaterial.size) {
 			throw new Error('Cannot parse ' + num + ' physical materials of ' + (num * SavePhysicsMaterial.size) + ' bytes from a ' + len + ' bytes buffer.');
 		}
 		for (let i = 0; i < num; i++) {
 			const savePhysMat = new SavePhysicsMaterial(buffer, i);
 			const material = this.materials.find(m => m.szName === savePhysMat.szName);
+			/* istanbul ignore if */
 			if (!material) {
 				throw new Error('Cannot find material "' + savePhysMat.szName + '" in [' + this.materials.map(m => m.szName).join(', ') + '] for updating physics.');
 			}
@@ -303,10 +307,6 @@ export class GameData extends BiffParser {
 }
 
 class LightSource {
-
-	public static from(data: any): Vertex2D {
-		return Object.assign(new Vertex2D(), data);
-	}
 
 	public emission: number;
 	public pos: Vertex3D;

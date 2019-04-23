@@ -18,6 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { Math as M } from 'three';
 import { logger } from '../common/logger';
 import { OleCompoundDoc, Storage } from '../common/ole-doc';
 import { BumperItem } from './bumper-item';
@@ -30,6 +31,9 @@ import { HitTargetItem } from './hit-target-item';
 import { KickerItem } from './kicker-item';
 import { LightItem } from './light-item';
 import { Material } from './material';
+import { f4 } from './math/float';
+import { Matrix3D } from './math/matrix3d';
+import { Vertex3DNoTex2 } from './math/vertex';
 import { Mesh } from './mesh';
 import { PrimitiveItem } from './primitive-item';
 import { RampItem } from './ramp-item';
@@ -38,10 +42,6 @@ import { SpinnerItem } from './spinner-item';
 import { SurfaceItem } from './surface-item';
 import { Texture } from './texture';
 import { TriggerItem } from './trigger-item';
-import { Vertex3DNoTex2 } from './math/vertex';
-import { Matrix3D } from './math/matrix3d';
-import { f4 } from './math/float';
-import { Math as M } from 'three';
 
 /**
  * A Visual Pinball table.

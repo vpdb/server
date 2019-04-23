@@ -71,6 +71,7 @@ import { Image } from './image';
 
 const gltfPipeline = require('gltf-pipeline');
 const PromisePool = require('es6-promise-pool');
+const pak = require('../../../../package.json');
 
 const WEBGL_CONSTANTS: { [key: string]: number } = {
 	POINTS: 0x0000,
@@ -158,7 +159,7 @@ export class GLTFExporter {
 	private readonly outputJSON: GltfFile = {
 		asset: {
 			version: '2.0',
-			generator: 'VPDB',
+			generator: 'VPDB ' + pak.version,
 		},
 	};
 

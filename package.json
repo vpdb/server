@@ -186,7 +186,8 @@
 			"build/app/common/settings.validator.js",
 			"build/app/common/middleware/website.middleware.js",
 			"build/app/common/profiler.js",
-			"build/app/authentication/strategies/**"
+			"build/app/authentication/strategies/**",
+			"build/app/vpinball/gltf/gltf-exporter.ts"
 		],
 		"reporter": [
 			"lcov",

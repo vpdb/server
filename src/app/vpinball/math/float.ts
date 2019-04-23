@@ -34,6 +34,7 @@
  *
  * This function does is return case 3.
  *
+ * istanbul ignore next: Only used for debugging
  * @param f8 Double-precision float
  * @return Rounded single-precision float
  */

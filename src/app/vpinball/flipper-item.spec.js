@@ -23,7 +23,7 @@ const ThreeHelper = require('../../test/three.helper');
 const api = new ApiClient();
 const three = new ThreeHelper(api);
 
-describe.only('The VPinball flipper generator', () => {
+describe('The VPinball flipper generator', () => {
 	let vpxFile, gltf;
 
 	before(async () => {

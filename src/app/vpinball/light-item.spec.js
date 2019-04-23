@@ -25,7 +25,7 @@ const api = new ApiClient();
 const three = new ThreeHelper(api);
 const scale = 0.05;
 
-describe.only('The VPinball lights generator', () => {
+describe('The VPinball lights generator', () => {
 
 	let vpxFile, gltf;
 

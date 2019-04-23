@@ -27,7 +27,7 @@ const three = new ThreeHelper(api);
 const tableWidth = 1111;
 const tableHeight = 2222;
 
-describe.only('The VPinball table generator', () => {
+describe('The VPinball table generator', () => {
 
 	before(async () => {
 		await api.setupUsers({

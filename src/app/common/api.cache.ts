@@ -130,7 +130,13 @@ class ApiCache {
 
 			// only cache successful responses
 			if (ctx.status >= 200 && ctx.status < 300) {
-				await this.setCache(ctx, key, cacheRoute);
+				if (process.env.NODE_ENV === 'test') {
+					// await when testing, so we're sure the cash is updated
+					await this.setCache(ctx, key, cacheRoute);
+				} else {
+					// noinspection JSIgnoredPromiseFromCall (serve and do this async in production)
+					this.setCache(ctx, key, cacheRoute);
+				}
 			}
 		}
 	}

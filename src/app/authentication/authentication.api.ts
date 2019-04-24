@@ -149,7 +149,9 @@ export class AuthenticationApi extends Api {
 		if (process.env.SQREEN_ENABLED) {
 			require('sqreen').auth_track(true, { email: authenticatedUser.email });
 		}
+		const span = this.apmStartSpan(`UserUtil.getACLs()`);
 		const acls = await UserUtil.getACLs(authenticatedUser);
+		this.apmEndSpan(span);
 		const response = {
 			token,
 			expires,

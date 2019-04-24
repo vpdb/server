@@ -338,9 +338,11 @@ export class ProfileApi extends Api {
 	 * @return Promise.<{permissions: string[]}>
 	 */
 	private async getACLs(user: UserDocument): Promise<{ permissions: string[] }> {
+		const span = this.apmStartSpan(`getACLs()`);
 		const roles = await acl.userRoles(user.id);
 		const resources = await acl.whatResources(roles);
 		const permissions = await acl.allowedPermissions(user.id, Object.keys(resources));
+		this.apmEndSpan(span);
 		return { permissions };
 	}
 }

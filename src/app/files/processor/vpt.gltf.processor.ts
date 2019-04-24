@@ -23,6 +23,7 @@ import { FileDocument } from '../file.document';
 import { FileUtil } from '../file.util';
 import { FileVariation } from '../file.variations';
 import { CreationProcessor } from './processor';
+import { logger } from '../../common/logger';
 
 export class VptGltfProcessor implements CreationProcessor<FileVariation> {
 
@@ -38,7 +39,10 @@ export class VptGltfProcessor implements CreationProcessor<FileVariation> {
 
 	public async process(requestState: RequestState, file: FileDocument, src: string, dest: string, variation?: FileVariation): Promise<string> {
 
+		logger.info(requestState, '[VptGltfProcessor.process]: Parsing VPX file at %s', src);
 		const vpt = await Table.load(src);
+		logger.info(requestState, '[VptGltfProcessor.process]: VPX file parsed, exporting to GLB at %s.', dest);
+
 		const glb = await vpt.exportGlb({
 
 			// texture and material
@@ -70,6 +74,7 @@ export class VptGltfProcessor implements CreationProcessor<FileVariation> {
 			exportSpinners: true,
 		});
 		await FileUtil.writeFile(dest, glb);
+		logger.info(requestState, '[VptGltfProcessor.process]: GLB successfully created at %s.', dest);
 		return dest;
 	}
 }

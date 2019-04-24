@@ -18,7 +18,15 @@
  */
 
 import { assign, includes, isArray, isObject } from 'lodash';
-import { Document, Model, ModeratedDocument, ModeratedModel, ModerationData, ModerationDataEvent, Schema } from 'mongoose';
+import {
+	Document,
+	Model,
+	ModeratedDocument,
+	ModeratedModel,
+	ModerationData,
+	ModerationDataEvent,
+	Schema,
+} from 'mongoose';
 
 import { LogEventUtil } from '../../log-event/log.event.util';
 import { state } from '../../state';

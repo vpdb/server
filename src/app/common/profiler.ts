@@ -19,6 +19,7 @@
 
 /* tslint:disable:no-console */
 import chalk from 'chalk';
+
 const treeify = require('treeify');
 
 const line = '=========================';

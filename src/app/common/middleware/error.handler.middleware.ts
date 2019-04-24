@@ -18,7 +18,7 @@
  */
 
 import chalk from 'chalk';
-import { assign, keys} from 'lodash';
+import { assign, keys } from 'lodash';
 import { isObject } from 'util';
 
 import { IncomingMessage } from 'http';

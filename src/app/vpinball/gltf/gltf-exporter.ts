@@ -48,7 +48,6 @@ import {
 	PixelFormat,
 	PropertyBinding,
 	RepeatWrapping,
-	RGBAFormat,
 	Scene,
 	Texture,
 	TriangleFanDrawMode,
@@ -65,7 +64,9 @@ import {
 	GltfImage,
 	GltfMaterial,
 	GltfMesh,
-	GltfMeshPrimitive, GltfNode, GltfScene,
+	GltfMeshPrimitive,
+	GltfNode,
+	GltfScene,
 } from './gltf';
 import { Image } from './image';
 

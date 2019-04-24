@@ -18,7 +18,7 @@
  */
 
 import { assign, defaultsDeep, isArray, isObject, pick } from 'lodash';
-import { Document, ModeratedDocument, Types } from 'mongoose';
+import { Document, ModeratedDocument } from 'mongoose';
 
 import { FileDocument } from '../files/file.document';
 import { ReleaseVersionFileDocument } from '../releases/version/file/release.version.file.document';

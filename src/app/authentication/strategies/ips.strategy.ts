@@ -19,10 +19,9 @@
 
 /* istanbul ignore file */
 import Axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import * as querystring from 'querystring';
 import { parse, stringify } from 'querystring';
 import randomString from 'randomstring';
-
-import * as querystring from 'querystring';
 import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
 import { VpdbIpsConfig } from '../../common/typings/config';

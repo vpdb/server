@@ -18,7 +18,15 @@
  */
 
 import { compact, flatten, isArray, map, uniq } from 'lodash';
-import { GameReferenceModel, MetricsModel, ModeratedDocument, ModeratedModel, PaginateModel, PrettyIdModel, Schema } from 'mongoose';
+import {
+	GameReferenceModel,
+	MetricsModel,
+	ModeratedDocument,
+	ModeratedModel,
+	PaginateModel,
+	PrettyIdModel,
+	Schema,
+} from 'mongoose';
 import paginatePlugin from 'mongoose-paginate';
 import uniqueValidatorPlugin from 'mongoose-unique-validator';
 

@@ -19,10 +19,10 @@
 
 import { isString } from 'lodash';
 import { GameReferenceModel, PaginateModel, PrettyIdModel, Schema } from 'mongoose';
-import paginatePlugin = require('mongoose-paginate');
 import uniqueValidator from 'mongoose-unique-validator';
 import { isLength } from 'validator';
 
+import paginatePlugin = require('mongoose-paginate');
 import { fileReferencePlugin } from '../common/mongoose/file.reference.plugin';
 import { gameReferencePlugin } from '../common/mongoose/game.reference.plugin';
 import { prettyIdPlugin } from '../common/mongoose/pretty.id.plugin';

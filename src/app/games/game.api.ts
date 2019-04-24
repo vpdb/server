@@ -18,7 +18,19 @@
  */
 
 import { createReadStream } from 'fs';
-import { assign, cloneDeep, difference, intersection, isEmpty, keys, omit, pick, sum, upperFirst, values } from 'lodash';
+import {
+	assign,
+	cloneDeep,
+	difference,
+	intersection,
+	isEmpty,
+	keys,
+	omit,
+	pick,
+	sum,
+	upperFirst,
+	values,
+} from 'lodash';
 
 import { acl } from '../common/acl';
 import { Api } from '../common/api';

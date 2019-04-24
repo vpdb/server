@@ -19,9 +19,9 @@
 
 import { keys } from 'lodash';
 import { MetricsModel, PaginateModel, PrettyIdModel, Schema } from 'mongoose';
-import paginatePlugin = require('mongoose-paginate');
 import uniqueValidator from 'mongoose-unique-validator';
 
+import paginatePlugin = require('mongoose-paginate');
 import { fileReferencePlugin } from '../common/mongoose/file.reference.plugin';
 import { metricsPlugin } from '../common/mongoose/metrics.plugin';
 import { prettyIdPlugin } from '../common/mongoose/pretty.id.plugin';

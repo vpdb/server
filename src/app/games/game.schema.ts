@@ -18,7 +18,6 @@
  */
 
 import { Document, PaginateModel, PrettyIdModel, Schema } from 'mongoose';
-import paginatePlugin = require('mongoose-paginate');
 import uniqueValidator from 'mongoose-unique-validator';
 import validator from 'validator';
 
@@ -30,6 +29,7 @@ import { FileDocument } from '../files/file.document';
 import { state } from '../state';
 
 import { isInteger, isString } from 'lodash';
+import paginatePlugin = require('mongoose-paginate');
 import { Game } from './game';
 import { GameDocument } from './game.document';
 

@@ -18,8 +18,7 @@
  */
 
 import { flatten, uniq } from 'lodash';
-import { BackglassVariation, VideoFileVariation } from './file.variations';
-import { FileVariation, ImageFileVariation } from './file.variations';
+import { BackglassVariation, FileVariation, ImageFileVariation, VideoFileVariation } from './file.variations';
 
 class FileTypes {
 

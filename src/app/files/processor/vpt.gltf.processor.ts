@@ -17,13 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { logger } from '../../common/logger';
 import { RequestState } from '../../common/typings/context';
 import { Table } from '../../vpinball/table';
 import { FileDocument } from '../file.document';
 import { FileUtil } from '../file.util';
 import { FileVariation } from '../file.variations';
 import { CreationProcessor } from './processor';
-import { logger } from '../../common/logger';
 
 export class VptGltfProcessor implements CreationProcessor<FileVariation> {
 
@@ -51,7 +51,7 @@ export class VptGltfProcessor implements CreationProcessor<FileVariation> {
 			optimizeTextures: true,
 			gltfOptions: {
 				compressVertices: process.env.NODE_ENV !== 'test', // don't compress in tests
-				forcePowerOfTwoTextures: true
+				forcePowerOfTwoTextures: true,
 			},
 
 			// lights

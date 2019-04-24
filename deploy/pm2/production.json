@@ -17,7 +17,8 @@
 				"NEW_RELIC_ENABLED": 0,
 				"NEW_RELIC_APP_NAME": "vpdb.io",
 				"NEW_RELIC_LICENSE_KEY": "xxx",
-				"NEW_RELIC_LOG_LEVEL": "info"
+				"NEW_RELIC_LOG_LEVEL": "info",
+				"LD_PRELOAD": "/var/www/server/production/current/node_modules/sharp/vendor/lib/libz.so"
 			}
 		}
 	]

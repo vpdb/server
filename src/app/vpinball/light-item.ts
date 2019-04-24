@@ -84,7 +84,7 @@ export class LightItem extends GameItem implements IRenderable {
 	}
 
 	public isVisible(): boolean {
-		return this.showBulbMesh;
+		return this.showBulbMesh && this.meshRadius > 0;
 	}
 
 	public getMeshes(table: Table): Meshes {

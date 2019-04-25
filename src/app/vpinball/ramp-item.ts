@@ -82,6 +82,12 @@ export class RampItem extends GameItem implements IRenderable {
 	public static async fromStorage(storage: Storage, itemName: string): Promise<RampItem> {
 		const rampItem = new RampItem();
 		await storage.streamFiltered(itemName, 4, RampItem.createStreamHandler(rampItem));
+		if (rampItem.widthTop === 0 && rampItem.widthBottom > 0) {
+			rampItem.widthTop = 0.1;
+		}
+		if (rampItem.widthBottom === 0 && rampItem.widthTop > 0) {
+			rampItem.widthBottom = 0.1;
+		}
 		return rampItem;
 	}
 
@@ -107,7 +113,7 @@ export class RampItem extends GameItem implements IRenderable {
 	}
 
 	public isVisible(): boolean {
-		return this.fVisible;
+		return this.fVisible && this.widthTop > 0 && this.widthBottom > 0;
 	}
 
 	public getMeshes(table: Table): Meshes {

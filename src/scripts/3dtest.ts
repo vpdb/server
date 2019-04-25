@@ -31,7 +31,8 @@ import { Table } from '../app/vpinball/table';
 		//const tablePath = 'D:/Pinball/Visual Pinball/Tables/Batman Dark Knight tt&NZ 1.2.vpx';
 		//const tablePath = 'D:/Pinball/Visual Pinball/Tables/Materials.vpx';
 		//const tablePath = 'C:/Development/vpdb-server/bumpertest.vpx';
-		const tablePath = 'C:/Development/vpdb-server/src/test/fixtures/table-hit-target.vpx';
+		//const tablePath = 'C:/Development/vpdb-server/src/test/fixtures/table-hit-target.vpx';
+		const tablePath = 'D:/Pinball/Visual Pinball/Tables/vpdb-production/p2empd85q.vpx';
 
 		const vpt = await Table.load(tablePath);
 		const loaded = Date.now();
@@ -47,7 +48,7 @@ import { Table } from '../app/vpinball/table';
 			exportLightBulbLights: true,
 			exportAllLights: false,
 			optimizeTextures: true,
-			gltfOptions: { compressVertices: false, forcePowerOfTwoTextures: true },
+			gltfOptions: { compressVertices: true, forcePowerOfTwoTextures: true },
 
 			exportPrimitives: true,
 			exportTriggers: true,

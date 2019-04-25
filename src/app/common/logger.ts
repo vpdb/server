@@ -30,7 +30,7 @@ import { RequestState } from './typings/context';
 
 class Logger {
 	private textLogger: winston.Logger;
-	private jsonLogger: winston.Logger;
+	private readonly jsonLogger: winston.Logger;
 
 	constructor() {
 		const alignedWithColorsAndTime = winston.format.combine(

@@ -17,9 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { RTMClient, WebClient } from '@slack/client';
-import { MessageAttachment } from '@slack/client/dist/methods';
-import { RTMClientOptions } from '@slack/client/dist/RTMClient';
+import { MessageAttachment, RTMClient, RTMClientOptions, WebClient } from '@slack/client';
 import { GameDocument } from '../games/game.document';
 import { LogEventDocument } from '../log-event/log.event.document';
 import { LogUserDocument } from '../log-user/log.user.document';

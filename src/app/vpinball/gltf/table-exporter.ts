@@ -83,6 +83,7 @@ export class TableExporter {
 	}
 
 	private async export<T>(): Promise<T> {
+
 		const renderGroups: IRenderGroup[] = [
 			{ name: 'playfield', meshes: [ this.table ], enabled: this.opts.exportPlayfield },
 			{ name: 'primitives', meshes: values<PrimitiveItem>(this.table.primitives), enabled: this.opts.exportPrimitives },
@@ -136,7 +137,6 @@ export class TableExporter {
 		}
 		this.playfield.add(lightGroup);
 
-		//this.playfield.scale.set(1, 1, -1);
 		this.scene.add(this.playfield);
 
 		const gltfExporter = new GLTFExporter(Object.assign({}, { embedImages: true }, this.opts.gltfOptions));

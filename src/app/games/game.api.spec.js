@@ -216,7 +216,7 @@ describe('The VPDB `game` API', () => {
 		});
 	});
 
-	describe('when listing games', () => {
+	describe('when listing recreations', () => {
 
 		const user = 'moderator';
 		const count = 10;
@@ -289,6 +289,39 @@ describe('The VPDB `game` API', () => {
 			expect(res.data.length).to.be.above(0);
 			expect(res.data.find(g => g.id === game.id)).to.be.ok();
 		});
+	});
+
+	describe('when listing original games', () => {
+
+		before(async () => {
+			await api.setupUsers({
+				member: { roles: ['member'] },
+				contributor: { roles: ['contributor'] },
+			});
+		});
+
+		after(async () => await api.teardown());
+
+		it('should not list the game without release', async () => {
+			const og = await api.gameHelper.createOriginalGame('member');
+			res = await api.get('/v1/games').then(res => res.expectStatus(200));
+			expect(res.data.find(g => g.id === og.id)).not.to.be.ok();
+		});
+
+		it('should not list the game with unapproved release', async () => {
+			const og = await api.gameHelper.createOriginalGame('member');
+			await api.releaseHelper.createReleaseForGame('member', og);
+			res = await api.get('/v1/games').then(res => res.expectStatus(200));
+			expect(res.data.find(g => g.id === og.id)).not.to.be.ok();
+		});
+
+		it('should list the game with approved release', async () => {
+			const og = await api.gameHelper.createOriginalGame('contributor');
+			await api.releaseHelper.createReleaseForGame('contributor', og);
+			res = await api.get('/v1/games').then(res => res.expectStatus(200));
+			expect(res.data.find(g => g.id === og.id)).to.be.ok();
+		});
+
 	});
 
 	describe('when viewing a game', () => {

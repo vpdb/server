@@ -103,6 +103,71 @@ describe('The VPDB `game` API', () => {
 
 	describe('when posting a new original game', () => {
 
+		before(async () => {
+			await api.setupUsers({
+				member: { roles: [ 'member' ] },
+			});
+		});
+
+		after(async () => await api.teardown());
+
+		it('should fail when not providing mandatory fields', async () => {
+			await api.as('member')
+				.post('/v1/games', { game_type: 'og' })
+				.then(res => res.expectValidationErrors([
+					['_backglass', 'Backglass image must be provided'],
+					['manufacturer', 'Manufacturer must be provided'],
+					['year', 'Year must be provided'],
+					['title', 'Title must be provided'],
+					['id', 'Game ID must be provided'],
+				]));
+		});
+
+		it('should succeed when providing minimal data', async () => {
+			const backglass = await api.fileHelper.createBackglass('member');
+			res = await api.as('member')
+				.markRootTeardown()
+				.post('/v1/games', {
+					game_type: 'og',
+					_backglass: backglass.id,
+					manufacturer: 'Test Inc.',
+					year: 2019,
+					title: 'Pinball play, you must',
+					id: 'pbpym',
+				})
+				.then(res => res.expectStatus(201));
+			expect(res.data.game_type).to.be('og');
+			expect(res.data.backglass.id).to.be(backglass.id);
+			expect(res.data.manufacturer).to.be('Test Inc.');
+			expect(res.data.year).to.be(2019);
+			expect(res.data.title).to.be('Pinball play, you must');
+			expect(res.data.id).to.be('pbpym');
+		});
+
+		it('should succeed when providing full data', async () => {
+			const backglass = await api.fileHelper.createBackglass('member');
+			res = await api.as('member')
+				.markRootTeardown()
+				.post('/v1/games', {
+					game_type: 'og',
+					_backglass: backglass.id,
+					manufacturer: 'Test Inc.',
+					year: 2019,
+					title: 'Pinball play, you must',
+					id: 'pbpym2',
+					description: 'A table you can play',
+					instructions: 'Play pinball!',
+				})
+				.then(res => res.expectStatus(201));
+			expect(res.data.game_type).to.be('og');
+			expect(res.data.backglass.id).to.be(backglass.id);
+			expect(res.data.manufacturer).to.be('Test Inc.');
+			expect(res.data.year).to.be(2019);
+			expect(res.data.title).to.be('Pinball play, you must');
+			expect(res.data.id).to.be('pbpym2');
+			expect(res.data.description).to.be('A table you can play');
+			expect(res.data.instructions).to.be('Play pinball!');
+		});
 	});
 
 	describe('when updating an existing game', () => {
@@ -211,7 +276,6 @@ describe('The VPDB `game` API', () => {
 			expect(res.data.length).to.be.above(0);
 			expect(res.data.find(g => g.id === game.id)).to.be.ok();
 		});
-
 
 		it('should find games by title split by a white space', async () => {
 			// find added game with longest title

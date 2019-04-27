@@ -76,7 +76,7 @@ export class GameApi extends Api {
 
 		// validate permission
 		if (ctx.request.body.game_type !== 'og' && !(await acl.isAllowed(ctx.state.user.id, 'games', 'add'))) {
-			throw new ApiError('As a member you can only create original games').status(403);
+			throw new ApiError('Your role can only create original games').status(403);
 		}
 
 		const game = await state.models.Game.getInstance(ctx.state, assign(ctx.request.body, {

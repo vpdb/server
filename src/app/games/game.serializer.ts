@@ -59,6 +59,8 @@ export class GameSerializer extends Serializer<GameDocument> {
 		game.game_type = doc.game_type;
 		game.counter = doc.counter;
 		game.rating = doc.rating;
+		game.description = doc.description;
+		game.instructions = doc.instructions;
 
 		// restrictions
 		const restrictions: GameRestrictions = {};

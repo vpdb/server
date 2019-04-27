@@ -42,7 +42,7 @@ export class GameApiRouter implements ApiRouter {
 		this.router.head('/v1/games/:id',  api.head.bind(api));
 		this.router.get('/v1/games/:id',   api.view.bind(api));
 		this.router.patch('/v1/games/:id',  api.auth(api.update.bind(api), 'games', 'update', [ Scope.ALL ]));
-		this.router.post('/v1/games',       api.auth(api.create.bind(api), 'games', 'add', [ Scope.ALL ]));
+		this.router.post('/v1/games',       api.auth(api.create.bind(api), 'games', 'add-og', [ Scope.ALL ]));
 		this.router.delete('/v1/games/:id', api.auth(api.del.bind(api), 'games', 'delete', [ Scope.ALL ]));
 
 		const ratingApi = new RatingApi();

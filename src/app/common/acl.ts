@@ -80,7 +80,7 @@ export async function init(): Promise<void> {
 				{ resources: 'builds',        permissions: ['add', 'delete-own'] },
 				{ resources: 'comments',      permissions: ['add', 'update-own'] },
 				{ resources: 'files',         permissions: ['download', 'delete-own', 'upload'] },
-				{ resources: 'games',         permissions: ['rate', 'star'] },
+				{ resources: 'games',         permissions: ['rate', 'star', 'add-og'] },
 				{ resources: 'game_requests', permissions: ['add', 'delete-own'] },
 				{ resources: 'media',         permissions: ['add', 'delete-own', 'star'] },
 				{ resources: 'messages',      permissions: ['receive'] },

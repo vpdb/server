@@ -74,6 +74,11 @@ export class GameApi extends Api {
 	 */
 	public async create(ctx: Context) {
 
+		// validate permission
+		if (ctx.request.body.game_type !== 'og' && !(await acl.isAllowed(ctx.state.user.id, 'games', 'add'))) {
+			throw new ApiError('As a member you can only create original games').status(403);
+		}
+
 		const game = await state.models.Game.getInstance(ctx.state, assign(ctx.request.body, {
 			_created_by: ctx.state.user._id,
 			created_at: new Date(),

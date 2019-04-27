@@ -354,6 +354,12 @@ export class GameApi extends Api {
 			}
 		}
 
+		// don't show original games without attached release
+		query.push({ $or: [
+			{ game_type: { $ne: 'og'} },
+			{ 'counter.releases': { $gte: 1 } },
+		]});
+
 		const sort = this.sortParams(ctx, { title: 1 }, {
 			popularity: '-metrics.popularity',
 			rating: '-rating.score',

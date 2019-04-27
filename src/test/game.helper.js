@@ -48,8 +48,36 @@ class GameHelper {
 		const backglass = await this.fileHelper.createBackglass(user, { keep: true });
 		const res = await this.api
 			.as(user)
-			.markTeardown()
+			.markRootTeardown()
 			.post('/v1/games', assign(this.getGame({ _backglass: backglass.id }), game))
+			.then(res => res.expectStatus(201));
+		return res.data;
+	}
+
+	/**
+	 * Creates a new original game. Automatically marks game for deletion after test.
+	 * @param user
+	 * @param game
+	 * @returns {Promise<Object>}
+	 */
+	async createOriginalGame(user, game) {
+		const backglass = await this.fileHelper.createBackglass(user, { keep: true });
+		const generatedGame = this.getGame({ _backglass: backglass.id });
+		generatedGame.game_type = 'og';
+		delete generatedGame.ipdb;
+		delete generatedGame.themes;
+		delete generatedGame.designers;
+		delete generatedGame.artists;
+		delete generatedGame.features;
+		delete generatedGame.notes;
+		delete generatedGame.model_number;
+		delete generatedGame.toys;
+		delete generatedGame.slogans;
+		delete generatedGame.produced_units;
+		const res = await this.api
+			.as(user)
+			.markRootTeardown()
+			.post('/v1/games', assign(generatedGame, game))
 			.then(res => res.expectStatus(201));
 		return res.data;
 	}

@@ -67,8 +67,12 @@ describe('The ACLs of the `Game` API', function() {
 			request.head('/api/v1/games/mb').as('member').end(hlp.status(404, done));
 		});
 
-		it('should deny access to game creation', function(done) {
-			request.post('/api/v1/games').send({}).as('member').end(hlp.status(403, done));
+		it('should deny access to game creation with non-original type', function(done) {
+			request.post('/api/v1/games').send({ game_type: 'ss' }).as('member').end(hlp.status(403, done));
+		});
+
+		it('should allow access to game creation with original type', function(done) {
+			request.post('/api/v1/games').send({ game_type: 'og' }).as('member').end(hlp.status(422, done));
 		});
 
 		it('should deny access to game deletion', function(done) {

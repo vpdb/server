@@ -2,6 +2,7 @@
 
 ################ config start ################
 
+LD_PRELOAD=/var/www/server/production/current/node_modules/sharp/vendor/lib/libz.so
 KEEP_DEPLOYMENTS=5
 DEPLOY_ROOT=/var/www/server
 

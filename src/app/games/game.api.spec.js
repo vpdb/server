@@ -19,503 +19,312 @@
 
 "use strict"; /* global describe, before, after, it */
 
-const _ = require('lodash');
-const async = require('async');
-const request = require('superagent');
+const { sortBy } = require('lodash');
 const expect = require('expect.js');
 
-const superagentTest = require('../../test/legacy/superagent-test');
-const hlp = require('../../test/legacy/helper');
+const ApiClient = require('../../test/api.client');
 
-superagentTest(request);
+const api = new ApiClient();
+let res;
 
-describe('The VPDB `game` API', function() {
+describe('The VPDB `game` API', () => {
 
-	describe('when posting a new game', function() {
+	describe('when posting a new recreation', () => {
 
-		before(function(done) {
-			hlp.setupUsers(request, {
+		before(async () => {
+			await api.setupUsers({
 				member: { roles: [ 'member' ] },
 				moderator: { roles: [ 'moderator' ] }
-			}, done);
-		});
-
-		after(function(done) {
-			hlp.cleanup(request, done);
-		});
-
-		it('should succeed if provided data is correct', function(done) {
-
-			const user = 'moderator';
-			hlp.file.createBackglass(user, request, function(backglass) {
-				request
-					.post('/api/v1/games')
-					.save({ path: 'games/create'})
-					.as(user)
-					.send(hlp.game.getGame({ _backglass: backglass.id }))
-					.end(function(err, res) {
-						hlp.expectStatus(err, res, 201);
-						hlp.doomGame(user, res.body.id);
-						done();
-					});
 			});
 		});
 
-		it('should fail if the ipdb number is already in the database', function(done) {
+		after(async () => await api.teardown());
 
-			let game;
+		it('should succeed if provided data is correct', async () => {
 			const user = 'moderator';
-			async.series([
-
-				// 1. post game 1
-				function(next) {
-					hlp.game.createGame(user, request, function(createdGame) {
-						game = createdGame;
-						next();
-					});
-				},
-
-				// 2. upload backglass
-				function(next) {
-					hlp.file.createBackglass(user, request, function(backglass) {
-						hlp.doomFile(user, backglass.id);
-						game._backglass = backglass.id;
-						game.id = game.id + '-2';
-						next();
-					});
-				},
-
-				// 3. re-post game 1
-				function(next) {
-					request
-						.post('/api/v1/games')
-						.as(user)
-						.send(game)
-						.end(function(err, res) {
-							hlp.expectStatus(err, res, 422);
-							expect(res.body.errors).to.have.length(1);
-							expect(res.body.errors[0].field).to.be('ipdb.number');
-							expect(res.body.errors[0].message).to.contain('cannot be added twice');
-							next();
-						});
-				}
-			], done);
+			const backglass = await api.fileHelper.createBackglass(user, { keep: true });
+			await api.as(user)
+				.markTeardown()
+				.save('games/create')
+				.post('/v1/games', api.gameHelper.getGame({ _backglass: backglass.id }))
+				.then(res => res.expectStatus(201));
 		});
 
-		it('should fail if the game id is already in the database', function(done) {
-			let game;
+		it('should fail if the ipdb number is already in the database', async () => {
 			const user = 'moderator';
-			async.series([
-
-				// 1. post game 1
-				function(next) {
-					hlp.game.createGame(user, request, function(createdGame) {
-						game = createdGame;
-						next();
-					});
-				},
-
-				// 2. upload backglass
-				function(next) {
-					hlp.file.createBackglass(user, request, function(backglass) {
-						hlp.doomFile(user, backglass.id);
-						const dupeId = game.id;
-						game = hlp.game.getGame({ _backglass: backglass.id });
-						game.id = dupeId;
-						next();
-					});
-				},
-
-				// 3. post game 2
-				function(next) {
-					request
-						.post('/api/v1/games')
-						.as(user)
-						.send(game)
-						.end(function(err, res) {
-							hlp.expectStatus(err, res, 422);
-							expect(res.body.errors).to.have.length(1);
-							expect(res.body.errors[0].field).to.be('id');
-							expect(res.body.errors[0].message).to.contain('is already taken');
-							next();
-						});
-				}
-			], done);
-
+			const game = await api.gameHelper.createGame(user);
+			const backglass = await api.fileHelper.createBackglass(user);
+			game._backglass = backglass.id;
+			game.id = game.id + '-2';
+			await api.as(user)
+				.post('/v1/games', game)
+				.then(res => res
+					.expectValidationError('ipdb.number', 'cannot be added twice')
+					.expectNumValidationErrors(1)
+				);
 		});
 
-		it('should fail if a referenced file is already referenced', function(done) {
-			let backglassId;
-			async.series([
-
-				// 1. upload game
-				function(next) {
-					hlp.game.createGame('moderator', request, function(game) {
-						backglassId = game.backglass.id;
-						next();
-					});
-				},
-
-				// 2. try to re-use backglass in another game
-				function(next) {
-					request
-						.post('/api/v1/games')
-						.as('moderator')
-						.send(hlp.game.getGame({ _backglass: backglassId }))
-						.end(function(err, res) {
-							hlp.expectStatus(err, res, 422);
-							expect(res.body.errors).to.have.length(1);
-							expect(res.body.errors[0].field).to.be('_backglass');
-							expect(res.body.errors[0].message).to.contain('Cannot reference active files');
-							next();
-						});
-				}
-			], done);
+		it('should fail if the game id is already in the database', async () => {
+			const user = 'moderator';
+			const game = await api.gameHelper.createGame(user);
+			const backglass = await api.fileHelper.createBackglass(user);
+			const dupeId = game.id;
+			const dupeGame = api.gameHelper.getGame({ _backglass: backglass.id });
+			dupeGame.id = dupeId;
+			await api.as(user)
+				.post('/v1/games', dupeGame)
+				.then(res => res
+					.expectValidationError('id', 'is already taken')
+					.expectNumValidationErrors(1)
+				);
 		});
 
-		it('should fail if the referenced file type for backglass is not backglass.', function(done) {
-			let romId;
-			async.series([
+		it('should fail if a referenced file is already referenced', async () => {
+			const game = await api.gameHelper.createGame('moderator');
+			const backglassId = game.backglass.id;
+			await api.as('moderator')
+				.post('/v1/games', api.gameHelper.getGame({ _backglass: backglassId }))
+				.then(res => res
+					.expectValidationError('_backglass', 'Cannot reference active files')
+					.expectNumValidationErrors(1)
+				);
+		});
 
-				// 1. upload game
-				next => {
-					hlp.file.createRom('moderator', request, rom => {
-						romId = rom.id;
-						next();
-					});
-				},
-
-				// 2. try to use rom as backglass
-				next => {
-					request
-						.post('/api/v1/games')
-						.as('moderator')
-						.send(hlp.game.getGame({ _backglass: romId }))
-						.end(function(err, res) {
-							hlp.expectStatus(err, res, 422);
-							expect(res.body.errors).to.have.length(1);
-							expect(res.body.errors[0].field).to.be('_backglass');
-							expect(res.body.errors[0].message).to.contain('file of type "backglass"');
-							next();
-						});
-				}
-			], done);
+		it('should fail if the referenced file type for backglass is not a backglass.', async () => {
+			const rom = await api.fileHelper.createRom('moderator');
+			await api.as('moderator')
+				.post('/v1/games', api.gameHelper.getGame({ _backglass: rom.id }))
+				.then(res => res
+					.expectValidationError('_backglass', 'file of type "backglass"')
+					.expectNumValidationErrors(1)
+				);
 		});
 	});
 
-	describe('when updating an existing game', function() {
+	describe('when posting a new original game', () => {
+
+	});
+
+	describe('when updating an existing game', () => {
 
 		let game;
-		before(function(done) {
-			hlp.setupUsers(request, {
+		before(async () => {
+			await api.setupUsers({
 				member: { roles: [ 'member' ] },
 				moderator: { roles: [ 'moderator' ] }
-			}, function() {
-				hlp.game.createGame('moderator', request, function(g) {
-					game = g;
-					done(null, g);
-				});
 			});
+			game = await api.gameHelper.createGame('moderator');
 		});
 
-		after(function(done) {
-			hlp.cleanup(request, done);
+		after(async () => await api.teardown());
+
+		it('should fail for an non-existing game', async () => {
+			await api.as('moderator')
+				.patch('/v1/games/brötzl', {})
+				.then(res => res.expectStatus(404));
 		});
 
-		it('should fail for an non-existing game', function(done) {
-			request
-				.patch('/api/v1/games/brötzl')
-				.as('moderator')
-				.send({ })
-				.end(hlp.status(404, done));
+		it('should fail if an invalid field is provided', async () => {
+			await api.as('moderator')
+				.patch('/v1/games/' + game.id, { created_at: new Date().toString() })
+				.then(res => res.expectError(400, 'invalid field'));
 		});
 
-		it('should fail if an invalid field is provided', function(done) {
-			request
-				.patch('/api/v1/games/' + game.id)
-				.as('moderator')
-				.send({ created_at: new Date().toString() })
-				.end(function(err, res) {
-					hlp.expectStatus(err, res, 400, 'invalid field');
-					done();
-				});
+		it('should fail if an invalid value is provided', async () => {
+			await api.as('moderator')
+				.patch('/v1/games/' + game.id, { game_type: 'zorg' })
+				.then(res => res.expectValidationError('game_type', 'invalid game type'));
 		});
 
-		it('should fail if an invalid value is provided', function(done) {
-			request
-				.patch('/api/v1/games/' + game.id)
-				.as('moderator')
-				.send({ game_type: 'zorg' })
-				.end(function(err, res) {
-					hlp.expectValidationError(err, res, 'game_type', 'invalid game type');
-					done();
-				});
-		});
-
-		it('should succeed with minimal data', function(done) {
+		it('should succeed with minimal data', async () => {
 			const title = 'Hi, I am your new title.';
-			request
-				.patch('/api/v1/games/' + game.id)
-				.as('moderator')
-				.save({ path: 'games/update' })
-				.send({ title: title })
-				.end(function(err, res) {
-					hlp.expectStatus(err, res, 200);
-					expect(res.body.title).to.be(title);
+			res = await api.as('moderator')
+				.save('games/update')
+				.patch('/v1/games/' + game.id, { title: title })
+				.then(res => res.expectStatus(200));
 
-					// refetch to be sure.
-					request
-						.get('/api/v1/games/' + game.id)
-						.end(function(err, res) {
-							hlp.expectStatus(err, res, 200);
-							expect(res.body.title).to.be(title);
-							done();
-						});
-				});
+			expect(res.data.title).to.be(title);
+
+			// refetch to be sure.
+			res = await api.get('/v1/games/' + game.id).then(res => res.expectStatus(200));
+			expect(res.data.title).to.be(title);
 		});
 	});
 
-	describe('when listing games', function() {
+	describe('when listing games', () => {
 
 		const user = 'moderator';
 		const count = 10;
 		let games = [];
 
-		before(function(done) {
-			hlp.setupUsers(request, {
-				moderator: { roles: [ user ]}
-			}, function() {
-				hlp.game.createGames(user, request, count, function(_games) {
-					games = _games;
-					done();
-				});
+		before(async () => {
+			await api.setupUsers({
+				member: { roles: [ 'member' ] },
+				moderator: { roles: [ 'moderator' ] }
 			});
+			games = await api.gameHelper.createGames(user, count);
 		});
 
-		after(function(done) {
-			hlp.cleanup(request, done);
+		after(async () => await api.teardown());
+
+		it('should list all games if number of games is smaller or equal to page size', async () => {
+			res = await api
+				.save('games/list')
+				.get('/v1/games')
+				.then(res => res.expectStatus(200));
+			expect(res.data).to.be.an('array');
+			expect(res.data).to.have.length(count);
 		});
 
-		it('should list all games if number of games is smaller or equal to page size', function(done) {
-			request
-				.get('/api/v1/games')
-				.save({ path: 'games/list' })
-				.end(function(err, res) {
-					hlp.expectStatus(err, res, 200);
-					expect(res.body).to.be.an('array');
-					expect(res.body).to.have.length(count);
-					done();
-				});
+		it('should refuse queries with less than two characters', async () => {
+			await api
+				.saveResponse('games/search')
+				.get('/v1/games?q=a')
+				.then(res => res.expectError(400, 'must contain at least two characters'));
 		});
 
-		it('should refuse queries with less than two characters', function(done) {
-			request.get('/api/v1/games?q=a').saveResponse({ path: 'games/search' }).end(hlp.status(400, 'must contain at least two characters', done));
+		it('should fail when providing nonsense number for year filter', async () => {
+			await api.get('/v1/games?decade=qwez').then(res => res.expectError(400, '"decade" must be an integer'));
 		});
 
-		it('should fail when providing nonsense number for year filter', function(done) {
-			request.get('/api/v1/games?decade=qwez').end(hlp.status(400, '"decade" must be an integer', done));
-		});
-
-		it('should find game by game id', function(done) {
+		it('should find game by game id', async () => {
 			// find added game with shortest id
-			const game = _.sortBy(games, function(game) {
-				return game.id.length;
-			})[0];
+			const game = sortBy(games, game => game.id.length)[0];
 
-			request
-				.get('/api/v1/games?q=' + game.id)
-				.end(function(err, res) {
-					hlp.expectStatus(err, res, 200);
-					expect(res.body).to.be.an('array');
-					expect(res.body.length).to.be.above(0);
-					let found = false;
-					_.each(res.body, function(g) {
-						if (g.id === game.id) {
-							found = true;
-						}
-					});
-					expect(found).to.be(true);
-					done();
-				});
+			res = await api.get('/v1/games?q=' + game.id)
+				.then(res => res.expectStatus(200));
+
+			expect(res.data).to.be.an('array');
+			expect(res.data.length).to.be.above(0);
+			expect(res.data.find(g => g.id === game.id)).to.be.ok();
 		});
 
-		it('should find games by title', function(done) {
+		it('should find games by title', async () => {
 			// find added game with longest title
-			const game = _.sortBy(games, function(game) {
-				return -game.title.length;
-			})[0];
+			const game = sortBy(games, game => -game.title.length)[0];
 
-			request
-				.get('/api/v1/games?q=' + game.title.match(/[0-9a-z]{3}/i)[0])
-				.end(function(err, res) {
-					hlp.expectStatus(err, res, 200);
-					expect(res.body).to.be.an('array');
-					expect(res.body.length).to.be.above(0);
-					let found = false;
-					_.each(res.body, function(g) {
-						if (g.id === game.id) {
-							found = true;
-						}
-					});
-					expect(found).to.be(true);
-					done();
-				});
+			res = await api
+				.get('/v1/games?q=' + game.title.match(/[0-9a-z]{3}/i)[0])
+				.then(res => res.expectStatus(200));
+
+			expect(res.data).to.be.an('array');
+			expect(res.data.length).to.be.above(0);
+			expect(res.data.find(g => g.id === game.id)).to.be.ok();
 		});
 
 
-		it('should find games by title split by a white space', function(done) {
+		it('should find games by title split by a white space', async () => {
 			// find added game with longest title
-			const game = _.sortBy(games, function(game) {
-				return -game.title.length;
-			})[0];
+			const game = sortBy(games, game => -game.title.length)[0];
 
-			request
-				.get('/api/v1/games?q=' + game.title.match(/[0-9a-z]{2}/i)[0] + '+' + game.title.match(/.*([0-9a-z]{2})/i)[1])
-				.end(function(err, res) {
-					hlp.expectStatus(err, res, 200);
-					expect(res.body).to.be.an('array');
-					expect(res.body.length).to.be.above(0);
-					let found = false;
-					_.each(res.body, function(g) {
-						if (g.id === game.id) {
-							found = true;
-						}
-					});
-					expect(found).to.be(true);
-					done();
-				});
+			res = await api
+				.get('/v1/games?q=' + game.title.match(/[0-9a-z]{2}/i)[0] + '+' + game.title.match(/.*([0-9a-z]{2})/i)[1])
+				.then(res => res.expectStatus(200));
+
+			expect(res.data).to.be.an('array');
+			expect(res.data.length).to.be.above(0);
+			expect(res.data.find(g => g.id === game.id)).to.be.ok();
 		});
 	});
 
-	describe('when viewing a game', function() {
+	describe('when viewing a game', () => {
 
 		const user = 'moderator';
 		let game;
 
-		before(function(done) {
-			hlp.setupUsers(request, {
+		before(async () => {
+			await api.setupUsers({
 				moderator: { roles: [ user ]}
-			}, function() {
-				hlp.game.createGame(user, request, function(_game) {
-					game = _game;
-					done();
-				});
 			});
+			game = await api.gameHelper.createGame('moderator');
 		});
 
-		after(function(done) {
-			hlp.cleanup(request, done);
+		after(async () => await api.teardown());
+
+		it('should return full game details', async () => {
+			res = await api
+				.get('/v1/games/' + game.id)
+				.then(res => res.expectStatus(200));
+			expect(res.data).to.be.an('object');
+			expect(res.data.title).to.be(game.title);
+			expect(res.data.manufacturer).to.be(game.manufacturer);
+			expect(res.data.year).to.be(game.year);
+			expect(res.data.game_type).to.be(game.game_type);
+			expect(res.data.backglass).to.be.an('object');
+			expect(res.data.backglass.variations).to.be.an('object');
+			expect(res.data.backglass.variations.medium).to.be.an('object');
 		});
 
-		it('should return full game details', function(done) {
-			request
-				.get('/api/v1/games/' + game.id)
-				.end(function(err, res) {
-					hlp.expectStatus(err, res, 200);
-					expect(res.body).to.be.an('object');
-					expect(res.body.title).to.be(game.title);
-					expect(res.body.manufacturer).to.be(game.manufacturer);
-					expect(res.body.year).to.be(game.year);
-					expect(res.body.game_type).to.be(game.game_type);
-					expect(res.body.backglass).to.be.an('object');
-					expect(res.body.backglass.variations).to.be.an('object');
-					expect(res.body.backglass.variations.medium).to.be.an('object');
-					done();
-				});
-		});
-
-		it('that does not exist should return a 404', function(done) {
-			request.get('/api/v1/games/01234567890123456789').end(hlp.status(404, done));
+		it('that does not exist should return a 404', async () => {
+			await api.get('/v1/games/01234567890123456789').then(res => res.expectError(404));
 		});
 	});
 
-	describe('when deleting a game', function() {
+	describe('when deleting a game', () => {
 
 		const user = 'moderator';
-		before(function(done) {
-			hlp.setupUsers(request, {
+		before(async () => {
+			await api.setupUsers({
 				moderator: { roles: [ user ]}
-			}, done);
-		});
-
-		after(function(done) {
-			hlp.cleanup(request, done);
-		});
-
-		it('should succeed if game is not referenced', function(done) {
-			hlp.file.createBackglass(user, request, function(backglass) {
-				request
-					.post('/api/v1/games')
-					.as(user)
-					.send(hlp.game.getGame({ _backglass: backglass.id }))
-					.end(function(err, res) {
-						hlp.expectStatus(err, res, 201);
-						request
-							.del('/api/v1/games/' + res.body.id)
-							.save({ path: 'games/delete'})
-							.as(user)
-							.end(hlp.status(204, done));
-					});
 			});
 		});
 
-		it('should fail if there is a backglass attached to that game', function(done) {
-			hlp.game.createGame(user, request, function(game) {
-				hlp.file.createDirectB2S(user, request, function(b2s) {
-					request
-						.post('/api/v1/backglasses')
-						.as(user)
-						.send({
-							_game: game.id,
-							authors: [ {
-								_user: hlp.users[user].id,
-								roles: [ 'creator' ]
-							} ],
-							versions: [ {
-								version: '1.0',
-								_file: b2s.id
-							} ]
-						})
-						.end(function(err, res) {
-							hlp.doomBackglass(user, res.body.id);
-							hlp.expectStatus(err, res, 201);
-							request
-								.del('/api/v1/games/' + game.id)
-								.save({ path: 'games/delete'})
-								.as(user)
-								.end(hlp.status(400, 'is referenced by', done));
-						});
-				});
-			});
+		after(async () => await api.teardown());
+
+		it('should succeed if game is not referenced', async () => {
+			const backglass = await api.fileHelper.createBackglass(user);
+			res = await api.as(user)
+				.post('/v1/games', api.gameHelper.getGame({ _backglass: backglass.id }))
+				.then(res => res.expectStatus(201));
+			await api.as(user)
+				.save('games/delete')
+				.del('/v1/games/' + res.data.id)
+				.then(res => res.expectStatus(204));
 		});
 
+		it('should fail if there is a backglass attached to that game', async () => {
+			const game = await api.gameHelper.createGame(user);
+			const b2s = await api.fileHelper.createDirectB2S(user);
+			await api.as(user)
+				.markTeardown()
+				.post('/v1/backglasses', {
+					_game: game.id,
+					authors: [ {
+						_user: api.getUser(user).id,
+						roles: [ 'creator' ]
+					} ],
+					versions: [ {
+						version: '1.0',
+						_file: b2s.id
+					} ]
+				})
+				.then(res => res.expectStatus(201));
+			await api.as(user)
+				.save('games/delete')
+				.del('/v1/games/' + game.id)
+				.then(res => res.expectError(400, 'is referenced by'));
+		});
 	});
 
-	describe('when requesting a release name', function() {
+	describe('when requesting a release name', () => {
 
-		before(function(done) {
-			hlp.setupUsers(request, {
+		before(async () => {
+			await api.setupUsers({
 				member: { roles: [ 'member' ] },
 				moderator: { roles: [ 'moderator' ] }
-			}, done);
-		});
-
-		after(function(done) {
-			hlp.cleanup(request, done);
-		});
-
-		it('should return at least two words', function(done) {
-			hlp.game.createGame('moderator', request, function(game) {
-				request
-					.get('/api/v1/games/' + game.id + '/release-name')
-					.save({ path: 'games/release-name' })
-					.as('member')
-					.end(function(err, res) {
-						hlp.expectStatus(err, res, 200);
-						expect(res.body.name.split(' ')).to.have.length(3);
-						done();
-					});
 			});
+		});
+
+		after(async () => await api.teardown());
+
+		it('should return at least two words', async () => {
+			const game = await api.gameHelper.createGame('moderator');
+			res = await api.as('member')
+				.save('games/release-name')
+				.get('/v1/games/' + game.id + '/release-name')
+				.then(res => res.expectStatus(200));
+
+			expect(res.data.name.split(' ')).to.have.length(3);
 		});
 
 	});

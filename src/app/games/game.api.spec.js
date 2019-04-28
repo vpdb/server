@@ -124,7 +124,7 @@ describe('The VPDB `game` API', () => {
 		});
 
 		it('should succeed when providing minimal data', async () => {
-			const backglass = await api.fileHelper.createBackglass('member');
+			const backglass = await api.fileHelper.createBackglass('member', { keep: true });
 			res = await api.as('member')
 				.markRootTeardown()
 				.post('/v1/games', {
@@ -145,7 +145,7 @@ describe('The VPDB `game` API', () => {
 		});
 
 		it('should succeed when providing full data', async () => {
-			const backglass = await api.fileHelper.createBackglass('member');
+			const backglass = await api.fileHelper.createBackglass('member', { keep: true });
 			res = await api.as('member')
 				.markRootTeardown()
 				.post('/v1/games', {
@@ -201,7 +201,13 @@ describe('The VPDB `game` API', () => {
 				.then(res => res.expectValidationError('game_type', 'invalid game type'));
 		});
 
-		it('should succeed with minimal data', async () => {
+		it('should fail as member for non-owned game', async () => {
+			await api.as('member')
+				.patch('/v1/games/' + game.id, {})
+				.then(res => res.expectError(403, 'You can only update games you have added yourself'));
+		});
+
+		it('should succeed with minimal data as moderator', async () => {
 			const title = 'Hi, I am your new title.';
 			res = await api.as('moderator')
 				.save('games/update')
@@ -212,6 +218,21 @@ describe('The VPDB `game` API', () => {
 
 			// refetch to be sure.
 			res = await api.get('/v1/games/' + game.id).then(res => res.expectStatus(200));
+			expect(res.data.title).to.be(title);
+		});
+
+		it('should succeed with minimal data as member', async () => {
+			const title = 'Hi, I am your new title.';
+			const og = await api.gameHelper.createOriginalGame('member');
+			res = await api.as('member')
+				.save('games/update')
+				.patch('/v1/games/' + og.id, { title: title })
+				.then(res => res.expectStatus(200));
+
+			expect(res.data.title).to.be(title);
+
+			// refetch to be sure.
+			res = await api.get('/v1/games/' + og.id).then(res => res.expectStatus(200));
 			expect(res.data.title).to.be(title);
 		});
 	});
@@ -369,7 +390,7 @@ describe('The VPDB `game` API', () => {
 		after(async () => await api.teardown());
 
 		it('should succeed if game is not referenced', async () => {
-			const backglass = await api.fileHelper.createBackglass(user);
+			const backglass = await api.fileHelper.createBackglass(user, { keep: true });
 			res = await api.as(user)
 				.post('/v1/games', api.gameHelper.getGame({ _backglass: backglass.id }))
 				.then(res => res.expectStatus(201));

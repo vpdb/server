@@ -173,6 +173,12 @@ export class GameApi extends Api {
 		if (!game) {
 			throw new ApiError('No such game with ID "%s".', ctx.params.id).status(404);
 		}
+
+		// validate permission
+		if (!game._created_by.equals(ctx.state.user._id) && !(await acl.isAllowed(ctx.state.user.id, 'games', 'update'))) {
+			throw new ApiError('You can only update games you have added yourself.').status(403);
+		}
+
 		const oldGame = cloneDeep(game) as GameDocument;
 
 		// fail if invalid fields provided

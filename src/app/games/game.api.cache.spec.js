@@ -223,6 +223,58 @@ describe('The game cache', () => {
 			expect(res.data.find(g => g.id === game.id).counter.releases).to.be(numReleases + 1);
 		});
 
+		it('should invalidate game list when an original game was auto-approved', async () => {
+
+			// create game and cache list
+			const game = await api.gameHelper.createOriginalGame('moderator');
+			await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'miss'));
+
+			// add release
+			await api.releaseHelper.createReleaseForGame('moderator', game);
+
+			// adding a release to an empty original game will make the game appear in the list, so a miss
+			res = await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'miss'));
+			expect(res.data.find(g => g.id === game.id).counter.releases).to.be(1);
+		});
+
+		it('should not invalidate game list when an original game was auto-approved for a second release', async () => {
+
+			// create game and cache list
+			const game = await api.gameHelper.createOriginalGame('moderator');
+			await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'miss'));
+
+			// add release 1
+			await api.releaseHelper.createReleaseForGame('moderator', game);
+			await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'miss'));
+
+			// add release 2
+			await api.releaseHelper.createReleaseForGame('moderator', game);
+			await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'hit'));
+		});
+
+		it('should invalidate game list when an original game was manually approved', async () => {
+
+			// create game and cache list
+			const game = await api.gameHelper.createOriginalGame('member');
+			res = await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'miss'));
+
+			// add release
+			const release = await api.releaseHelper.createReleaseForGame('member', game);
+
+			// release is still pending, so cache should still hit
+			await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'hit'));
+
+			// approve
+			res = await api
+				.as('moderator')
+				.post('/v1/releases/' + release.id + '/moderate', { action: 'approve' })
+				.then(res => res.expectStatus(200));
+
+			// now cache should be cleared
+			res = await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'miss'));
+			expect(res.data.find(g => g.id === game.id).counter.releases).to.be(1);
+		});
+
 		it('should invalidate game details', async () => {
 
 			// create game and cache details
@@ -327,7 +379,7 @@ describe('The game cache', () => {
 
 			// create release and cache list
 			const release = await api.releaseHelper.createRelease('moderator');
-			res = await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'miss'));
+			res = await api.get('/v1/games?per_page=100').then(res => res.expectHeader('x-cache-api', 'miss'));
 			const numComments = res.data.find(g => g.id === release.game.id).counter.comments;
 
 			// comment release
@@ -337,7 +389,7 @@ describe('The game cache', () => {
 				.then(res => res.expectStatus(201));
 
 			// it's a hit but counter is updated
-			res = await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'hit'));
+			res = await api.get('/v1/games?per_page=100').then(res => res.expectHeader('x-cache-api', 'hit'));
 			expect(res.data.find(g => g.id === release.game.id).counter.comments).to.be(numComments + 1);
 		});
 

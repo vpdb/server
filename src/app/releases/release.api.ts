@@ -90,11 +90,12 @@ export class ReleaseApi extends ReleaseAbstractApi {
 			logger.info(ctx.state, '[ReleaseApi.create] All referenced files activated, returning object to client.');
 
 			release = await this.getDetails(release._id);
+			const game = release._game as GameDocument;
 
 			// log event
 			await LogEventUtil.log(ctx, 'create_release', true, {
 				release: state.serializers.Release.detailed(ctx, release, { thumbFormat: 'medium', includedFields: ['moderation'] }),
-				game: pick(state.serializers.Game.simple(ctx, release._game as GameDocument), ['id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type']),
+				game: pick(state.serializers.Game.simple(ctx, game), ['id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type']),
 			}, {
 				release: release._id,
 				game: release._game._id,
@@ -102,6 +103,10 @@ export class ReleaseApi extends ReleaseAbstractApi {
 
 			// invalidate cache
 			await apiCache.invalidateCreatedRelease(ctx.state, release);
+			if (game.game_type === 'og' && release.moderation.is_approved && game.counter.releases === 0) {
+				// empty original games aren't shown in lists, so we need to invalidate when that changes.
+				await apiCache.invalidateCreatedGame(ctx.state);
+			}
 
 			this.success(ctx, state.serializers.Release.detailed(ctx, release, { includedFields: ['is_active'] }), 201);
 

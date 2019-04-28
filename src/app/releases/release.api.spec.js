@@ -1300,4 +1300,62 @@ describe('The VPDB `Release` API', function() {
 
 	});
 
+	describe('when only listing "mine"', () => {
+
+		before(done => {
+			hlp.setupUsers(request, {
+				member: { roles: [ 'member' ] },
+				author: { roles: [ 'member' ] },
+				moderator: { roles: [ 'moderator' ] },
+				contributor: { roles: [ 'release-contributor' ] },
+			}, done);
+		});
+
+		after(done => {
+			hlp.cleanup(request, done);
+		});
+
+		it('should list restricted releases', done => {
+			hlp.game.createGame('moderator', request, { ipdb: { number: 99999, mpu: 9999 } }, function(restrictedGame) {
+				hlp.release.createReleaseForGame('contributor', request, restrictedGame, function(release) {
+					request
+						.get('/api/v1/releases?show_mine_only=1')
+						.as('contributor')
+						.end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							expect(res.body.find(r => r.id === release.id)).to.be.ok();
+							done();
+						});
+				});
+			});
+		});
+
+		it('should list pending releases as uploader', done => {
+			hlp.release.createRelease('member', request, function(release) {
+				request
+					.get('/api/v1/releases?show_mine_only=1')
+					.as('member')
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						expect(res.body.find(r => r.id === release.id)).to.be.ok();
+						done();
+					});
+			});
+		});
+
+		it('should list pending releases as author', done => {
+			hlp.release.createRelease('member', request, { author: 'author' }, function(release) {
+				request
+					.get('/api/v1/releases?show_mine_only=1')
+					.as('author')
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						expect(res.body.find(r => r.id === release.id)).to.be.ok();
+						done();
+					});
+			});
+		});
+
+	});
+
 });

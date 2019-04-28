@@ -310,6 +310,9 @@ describe('The VPDB `game` API', () => {
 			expect(res.data.length).to.be.above(0);
 			expect(res.data.find(g => g.id === game.id)).to.be.ok();
 		});
+
+		it('should list pending releases when "show_mine_only" is set');
+
 	});
 
 	describe('when listing original games', () => {

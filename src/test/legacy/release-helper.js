@@ -33,7 +33,7 @@ exports.createReleaseForGame = function(user, request, game, opts, done) {
 							version: opts.version || '1.0.0'
 						}
 					],
-					authors: [ { _user: hlp.getUser(user).id, roles: [ 'Table Creator' ] } ]
+					authors: [ { _user: hlp.getUser(opts.author || user).id, roles: [ 'Table Creator' ] } ]
 				})
 				.end(function (err, res) {
 					hlp.doomRelease(user, res.body.id);

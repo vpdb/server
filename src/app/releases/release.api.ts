@@ -244,7 +244,16 @@ export class ReleaseApi extends ReleaseAbstractApi {
 			}
 
 			// moderation && restricted games
-			let query = await state.models.Release.applyRestrictions(ctx, await state.models.Release.handleModerationQuery(ctx, []));
+			let query;
+			if (ctx.query.show_mine_only && ctx.state.user) {
+				// if logged and show_mine_only requested, don't filter by restrictions or moderation query but return all owned
+				query = [ { $or: [
+					{ _created_by: ctx.state.user._id },
+					{ 'authors._user': ctx.state.user._id },
+				] } ];
+			} else {
+				query = await state.models.Release.applyRestrictions(ctx, await state.models.Release.handleModerationQuery(ctx, []));
+			}
 
 			// filters
 			const qb = new ReleaseListQueryBuilder();

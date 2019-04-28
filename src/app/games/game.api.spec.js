@@ -343,6 +343,19 @@ describe('The VPDB `game` API', () => {
 			expect(res.data.find(g => g.id === og.id)).to.be.ok();
 		});
 
+		it('should list the game without release when fetching own content', async () => {
+			const og = await api.gameHelper.createOriginalGame('member');
+			res = await api.as('member').get('/v1/games?show_mine_only=1').then(res => res.expectStatus(200));
+			expect(res.data.find(g => g.id === og.id)).to.be.ok();
+		});
+
+		it('should list the game with unapproved release when fetching own content', async () => {
+			const og = await api.gameHelper.createOriginalGame('member');
+			await api.releaseHelper.createReleaseForGame('member', og);
+			res = await api.as('member').get('/v1/games?show_mine_only=1').then(res => res.expectStatus(200));
+			expect(res.data.find(g => g.id === og.id)).to.be.ok();
+		});
+
 	});
 
 	describe('when viewing a game', () => {

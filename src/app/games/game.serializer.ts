@@ -59,8 +59,7 @@ export class GameSerializer extends Serializer<GameDocument> {
 		game.game_type = doc.game_type;
 		game.counter = doc.counter;
 		game.rating = doc.rating;
-		game.description = doc.description;
-		game.instructions = doc.instructions;
+		game.created_at = doc.created_at;
 
 		// restrictions
 		const restrictions: GameRestrictions = {};
@@ -97,7 +96,7 @@ export class GameSerializer extends Serializer<GameDocument> {
 
 	protected _detailed(ctx: Context, doc: GameDocument, opts: SerializerOptions): GameDocument {
 		const game = Object.assign({}, this._simple(ctx, doc, opts), pick(doc,
-			[ 'created_at', 'designers', 'features', 'keywords', 'metrics', 'notes', 'pinside', 'short', 'themes']));
+			[ 'created_at', 'designers', 'features', 'keywords', 'metrics', 'notes', 'pinside', 'short', 'themes', 'description', 'instructions']));
 		game.owner = ipdb.owners[doc.ipdb.mfg] || doc.manufacturer;
 		return game;
 	}

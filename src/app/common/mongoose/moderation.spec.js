@@ -323,6 +323,15 @@ describe('The VPDB moderation feature', () => {
 				.then(res => res.expectStatus(200));
 		});
 
+		it('should succeed when only requesting own releases', async () => {
+			res = await api
+				.as('member')
+				.withQuery({ fields: 'moderation', show_mine_only: 1 })
+				.get('/v1/releases')
+				.then(res => res.expectStatus(200));
+			expect(res.data.find(r => r.id === release.id).moderation).to.be.ok();
+		});
+
 	});
 
 	describe('when listing moderated backglasses', () => {
@@ -467,6 +476,16 @@ describe('The VPDB moderation feature', () => {
 			res = await api.as('moderator').withQuery({ moderation: 'manually_approved' }).get('/v1/releases').then(res => res.expectStatus(200));
 			expect(res.data.find(b => b.id === release.id)).not.to.be.ok();
 		});
+
+		it('should list a moderated release when requesting own releases', async () => {
+			res = await api
+				.as('member')
+				.withQuery({ fields: 'moderation', show_mine_only: 1 })
+				.get('/v1/releases')
+				.then(res => res.expectStatus(200));
+			expect(res.data.find(r => r.id === release.id)).to.be.ok();
+		});
+
 	});
 
 	describe('when retrieving pending backglass details', () => {

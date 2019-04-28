@@ -230,7 +230,9 @@ export class ReleaseApi extends ReleaseAbstractApi {
 			const serializerOpts = this.parseQueryThumbOptions(ctx);
 
 			if (fields.includes('moderation')) {
-				await state.models.Release.assertModerationField(ctx);
+				if (!ctx.query.show_mine_only) {
+					await state.models.Release.assertModerationField(ctx);
+				}
 				serializerOpts.includedFields = ['moderation'];
 			}
 

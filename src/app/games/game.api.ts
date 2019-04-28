@@ -372,6 +372,7 @@ export class GameApi extends Api {
 		}
 
 		const sort = this.sortParams(ctx, { title: 1 }, {
+			created_at: '-created_at',
 			popularity: '-metrics.popularity',
 			rating: '-rating.score',
 			title: 'title_sortable',

@@ -101,6 +101,10 @@ export class Table implements IRenderable {
 		return this.gameData.tableheight;
 	}
 
+	public getPlayfieldMap(): string {
+		return this.gameData.szImage;
+	}
+
 	public async getDocument(): Promise<OleCompoundDoc> {
 		await this.doc.read();
 		return this.doc;

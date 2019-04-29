@@ -107,13 +107,13 @@ export class TableExporter {
 			}
 			const g = new Group();
 			g.name = group.name;
-			for (const renderable of group.meshes.filter(i => i.isVisible())) {
+			for (const renderable of group.meshes.filter(i => i.isVisible(this.table))) {
 				const objects = renderable.getMeshes(this.table);
 				let obj: RenderInfo;
 				for (obj of values(objects)) {
-					const bufferGeometry = obj.mesh.getBufferGeometry();
+					const bufferGeometry = obj.geometry || obj.mesh.getBufferGeometry();
 					const mesh = new Mesh(bufferGeometry, await this.getMaterial(obj));
-					mesh.name = obj.mesh.name;
+					mesh.name = (obj.geometry || obj.mesh).name;
 					g.add(mesh);
 				}
 			}
@@ -145,7 +145,8 @@ export class TableExporter {
 
 	private async getMaterial(obj: RenderInfo): Promise<ThreeMaterial> {
 		const material = new MeshStandardMaterial();
-		material.name = `material:${obj.mesh.name}`;
+		const name = (obj.geometry || obj.mesh).name;
+		material.name = `material:${name}`;
 		const materialInfo = obj.material;
 		if (materialInfo && this.opts.applyMaterials) {
 			material.metalness = materialInfo.bIsMetal ? 1.0 : 0.0;
@@ -165,7 +166,7 @@ export class TableExporter {
 			if (obj.map) {
 				material.map = new Texture();
 				material.map.name = 'texture:' + obj.map.getName();
-				if (await this.loadMap(obj.mesh.name, obj.map, material.map)) {
+				if (await this.loadMap(name, obj.map, material.map)) {
 					if ((material.map.image as Image).containsTransparency()) {
 						material.transparent = true;
 					}
@@ -178,7 +179,7 @@ export class TableExporter {
 			if (obj.normalMap) {
 				material.normalMap = new Texture();
 				material.normalMap.name = 'normal-map:' + obj.normalMap.getName();
-				if (await this.loadMap(obj.mesh.name, obj.normalMap, material.normalMap)) {
+				if (await this.loadMap(name, obj.normalMap, material.normalMap)) {
 					material.normalMap.anisotropy = 16;
 					material.needsUpdate = true;
 				} else {
@@ -236,6 +237,7 @@ export interface VpTableExporterOptions {
 	exportBumpers?: boolean;
 	exportRamps?: boolean;
 	exportLightBulbs?: boolean;
+	exportPlayfieldLights?: boolean;
 	exportLightBulbLights?: boolean;
 	exportAllLights?: boolean;
 	exportHitTargets?: boolean;
@@ -257,6 +259,7 @@ const defaultOptions: VpTableExporterOptions = {
 	exportFlippers: true,
 	exportBumpers: true,
 	exportRamps: true,
+	exportPlayfieldLights: false,
 	exportLightBulbs: true,
 	exportLightBulbLights: true,
 	exportAllLights: false,

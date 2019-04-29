@@ -126,7 +126,7 @@ export class SplineVertex {
 		return v;
 	}
 
-	private static getCentralCurve(dragPoints: DragPoint[], tableDetailLevel: number, acc: number, staticRendering = true): RenderVertex[] {
+	public static getCentralCurve(dragPoints: DragPoint[], tableDetailLevel: number, acc: number, staticRendering = true): RenderVertex[] {
 
 		let accuracy: number;
 

@@ -17,16 +17,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { BufferGeometry, ExtrudeBufferGeometry, Shape, SplineCurve, Vector2 } from 'three';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { GameItem, IRenderable, Meshes } from './game-item';
 import { Material } from './material';
-import { DragPoint } from './math/dragpoint';
+import { DragPoint, HIT_SHAPE_DETAIL_LEVEL } from './math/dragpoint';
 import { Matrix3D } from './math/matrix3d';
 import { Vertex2D } from './math/vertex2d';
 import { bulbLightMesh } from './meshes/bulb-light-mesh';
 import { bulbSocketMesh } from './meshes/bulb-socket-mesh';
 import { Table } from './table';
+import { SplineVertex } from './math/spline-vertex';
 
 /**
  * VPinball's lights.
@@ -83,11 +85,18 @@ export class LightItem extends GameItem implements IRenderable {
 		return this.wzName;
 	}
 
-	public isVisible(): boolean {
-		return this.showBulbMesh && this.meshRadius > 0;
+	public isVisible(table: Table): boolean {
+		return this.showBulbMesh && this.meshRadius > 0 || this.isSurfaceLight(table);
 	}
 
 	public getMeshes(table: Table): Meshes {
+		if (this.showBulbMesh) {
+			return this.getBulbMeshes(table);
+		}
+		return this.getSurfaceMeshes(table);
+	}
+
+	private getBulbMeshes(table: Table): Meshes {
 		const lightMesh = bulbLightMesh.clone(`bulb.light-${this.getName()}`);
 		const height = table.getSurfaceHeight(this.szSurface, this.vCenter.x, this.vCenter.y) * table.getScaleZ();
 		for (const vertex of lightMesh.vertices) {
@@ -141,6 +150,40 @@ export class LightItem extends GameItem implements IRenderable {
 			socket: {
 				mesh: socketMesh.transform(new Matrix3D().toRightHanded()),
 				material: socketMaterial,
+			},
+		};
+	}
+
+	private isSurfaceLight(table: Table) {
+		if (!this.szOffImage || !table.getPlayfieldMap()) {
+			return false;
+		}
+		return this.szOffImage.toLowerCase() === table.getPlayfieldMap().toLowerCase()
+			&& this.dragPoints
+			&& this.dragPoints.length > 2;
+	}
+
+	private getSurfaceMeshes(table: Table): Meshes {
+		// const vectors = this.dragPoints.map(dp => new Vector2(dp.vertex.x, dp.vertex.y));
+		const vvertex = SplineVertex.getCentralCurve(this.dragPoints, table.getDetailLevel(), -1);
+		const shape = new Shape();
+
+		shape.moveTo(vvertex[0].x, vvertex[0].y);
+		for (const v of vvertex.slice(1)) {
+			shape.lineTo(v.x, v.y);
+		}
+		// const curve = new SplineCurve(vectors);
+		const geometry = new ExtrudeBufferGeometry(shape, {
+			depth: 15,
+			bevelEnabled: true,
+			bevelSegments: 2,
+			steps: 2,
+			bevelSize: 1,
+			bevelThickness: 1,
+		});
+		return {
+			lights: {
+				geometry,
 			},
 		};
 	}

@@ -23,6 +23,7 @@ import { Material } from './material';
 import { Mesh } from './mesh';
 import { Table } from './table';
 import { Texture } from './texture';
+import { BufferGeometry } from 'three';
 
 /**
  * The parent class for all game items.
@@ -109,7 +110,7 @@ export abstract class GameItem extends BiffParser {
 
 export interface IRenderable {
 	getMeshes(table: Table): Meshes;
-	isVisible(): boolean;
+	isVisible(table: Table): boolean;
 }
 
 export interface Meshes {
@@ -117,7 +118,8 @@ export interface Meshes {
 }
 
 export interface RenderInfo {
-	mesh: Mesh;
+	mesh?: Mesh;
+	geometry?: BufferGeometry;
 	map?: Texture;
 	normalMap?: Texture;
 	material?: Material;

@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { BufferGeometry, MeshStandardMaterial } from 'three';
+import { BufferGeometry, MeshStandardMaterial, Mesh as ThreeMesh } from 'three';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { Material } from './material';
@@ -111,6 +111,7 @@ export abstract class GameItem extends BiffParser {
 export interface IRenderable {
 	getMeshes(table: Table): Meshes;
 	isVisible(table: Table): boolean;
+	postProcessMesh?(table: Table, mesh: ThreeMesh): ThreeMesh;
 	postProcessMaterial?(table: Table, geometry: BufferGeometry, material: MeshStandardMaterial): MeshStandardMaterial | MeshStandardMaterial[];
 }
 

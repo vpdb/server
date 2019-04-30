@@ -145,7 +145,7 @@ export class GLTFExporter {
 	private options: ParseOptions;
 	private byteOffset: number = 0;
 	private buffers: Buffer[] = [];
-	private pending: Array<Promise<void>> = [];
+	private pending: Array<() => Promise<void>> = [];
 	private nodeMap = new Map();
 	private skins: Object3D[] = [];
 	private extensionsUsed: ExtensionsUsed = {};
@@ -208,7 +208,7 @@ export class GLTFExporter {
 
 		// do all the async shit
 		const numConcurrent = Math.max(1, Math.floor(cpus().length / 2));
-		const pendingProducer = () => this.pending.length ? this.pending.shift() : null;
+		const pendingProducer = () => this.pending.length ? this.pending.shift()() : null;
 		logger.info(this.options.state, '[GLTFExporter.parse] Processing images with %s threads..', numConcurrent);
 		const pool = new PromisePool(pendingProducer, numConcurrent);
 		await pool.start();
@@ -629,8 +629,9 @@ export class GLTFExporter {
 		if (!this.outputJSON.bufferViews) {
 			this.outputJSON.bufferViews = [];
 		}
-		if (this.images.has(uri)) {
-			return this.images.get(uri);
+		if (this.images.has(uri)) { // maybe a parallel process resolved this now, so check again
+			const image = this.images.get(uri);
+			return image;
 		}
 		const buffer = this.getPaddedArrayBuffer(blob);
 		const bufferView = {
@@ -769,15 +770,20 @@ export class GLTFExporter {
 				image.flipY();
 			}
 			if (this.options.binary === true) {
-				this.pending.push(new Promise(resolve => {
-					image.getImage().then(buffer => {
-						gltfImage.bufferView = this.processBufferViewImage(buffer, image.src);
+				this.pending.push(() => new Promise(resolve => {
+					if (this.images.has(image.src)) {
+						gltfImage.bufferView = this.images.get(image.src);
 						resolve();
-					});
+					} else {
+						image.getImage().then(buffer => {
+							gltfImage.bufferView = this.processBufferViewImage(buffer, image.src);
+							resolve();
+						});
+					}
 				}));
 
 			} else {
-				this.pending.push(new Promise(resolve => {
+				this.pending.push(() => new Promise(resolve => {
 					image.getImage().then(buffer => {
 						gltfImage.uri = `data:image/${image.getFormat()};base64,${buffer.toString('base64')}`;
 						resolve();

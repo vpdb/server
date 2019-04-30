@@ -111,8 +111,10 @@ export class TableExporter {
 				const objects = renderable.getMeshes(this.table);
 				let obj: RenderInfo;
 				for (obj of values(objects)) {
-					const bufferGeometry = obj.geometry || obj.mesh.getBufferGeometry();
-					const mesh = new Mesh(bufferGeometry, await this.getMaterial(obj));
+					const geometry = obj.geometry || obj.mesh.getBufferGeometry();
+					const material = await this.getMaterial(obj);
+					const postProcessedMaterial = renderable.postProcessMaterial ? renderable.postProcessMaterial(this.table, geometry, material) : material;
+					const mesh = new Mesh(geometry, postProcessedMaterial);
 					mesh.name = (obj.geometry || obj.mesh).name;
 					g.add(mesh);
 				}
@@ -128,7 +130,6 @@ export class TableExporter {
 			: (this.opts.exportLightBulbLights ? this.table.lights.filter(l => l.showBulbMesh) : []);
 		const lightGroup = new Group();
 		lightGroup.name = 'lights';
-
 		for (const lightInfo of lightInfos) {
 			const light = new PointLight(lightInfo.color, lightInfo.intensity, lightInfo.falloff * TableExporter.scale, 2);
 			light.name = 'light:' + lightInfo.getName();
@@ -137,13 +138,15 @@ export class TableExporter {
 		}
 		this.playfield.add(lightGroup);
 
+		// finally, add to scene
 		this.scene.add(this.playfield);
 
+		// now, export to GLTF
 		const gltfExporter = new GLTFExporter(Object.assign({}, { embedImages: true }, this.opts.gltfOptions));
 		return gltfExporter.parse(this.scene);
 	}
 
-	private async getMaterial(obj: RenderInfo): Promise<ThreeMaterial> {
+	private async getMaterial(obj: RenderInfo): Promise<MeshStandardMaterial> {
 		const material = new MeshStandardMaterial();
 		const name = (obj.geometry || obj.mesh).name;
 		material.name = `material:${name}`;

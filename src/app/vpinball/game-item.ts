@@ -17,13 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { BufferGeometry, MeshStandardMaterial } from 'three';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { Material } from './material';
 import { Mesh } from './mesh';
 import { Table } from './table';
 import { Texture } from './texture';
-import { BufferGeometry } from 'three';
 
 /**
  * The parent class for all game items.
@@ -111,6 +111,7 @@ export abstract class GameItem extends BiffParser {
 export interface IRenderable {
 	getMeshes(table: Table): Meshes;
 	isVisible(table: Table): boolean;
+	postProcessMaterial?(table: Table, geometry: BufferGeometry, material: MeshStandardMaterial): MeshStandardMaterial | MeshStandardMaterial[];
 }
 
 export interface Meshes {

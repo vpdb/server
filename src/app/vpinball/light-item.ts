@@ -17,18 +17,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { BufferGeometry, ExtrudeBufferGeometry, Shape, SplineCurve, Vector2 } from 'three';
+import { BufferGeometry, ExtrudeBufferGeometry, MeshStandardMaterial, RepeatWrapping, Shape, Vector2 } from 'three';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { GameItem, IRenderable, Meshes } from './game-item';
 import { Material } from './material';
-import { DragPoint, HIT_SHAPE_DETAIL_LEVEL } from './math/dragpoint';
+import { DragPoint } from './math/dragpoint';
 import { Matrix3D } from './math/matrix3d';
+import { SplineVertex } from './math/spline-vertex';
 import { Vertex2D } from './math/vertex2d';
 import { bulbLightMesh } from './meshes/bulb-light-mesh';
 import { bulbSocketMesh } from './meshes/bulb-socket-mesh';
 import { Table } from './table';
-import { SplineVertex } from './math/spline-vertex';
+import { Texture } from './texture';
 
 /**
  * VPinball's lights.
@@ -173,6 +174,11 @@ export class LightItem extends GameItem implements IRenderable {
 			shape.lineTo(v.x, v.y);
 		}
 		// const curve = new SplineCurve(vectors);
+
+		const dim = table.getDimensions();
+		const invTableWidth = 1.0 / dim.width;
+		const invTableHeight = 1.0 / dim.height;
+
 		const geometry = new ExtrudeBufferGeometry(shape, {
 			depth: 15,
 			bevelEnabled: true,
@@ -180,12 +186,55 @@ export class LightItem extends GameItem implements IRenderable {
 			steps: 2,
 			bevelSize: 1,
 			bevelThickness: 1,
+			UVGenerator: {
+				generateSideWallUV(g: ExtrudeBufferGeometry, vertices: number[], indexA: number, indexB: number, indexC: number, indexD: number): Vector2[] {
+					return [
+						new Vector2( 0, 0),
+						new Vector2( 0, 0),
+						new Vector2( 0, 0),
+						new Vector2( 0, 0),
+					];
+				},
+				generateTopUV(g: ExtrudeBufferGeometry, vertices: number[], indexA: number, indexB: number, indexC: number): Vector2[] {
+					const ax = vertices[indexA * 3];
+					const ay = vertices[indexA * 3 + 1];
+					const bx = vertices[indexB * 3];
+					const by = vertices[indexB * 3 + 1];
+					const cx = vertices[indexC * 3];
+					const cy = vertices[indexC * 3 + 1];
+					return [
+						new Vector2(ax * invTableWidth, 1 - ay * invTableHeight),
+						new Vector2(bx * invTableWidth, 1 - by * invTableHeight),
+						new Vector2(cx * invTableWidth, 1 - cy * invTableHeight),
+					];
+				},
+			},
 		});
 		return {
 			lights: {
 				geometry,
+				map: this.getMap(table),
 			},
 		};
+	}
+
+	public postProcessMaterial(table: Table, geometry: BufferGeometry, material: MeshStandardMaterial): MeshStandardMaterial | MeshStandardMaterial[] {
+		if (!this.isSurfaceLight(table)) {
+			return material;
+		}
+		// material.map.wrapS = material.map.wrapT = RepeatWrapping;
+		// //material.map.repeat.set(1 / 500, 1 / 500);
+		//
+		// material.map.offset.set(0.1, 0.5);
+		return material;
+	}
+
+	private getMap(table: Table): Texture {
+		const texture = table.getTexture(this.szOffImage);
+		// texture.w = texture.wrapT = THREE.RepeatWrapping;
+		// texture.repeat.set( 1 / 500, 1 / 500 );
+		// texture.offset.set( 0.1, 0.5 );
+		return texture;
 	}
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<number> {

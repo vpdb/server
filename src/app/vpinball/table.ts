@@ -101,6 +101,13 @@ export class Table implements IRenderable {
 		return this.gameData.tableheight;
 	}
 
+	public getDimensions(): { width: number, height: number } {
+		return {
+			width: this.gameData.right - this.gameData.left,
+			height: this.gameData.bottom - this.gameData.top,
+		};
+	}
+
 	public getPlayfieldMap(): string {
 		return this.gameData.szImage;
 	}

@@ -41,6 +41,8 @@ import { SpinnerItem } from './spinner-item';
 import { SurfaceItem } from './surface-item';
 import { Texture } from './texture';
 import { TriggerItem } from './trigger-item';
+import { BoxGeometry, BufferGeometry, Geometry, Mesh as ThreeMesh, MeshStandardMaterial } from 'three';
+import CSG from './math/csg';
 
 /**
  * A Visual Pinball table.
@@ -64,6 +66,8 @@ export class Table implements IRenderable {
 	public kickers: KickerItem[] = [];
 	public triggers: TriggerItem[] = [];
 	public spinners: SpinnerItem[] = [];
+
+	public static playfieldThickness = 20.0;
 
 	private doc: OleCompoundDoc;
 
@@ -180,9 +184,9 @@ export class Table implements IRenderable {
 		rgv[3].x = this.gameData.left;     rgv[3].y = this.gameData.bottom;   rgv[3].z = this.gameData.tableheight;
 
 		// These next 4 vertices are used just to set the extents
-		rgv[4].x = this.gameData.left;     rgv[4].y = this.gameData.top;      rgv[4].z = this.gameData.tableheight + 50.0;
-		rgv[5].x = this.gameData.left;     rgv[5].y = this.gameData.bottom;   rgv[5].z = this.gameData.tableheight + 50.0;
-		rgv[6].x = this.gameData.right;    rgv[6].y = this.gameData.bottom;   rgv[6].z = this.gameData.tableheight + 50.0;
+		rgv[4].x = this.gameData.left;     rgv[4].y = this.gameData.top;      rgv[4].z = this.gameData.tableheight + Table.playfieldThickness;
+		rgv[5].x = this.gameData.left;     rgv[5].y = this.gameData.bottom;   rgv[5].z = this.gameData.tableheight + Table.playfieldThickness;
+		rgv[6].x = this.gameData.right;    rgv[6].y = this.gameData.bottom;   rgv[6].z = this.gameData.tableheight + Table.playfieldThickness;
 		//rgv[7].x=g_pplayer->m_ptable->m_right;    rgv[7].y=g_pplayer->m_ptable->m_top;      rgv[7].z=50.0f;
 
 		for (let i = 0; i < 4; ++i) {
@@ -218,13 +222,35 @@ export class Table implements IRenderable {
 			}
 		}
 
+		const dim = this.getDimensions();
 		return {
 			playfield: {
+				geometry: new BufferGeometry().fromGeometry(new BoxGeometry(dim.width, dim.height, Table.playfieldThickness)).translate(dim.width / 2, dim.height / 2, Table.playfieldThickness / 2),
 				mesh: new Mesh(buffer, playfieldPolyIndices).transform(new Matrix3D().toRightHanded()),
 				material: this.getMaterial(this.gameData.szPlayfieldMaterial),
 				map: this.getTexture(this.gameData.szImage),
 			},
 		};
+	}
+
+	postProcessMesh(table: Table, meshPlayfield: ThreeMesh): ThreeMesh {
+		const overlap = 5;
+		meshPlayfield.updateMatrix();
+		let bspPlayfield = CSG.fromMesh(meshPlayfield);
+		for (const light of table.lights.filter(l => l.isSurfaceLight(table))) {
+			const lightGeom = light.getSurfaceGeometry(table, Table.playfieldThickness + 2 * overlap);
+			const lightMesh = new ThreeMesh(lightGeom.translate(0, 0, -overlap), new MeshStandardMaterial());
+
+			lightMesh.updateMatrix();
+			const bspLight = CSG.fromMesh(lightMesh);
+
+			bspPlayfield = bspPlayfield.subtract(bspLight);
+		}
+
+		const mesh = CSG.toMesh(bspPlayfield, meshPlayfield.matrix);
+		mesh.material = meshPlayfield.material;
+		mesh.geometry = new BufferGeometry().fromGeometry(mesh.geometry as Geometry);
+		return mesh;
 	}
 
 	public isVisible(): boolean {

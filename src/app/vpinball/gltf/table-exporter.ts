@@ -114,7 +114,10 @@ export class TableExporter {
 					const geometry = obj.geometry || obj.mesh.getBufferGeometry();
 					const material = await this.getMaterial(obj);
 					const postProcessedMaterial = renderable.postProcessMaterial ? renderable.postProcessMaterial(this.table, geometry, material) : material;
-					const mesh = new Mesh(geometry, postProcessedMaterial);
+					let mesh = new Mesh(geometry, postProcessedMaterial);
+					if (renderable.postProcessMesh) {
+						mesh = renderable.postProcessMesh(this.table, mesh);
+					}
 					mesh.name = (obj.geometry || obj.mesh).name;
 					g.add(mesh);
 				}

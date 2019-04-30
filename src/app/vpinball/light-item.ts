@@ -90,11 +90,73 @@ export class LightItem extends GameItem implements IRenderable {
 		return this.showBulbMesh && this.meshRadius > 0 || this.isSurfaceLight(table);
 	}
 
+	public isSurfaceLight(table: Table) {
+		if (!this.szOffImage || !table.getPlayfieldMap()) {
+			return false;
+		}
+		return this.szOffImage.toLowerCase() === table.getPlayfieldMap().toLowerCase()
+			&& this.dragPoints
+			&& this.dragPoints.length > 2;
+	}
+
 	public getMeshes(table: Table): Meshes {
 		if (this.showBulbMesh) {
 			return this.getBulbMeshes(table);
 		}
-		return this.getSurfaceMeshes(table);
+		return {
+			surfaceLight: {
+				geometry: this.getSurfaceGeometry(table),
+				map: table.getTexture(this.szOffImage),
+			},
+		};
+	}
+
+	public getSurfaceGeometry(table: Table, depth = 15): ExtrudeBufferGeometry {
+		// const vectors = this.dragPoints.map(dp => new Vector2(dp.vertex.x, dp.vertex.y));
+		const vvertex = SplineVertex.getCentralCurve(this.dragPoints, table.getDetailLevel(), -1);
+		const shape = new Shape();
+
+		shape.moveTo(vvertex[0].x, vvertex[0].y);
+		for (const v of vvertex.slice(1)) {
+			shape.lineTo(v.x, v.y);
+		}
+		// const curve = new SplineCurve(vectors);
+
+		const dim = table.getDimensions();
+		const invTableWidth = 1.0 / dim.width;
+		const invTableHeight = 1.0 / dim.height;
+
+		return new ExtrudeBufferGeometry(shape, {
+			depth,
+			bevelEnabled: true,
+			bevelSegments: 2,
+			steps: 2,
+			bevelSize: 1,
+			bevelThickness: 1,
+			UVGenerator: {
+				generateSideWallUV(g: ExtrudeBufferGeometry, vertices: number[], indexA: number, indexB: number, indexC: number, indexD: number): Vector2[] {
+					return [
+						new Vector2( 0, 0),
+						new Vector2( 0, 0),
+						new Vector2( 0, 0),
+						new Vector2( 0, 0),
+					];
+				},
+				generateTopUV(g: ExtrudeBufferGeometry, vertices: number[], indexA: number, indexB: number, indexC: number): Vector2[] {
+					const ax = vertices[indexA * 3];
+					const ay = vertices[indexA * 3 + 1];
+					const bx = vertices[indexB * 3];
+					const by = vertices[indexB * 3 + 1];
+					const cx = vertices[indexC * 3];
+					const cy = vertices[indexC * 3 + 1];
+					return [
+						new Vector2(ax * invTableWidth, 1 - ay * invTableHeight),
+						new Vector2(bx * invTableWidth, 1 - by * invTableHeight),
+						new Vector2(cx * invTableWidth, 1 - cy * invTableHeight),
+					];
+				},
+			},
+		});
 	}
 
 	private getBulbMeshes(table: Table): Meshes {
@@ -155,69 +217,6 @@ export class LightItem extends GameItem implements IRenderable {
 		};
 	}
 
-	private isSurfaceLight(table: Table) {
-		if (!this.szOffImage || !table.getPlayfieldMap()) {
-			return false;
-		}
-		return this.szOffImage.toLowerCase() === table.getPlayfieldMap().toLowerCase()
-			&& this.dragPoints
-			&& this.dragPoints.length > 2;
-	}
-
-	private getSurfaceMeshes(table: Table): Meshes {
-		// const vectors = this.dragPoints.map(dp => new Vector2(dp.vertex.x, dp.vertex.y));
-		const vvertex = SplineVertex.getCentralCurve(this.dragPoints, table.getDetailLevel(), -1);
-		const shape = new Shape();
-
-		shape.moveTo(vvertex[0].x, vvertex[0].y);
-		for (const v of vvertex.slice(1)) {
-			shape.lineTo(v.x, v.y);
-		}
-		// const curve = new SplineCurve(vectors);
-
-		const dim = table.getDimensions();
-		const invTableWidth = 1.0 / dim.width;
-		const invTableHeight = 1.0 / dim.height;
-
-		const geometry = new ExtrudeBufferGeometry(shape, {
-			depth: 15,
-			bevelEnabled: true,
-			bevelSegments: 2,
-			steps: 2,
-			bevelSize: 1,
-			bevelThickness: 1,
-			UVGenerator: {
-				generateSideWallUV(g: ExtrudeBufferGeometry, vertices: number[], indexA: number, indexB: number, indexC: number, indexD: number): Vector2[] {
-					return [
-						new Vector2( 0, 0),
-						new Vector2( 0, 0),
-						new Vector2( 0, 0),
-						new Vector2( 0, 0),
-					];
-				},
-				generateTopUV(g: ExtrudeBufferGeometry, vertices: number[], indexA: number, indexB: number, indexC: number): Vector2[] {
-					const ax = vertices[indexA * 3];
-					const ay = vertices[indexA * 3 + 1];
-					const bx = vertices[indexB * 3];
-					const by = vertices[indexB * 3 + 1];
-					const cx = vertices[indexC * 3];
-					const cy = vertices[indexC * 3 + 1];
-					return [
-						new Vector2(ax * invTableWidth, 1 - ay * invTableHeight),
-						new Vector2(bx * invTableWidth, 1 - by * invTableHeight),
-						new Vector2(cx * invTableWidth, 1 - cy * invTableHeight),
-					];
-				},
-			},
-		});
-		return {
-			lights: {
-				geometry,
-				map: this.getMap(table),
-			},
-		};
-	}
-
 	public postProcessMaterial(table: Table, geometry: BufferGeometry, material: MeshStandardMaterial): MeshStandardMaterial | MeshStandardMaterial[] {
 		if (!this.isSurfaceLight(table)) {
 			return material;
@@ -227,14 +226,6 @@ export class LightItem extends GameItem implements IRenderable {
 		//
 		// material.map.offset.set(0.1, 0.5);
 		return material;
-	}
-
-	private getMap(table: Table): Texture {
-		const texture = table.getTexture(this.szOffImage);
-		// texture.w = texture.wrapT = THREE.RepeatWrapping;
-		// texture.repeat.set( 1 / 500, 1 / 500 );
-		// texture.offset.set( 0.1, 0.5 );
-		return texture;
 	}
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<number> {

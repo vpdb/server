@@ -18,6 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { BoxGeometry, BufferGeometry, ExtrudeBufferGeometry, Shape, Vector2 } from 'three';
 import { logger } from '../common/logger';
 import { OleCompoundDoc, Storage } from '../common/ole-doc';
 import { BumperItem } from './bumper-item';
@@ -31,7 +32,6 @@ import { KickerItem } from './kicker-item';
 import { LightItem } from './light-item';
 import { Material } from './material';
 import { f4 } from './math/float';
-import { Matrix3D } from './math/matrix3d';
 import { Vertex3DNoTex2 } from './math/vertex';
 import { Mesh } from './mesh';
 import { PrimitiveItem } from './primitive-item';
@@ -41,8 +41,6 @@ import { SpinnerItem } from './spinner-item';
 import { SurfaceItem } from './surface-item';
 import { Texture } from './texture';
 import { TriggerItem } from './trigger-item';
-import { BoxGeometry, BufferGeometry, Geometry, Mesh as ThreeMesh, MeshStandardMaterial } from 'three';
-import CSG from './math/csg';
 
 /**
  * A Visual Pinball table.
@@ -173,84 +171,67 @@ export class Table implements IRenderable {
 		}
 	}
 
-	public getMeshes(table: Table): Meshes {
-		const rgv: Vertex3DNoTex2[] = [];
-		for (let i = 0; i < 7; i++) {
-			rgv.push(new Vertex3DNoTex2());
+	public getMeshes(table: Table, opts: VpTableExporterOptions): Meshes {
+
+		let geometry: BufferGeometry;
+		const dim = table.getDimensions();
+
+		// drill holes if playfield lights are rendered separately.
+		if (opts.exportPlayfieldLights) {
+			const pfShape = new Shape();
+			pfShape.moveTo(this.gameData.left, this.gameData.top);
+			pfShape.lineTo(this.gameData.right, this.gameData.top);
+			pfShape.lineTo(this.gameData.right, this.gameData.bottom);
+			pfShape.lineTo(this.gameData.left, this.gameData.bottom);
+			pfShape.lineTo(this.gameData.left, this.gameData.top);
+
+			pfShape.holes = this.lights
+				.filter(l => l.isSurfaceLight(table))
+				.map(l => l.getPath(table));
+
+			const invTableWidth = 1.0 / dim.width;
+			const invTableHeight = 1.0 / dim.height;
+
+			geometry = new ExtrudeBufferGeometry(pfShape, {
+				depth: Table.playfieldThickness,
+				bevelEnabled: false,
+				steps: 1,
+				UVGenerator: {
+					generateSideWallUV(g: ExtrudeBufferGeometry, vertices: number[], indexA: number, indexB: number, indexC: number, indexD: number): Vector2[] {
+						return [
+							new Vector2( 0, 0),
+							new Vector2( 0, 0),
+							new Vector2( 0, 0),
+							new Vector2( 0, 0),
+						];
+					},
+					generateTopUV(g: ExtrudeBufferGeometry, vertices: number[], indexA: number, indexB: number, indexC: number): Vector2[] {
+						const ax = vertices[indexA * 3];
+						const ay = vertices[indexA * 3 + 1];
+						const bx = vertices[indexB * 3];
+						const by = vertices[indexB * 3 + 1];
+						const cx = vertices[indexC * 3];
+						const cy = vertices[indexC * 3 + 1];
+						return [
+							new Vector2(ax * invTableWidth, 1 - ay * invTableHeight),
+							new Vector2(bx * invTableWidth, 1 - by * invTableHeight),
+							new Vector2(cx * invTableWidth, 1 - cy * invTableHeight),
+						];
+					},
+				},
+			});
+
+		} else {
+			geometry = new BufferGeometry().fromGeometry(new BoxGeometry(dim.width, dim.height, Table.playfieldThickness)).translate(dim.width / 2, dim.height / 2, Table.playfieldThickness / 2);
 		}
-		rgv[0].x = this.gameData.left;     rgv[0].y = this.gameData.top;      rgv[0].z = this.gameData.tableheight;
-		rgv[1].x = this.gameData.right;    rgv[1].y = this.gameData.top;      rgv[1].z = this.gameData.tableheight;
-		rgv[2].x = this.gameData.right;    rgv[2].y = this.gameData.bottom;   rgv[2].z = this.gameData.tableheight;
-		rgv[3].x = this.gameData.left;     rgv[3].y = this.gameData.bottom;   rgv[3].z = this.gameData.tableheight;
 
-		// These next 4 vertices are used just to set the extents
-		rgv[4].x = this.gameData.left;     rgv[4].y = this.gameData.top;      rgv[4].z = this.gameData.tableheight + Table.playfieldThickness;
-		rgv[5].x = this.gameData.left;     rgv[5].y = this.gameData.bottom;   rgv[5].z = this.gameData.tableheight + Table.playfieldThickness;
-		rgv[6].x = this.gameData.right;    rgv[6].y = this.gameData.bottom;   rgv[6].z = this.gameData.tableheight + Table.playfieldThickness;
-		//rgv[7].x=g_pplayer->m_ptable->m_right;    rgv[7].y=g_pplayer->m_ptable->m_top;      rgv[7].z=50.0f;
-
-		for (let i = 0; i < 4; ++i) {
-			rgv[i].nx = 0;
-			rgv[i].ny = 0;
-			rgv[i].nz = 1.0;
-
-			rgv[i].tv = (i & 2) ? 1.0 : 0.0;
-			rgv[i].tu = (i === 1 || i === 2) ? 1.0 : 0.0;
-		}
-
-		const playfieldPolyIndices = [ 0, 1, 3, 0, 3, 2, 2, 3, 5, 6 ];
-		Mesh.setNormal(rgv, playfieldPolyIndices.splice(6), 4);
-
-		const buffer: Vertex3DNoTex2[] = [];
-		for (let i = 0; i < 7; i++) {
-			buffer.push(new Vertex3DNoTex2());
-		}
-		let offs = 0;
-		for (let y = 0; y <= 1; ++y) {
-			for (let x = 0; x <= 1; ++x) {
-				buffer[offs].x = (x & 1) ? rgv[1].x : rgv[0].x;
-				buffer[offs].y = (y & 1) ? rgv[2].y : rgv[0].y;
-				buffer[offs].z = rgv[0].z;
-
-				buffer[offs].tu = (x & 1) ? rgv[1].tu : rgv[0].tu;
-				buffer[offs].tv = (y & 1) ? rgv[2].tv : rgv[0].tv;
-
-				buffer[offs].nx = rgv[0].nx;
-				buffer[offs].ny = rgv[0].ny;
-				buffer[offs].nz = rgv[0].nz;
-				++offs;
-			}
-		}
-
-		const dim = this.getDimensions();
 		return {
 			playfield: {
-				geometry: new BufferGeometry().fromGeometry(new BoxGeometry(dim.width, dim.height, Table.playfieldThickness)).translate(dim.width / 2, dim.height / 2, Table.playfieldThickness / 2),
-				mesh: new Mesh(buffer, playfieldPolyIndices).transform(new Matrix3D().toRightHanded()),
+				geometry,
 				material: this.getMaterial(this.gameData.szPlayfieldMaterial),
 				map: this.getTexture(this.gameData.szImage),
 			},
 		};
-	}
-
-	postProcessMesh(table: Table, meshPlayfield: ThreeMesh): ThreeMesh {
-		const overlap = 5;
-		meshPlayfield.updateMatrix();
-		let bspPlayfield = CSG.fromMesh(meshPlayfield);
-		for (const light of table.lights.filter(l => l.isSurfaceLight(table))) {
-			const lightGeom = light.getSurfaceGeometry(table, Table.playfieldThickness + 2 * overlap);
-			const lightMesh = new ThreeMesh(lightGeom.translate(0, 0, -overlap), new MeshStandardMaterial());
-
-			lightMesh.updateMatrix();
-			const bspLight = CSG.fromMesh(lightMesh);
-
-			bspPlayfield = bspPlayfield.subtract(bspLight);
-		}
-
-		const mesh = CSG.toMesh(bspPlayfield, meshPlayfield.matrix);
-		mesh.material = meshPlayfield.material;
-		mesh.geometry = new BufferGeometry().fromGeometry(mesh.geometry as Geometry);
-		return mesh;
 	}
 
 	public isVisible(): boolean {
@@ -350,6 +331,57 @@ export class Table implements IRenderable {
 			const texture = await Texture.fromStorage(storage, itemName);
 			this.textures[texture.getName()] = texture;
 		}
+	}
+
+	private get2DMesh(): Mesh {
+		const rgv: Vertex3DNoTex2[] = [];
+		for (let i = 0; i < 7; i++) {
+			rgv.push(new Vertex3DNoTex2());
+		}
+		rgv[0].x = this.gameData.left;     rgv[0].y = this.gameData.top;      rgv[0].z = this.gameData.tableheight;
+		rgv[1].x = this.gameData.right;    rgv[1].y = this.gameData.top;      rgv[1].z = this.gameData.tableheight;
+		rgv[2].x = this.gameData.right;    rgv[2].y = this.gameData.bottom;   rgv[2].z = this.gameData.tableheight;
+		rgv[3].x = this.gameData.left;     rgv[3].y = this.gameData.bottom;   rgv[3].z = this.gameData.tableheight;
+
+		// These next 4 vertices are used just to set the extents
+		rgv[4].x = this.gameData.left;     rgv[4].y = this.gameData.top;      rgv[4].z = this.gameData.tableheight + Table.playfieldThickness;
+		rgv[5].x = this.gameData.left;     rgv[5].y = this.gameData.bottom;   rgv[5].z = this.gameData.tableheight + Table.playfieldThickness;
+		rgv[6].x = this.gameData.right;    rgv[6].y = this.gameData.bottom;   rgv[6].z = this.gameData.tableheight + Table.playfieldThickness;
+		//rgv[7].x=g_pplayer->m_ptable->m_right;    rgv[7].y=g_pplayer->m_ptable->m_top;      rgv[7].z=50.0f;
+
+		for (let i = 0; i < 4; ++i) {
+			rgv[i].nx = 0;
+			rgv[i].ny = 0;
+			rgv[i].nz = 1.0;
+
+			rgv[i].tv = (i & 2) ? 1.0 : 0.0;
+			rgv[i].tu = (i === 1 || i === 2) ? 1.0 : 0.0;
+		}
+
+		const playfieldPolyIndices = [ 0, 1, 3, 0, 3, 2, 2, 3, 5, 6 ];
+		Mesh.setNormal(rgv, playfieldPolyIndices.splice(6), 4);
+
+		const buffer: Vertex3DNoTex2[] = [];
+		for (let i = 0; i < 7; i++) {
+			buffer.push(new Vertex3DNoTex2());
+		}
+		let offs = 0;
+		for (let y = 0; y <= 1; ++y) {
+			for (let x = 0; x <= 1; ++x) {
+				buffer[offs].x = (x & 1) ? rgv[1].x : rgv[0].x;
+				buffer[offs].y = (y & 1) ? rgv[2].y : rgv[0].y;
+				buffer[offs].z = rgv[0].z;
+
+				buffer[offs].tu = (x & 1) ? rgv[1].tu : rgv[0].tu;
+				buffer[offs].tv = (y & 1) ? rgv[2].tv : rgv[0].tv;
+
+				buffer[offs].nx = rgv[0].nx;
+				buffer[offs].ny = rgv[0].ny;
+				buffer[offs].nz = rgv[0].nz;
+				++offs;
+			}
+		}
+		return new Mesh(buffer, playfieldPolyIndices);
 	}
 
 }

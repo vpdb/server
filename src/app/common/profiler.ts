@@ -23,7 +23,7 @@ import chalk from 'chalk';
 const treeify = require('treeify');
 
 const line = '=========================';
-class Profiler {
+export class Profiler {
 
 	private logs: Map<string, ProfileLog> = new Map();
 	private history: ProfileLog[] = [];

@@ -28,11 +28,11 @@ import { Table } from '../app/vpinball/table';
 
 		const start = Date.now();
 		//const tablePath = 'D:/Pinball/Visual Pinball/Tables/vpdb/e2na558ew.vpx'; // has animation frames
-		//const tablePath = 'D:/Pinball/Visual Pinball/Tables/Batman Dark Knight tt&NZ 1.2.vpx';
+		const tablePath = 'D:/Pinball/Visual Pinball/Tables/Batman Dark Knight tt&NZ 1.2.vpx';
 		//const tablePath = 'D:/Pinball/Visual Pinball/Tables/Materials.vpx';
 		//const tablePath = 'C:/Development/vpdb-server/bumpertest.vpx';
 		//const tablePath = 'C:/Development/vpdb-server/src/test/fixtures/table-hit-target.vpx';
-		const tablePath = 'D:/Pinball/Visual Pinball/Tables/vpdb-production/p2empd85q.vpx';
+		//const tablePath = 'D:/Pinball/Visual Pinball/Tables/vpdb-production/eksmrxkrw.vpx';
 
 		const vpt = await Table.load(tablePath);
 		const loaded = Date.now();
@@ -46,21 +46,21 @@ import { Table } from '../app/vpinball/table';
 			applyTextures: true,
 			applyMaterials: true,
 			exportLightBulbLights: true,
-			exportAllLights: false,
 			optimizeTextures: true,
-			gltfOptions: { compressVertices: true, forcePowerOfTwoTextures: true },
+			gltfOptions: { compressVertices: false, forcePowerOfTwoTextures: true },
 
-			exportPrimitives: true,
-			exportTriggers: true,
-			exportKickers: true,
-			exportGates: true,
-			exportHitTargets: true,
-			exportFlippers: true,
-			exportBumpers: true,
-			exportRamps: true,
-			exportSurfaces: true,
+			exportPrimitives: false,
+			exportTriggers: false,
+			exportKickers: false,
+			exportGates: false,
+			exportHitTargets: false,
+			exportFlippers: false,
+			exportBumpers: false,
+			exportRamps: false,
+			exportSurfaces: false,
 			exportRubbers: true,
 			exportLightBulbs: true,
+			exportPlayfieldLights: true,
 			exportPlayfield: true,
 		});
 		const exported = Date.now();

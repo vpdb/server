@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { BufferGeometry, ExtrudeBufferGeometry, MeshStandardMaterial, Path, Shape, Vector2 } from 'three';
+import { BufferGeometry, ExtrudeBufferGeometry, MeshStandardMaterial, Path, Shape, Vector2, } from 'three';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { GameItem, IRenderable, Meshes } from './game-item';
@@ -154,7 +154,7 @@ export class LightItem extends GameItem implements IRenderable {
 		return path;
 	}
 
-	public getSurfaceGeometry(table: Table, depth = 15, bevel = 1): ExtrudeBufferGeometry {
+	public getSurfaceGeometry(table: Table, depth = 5, bevel = 1): ExtrudeBufferGeometry {
 
 		const shape = this.getShape(table);
 		const dim = table.getDimensions();
@@ -192,6 +192,15 @@ export class LightItem extends GameItem implements IRenderable {
 				},
 			},
 		});
+	}
+
+	public postProcessMaterial(table: Table, geometry: BufferGeometry, material: MeshStandardMaterial): MeshStandardMaterial | MeshStandardMaterial[] {
+		if (!this.isSurfaceLight(table)) {
+			return material;
+		}
+		material.emissiveMap = material.map;
+		material.opacity = 0.8;
+		return material;
 	}
 
 	private getBulbMeshes(table: Table): Meshes {
@@ -250,17 +259,6 @@ export class LightItem extends GameItem implements IRenderable {
 				material: socketMaterial,
 			},
 		};
-	}
-
-	public postProcessMaterial(table: Table, geometry: BufferGeometry, material: MeshStandardMaterial): MeshStandardMaterial | MeshStandardMaterial[] {
-		if (!this.isSurfaceLight(table)) {
-			return material;
-		}
-		// material.map.wrapS = material.map.wrapT = RepeatWrapping;
-		// //material.map.repeat.set(1 / 500, 1 / 500);
-		//
-		// material.map.offset.set(0.1, 0.5);
-		return material;
 	}
 
 	private async fromTag(buffer: Buffer, tag: string, offset: number, len: number): Promise<number> {

@@ -17,14 +17,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { BufferGeometry, MeshStandardMaterial, Mesh as ThreeMesh } from 'three';
+import { BufferGeometry, Material as ThreeMaterial, Mesh as ThreeMesh, MeshStandardMaterial } from 'three';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
+import { VpTableExporterOptions } from './gltf/table-exporter';
 import { Material } from './material';
 import { Mesh } from './mesh';
 import { Table } from './table';
 import { Texture } from './texture';
-import { VpTableExporterOptions } from './gltf/table-exporter';
 
 /**
  * The parent class for all game items.
@@ -126,4 +126,5 @@ export interface RenderInfo {
 	map?: Texture;
 	normalMap?: Texture;
 	material?: Material;
+	threeMaterial?: ThreeMaterial;
 }

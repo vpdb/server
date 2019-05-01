@@ -56,7 +56,6 @@ export class VptGltfProcessor implements CreationProcessor<FileVariation> {
 
 			// lights
 			exportLightBulbLights: true,
-			exportAllLights: false,
 
 			// meshes
 			exportPrimitives: true,

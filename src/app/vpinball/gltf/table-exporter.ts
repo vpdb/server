@@ -128,19 +128,32 @@ export class TableExporter {
 			}
 		}
 
-		// lights
-		const lightInfos = this.opts.exportAllLights
-			? this.table.lights
-			: (this.opts.exportLightBulbLights ? this.table.lights.filter(l => l.showBulbMesh) : []);
 		const lightGroup = new Group();
 		lightGroup.name = 'lights';
-		for (const lightInfo of lightInfos) {
-			const light = new PointLight(lightInfo.color, lightInfo.intensity, lightInfo.falloff * TableExporter.scale, 2);
-			light.name = 'light:' + lightInfo.getName();
-			light.position.set(lightInfo.vCenter.x, lightInfo.vCenter.y, -10);
-			lightGroup.add(light);
+
+		// light bulb lights
+		if (this.opts.exportLightBulbLights) {
+			for (const lightInfo of this.table.lights.filter(l => l.isBulbLight())) {
+				const light = new PointLight(lightInfo.color, lightInfo.intensity, lightInfo.falloff * TableExporter.scale, 2);
+				light.name = 'light:' + lightInfo.getName();
+				light.position.set(lightInfo.vCenter.x, lightInfo.vCenter.y, -17);
+				lightGroup.add(light);
+			}
 		}
-		this.playfield.add(lightGroup);
+
+		// playfield lights
+		if (this.opts.exportPlayfieldLights) {
+			for (const lightInfo of this.table.lights.filter(l => l.isSurfaceLight(this.table)).slice(0, 10)) {
+				const light = new PointLight(lightInfo.color, lightInfo.intensity, lightInfo.falloff * TableExporter.scale, 2);
+				light.name = 'light:' + lightInfo.getName();
+				light.position.set(lightInfo.vCenter.x, lightInfo.vCenter.y, 10);
+				lightGroup.add(light);
+			}
+		}
+
+		if (lightGroup.children.length > 0) {
+			this.playfield.add(lightGroup);
+		}
 
 		// finally, add to scene
 		this.scene.add(this.playfield);
@@ -246,7 +259,6 @@ export interface VpTableExporterOptions {
 	exportLightBulbs?: boolean;
 	exportPlayfieldLights?: boolean;
 	exportLightBulbLights?: boolean;
-	exportAllLights?: boolean;
 	exportHitTargets?: boolean;
 	exportGates?: boolean;
 	exportKickers?: boolean;
@@ -269,7 +281,6 @@ const defaultOptions: VpTableExporterOptions = {
 	exportPlayfieldLights: false,
 	exportLightBulbs: true,
 	exportLightBulbLights: true,
-	exportAllLights: false,
 	exportHitTargets: true,
 	exportGates: true,
 	exportKickers: true,

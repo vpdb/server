@@ -24,6 +24,7 @@ import { Material } from './material';
 import { Mesh } from './mesh';
 import { Table } from './table';
 import { Texture } from './texture';
+import { VpTableExporterOptions } from './gltf/table-exporter';
 
 /**
  * The parent class for all game items.
@@ -109,7 +110,7 @@ export abstract class GameItem extends BiffParser {
 }
 
 export interface IRenderable {
-	getMeshes(table: Table): Meshes;
+	getMeshes(table: Table, opts: VpTableExporterOptions): Meshes;
 	isVisible(table: Table): boolean;
 	postProcessMesh?(table: Table, mesh: ThreeMesh): ThreeMesh;
 	postProcessMaterial?(table: Table, geometry: BufferGeometry, material: MeshStandardMaterial): MeshStandardMaterial | MeshStandardMaterial[];

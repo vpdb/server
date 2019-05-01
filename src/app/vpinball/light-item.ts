@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { BufferGeometry, ExtrudeBufferGeometry, MeshStandardMaterial, RepeatWrapping, Shape, Vector2 } from 'three';
+import { BufferGeometry, ExtrudeBufferGeometry, MeshStandardMaterial, Path, Shape, Vector2 } from 'three';
 import { Storage } from '../common/ole-doc';
 import { BiffParser } from './biff-parser';
 import { GameItem, IRenderable, Meshes } from './game-item';
@@ -29,7 +29,6 @@ import { Vertex2D } from './math/vertex2d';
 import { bulbLightMesh } from './meshes/bulb-light-mesh';
 import { bulbSocketMesh } from './meshes/bulb-socket-mesh';
 import { Table } from './table';
-import { Texture } from './texture';
 
 /**
  * VPinball's lights.
@@ -87,7 +86,11 @@ export class LightItem extends GameItem implements IRenderable {
 	}
 
 	public isVisible(table: Table): boolean {
-		return this.showBulbMesh && this.meshRadius > 0 || this.isSurfaceLight(table);
+		return this.isBulbLight() || this.isSurfaceLight(table);
+	}
+
+	public isBulbLight() {
+		return this.showBulbMesh && this.meshRadius > 0;
 	}
 
 	public isSurfaceLight(table: Table) {
@@ -111,28 +114,60 @@ export class LightItem extends GameItem implements IRenderable {
 		};
 	}
 
-	public getSurfaceGeometry(table: Table, depth = 15): ExtrudeBufferGeometry {
-		// const vectors = this.dragPoints.map(dp => new Vector2(dp.vertex.x, dp.vertex.y));
+	public getShape(table: Table): Shape {
 		const vvertex = SplineVertex.getCentralCurve(this.dragPoints, table.getDetailLevel(), -1);
-		const shape = new Shape();
+		return this.getPathFromPoints<Shape>(vvertex.map(v => new Vector2(v.x, v.y)), new Shape());
+	}
 
-		shape.moveTo(vvertex[0].x, vvertex[0].y);
-		for (const v of vvertex.slice(1)) {
-			shape.lineTo(v.x, v.y);
+	public getPath(table: Table): Path {
+		const vvertex = SplineVertex.getCentralCurve(this.dragPoints, table.getDetailLevel(), -1);
+		return this.getPathFromPoints<Path>(vvertex.map(v => new Vector2(v.x, v.y)), new Path());
+	}
+
+	// public getExtendedPath(table: Table, distance: number): Path {
+	// 	const path = this.getPath(table);
+	// 	let len = 0;
+	// 	const points: Vector2[] = [];
+	// 	const totalLen = path.getLength();
+	// 	let i = 0;
+	// 	for (const curveLength of path.getCurveLengths()) {
+	// 		const tangent = path.getTangent(i);
+	// 		const point = path.getPoint(i);
+	// 		const direction = tangent.rotateAround(point, M.degToRad(90));
+	// 		point.add(direction.multiplyScalar(distance));
+	// 		len += curveLength;
+	// 		i++;
+	// 		points.push(point);
+	// 	}
+	// 	return this.getPathFromPoints(points);
+	// }
+
+	private getPathFromPoints<T extends Path>(points: Vector2[], path: T): T {
+		if (points.length === 0) {
+			throw new Error('Cannot get path from no points.');
 		}
-		// const curve = new SplineCurve(vectors);
+		path.moveTo(points[0].x, points[0].y);
+		for (const v of points.slice(1)) {
+			path.lineTo(v.x, v.y);
+		}
+		path.moveTo(points[0].x, points[0].y);
+		return path;
+	}
 
+	public getSurfaceGeometry(table: Table, depth = 15, bevel = 1): ExtrudeBufferGeometry {
+
+		const shape = this.getShape(table);
 		const dim = table.getDimensions();
 		const invTableWidth = 1.0 / dim.width;
 		const invTableHeight = 1.0 / dim.height;
 
 		return new ExtrudeBufferGeometry(shape, {
 			depth,
-			bevelEnabled: true,
-			bevelSegments: 2,
-			steps: 2,
-			bevelSize: 1,
-			bevelThickness: 1,
+			bevelEnabled: bevel > 0,
+			bevelSegments: 1,
+			steps: 1,
+			bevelSize: bevel,
+			bevelThickness: bevel,
 			UVGenerator: {
 				generateSideWallUV(g: ExtrudeBufferGeometry, vertices: number[], indexA: number, indexB: number, indexC: number, indexD: number): Vector2[] {
 					return [

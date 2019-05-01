@@ -92,7 +92,8 @@ export class TableExporter {
 			{ name: 'flippers', meshes: values<FlipperItem>(this.table.flippers), enabled: this.opts.exportFlippers},
 			{ name: 'bumpers', meshes: values<BumperItem>(this.table.bumpers), enabled: this.opts.exportBumpers },
 			{ name: 'ramps', meshes: values<RampItem>(this.table.ramps), enabled: this.opts.exportRamps },
-			{ name: 'lightsBulbs', meshes: this.table.lights, enabled: this.opts.exportLightBulbs },
+			{ name: 'lightsBulbs', meshes: this.table.lights.filter(l => l.isBulbLight()), enabled: this.opts.exportLightBulbs },
+			{ name: 'playfieldLights', meshes: this.table.lights.filter(l => l.isSurfaceLight(this.table)), enabled: this.opts.exportPlayfieldLights },
 			{ name: 'hitTargets', meshes: this.table.hitTargets, enabled: this.opts.exportHitTargets },
 			{ name: 'gates', meshes: this.table.gates, enabled: this.opts.exportGates },
 			{ name: 'kickers', meshes: this.table.kickers, enabled: this.opts.exportKickers },
@@ -108,7 +109,7 @@ export class TableExporter {
 			const g = new Group();
 			g.name = group.name;
 			for (const renderable of group.meshes.filter(i => i.isVisible(this.table))) {
-				const objects = renderable.getMeshes(this.table);
+				const objects = renderable.getMeshes(this.table, this.opts);
 				let obj: RenderInfo;
 				for (obj of values(objects)) {
 					const geometry = obj.geometry || obj.mesh.getBufferGeometry();

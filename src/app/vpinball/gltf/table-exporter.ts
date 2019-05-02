@@ -142,14 +142,14 @@ export class TableExporter {
 		}
 
 		// playfield lights
-		if (this.opts.exportPlayfieldLights) {
-			for (const lightInfo of this.table.lights.filter(l => l.isSurfaceLight(this.table)).slice(0, 10)) {
-				const light = new PointLight(lightInfo.color, lightInfo.intensity, lightInfo.falloff * TableExporter.scale, 2);
-				light.name = 'light:' + lightInfo.getName();
-				light.position.set(lightInfo.vCenter.x, lightInfo.vCenter.y, 10);
-				lightGroup.add(light);
-			}
-		}
+		// if (this.opts.exportPlayfieldLights) {
+		// 	for (const lightInfo of this.table.lights.filter(l => l.isSurfaceLight(this.table)).slice(0, 10)) {
+		// 		const light = new PointLight(lightInfo.color, lightInfo.intensity, lightInfo.falloff * TableExporter.scale, 2);
+		// 		light.name = 'light:' + lightInfo.getName();
+		// 		light.position.set(lightInfo.vCenter.x, lightInfo.vCenter.y, 10);
+		// 		lightGroup.add(light);
+		// 	}
+		// }
 
 		if (lightGroup.children.length > 0) {
 			this.playfield.add(lightGroup);

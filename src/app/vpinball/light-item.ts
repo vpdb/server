@@ -86,29 +86,60 @@ export class LightItem extends GameItem implements IRenderable {
 	}
 
 	public isVisible(table: Table): boolean {
-		return this.isBulbLight() || this.isSurfaceLight(table);
+		return true; // we filter by bulb/playfield light
 	}
 
+	/**
+	 * Returns whether this light comes with a bulb mesh.
+	 */
 	public isBulbLight() {
 		return this.showBulbMesh && this.meshRadius > 0;
 	}
 
+	/**
+	 * Returns whether this light is set inside the playfield (but not
+	 * a surface)
+	 * @param table
+	 */
+	public isPlayfieldLight(table: Table) {
+		return this.isSurfaceLight(table) && !this.szSurface;
+	}
+
+	/**
+	 * Returns whether this light is either set inside the playfield or another
+	 * surface.
+	 * @param table
+	 */
 	public isSurfaceLight(table: Table) {
-		if (!this.szOffImage || !table.getPlayfieldMap()) {
+		if (!this.szOffImage || this.BulbLight) { // in dark knight, we have BulbLight overlays with same texture
 			return false;
 		}
-		return this.szOffImage.toLowerCase() === table.getPlayfieldMap().toLowerCase()
+		if (table.getPlayfieldMap()
+			&& this.szOffImage.toLowerCase() === table.getPlayfieldMap().toLowerCase()
 			&& this.dragPoints
-			&& this.dragPoints.length > 2;
+			&& this.dragPoints.length > 2) {
+			return true;
+		}
+
+		/*
+		 * Sometimes, the texture used for playfield lights is not the same as the
+		 * playfield texture, so we need another way to determine whether a light
+		 * is inside the playfield or a surface. The rule is currently the
+		 * following:
+		 *   - First, it needs a texture.
+		 *   - If at least four other lights have the same texture, we assume
+		 *     it's a match.
+		 */
+		return table.lights.filter(l => l.szOffImage === this.szOffImage).length > 3;
 	}
 
 	public getMeshes(table: Table): Meshes {
-		if (this.showBulbMesh) {
+		if (this.isBulbLight()) {
 			return this.getBulbMeshes(table);
 		}
 		return {
 			surfaceLight: {
-				geometry: this.getSurfaceGeometry(table),
+				geometry: this.getSurfaceGeometry(table, Table.playfieldThickness / 2),
 				map: table.getTexture(this.szOffImage),
 			},
 		};
@@ -142,18 +173,6 @@ export class LightItem extends GameItem implements IRenderable {
 	// 	return this.getPathFromPoints(points);
 	// }
 
-	private getPathFromPoints<T extends Path>(points: Vector2[], path: T): T {
-		if (points.length === 0) {
-			throw new Error('Cannot get path from no points.');
-		}
-		path.moveTo(points[0].x, points[0].y);
-		for (const v of points.slice(1)) {
-			path.lineTo(v.x, v.y);
-		}
-		path.moveTo(points[0].x, points[0].y);
-		return path;
-	}
-
 	public getSurfaceGeometry(table: Table, depth = 5, bevel = 1): ExtrudeBufferGeometry {
 
 		const shape = this.getShape(table);
@@ -161,7 +180,7 @@ export class LightItem extends GameItem implements IRenderable {
 		const invTableWidth = 1.0 / dim.width;
 		const invTableHeight = 1.0 / dim.height;
 
-		return new ExtrudeBufferGeometry(shape, {
+		const geometry = new ExtrudeBufferGeometry(shape, {
 			depth,
 			bevelEnabled: bevel > 0,
 			bevelSegments: 1,
@@ -192,6 +211,11 @@ export class LightItem extends GameItem implements IRenderable {
 				},
 			},
 		});
+		if (this.szSurface) {
+			geometry.translate(0, 0, -table.getSurfaceHeight(this.szSurface, 0, 0));
+		}
+		geometry.name = `surface.light-${this.getName()}`;
+		return geometry;
 	}
 
 	public postProcessMaterial(table: Table, geometry: BufferGeometry, material: MeshStandardMaterial): MeshStandardMaterial | MeshStandardMaterial[] {
@@ -199,8 +223,22 @@ export class LightItem extends GameItem implements IRenderable {
 			return material;
 		}
 		material.emissiveMap = material.map;
-		material.opacity = 0.8;
+		material.emissiveIntensity = 0;
+		material.emissive.setRGB(50, 50, 50);
+		material.opacity = 1;
 		return material;
+	}
+
+	private getPathFromPoints<T extends Path>(points: Vector2[], path: T): T {
+		if (points.length === 0) {
+			throw new Error('Cannot get path from no points.');
+		}
+		path.moveTo(points[0].x, points[0].y);
+		for (const v of points.slice(1)) {
+			path.lineTo(v.x, v.y);
+		}
+		path.moveTo(points[0].x, points[0].y);
+		return path;
 	}
 
 	private getBulbMeshes(table: Table): Meshes {

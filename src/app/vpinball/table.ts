@@ -186,7 +186,7 @@ export class Table implements IRenderable {
 			pfShape.lineTo(this.gameData.left, this.gameData.top);
 
 			pfShape.holes = this.lights
-				.filter(l => l.isSurfaceLight(table))
+				.filter(l => l.isPlayfieldLight(table))
 				.map(l => l.getPath(table));
 
 			const invTableWidth = 1.0 / dim.width;

@@ -17,107 +17,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { isUndefined, keys, times } from 'lodash';
+import { isUndefined, times } from 'lodash';
 
 import { createHash } from 'crypto';
-import { FileUtil } from '../files/file.util';
+import { OleCompoundDoc, Storage } from 'vpx-toolbox';
 import { TableBlock } from '../releases/release.tableblock';
 import { logger } from './logger';
-import { OleCompoundDoc, Storage } from './ole-doc';
 import { RequestState } from './typings/context';
 
-const bindexOf = require('buffer-indexof');
-
 class VisualPinballTable {
-
-	/**
-	 * Extracts the table script from a given .vpt file.
-	 *
-	 * @param requestState For logging
-	 * @param {string} tablePath Path to the .vpt file. File must exist.
-	 * @return {Promise} Table script
-	 */
-	public async readScriptFromTable(requestState: RequestState, tablePath: string): Promise<{ code: string, head: Buffer, tail: Buffer }> {
-		const now = Date.now();
-		/* istanbul ignore if */
-		if (!(await FileUtil.exists(tablePath))) {
-			throw new Error('File "' + tablePath + '" does not exist.');
-		}
-		let doc: OleCompoundDoc;
-		try {
-			doc = await this.readDoc(tablePath);
-
-			const storage = doc.storage('GameStg');
-			const buf = await this.readStream(storage, 'GameData');
-
-			const codeStart: number = bindexOf(buf, Buffer.from('04000000434F4445', 'hex')); // 0x04000000 "CODE"
-			const codeEnd: number = bindexOf(buf, Buffer.from('04000000454E4442', 'hex'));   // 0x04000000 "ENDB"
-			logger.info(requestState, '[VisualPinballTable.readScriptFromTable] Found GameData for "%s" in %d ms.', tablePath, Date.now() - now);
-			/* istanbul ignore if */
-			if (codeStart < 0 || codeEnd < 0) {
-				throw new Error('Cannot find CODE part in BIFF structure.');
-			}
-			return {
-				code: buf.slice(codeStart + 12, codeEnd).toString(),
-				head: buf.slice(0, codeStart + 12),
-				tail: buf.slice(codeEnd),
-			};
-		} finally {
-			await doc.close();
-		}
-	}
-
-	/**
-	 * Returns all TableInfo fields of the table file.
-	 *
-	 * @param requestState For logging
-	 * @param {string} tablePath Path to the .vpt file. File must exist.
-	 * @return {Promise<object>} Table properties
-	 */
-	public async getTableInfo(requestState: RequestState, tablePath: string): Promise<{ [key: string]: string }> {
-
-		/* istanbul ignore if */
-		if (!(await FileUtil.exists(tablePath))) {
-			throw new Error('File "' + tablePath + '" does not exist.');
-		}
-		let doc: OleCompoundDoc;
-		try {
-			doc = await this.readDoc(tablePath);
-
-			const storage = doc.storage('TableInfo');
-			const props: { [key: string]: string } = {};
-			if (!storage) {
-				logger.warn(requestState, '[VisualPinballTable.getTableInfo] Storage "TableInfo" not found in "%s".', tablePath);
-				return props;
-			}
-			const streams: { [key: string]: string } = {
-				TableName: 'table_name',
-				AuthorName: 'author_name',
-				TableBlurp: 'table_blurp',
-				TableRules: 'table_rules',
-				AuthorEmail: 'author_email',
-				ReleaseDate: 'release_date',
-				TableVersion: 'table_version',
-				AuthorWebSite: 'author_website',
-				TableDescription: 'table_description',
-			};
-			for (const key of keys(streams)) {
-				const propKey = streams[key];
-				try {
-					const buf = await this.readStream(storage, key);
-					if (buf) {
-						props[propKey] = buf.toString().replace(/\0/g, '');
-					}
-				} catch (err) {
-					logger.warn(requestState, '[VisualPinballTable.getTableInfo] %s', err.message);
-				}
-			}
-			return props;
-
-		} finally {
-			await doc.close();
-		}
-	}
 
 	/**
 	 * Returns an array of elements of which the table file is made of.
@@ -207,9 +115,7 @@ class VisualPinballTable {
 	 * @returns {Promise<OleCompoundDoc>}
 	 */
 	public async readDoc(filename: string): Promise<OleCompoundDoc> {
-		const doc = new OleCompoundDoc(filename);
-		await doc.read();
-		return doc;
+		return await OleCompoundDoc.load(filename);
 	}
 
 	/**

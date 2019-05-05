@@ -16,10 +16,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-import { extend, omit } from 'lodash';
+import { mapKeys, omit } from 'lodash';
 
+import { Table } from 'vpx-toolbox';
 import { RequestState } from '../../common/typings/context';
-import { visualPinballTable } from '../../common/visualpinball.table';
 import { File } from '../file';
 import { FileDocument } from '../file.document';
 import { FileVariation } from '../file.variations';
@@ -33,9 +33,22 @@ export class VptMetadata extends Metadata {
 	}
 
 	public async getMetadata(requestState: RequestState, file: FileDocument, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
-		const script = await visualPinballTable.readScriptFromTable(requestState, path);
-		const props = await visualPinballTable.getTableInfo(requestState, path);
-		extend(props, { table_script: script.code });
+		const table = await Table.load(path, { gameDataOnly: true, tableInfoOnly: true });
+		const script = await table.getTableScript();
+		const props = mapKeys(table.tableInfo, key => {
+			switch (key) {
+				case 'TableName': return 'table_name';
+				case 'AuthorName': return 'author_name';
+				case 'TableBlurp': return 'table_blurp';
+				case 'TableRules': return 'table_rules';
+				case 'AuthorEmail': return 'author_email';
+				case 'ReleaseDate': return 'release_date';
+				case 'AuthorWebSite': return 'author_website';
+				case 'TableDescription': return 'table_description';
+				default: return key;
+			}
+		});
+		props.table_script = script;
 		return props;
 	}
 

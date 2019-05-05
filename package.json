@@ -26,7 +26,7 @@
 		"serve:test:debug:compiled": "npm run copy:resources && node --inspect build/app",
 		"serve:protractor": "cross-env NODE_ENV=test APP_SETTINGS=config/settings.protractor.js PORT=7357 APP_NAME=local run-s test:dropdbs start",
 		"build": "rimraf build && tsc && npm run copy:resources",
-		"copy:resources": "cp -r src/app/common/email-templates build/app/common && cp -r src/app/vpinball/res build/app/vpinball",
+		"copy:resources": "cp -r src/app/common/email-templates build/app/common",
 		"lint": "tslint src/app/**/*.ts",
 		"test:dropdbs": "node deploy/tools/dropdb",
 		"test:rimraf": "rimraf .nyc_output coverage data/storage-test-protected/**/* data/storage-test-public/**/*",
@@ -105,6 +105,7 @@
 		"unrar": "0.1.7",
 		"unzip": "0.1.11",
 		"validator": "10.11.0",
+		"vpx-toolbox": "^1.1.3",
 		"winston": "3.2.1",
 		"winston-daily-rotate-file": "3.9.0",
 		"xmlbuilder": "12.0.0"

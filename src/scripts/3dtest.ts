@@ -20,7 +20,7 @@
 
 import { writeFileSync } from 'fs';
 import { basename } from 'path';
-import { Table } from '../app/vpinball/table';
+import { Table } from 'vpx-toolbox';
 
 (async () => {
 
@@ -28,7 +28,8 @@ import { Table } from '../app/vpinball/table';
 
 		const start = Date.now();
 		//const tablePath = 'D:/Pinball/Visual Pinball/Tables/vpdb/e2na558ew.vpx'; // has animation frames
-		const tablePath = 'D:/Pinball/Visual Pinball/Tables/Batman Dark Knight tt&NZ 1.2.vpx';
+		const tablePath = 'D:/Pinball/Visual Pinball/Tables/Black Knight 2000 1.1.vpx';
+		//const tablePath = 'D:/Pinball/Visual Pinball/Tables/Medieval Madness Reloaded 1.0.vpx';
 		//const tablePath = 'D:/Pinball/Visual Pinball/Tables/Materials.vpx';
 		//const tablePath = 'C:/Development/vpdb-server/bumpertest.vpx';
 		//const tablePath = 'C:/Development/vpdb-server/src/test/fixtures/table-hit-target.vpx';
@@ -57,7 +58,7 @@ import { Table } from '../app/vpinball/table';
 			exportFlippers: false,
 			exportBumpers: false,
 			exportRamps: false,
-			exportSurfaces: false,
+			exportSurfaces: true,
 			exportRubbers: true,
 			exportLightBulbs: true,
 			exportPlayfieldLights: true,

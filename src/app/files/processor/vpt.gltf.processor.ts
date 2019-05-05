@@ -17,9 +17,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { Table } from 'vpx-toolbox';
 import { logger } from '../../common/logger';
 import { RequestState } from '../../common/typings/context';
-import { Table } from '../../vpinball/table';
 import { FileDocument } from '../file.document';
 import { FileUtil } from '../file.util';
 import { FileVariation } from '../file.variations';

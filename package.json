@@ -82,7 +82,7 @@
 		"mongoose-paginate": "5.0.3",
 		"mongoose-unique-validator": "2.0.3",
 		"natives": "1.1.6",
-		"nodegit": "0.24.2",
+		"nodegit": "0.24.3",
 		"nodemailer": "6.1.1",
 		"optipng": "2.0.0",
 		"passthrough-counter": "1.0.0",

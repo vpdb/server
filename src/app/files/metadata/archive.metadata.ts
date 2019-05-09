@@ -41,6 +41,7 @@ export class ArchiveMetadata extends Metadata {
 			case 'rar':
 				return this.getRarMetadata(path);
 
+			case 'x-zip-compressed':
 			case 'zip':
 				return this.getZipMetadata(path);
 		}

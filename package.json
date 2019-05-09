@@ -146,7 +146,7 @@
 		"@types/uglify-js": "3.0.4",
 		"@types/unzip": "0.1.1",
 		"@types/validator": "10.11.0",
-		"@types/yargs": "12.0.11",
+		"@types/yargs": "12.0.12",
 		"async": "2.6.2",
 		"cheerio": "1.0.0-rc.2",
 		"cross-env": "5.2.0",

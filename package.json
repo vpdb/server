@@ -142,7 +142,7 @@
 		"@types/sax": "1.0.1",
 		"@types/sharp": "0.22.1",
 		"@types/strip-ansi": "3.0.0",
-		"@types/ua-parser-js": "0.7.32",
+		"@types/ua-parser-js": "0.7.33",
 		"@types/uglify-js": "3.0.4",
 		"@types/unzip": "0.1.1",
 		"@types/validator": "10.11.0",

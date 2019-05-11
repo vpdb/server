@@ -16,12 +16,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-
+import { isEmpty } from 'lodash';
 import { BuildDocument } from '../../../builds/build.document';
 import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../../../common/serializer';
 import { Context } from '../../../common/typings/context';
 import { ModelName } from '../../../common/typings/models';
-import { File } from '../../../files/file';
 import { FileDocument } from '../../../files/file.document';
 import { state } from '../../../state';
 import { UserDocument } from '../../../users/user.document';
@@ -58,7 +57,7 @@ export class ReleaseVersionFileSerializer extends Serializer<ReleaseVersionFileD
 	protected _detailed(ctx: Context, doc: ReleaseVersionFileDocument, opts: SerializerOptions): ReleaseVersionFileDocument {
 		const versionFile = this.serializeReleaseVersionFile(ctx, doc, opts, state.serializers.Build.simple.bind(state.serializers.Build), state.serializers.File.detailed.bind(state.serializers.File)) as ReleaseVersionFileDocument;
 
-		if (File.getMimeCategory(doc._file as FileDocument) === 'table') {
+		if (!isEmpty(doc.flavor)) {
 			// media
 			if (this._populated(doc, '_playfield_image')) {
 				versionFile.playfield_image = state.serializers.File.detailed(ctx, doc._playfield_image as FileDocument, opts);
@@ -86,7 +85,7 @@ export class ReleaseVersionFileSerializer extends Serializer<ReleaseVersionFileD
 		}
 
 		// table file props
-		if (File.getMimeCategory(doc._file as FileDocument) === 'table') {
+		if (!isEmpty(doc.flavor)) {
 
 			// flavor
 			versionFile.flavor = doc.flavor;

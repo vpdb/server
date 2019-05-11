@@ -134,10 +134,3 @@ patch:
         patched: '2018-07-13T21:56:19.990Z'
     - pngquant > pngquant-bin > bin-wrapper > download > caw > tunnel-agent:
         patched: '2018-07-13T21:56:19.990Z'
-  SNYK-JS-AXIOS-174505:
-    - axios:
-        patched: '2019-05-07T22:03:37.211Z'
-    - '@slack/client > @slack/webhook > axios':
-        patched: '2019-05-07T22:03:37.211Z'
-    - '@slack/client > @slack/rtm-api > @slack/web-api > axios':
-        patched: '2019-05-07T22:03:37.211Z'

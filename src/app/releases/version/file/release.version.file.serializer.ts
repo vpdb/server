@@ -21,6 +21,7 @@ import { BuildDocument } from '../../../builds/build.document';
 import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../../../common/serializer';
 import { Context } from '../../../common/typings/context';
 import { ModelName } from '../../../common/typings/models';
+import { File } from '../../../files/file';
 import { FileDocument } from '../../../files/file.document';
 import { state } from '../../../state';
 import { UserDocument } from '../../../users/user.document';
@@ -56,13 +57,17 @@ export class ReleaseVersionFileSerializer extends Serializer<ReleaseVersionFileD
 
 	protected _detailed(ctx: Context, doc: ReleaseVersionFileDocument, opts: SerializerOptions): ReleaseVersionFileDocument {
 		const versionFile = this.serializeReleaseVersionFile(ctx, doc, opts, state.serializers.Build.simple.bind(state.serializers.Build), state.serializers.File.detailed.bind(state.serializers.File)) as ReleaseVersionFileDocument;
-		// media
-		if (this._populated(doc, '_playfield_image')) {
-			versionFile.playfield_image = state.serializers.File.detailed(ctx, doc._playfield_image as FileDocument, opts);
+
+		if (File.getMimeCategory(doc._file as FileDocument) === 'table') {
+			// media
+			if (this._populated(doc, '_playfield_image')) {
+				versionFile.playfield_image = state.serializers.File.detailed(ctx, doc._playfield_image as FileDocument, opts);
+			}
+			if (doc._playfield_video && this._populated(doc, '_playfield_video')) {
+				versionFile.playfield_video = state.serializers.File.detailed(ctx, doc._playfield_video as FileDocument, opts);
+			}
 		}
-		if (doc._playfield_video && this._populated(doc, '_playfield_video')) {
-			versionFile.playfield_video = state.serializers.File.detailed(ctx, doc._playfield_video as FileDocument, opts);
-		}
+
 		versionFile.counter = doc.counter;
 		return versionFile;
 	}
@@ -72,7 +77,6 @@ export class ReleaseVersionFileSerializer extends Serializer<ReleaseVersionFileD
 										fileSerializer: (ctx: Context, doc: FileDocument, opts: SerializerOptions) => FileDocument): ReleaseVersionFileDocument {
 
 		const versionFile = {
-			flavor: doc.flavor,
 			released_at: doc.released_at,
 		} as ReleaseVersionFileDocument;
 
@@ -81,25 +85,33 @@ export class ReleaseVersionFileSerializer extends Serializer<ReleaseVersionFileD
 			versionFile.file = fileSerializer(ctx, doc._file as FileDocument, opts);
 		}
 
-		// compat
-		if (this._populated(doc, '_compatibility')) {
-			versionFile.compatibility = (doc._compatibility as BuildDocument[]).map(build => buildSerializer(ctx, build, opts));
+		// table file props
+		if (File.getMimeCategory(doc._file as FileDocument) === 'table') {
+
+			// flavor
+			versionFile.flavor = doc.flavor;
+
+			// compat
+			if (this._populated(doc, '_compatibility')) {
+				versionFile.compatibility = (doc._compatibility as BuildDocument[]).map(build => buildSerializer(ctx, build, opts));
+			}
+
+			// validation
+			if (doc.validation && doc.validation.status) {
+				versionFile.validation = {
+					status: doc.validation.status,
+					message: doc.validation.message,
+					validated_at: doc.validation.validated_at,
+					validated_by: this._populated(doc, 'validation._validated_by') ? state.serializers.User.reduced(ctx, doc.validation._validated_by as UserDocument, opts) : undefined,
+				};
+			}
+
+			// thumb
+			if (opts.thumbPerFile && opts.thumbFormat) {
+				versionFile.thumb = this.getFileThumb(ctx, doc, opts);
+			}
 		}
 
-		// validation
-		if (doc.validation && doc.validation.status) {
-			versionFile.validation = {
-				status: doc.validation.status,
-				message: doc.validation.message,
-				validated_at: doc.validation.validated_at,
-				validated_by: this._populated(doc, 'validation._validated_by') ? state.serializers.User.reduced(ctx, doc.validation._validated_by as UserDocument, opts) : undefined,
-			};
-		}
-
-		// thumb
-		if (opts.thumbPerFile && opts.thumbFormat) {
-			versionFile.thumb = this.getFileThumb(ctx, doc, opts);
-		}
 		return versionFile;
 	}
 }

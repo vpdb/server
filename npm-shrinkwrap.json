@@ -12242,11 +12242,31 @@
 			"integrity": "sha512-nMkKc4WDwQcMYh4Au7K5pWXbi8C+HSbix+49Le/IDGlfuFcaHqK2ZSoE13e6wk2IYEz1z3znphbNrOV9t+iswQ==",
 			"requires": {
 				"es6-promise-pool": "2.5.0",
-				"gltf-pipeline": "github:freezy/gltf-pipeline#8e7c1450d08374755b3abaf0eb0e3ae9a118c8f2",
 				"gm": "1.23.1",
 				"pngquant": "2.0.1",
 				"sharp": "0.22.1",
 				"three": "0.104.0"
+			},
+			"dependencies": {
+				"gltf-pipeline": {
+					"version": "github:freezy/gltf-pipeline#8e7c1450d08374755b3abaf0eb0e3ae9a118c8f2",
+					"from": "github:freezy/gltf-pipeline#8e7c1450d08374755b3abaf0eb0e3ae9a118c8f2",
+					"requires": {
+						"bluebird": "^3.5.3",
+						"cesium": "^1.54.0",
+						"draco3d": "^1.3.4",
+						"fs-extra": "^7.0.1",
+						"mime": "^2.4.0",
+						"object-hash": "^1.3.1",
+						"uuid": "^3.3.2",
+						"yargs": "^13.2.0"
+					}
+				},
+				"uuid": {
+					"version": "3.3.2",
+					"resolved": "https://registry.npmjs.org/uuid/-/uuid-3.3.2.tgz",
+					"integrity": "sha512-yXJmeNaw3DnnKAOKJE51sL/ZaYfWJRl1pK9dr19YFCu0ObS231AB1/LbqTKRAQ5kw8A90rA6fr4riOUpTZvQZA=="
+				}
 			}
 		},
 		"vscode-languageserver-types": {

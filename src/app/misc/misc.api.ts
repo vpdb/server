@@ -30,6 +30,7 @@ import { ipdb } from '../common/ipdb';
 import { logger } from '../common/logger';
 import { config } from '../common/settings';
 import { Context } from '../common/typings/context';
+import { File } from '../files/file';
 import { FileDocument } from '../files/file.document';
 import { processorQueue } from '../files/processor/processor.queue';
 import { GameDocument } from '../games/game.document';
@@ -120,6 +121,8 @@ export class MiscApi extends Api {
 
 	/**
 	 * Prints the sitemap for a site running vpdb-website.
+	 *
+	 * @see GET /v1/sitemap
 	 * @param {Context} ctx
 	 * @returns {Promise<void>}
 	 */
@@ -163,16 +166,17 @@ export class MiscApi extends Api {
 			const game = release._game as GameDocument;
 			let fsImage: FileDocument;
 			let dtImage: FileDocument;
-			release.versions.forEach(version => {
-				version.files.forEach(file => {
+			for (const version of release.versions) {
+				const tableFiles = version.files.filter(file => file._playfield_image && (file._playfield_image as FileDocument).metadata);
+				for (const file of tableFiles) {
 					const playfieldImage = file._playfield_image as FileDocument;
 					if (playfieldImage.metadata.size.width > playfieldImage.metadata.size.height) {
 						dtImage = playfieldImage;
 					} else {
 						fsImage = playfieldImage;
 					}
-				});
-			});
+				}
+			}
 			const authors = release.authors.map(author => (author._user as UserDocument).name).join(', ');
 			const url = rootNode.ele('url');
 			url.ele('loc', webUrl + 'games/' + game.id + '/releases/' + release.id);

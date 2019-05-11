@@ -42,6 +42,7 @@ import { ReleaseDocument } from './release.document';
 import { flavors } from './release.flavors';
 import { ReleaseVersionFileDocument } from './version/file/release.version.file.document';
 import { ReleaseVersionDocument } from './version/release.version.document';
+import base = Mocha.reporters.base;
 
 const Unrar = require('unrar');
 
@@ -162,11 +163,11 @@ export class ReleaseStorage extends Api {
 						case 'archive':
 							if (file.metadata && isArray(file.metadata.entries)) {
 								if (/rar/i.test(file.getMimeSubtype())) {
-									await this.streamZipfile(ctx.state, file, archive);
+									await this.streamRarfile(ctx.state, file, archive);
 									continue;
 								}
 								if (/zip/i.test(file.getMimeSubtype())) {
-									await this.streamRarfile(ctx.state, file, archive);
+									await this.streamZipfile(ctx.state, file, archive);
 									continue;
 								}
 							}
@@ -468,9 +469,19 @@ export class ReleaseStorage extends Api {
 		}
 	}
 
+	/**
+	 * Returns the path in the download archive of a file streamed from an archive.
+	 * @param entryPath Path in the archive
+	 * @param archiveName File name of the archive itself
+	 * @return Path of the file in the download archive
+	 */
 	private getArchivedFilename(entryPath: string, archiveName: string) {
 		entryPath = entryPath.replace(/\\/g, '/');
 		entryPath = entryPath.replace(/^\//, '');
+		const ext = extname(entryPath).toLowerCase();
+		if (ext === '.mp3') {
+			return 'Visual Pinball/Music/' + basename(entryPath);
+		}
 		if (basename(entryPath) === entryPath) {
 			entryPath = archiveName.substr(0, archiveName.length - extname(archiveName).length) + '/' + entryPath;
 		}
@@ -484,7 +495,7 @@ export class ReleaseStorage extends Api {
 	 * @param archive Destination
 	 * @returns {Promise}
 	 */
-	private async streamZipfile(requestState: RequestState, file: FileDocument, archive: Archiver) {
+	private async streamRarfile(requestState: RequestState, file: FileDocument, archive: Archiver) {
 		return new Promise(resolve => {
 			const rarFile = new Unrar(file.getPath(requestState));
 			file.metadata.entries.forEach((entry: any) => {
@@ -508,7 +519,7 @@ export class ReleaseStorage extends Api {
 	 * @param archive Destination
 	 * @returns {Promise}
 	 */
-	private async streamRarfile(requestState: RequestState, file: FileDocument, archive: Archiver) {
+	private async streamZipfile(requestState: RequestState, file: FileDocument, archive: Archiver) {
 		return new Promise(resolve => {
 			createReadStream(file.getPath(requestState))
 				.pipe(unzip.Parse())

@@ -134,6 +134,6 @@ export class Release {
 				return [];
 			});
 		}
-		return releaseVersionFiles.filter(f => !!f);
+		return releaseVersionFiles.filter(f => !!f && f.file);
 	}
 }

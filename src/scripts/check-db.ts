@@ -105,7 +105,9 @@ import { isEmpty } from 'lodash';
 			assertOptional('LogEvent', logEvent._id, `_ref.game_request`, logEvent._ref.game_request, await state.models.GameRequest.findById(logEvent._ref.game_request).exec());
 			assertOptional('LogEvent', logEvent._id, `_ref.build`, logEvent._ref.build, await state.models.Build.findById(logEvent._ref.build).exec());
 			assertOptional('LogEvent', logEvent._id, `_ref.file`, logEvent._ref.file, await state.models.File.findById(logEvent._ref.file).exec());
+			const ipdbRef = logEvent.payload && logEvent.payload.game ? logEvent.payload.game.ipdb : undefined;
 			assertOneOrMore('LogEvent', logEvent._id, [
+				{ refField: `payload.game.ipdb`, refId: ipdbRef },
 				{ refField: `_ref.game`, refId: logEvent._ref.game },
 				{ refField: `_ref.release`, refId: logEvent._ref.release },
 				{ refField: `_ref.backglass`, refId: logEvent._ref.backglass },
@@ -196,7 +198,7 @@ import { isEmpty } from 'lodash';
 		// roms
 		const roms = await state.models.Rom.find({}).exec();
 		for (const rom of roms) {
-			assert('Roms', rom._id, '_file', rom._file, await state.models.File.findById(rom._file).exec());
+			assertOptional('Roms', rom._id, '_file', rom._file, await state.models.File.findById(rom._file).exec());
 			assert('Roms', rom._id, '_created_by', rom._created_by, await state.models.User.findById(rom._created_by).exec());
 			assert('Roms', rom._id, '_game', rom._game, await state.models.Game.findById(rom._game).exec());
 		}

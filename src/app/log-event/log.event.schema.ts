@@ -54,6 +54,7 @@ export const logEventFields = {
 	event: { type: String, enum: events, required: true, index: true },
 	payload: {},
 	is_public: { type: Boolean, required: true, default: false },
+	request_id: { type: String },
 	ip: { type: String, required: true },
 	logged_at: { type: Date, required: true },
 };

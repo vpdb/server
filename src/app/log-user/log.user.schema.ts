@@ -31,6 +31,7 @@ const fields = {
 	payload: {},
 	result: { type: String, enum: ['success', 'failure'], required: true },
 	message: { type: String }, // in case of failure, this is the error message.
+	request_id: { type: String },
 	ip: { type: String, required: true },
 	logged_at: { type: Date, required: true },
 };

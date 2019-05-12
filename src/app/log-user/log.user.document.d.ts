@@ -27,6 +27,7 @@ export interface LogUserDocument extends Document {
 	payload: { [key: string]: any };
 	result: 'success' | 'failure';
 	message: string;
+	request_id: string;
 	ip: string;
 	logged_at: Date;
 

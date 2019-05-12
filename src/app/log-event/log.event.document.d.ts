@@ -39,6 +39,7 @@ export interface LogEventDocument extends Document {
 	event: string;
 	payload: any;
 	is_public: boolean;
+	request_id: string;
 	ip: string;
 	logged_at: Date;
 

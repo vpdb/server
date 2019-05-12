@@ -172,15 +172,17 @@ import { isEmpty } from 'lodash';
 				let j = 0;
 				for (const versionFile of version.files) {
 					assert('Release', release._id, `versions.${i}.files.${j}._file`, versionFile._file, await state.models.File.findById(versionFile._file).exec());
-					assert('Release', release._id, `versions.${i}.files.${j}._playfield_image`, versionFile._playfield_image, await state.models.File.findById(versionFile._playfield_image).exec());
-					assertOptional('Release', release._id, `versions.${i}.files.${j}._playfield_video`, versionFile._playfield_video, await state.models.File.findById(versionFile._playfield_video).exec());
-					let k = 0;
-					for (const build of versionFile._compatibility) {
-						assert('Release', release._id, `versions.${i}.files.${j}._compatibility.${k}`, build, await state.models.Build.findById(build).exec());
-						k++;
-					}
-					if (versionFile.validation) {
-						assertOptional('Release', release._id, `versions.${i}.files.${j}.validation._validated_by`, versionFile.validation._validated_by, await state.models.User.findById(versionFile.validation._validated_by).exec());
+					if (!isEmpty(versionFile.flavor)) {
+						assert('Release', release._id, `versions.${i}.files.${j}._playfield_image`, versionFile._playfield_image, await state.models.File.findById(versionFile._playfield_image).exec());
+						assertOptional('Release', release._id, `versions.${i}.files.${j}._playfield_video`, versionFile._playfield_video, await state.models.File.findById(versionFile._playfield_video).exec());
+						let k = 0;
+						for (const build of versionFile._compatibility) {
+							assert('Release', release._id, `versions.${i}.files.${j}._compatibility.${k}`, build, await state.models.Build.findById(build).exec());
+							k++;
+						}
+						if (versionFile.validation) {
+							assertOptional('Release', release._id, `versions.${i}.files.${j}.validation._validated_by`, versionFile.validation._validated_by, await state.models.User.findById(versionFile.validation._validated_by).exec());
+						}
 					}
 					j++;
 				}
@@ -198,9 +200,13 @@ import { isEmpty } from 'lodash';
 		// roms
 		const roms = await state.models.Rom.find({}).exec();
 		for (const rom of roms) {
-			assertOptional('Roms', rom._id, '_file', rom._file, await state.models.File.findById(rom._file).exec());
+			assert('Roms', rom._id, '_file', rom._file, await state.models.File.findById(rom._file).exec());
 			assert('Roms', rom._id, '_created_by', rom._created_by, await state.models.User.findById(rom._created_by).exec());
-			assert('Roms', rom._id, '_game', rom._game, await state.models.Game.findById(rom._game).exec());
+			assertOptional('Roms', rom._id, '_game', rom._game, await state.models.Game.findById(rom._game).exec());
+			assertOneOrMore('Roms', rom._id, [
+				{ refField: `_ref.game`, refId: rom._game },
+				{ refField: `_ipdb_number`, refId: rom._ipdb_number },
+			]);
 		}
 
 		// stars

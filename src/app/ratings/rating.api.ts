@@ -212,14 +212,16 @@ export class RatingApi extends Api {
 
 		this.success(ctx, result, status);
 
-		if (rating) {
-			await LogEventUtil.log(ctx, 'rate_' + modelName, true, this.logPayload(rating, entity, modelName, status === 200), this.logRefs(rating, entity, modelName));
-		} else {
-			await LogEventUtil.log(ctx, 'unrate_' + modelName, true, this.logPayload(null, entity, modelName, false), this.logRefs(null, entity, modelName));
-		}
+		this.noAwait(async () => {
+			if (rating) {
+				await LogEventUtil.log(ctx, 'rate_' + modelName, true, this.logPayload(rating, entity, modelName, status === 200), this.logRefs(rating, entity, modelName));
+			} else {
+				await LogEventUtil.log(ctx, 'unrate_' + modelName, true, this.logPayload(null, entity, modelName, false), this.logRefs(null, entity, modelName));
+			}
 
-		// invalidate cache
-		await apiCache.invalidateEntity(ctx.state, modelName, entity.id);
+			// invalidate cache
+			await apiCache.invalidateEntity(ctx.state, modelName, entity.id);
+		});
 	}
 
 	/**

@@ -59,6 +59,7 @@ export class LogUserUtil {
 			_actor: actor,
 			event,
 			payload,
+			request_id: ctx.state.request.id,
 			ip: ctx.ip || ctx.request.get('x-forwarded-for') || '0.0.0.0',
 			result,
 			message,

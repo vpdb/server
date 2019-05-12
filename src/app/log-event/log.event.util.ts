@@ -33,6 +33,7 @@ export class LogEventUtil {
 			event,
 			payload,
 			is_public: isPublic,
+			request_id: ctx.state.request.id,
 			ip: ctx.request.get('x-forwarded-for') || ctx.ip || '0.0.0.0',
 			logged_at: new Date(),
 		});

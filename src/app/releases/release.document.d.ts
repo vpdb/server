@@ -42,7 +42,7 @@ export interface ReleaseDocument extends ModeratedDocument, GameReferenceDocumen
 	description: string;
 	versions: ReleaseVersionDocument[];
 	authors: ContentAuthor[];
-	_tags: TagDocument[] | Types.ObjectId;
+	_tags: TagDocument[] | Types.ObjectId[];
 	links: Array<{
 		label: string;
 		url: string

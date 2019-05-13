@@ -48,6 +48,9 @@ export class UserApi extends Api {
 	 */
 	public async create(ctx: Context) {
 
+		// blocked ips can't create new users
+		await this.ipLockAssert(ctx);
+
 		const postedUser: UserDocument = assignIn<UserDocument>(pick(ctx.request.body, 'username', 'password', 'email'), {
 			is_local: true,
 			name: ctx.request.body.name || ctx.request.body.username,

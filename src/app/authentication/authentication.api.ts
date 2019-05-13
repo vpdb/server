@@ -43,26 +43,13 @@ export class AuthenticationApi extends Api {
 	 * @returns {Promise<boolean>}
 	 */
 	public async authenticate(ctx: Context) {
-		const ipAddress = this.getIpAddress(ctx);
-		const backoffNumDelay = config.vpdb.loginBackoff.keep;
-		const backoffDelay = config.vpdb.loginBackoff.delay;
-		const backoffNumKey = 'auth_delay_num:' + ipAddress;
-		const backoffLockKey = 'auth_delay_time:' + ipAddress;
 
 		let how: 'password' | 'token';
 		let authenticatedUser: UserDocument;
 		try {
 
-			// check if there's a back-off delay
-			const ttl = await state.redis.ttl(backoffLockKey);
-			if (ttl > 0) {
-				throw new ApiError('Too many failed login attempts from %s, blocking for another %s seconds.', ipAddress, ttl)
-					.display('Too many failed login attempts from this IP, try again in %s seconds.', ttl)
-					.code('too_many_failed_logins')
-					.body({ wait: ttl })
-					.warn()
-					.status(429);
-			}
+			// this resource is lock-protected
+			await this.ipLockAssert(ctx);
 
 			// try to authenticate locally
 			const localUser = await this.authenticateLocally(ctx);
@@ -85,30 +72,11 @@ export class AuthenticationApi extends Api {
 			// here we're authenticated (but not yet authorized)
 			await this.authenticateUser(ctx, authenticatedUser, how);
 
-			// if logged and no "keep" is set, expire lock
-			if (!backoffNumDelay) {
-				await state.redis.del(backoffNumKey);
-			}
+			// potentially unlock ip block
+			await this.ipLockOnSuccess(ctx);
 
 		} catch (err) {
-			// increase number of consecutively failed attempts
-			const num: number = await state.redis.incr(backoffNumKey);
-
-			// check how log to wait
-			const wait = backoffDelay[Math.min(num, backoffDelay.length) - 1];
-			logger.info(ctx.state, '[AuthenticationApi.authenticate] Increasing back-off time to %s for try number %d.', wait, num);
-
-			// if there's a wait, set the lock and expire it to wait time
-			if (wait > 0) {
-				await state.redis.set(backoffLockKey, '1');
-				await state.redis.expire(backoffLockKey, wait);
-			}
-			// if this is the first failure and "keep" is set, start the count-down (usually 24h)
-			/* istanbul ignore if: Tests break if we keep the backoff delay. */
-			if (num === 1 && backoffNumDelay) {
-				await state.redis.expire(backoffNumKey, backoffNumDelay);
-			}
-			throw err;
+			await this.ipLockOnFail(ctx, err);
 		}
 	}
 

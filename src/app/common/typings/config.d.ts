@@ -135,7 +135,7 @@ export interface VpdbConfig {
 		loginBackoff: {
 
 			/**
-			 * How long the IP adress is blocked. Index in array is number of
+			 * How long the IP address is blocked. Index in array is number of
 			 * seconds to wait for the nth time. If n > array length, the last
 			 * delay is applied.
 			 */
@@ -145,6 +145,12 @@ export interface VpdbConfig {
 			 * Keep counter during this time in seconds. That means that once
 			 * the user fails to login, the counter will continue to increase
 			 * during that time even if a successful login occurs.
+			 *
+			 * The goal of this is to avoid an attacker being able to create an
+			 * account, brute-force a few entries, reset backoff time by
+			 * logging in, and repeat.
+			 *
+			 * This screws up the tests however, so we here we can disable it.
 			 */
 			keep: number,
 		},

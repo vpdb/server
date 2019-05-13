@@ -198,6 +198,80 @@ export abstract class Api {
 	}
 
 	/**
+	 * Throws an exception if the user's IP is blocked due to failed login attempts.
+	 * @param ctx Koa context
+	 */
+	protected async ipLockAssert(ctx: Context) {
+		const ipAddress = this.getIpAddress(ctx);
+		const backoffLockKey = this.getLockKeys(ctx)[1];
+		// check if there's a back-off delay
+		const ttl = await state.redis.ttl(backoffLockKey);
+		if (ttl > 0) {
+			throw new ApiError('Too many failed login attempts from %s, blocking for another %s seconds.', ipAddress, ttl)
+				.display('Too many failed login attempts from this IP, try again in %s seconds.', ttl)
+				.code('too_many_failed_logins')
+				.body({ wait: ttl })
+				.warn()
+				.status(429);
+		}
+	}
+
+	/**
+	 * Clears the counter when the "keep" delay is not set. Otherwise,
+	 * even on successful login, the user will hit the current back-off
+	 * delay on next failure.
+	 *
+	 * @param ctx Koa context
+	 */
+	protected async ipLockOnSuccess(ctx: Context) {
+		const backoffNumDelay = config.vpdb.loginBackoff.keep;
+
+		// if logged and no "keep" is set, expire lock
+		if (!backoffNumDelay) {
+			await state.redis.del(this.getLockKeys(ctx)[0]);
+		}
+	}
+
+	/**
+	 * Increases the fail counter. Every time this is called, the longer
+	 * the blocking period will be.
+	 *
+	 * After updating the counter, the original error is thrown.
+	 *
+	 * @param ctx Koa context
+	 * @param err Error to throw
+	 */
+	protected async ipLockOnFail(ctx: Context, err: ApiError) {
+
+		// don't count twice
+		if (err.statusCode === 429) {
+			throw err;
+		}
+		const backoffNumDelay = config.vpdb.loginBackoff.keep;
+		const backoffDelay = config.vpdb.loginBackoff.delay;
+		const [ backoffNumKey, backoffLockKey ] = this.getLockKeys(ctx);
+
+		// increase number of consecutively failed attempts
+		const num: number = await state.redis.incr(backoffNumKey);
+
+		// check how log to wait
+		const wait = backoffDelay[Math.min(num, backoffDelay.length) - 1];
+		logger.info(ctx.state, '[AuthenticationApi.authenticate] Increasing back-off time to %s for try number %d.', wait, num);
+
+		// if there's a wait, set the lock and expire it to wait time
+		if (wait > 0) {
+			await state.redis.set(backoffLockKey, '1');
+			await state.redis.expire(backoffLockKey, wait);
+		}
+		// if this is the first failure and "keep" is set, start the count-down (usually 24h)
+		/* istanbul ignore if: Tests break if we keep the backoff delay. */
+		if (num === 1 && backoffNumDelay) {
+			await state.redis.expire(backoffNumKey, backoffNumDelay);
+		}
+		throw err;
+	}
+
+	/**
 	 * Creates a MongoDb query out of a list of queries.
 	 *
 	 * @param query Search queries
@@ -411,6 +485,19 @@ export abstract class Api {
 				throw new ApiError('User <%s> tried to access `%s` but was denied access due to missing permissions to %s/%s.', user.email, ctx.url, resource, permission).display('Access denied').status(403).log();
 			}
 		}
+	}
+
+	/**
+	 * Returns the Redis keys of the lock counter and current delay.
+	 *
+	 * @param ctx Koa context
+	 * @return [ backoffNumKey, backoffLockKey ]
+	 */
+	private getLockKeys(ctx: Context): [ string, string ] {
+		const ipAddress = this.getIpAddress(ctx);
+		const backoffNumKey = 'auth_delay_num:' + ipAddress;
+		const backoffLockKey = 'auth_delay_time:' + ipAddress;
+		return [ backoffNumKey, backoffLockKey ];
 	}
 
 }

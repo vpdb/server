@@ -79,10 +79,11 @@ describe('The authentication engine of the VPDB API', () => {
 				.post('/v1/authenticate', { username: api.getUser('member').name, password: api.getUser('member').password })
 				.then(res => res.expectStatus(200));
 
-			// fail 5x
+			// first, fail 10x
 			for (let i = 0; i < 10; i++) {
 				await api.post('/v1/authenticate', { username: 'xxx', password: 'xxx' }).then(res => res.expectError(401));
 			}
+			// 11th time should be blocked
 			res = await api.post('/v1/authenticate', { username: 'xxx', password: 'xxx' }).then(res => res.expectStatus(429));
 			expect(res.data.wait).to.be(1);
 

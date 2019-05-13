@@ -173,6 +173,25 @@ describe('The VPDB `user` API', () => {
 				.get('/v1/user/confirm/invalid')
 				.then(res => res.expectError(404, 'no such token'));
 		});
+
+		it('should fail if the same ip tried to login unsuccessfully before', async () => {
+
+			// succeed first to clear previous counter
+			await api
+				.post('/v1/authenticate', { username: api.getUser('member').name, password: api.getUser('member').password })
+				.then(res => res.expectStatus(200));
+
+			// first, fail 10x to login
+			for (let i = 0; i < 10; i++) {
+				await api.post('/v1/authenticate', { username: 'xxx', password: 'xxx' }).then(res => res.expectError(401));
+			}
+			// now user creation should be blocked as well
+			res = await api.post('/v1/users', {}).then(res => res.expectStatus(429));
+			expect(res.data.wait).to.be(1);
+
+			await new Promise(resolve => setTimeout(resolve, 1000));
+		});
+
 	});
 
 	describe('when an admin updates a user', () => {

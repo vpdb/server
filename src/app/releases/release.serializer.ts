@@ -172,6 +172,7 @@ export class ReleaseSerializer extends Serializer<ReleaseDocument> {
 
 		// get all table files
 		const releaseVersionTableFiles = flatten(versions.map(v => v.files))
+			.filter(file => !!file._file) // FIXME hack to not crash on inconsistencies.
 			.filter(file => File.getMimeCategory(file._file as FileDocument) === 'table');
 
 		// console.log('flavorParams: %j, flavorDefaults: %j', flavorParams, flavorDefaults);

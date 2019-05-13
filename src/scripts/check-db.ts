@@ -23,6 +23,9 @@ import { logger } from '../app/common/logger';
 import { config } from '../app/common/settings';
 import { state } from '../app/state';
 import { isEmpty } from 'lodash';
+import { slackbot } from '../app/common/slackbot';
+
+const slackEnabled = false;
 
 (async () => {
 
@@ -198,7 +201,7 @@ async function checkDatabase(ignoreLogEvents = true): Promise<string[]> {
 			let j = 0;
 			for (const versionFile of version.files) {
 				messages.push(...assert('Release', release._id, `versions.${i}.files.${j}._file`, versionFile._file, await state.models.File.findById(versionFile._file).exec()));
-				if (!isEmpty(versionFile.flavor)) {
+				if (!versionFile.flavor) {
 					messages.push(...assert('Release', release._id, `versions.${i}.files.${j}._playfield_image`, versionFile._playfield_image, await state.models.File.findById(versionFile._playfield_image).exec()));
 					messages.push(...assertOptional('Release', release._id, `versions.${i}.files.${j}._playfield_video`, versionFile._playfield_video, await state.models.File.findById(versionFile._playfield_video).exec()));
 					let k = 0;
@@ -284,13 +287,13 @@ function assertOptional(parentModel: string, parentId: any, refField: string, re
 
 function assert(parentModel: string, parentId: any, refField: string, refId: any, refResult: any, optional = false): string[] {
 	if (!optional && !refId) {
-		const message = `Reference ${refField} in ${parentModel}:${parentId.toString()} is required but not found.`;
-		logger.warn(null, message);
+		const message = `*[${parentModel}]* Document \`${parentId.toString()}\` is missing required field \`${refField}\`.`;
+		log(message);
 		return [message];
 
 	} else if (refId && !refResult) {
-		const message = `Reference ${refField}:${refId.toString()} in ${parentModel}:${parentId.toString()} not found.`;
-		logger.warn(null, message);
+		const message = `*[${parentModel}]* Document \`${parentId.toString()}\` is missing reference \`${refId.toString()}\` of field \`${refField}\`.`;
+		log(message);
 		return [message]
 	}
 	return [];
@@ -299,8 +302,8 @@ function assert(parentModel: string, parentId: any, refField: string, refId: any
 function assertOneOrMore(parentModel: string, parentId: any, fields: { refField: string, refId: any }[], message = 'one or more references'): string[] {
 	const populatedFields = fields.filter(f => !!f.refId);
 	if (populatedFields.length === 0) {
-		const warn = `Reference ${parentModel}:${parentId.toString()} must have ${message} within [ ${fields.map(f => f.refField).join(', ')} ] but none found.`;
-		logger.warn(null, warn);
+		const warn = `*[${parentModel}]* Document \`${parentId.toString()}\` must have ${message} within [ \`${fields.map(f => f.refField).join('`, `')}\` ] but none found.`;
+		log(warn);
 		return [warn];
 	}
 	return [];
@@ -310,11 +313,20 @@ function assertOne(parentModel: string, parentId: any, fields: { refField: strin
 	const populatedFields = fields.filter(f => !!f.refId);
 	const warn = assertOneOrMore(parentModel, parentId, fields, 'exactly one reference');
 	if (warn.length === 0 && populatedFields.length > 1) {
-		const message = `Reference ${parentModel}:${parentId.toString()} must have exactly one reference, but multiple found[ ${populatedFields.map(f => f.refField).join(', ')} ] but none found.`;
-		logger.warn(null, message);
+		const message = `*[${parentModel}]* Document \`${parentId.toString()}\` must have exactly one reference, but multiple found: [ \`${populatedFields.map(f => f.refField).join('`, `')}\` ]`;
+		log(message);
 		warn.push(message);
 	}
 	return warn;
+}
+
+function log(message: string) {
+	//this.config.channels.infra
+	logger.warn(null, message);
+	if (slackEnabled) {
+		// noinspection JSIgnoredPromiseFromCall
+		slackbot.rawMessage(config.vpdb.logging.slack.channels.infra, 'DB Checker', message);
+	}
 }
 
 async function bootstrapDatabase() {

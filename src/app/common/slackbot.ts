@@ -36,7 +36,7 @@ const delay = 5000;
 export class SlackBot {
 
 	private readonly enabled: boolean = false;
-	private config: { enabled: boolean; token: string; channels: { eventLog: string; userLog: string; downloadLog: string; general: string } };
+	private config: { enabled: boolean; token: string; channels: { eventLog: string; userLog: string; downloadLog: string; infra: string, general: string } };
 	private web: WebClient;
 	private rtm: RTMClient;
 
@@ -364,6 +364,23 @@ export class SlackBot {
 
 		} catch (err) {
 			logger.error(err, 'Error sending log to slack.');
+		}
+	}
+
+	public async rawMessage(channel: string, botName: string, message: string) {
+		if (!this.enabled) {
+			return;
+		}
+		try {
+			await this.web.chat.postMessage({
+				channel,
+				username: botName,
+				icon_url: 'https://github.com/vpdb/website/raw/master/src/static/favicon/android-chrome-256x256.png',
+				mrkdwn: true,
+				text: message
+			});
+		} catch (err) {
+			logger.error(err, 'Error sending raw message to slack.');
 		}
 	}
 

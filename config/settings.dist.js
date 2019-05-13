@@ -213,7 +213,9 @@ module.exports = {
 				channels: {
 					eventLog: '',
 					userLog: '',
-					general: ''
+					downloadLog: '',
+					general: '',
+					infra: '',
 				}
 			}
 		},

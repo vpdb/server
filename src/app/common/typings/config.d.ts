@@ -250,6 +250,7 @@ export interface VpdbConfig {
 					userLog: string,
 					downloadLog: string,
 					general: string,
+					infra: string,
 				},
 			},
 		},

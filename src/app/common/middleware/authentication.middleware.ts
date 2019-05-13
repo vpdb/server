@@ -226,7 +226,7 @@ async function authenticateWithJwt(ctx: Context, token: { value: string, fromUrl
 	try {
 		decoded = jwtDecode(token.value, config.vpdb.secret, false, 'HS256');
 	} catch (e) {
-		throw new ApiError('Bad JSON Web Token').log(e).status(401);
+		throw new ApiError('Bad JSON Web Token').status(401);
 	}
 
 	// check for expiration

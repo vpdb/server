@@ -55,6 +55,14 @@ describe('The ACLs of the `Profile` API', function() {
 		it('should deny updates of user profile', function(done) {
 			request.patch('/api/v1/profile').send({}).end(hlp.status(401, done));
 		});
+
+		it('should allow password reset requests', function(done) {
+			request.post('/api/v1/profile/request-password-reset').send({}).end(hlp.status(422, done));
+		});
+
+		it('should allow password resets', function(done) {
+			request.post('/api/v1/profile/password-reset').send({}).end(hlp.status(422, done));
+		});
 	});
 
 	describe('for logged clients (role member)', function() {
@@ -65,6 +73,14 @@ describe('The ACLs of the `Profile` API', function() {
 
 		it('should allow access to user logs', function(done) {
 			request.get('/api/v1/profile/logs').as('member').end(hlp.status(200, done));
+		});
+
+		it('should allow password reset requests', function(done) {
+			request.post('/api/v1/profile/request-password-reset').as('member').send({}).end(hlp.status(422, done));
+		});
+
+		it('should allow password resets', function(done) {
+			request.post('/api/v1/profile/password-reset').as('member').send({}).end(hlp.status(422, done));
 		});
 	});
 

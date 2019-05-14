@@ -327,6 +327,12 @@ export class SlackBot {
 			case 'change_password':
 				msg.msg = 'Changed password.';
 				break;
+			case 'reset_password':
+				msg.msg = 'Reset password.';
+				break;
+			case 'request_reset_password':
+				msg.msg = 'Requested password to be reset.';
+				break;
 			case 'create_local_account':
 				msg.msg = 'Added local credentials.';
 				break;

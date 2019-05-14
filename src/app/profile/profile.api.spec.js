@@ -39,7 +39,8 @@ describe('The VPDB `profile` API', () => {
 			admin: { roles: [ 'admin' ]},
 			contributor: { roles: [ 'contributor' ]},
 			member: { roles: [ 'member' ]},
-			chprofile: { roles: [ 'member' ]}
+			chprofile: { roles: [ 'member' ]},
+			chpass: { roles: [ 'member' ]},
 		});
 	});
 
@@ -456,6 +457,99 @@ describe('The VPDB `profile` API', () => {
 			await api.post('/v1/authenticate', { username: user.name, password: user.password })
 				.then(res => res.expectError(401, 'Wrong username or password'));
 		});
+	});
+
+	describe('when a local user requests a password reset', () => {
+
+		it('should fail if the email is not provided', async () => {
+			await api
+				.post('/v1/profile/request-password-reset', { })
+				.then(res => res.expectValidationError('email', 'Email must be provided'));
+		});
+
+		it('should fail if the email is not a string', async () => {
+			await api
+				.post('/v1/profile/request-password-reset', { email: { email: 'test' } })
+				.then(res => res.expectValidationError('email', 'Email must be a string'));
+		});
+
+		it('should fail if the email does not exist', async () => {
+			await api
+				.post('/v1/profile/request-password-reset', { email: 'zrrgamapel'})
+				.then(res => res.expectValidationError('email','Can\'t find that email, sorry'));
+		});
+
+		it('should fail if the email is linked to an OAuth account', async () => {
+			const oauthUser = await api.createOAuthUser('github');
+			await api
+				.post('/v1/profile/request-password-reset', { email: oauthUser.user.email })
+				.then(res => res.expectError(400,'you\'ve previously logged in via GitHub'));
+		});
+
+		it('should succeed for a valid email address', async () => {
+			const res = await api
+				.post('/v1/profile/request-password-reset', { email: api.getUser('chpass').email, returnEmailToken: 1 })
+				.then(res => res.expectStatus(200));
+			expect(res.data.message).to.contain('Email sent');
+		});
+
+	});
+
+	describe('when a local user resets the password', () => {
+
+		it('should fail if token is not provided', async () => {
+			await api
+				.post('/v1/profile/password-reset', {})
+				.then(res => res.expectValidationError('token', 'token must be provided'));
+		});
+
+		it('should fail if token is not a string', async () => {
+			await api
+				.post('/v1/profile/password-reset', { token: { token: 'asdf' }})
+				.then(res => res.expectValidationError('token', 'token must be a string'));
+		});
+
+		it('should fail if password is not provided', async () => {
+			await api
+				.post('/v1/profile/password-reset', { token: '1234' })
+				.then(res => res.expectValidationError('password', 'password must be provided'));
+		});
+
+		it('should fail if password is not a string', async () => {
+			await api
+				.post('/v1/profile/password-reset', { token: '1234', password: { password: 'asdf' }})
+				.then(res => res.expectValidationError('password', 'password must be a string'));
+		});
+
+		it('should fail if token is invalid', async () => {
+			await api
+				.post('/v1/profile/password-reset', { token: '1234', password: 'asdf' })
+				.then(res => res.expectValidationError('token', 'invalid token'));
+		});
+
+		it('should fail if the new password is invalid', async () => {
+			const user = api.getUser('chpass');
+			const res = await api
+				.post('/v1/profile/request-password-reset', { email: user.email, returnEmailToken: 1 })
+				.then(res => res.expectStatus(200));
+			const token = res.data.token;
+			await api
+				.post('/v1/profile/password-reset', { token: token, password: '1' })
+				.then(res => res.expectValidationError('password', 'Password must be at least'));
+		});
+
+		it('should succeed if the token and the new password are valid', async () => {
+			const user = api.getUser('chpass');
+			let res = await api
+				.post('/v1/profile/request-password-reset', { email: user.email, returnEmailToken: 1 })
+				.then(res => res.expectStatus(200));
+			const token = res.data.token;
+			res = await api
+				.post('/v1/profile/password-reset', { token: token, password: 'newpassword' })
+				.then(res => res.expectStatus(200));
+			expect(res.data.message).to.contain('Password updated');
+		});
+
 	});
 
 	describe.skip('when a non-local user sets its username', () => {

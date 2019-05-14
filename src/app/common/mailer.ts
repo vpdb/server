@@ -60,6 +60,19 @@ class Mailer {
 		});
 	}
 
+	public async resetPasswordRequest(requestState: RequestState, user: UserDocument, email: string, token: string): Promise<SentMessageInfo> {
+		return this.sendEmail(requestState, user, 'Password reset at VPDB', 'password-reset-request', {
+			user,
+			confirmationUrl: settings.webUri('/reset-password/' + token),
+		}, undefined, email);
+	}
+
+	public async resetPasswordSuccess(requestState: RequestState, user: UserDocument): Promise<SentMessageInfo> {
+		return this.sendEmail(requestState, user, 'Your password has been reset', 'password-reset-success', {
+			user,
+		});
+	}
+
 	public async welcomeLocal(requestState: RequestState, user: UserDocument): Promise<SentMessageInfo> {
 		return this.sendEmail(requestState, user, 'Welcome to VPDB!', 'welcome-local', { user });
 	}
@@ -355,9 +368,10 @@ class Mailer {
 	 * @param {string} template Name of the Handlebars template, without path or extension
 	 * @param {object} templateData Data passed to the Handlebars renderer
 	 * @param {string} [enabledFlag] If set, user profile must have this preference set to true
+	 * @param {string} [emailAddress] If set, this email as the recipient's email instead of the user's default.
 	 * @return Promise<SentMessageInfo>
 	 */
-	private async sendEmail(requestState: RequestState, user: UserDocument, subject: string, template: string, templateData: object, enabledFlag: string = null): Promise<SentMessageInfo> {
+	private async sendEmail(requestState: RequestState, user: UserDocument, subject: string, template: string, templateData: object, enabledFlag?: string, emailAddress?: string): Promise<SentMessageInfo> {
 
 		const what = template.replace(/-/g, ' ');
 		if (!this.emailEnabled(user, enabledFlag)) {
@@ -372,7 +386,7 @@ class Mailer {
 		// setup email
 		const email: Mail.Options = {
 			from: { name: config.vpdb.email.sender.name, address: config.vpdb.email.sender.email },
-			to: { name: user.name, address: user.email },
+			to: { name: user.name, address: emailAddress || user.email },
 			subject,
 			text,
 		};

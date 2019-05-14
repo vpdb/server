@@ -33,9 +33,12 @@ export interface UserDocument extends MetricsDocument {
 	roles?: string[];
 	_plan?: string;
 	is_local?: boolean;
-	providers?: UserProviders;
 	password_hash?: string;
 	password_salt?: string;
+	password_reset?: {
+		token: string;
+		expires_at: Date;
+	};
 	thumb?: string;
 	location?: string;
 	preferences?: UserPreferences;
@@ -53,7 +56,7 @@ export interface UserDocument extends MetricsDocument {
 		subscribed_releases: string[];
 		api_key: string;
 	};
-
+	providers?: UserProviders;
 	provider?: string;
 	provider_id?: string;
 	gravatar_id?: string;
@@ -98,6 +101,11 @@ export interface UserDocument extends MetricsDocument {
 	 * @return {boolean} True if at least one role matches, false otherwise.
 	 */
 	hasRole?(role: string | string[]): boolean;
+
+	/**
+	 * Returns the names of the OAuth provider the user has logged in.
+	 */
+	getProviderNames?(): string[];
 }
 
 export interface UserPreferences extends Document {

@@ -44,17 +44,22 @@ export const userFields: any = {
 	email: { type: String, index: true, unique: true, required: 'Email must be provided.' },
 	email_status: {
 		code: { type: String, enum: ['confirmed', 'pending_registration', 'pending_update'], required: true },
-		token: { type: String },
+		token: { type: String, index: true },
 		expires_at: { type: Date },
 		value: { type: String },
 	},
 	emails: { type: [String], index: true }, // collected from profiles
+	validated_emails: { type: [String], index: true },
 	roles: { type: [String], required: 'Roles must be provided.' },
 	_plan: { type: String, required: 'Plan must be provided.' },
 	is_local: { type: Boolean, required: true },
 	providers: {},
 	password_hash: { type: String },
 	password_salt: { type: String },
+	password_reset: {
+		token: { type: String, index: true },
+		expires_at: { type: Date },
+	},
 	thumb: { type: String },
 	location: { type: String },
 	preferences: {
@@ -82,7 +87,6 @@ export const userFields: any = {
 	},
 	created_at: { type: Date, required: true },
 	is_active: { type: Boolean, required: true, default: false },
-	validated_emails: { type: [String], index: true },
 	channel_config: {
 		subscribe_to_starred: { type: Boolean, default: false }, // "nice to know", useless
 		subscribed_releases: { type: [String], index: true },     // linked releases on client side, so we can announce properly in realtime
@@ -341,6 +345,31 @@ userSchema.methods.hasRole = function(role: string | string[]): boolean {
 	} else {
 		return this.roles.includes(role);
 	}
+};
+
+/**
+ * Returns the names of the OAuth provider the user has logged in.
+ * @return List of (display) names
+ */
+userSchema.methods.getProviderNames = function(): string[] {
+	if (!this.providers || !Object.keys(this.providers).length) {
+		return [];
+	}
+	const names: string[] = [];
+	const providerIds = Object.keys(this.providers).filter(k => !!this.providers[k]);
+	for (const providerId of providerIds) {
+		switch (providerId) {
+			case 'github': names.push('GitHub'); break;
+			case 'google': names.push('Google'); break;
+			default:
+				const ips = config.vpdb.passport.ipboard.find(i => i.id === providerId);
+				if (ips) {
+					names.push(ips.name)
+				}
+				break;
+		}
+	}
+	return names;
 };
 
 //-----------------------------------------------------------------------------

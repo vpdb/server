@@ -26,6 +26,7 @@ import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
 import { Context } from '../common/typings/context';
 import { state } from '../state';
+import { apiCache } from '../common/api.cache';
 
 export class MediumApi extends Api {
 
@@ -96,5 +97,14 @@ export class MediumApi extends Api {
 
 		logger.info(ctx.state, '[MediumApi.del] Medium "%s" successfully deleted.', medium.id);
 		this.success(ctx, null, 204);
+
+		this.noAwait(async () => {
+			if (medium._ref.game) {
+				await apiCache.invalidateUpdatedGame(ctx.state, await state.models.Game.findById(medium._ref.game));
+			}
+			if (medium._ref.release) {
+				await apiCache.invalidateUpdatedRelease(ctx.state, await state.models.Release.findById(medium._ref.release));
+			}
+		});
 	}
 }

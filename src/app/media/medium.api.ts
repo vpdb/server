@@ -92,19 +92,16 @@ export class MediumApi extends Api {
 		if (!canDelete && !(medium._created_by as Types.ObjectId).equals(ctx.state.user._id)) {
 			throw new ApiError('Permission denied, must be owner.').status(403);
 		}
+
 		// remove from db
 		await medium.remove();
 
+		// invalidate cache
+		if (medium._ref.game) {
+			await apiCache.invalidateUpdatedGame(ctx.state, await state.models.Game.findById(medium._ref.game));
+		}
+
 		logger.info(ctx.state, '[MediumApi.del] Medium "%s" successfully deleted.', medium.id);
 		this.success(ctx, null, 204);
-
-		this.noAwait(async () => {
-			if (medium._ref.game) {
-				await apiCache.invalidateUpdatedGame(ctx.state, await state.models.Game.findById(medium._ref.game));
-			}
-			if (medium._ref.release) {
-				await apiCache.invalidateUpdatedRelease(ctx.state, await state.models.Release.findById(medium._ref.release));
-			}
-		});
 	}
 }

@@ -494,8 +494,12 @@ class ApiCache {
 			delete response.headers[header];
 		}
 
-		// set the cache todo set ttl to user caches
+		// set the cache
 		await state.redis.set(key, JSON.stringify(response));
+		if (ctx.state.user) {
+			// expire user-scoped cache after 24h
+			await state.redis.expire(key, 86400);
+		}
 
 		// reference entities
 		if (isObject(body)) {

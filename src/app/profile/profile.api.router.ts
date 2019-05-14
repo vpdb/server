@@ -35,6 +35,8 @@ export class ProfileApiRouter implements ApiRouter {
 		this.router.get('/v1/profile',               api.auth(api.view.bind(api), 'user', 'view', [ Scope.ALL, Scope.COMMUNITY ]));
 		this.router.patch('/v1/profile',             api.auth(api.update.bind(api), 'user', 'update', [ Scope.ALL ]));
 		this.router.get('/v1/profile/confirm/:tkn', api.confirm.bind(api));
+		this.router.post('/v1/profile/request-password-reset', api.requestResetPassword.bind(api));
+		this.router.post('/v1/profile/password-reset',         api.resetPassword.bind(api));
 
 		const logApi = new LogUserApi();
 		this.router.get('/v1/profile/logs',          api.auth(logApi.list.bind(api), 'user', 'view', [ Scope.ALL ]));

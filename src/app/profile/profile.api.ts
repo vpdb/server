@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { assign, pick, uniq } from 'lodash';
+import { assign, pick, uniq, isString } from 'lodash';
 import randomString from 'randomstring';
 
 import { acl } from '../common/acl';
@@ -231,6 +231,118 @@ export class ProfileApi extends Api {
 			if (logEvent === 'registration_email_confirmed' && config.vpdb.email.confirmUserEmail) {
 				await mailer.welcomeLocal(ctx.state, user);
 			}
+		});
+	}
+
+	/**
+	 * Requests a password request for a given email address
+	 *
+	 * @see POST /v1/profile/request-password-reset
+	 * @param ctx Koa context
+	 */
+	public async requestResetPassword(ctx: Context) {
+
+		// FIXME rate limit!
+
+		if (!ctx.request.body.email) {
+			throw new ApiError().validationError('email', 'Email must be provided');
+		}
+		if (!isString(ctx.request.body.email)) {
+			throw new ApiError().validationError('email', 'Email must be a string');
+		}
+		const email = ctx.request.body.email.trim();
+
+		// TODO make sure newUser.email is sane (comes from user directly)
+		const user = await state.models.User.findOne({
+			$or: [
+				{ emails: email },
+				{ validated_emails: email },
+			],
+		}).exec();
+
+		// check if email exists
+		if (!user) {
+			throw new ApiError().validationError('email', 'Can\'t find that email, sorry.');
+		}
+
+		// check if user is local
+		if (!user.is_local) {
+			const providers = user.getProviderNames();
+			const lastProvider = providers.pop();
+			const via = providers.length ? [ providers.join(', '), lastProvider ].join(' or ') : lastProvider;
+			throw new ApiError('You don\'t have a password set because you\'ve previously logged in via %s.', via).status(400);
+		}
+
+		// set reset token
+		const token = randomString.generate(16);
+		await state.models.User.findOneAndUpdate({ _id: user._id },
+		{ $set: {
+				password_reset: {
+					token,
+					expires_at: new Date(Date.now() + 86400000), // 1d valid
+				}
+			} }).exec();
+
+		// log
+		await LogUserUtil.success(ctx, user, 'request_reset_password');
+
+		// return body
+		if (process.env.NODE_ENV === 'test' && ctx.request.body.returnEmailToken) {
+			this.success(ctx, { message: 'Email sent.', token });
+		} else {
+			/* istanbul ignore next: Test case is above */
+			this.success(ctx, { message: 'Email sent.' });
+		}
+
+
+		// send password reset mail
+		this.noAwait(async () => {
+			await mailer.resetPasswordRequest(ctx.state, user, email, token);
+		});
+	}
+
+	/**
+	 * Sets a new password with a previously requested token
+	 *
+	 * @see POST /v1/profile/password-reset
+	 * @param ctx Koa context
+	 */
+	public async resetPassword(ctx: Context) {
+
+		// validations
+		if (!ctx.request.body.token) {
+			throw new ApiError().validationError('token', 'Token must be provided');
+		}
+		if (!isString(ctx.request.body.token)) {
+			throw new ApiError().validationError('token', 'Token must be a string');
+		}
+		if (!ctx.request.body.password) {
+			throw new ApiError().validationError('password', 'Password must be provided');
+		}
+		if (!isString(ctx.request.body.password)) {
+			throw new ApiError().validationError('password', 'Password must be a string');
+		}
+		const user = await state.models.User.findOne({ 'password_reset.token': ctx.request.body.token });
+		if (!user) {
+			throw new ApiError().validationError('token', 'Invalid token', ctx.request.body.token);
+		}
+		if (user.password_reset.expires_at.getTime() < Date.now()) {
+			throw new ApiError().validationError('token', 'Token expired. Please request a password reset again.');
+		}
+
+		// save new password
+		user.password = ctx.request.body.password;
+		await user.save();
+
+		// log
+		await LogUserUtil.success(ctx, user, 'reset_password');
+
+		// return body
+		this.success(ctx, { message: 'Password updated.' });
+
+		// send confirmation
+		this.noAwait(async () => {
+			await mailer.resetPasswordSuccess(ctx.state, user);
 		});
 	}
 

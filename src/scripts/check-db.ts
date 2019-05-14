@@ -22,7 +22,6 @@ import { endPoints } from '../app/common/api.endpoints';
 import { logger } from '../app/common/logger';
 import { config } from '../app/common/settings';
 import { state } from '../app/state';
-import { isEmpty } from 'lodash';
 import { slackbot } from '../app/common/slackbot';
 
 const slackEnabled = false;
@@ -183,7 +182,7 @@ async function checkDatabase(ignoreLogEvents = true): Promise<string[]> {
 	for (const release of releases) {
 		messages.push(...assert('Release', release._id, '_game', release._game, await state.models.Game.findById(release._game).exec()));
 		messages.push(...assert('Release', release._id, '_created_by', release._created_by, await state.models.User.findById(release._created_by).exec()));
-		if (isEmpty(release.original_version)) {
+		if (release.original_version) {
 			messages.push(...assert('Release', release._id, 'original_version._ref', release.original_version._ref, await state.models.Release.findById(release.original_version._ref).exec()));
 		}
 		i = 0;

@@ -69,6 +69,7 @@ export class VptGltfProcessor implements CreationProcessor<FileVariation> {
 			exportSurfaces: true,
 			exportRubbers: true,
 			exportLightBulbs: true,
+			exportPlayfieldLights: false,
 			exportPlayfield: true,
 			exportSpinners: true,
 		});

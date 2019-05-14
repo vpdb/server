@@ -418,7 +418,7 @@ describe('The VPDB `game` API', () => {
 
 		it('should fail if there is a backglass attached to that game', async () => {
 			const game = await api.gameHelper.createGame(user);
-			const b2s = await api.fileHelper.createDirectB2S(user);
+			const b2s = await api.fileHelper.createDirectB2S(user, { keep: true });
 			await api.as(user)
 				.markTeardown()
 				.post('/v1/backglasses', {

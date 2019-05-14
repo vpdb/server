@@ -221,7 +221,7 @@ describe('The VPDB `Media` API', () => {
 
 		it('should fail if the medium is owned by another member', async () => {
 			const user = 'member';
-			const bg = await api.fileHelper.createBackglass(user);
+			const bg = await api.fileHelper.createBackglass(user, { keep: true });
 			res = await api.as(user)
 				.post('/v1/media', {
 					_ref: { game: game.id },
@@ -238,7 +238,7 @@ describe('The VPDB `Media` API', () => {
 
 		it('should fail if the medium is owned by another contributor', async () => {
 			const user = 'member';
-			const bg = await api.fileHelper.createBackglass(user);
+			const bg = await api.fileHelper.createBackglass(user, { keep: true });
 			res = await api.as(user)
 				.markTeardown()
 				.post('/v1/media', {
@@ -255,7 +255,7 @@ describe('The VPDB `Media` API', () => {
 
 		it('should succeed if the backglass is owned', async () => {
 			const user = 'member';
-			const bg = await api.fileHelper.createBackglass(user);
+			const bg = await api.fileHelper.createBackglass(user, { keep: true });
 			res = await api.as(user)
 				.post('/v1/media', {
 					_ref: { game: game.id },
@@ -272,7 +272,7 @@ describe('The VPDB `Media` API', () => {
 
 		it('should succeed as moderator', async () => {
 			const user = 'member';
-			const bg = await api.fileHelper.createBackglass(user);
+			const bg = await api.fileHelper.createBackglass(user, { keep: true });
 			res = await api.as(user)
 				.post('/v1/media', {
 					_ref: { game: game.id },
@@ -287,13 +287,25 @@ describe('The VPDB `Media` API', () => {
 		});
 
 		it('should invalidate the cache of game details', async () => {
+			const user = 'member';
+			const bg = await api.fileHelper.createBackglass(user, { keep: true });
+			res = await api.as(user)
+				.post('/v1/media', {
+					_ref: { game: game.id },
+					_file: bg.id,
+					category: 'backglass_image'
+				})
+				.then(res => res.expectStatus(201));
+			const media = res.data;
 
+			await api.get(`/v1/games/${game.id}`).then(res => res.expectHeader('x-cache-api', 'miss'));
+			res = await api.get(`/v1/games/${game.id}`).then(res => res.expectHeader('x-cache-api', 'hit'));
+			expect(res.data.media.find(m => m.id === media.id)).to.be.an('object');
+
+			await api.as('moderator').del(`/v1/media/${media.id}`).then(res => res.expectStatus(204));
+			res = await api.get(`/v1/games/${game.id}`).then(res => res.expectHeader('x-cache-api', 'miss'));
+			expect(res.data.media.find(m => m.id === media.id)).not.to.be.an('object');
 		});
-
-		it('should invalidate the cache of release details', async () => {
-
-		});
-
 	});
 });
 
@@ -362,7 +374,7 @@ describe('When dealing with pre-processing media', () => {
 		it('should fail when image orientation for playfield-fs is ws', async () => {
 			const user = 'member';
 			const playfield = await api.fileHelper.createPlayfield(user, 'ws', 'playfield-fs');
-			await apiq.as(user)
+			await api.as(user)
 				.post('/v1/releases', {
 					name: 'release',
 					license: 'by-sa',

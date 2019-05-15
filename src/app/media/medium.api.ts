@@ -22,11 +22,11 @@ import { Types } from 'mongoose';
 
 import { acl } from '../common/acl';
 import { Api } from '../common/api';
+import { apiCache } from '../common/api.cache';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
 import { Context } from '../common/typings/context';
 import { state } from '../state';
-import { apiCache } from '../common/api.cache';
 
 export class MediumApi extends Api {
 

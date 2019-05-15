@@ -364,7 +364,7 @@ userSchema.methods.getProviderNames = function(): string[] {
 			default:
 				const ips = config.vpdb.passport.ipboard.find(i => i.id === providerId);
 				if (ips) {
-					names.push(ips.name)
+					names.push(ips.name);
 				}
 				break;
 		}

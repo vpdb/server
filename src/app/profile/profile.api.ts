@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { assign, pick, uniq, isString } from 'lodash';
+import { assign, isString, pick, uniq } from 'lodash';
 import randomString from 'randomstring';
 
 import { acl } from '../common/acl';
@@ -280,7 +280,7 @@ export class ProfileApi extends Api {
 				password_reset: {
 					token,
 					expires_at: new Date(Date.now() + 86400000), // 1d valid
-				}
+				},
 			} }).exec();
 
 		// log
@@ -293,7 +293,6 @@ export class ProfileApi extends Api {
 			/* istanbul ignore next: Test case is above */
 			this.success(ctx, { message: 'Email sent.' });
 		}
-
 
 		// send password reset mail
 		this.noAwait(async () => {

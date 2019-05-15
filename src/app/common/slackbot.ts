@@ -383,7 +383,7 @@ export class SlackBot {
 				username: botName,
 				icon_url: 'https://github.com/vpdb/website/raw/master/src/static/favicon/android-chrome-256x256.png',
 				mrkdwn: true,
-				text: message
+				text: message,
 			});
 		} catch (err) {
 			logger.error(err, 'Error sending raw message to slack.');

@@ -71,9 +71,10 @@ export function moderationPlugin(schema: Schema, opts?: ModerationPluginOptions)
 		moderation: {
 			is_approved: { type: Boolean, required: true, default: false },
 			is_refused: { type: Boolean, required: true, default: false },
+			is_deleted: { type: Boolean, required: true, default: false },
 			auto_approved: { type: Boolean, required: true, default: false },
 			history: [{
-				event: { type: String, enum: ['approved', 'refused', 'pending'], required: true },
+				event: { type: String, enum: ['approved', 'refused', 'pending', 'deleted', 'undeleted'], required: true },
 				message: { type: String },
 				created_at: { type: Date },
 				_created_by: { type: Schema.Types.ObjectId, ref: 'User' },
@@ -110,6 +111,7 @@ export function moderationPlugin(schema: Schema, opts?: ModerationPluginOptions)
 			this.moderation = {
 				is_approved: true,
 				is_refused: false,
+				is_deleted: false,
 				auto_approved: true,
 				history: [{ event: 'approved', created_at: now, _created_by: user }],
 			} as ModerationData;
@@ -117,11 +119,11 @@ export function moderationPlugin(schema: Schema, opts?: ModerationPluginOptions)
 			this.moderation = {
 				is_approved: false,
 				is_refused: false,
+				is_deleted: false,
 				auto_approved: false,
 				history: [],
 			} as ModerationData;
 		}
-
 	});
 
 	/**
@@ -137,7 +139,7 @@ export function moderationPlugin(schema: Schema, opts?: ModerationPluginOptions)
 
 		// no moderation filter requested, move on.
 		if (!ctx.query || !ctx.query.moderation) {
-			return addToQuery({ 'moderation.is_approved': true }, query);
+			return addToQuery({ 'moderation.is_approved': true, 'moderation.is_deleted': false }, query);
 		}
 
 		if (!ctx.state.user) {
@@ -155,29 +157,36 @@ export function moderationPlugin(schema: Schema, opts?: ModerationPluginOptions)
 			throw new ApiError('Must be moderator in order to retrieved moderated items.').status(403);
 		}
 
-		const filters = ['refused', 'pending', 'auto_approved', 'manually_approved', 'all'];
+		const filters = ['refused', 'pending', 'auto_approved', 'manually_approved', 'deleted', 'all'];
 
 		if (!includes(filters, ctx.query.moderation)) {
 			throw new ApiError('Invalid moderation filter. Valid filters are: [ "' + filters.join('", "') + '" ].').status(400);
 		}
 		switch (ctx.query.moderation) {
 			case 'refused':
+				query = addToQuery({ 'moderation.is_deleted': false }, query);
 				return addToQuery({ 'moderation.is_refused': true }, query);
 
 			case 'pending':
+				query = addToQuery({ 'moderation.is_deleted': false }, query);
 				query = addToQuery({ 'moderation.is_approved': false }, query);
 				return addToQuery({ 'moderation.is_refused': false }, query);
 
 			case 'auto_approved':
+				query = addToQuery({ 'moderation.is_deleted': false }, query);
 				query = addToQuery({ 'moderation.is_approved': true }, query);
 				return addToQuery({ 'moderation.auto_approved': true }, query);
 
 			case 'manually_approved':
+				query = addToQuery({ 'moderation.is_deleted': false }, query);
 				query = addToQuery({ 'moderation.is_approved': true }, query);
 				return addToQuery({ 'moderation.auto_approved': false }, query);
 
 			case 'all':
-				return query;
+				return addToQuery({ 'moderation.is_deleted': false }, query);
+
+			case 'deleted':
+				return addToQuery({ 'moderation.is_deleted': true }, query);
 		}
 	};
 
@@ -188,7 +197,7 @@ export function moderationPlugin(schema: Schema, opts?: ModerationPluginOptions)
 	 * @return {Promise<ModerationDataEvent>} Created moderation event
 	 */
 	schema.statics.handleModeration = async function(ctx: Context, entity: ModeratedDocument): Promise<ModerationDataEvent> {
-		const actions = ['refuse', 'approve', 'moderate'];
+		const actions = ['refuse', 'approve', 'moderate', 'delete', 'undelete'];
 		if (!ctx.request.body.action) {
 			throw new ApiError().validationError('action', 'An action must be provided. Valid actions are: [ "' + actions.join('", "') + '" ].');
 		}
@@ -210,6 +219,14 @@ export function moderationPlugin(schema: Schema, opts?: ModerationPluginOptions)
 
 			case 'moderate':
 				moderationEvent = await entity.moderate(ctx.state.user, ctx.request.body.message);
+				break;
+
+			case 'delete':
+				moderationEvent = await entity.delete(ctx.state.user);
+				break;
+
+			case 'undelete':
+				moderationEvent = await entity.undelete(ctx.state.user);
 				break;
 		}
 
@@ -255,7 +272,10 @@ export function moderationPlugin(schema: Schema, opts?: ModerationPluginOptions)
 	 * @param {T} query
 	 * @returns {T}
 	 */
-	schema.statics.approvedQuery = <T>(query: T) => addToQuery({ 'moderation.is_approved': true }, query);
+	schema.statics.approvedQuery = <T>(query: T) => addToQuery({
+		'moderation.is_approved': true,
+		'moderation.is_deleted': false,
+	}, query);
 
 	/**
 	 * Makes sure an API request has the permission to view the entity.
@@ -272,8 +292,8 @@ export function moderationPlugin(schema: Schema, opts?: ModerationPluginOptions)
 			throw new Error('Tried to check moderation permission for unmapped entity "' + modelName + '".');
 		}
 
-		// if approved, all okay.
-		if (this.moderation.is_approved) {
+		// if approved and not deleted, all okay.
+		if (this.moderation.is_approved && !this.moderation.is_deleted) {
 			return this;
 		}
 
@@ -344,6 +364,7 @@ export function moderationPlugin(schema: Schema, opts?: ModerationPluginOptions)
 			'approved',
 			true,
 			false,
+			false,
 		);
 	};
 
@@ -361,6 +382,7 @@ export function moderationPlugin(schema: Schema, opts?: ModerationPluginOptions)
 			'refused',
 			false,
 			true,
+			false,
 		);
 	};
 
@@ -378,6 +400,41 @@ export function moderationPlugin(schema: Schema, opts?: ModerationPluginOptions)
 			'pending',
 			false,
 			false,
+			false,
+		);
+	};
+
+	/**
+	 * Deletes an entity without refusing or approving
+	 * @param {UserDocument|ObjectId} user User who deletes
+	 * @returns {Promise<ModerationDataEvent>} Created moderation event
+	 */
+	schema.methods.delete = async function(user: UserDocument): Promise<ModerationData> {
+		return await moderateEntity.bind(this)(
+			this.constructor.modelName,
+			user,
+			undefined,
+			'deleted',
+			this.moderation.is_approved,
+			this.moderation.is_refused,
+			true,
+		);
+	};
+
+	/**
+	 * Undeletes an entity without refusing or approving
+	 * @param {UserDocument|ObjectId} user User who undeletes
+	 * @returns {Promise<ModerationDataEvent>} Created moderation event
+	 */
+	schema.methods.undelete = async function(user: UserDocument): Promise<ModerationData> {
+		return await moderateEntity.bind(this)(
+			this.constructor.modelName,
+			user,
+			undefined,
+			'undeleted',
+			this.moderation.is_approved,
+			this.moderation.is_refused,
+			false,
 		);
 	};
 }
@@ -391,9 +448,10 @@ export function moderationPlugin(schema: Schema, opts?: ModerationPluginOptions)
  * @param {string} eventName Name of the event
  * @param {boolean} isApproved True if new status is approved
  * @param {boolean} isRefused True if new status is refused
+ * @param {boolean} isDeleted True if new status is deleted
  * @returns {Promise<ModerationDataEvent>} Created moderation event
  */
-async function moderateEntity(this: ModeratedDocument, modelName: string, user: UserDocument, message: string, eventName: string, isApproved: boolean, isRefused: boolean): Promise<ModerationDataEvent> {
+async function moderateEntity(this: ModeratedDocument, modelName: string, user: UserDocument, message: string, eventName: string, isApproved: boolean, isRefused: boolean, isDeleted: boolean): Promise<ModerationDataEvent> {
 
 	const model = state.getModel<ModeratedModel<ModeratedDocument>>(modelName);
 	const previousModeration = { isApproved: this.moderation.is_approved, isRefused: this.moderation.is_refused };
@@ -408,6 +466,7 @@ async function moderateEntity(this: ModeratedDocument, modelName: string, user: 
 	await model.findOneAndUpdate({ _id: this._id }, {
 		'moderation.is_approved': isApproved,
 		'moderation.is_refused': isRefused,
+		'moderation.is_deleted': isDeleted,
 		$push: { 'moderation.history': event },
 	}).exec();
 
@@ -501,6 +560,18 @@ declare module 'mongoose' {
 		moderate(user: UserDocument, message: string): Promise<ModerationDataEvent>;
 
 		/**
+		 * Semantically deletes the entity. Can be undone with #undelete().
+		 * @param user User deleting
+		 */
+		delete(user: UserDocument): Promise<ModerationDataEvent>;
+
+		/**
+		 * Undeletes the entity
+		 * @param user User undeleting
+		 */
+		undelete(user: UserDocument): Promise<ModerationDataEvent>;
+
+		/**
 		 * An optional hook executed when moderation changed.
 		 *
 		 * @param previousModeration Original moderation
@@ -513,6 +584,7 @@ declare module 'mongoose' {
 	export interface ModerationData extends Document {
 		is_approved: boolean;
 		is_refused: boolean;
+		is_deleted: boolean;
 		auto_approved: boolean;
 		history?: ModerationDataEvent[];
 	}

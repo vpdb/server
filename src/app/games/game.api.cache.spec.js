@@ -328,7 +328,7 @@ describe('The game cache', () => {
 
 			// create release and cache list
 			const release = await api.releaseHelper.createRelease('moderator');
-			res = await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'miss'));
+			res = await api.get('/v1/games?per_page=100').then(res => res.expectHeader('x-cache-api', 'miss'));
 			const numDownloads = res.data.find(g => g.id === release.game.id).counter.downloads;
 
 			// download release
@@ -339,7 +339,7 @@ describe('The game cache', () => {
 				.then(res => res.expectStatus(200));
 
 			// it's a hit but counter is updated
-			res = await api.get('/v1/games').then(res => res.expectHeader('x-cache-api', 'hit'));
+			res = await api.get('/v1/games?per_page=100').then(res => res.expectHeader('x-cache-api', 'hit'));
 			expect(res.data.find(g => g.id === release.game.id).counter.downloads).to.be(numDownloads + 1);
 		});
 

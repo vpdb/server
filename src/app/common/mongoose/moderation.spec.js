@@ -93,6 +93,7 @@ describe('The VPDB moderation feature', () => {
 
 				expect(res.data.is_approved).to.be(true);
 				expect(res.data.is_refused).to.be(false);
+				expect(res.data.is_deleted).to.be(false);
 				expect(res.data.auto_approved).to.be(false);
 				expect(res.data.history).to.be.an('array');
 				expect(res.data.history).to.have.length(1);
@@ -117,6 +118,7 @@ describe('The VPDB moderation feature', () => {
 
 				expect(res.data.is_approved).to.be(false);
 				expect(res.data.is_refused).to.be(true);
+				expect(res.data.is_deleted).to.be(false);
 				expect(res.data.auto_approved).to.be(false);
 				expect(res.data.history).to.be.an('array');
 				expect(res.data.history).to.have.length(1);
@@ -125,7 +127,7 @@ describe('The VPDB moderation feature', () => {
 
 		describe('when resetting', () => {
 
-			it('should succeed reset', async () => {
+			it('should succeed', async () => {
 				const moderatedBackglass = await api.releaseHelper.createDirectB2S('member');
 				await api
 					.as('moderator')
@@ -139,6 +141,7 @@ describe('The VPDB moderation feature', () => {
 
 				expect(res.data.is_approved).to.be(false);
 				expect(res.data.is_refused).to.be(false);
+				expect(res.data.is_deleted).to.be(false);
 				expect(res.data.auto_approved).to.be(false);
 				expect(res.data.history).to.be.an('array');
 				expect(res.data.history).to.have.length(2);
@@ -157,10 +160,69 @@ describe('The VPDB moderation feature', () => {
 
 				expect(res.data.moderation.is_approved).to.be(true);
 				expect(res.data.moderation.is_refused).to.be(false);
+				expect(res.data.moderation.is_deleted).to.be(false);
 				expect(res.data.moderation.auto_approved).to.be(true);
 				expect(res.data.moderation.history).to.be.an('array');
 				expect(res.data.moderation.history).to.have.length(1);
 			});
+		});
+
+		describe('when deleting', () => {
+
+			it('should succeed for an approved backglass', async () => {
+				const moderatedBackglass = await api.releaseHelper.createDirectB2S('contributor');
+
+				// delete
+				await api
+					.as('moderator')
+					.post(`/v1/backglasses/${moderatedBackglass.id}/moderate`, { action: 'delete' })
+					.then(res => res.expectStatus(200));
+
+				// check
+				res = await api
+					.as('moderator')
+					.withQuery({ fields: 'moderation' })
+					.get(`/v1/backglasses/${moderatedBackglass.id}`)
+					.then(res => res.expectStatus(200));
+
+				expect(res.data.moderation.is_approved).to.be(true);
+				expect(res.data.moderation.is_refused).to.be(false);
+				expect(res.data.moderation.is_deleted).to.be(true);
+				expect(res.data.moderation.auto_approved).to.be(true);
+				expect(res.data.moderation.history).to.be.an('array');
+				expect(res.data.moderation.history).to.have.length(2);
+			});
+
+			it('should succeed for a pending backglass', async () => {
+				const moderatedBackglass = await api.releaseHelper.createDirectB2S('member');
+
+				// refuse
+				await api
+					.as('moderator')
+					.post(`/v1/backglasses/${moderatedBackglass.id}/moderate`, { action: 'refuse', message: 'test.' })
+					.then(res => res.expectStatus(200));
+
+				// delete
+				await api
+					.as('moderator')
+					.post(`/v1/backglasses/${moderatedBackglass.id}/moderate`, { action: 'delete' })
+					.then(res => res.expectStatus(200));
+
+				// check
+				res = await api
+					.as('moderator')
+					.withQuery({ fields: 'moderation' })
+					.get(`/v1/backglasses/${moderatedBackglass.id}`)
+					.then(res => res.expectStatus(200));
+
+				expect(res.data.moderation.is_approved).to.be(false);
+				expect(res.data.moderation.is_refused).to.be(true);
+				expect(res.data.moderation.is_deleted).to.be(true);
+				expect(res.data.moderation.auto_approved).to.be(false);
+				expect(res.data.moderation.history).to.be.an('array');
+				expect(res.data.moderation.history).to.have.length(2);
+			});
+
 		});
 
 	});
@@ -263,6 +325,7 @@ describe('The VPDB moderation feature', () => {
 
 				expect(res.data.moderation.is_approved).to.be(true);
 				expect(res.data.moderation.is_refused).to.be(false);
+				expect(res.data.moderation.is_deleted).to.be(false);
 				expect(res.data.moderation.auto_approved).to.be(true);
 				expect(res.data.moderation.history).to.be.an('array');
 				expect(res.data.moderation.history).to.have.length(1);
@@ -406,6 +469,56 @@ describe('The VPDB moderation feature', () => {
 		});
 	});
 
+	describe('when listing approved but deleted backglasses', () => {
+
+		let deletedBackglass;
+		before(async () => {
+			deletedBackglass = await api.releaseHelper.createDirectB2S('contributor');
+			await api
+				.as('moderator')
+				.post(`/v1/backglasses/${deletedBackglass.id}/moderate`, { action: 'delete' })
+				.then(res => res.expectStatus(200));
+		});
+
+		it('should never list the backglass without requesting moderated entities', async () => {
+			res = await api.get('/v1/backglasses').then(res => res.expectStatus(200));
+			expect(res.data.find(b => b.id === deletedBackglass.id)).not.to.be.ok();
+
+			res = await api.as('contributor').get('/v1/backglasses').then(res => res.expectStatus(200));
+			expect(res.data.find(b => b.id === deletedBackglass.id)).not.to.be.ok();
+
+			res = await api.as('member').get('/v1/backglasses').then(res => res.expectStatus(200));
+			expect(res.data.find(b => b.id === deletedBackglass.id)).not.to.be.ok();
+
+			res = await api.as('moderator').get('/v1/backglasses').then(res => res.expectStatus(200));
+			expect(res.data.find(b => b.id === deletedBackglass.id)).not.to.be.ok();
+		});
+
+		it('should not list the backglass within the game', async () => {
+			res = await api.get('/v1/games/' + deletedBackglass.game.id).then(res => res.expectStatus(200));
+			expect(res.data.backglasses.find(b => b.id === deletedBackglass.id)).not.to.be.ok();
+		});
+
+		it('should not list the backglass when listing all entities', async () => {
+			res = await api
+				.as('moderator')
+				.withQuery({ moderation: 'all' })
+				.get('/v1/backglasses')
+				.then(res => res.expectStatus(200));
+			expect(res.data.find(b => b.id === deletedBackglass.id)).not.to.be.ok();
+		});
+
+		it('should succeed listing deleted backglasses', async () => {
+			res = await api
+				.as('moderator')
+				.withQuery({ moderation: 'deleted' })
+				.get('/v1/backglasses')
+				.then(res => res.expectStatus(200));
+			expect(res.data.find(b => b.id === deletedBackglass.id)).to.be.ok();
+		});
+
+	});
+
 	describe('when listing moderated releases', () => {
 
 		it('should fail as anonymous', async () => {
@@ -520,6 +633,29 @@ describe('The VPDB moderation feature', () => {
 			await api.as('member').get('/v1/backglasses/' + backglass2.id).then(res => res.expectStatus(200));
 			await api.as('member2').get('/v1/backglasses/' + backglass2.id).then(res => res.expectStatus(200));
 		});
+	});
+
+	describe('when retrieving deleted backglass details', () => {
+
+		let deletedBackglass;
+		before(async () => {
+			deletedBackglass = await api.releaseHelper.createDirectB2S('contributor');
+			await api
+				.as('moderator')
+				.post(`/v1/backglasses/${deletedBackglass.id}/moderate`, { action: 'delete' })
+				.then(res => res.expectStatus(200));
+		});
+
+		it('should fail as anonymous and non-creator', async () => {
+			await api.get('/v1/backglasses/' + deletedBackglass.id).then(res => res.expectStatus(404));
+			await api.as('member2').get('/v1/backglasses/' + deletedBackglass.id).then(res => res.expectStatus(404));
+		});
+
+		it('should succeed as creator or moderator', async () => {
+			await api.as('contributor').get('/v1/backglasses/' + deletedBackglass.id).then(res => res.expectStatus(200));
+			await api.as('moderator').get('/v1/backglasses/' + deletedBackglass.id).then(res => res.expectStatus(200));
+		});
+
 	});
 
 	describe('when retrieving pending releases details', () => {

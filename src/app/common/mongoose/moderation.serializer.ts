@@ -52,7 +52,7 @@ export class ModerationSerializer extends Serializer<ModerationData> {
 		}
 		// if user is populated that means we should populate the history, otherwise only status is returned
 		const includeHistory = isArray(doc.history) && doc.history[0] && this._populated(doc.history[0], '_created_by');
-		const moderationData: ModerationData = pick(doc, ['is_approved', 'is_refused', 'auto_approved']) as ModerationData;
+		const moderationData: ModerationData = pick(doc, ['is_approved', 'is_refused', 'is_deleted', 'auto_approved']) as ModerationData;
 		if (includeHistory) {
 			moderationData.history = doc.history.map(h => {
 				return {

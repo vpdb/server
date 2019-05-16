@@ -49,7 +49,7 @@ export class UserApi extends Api {
 	public async create(ctx: Context) {
 
 		// blocked ips can't create new users
-		await this.ipLockAssert(ctx);
+		await this.ipLockAssert(ctx, config.vpdb.loginBackoff);
 
 		const postedUser: UserDocument = assignIn<UserDocument>(pick(ctx.request.body, 'username', 'password', 'email'), {
 			is_local: true,

@@ -64,25 +64,25 @@ describe('The VPDB `Comment` API', () => {
 			await api
 				.as('member')
 				.post('/v1/releases/' + restrictedRelease.id + '/comments', { message: '123' })
-				.then(res => res.expectError(404, 'no such release'));
+				.then(res => res.expectError(404, 'is restricted'));
 
 			// as author
 			await api
 				.as('author')
 				.post('/v1/releases/' + restrictedRelease.id + '/comments', { message: '123' })
-				.then(res => res.expectError(404, 'no such release'));
+				.then(res => res.expectError(404, 'is restricted'));
 
 			// as uploader
 			await api
 				.as('contributor')
 				.post('/v1/releases/' + restrictedRelease.id + '/comments', { message: '123' })
-				.then(res => res.expectError(404, 'no such release'));
+				.then(res => res.expectError(404, 'is restricted'));
 
 			// as moderator
 			await api
 				.as('moderator')
 				.post('/v1/releases/' + restrictedRelease.id + '/comments', { message: '123' })
-				.then(res => res.expectError(404, 'no such release'));
+				.then(res => res.expectError(404, 'is restricted'));
 		});
 
 		it('should fail when posting an empty message', async () => {

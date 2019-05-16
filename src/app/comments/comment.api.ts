@@ -57,7 +57,7 @@ export class CommentApi extends Api {
 			}
 			game = release._game as GameDocument;
 			if (game.isRestricted('release')) {
-				throw new ApiError('No such release with ID "%s"', ctx.params.id).status(404);
+				throw new ApiError('Release with ID "%s" is restricted', ctx.params.id).status(404);
 			}
 			let comment = new state.models.Comment({
 				_from: ctx.state.user._id,

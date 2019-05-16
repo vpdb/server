@@ -242,7 +242,8 @@ export class ProfileApi extends Api {
 	 */
 	public async requestResetPassword(ctx: Context) {
 
-		// FIXME rate limit!
+		// this resource is lock-protected
+		await this.ipLockAssert(ctx, config.vpdb.passwordResetBackoff);
 
 		if (!ctx.request.body.email) {
 			throw new ApiError().validationError('email', 'Email must be provided');
@@ -262,8 +263,12 @@ export class ProfileApi extends Api {
 
 		// check if email exists
 		if (!user) {
-			throw new ApiError().validationError('email', 'Can\'t find that email, sorry.');
+			await this.ipLockOnFail(ctx, config.vpdb.passwordResetBackoff,
+				new ApiError().validationError('email', 'Can\'t find that email, sorry.'));
 		}
+
+		// potentially unlock ip block
+		await this.ipLockOnSuccess(ctx, config.vpdb.passwordResetBackoff);
 
 		// check if user is local
 		if (!user.is_local) {
@@ -308,6 +313,9 @@ export class ProfileApi extends Api {
 	 */
 	public async resetPassword(ctx: Context) {
 
+		// this resource is lock-protected
+		await this.ipLockAssert(ctx, config.vpdb.passwordResetBackoff);
+
 		// validations
 		if (!ctx.request.body.token) {
 			throw new ApiError().validationError('token', 'Token must be provided');
@@ -323,7 +331,8 @@ export class ProfileApi extends Api {
 		}
 		const user = await state.models.User.findOne({ 'password_reset.token': ctx.request.body.token });
 		if (!user) {
-			throw new ApiError().validationError('token', 'Invalid token', ctx.request.body.token);
+			await this.ipLockOnFail(ctx, config.vpdb.passwordResetBackoff,
+				new ApiError().validationError('token', 'Invalid token', ctx.request.body.token));
 		}
 		if (user.password_reset.expires_at.getTime() < Date.now()) {
 			throw new ApiError().validationError('token', 'Token expired. Please request a password reset again.');
@@ -335,6 +344,9 @@ export class ProfileApi extends Api {
 
 		// log
 		await LogUserUtil.success(ctx, user, 'reset_password');
+
+		// potentially unlock ip block
+		await this.ipLockOnSuccess(ctx, config.vpdb.passwordResetBackoff);
 
 		// return body
 		this.success(ctx, { message: 'Password updated.' });

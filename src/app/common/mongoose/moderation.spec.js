@@ -26,7 +26,7 @@ const ApiClient = require('../../../test/api.client');
 const api = new ApiClient();
 
 let res;
-describe('The VPDB moderation feature', () => {
+describe.only('The VPDB moderation feature', () => {
 
 	let game, backglass, release;
 
@@ -221,6 +221,36 @@ describe('The VPDB moderation feature', () => {
 				expect(res.data.moderation.auto_approved).to.be(false);
 				expect(res.data.moderation.history).to.be.an('array');
 				expect(res.data.moderation.history).to.have.length(2);
+			});
+
+			it('should succeed undeleting', async () => {
+				const moderatedBackglass = await api.releaseHelper.createDirectB2S('contributor');
+
+				// delete
+				await api
+					.as('moderator')
+					.post(`/v1/backglasses/${moderatedBackglass.id}/moderate`, { action: 'delete' })
+					.then(res => res.expectStatus(200));
+
+				// undelete
+				await api
+					.as('moderator')
+					.post(`/v1/backglasses/${moderatedBackglass.id}/moderate`, { action: 'undelete' })
+					.then(res => res.expectStatus(200));
+
+				// check
+				res = await api
+					.as('moderator')
+					.withQuery({ fields: 'moderation' })
+					.get(`/v1/backglasses/${moderatedBackglass.id}`)
+					.then(res => res.expectStatus(200));
+
+				expect(res.data.moderation.is_approved).to.be(true);
+				expect(res.data.moderation.is_refused).to.be(false);
+				expect(res.data.moderation.is_deleted).to.be(false);
+				expect(res.data.moderation.auto_approved).to.be(true);
+				expect(res.data.moderation.history).to.be.an('array');
+				expect(res.data.moderation.history).to.have.length(3);
 			});
 
 		});

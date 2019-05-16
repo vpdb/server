@@ -129,7 +129,25 @@ module.exports = {
 			 *
 			 * If set to 0, it will only block until the next successful login.
 			 */
-			keep: 3600 * 24
+			keep: 3600 * 24,
+
+			/**
+			 * This is what makes this backoff config independent from others,
+			 * it's the prefix for the Redis keys.
+			 */
+			key: 'auth',
+
+			/**
+			 * The error code in case of denial.
+			 */
+			errorCode: 'too_many_failed_logins'
+		},
+
+		passwordResetBackoff: {
+			delay: [ 0, 0, 0, 0, 0, 5, 10, 15, 20, 30, 60, 120, 180, 300 ],
+			keep: 3600 * 24,
+			key: 'reset',
+			errorCode: 'too_many_failed_password_resets'
 		},
 
 		/**

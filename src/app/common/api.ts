@@ -27,6 +27,7 @@ import { ApiError, ApiValidationError } from './api.error';
 import { logger } from './logger';
 import { scope, Scope } from './scope';
 import { config, settings } from './settings';
+import { VpdbBackoffConfig } from './typings/config';
 import { Context } from './typings/context';
 
 export abstract class Api {
@@ -200,16 +201,17 @@ export abstract class Api {
 	/**
 	 * Throws an exception if the user's IP is blocked due to failed login attempts.
 	 * @param ctx Koa context
+	 * @param backoff Backoff config
 	 */
-	protected async ipLockAssert(ctx: Context) {
+	protected async ipLockAssert(ctx: Context, backoff: VpdbBackoffConfig) {
 		const ipAddress = this.getIpAddress(ctx);
-		const backoffLockKey = this.getLockKeys(ctx)[1];
+		const backoffLockKey = this.getLockKeys(ctx, backoff)[1];
 		// check if there's a back-off delay
 		const ttl = await state.redis.ttl(backoffLockKey);
 		if (ttl > 0) {
-			throw new ApiError('Too many failed login attempts from %s, blocking for another %s seconds.', ipAddress, ttl)
-				.display('Too many failed login attempts from this IP, try again in %s seconds.', ttl)
-				.code('too_many_failed_logins')
+			throw new ApiError('Too many failed %s attempts from %s, blocking for another %s seconds.', backoff.key, ipAddress, ttl)
+				.display('Too many failed %s attempts from this IP, try again in %s seconds.', backoff.key, ttl)
+				.code(backoff.errorCode)
 				.body({ wait: ttl })
 				.warn()
 				.status(429);
@@ -222,13 +224,15 @@ export abstract class Api {
 	 * delay on next failure.
 	 *
 	 * @param ctx Koa context
+	 * @param key Redis prefix
+	 * @param backoff Backoff config
 	 */
-	protected async ipLockOnSuccess(ctx: Context) {
-		const backoffNumDelay = config.vpdb.loginBackoff.keep;
+	protected async ipLockOnSuccess(ctx: Context, backoff: VpdbBackoffConfig) {
+		const backoffNumDelay = backoff.keep;
 
 		// if logged and no "keep" is set, expire lock
 		if (!backoffNumDelay) {
-			await state.redis.del(this.getLockKeys(ctx)[0]);
+			await state.redis.del(this.getLockKeys(ctx, backoff)[0]);
 		}
 	}
 
@@ -239,24 +243,26 @@ export abstract class Api {
 	 * After updating the counter, the original error is thrown.
 	 *
 	 * @param ctx Koa context
+	 * @param key Redis prefix
+	 * @param backoff Backoff config
 	 * @param err Error to throw
 	 */
-	protected async ipLockOnFail(ctx: Context, err: ApiError) {
+	protected async ipLockOnFail(ctx: Context, backoff: VpdbBackoffConfig, err: ApiError) {
 
 		// don't count twice
 		if (err.statusCode === 429) {
 			throw err;
 		}
-		const backoffNumDelay = config.vpdb.loginBackoff.keep;
-		const backoffDelay = config.vpdb.loginBackoff.delay;
-		const [ backoffNumKey, backoffLockKey ] = this.getLockKeys(ctx);
+		const backoffNumDelay = backoff.keep;
+		const backoffDelay = backoff.delay;
+		const [ backoffNumKey, backoffLockKey ] = this.getLockKeys(ctx, backoff);
 
 		// increase number of consecutively failed attempts
 		const num: number = await state.redis.incr(backoffNumKey);
 
 		// check how log to wait
 		const wait = backoffDelay[Math.min(num, backoffDelay.length) - 1];
-		logger.info(ctx.state, '[AuthenticationApi.authenticate] Increasing back-off time to %s for try number %d.', wait, num);
+		logger.info(ctx.state, '[AuthenticationApi.authenticate] Increasing back-off time of %s to %s for try number %d.', backoff.key, wait, num);
 
 		// if there's a wait, set the lock and expire it to wait time
 		if (wait > 0) {
@@ -491,12 +497,13 @@ export abstract class Api {
 	 * Returns the Redis keys of the lock counter and current delay.
 	 *
 	 * @param ctx Koa context
+	 * @param backoff Backoff config
 	 * @return [ backoffNumKey, backoffLockKey ]
 	 */
-	private getLockKeys(ctx: Context): [ string, string ] {
+	private getLockKeys(ctx: Context, backoff: VpdbBackoffConfig): [ string, string ] {
 		const ipAddress = this.getIpAddress(ctx);
-		const backoffNumKey = 'auth_delay_num:' + ipAddress;
-		const backoffLockKey = 'auth_delay_time:' + ipAddress;
+		const backoffNumKey = `${backoff.key}_delay_num:${ipAddress}`;
+		const backoffLockKey = `${backoff.key}_delay_time:${ipAddress}`;
 		return [ backoffNumKey, backoffLockKey ];
 	}
 

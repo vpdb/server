@@ -157,7 +157,7 @@ describe('The VPDB restriction feature', function() {
 			request.post('/api/v1/releases/' + restrictedRelease.id + '/comments')
 				.as('moderator')
 				.send({ message: msg })
-				.end(hlp.status(404, 'no such release', done));
+				.end(hlp.status(404, 'is restricted', done));
 		});
 
 		it('should fail retrieving release details of a restricted release as anonymous', function(done) {

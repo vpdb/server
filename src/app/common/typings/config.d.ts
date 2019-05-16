@@ -132,28 +132,13 @@ export interface VpdbConfig {
 		 * When the user fails to login with user/pass or token, block logins for
 		 * the IP address.
 		 */
-		loginBackoff: {
+		loginBackoff: VpdbBackoffConfig,
 
-			/**
-			 * How long the IP address is blocked. Index in array is number of
-			 * seconds to wait for the nth time. If n > array length, the last
-			 * delay is applied.
-			 */
-			delay: number[],
-
-			/**
-			 * Keep counter during this time in seconds. That means that once
-			 * the user fails to login, the counter will continue to increase
-			 * during that time even if a successful login occurs.
-			 *
-			 * The goal of this is to avoid an attacker being able to create an
-			 * account, brute-force a few entries, reset backoff time by
-			 * logging in, and repeat.
-			 *
-			 * This screws up the tests however, so we here we can disable it.
-			 */
-			keep: number,
-		},
+		/**
+		 * When the user fails to reset or request to reset the password, block
+		 * logins for the IP address
+		 */
+		passwordResetBackoff: VpdbBackoffConfig,
 
 		/**
 		 * Various mail settings.
@@ -568,4 +553,38 @@ export interface VpdbPlanCategoryCost {
 	table: number;
 	'*': number;
 	[key: string]: number;
+}
+
+export interface VpdbBackoffConfig {
+
+	/**
+	 * This is what makes this backoff config independent from others,
+	 * it's the prefix for the Redis keys.
+	 */
+	key: string;
+
+	/**
+	 * The error code in case of denial.
+	 */
+	errorCode: string;
+
+	/**
+	 * How long the IP address is blocked. Index in array is number of
+	 * seconds to wait for the nth time. If n > array length, the last
+	 * delay is applied.
+	 */
+	delay: number[];
+
+	/**
+	 * Keep counter during this time in seconds. That means that once
+	 * the user fails to login, the counter will continue to increase
+	 * during that time even if a successful login occurs.
+	 *
+	 * The goal of this is to avoid an attacker being able to create an
+	 * account, brute-force a few entries, reset backoff time by
+	 * logging in, and repeat.
+	 *
+	 * This screws up the tests however, so we here we can disable it.
+	 */
+	keep: number;
 }

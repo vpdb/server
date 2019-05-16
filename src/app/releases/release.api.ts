@@ -133,6 +133,8 @@ export class ReleaseApi extends ReleaseAbstractApi {
 			} else {
 				await mailer.releaseSubmitted(ctx.state, ctx.state.user, release);
 			}
+
+			// update game modification date
 			await (release._game as GameDocument).update({ modified_at: new Date() });
 		});
 	}

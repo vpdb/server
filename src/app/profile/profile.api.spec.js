@@ -461,6 +461,13 @@ describe('The VPDB `profile` API', () => {
 
 	describe('when a local user requests a password reset', () => {
 
+		afterEach(async () => {
+			// succeed to clear ip block
+			await api
+				.post('/v1/profile/request-password-reset', { email: api.getUser('chpass').email })
+				.then(res => res.expectStatus(200));
+		});
+
 		it('should fail if the email is not provided', async () => {
 			await api
 				.post('/v1/profile/request-password-reset', { })
@@ -491,6 +498,29 @@ describe('The VPDB `profile` API', () => {
 				.post('/v1/profile/request-password-reset', { email: api.getUser('chpass').email, returnEmailToken: 1 })
 				.then(res => res.expectStatus(200));
 			expect(res.data.message).to.contain('Email sent');
+		});
+
+		it('should block the IP after the nth attempt', async () => {
+
+			// first, fail 10x
+			for (let i = 0; i < 10; i++) {
+				await api
+					.post('/v1/profile/request-password-reset', { email: 'brute@force.email'})
+					.then(res => res.expectValidationError('email','Can\'t find that email, sorry'));
+			}
+			// 11th time should be blocked
+			res = await api
+				.post('/v1/profile/request-password-reset', { email: 'brute@force.email'})
+				.then(res => res.expectStatus(429));
+			expect(res.data.wait).to.be(1);
+
+			// reset should also be blocked
+			res = await api
+				.post('/v1/profile/password-reset', { })
+				.then(res => res.expectStatus(429));
+			expect(res.data.wait).to.be(1);
+
+			await new Promise(resolve => setTimeout(resolve, 1000));
 		});
 
 	});
@@ -548,6 +578,34 @@ describe('The VPDB `profile` API', () => {
 				.post('/v1/profile/password-reset', { token: token, password: 'newpassword' })
 				.then(res => res.expectStatus(200));
 			expect(res.data.message).to.contain('Password updated');
+		});
+
+		it('should block the IP after the nth attempt', async () => {
+
+			// succeed first to clear previous counter
+			await api
+				.post('/v1/profile/request-password-reset', { email: api.getUser('chpass').email, returnEmailToken: 1 })
+				.then(res => res.expectStatus(200));
+
+			// first, fail 10x
+			for (let i = 0; i < 10; i++) {
+				await api
+					.post('/v1/profile/password-reset', { token: 'brute-forced', password: 'newpassword' })
+					.then(res => res.expectValidationError('token', 'invalid token'));
+			}
+			// 11th time should be blocked
+			res = await api
+				.post('/v1/profile/password-reset', { token: 'brute-forced', password: 'newpassword' })
+				.then(res => res.expectStatus(429));
+			expect(res.data.wait).to.be(1);
+
+			// request should also be blocked with the same duration
+			res = await api
+				.post('/v1/profile/request-password-reset', { email: 'brute@force.email'})
+				.then(res => res.expectStatus(429));
+			expect(res.data.wait).to.be(1);
+
+			await new Promise(resolve => setTimeout(resolve, 1000));
 		});
 
 	});

@@ -29,7 +29,8 @@ module.exports = {
 		apiTokenLifetime: 3600000,
 		storageTokenLifetime: 60000,
 		secret: 'do-not-run-this-config-in-production!',
-		loginBackoff: { delay: [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 ], keep: 0 },
+		loginBackoff: { delay: [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5 ], keep: 0, key: 'auth', errorCode: 'too_many_failed_logins' },
+		passwordResetBackoff: { delay: [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5 ], keep: 0, key: 'reset', errorCode: 'too_many_failed_password_resets' },
 		email: {
 			confirmUserEmail: true,
 			sender: { email: 'server@vpdb.local', name: 'VPDB Server' },

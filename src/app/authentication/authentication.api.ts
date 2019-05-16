@@ -49,7 +49,7 @@ export class AuthenticationApi extends Api {
 		try {
 
 			// this resource is lock-protected
-			await this.ipLockAssert(ctx);
+			await this.ipLockAssert(ctx, config.vpdb.loginBackoff);
 
 			// try to authenticate locally
 			const localUser = await this.authenticateLocally(ctx);
@@ -73,10 +73,10 @@ export class AuthenticationApi extends Api {
 			await this.authenticateUser(ctx, authenticatedUser, how);
 
 			// potentially unlock ip block
-			await this.ipLockOnSuccess(ctx);
+			await this.ipLockOnSuccess(ctx, config.vpdb.loginBackoff);
 
 		} catch (err) {
-			await this.ipLockOnFail(ctx, err);
+			await this.ipLockOnFail(ctx, config.vpdb.loginBackoff, err);
 		}
 	}
 

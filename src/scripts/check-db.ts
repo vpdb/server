@@ -21,8 +21,8 @@ import mongoose from 'mongoose';
 import { endPoints } from '../app/common/api.endpoints';
 import { logger } from '../app/common/logger';
 import { config } from '../app/common/settings';
-import { state } from '../app/state';
 import { slackbot } from '../app/common/slackbot';
+import { state } from '../app/state';
 
 const slackEnabled = false;
 
@@ -148,9 +148,9 @@ async function checkDatabase(ignoreLogEvents = true): Promise<string[]> {
 
 	// log user
 	const logUser = await state.models.LogUser.find({}).exec();
-	for (const log of logUser) {
-		messages.push(...assert('LogEvent', log._id, '_actor', log._actor, await state.models.User.findById(log._actor).exec()));
-		messages.push(...assert('LogEvent', log._id, '_user', log._user, await state.models.User.findById(log._user).exec()));
+	for (const l of logUser) {
+		messages.push(...assert('LogEvent', l._id, '_actor', l._actor, await state.models.User.findById(l._actor).exec()));
+		messages.push(...assert('LogEvent', l._id, '_user', l._user, await state.models.User.findById(l._user).exec()));
 	}
 
 	// media
@@ -293,12 +293,12 @@ function assert(parentModel: string, parentId: any, refField: string, refId: any
 	} else if (refId && !refResult) {
 		const message = `*[${parentModel}]* Document \`${parentId.toString()}\` is missing reference \`${refId.toString()}\` of field \`${refField}\`.`;
 		log(message);
-		return [message]
+		return [message];
 	}
 	return [];
 }
 
-function assertOneOrMore(parentModel: string, parentId: any, fields: { refField: string, refId: any }[], message = 'one or more references'): string[] {
+function assertOneOrMore(parentModel: string, parentId: any, fields: Array<{ refField: string, refId: any }>, message = 'one or more references'): string[] {
 	const populatedFields = fields.filter(f => !!f.refId);
 	if (populatedFields.length === 0) {
 		const warn = `*[${parentModel}]* Document \`${parentId.toString()}\` must have ${message} within [ \`${fields.map(f => f.refField).join('`, `')}\` ] but none found.`;
@@ -308,7 +308,7 @@ function assertOneOrMore(parentModel: string, parentId: any, fields: { refField:
 	return [];
 }
 
-function assertOne(parentModel: string, parentId: any, fields: { refField: string, refId: any }[]) {
+function assertOne(parentModel: string, parentId: any, fields: Array<{ refField: string, refId: any }>) {
 	const populatedFields = fields.filter(f => !!f.refId);
 	const warn = assertOneOrMore(parentModel, parentId, fields, 'exactly one reference');
 	if (warn.length === 0 && populatedFields.length > 1) {

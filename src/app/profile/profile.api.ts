@@ -340,6 +340,7 @@ export class ProfileApi extends Api {
 
 		// save new password
 		user.password = ctx.request.body.password;
+		user.password_reset = null;
 		await user.save();
 
 		// log

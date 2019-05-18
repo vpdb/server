@@ -580,6 +580,22 @@ describe('The VPDB `profile` API', () => {
 			expect(res.data.message).to.contain('Password updated');
 		});
 
+		it('should fail once the token has been used', async () => {
+			const user = api.getUser('chpass');
+			let res = await api
+				.post('/v1/profile/request-password-reset', { email: user.email, returnEmailToken: 1 })
+				.then(res => res.expectStatus(200));
+			const token = res.data.token;
+			res = await api
+				.post('/v1/profile/password-reset', { token: token, password: 'newpassword1' })
+				.then(res => res.expectStatus(200));
+			expect(res.data.message).to.contain('Password updated');
+
+			await api
+				.post('/v1/profile/password-reset', { token: token, password: 'newpassword2' })
+				.then(res => res.expectValidationError('token', 'Invalid token'));
+		});
+
 		it('should block the IP after the nth attempt', async () => {
 
 			// succeed first to clear previous counter

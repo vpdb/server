@@ -139,6 +139,14 @@ repo_link() {
 	test $? -eq 0 || abort $1 "Failed to symlink current repo."
 }
 
+post_scripts() {
+	echo Executing post scripts...
+	local dest=${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
+	local settings=${DEPLOY_ROOT}/${DEPLOY_ENV}/settings.js
+	cd ${dest}
+	APP_SETTINGS=${settings} VERSION=${1} node build/scripts/rollbar-deploy.js
+}
+
 repo_cleanup() {
 	local regex=$1
 	local dir=${DEPLOY_ROOT}/${DEPLOY_ENV}

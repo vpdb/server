@@ -34,7 +34,10 @@ repo_link ${LAST_TAG}
 # 5. reload node cluster
 node_cluster_reload
 
-# 6. cleanup old deployment
+# 6. post scripts
+post_scripts ${LAST_TAG}
+
+# 7. cleanup old deployment
 repo_cleanup "v[0-9]+\.[0-9]+\.[0-9]+"
 
 echo ==================================================================

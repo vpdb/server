@@ -108,7 +108,7 @@ async function checkDatabase(ignoreLogEvents = true): Promise<string[]> {
 	// game request
 	const gameRequests = await state.models.GameRequest.find({}).exec();
 	for (const gr of gameRequests) {
-		messages.push(...assert('GameRequest', gr._id, '_game', gr._game, await state.models.Game.findById(gr._game).exec()));
+		messages.push(...assertOptional('GameRequest', gr._id, '_game', gr._game, await state.models.Game.findById(gr._game).exec()));
 		messages.push(...assert('GameRequest', gr._id, '_created_by', gr._created_by, await state.models.User.findById(gr._created_by).exec()));
 	}
 
@@ -183,7 +183,7 @@ async function checkDatabase(ignoreLogEvents = true): Promise<string[]> {
 		messages.push(...assert('Release', release._id, '_game', release._game, await state.models.Game.findById(release._game).exec()));
 		messages.push(...assert('Release', release._id, '_created_by', release._created_by, await state.models.User.findById(release._created_by).exec()));
 		if (release.original_version) {
-			messages.push(...assert('Release', release._id, 'original_version._ref', release.original_version._ref, await state.models.Release.findById(release.original_version._ref).exec()));
+			messages.push(...assertOptional('Release', release._id, 'original_version._ref', release.original_version._ref, await state.models.Release.findById(release.original_version._ref).exec()));
 		}
 		i = 0;
 		for (const tag of release._tags) {

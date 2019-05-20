@@ -152,7 +152,7 @@ function origin(ctx: Context): string {
 	if (process.env.NODE_ENV === 'development') {
 		return requestOrigin;
 	}
-	return requestOrigin.match(/(^https?:\/\/.*?vpdb\.(io|ch)(:\d+)?$)|(^https?:\/\/localhost(:\d+)?$)|^none$/i)
+	return requestOrigin.match(/(^https?:\/\/.*?vpdb\.(io|ch)(:\d+)?$)|(^https?:\/\/localhost(:\d+)?$)|^none$|^https:\/\/vpdb-lighthouse\.firebaseapp\.com$/i)
 		? requestOrigin : 'https://vpdb.io';
 }
 
@@ -165,6 +165,7 @@ const allowHeaders = [
 	'Cache-Control',
 	'Content-Type',
 	'DNT',
+	'elastic-apm-traceparent',
 	'If-Modified-Since',
 	'Keep-Alive',
 	'Origin',

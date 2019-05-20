@@ -19,8 +19,9 @@
 
 import { cloneDeep, difference, extend, intersection, isArray, isUndefined, keys, pick } from 'lodash';
 import { Types } from 'mongoose';
-import { inspect } from 'util';
+import sanitize = require('mongo-sanitize');
 
+import { inspect } from 'util';
 import { acl } from '../common/acl';
 import { Api } from '../common/api';
 import { apiCache } from '../common/api.cache';
@@ -62,7 +63,7 @@ export class BackglassApi extends Api {
 
 			// if this comes from /games/:gameId/backglasses, we already have a game id.
 			if (ctx.params.gameId) {
-				const game = await state.models.Game.findOne({ id: ctx.params.gameId }).exec();
+				const game = await state.models.Game.findOne({ id: sanitize(ctx.params.gameId) }).exec();
 				if (!game) {
 					throw new ApiError('No such game with ID "%s".', ctx.params.gameId).status(404);
 				}
@@ -129,7 +130,7 @@ export class BackglassApi extends Api {
 
 		const updatableFields = ['_game', 'description', 'acknowledgements'];
 
-		let backglass = await state.models.Backglass.findOne({ id: ctx.params.id }).exec();
+		let backglass = await state.models.Backglass.findOne({ id: sanitize(ctx.params.id) }).exec();
 
 		// fail if invalid id
 		if (!backglass) {
@@ -196,10 +197,10 @@ export class BackglassApi extends Api {
 		let game: GameDocument;
 		// list roms of a game below /api/v1/games/{gameId}
 		if (ctx.params.gameId) {
-			game = await state.models.Game.findOne({ id: ctx.params.gameId }).exec();
+			game = await state.models.Game.findOne({ id: sanitize(ctx.params.gameId) }).exec();
 		} else if (ctx.query.game_id) {
 			// filter with game_id query parameter
-			game = await state.models.Game.findOne({ id: ctx.query.game_id }).exec();
+			game = await state.models.Game.findOne({ id: sanitize(ctx.query.game_id) }).exec();
 		}
 
 		if (!game) {
@@ -244,7 +245,7 @@ export class BackglassApi extends Api {
 		const serializerOpts: SerializerOptions = {
 			includedFields: [],
 		};
-		const backglass = await state.models.Backglass.findOne({ id: ctx.params.id })
+		const backglass = await state.models.Backglass.findOne({ id: sanitize(ctx.params.id) })
 			.populate({ path: '_game' })
 			.populate({ path: 'authors._user' })
 			.populate({ path: 'versions._file' })
@@ -271,7 +272,7 @@ export class BackglassApi extends Api {
 	public async del(ctx: Context) {
 
 		const canDelete = await acl.isAllowed(ctx.state.user.id, 'backglasses', 'delete');
-		const backglass = await state.models.Backglass.findOne({ id: ctx.params.id })
+		const backglass = await state.models.Backglass.findOne({ id: sanitize(ctx.params.id) })
 			.populate({ path: '_game' })
 			.populate({ path: 'authors._user' })
 			.populate({ path: 'versions._file' })
@@ -305,7 +306,7 @@ export class BackglassApi extends Api {
 	 * @param {Context} ctx Koa context
 	 */
 	public async moderate(ctx: Context) {
-		let backglass = await state.models.Backglass.findOne({ id: ctx.params.id })
+		let backglass = await state.models.Backglass.findOne({ id: sanitize(ctx.params.id) })
 			.populate('_game')
 			.populate('_created_by')
 			.exec();

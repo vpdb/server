@@ -19,6 +19,7 @@
 
 import { extend } from 'lodash';
 import { Types } from 'mongoose';
+import sanitize = require('mongo-sanitize');
 
 import { acl } from '../common/acl';
 import { Api } from '../common/api';
@@ -76,7 +77,7 @@ export class TagApi extends Api {
 	 */
 	public async del(ctx: Context) {
 
-		const tag = await state.models.Tag.findById(ctx.params.id).exec();
+		const tag = await state.models.Tag.findById(sanitize(ctx.params.id)).exec();
 		// tag must exist
 		if (!tag) {
 			throw new ApiError('No such tag with ID "%s".', ctx.params.id).status(404);

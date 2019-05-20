@@ -18,6 +18,8 @@
  */
 
 import { isUndefined } from 'util';
+import sanitize = require('mongo-sanitize');
+
 import { ApiError } from '../common/api.error';
 import { SerializerOptions } from '../common/serializer';
 import { state } from '../state';
@@ -40,14 +42,14 @@ export class ReleaseListQueryBuilder {
 		if (tags) {
 			// all tags must be matched
 			for (const tag of tags.split(',')) {
-				this.query.push({ _tags: { $in: [tag] } });
+				this.query.push({ _tags: { $in: [sanitize(tag)] } });
 			}
 		}
 	}
 
 	public filterByReleaseIds(ids: string): void {
 		if (ids) {
-			this.query.push({ id: { $in: ids.split(',') } });
+			this.query.push({ id: { $in: ids.split(',').map(sanitize) } });
 		}
 	}
 
@@ -67,7 +69,7 @@ export class ReleaseListQueryBuilder {
 			flavor.split(',').forEach((f: string) => {
 				const [key, val] = f.split(':');
 				if (flavors.values[key]) {
-					this.query.push({ ['versions.files.flavor.' + key]: { $in: ['any', val] } });
+					this.query.push({ ['versions.files.flavor.' + sanitize(key)]: { $in: ['any', sanitize(val)] } });
 				}
 			});
 			// also return the same thumb if not specified otherwise.
@@ -101,7 +103,7 @@ export class ReleaseListQueryBuilder {
 			if (tokenType !== 'provider') {
 				throw new ApiError('Must be authenticated with provider token in order to filter by provider user ID.').status(400);
 			}
-			const user = await state.models.User.findOne({ ['providers.' + tokenProvider + '.id']: String(providerUserId) });
+			const user = await state.models.User.findOne({ ['providers.' + sanitize(tokenProvider) + '.id']: sanitize(String(providerUserId)) });
 			if (user) {
 				this.query.push({ 'authors._user': user._id.toString() });
 			}
@@ -123,7 +125,7 @@ export class ReleaseListQueryBuilder {
 
 	public async filterByCompatibility(buildIds: string): Promise<void> {
 		if (!isUndefined(buildIds)) {
-			const builds = await state.models.Build.find({ id: { $in: buildIds.split(',') } }).exec();
+			const builds = await state.models.Build.find({ id: { $in: buildIds.split(',').map(sanitize) } }).exec();
 			this.query.push({ 'versions.files._compatibility': { $in: builds.map(b => b._id) } });
 		}
 	}

@@ -18,8 +18,9 @@
  */
 
 import { compact, isUndefined, map } from 'lodash';
-import { inspect } from 'util';
+import sanitize = require('mongo-sanitize');
 
+import { inspect } from 'util';
 import { acl } from '../common/acl';
 import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
@@ -74,7 +75,7 @@ export class LogEventApi extends Api {
 
 			// by game
 			if (opts.byGame && ctx.params.id) {
-				const game = await state.models.Game.findOne({ id: ctx.params.id }).exec();
+				const game = await state.models.Game.findOne({ id: sanitize(ctx.params.id) }).exec();
 				if (!game) {
 					throw new ApiError('No such game with id %s.', ctx.params.id).status(404);
 				}
@@ -83,7 +84,7 @@ export class LogEventApi extends Api {
 
 			// by release
 			if (opts.byRelease && ctx.params.id) {
-				const release = await state.models.Release.findOne({ id: ctx.params.id }).populate('_game').exec();
+				const release = await state.models.Release.findOne({ id: sanitize(ctx.params.id) }).populate('_game').exec();
 				if (!release) {
 					throw new ApiError('No such release with id %s.', ctx.params.id).status(404);
 				}
@@ -131,7 +132,7 @@ export class LogEventApi extends Api {
 				if (!fullDetails) {
 					throw new ApiError('Access denied.').status(401);
 				}
-				const user = await state.models.User.findOne({ id: ctx.params.id }).exec();
+				const user = await state.models.User.findOne({ id: sanitize(ctx.params.id) }).exec();
 				if (!user) {
 					throw new ApiError('No such user with id %s.', ctx.params.id).status(404);
 				}

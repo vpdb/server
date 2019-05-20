@@ -18,6 +18,7 @@
  */
 
 import { cloneDeep, defaults, orderBy, pick } from 'lodash';
+import sanitize = require('mongo-sanitize');
 
 import { acl } from '../../common/acl';
 import { apiCache } from '../../common/api.cache';
@@ -52,7 +53,7 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 
 		try {
 			const now = new Date();
-			release = await state.models.Release.findOne({ id: ctx.params.id }).exec();
+			release = await state.models.Release.findOne({ id: sanitize(ctx.params.id) }).exec();
 
 			// fail if release doesn't exist
 			if (!release) {
@@ -184,7 +185,7 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 			const now = new Date();
 
 			// retrieve release
-			release = await state.models.Release.findOne({ id: ctx.params.id })
+			release = await state.models.Release.findOne({ id: sanitize(ctx.params.id) })
 				.populate('versions.files._compatibility')
 				.populate('versions.files._file')
 				.exec();
@@ -215,7 +216,7 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 			}
 
 			// retrieve release with no references that we can update
-			const releaseToUpdate = await state.models.Release.findOne({ id: ctx.params.id }).exec();
+			const releaseToUpdate = await state.models.Release.findOne({ id: sanitize(ctx.params.id) }).exec();
 
 			const versionToUpdate = releaseToUpdate.versions.find(v => v.version === ctx.params.version);
 			oldVersion = cloneDeep(versionToUpdate);
@@ -274,7 +275,7 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 			logger.info(ctx.state, '[ReleaseApi.updateVersion] Activated files [ %s ], returning object to client.', activatedFiles.join(', '));
 			await state.models.Game.updateOne({ _id: release._game.toString() }, { modified_at: new Date() });
 
-			release = await state.models.Release.findOne({ id: ctx.params.id })
+			release = await state.models.Release.findOne({ id: sanitize(ctx.params.id) })
 				.populate({ path: '_game' })
 				.populate({ path: 'authors._user' })
 				.populate({ path: 'versions.files._file' })

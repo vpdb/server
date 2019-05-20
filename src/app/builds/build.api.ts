@@ -19,6 +19,7 @@
 
 import { assign, cloneDeep, pick } from 'lodash';
 import { Types } from 'mongoose';
+import sanitize = require('mongo-sanitize');
 
 import { acl } from '../common/acl';
 import { Api } from '../common/api';
@@ -62,7 +63,7 @@ export class BuildApi extends Api {
 		const updatableFields = ['id', 'platform', 'major_version', 'label', 'download_url', 'support_url', 'built_at',
 			'description', 'type', 'is_range', 'is_active'];
 
-		const build = await state.models.Build.findOne({ id: ctx.params.id }).exec();
+		const build = await state.models.Build.findOne({ id: sanitize(ctx.params.id) }).exec();
 
 		// build must exist
 		if (!build) {
@@ -105,7 +106,7 @@ export class BuildApi extends Api {
 	 */
 	public async view(ctx: Context) {
 
-		const build = await state.models.Build.findOne({ id: ctx.params.id }).exec();
+		const build = await state.models.Build.findOne({ id: sanitize(ctx.params.id) }).exec();
 
 		// build must exist
 		if (!build) {
@@ -146,7 +147,7 @@ export class BuildApi extends Api {
 	 */
 	public async del(ctx: Context) {
 
-		const build = await state.models.Build.findOne({ id: ctx.params.id }).exec();
+		const build = await state.models.Build.findOne({ id: sanitize(ctx.params.id) }).exec();
 
 		// build must exist
 		if (!build) {

@@ -19,6 +19,7 @@
 
 import { pick } from 'lodash';
 import { Document, Model } from 'mongoose';
+import sanitize = require('mongo-sanitize');
 
 import { Api } from '../common/api';
 import { apiCache } from '../common/api.cache';
@@ -234,7 +235,7 @@ export class RatingApi extends Api {
 	 */
 	private find(model: Model<Document>, modelName: string, populate?: string) {
 		return async (ctx: Context): Promise<[Document, RatingDocument]> => {
-			const query = model.findOne({ id: ctx.params.id });
+			const query = model.findOne({ id: sanitize(ctx.params.id) });
 			if (populate) {
 				query.populate(populate);
 			}

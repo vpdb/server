@@ -23,6 +23,7 @@ import { intersection, isArray, isUndefined, sortBy } from 'lodash';
 import { Types } from 'mongoose';
 import { basename, extname } from 'path';
 import unzip from 'unzip';
+import sanitize = require('mongo-sanitize');
 
 import { BuildDocument } from '../builds/build.document';
 import { Api } from '../common/api';
@@ -42,7 +43,6 @@ import { ReleaseDocument } from './release.document';
 import { flavors } from './release.flavors';
 import { ReleaseVersionFileDocument } from './version/file/release.version.file.document';
 import { ReleaseVersionDocument } from './version/release.version.document';
-import base = Mocha.reporters.base;
 
 const Unrar = require('unrar');
 
@@ -245,7 +245,7 @@ export class ReleaseStorage extends Api {
 		const validFormats = fileTypes.getVariationNames(['playfield', 'playfield-fs', 'playfield-ws']);
 		const format = ctx.query.format && validFormats.includes(ctx.query.format) ? ctx.query.format : 'medium';
 
-		const release = await state.models.Release.findOne({ id: ctx.params.release_id })
+		const release = await state.models.Release.findOne({ id: sanitize(ctx.params.release_id) })
 			.populate('versions.files._playfield_image')
 			.populate('versions.files._file')
 			.exec();
@@ -284,7 +284,7 @@ export class ReleaseStorage extends Api {
 			throw new ApiError('You need to provide which files you want to include in the download.').status(422);
 		}
 
-		const release = await state.models.Release.findOne({ id: ctx.params.release_id })
+		const release = await state.models.Release.findOne({ id: sanitize(ctx.params.release_id) })
 			.populate({ path: '_game' })
 			.populate({ path: '_game._backglass' })
 			.populate({ path: '_game._logo' })
@@ -378,7 +378,7 @@ export class ReleaseStorage extends Api {
 
 		// check for backglasses
 		if (body.backglass) {
-			const backglass = await state.models.Backglass.findOne({ id: body.backglass }).populate('versions._file').exec();
+			const backglass = await state.models.Backglass.findOne({ id: sanitize(body.backglass) }).populate('versions._file').exec();
 			if (!backglass) {
 				throw new ApiError('Could not find backglass with id %s.', body.backglass).status(422);
 			}

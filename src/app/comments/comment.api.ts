@@ -32,6 +32,7 @@ import { ReleaseDocument } from '../releases/release.document';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
 import { CommentDocument } from './comment.document';
+import sanitize = require('mongo-sanitize');
 
 export class CommentApi extends Api {
 
@@ -47,7 +48,7 @@ export class CommentApi extends Api {
 		let release: ReleaseDocument;
 		let game: GameDocument;
 		try {
-			release = await state.models.Release.findOne({ id: ctx.params.id })
+			release = await state.models.Release.findOne({ id: sanitize(ctx.params.id) })
 				.populate('_game')
 				.populate('_created_by')
 				.exec();
@@ -62,7 +63,7 @@ export class CommentApi extends Api {
 			let comment = new state.models.Comment({
 				_from: ctx.state.user._id,
 				_ref: { release },
-				message: ctx.request.body.message,
+				message: sanitize(ctx.request.body.message),
 				ip: this.getIpAddress(ctx),
 				created_at: new Date(),
 			});
@@ -120,7 +121,7 @@ export class CommentApi extends Api {
 		let comment: CommentDocument;
 		let release: ReleaseDocument;
 		try {
-			release = await state.models.Release.findOne({ id: ctx.params.id })
+			release = await state.models.Release.findOne({ id: sanitize(ctx.params.id) })
 				.populate('_game')
 				.populate('_created_by')
 				.exec();
@@ -138,7 +139,7 @@ export class CommentApi extends Api {
 			comment = new state.models.Comment({
 				_from: ctx.state.user._id,
 				_ref: { release_moderation: release },
-				message: ctx.request.body.message,
+				message: sanitize(ctx.request.body.message),
 				ip: this.getIpAddress(ctx),
 				created_at: new Date(),
 			});
@@ -173,9 +174,8 @@ export class CommentApi extends Api {
 		let newRef: any;
 		let oldComment: CommentDocument;
 		try {
-			const comment = await state.models.Comment.findOne({ id: ctx.params.id }).exec();
+			const comment = await state.models.Comment.findOne({ id: sanitize(ctx.params.id) }).exec();
 			if (!comment) {
-
 				throw new ApiError('No such comment with ID "%s"', ctx.params.id).status(404);
 			}
 			const updates: Array<() => Promise<any>> = [];
@@ -202,7 +202,7 @@ export class CommentApi extends Api {
 				// assert that the provided ref exists
 				const refPath = ctx.request.body._ref.release ? '_ref.release' : '_ref.release_moderation';
 				const refValue = ctx.request.body._ref.release || ctx.request.body._ref.release_moderation;
-				const release = await state.models.Release.findOne({ id: refValue })
+				const release = await state.models.Release.findOne({ id: sanitize(refValue) })
 					.populate('_game')
 					.populate('_created_by')
 					.exec();
@@ -280,7 +280,7 @@ export class CommentApi extends Api {
 		try {
 			const pagination = this.pagination(ctx, 10, 50);
 			const sort = this.sortParams(ctx, { released_at: 1 }, { date: '-created_at' });
-			const release = await state.models.Release.findOne({ id: ctx.params.id })
+			const release = await state.models.Release.findOne({ id: sanitize(ctx.params.id) })
 				.populate('_game')
 				.populate('_created_by')
 				.exec();
@@ -318,7 +318,7 @@ export class CommentApi extends Api {
 
 		const span = this.apmStartSpan('CommentApi.listForReleaseModeration');
 		try {
-			const release = await state.models.Release.findOne({ id: ctx.params.id }).exec();
+			const release = await state.models.Release.findOne({ id: sanitize(ctx.params.id) }).exec();
 
 			if (!release) {
 				throw new ApiError('No such release with ID "%s"', ctx.params.id).status(404);

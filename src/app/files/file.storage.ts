@@ -19,6 +19,7 @@
 
 import Busboy from 'busboy';
 import { createReadStream } from 'fs';
+import sanitize = require('mongo-sanitize');
 
 import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
@@ -252,7 +253,7 @@ export class FileStorage extends Api {
 	 */
 	private async find(ctx: Context): Promise<[FileDocument, boolean, boolean]> {
 
-		const file = await state.models.File.findOne({ id: ctx.params.id }).exec();
+		const file = await state.models.File.findOne({ id: sanitize(ctx.params.id) }).exec();
 		if (!file) {
 			throw new ApiError('No such file with ID "%s".', ctx.params.id).status(404);
 		}

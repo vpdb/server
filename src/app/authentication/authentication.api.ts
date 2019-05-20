@@ -18,6 +18,7 @@
  */
 
 import { assign, isArray, uniq } from 'lodash';
+import sanitize = require('mongo-sanitize');
 
 import { Api } from '../common/api';
 import { apiCache } from '../common/api.cache';
@@ -188,7 +189,7 @@ export class AuthenticationApi extends Api {
 		if (!ctx.request.body.username || !ctx.request.body.password) {
 			return null;
 		}
-		const localUser = await state.models.User.findOne({ username: ctx.request.body.username }).exec();
+		const localUser = await state.models.User.findOne({ username: sanitize(ctx.request.body.username) }).exec();
 		if (localUser && localUser.authenticate(ctx.request.body.password)) {
 			// all good, return.
 			return localUser;
@@ -233,7 +234,7 @@ export class AuthenticationApi extends Api {
 				.warn()
 				.status(400);
 		}
-		const token = await state.models.Token.findOne({ token: ctx.request.body.token }).populate('_created_by').exec();
+		const token = await state.models.Token.findOne({ token: sanitize(ctx.request.body.token) }).populate('_created_by').exec();
 		// fail if not found
 		if (!token) {
 			// todo fix antiBruteForce = true;

@@ -103,8 +103,8 @@ export abstract class Api {
 		return {
 			defaultPerPage,
 			maxPerPage,
-			page: Math.max(ctx.query.page, 1) || 1,
-			perPage: Math.max(0, Math.min(ctx.query.per_page, maxPerPage)) || defaultPerPage,
+			page: Math.max(parseInt(ctx.query.page), 1) || 1,
+			perPage: Math.max(0, Math.min(parseInt(ctx.query.per_page), maxPerPage)) || defaultPerPage,
 		};
 	}
 

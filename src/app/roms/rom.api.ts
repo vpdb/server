@@ -19,6 +19,7 @@
 
 import Zip from 'adm-zip'; // todo migrate to unzip
 import { assign, extend, pick } from 'lodash';
+import sanitize = require('mongo-sanitize');
 
 import { Types } from 'mongoose';
 import { acl } from '../common/acl';
@@ -57,7 +58,7 @@ export class RomApi extends Api {
 			}
 		}
 
-		const q = ctx.params.gameId ? { id: ctx.params.gameId } : { 'ipdb.number': ctx.request.body._ipdb_number };
+		const q = ctx.params.gameId ? { id: sanitize(ctx.params.gameId) } : { 'ipdb.number': sanitize(ctx.request.body._ipdb_number) };
 		let game = await state.models.Game.findOne(q).exec();
 
 		const rom = extend(pick(ctx.request.body, validFields), {
@@ -128,10 +129,10 @@ export class RomApi extends Api {
 
 		// list roms of a game below /api/v1/games/{gameId}
 		if (ctx.params.gameId) {
-			game = await state.models.Game.findOne({ id: ctx.params.gameId }).exec();
+			game = await state.models.Game.findOne({ id: sanitize(ctx.params.gameId) }).exec();
 
 		} else if (ctx.query.game_id) {
-			game = await state.models.Game.findOne({ id: ctx.query.game_id }).exec();
+			game = await state.models.Game.findOne({ id: sanitize(ctx.query.game_id) }).exec();
 
 		} else if (ctx.query.ipdb_number) {
 			ipdbNumber = parseInt(ctx.query.ipdb_number, 10);
@@ -188,7 +189,7 @@ export class RomApi extends Api {
 	 */
 	public async view(ctx: Context) {
 
-		const rom = await state.models.Rom.findOne({ id: ctx.params.id })
+		const rom = await state.models.Rom.findOne({ id: sanitize(ctx.params.id) })
 			.populate('_game')
 			.populate('_created_by')
 			.exec();
@@ -211,7 +212,7 @@ export class RomApi extends Api {
 	public async del(ctx: Context) {
 
 		const canDelete = await acl.isAllowed(ctx.state.user.id, 'roms', 'delete');
-		const rom = await state.models.Rom.findOne({ id: ctx.params.id }).exec();
+		const rom = await state.models.Rom.findOne({ id: sanitize(ctx.params.id) }).exec();
 
 		if (!rom) {
 			throw new ApiError('No such ROM with ID "%s".', ctx.params.id).status(404);

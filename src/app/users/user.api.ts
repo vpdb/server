@@ -18,6 +18,7 @@
  */
 
 import { assign, assignIn, difference, escapeRegExp, includes, isNumber, isObject, isString, pick, uniq } from 'lodash';
+import sanitize = require('mongo-sanitize');
 
 import { acl } from '../common/acl';
 import { Api } from '../common/api';
@@ -53,7 +54,7 @@ export class UserApi extends Api {
 
 		const postedUser: UserDocument = assignIn<UserDocument>(pick(ctx.request.body, 'username', 'password', 'email'), {
 			is_local: true,
-			name: ctx.request.body.name || ctx.request.body.username,
+			name: sanitize(ctx.request.body.name || ctx.request.body.username),
 		});
 
 		// api test behavior
@@ -63,8 +64,8 @@ export class UserApi extends Api {
 		// TODO make sure newUser.email is sane (comes from user directly)
 		const existingUser = await state.models.User.findOne({
 			$or: [
-				{ emails: postedUser.email },
-				{ validated_emails: postedUser.email },
+				{ emails: sanitize(postedUser.email) },
+				{ validated_emails: sanitize(postedUser.email) },
 			],
 		}).exec();
 
@@ -151,8 +152,8 @@ export class UserApi extends Api {
 		const query = {
 			$or: [
 				{ ['providers.' + provider + '.id']: ctx.request.body.provider_id },
-				{ email: ctx.request.body.email },
-				{ validated_emails: ctx.request.body.email },
+				{ email: sanitize(ctx.request.body.email) },
+				{ validated_emails: sanitize(ctx.request.body.email) },
 			],
 		};
 		const existingUser = await state.models.User.findOne(query).exec();
@@ -219,7 +220,7 @@ export class UserApi extends Api {
 		// filter by role
 		if (canList && ctx.request.query.roles) {
 			// sanitze and split
-			const roles = ctx.request.query.roles.trim().replace(/[^a-z0-9,-]+/gi, '').split(',');
+			const roles = ctx.request.query.roles.trim().replace(/[^a-z0-9,-]+/gi, '').split(',').map(sanitize);
 			query.push({ roles: { $in: roles } });
 		}
 		let users = await state.models.User.find(this.searchQuery(query)).exec();
@@ -241,7 +242,7 @@ export class UserApi extends Api {
 	 */
 	public async update(ctx: Context) {
 
-		const user: UserDocument = await state.models.User.findOne({ id: ctx.params.id }).exec();
+		const user: UserDocument = await state.models.User.findOne({ id: sanitize(ctx.params.id) }).exec();
 		if (!user) {
 			throw new ApiError('No such user.').status(404);
 		}
@@ -344,7 +345,7 @@ export class UserApi extends Api {
 	 * @return {Promise<boolean>}
 	 */
 	public async view(ctx: Context) {
-		const user = await state.models.User.findOne({ id: ctx.params.id }).exec();
+		const user = await state.models.User.findOne({ id: sanitize(ctx.params.id) }).exec();
 		if (!user) {
 			throw new ApiError('No such user').status(404);
 		}
@@ -361,7 +362,7 @@ export class UserApi extends Api {
 	 */
 	public async del(ctx: Context) {
 
-		const user = await state.models.User.findOne({ id: ctx.params.id }).exec();
+		const user = await state.models.User.findOne({ id: sanitize(ctx.params.id) }).exec();
 		if (!user) {
 			throw new ApiError('No such user').status(404);
 		}
@@ -385,7 +386,7 @@ export class UserApi extends Api {
 	 */
 	public async sendConfirmationMail(ctx: Context) {
 
-		const user = await state.models.User.findOne({ id: ctx.params.id }).exec();
+		const user = await state.models.User.findOne({ id: sanitize(ctx.params.id) }).exec();
 
 		if (!user) {
 			throw new ApiError('No such user').status(404);

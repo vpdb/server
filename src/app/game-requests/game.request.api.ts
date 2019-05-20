@@ -19,6 +19,7 @@
 
 import { assign, pick } from 'lodash';
 import { Types } from 'mongoose';
+import sanitize = require('mongo-sanitize');
 
 import { acl } from '../common/acl';
 import { Api } from '../common/api';
@@ -79,8 +80,8 @@ export class GameRequestApi extends Api {
 		}
 
 		let gameRequest = new state.models.GameRequest({
-			title: ctx.request.body.title,
-			notes: ctx.request.body.notes,
+			title: sanitize(ctx.request.body.title),
+			notes: sanitize(ctx.request.body.notes),
 			ipdb_number: ipdbNumber,
 			ipdb_title: ipdbData.title,
 			is_closed: false,
@@ -109,7 +110,7 @@ export class GameRequestApi extends Api {
 
 		let requestClosed = false;
 		let gameRequest = await state.models.GameRequest
-			.findOne({ id: ctx.params.id })
+			.findOne({ id: sanitize(ctx.params.id) })
 			.populate('_created_by')
 			.exec();
 
@@ -182,7 +183,7 @@ export class GameRequestApi extends Api {
 	public async del(ctx: Context) {
 
 		const canDelete = await acl.isAllowed(ctx.state.user.id, 'game_requests', 'delete');
-		const gameRequest = await state.models.GameRequest.findOne({ id: ctx.params.id }).exec();
+		const gameRequest = await state.models.GameRequest.findOne({ id: sanitize(ctx.params.id) }).exec();
 		if (!gameRequest) {
 			throw new ApiError('No such game request with ID "%s".', ctx.params.id).status(404);
 		}

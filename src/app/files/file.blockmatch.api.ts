@@ -17,6 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 import { pick, sortBy, sumBy } from 'lodash';
+import sanitize = require('mongo-sanitize');
 
 import { BuildDocument } from '../builds/build.document';
 import { Api } from '../common/api';
@@ -41,7 +42,7 @@ export class FileBlockmatchApi extends Api {
 		const includeSameRelease = !!ctx.query.include_same_release;
 		const rlsFields = ['_game', 'authors._user', 'versions.files._file', 'versions.files._compatibility'];
 		const threshold = 50; // sum of matched bytes and object percentage must be >50%
-		const file = await state.models.File.findOne({ id: ctx.params.id });
+		const file = await state.models.File.findOne({ id: sanitize(ctx.params.id) });
 
 		// fail if not found
 		if (!file) {

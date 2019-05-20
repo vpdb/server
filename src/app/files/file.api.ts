@@ -17,6 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import sanitize = require('mongo-sanitize');
 import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
@@ -35,7 +36,7 @@ export class FileApi extends Api {
 	 * @param {Application.Context} ctx Koa context
 	 */
 	public async del(ctx: Context) {
-		const file = await state.models.File.findOne({ id: ctx.params.id });
+		const file = await state.models.File.findOne({ id: sanitize(ctx.params.id) });
 
 		// fail if not found
 		if (!file) {
@@ -62,7 +63,7 @@ export class FileApi extends Api {
 	 * @param {Application.Context} ctx Koa context
 	 */
 	public async view(ctx: Context) {
-		const file = await state.models.File.findOne({ id: ctx.params.id });
+		const file = await state.models.File.findOne({ id: sanitize(ctx.params.id) });
 
 		// fail if not found
 		if (!file) {

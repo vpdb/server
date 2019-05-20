@@ -19,6 +19,7 @@
 
 import { assign, cloneDeep, difference, extend, intersection, isUndefined, keys, orderBy, pick } from 'lodash';
 import { ModerationDataEvent, Types } from 'mongoose';
+import sanitize = require('mongo-sanitize');
 
 import { acl } from '../common/acl';
 import { apiCache } from '../common/api.cache';
@@ -153,7 +154,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		let oldRelease: ReleaseDocument;
 
 		try {
-			release = await state.models.Release.findOne({ id: ctx.params.id }).exec();
+			release = await state.models.Release.findOne({ id: sanitize(ctx.params.id) }).exec();
 
 			// fail if invalid id
 			if (!release) {
@@ -397,7 +398,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		const span = this.apmStartSpan('ReleaseApi.del');
 		let release: ReleaseDocument;
 		try {
-			release = await state.models.Release.findOne({ id: ctx.params.id })
+			release = await state.models.Release.findOne({ id: sanitize(ctx.params.id) })
 				.populate({ path: 'versions.files._file' })
 				.populate({ path: 'versions.files._playfield_image' })
 				.populate({ path: 'versions.files._playfield_video' })
@@ -447,7 +448,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 		let moderationEvent: ModerationDataEvent;
 		const span = this.apmStartSpan('ReleaseApi.moderate');
 		try {
-			release = await state.models.Release.findOne({ id: ctx.params.id })
+			release = await state.models.Release.findOne({ id: sanitize(ctx.params.id) })
 				.populate('_game')
 				.populate('_created_by')
 				.exec();
@@ -462,7 +463,7 @@ export class ReleaseApi extends ReleaseAbstractApi {
 				const comment = new state.models.Comment({
 					_from: ctx.state.user._id,
 					_ref: { release_moderation: release },
-					message: moderationEvent.message,
+					message: sanitize(moderationEvent.message),
 					ip: this.getIpAddress(ctx),
 					created_at: new Date(),
 				});

@@ -33,6 +33,7 @@ import { LogUserUtil } from '../log-user/log.user.util';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
 import { UserUtil } from '../users/user.util';
+import sanitize = require('mongo-sanitize');
 
 export class ProfileApi extends Api {
 
@@ -141,7 +142,7 @@ export class ProfileApi extends Api {
 
 		const failMsg = 'No such token or token expired.';
 
-		let user = await state.models.User.findOne({ 'email_status.token': ctx.params.tkn }).exec();
+		let user = await state.models.User.findOne({ 'email_status.token': sanitize(ctx.params.tkn) }).exec();
 		if (!user) {
 			throw new ApiError('No user found with email token "%s".', ctx.params.tkn)
 				.display(failMsg)
@@ -251,9 +252,7 @@ export class ProfileApi extends Api {
 		if (!isString(ctx.request.body.email)) {
 			throw new ApiError().validationError('email', 'Email must be a string');
 		}
-		const email = ctx.request.body.email.trim();
-
-		// TODO make sure newUser.email is sane (comes from user directly)
+		const email = sanitize(ctx.request.body.email.trim());
 		const user = await state.models.User.findOne({
 			$or: [
 				{ emails: email },
@@ -329,7 +328,7 @@ export class ProfileApi extends Api {
 		if (!isString(ctx.request.body.password)) {
 			throw new ApiError().validationError('password', 'Password must be a string');
 		}
-		const user = await state.models.User.findOne({ 'password_reset.token': ctx.request.body.token });
+		const user = await state.models.User.findOne({ 'password_reset.token': sanitize(ctx.request.body.token) });
 		if (!user) {
 			await this.ipLockOnFail(ctx, config.vpdb.passwordResetBackoff,
 				new ApiError().validationError('token', 'Invalid token', ctx.request.body.token));

@@ -18,6 +18,8 @@
  */
 
 import { decode as jwtDecode } from 'jwt-simple';
+import sanitize = require('mongo-sanitize');
+
 import { AuthenticationUtil, Jwt } from '../../authentication/authentication.util';
 import { state } from '../../state';
 import { UserDocument } from '../../users/user.document';
@@ -183,7 +185,7 @@ async function authenticateWithAppToken(ctx: Context, token: { value: string, fr
 
 		// vpdb user id header provided
 		if (userId) {
-			user = await state.models.User.findOne({ id: userId });
+			user = await state.models.User.findOne({ id: sanitize(userId) });
 			if (!user) {
 				throw new ApiError('No user with ID "%s".', userId).status(400);
 			}
@@ -245,7 +247,7 @@ async function authenticateWithJwt(ctx: Context, token: { value: string, fromUrl
 		throw new ApiError('Token is only valid for "GET/HEAD %s" but got "%s %s".', decoded.path, ctx.method, extPath).status(401);
 	}
 
-	const user = await state.models.User.findOne({ id: decoded.iss });
+	const user = await state.models.User.findOne({ id: sanitize(decoded.iss) });
 	if (!user) {
 		throw new ApiError('No user with ID %s found.', decoded.iss).status(403).log();
 	}

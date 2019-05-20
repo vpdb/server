@@ -18,6 +18,7 @@
  */
 
 import { extend, pick } from 'lodash';
+import sanitize = require('mongo-sanitize');
 
 import { acl } from '../common/acl';
 import { Api } from '../common/api';
@@ -89,7 +90,7 @@ export class TokenApi extends Api {
 				throw new ApiError('Permission denied.').status(401);
 			}
 			newToken = new state.models.Token(extend(ctx.request.body, {
-				label: ctx.request.body.label,
+				label: sanitize(ctx.request.body.label),
 				is_active: true,
 				created_at: new Date(),
 				expires_at: new Date(new Date().getTime() + 315360000000), // 10 years
@@ -200,7 +201,7 @@ export class TokenApi extends Api {
 				}
 				delete query._created_by;
 			}
-			query.type = ctx.query.type;
+			query.type = sanitize(ctx.query.type);
 		}
 		let tokens = await state.models.Token.find(query).exec();
 
@@ -220,7 +221,7 @@ export class TokenApi extends Api {
 		if (process.env.NODE_ENV === 'test') {
 			updatableFields.push('expires_at');
 		}
-		const token = await state.models.Token.findOne({ id: ctx.params.id, _created_by: ctx.state.user._id }).exec();
+		const token = await state.models.Token.findOne({ id: sanitize(ctx.params.id), _created_by: ctx.state.user._id }).exec();
 		if (!token) {
 			throw new ApiError('No token found with ID "%s".', ctx.params.id).status(404);
 		}
@@ -237,7 +238,7 @@ export class TokenApi extends Api {
 	 * @param {Context} ctx Koa context
 	 */
 	public async del(ctx: Context) {
-		const token = await state.models.Token.findOne({ id: ctx.params.id, _created_by: ctx.state.user._id }).exec();
+		const token = await state.models.Token.findOne({ id: sanitize(ctx.params.id), _created_by: ctx.state.user._id }).exec();
 		if (!token) {
 			throw new ApiError('No such token').status(404);
 		}

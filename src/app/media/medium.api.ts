@@ -19,6 +19,7 @@
 
 import { extend } from 'lodash';
 import { Types } from 'mongoose';
+import sanitize = require('mongo-sanitize');
 
 import { acl } from '../common/acl';
 import { Api } from '../common/api';
@@ -64,7 +65,7 @@ export class MediumApi extends Api {
 	 */
 	public async list(ctx: Context) {
 
-		const game = await state.models.Game.findOne({ id: ctx.params.gameId }).exec();
+		const game = await state.models.Game.findOne({ id: sanitize(ctx.params.gameId) }).exec();
 		if (!game) {
 			throw new ApiError('Unknown game "%s".', ctx.params.gameId).status(404);
 		}
@@ -83,7 +84,7 @@ export class MediumApi extends Api {
 	public async del(ctx: Context) {
 
 		const canDelete = await acl.isAllowed(ctx.state.user.id, 'media', 'delete');
-		const medium = await state.models.Medium.findOne({ id: ctx.params.id }).exec();
+		const medium = await state.models.Medium.findOne({ id: sanitize(ctx.params.id) }).exec();
 		if (!medium) {
 			throw new ApiError('No such medium with ID "%s".', ctx.params.id).status(404);
 		}

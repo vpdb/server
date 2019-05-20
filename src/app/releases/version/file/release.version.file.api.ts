@@ -17,6 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import sanitize = require('mongo-sanitize');
 import { Api } from '../../../common/api';
 import { apiCache } from '../../../common/api.cache';
 import { ApiError } from '../../../common/api.error';
@@ -48,7 +49,7 @@ export class ReleaseVersionFileApi extends Api {
 		try {
 			const now = new Date();
 
-			release = await state.models.Release.findOne({ id: ctx.params.id })
+			release = await state.models.Release.findOne({ id: sanitize(ctx.params.id) })
 				.populate('versions.files._file')
 				.exec();
 
@@ -82,7 +83,7 @@ export class ReleaseVersionFileApi extends Api {
 			}
 
 			// retrieve release with no references that we can update
-			const releaseToUpdate = await state.models.Release.findOne({ id: ctx.params.id }).exec();
+			const releaseToUpdate = await state.models.Release.findOne({ id: sanitize(ctx.params.id) }).exec();
 
 			const versionToUpdate = releaseToUpdate.versions.find(v => v.version === ctx.params.version);
 			const fileToUpdate = versionToUpdate.files.find(f => f._id.equals(versionFileId));
@@ -107,7 +108,7 @@ export class ReleaseVersionFileApi extends Api {
 
 			logger.info(ctx.state, '[ReleaseApi.validateFile] Updated file validation status.');
 
-			release = await state.models.Release.findOne({ id: ctx.params.id })
+			release = await state.models.Release.findOne({ id: sanitize(ctx.params.id) })
 				.populate({ path: '_created_by' })
 				.populate({ path: '_game' })
 				.populate({ path: 'versions.files._file' })

@@ -31,6 +31,7 @@ import {
 	upperFirst,
 	values,
 } from 'lodash';
+import sanitize = require('mongo-sanitize');
 
 import { acl } from '../common/acl';
 import { Api } from '../common/api';
@@ -61,7 +62,7 @@ export class GameApi extends Api {
 	 * @param {Context} ctx Koa context
 	 */
 	public async head(ctx: Context) {
-		const game = await state.models.Game.findOne({ id: ctx.params.id }).exec();
+		const game = await state.models.Game.findOne({ id: sanitize(ctx.params.id) }).exec();
 		ctx.response.set('Content-Length', '0');
 		this.success(ctx, null, game ? 200 : 404);
 	}
@@ -111,7 +112,7 @@ export class GameApi extends Api {
 		let gameRequest: GameRequestDocument;
 		if (ctx.request.body._game_request) {
 			gameRequest = await state.models.GameRequest
-				.findOne({ id: ctx.request.body._game_request })
+				.findOne({ id: sanitize(ctx.request.body._game_request) })
 				.populate('_created_by')
 				.exec();
 
@@ -165,7 +166,7 @@ export class GameApi extends Api {
 			'ipdb', 'number', '_backglass', '_logo', 'keywords'];
 
 		const body = cloneDeep(ctx.request.body);
-		let game = await state.models.Game.findOne({ id: ctx.params.id })
+		let game = await state.models.Game.findOne({ id: sanitize(ctx.params.id) })
 			.populate({ path: '_backglass' })
 			.populate({ path: '_logo' })
 			.exec();
@@ -245,7 +246,7 @@ export class GameApi extends Api {
 	 */
 	public async del(ctx: Context) {
 
-		const game = await state.models.Game.findOne({ id: ctx.params.id })
+		const game = await state.models.Game.findOne({ id: sanitize(ctx.params.id) })
 			.populate({ path: '_backglass' })
 			.populate({ path: '_logo' })
 			.exec();
@@ -300,7 +301,7 @@ export class GameApi extends Api {
 
 		// filter by manufacturer
 		if (ctx.query.mfg) {
-			const mfgs = ctx.query.mfg.split(',');
+			const mfgs = ctx.query.mfg.split(',').map(sanitize);
 			query.push({ manufacturer: mfgs.length === 1 ? mfgs[0] : { $in: mfgs } });
 		}
 
@@ -400,7 +401,7 @@ export class GameApi extends Api {
 	public async view(ctx: Context) {
 
 		// retrieve game
-		const game = await state.models.Game.findOne({ id: ctx.params.id })
+		const game = await state.models.Game.findOne({ id: sanitize(ctx.params.id) })
 			.populate({ path: '_backglass' })
 			.populate({ path: '_logo' })
 			.exec();
@@ -472,7 +473,7 @@ export class GameApi extends Api {
 	 */
 	public async releaseName(ctx: Context) {
 
-		const game = await state.models.Game.findOne({ id: ctx.params.id }).exec();
+		const game = await state.models.Game.findOne({ id: sanitize(ctx.params.id) }).exec();
 
 		if (!game) {
 			throw new ApiError('No such game with ID "%s".', ctx.params.id).status(404);

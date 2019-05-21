@@ -18,6 +18,7 @@
  */
 
 import { assign, isString, pick, uniq } from 'lodash';
+import sanitize = require('mongo-sanitize');
 import randomString from 'randomstring';
 
 import { acl } from '../common/acl';
@@ -33,7 +34,6 @@ import { LogUserUtil } from '../log-user/log.user.util';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
 import { UserUtil } from '../users/user.util';
-import sanitize = require('mongo-sanitize');
 
 export class ProfileApi extends Api {
 

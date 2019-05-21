@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { isUndefined } from 'util';
 import sanitize = require('mongo-sanitize');
+import { isUndefined } from 'util';
 
 import { ApiError } from '../common/api.error';
 import { SerializerOptions } from '../common/serializer';

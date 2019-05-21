@@ -19,6 +19,7 @@
 
 import { cloneDeep } from 'lodash';
 
+import sanitize = require('mongo-sanitize');
 import { acl } from '../common/acl';
 import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
@@ -32,7 +33,6 @@ import { ReleaseDocument } from '../releases/release.document';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
 import { CommentDocument } from './comment.document';
-import sanitize = require('mongo-sanitize');
 
 export class CommentApi extends Api {
 

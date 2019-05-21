@@ -18,8 +18,8 @@
  */
 
 import { assign, pick } from 'lodash';
-import { Types } from 'mongoose';
 import sanitize = require('mongo-sanitize');
+import { Types } from 'mongoose';
 
 import { acl } from '../common/acl';
 import { Api } from '../common/api';

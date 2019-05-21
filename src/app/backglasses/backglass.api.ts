@@ -18,8 +18,8 @@
  */
 
 import { cloneDeep, difference, extend, intersection, isArray, isUndefined, keys, pick } from 'lodash';
-import { Types } from 'mongoose';
 import sanitize = require('mongo-sanitize');
+import { Types } from 'mongoose';
 
 import { inspect } from 'util';
 import { acl } from '../common/acl';

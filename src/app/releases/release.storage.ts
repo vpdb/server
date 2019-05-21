@@ -20,10 +20,10 @@
 import archiver, { Archiver } from 'archiver';
 import { createReadStream } from 'fs';
 import { intersection, isArray, isUndefined, sortBy } from 'lodash';
+import sanitize = require('mongo-sanitize');
 import { Types } from 'mongoose';
 import { basename, extname } from 'path';
 import unzip from 'unzip';
-import sanitize = require('mongo-sanitize');
 
 import { BuildDocument } from '../builds/build.document';
 import { Api } from '../common/api';

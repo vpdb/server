@@ -18,8 +18,8 @@
  */
 
 import { assign, cloneDeep, difference, extend, intersection, isUndefined, keys, orderBy, pick } from 'lodash';
-import { ModerationDataEvent, Types } from 'mongoose';
 import sanitize = require('mongo-sanitize');
+import { ModerationDataEvent, Types } from 'mongoose';
 
 import { acl } from '../common/acl';
 import { apiCache } from '../common/api.cache';

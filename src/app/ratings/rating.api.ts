@@ -18,8 +18,8 @@
  */
 
 import { pick } from 'lodash';
-import { Document, Model } from 'mongoose';
 import sanitize = require('mongo-sanitize');
+import { Document, Model } from 'mongoose';
 
 import { Api } from '../common/api';
 import { apiCache } from '../common/api.cache';

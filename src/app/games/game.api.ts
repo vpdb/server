@@ -189,16 +189,16 @@ export class GameApi extends Api {
 			throw new ApiError('Invalid field%s: ["%s"]. Allowed fields: ["%s"]', invalidFields.length === 1 ? '' : 's', invalidFields.join('", "'), updatableFields.join('", "')).status(400).log();
 		}
 
-		const oldMediaBackglassObj = game._backglass as FileDocument;
-		const oldMediaLogoObj = game._logo as FileDocument;
-		const oldMediaBackglass = (game._backglass as FileDocument).id;
-		const oldMediaLogo = game._logo ? (game._logo as FileDocument).id : null;
-		const newMediaBackglass = ctx.request.body._backglass || oldMediaBackglass;
-		const newMediaLogo = ctx.request.body._logo || oldMediaLogo;
+		const oldMediaBackglass = game._backglass as FileDocument;
+		const oldMediaLogo = game._logo as FileDocument;
+		const oldMediaBackglassId = (game._backglass as FileDocument).id;
+		const oldMediaLogoId = game._logo ? (game._logo as FileDocument).id : null;
+		const newMediaBackglassId = ctx.request.body._backglass || oldMediaBackglassId;
+		const newMediaLogoId = ctx.request.body._logo || oldMediaLogoId;
 
 		// copy media if not submitted so it doesn't get erased
-		ctx.request.body._backglass = newMediaBackglass;
-		ctx.request.body._logo = newMediaLogo;
+		ctx.request.body._backglass = newMediaBackglassId;
+		ctx.request.body._logo = newMediaLogoId;
 
 		// apply changes
 		game = await game.updateInstance(ctx.state, ctx.request.body) as GameDocument;
@@ -220,14 +220,14 @@ export class GameApi extends Api {
 
 		// copy to media and delete old media if changed
 		try {
-			if (oldMediaBackglass !== newMediaBackglass) {
+			if (oldMediaBackglassId !== newMediaBackglassId) {
 				await this.copyMedia(ctx.state, ctx.state.user, game, game._backglass as FileDocument, 'backglass_image', bg => bg.metadata.size.width * bg.metadata.size.height > 647000);  // > 900x720
-				await oldMediaBackglassObj.remove();
+				await oldMediaBackglass.remove();
 			}
-			if (oldMediaLogo !== newMediaLogo) {
+			if (oldMediaLogoId !== newMediaLogoId) {
 				await this.copyMedia(ctx.state, ctx.state.user, game, game._logo as FileDocument, 'wheel_image');
-				if (oldMediaLogoObj) {
-					await oldMediaLogoObj.remove();
+				if (oldMediaLogo) {
+					await oldMediaLogo.remove();
 				}
 			}
 		} catch (err) {

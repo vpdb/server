@@ -171,18 +171,22 @@
 		"yauzl": "2.10.0"
 	},
 	"nyc": {
+		"extends": "@istanbuljs/nyc-config-typescript",
 		"check-coverage": true,
 		"all": true,
 		"cache": true,
+		"sourceMap": true,
 		"lines": 80,
 		"statements": 80,
 		"functions": 80,
 		"branches": 80,
 		"extension": [
-			".js"
+			".js",
+			".ts"
 		],
 		"include": [
-			"build/app/**/*.js"
+			"build/app/**/*.js",
+			"src/app/**/*.ts"
 		],
 		"exclude": [
 			"build/app/files/processor/processor.js",
@@ -190,7 +194,13 @@
 			"build/app/common/middleware/website.middleware.js",
 			"build/app/common/profiler.js",
 			"build/app/authentication/strategies/**",
-			"build/app/vpinball/gltf/gltf-exporter.ts"
+			"build/app/vpinball/gltf/gltf-exporter.ts",
+			"src/app/files/processor/processor.ts",
+			"src/app/common/settings.validator.ts",
+			"src/app/common/middleware/website.middleware.ts",
+			"src/app/common/profiler.ts",
+			"src/app/authentication/strategies/**",
+			"src/app/vpinball/gltf/gltf-exporter.ts"
 		],
 		"reporter": [
 			"lcov",

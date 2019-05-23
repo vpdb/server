@@ -97,7 +97,7 @@ export class Directb2sThumbProcessor implements CreationProcessor<BackglassVaria
 						}
 
 						if (variation.modulate) {
-							img.modulate(variation.modulate, 0, 0);
+							img.modulate(variation.modulate, 100, 100);
 						}
 
 						const writeStream = createWriteStream(dest);

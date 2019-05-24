@@ -14,6 +14,7 @@ module.exports = {
 		},
 		webapp: { protocol: 'http', hostname: 'localhost', port: 3333 },
 		db: `mongodb://localhost:${process.env.MONGODB_PORT || 27017}/vpdb-test`,
+		dbLogging: { writeQueries: false },
 		redis: { host: '127.0.0.1', port: 6379, db: 7 },
 		apiTokenLifetime: 3600000,
 		storageTokenLifetime: 60000,

@@ -55,6 +55,13 @@ shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 		mongoose.set('useNewUrlParser', true);
 		mongoose.set('useFindAndModify', false);
 		mongoose.set('useCreateIndex', true);
+		if (config.vpdb.dbLogging.writeQueries) {
+			mongoose.set('debug', (collection: string, method: string, query: any, doc: any, options: any) => {
+				if (!['find', 'findOne', 'findMany', 'createIndex', 'countDocuments', 'count'].includes(method)) {
+					logger.debug(null, '[MongoDB]: %s.%s(%s, %s, %s)', collection, method, JSON.stringify(query), JSON.stringify(doc), JSON.stringify(options));
+				}
+			});
+		}
 		await mongoose.connect(config.vpdb.db, { useNewUrlParser: true });
 
 		// bootstrap endpoints

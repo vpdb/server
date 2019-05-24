@@ -114,6 +114,17 @@ export interface VpdbConfig {
 		db: string,
 
 		/**
+		 * Database query logging through Mongoose
+		 */
+		dbLogging: {
+
+			/**
+			 * If set, log all write operations.
+			 */
+			writeQueries: boolean,
+		},
+
+		/**
 		 * Redis configuration.
 		 */
 		redis: {

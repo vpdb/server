@@ -95,6 +95,17 @@ module.exports = {
 		db: 'mongodb://localhost:27017/vpdb',
 
 		/**
+		 * Database query logging through Mongoose
+		 */
+		dbLogging: {
+
+			/**
+			 * If set, log all write operations.
+			 */
+			writeQueries: false
+		},
+
+		/**
 		 * Redis configuration.
 		 */
 		redis: {

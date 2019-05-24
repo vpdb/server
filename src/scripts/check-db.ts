@@ -59,6 +59,7 @@ async function checkDatabase(ignoreLogEvents = true): Promise<string[]> {
 	let i = 0;
 
 	// backglasses
+	logger.info(null, 'Checking backglasses...');
 	const backglasses = await state.models.Backglass.find({}).exec();
 	for (const backglass of backglasses) {
 		messages.push(...assert('Backglass', backglass._id, '_created_by', backglass._created_by, await state.models.User.findById(backglass._created_by).exec()));
@@ -82,12 +83,14 @@ async function checkDatabase(ignoreLogEvents = true): Promise<string[]> {
 	}
 
 	// builds
+	logger.info(null, 'Checking builds...');
 	const builds = await state.models.Build.find({}).exec();
 	for (const build of builds) {
 		messages.push(...assertOptional('Build', build._id, '_created_by', build._created_by, await state.models.User.findById(build._created_by).exec()));
 	}
 
 	// comments
+	logger.info(null, 'Checking comments...');
 	const comments = await state.models.Comment.find({}).exec();
 	for (const comment of comments) {
 		messages.push(...assert('Comment', comment._id, `_from`, comment._from, await state.models.User.findById(comment._from).exec()));
@@ -100,12 +103,14 @@ async function checkDatabase(ignoreLogEvents = true): Promise<string[]> {
 	}
 
 	// files
+	logger.info(null, 'Checking files...');
 	const files = await state.models.File.find({}).exec();
 	for (const file of files) {
 		messages.push(...assert('File', file._id, '_created_by', file._created_by, await state.models.User.findById(file._created_by).exec()));
 	}
 
 	// game request
+	logger.info(null, 'Checking game requests...');
 	const gameRequests = await state.models.GameRequest.find({}).exec();
 	for (const gr of gameRequests) {
 		messages.push(...assertOptional('GameRequest', gr._id, '_game', gr._game, await state.models.Game.findById(gr._game).exec()));
@@ -113,6 +118,7 @@ async function checkDatabase(ignoreLogEvents = true): Promise<string[]> {
 	}
 
 	// games
+	logger.info(null, 'Checking games...');
 	const games = await state.models.Game.find({}).exec();
 	for (const game of games) {
 		messages.push(...assert('Game', game._id, '_backglass', game._backglass, await state.models.File.findById(game._backglass).exec()));
@@ -122,6 +128,7 @@ async function checkDatabase(ignoreLogEvents = true): Promise<string[]> {
 
 	// log events
 	if (!ignoreLogEvents) {
+		logger.info(null, 'Checking log events...');
 		const logEvents = await state.models.LogEvent.find({}).exec();
 		for (const logEvent of logEvents) {
 			messages.push(...assert('LogEvent', logEvent._id, '_actor', logEvent._actor, await state.models.User.findById(logEvent._actor).exec()));
@@ -147,6 +154,7 @@ async function checkDatabase(ignoreLogEvents = true): Promise<string[]> {
 	}
 
 	// log user
+	logger.info(null, 'Checking user logs...');
 	const logUser = await state.models.LogUser.find({}).exec();
 	for (const l of logUser) {
 		messages.push(...assert('LogEvent', l._id, '_actor', l._actor, await state.models.User.findById(l._actor).exec()));
@@ -154,6 +162,7 @@ async function checkDatabase(ignoreLogEvents = true): Promise<string[]> {
 	}
 
 	// media
+	logger.info(null, 'Checking media...');
 	const media = await state.models.Medium.find({}).exec();
 	for (const medium of media) {
 		messages.push(...assert('Medium', medium._id, `_file`, medium._file, await state.models.File.findById(medium._file).exec()));
@@ -166,6 +175,7 @@ async function checkDatabase(ignoreLogEvents = true): Promise<string[]> {
 	}
 
 	// ratings
+	logger.info(null, 'Checking ratings...');
 	const ratings = await state.models.Rating.find({}).exec();
 	for (const rating of ratings) {
 		messages.push(...assert('Rating', rating._id, '_from', rating._from, await state.models.User.findById(rating._from).exec()));
@@ -178,6 +188,7 @@ async function checkDatabase(ignoreLogEvents = true): Promise<string[]> {
 	}
 
 	// releases
+	logger.info(null, 'Checking releases...');
 	const releases = await state.models.Release.find({}).exec();
 	for (const release of releases) {
 		messages.push(...assert('Release', release._id, '_game', release._game, await state.models.Game.findById(release._game).exec()));
@@ -226,6 +237,7 @@ async function checkDatabase(ignoreLogEvents = true): Promise<string[]> {
 	}
 
 	// roms
+	logger.info(null, 'Checking roms...');
 	const roms = await state.models.Rom.find({}).exec();
 	for (const rom of roms) {
 		messages.push(...assert('Roms', rom._id, '_file', rom._file, await state.models.File.findById(rom._file).exec()));
@@ -238,6 +250,7 @@ async function checkDatabase(ignoreLogEvents = true): Promise<string[]> {
 	}
 
 	// stars
+	logger.info(null, 'Checking stars...');
 	const stars = await state.models.Star.find({}).exec();
 	for (const star of stars) {
 		messages.push(...assert('Star', star._id, '_from', star._from, await state.models.User.findById(star._from).exec()));
@@ -256,6 +269,7 @@ async function checkDatabase(ignoreLogEvents = true): Promise<string[]> {
 	}
 
 	// table blocks
+	logger.info(null, 'Checking table blocks...');
 	const tableBlocks = await state.models.TableBlock.find({}).exec();
 	for (const tableBlock of tableBlocks) {
 		i = 0;
@@ -266,12 +280,14 @@ async function checkDatabase(ignoreLogEvents = true): Promise<string[]> {
 	}
 
 	// tags
+	logger.info(null, 'Checking tags...');
 	const tags = await state.models.Tag.find({}).exec();
 	for (const tag of tags) {
 		messages.push(...assertOptional('Tag', tag._id, '_created_by', tag._created_by, await state.models.User.findById(tag._created_by).exec()));
 	}
 
 	// tokens
+	logger.info(null, 'Checking tokens...');
 	const tokens = await state.models.Token.find({}).exec();
 	for (const token of tokens) {
 		messages.push(...assert('Token', token._id, '_created_by', token._created_by, await state.models.User.findById(token._created_by).exec()));

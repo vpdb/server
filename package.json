@@ -1,6 +1,6 @@
 {
 	"name": "vpdb",
-	"version": "v3.2.1-SNAPSHOT",
+	"version": "v3.2.1",
 	"description": "Virtual Pinball Database",
 	"main": "src/app/index.ts",
 	"repository": {

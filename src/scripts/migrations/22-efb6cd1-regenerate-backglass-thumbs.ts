@@ -24,7 +24,8 @@ import { processorQueue } from '../../app/files/processor/processor.queue';
 import { state } from '../../app/state';
 
 /**
- * Sets the new is_deleted moderation status to false for all entities.
+ * Re-processes backglass thumbs that were generated without saturation due to
+ * a bug.
  */
 export async function up() {
 

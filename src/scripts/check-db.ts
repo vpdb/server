@@ -24,7 +24,7 @@ import { config } from '../app/common/settings';
 import { slackbot } from '../app/common/slackbot';
 import { state } from '../app/state';
 
-const slackEnabled = false;
+const slackEnabled = process.env.SLACK_ENABLED;
 
 (async () => {
 
@@ -37,6 +37,7 @@ const slackEnabled = false;
 
 		if (warnings.length > 0) {
 			logger.info(null, 'Done in %sms, there were %s inconsistencies.', Date.now() - now, warnings.length);
+			log(`:warning: Database check returned ${warnings.length} inconsistencies.`);
 		} else {
 			logger.info(null, 'Done in %sms, everything looks fine!', Date.now() - now);
 		}
@@ -44,6 +45,7 @@ const slackEnabled = false;
 		process.exit(0);
 
 	} catch (err) {
+		log(`:warning: Database check failed!\n> ${err.message}`);
 		console.error(err);
 		process.exit(1);
 
@@ -336,7 +338,6 @@ function assertOne(parentModel: string, parentId: any, fields: Array<{ refField:
 }
 
 function log(message: string) {
-	//this.config.channels.infra
 	logger.warn(null, message);
 	if (slackEnabled) {
 		// noinspection JSIgnoredPromiseFromCall

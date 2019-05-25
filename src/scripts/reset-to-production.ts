@@ -150,9 +150,11 @@ async function resetToProduction() {
 		await apiCache.invalidateAll();
 
 		console.log('=== All done!');
+		process.exit(0);
 
 	} catch (err) {
 		console.error('ERROR: ', err);
+		process.exit(1);
 	}
 }
 

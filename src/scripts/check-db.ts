@@ -42,12 +42,12 @@ const slackEnabled = process.env.SLACK_ENABLED;
 			logger.info(null, 'Done in %sms, everything looks fine!', Date.now() - now);
 		}
 
-		process.exit(0);
+		setTimeout(() => process.exit(1), 5000);
 
 	} catch (err) {
 		log(`:warning: Database check failed!\n> ${err.message}`);
 		console.error(err);
-		process.exit(1);
+		setTimeout(() => process.exit(2), 5000);
 
 	} finally {
 		await closeDatabase();

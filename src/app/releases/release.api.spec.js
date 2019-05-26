@@ -1018,62 +1018,44 @@ describe('The VPDB `Release` API', () => {
 
 	});
 
-	// describe('when only listing "mine"', () => {
-	//
-	// 	before(done => {
-	// 		hlp.setupUsers(request, {
-	// 			member: { roles: [ 'member' ] },
-	// 			author: { roles: [ 'member' ] },
-	// 			moderator: { roles: [ 'moderator' ] },
-	// 			contributor: { roles: [ 'release-contributor' ] },
-	// 		}, done);
-	// 	});
-	//
-	// 	after(done => {
-	// 		hlp.cleanup(request, done);
-	// 	});
-	//
-	// 	it('should list restricted releases', done => {
-	// 		hlp.game.createGame('moderator', request, { ipdb: { number: 99999, mpu: 9999 } }, function(restrictedGame) {
-	// 			hlp.release.createReleaseForGame('contributor', request, restrictedGame, function(release) {
-	// 				res = await api
-	// 					.get('/v1/releases?show_mine_only=1')
-	// 					.as('contributor')
-	// 					.end(function(err, res) {
-	// 						hlp.expectStatus(err, res, 200);
-	// 						expect(res.data.find(r => r.id === release.id)).to.be.ok();
-	// 						done();
-	// 					});
-	// 			});
-	// 		});
-	// 	});
-	//
-	// 	it('should list pending releases as uploader', done => {
-	// 		hlp.release.createRelease('member', request, function(release) {
-	// 			res = await api
-	// 				.get('/v1/releases?show_mine_only=1')
-	// 				.as('member')
-	// 				.end(function(err, res) {
-	// 					hlp.expectStatus(err, res, 200);
-	// 					expect(res.data.find(r => r.id === release.id)).to.be.ok();
-	// 					done();
-	// 				});
-	// 		});
-	// 	});
-	//
-	// 	it('should list pending releases as author', done => {
-	// 		hlp.release.createRelease('member', request, { author: 'author' }, function(release) {
-	// 			res = await api
-	// 				.get('/v1/releases?show_mine_only=1')
-	// 				.as('author')
-	// 				.end(function(err, res) {
-	// 					hlp.expectStatus(err, res, 200);
-	// 					expect(res.data.find(r => r.id === release.id)).to.be.ok();
-	// 					done();
-	// 				});
-	// 		});
-	// 	});
-	//
-	// });
+	describe('when only listing "mine"', () => {
+
+		before(async () => {
+			await api.setupUsers({
+				member: { roles: [ 'member' ] },
+				author: { roles: [ 'member' ] },
+				moderator: { roles: [ 'moderator' ] },
+				contributor: { roles: [ 'release-contributor' ] },
+			});
+		});
+
+		after(async () => await api.teardown());
+
+		it('should list restricted releases', async () => {
+			const restrictedGame = await api.gameHelper.createGame('moderator', { ipdb: { number: 99999, mpu: 9999 } });
+			const release = await api.releaseHelper.createReleaseForGame('contributor', restrictedGame);
+			res = await api.as('contributor')
+				.get('/v1/releases?show_mine_only=1')
+				.then(res => res.expectStatus(200));
+			expect(res.data.find(r => r.id === release.id)).to.be.ok();
+		});
+
+		it('should list pending releases as uploader', async () => {
+			const release = await api.releaseHelper.createRelease('member');
+			res = await api.as('member')
+				.get('/v1/releases?show_mine_only=1')
+				.then(res => res.expectStatus(200));
+			expect(res.data.find(r => r.id === release.id)).to.be.ok();
+		});
+
+		it('should list pending releases as author', async () => {
+			const release = await api.releaseHelper.createRelease('member', { author: 'author' });
+			res = await api.as('author')
+				.get('/v1/releases?show_mine_only=1')
+				.then(res => res.expectStatus(200));
+			expect(res.data.find(r => r.id === release.id)).to.be.ok();
+		});
+
+	});
 
 });

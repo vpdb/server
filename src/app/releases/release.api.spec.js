@@ -476,248 +476,185 @@ describe('The VPDB `Release` API', () => {
 
 	});
 
-	// describe('when updating an existing release', () => {
-	//
-	// 	before(function(done) {
-	// 		hlp.setupUsers(request, {
-	// 			member: { roles: [ 'member' ] },
-	// 			othermember: { roles: [ 'member' ] },
-	// 			moderator: { roles: [ 'moderator' ] }
-	// 		}, done);
-	// 	});
-	//
-	// 	after(function(done) {
-	// 		hlp.cleanup(request, done);
-	// 	});
-	//
-	// 	it('should fail if not author or creator', async () => {
-	// 		hlp.release.createRelease('member', request, function(release) {
-	// 			res = await api
-	// 				.patch('/v1/releases/' + release.id)
-	// 				.as('othermember')
-	// 				.send({ name: 'New name' })
-	// 				.end(hlp.status(403, 'only authors and owners of the release can update it', done));
-	// 		});
-	// 	});
-	//
-	// 	it('should fail if an invalid release ID is provided', async () => {
-	// 		res = await api
-	// 			.patch('/v1/releases/non-existent')
-	// 			.as('member')
-	// 			.send({})
-	// 			.end(hlp.status(404, 'no such release', done));
-	// 	});
-	//
-	// 	it('should fail if an illegal attribute is provided', async () => {
-	// 		hlp.release.createRelease('member', request, function(release) {
-	// 			res = await api
-	// 				.patch('/v1/releases/' + release.id)
-	// 				.as('member')
-	// 				.send({ id: '1234', name: 'New name', versions: [] })
-	// 				.end(hlp.status(400, 'invalid field', done));
-	// 		});
-	// 	});
-	//
-	// 	it('should fail validations for illegal data', async () => {
-	// 		hlp.release.createRelease('member', request, function(release) {
-	// 			res = await api
-	// 				.patch('/v1/releases/' + release.id)
-	// 				.as('member')
-	// 				.send({ name: '', authors: 'i am a string but i should not!', links: 'i am also string!' })
-	// 				.end(function(err, res) {
-	// 					hlp.expectValidationError(err, res, 'name', 'must be provided');
-	// 					hlp.expectValidationError(err, res, 'authors', 'cast to array failed');
-	// 					hlp.expectValidationError(err, res, 'links', 'cast to array failed');
-	// 					done();
-	// 				});
-	// 		});
-	// 	});
-	//
-	// 	it('should succeed when updating text fields', async () => {
-	// 		const newName = 'My edited name';
-	// 		const newDescription = 'My edited description';
-	// 		const newAcknowledgements = 'My edited acknowledgements';
-	// 		hlp.release.createRelease('member', request, function(release) {
-	// 			res = await api
-	// 				.patch('/v1/releases/' + release.id)
-	// 				.as('member')
-	// 				.send({ name: newName, description: newDescription, acknowledgements: newAcknowledgements })
-	// 				.end(function(err, res) {
-	// 					hlp.expectStatus(err, res, 200);
-	// 					expect(res.data.name).to.be(newName);
-	// 					expect(res.data.description).to.be(newDescription);
-	// 					expect(res.data.acknowledgements).to.be(newAcknowledgements);
-	// 					done();
-	// 				});
-	// 		});
-	// 	});
-	//
-	// 	it('should succeed when updating all fields', async () => {
-	// 		const newName = 'Updated name';
-	// 		const newDescription = 'Updated description';
-	// 		const newAcknowledgements = 'Updated acknowledgements';
-	// 		const links = [
-	// 			{ label: 'first link', url: 'https://vpdb.io/somelink' },
-	// 			{ label: 'second link', url: 'https://vpdb.io/someotherlink' }
-	// 		];
-	// 		const newTags = ['hd', 'dof'];
-	// 		hlp.release.createRelease('member', request, function(release) {
-	// 			res = await api
-	// 				.patch('/v1/releases/' + release.id)
-	// 				.as('member')
-	// 				.save('releases/update')
-	// 				.send({
-	// 					name: newName,
-	// 					description: newDescription,
-	// 					acknowledgements: newAcknowledgements,
-	// 					authors: [ { _user: hlp.getUser('othermember').id, roles: [ 'Some other job' ] } ],
-	// 					links: links,
-	// 					_tags: newTags
-	// 				}).end(function(err, res) {
-	// 					hlp.expectStatus(err, res, 200);
-	// 					expect(res.data.name).to.be(newName);
-	// 					expect(res.data.description).to.be(newDescription);
-	// 					expect(res.data.acknowledgements).to.be(newAcknowledgements);
-	// 					expect(res.data.links).to.eql(links);
-	// 					expect(res.data.tags).to.be.an('array');
-	// 					expect(res.data.tags).to.have.length(newTags.length);
-	// 					newTags.forEach(tag => expect(_.find(res.data.tags, t => t.id === tag)).to.be.an('object'));
-	// 					expect(res.data.authors).to.have.length(1);
-	// 					expect(res.data.authors[0].user.id).to.be(hlp.getUser('othermember').id);
-	// 					done();
-	// 				});
-	// 		});
-	// 	});
-	//
-	// 	it('should succeed updating as non-creator but author', async () => {
-	// 		const newName = 'My edited name';
-	// 		const newDescription = 'My edited description';
-	// 		const newAcknowledgements = 'My edited acknowledgements';
-	// 		hlp.release.createRelease('member', request, function(release) {
-	// 			let originalAuthors = release.authors.map(a => { return { _user: a.user.id, roles: a.roles };});
-	// 			res = await api
-	// 				.patch('/v1/releases/' + release.id)
-	// 				.as('member')
-	// 				.send({ authors: [ ...originalAuthors, { _user: hlp.getUser('othermember').id, roles: [ 'Some other job' ] } ] })
-	// 				.end(function(err, res) {
-	// 					hlp.expectStatus(err, res, 200);
-	// 					res = await api
-	// 						.patch('/v1/releases/' + release.id)
-	// 						.as('othermember')
-	// 						.send({ name: newName, description: newDescription, acknowledgements: newAcknowledgements })
-	// 						.end(function(err, res) {
-	// 							hlp.expectStatus(err, res, 200);
-	// 							expect(res.data.name).to.be(newName);
-	// 							expect(res.data.description).to.be(newDescription);
-	// 							expect(res.data.acknowledgements).to.be(newAcknowledgements);
-	// 							done();
-	// 						});
-	// 				});
-	// 		});
-	// 	});
-	//
-	// 	it('should succeed updating as non-creator but moderator', async () => {
-	// 		const newName = 'My edited name';
-	// 		const newDescription = 'My edited description';
-	// 		const newAcknowledgements = 'My edited acknowledgements';
-	// 		hlp.release.createRelease('member', request, function(release) {
-	// 			res = await api
-	// 				.patch('/v1/releases/' + release.id)
-	// 				.as('moderator')
-	// 				.send({ name: newName, description: newDescription, acknowledgements: newAcknowledgements })
-	// 				.end(function(err, res) {
-	// 					hlp.expectStatus(err, res, 200);
-	// 					expect(res.data.name).to.be(newName);
-	// 					expect(res.data.description).to.be(newDescription);
-	// 					expect(res.data.acknowledgements).to.be(newAcknowledgements);
-	// 					done();
-	// 				});
-	// 		});
-	// 	});
-	//
-	// 	it('should fail for a non-existing tag', async () => {
-	// 		const newTags = ['hd', 'i-dont-exist'];
-	// 		hlp.release.createRelease('member', request, function(release) {
-	// 			res = await api
-	// 				.patch('/v1/releases/' + release.id)
-	// 				.as('member')
-	// 				.send({ _tags: newTags })
-	// 				.end(function(err, res) {
-	// 					hlp.expectValidationError(err, res, '_tags.1', 'no such tag');
-	// 					done();
-	// 				});
-	// 		});
-	// 	});
-	//
-	// 	it('should succeed when updating tags', async () => {
-	// 		const newTags = ['hd', 'dof'];
-	// 		hlp.release.createRelease('member', request, function(release) {
-	// 			res = await api
-	// 				.patch('/v1/releases/' + release.id)
-	// 				.as('member')
-	// 				.send({ _tags: newTags })
-	// 				.end(function(err, res) {
-	// 					hlp.expectStatus(err, res, 200);
-	// 					expect(res.data.tags).to.be.an('array');
-	// 					expect(res.data.tags).to.have.length(newTags.length);
-	// 					newTags.forEach(tag => expect(_.find(res.data.tags, t => t.id === tag)).to.be.an('object'));
-	// 					done();
-	// 				});
-	// 		});
-	// 	});
-	//
-	// 	it('should succeed when updating links', async () => {
-	// 		const links = [
-	// 			{ label: 'first link', url: 'https://vpdb.io/somelink' },
-	// 			{ label: 'second link', url: 'https://vpdb.io/someotherlink' }
-	// 		];
-	// 		hlp.release.createRelease('member', request, function(release) {
-	// 			res = await api
-	// 				.patch('/v1/releases/' + release.id)
-	// 				.as('member')
-	// 				.send({ links: links })
-	// 				.end(function(err, res) {
-	// 					hlp.expectStatus(err, res, 200);
-	// 					expect(res.data.links).to.eql(links);
-	// 					done();
-	// 				});
-	// 		});
-	// 	});
-	//
-	// 	it('should fail when updating author as non-creator but other author', async () => {
-	// 		hlp.release.createRelease('member', request, function(release) {
-	// 			res = await api
-	// 				.patch('/v1/releases/' + release.id)
-	// 				.as('member')
-	// 				.send({ authors: [ { _user: hlp.getUser('othermember').id, roles: [ 'Some other job' ] } ] })
-	// 				.end(function(err, res) {
-	// 					hlp.expectStatus(err, res, 200);
-	// 					res = await api
-	// 						.patch('/v1/releases/' + release.id)
-	// 						.as('othermember')
-	// 						.send({ authors: [] })
-	// 						.end(hlp.status(403, 'only the original uploader', done));
-	// 				});
-	// 		});
-	// 	});
-	//
-	// 	it('should succeed when updating authors', async () => {
-	// 		hlp.release.createRelease('member', request, function(release) {
-	// 			res = await api
-	// 				.patch('/v1/releases/' + release.id)
-	// 				.as('member')
-	// 				.send({ authors: [ { _user: hlp.getUser('othermember').id, roles: [ 'Some other job' ] } ] })
-	// 				.end(function(err, res) {
-	// 					hlp.expectStatus(err, res, 200);
-	// 					expect(res.data.authors).to.have.length(1);
-	// 					expect(res.data.authors[0].user.id).to.be(hlp.getUser('othermember').id);
-	// 					done();
-	// 				});
-	// 		});
-	// 	});
-	//
-	// });
-	//
+	describe('when updating an existing release', () => {
+
+		before(async () => {
+			await api.setupUsers({
+				member: { roles: [ 'member' ] },
+				othermember: { roles: [ 'member' ] },
+				moderator: { roles: [ 'moderator' ] }
+			});
+		});
+
+		after(async () => await api.teardown());
+
+		it('should fail if not author or creator', async () => {
+			const release = await api.releaseHelper.createRelease('member');
+			await api.as('othermember')
+				.patch('/v1/releases/' + release.id, { name: 'New name' })
+				.then(res => res.expectError(403));
+		});
+
+		it('should fail if an invalid release ID is provided', async () => {
+			res = await api.as('member')
+				.patch('/v1/releases/non-existent', {})
+				.then(res => res.expectError(404, 'no such release'));
+		});
+
+		it('should fail if an illegal attribute is provided', async () => {
+			const release = await api.releaseHelper.createRelease('member');
+			await api.as('member')
+				.patch('/v1/releases/' + release.id, { id: '1234', name: 'New name', versions: [] })
+				.then(res => res.expectError(400, 'invalid field'));
+		});
+
+		it('should fail validations for illegal data', async () => {
+			const release = await api.releaseHelper.createRelease('member');
+			await api.as('member')
+				.patch('/v1/releases/' + release.id,
+					{ name: '', authors: 'i am a string but i should not!', links: 'i am also string!' })
+				.then(res => res.expectValidationErrors([
+					['name', 'must be provided'],
+					['authors', 'cast to array failed'],
+					['links', 'cast to array failed'],
+				]));
+		});
+
+		it('should succeed when updating text fields', async () => {
+			const newName = 'My edited name';
+			const newDescription = 'My edited description';
+			const newAcknowledgements = 'My edited acknowledgements';
+			const release = await api.releaseHelper.createRelease('member');
+			res = await api.as('member')
+				.patch('/v1/releases/' + release.id,
+					{ name: newName, description: newDescription, acknowledgements: newAcknowledgements })
+				.then(res => res.expectStatus(200));
+			expect(res.data.name).to.be(newName);
+			expect(res.data.description).to.be(newDescription);
+			expect(res.data.acknowledgements).to.be(newAcknowledgements);
+		});
+
+		it('should succeed when updating all fields', async () => {
+			const newName = 'Updated name';
+			const newDescription = 'Updated description';
+			const newAcknowledgements = 'Updated acknowledgements';
+			const links = [
+				{ label: 'first link', url: 'https://vpdb.io/somelink' },
+				{ label: 'second link', url: 'https://vpdb.io/someotherlink' }
+			];
+			const newTags = ['hd', 'dof'];
+			const release = await api.releaseHelper.createRelease('member');
+			res = await api.as('member')
+				.save('releases/update')
+				.patch('/v1/releases/' + release.id, {
+					name: newName,
+					description: newDescription,
+					acknowledgements: newAcknowledgements,
+					authors: [ { _user: api.getUser('othermember').id, roles: [ 'Some other job' ] } ],
+					links: links,
+					_tags: newTags
+				})
+				.then(res => res.expectStatus(200));
+
+			expect(res.data.name).to.be(newName);
+			expect(res.data.description).to.be(newDescription);
+			expect(res.data.acknowledgements).to.be(newAcknowledgements);
+			expect(res.data.links).to.eql(links);
+			expect(res.data.tags).to.be.an('array');
+			expect(res.data.tags).to.have.length(newTags.length);
+			newTags.forEach(tag => expect(res.data.tags.find(t => t.id === tag)).to.be.an('object'));
+			expect(res.data.authors).to.have.length(1);
+			expect(res.data.authors[0].user.id).to.be(api.getUser('othermember').id);
+		});
+
+		it('should succeed updating as non-creator but author', async () => {
+			const newName = 'My edited name';
+			const newDescription = 'My edited description';
+			const newAcknowledgements = 'My edited acknowledgements';
+			const release = await api.releaseHelper.createRelease('member');
+			let originalAuthors = release.authors.map(a => ({ _user: a.user.id, roles: a.roles }));
+			await api.as('member')
+				.patch('/v1/releases/' + release.id,
+					{ authors: [ ...originalAuthors, { _user: api.getUser('othermember').id, roles: [ 'Some other job' ] } ] })
+				.then(res => res.expectStatus(200));
+
+			res = await api.as('othermember')
+				.patch('/v1/releases/' + release.id,
+					{ name: newName, description: newDescription, acknowledgements: newAcknowledgements })
+				.then(res => res.expectStatus(200));
+			expect(res.data.name).to.be(newName);
+			expect(res.data.description).to.be(newDescription);
+			expect(res.data.acknowledgements).to.be(newAcknowledgements);
+		});
+
+		it('should succeed updating as non-creator but moderator', async () => {
+			const newName = 'My edited name';
+			const newDescription = 'My edited description';
+			const newAcknowledgements = 'My edited acknowledgements';
+			const release = await api.releaseHelper.createRelease('member');
+			res = await api.as('moderator')
+				.patch('/v1/releases/' + release.id,
+					{ name: newName, description: newDescription, acknowledgements: newAcknowledgements })
+				.then(res => res.expectStatus(200));
+			expect(res.data.name).to.be(newName);
+			expect(res.data.description).to.be(newDescription);
+			expect(res.data.acknowledgements).to.be(newAcknowledgements);
+		});
+
+		it('should fail for a non-existing tag', async () => {
+			const newTags = ['hd', 'i-dont-exist'];
+			const release = await api.releaseHelper.createRelease('member');
+			await api.as('member')
+				.patch('/v1/releases/' + release.id, { _tags: newTags })
+				.then(res => res.expectValidationError('_tags.1', 'no such tag'));
+		});
+
+		it('should succeed when updating tags', async () => {
+			const newTags = ['hd', 'dof'];
+			const release = await api.releaseHelper.createRelease('member');
+				res = await api.as('member')
+					.patch('/v1/releases/' + release.id, { _tags: newTags })
+					.then(res => res.expectStatus(200));
+				expect(res.data.tags).to.be.an('array');
+				expect(res.data.tags).to.have.length(newTags.length);
+				newTags.forEach(tag => expect(res.data.tags.find(t => t.id === tag)).to.be.an('object'));
+		});
+
+		it('should succeed when updating links', async () => {
+			const links = [
+				{ label: 'first link', url: 'https://vpdb.io/somelink' },
+				{ label: 'second link', url: 'https://vpdb.io/someotherlink' }
+			];
+			const release = await api.releaseHelper.createRelease('member');
+			res = await api.as('member')
+				.patch('/v1/releases/' + release.id, { links: links })
+				.then(res => res.expectStatus(200));
+			expect(res.data.links).to.eql(links);
+		});
+
+		it('should fail when updating author as non-creator but other author', async () => {
+			const release = await api.releaseHelper.createRelease('member');
+			res = await api.as('member')
+				.patch('/v1/releases/' + release.id,
+					{ authors: [ { _user: api.getUser('othermember').id, roles: [ 'Some other job' ] } ] })
+				.then(res => res.expectStatus(200));
+			res = await api.as('othermember')
+				.patch('/v1/releases/' + release.id, { authors: [] })
+				.then(res => res.expectError(403, 'only the original uploader'));
+		});
+
+		it('should succeed when updating authors', async () => {
+			const release = await api.releaseHelper.createRelease('member');
+				res = await api.as('member')
+					.patch('/v1/releases/' + release.id,
+						{ authors: [ { _user: api.getUser('othermember').id, roles: [ 'Some other job' ] } ] })
+					.then(res => res.expectStatus(200));
+			expect(res.data.authors).to.have.length(1);
+			expect(res.data.authors[0].user.id).to.be(api.getUser('othermember').id);
+		});
+
+	});
+
 	// describe('when viewing a release', () => {
 	//
 	// 	before(function(done) {
@@ -821,7 +758,7 @@ describe('The VPDB `Release` API', () => {
 	// 							username: 'motorhead',
 	// 							profileUrl: 'https://github.com/mockuser',
 	// 							emails: [
-	// 								{ value: hlp.getUser('providerUser').email }
+	// 								{ value: api.getUser('providerUser').email }
 	// 							],
 	// 							_raw: '(not mocked)', _json: { not: 'mocked ' }
 	// 						}
@@ -1160,7 +1097,7 @@ describe('The VPDB `Release` API', () => {
 	// 		res = await api
 	// 			.post('/v1/tokens')
 	// 			.as('admin')
-	// 			.send({ label: 'Test Application', password: hlp.getUser('admin').password, provider: 'github', type: 'provider', scopes: [ 'community'] })
+	// 			.send({ label: 'Test Application', password: api.getUser('admin').password, provider: 'github', type: 'provider', scopes: [ 'community'] })
 	// 			.end(function(err, res) {
 	// 				hlp.expectStatus(err, res, 201);
 	// 				const token = res.data.token;

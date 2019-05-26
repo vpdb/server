@@ -19,10 +19,7 @@
 
 const readFileSync = require('fs').readFileSync;
 const resolve = require('path').resolve;
-const gm = require('gm');
-const pleasejs = require('pleasejs');
-
-require('bluebird').promisifyAll(gm.prototype);
+const ImageHelper = require('./image.helper');
 
 const rom = resolve(__dirname, 'fixtures/hulk.zip');
 const vpt = resolve(__dirname, 'fixtures/empty.vpt');
@@ -35,6 +32,7 @@ class FileHelper {
 
 	constructor(api) {
 		this.api = api;
+		this.imageHelper = new ImageHelper();
 	}
 
 	/**
@@ -65,8 +63,7 @@ class FileHelper {
 		const mimeType = 'image/png';
 		const teardown = opts.keep ? false : undefined;
 		const name = 'logo.png';
-		const img = gm(600, 200, pleasejs.make_color());
-		const data = await img.toBufferAsync('PNG');
+		const data = await this.imageHelper.createPng(600, 200);
 		const res = await this.api.onStorage()
 			.as(user)
 			.markTeardown(teardown)
@@ -99,8 +96,9 @@ class FileHelper {
 		const teardown = opts.keep ? false : undefined;
 		for (let i = 0; i < times; i++) {
 			const name = 'playfield-' + i + '.png';
-			const img = gm(isFS ? 1080 : 1920, isFS ? 1920 : 1080, pleasejs.make_color());
-			const data = await img.toBufferAsync('PNG');
+			const data = isFS
+				? await this.imageHelper.createPng(1080, 1920)
+				: await this.imageHelper.createPng(1920, 1080);
 			const res = await this.api.onStorage()
 				.as(user)
 				.markTeardown(teardown)
@@ -129,8 +127,7 @@ class FileHelper {
 		const fileType = 'backglass';
 		const mimeType = 'image/png';
 		const name = 'backglass.png';
-		const img = gm(640, 512, pleasejs.make_color());
-		const data = await img.toBufferAsync('PNG');
+		const data = await this.imageHelper.createPng(640, 512);
 		const res = await this.api.onStorage()
 			.as(user)
 			.markTeardown(teardown)
@@ -328,7 +325,7 @@ class FileHelper {
 		opts = opts || {}
 		const gameName = opts.gameName || 'aavenger';
 		const teardown = opts.keep ? false : undefined;
-		const image = await gm(1280, 1024, pleasejs.make_color()).toBufferAsync('PNG');
+		const image = await this.imageHelper.createPng(1280, 1024);
 		const data = `<B2SBackglassData Version="1.2">
 			  <ProjectGUID Value="41664711-BFB7-4911-ABE1-31542BFD0014" />
 			  <ProjectGUID2 Value="C29873B0-D97B-4461-91CD-8897167F5CA0" />

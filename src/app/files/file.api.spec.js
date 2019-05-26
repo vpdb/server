@@ -73,7 +73,7 @@ describe('The VPDB `file` API', () => {
 			expect(img.metadata.format).to.be('PNG');
 			expect(img.metadata.size.width).to.be(640);
 			expect(img.metadata.size.height).to.be(512);
-			expect(img.metadata.depth).to.be(8);
+			expect(img.metadata.depth).to.be(1);
 		});
 
 	});

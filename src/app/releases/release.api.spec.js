@@ -19,6 +19,7 @@
 
 const expect = require('expect.js');
 const shortId = require('shortid32');
+const faker = require('faker');
 const { filter } = require('lodash');
 
 shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
@@ -34,7 +35,8 @@ describe('The VPDB `Release` API', () => {
 		before(async () => {
 			await api.setupUsers({
 				member: { roles: [ 'member' ] },
-				moderator: { roles: [ 'moderator' ] }
+				moderator: { roles: [ 'moderator' ] },
+				contributor: { roles: [ 'contributor' ] },
 			});
 		});
 
@@ -469,6 +471,66 @@ describe('The VPDB `Release` API', () => {
 					authors: [ { _user: api.getUser(user).id, roles: [ 'Table Creator' ] } ]
 				})
 				.then(res => res.expectError(400, 'it is not part of the release'));
+		});
+
+		it('should properly increment counters of a release with multiple versions', async () => {
+
+			const user = 'contributor';
+			const game = await api.gameHelper.createGame('moderator');
+			const vptfiles = await api.fileHelper.createVpts(user, 2, { keep: true });
+			const playfields = await api.fileHelper.createPlayfields(user, 'fs', 2, undefined, { keep: true });
+			res = await api.as(user)
+				.markTeardown()
+				.post('/v1/releases', {
+					name: faker.company.catchPhraseAdjective() + ' Edition',
+					license: 'by-sa',
+					_game: game.id,
+					versions: [
+						{
+							files: [ {
+								_file: vptfiles[0].id,
+								_playfield_image: playfields[0].id,
+								_compatibility: [ '10.x' ],
+								flavor: { orientation: 'fs', lighting: 'night' }
+							} ],
+							version: '2.0',
+							"released_at": "2015-08-30T12:00:00.000Z"
+						}, {
+							files: [ {
+								_file: vptfiles[1].id,
+								_playfield_image: playfields[1].id,
+								_compatibility: [ '10.x' ],
+								flavor: { orientation: 'fs', lighting: 'night' }
+							} ],
+							version: '1.0',
+							"released_at": "2015-07-01T12:00:00.000Z"
+						}
+					],
+					_tags: ['wip', 'dof'],
+					authors: [ { _user: api.getUser(user).id, roles: [ 'Table Creator' ] } ]
+				})
+				.then(res => res.expectStatus(201));
+			const release = res.data;
+			expect(release.versions[0].files[0].counter.downloads).to.be(0);
+			expect(release.versions[1].files[0].counter.downloads).to.be(0);
+
+			const body = {
+				files: [release.versions[1].files[0].file.id],
+				media: { playfield_image: false, playfield_video: false }
+			};
+
+			await api
+				.onStorage()
+				.as(user)
+				.withQuery(({ body: JSON.stringify(body) }))
+				.withHeader('Accept', 'application/zip')
+				.responseAsBuffer()
+				.get('/v1/releases/' + release.id)
+				.then(res => res.expectStatus(200));
+
+			res = await api.get(`/v1/releases/${release.id}`).then(res => res.expectStatus(200));
+			expect(res.data.versions[0].files[0].counter.downloads).to.be(0);
+			expect(res.data.versions[1].files[0].counter.downloads).to.be(1);
 		});
 
 		it('should fail when providing a non-rotated and unspecified playfield image ("playfield" file_type)');

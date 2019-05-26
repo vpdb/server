@@ -238,7 +238,7 @@ describe('The VPDB `Release` storage API', () => {
 				.as('creator')
 				.withQuery(({ body: JSON.stringify(body) }))
 				.withHeader('Accept', 'application/zip')
-				.responseAs('arraybuffer')
+				.responseAsBuffer()
 				.get('/v1/releases/' + release.id)
 				.then(res => res.expectStatus(200));
 

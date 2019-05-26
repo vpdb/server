@@ -19,172 +19,123 @@
 
 "use strict"; /* global describe, before, after, it */
 
-const request = require('superagent');
 const expect = require('expect.js');
+const ApiClient = require('../../../../test/api.client');
+const api = new ApiClient();
 
-const superagentTest = require('../../../../test/legacy/superagent-test');
-const hlp = require('../../../../test/legacy/helper');
+let res;
+describe('The VPDB `Release Version File` API', () => {
 
-superagentTest(request);
-
-describe('The VPDB `Release Version File` API', function() {
-
-	describe('when validating a file of a release', function() {
+	describe('when validating a file of a release', () => {
 
 		let release;
-		before(function(done) {
-			hlp.setupUsers(request, {
+		before(async () => {
+			await api.setupUsers({
 				member: { roles: ['contributor'] },
 				moderator: { roles: ['moderator'] }
-			}, function() {
-				const user = 'member';
-				hlp.release.createRelease(user, request, function(r) {
-					release = r;
-					done();
-				});
 			});
+			release = await api.releaseHelper.createRelease('member');
 		});
 
-		after(function(done) {
-			hlp.cleanup(request, done);
+		after(async () => await api.teardown());
+
+		it('should fail for invalid release', async () => {
+			await api.as('moderator')
+				.post('/v1/releases/doesnotexist/versions/doesnotexist/files/doesnotexist/validate', {})
+				.then(res => res.expectError(404, 'no such release'));
 		});
 
-		it('should fail for invalid release', function(done) {
-			request
-				.post('/api/v1/releases/doesnotexist/versions/doesnotexist/files/doesnotexist/validate')
-				.as('moderator')
-				.send({})
-				.end(hlp.status(404, 'no such release', done));
+		it('should fail for invalid version', async () => {
+			await api.as('moderator')
+				.post('/v1/releases/' + release.id + '/versions/doesnotexist/files/' + release.versions[0].files[0].file.id + '/validate', {})
+				.then(res => res.expectError(404, 'no such version'));
 		});
 
-		it('should fail for invalid version', function(done) {
-			request
-				.post('/api/v1/releases/' + release.id + '/versions/doesnotexist/files/' + release.versions[0].files[0].file.id + '/validate')
-				.as('moderator')
-				.send({})
-				.end(hlp.status(404, 'no such version', done));
+		it('should fail for invalid file', async () => {
+			await api.as('moderator')
+				.post('/v1/releases/' + release.id + '/versions/' + release.versions[0].version + '/files/doesnotexist/validate', {})
+				.then(res => res.expectError(404, 'no file with id'));
 		});
 
-		it('should fail for invalid file', function(done) {
-			request
-				.post('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version + '/files/doesnotexist/validate')
-				.as('moderator')
-				.send({})
-				.end(hlp.status(404, 'no file with id', done));
+		it('should fail for empty data', async () => {
+			await api.as('moderator')
+				.post('/v1/releases/' + release.id + '/versions/' + release.versions[0].version + '/files/' + release.versions[0].files[0].file.id + '/validate', {})
+				.then(res => res.expectValidationErrors([
+					['status', 'must be provided'],
+					['message', 'must be provided'],
+				], 2));
 		});
 
-		it('should fail for empty data', function(done) {
-			request
-				.post('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version + '/files/' + release.versions[0].files[0].file.id + '/validate')
-				.as('moderator')
-				.send({})
-				.end(function(err, res) {
-					expect(res.body.errors).to.have.length(2);
-					hlp.expectValidationError(err, res, 'status', 'must be provided');
-					hlp.expectValidationError(err, res, 'message', 'must be provided');
-					done();
-				});
+		it('should fail for invalid status', async () => {
+			await api.as('moderator')
+				.post('/v1/releases/' + release.id + '/versions/' + release.versions[0].version + '/files/' + release.versions[0].files[0].file.id + '/validate',
+					{ message: 'Wrong status.', status: 'duh.' })
+				.then(res => res.expectValidationErrors([
+					['status', 'must be one of']
+				], 1));
 		});
 
-		it('should fail for invalid status', function(done) {
-			request
-				.post('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version + '/files/' + release.versions[0].files[0].file.id + '/validate')
-				.as('moderator')
-				.send({ message: 'Wrong status.', status: 'duh.' })
-				.end(function(err, res) {
-					expect(res.body.errors).to.have.length(1);
-					hlp.expectValidationError(err, res, 'status', 'must be one of');
-					done();
-				});
-		});
-
-		it('should succeed for valid data', function(done) {
+		it('should succeed for valid data', async () => {
 			const message = 'All validated, thanks!';
 			const status = 'verified';
-			request
-				.post('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version + '/files/' + release.versions[0].files[0].file.id + '/validate')
-				.as('moderator')
-				.save({ path: 'releases/validate-file' })
-				.send({ message: message, status: status })
-				.end(function(err, res) {
-					hlp.expectStatus(err, res, 200);
-					expect(res.body.message).to.be(message);
-					expect(res.body.status).to.be(status);
-					expect(res.body.validated_at).to.be.ok();
-					expect(res.body.validated_by).to.be.an('object');
-					done();
-				});
+			res = await api.as('moderator')
+				.save('releases/validate-file')
+				.post('/v1/releases/' + release.id + '/versions/' + release.versions[0].version + '/files/' + release.versions[0].files[0].file.id + '/validate',
+					{ message: message, status: status })
+				.then(res => res.expectStatus(200));
+			expect(res.data.message).to.be(message);
+			expect(res.data.status).to.be(status);
+			expect(res.data.validated_at).to.be.ok();
+			expect(res.data.validated_by).to.be.an('object');
 		});
 	});
 
-	describe('when filtering releases by validation', function() {
+	describe('when filtering releases by validation', () => {
 
 		let release;
-		before(function(done) {
-			hlp.setupUsers(request, {
+		before(async () => {
+			await api.setupUsers({
 				member: { roles: ['contributor'] },
 				moderator: { roles: ['moderator'] }
-			}, function() {
-				const user = 'member';
-				hlp.release.createRelease(user, request, function(r) {
-					release = r;
-					done();
-				});
 			});
+			release = await api.releaseHelper.createRelease('member');
 		});
 
-		after(function(done) {
-			hlp.cleanup(request, done);
+		after(async () => await api.teardown());
+
+		it('should filter a validated release', async () => {
+			res = await api
+				.withQuery({ validation: 'none' })
+				.get('/v1/releases')
+				.then(res => res.expectStatus(200));
+			expect(res.data.length).to.be(1);
+
+			await api.as('moderator')
+				.post('/v1/releases/' + release.id + '/versions/' + release.versions[0].version + '/files/' + release.versions[0].files[0].file.id + '/validate',
+					{ message: 'ok', status: 'verified' })
+				.then(res => res.expectStatus(200));
+
+			res = await api.withQuery({ validation: 'verified' }).get('/v1/releases').then(res => res.expectStatus(200));
+			expect(res.data.length).to.be(1);
+
+			res = await api.withQuery({ validation: 'playable' }).get('/v1/releases').then(res => res.expectStatus(200));
+			expect(res.data.length).to.be(0);
+
+			res = await api.withQuery({ validation: 'none' }).get('/v1/releases').then(res => res.expectStatus(200));
+			expect(res.data.length).to.be(0);
 		});
 
+		it('should filter a playable playable', async () => {
+			await api.as('moderator')
+				.post('/v1/releases/' + release.id + '/versions/' + release.versions[0].version + '/files/' + release.versions[0].files[0].file.id + '/validate',
+					{ message: 'ok', status: 'playable' })
+				.then(res => res.expectStatus(200));
 
-		it('should filter a validated release', function(done) {
-			request.get('/api/v1/releases').query({ validation: 'none' }).end(function(err, res) {
-				hlp.expectStatus(err, res, 200);
-				expect(res.body.length).to.be(1);
-				request
-					.post('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version + '/files/' + release.versions[0].files[0].file.id + '/validate')
-					.as('moderator')
-					.send({ message: 'ok', status: 'verified' })
-					.end(function(err, res) {
-						hlp.expectStatus(err, res, 200);
+			res = await api.withQuery({ validation: 'playable' }).get('/v1/releases').then(res => res.expectStatus(200));
+			expect(res.data.length).to.be(1);
 
-						request.get('/api/v1/releases').query({ validation: 'verified' }).end(function(err, res) {
-							hlp.expectStatus(err, res, 200);
-							expect(res.body.length).to.be(1);
-							request.get('/api/v1/releases').query({ validation: 'playable' }).end(function(err, res) {
-								hlp.expectStatus(err, res, 200);
-								expect(res.body.length).to.be(0);
-								request.get('/api/v1/releases').query({ validation: 'none' }).end(function(err, res) {
-									hlp.expectStatus(err, res, 200);
-									expect(res.body.length).to.be(0);
-									done();
-								});
-							});
-						});
-					});
-			});
+			res = await api.withQuery({ validation: 'broken' }).get('/v1/releases').then(res => res.expectStatus(200));
+			expect(res.data.length).to.be(0);
 		});
-
-		it('should filter a playable playable', function(done) {
-			request
-				.post('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version + '/files/' + release.versions[0].files[0].file.id + '/validate')
-				.as('moderator')
-				.send({ message: 'ok', status: 'playable' })
-				.end(function(err, res) {
-					hlp.expectStatus(err, res, 200);
-					request.get('/api/v1/releases').query({ validation: 'playable' }).end(function(err, res) {
-						hlp.expectStatus(err, res, 200);
-						expect(res.body.length).to.be(1);
-						request.get('/api/v1/releases').query({ validation: 'broken' }).end(function(err, res) {
-							hlp.expectStatus(err, res, 200);
-							expect(res.body.length).to.be(0);
-							done();
-						});
-					});
-				});
-		});
-
 	});
-
 });

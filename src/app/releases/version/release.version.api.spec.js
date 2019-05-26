@@ -19,451 +19,352 @@
 
 "use strict"; /* global describe, before, after, it */
 
-const _ = require('lodash');
-const request = require('superagent');
 const expect = require('expect.js');
+const ApiClient = require('../../../test/api.client');
+const api = new ApiClient();
 
-const superagentTest = require('../../../test/legacy/superagent-test');
-const hlp = require('../../../test/legacy/helper');
+let res;
+describe('The VPDB `Release Version` API', () => {
 
-superagentTest(request);
+	describe('when adding a new version to an existing release', () => {
 
-describe('The VPDB `Release Version` API', function() {
-
-	describe('when adding a new version to an existing release', function() {
-
-		before(function(done) {
-			hlp.setupUsers(request, {
-				member: { roles: [ 'member' ] },
-				member2: { roles: [ 'member' ] },
-				othermember: { roles: [ 'member' ] },
-				moderator: { roles: [ 'moderator' ] }
-			}, done);
-		});
-
-		after(function(done) {
-			hlp.cleanup(request, done);
-		});
-
-		it('should fail when logged as a different user', function(done) {
-			hlp.release.createRelease('member', request, function(release) {
-				request.post('/api/v1/releases/' + release.id + '/versions')
-					.as('member2')
-					.send({})
-					.saveResponse({ path: 'releases/create-version'})
-					.end(hlp.status(403, 'only moderators or authors of the release', done));
+		before(async () => {
+			await api.setupUsers({
+				member: { roles: ['member'] },
+				member2: { roles: ['member'] },
+				othermember: { roles: ['member'] },
+				moderator: { roles: ['moderator'] }
 			});
 		});
 
-		it('should fail validations when providing valid file reference with invalid meta data', function(done) {
+		after(async () => await api.teardown());
+
+		it('should fail when logged as a different user', async () => {
+			const release = await api.releaseHelper.createRelease('member');
+			await api.as('member2')
+				.saveResponse('releases/create-version')
+				.post('/v1/releases/' + release.id + '/versions', {})
+				.then(res => res.expectError(403, 'only moderators or authors of the release'));
+		});
+
+		it('should fail validations when providing valid file reference with invalid meta data', async () => {
 
 			const user = 'member';
-			hlp.release.createRelease(user, request, function(release) {
-				hlp.file.createVpt('member', request, function(vptfile) {
-					hlp.doomFile(user, vptfile.id);
-					request
-						.post('/api/v1/releases/' + release.id + '/versions')
-						.as(user)
-						.send({
-							version: '2.0.0',
-							changes: '*Second release.*',
-							files: [
-								{ _file: vptfile.id },
-								{ _file: vptfile.id, flavor: {} },
-								{ _file: vptfile.id, flavor: { orientation: 'invalid' } },
-								{ _file: vptfile.id },
-								{ _file: vptfile.id, _compatibility: [ 'non-existent' ] }
-							]
-						}).end(function(err, res) {
-							hlp.expectValidationError(err, res, 'files.0.flavor.orientation', 'must be provided');
-							hlp.expectValidationError(err, res, 'files.0.flavor.lighting', 'must be provided');
-							hlp.expectValidationError(err, res, 'files.0._compatibility', 'must be provided');
-							hlp.expectValidationError(err, res, 'files.1.flavor.orientation', 'must be provided');
-							hlp.expectValidationError(err, res, 'files.1.flavor.lighting', 'must be provided');
-							hlp.expectValidationError(err, res, 'files.2.flavor.orientation', 'invalid orientation');
-							hlp.expectValidationError(err, res, 'files.3._compatibility', 'must be provided');
-							hlp.expectValidationError(err, res, 'files.4._compatibility.0', 'no such build');
-							hlp.expectValidationError(err, res, 'files.0._playfield_image', 'must be provided');
-							done();
-						});
-				});
-			});
+			const release = await api.releaseHelper.createRelease(user);
+			const vptfile = await api.fileHelper.createVpt('member');
+			await api.as(user)
+				.post('/v1/releases/' + release.id + '/versions', {
+					version: '2.0.0',
+					changes: '*Second release.*',
+					files: [
+						{ _file: vptfile.id },
+						{ _file: vptfile.id, flavor: {} },
+						{ _file: vptfile.id, flavor: { orientation: 'invalid' } },
+						{ _file: vptfile.id },
+						{ _file: vptfile.id, _compatibility: ['non-existent'] }
+					]
+				}).then(res => res.expectNumValidationErrors([
+					['files.0.flavor.orientation', 'must be provided'],
+					['files.0.flavor.lighting', 'must be provided'],
+					['files.0._compatibility', 'must be provided'],
+					['files.1.flavor.orientation', 'must be provided'],
+					['files.1.flavor.lighting', 'must be provided'],
+					['files.2.flavor.orientation', 'invalid orientation'],
+					['files.3._compatibility', 'must be provided'],
+					['files.4._compatibility.0', 'no such build'],
+					['files.0._playfield_image', 'must be provided'],
+				]));
 		});
 
-		it('should fail when adding an existing version', function(done) {
+		it('should fail when adding an existing version', async () => {
 			const user = 'member';
-			hlp.release.createRelease(user, request, function(release) {
-				request
-					.post('/api/v1/releases/' + release.id + '/versions')
-					.as(user)
-					.saveResponse({ path: 'releases/create-version'})
-					.send({
-						version: '1.0.0',
-						changes: '*Second release.*',
-						files: [ {
-							_file: '12345',
-							_playfield_image: '67890',
-							_compatibility: [ '9.9.0' ],
-							flavor: { orientation: 'fs', lighting: 'night' }
-						} ]
-					}).end(function(err, res) {
-						hlp.expectValidationError(err, res, 'version', 'version already exists');
-						done();
-					});
-			});
+			const release = await api.releaseHelper.createRelease(user);
+			await api.as(user)
+				.saveResponse('releases/create-version')
+				.post('/v1/releases/' + release.id + '/versions', {
+					version: '1.0.0',
+					changes: '*Second release.*',
+					files: [{
+						_file: '12345',
+						_playfield_image: '67890',
+						_compatibility: ['9.9.0'],
+						flavor: { orientation: 'fs', lighting: 'night' }
+					}]
+				})
+				.then(res => res.expectValidationError('version', 'version already exists'));
 		});
 
-		it('should succeed when providing valid data', function(done) {
+		it('should succeed when providing valid data', async () => {
 			const user = 'member';
-			hlp.release.createRelease(user, request, function(release) {
-				hlp.file.createVpt(user, request, function(vptfile) {
-					hlp.file.createPlayfield(user, request, 'fs', function (playfield) {
-						request
-							.post('/api/v1/releases/' + release.id + '/versions')
-							.save({ path: 'releases/create-version'})
-							.as(user)
-							.send({
-								version: '2.0.0',
-								changes: '*Second release.*',
-								files: [ {
-									_file: vptfile.id,
-									_playfield_image: playfield.id,
-									_compatibility: [ '9.9.0' ],
-									flavor: { orientation: 'fs', lighting: 'night' }
-								} ]
-							}).end(function(err, res) {
-								hlp.expectStatus(err, res, 201);
-							const version = res.body;
-							expect(version).to.be.ok();
-								expect(version.changes).to.be('*Second release.*');
-								done();
-							});
-					});
-				});
-			});
+			const release = await api.releaseHelper.createRelease(user);
+			const vptfile = await api.fileHelper.createVpt(user);
+			const playfield = await api.fileHelper.createPlayfield(user, 'fs');
+
+			res = await api.as(user)
+				.save('releases/create-version')
+				.post('/v1/releases/' + release.id + '/versions', {
+					version: '2.0.0',
+					changes: '*Second release.*',
+					files: [{
+						_file: vptfile.id,
+						_playfield_image: playfield.id,
+						_compatibility: ['9.9.0'],
+						flavor: { orientation: 'fs', lighting: 'night' }
+					}]
+				})
+				.then(res => res.expectStatus(201));
+
+			const version = res.data;
+			expect(version).to.be.ok();
+			expect(version.changes).to.be('*Second release.*');
 		});
 
-		it('should succeed when logged as non-creator but author', function(done) {
+		it('should succeed when logged as non-creator but author', async () => {
 			const user = 'member';
-			hlp.release.createRelease(user, request, function(release) {
-				let originalAuthors = release.authors.map(a => { return { _user: a.user.id, roles: a.roles };});
-				request
-					.patch('/api/v1/releases/' + release.id)
-					.as(user)
-					.send({ authors: [ ...originalAuthors, { _user: hlp.getUser('othermember').id, roles: [ 'Some other job' ] } ] })
-					.end(function(err, res) {
-						hlp.expectStatus(err, res, 200);
-						hlp.file.createVpt('othermember', request, function(vptfile) {
-							hlp.file.createPlayfield('othermember', request, 'fs', function (playfield) {
-								request
-									.post('/api/v1/releases/' + release.id + '/versions')
-									.as('othermember')
-									.send({
-										version: '2.0.0',
-										changes: '*Second release.*',
-										files: [ {
-											_file: vptfile.id,
-											_playfield_image: playfield.id,
-											_compatibility: [ '9.9.0' ],
-											flavor: { orientation: 'fs', lighting: 'night' }
-										} ]
-									}).end(function(err, res) {
-										hlp.expectStatus(err, res, 201);
-									const version = res.body;
-									expect(version).to.be.ok();
-										expect(version.changes).to.be('*Second release.*');
-										done();
-									});
-							});
-					});
+			const release = await api.releaseHelper.createRelease(user);
+			let originalAuthors = release.authors.map(a => ({ _user: a.user.id, roles: a.roles }));
+			await api.as(user)
+				.patch('/v1/releases/' + release.id,
+					{
+						authors: [...originalAuthors, {
+							_user: api.getUser('othermember').id,
+							roles: ['Some other job']
+						}]
+					})
+				.then(res => res.expectStatus(200));
 
-				});
-			});
+			const vptfile = await api.fileHelper.createVpt('othermember');
+			const playfield = await api.fileHelper.createPlayfield('othermember', 'fs');
+			res = await api.as('othermember')
+				.post('/v1/releases/' + release.id + '/versions', {
+					version: '2.0.0',
+					changes: '*Second release.*',
+					files: [{
+						_file: vptfile.id,
+						_playfield_image: playfield.id,
+						_compatibility: ['9.9.0'],
+						flavor: { orientation: 'fs', lighting: 'night' }
+					}]
+				})
+				.then(res => res.expectStatus(201));
+			const version = res.data;
+			expect(version).to.be.ok();
+			expect(version.changes).to.be('*Second release.*');
 		});
 
-		it('should succeed when logged as non-creator but moderator', function(done) {
+		it('should succeed when logged as non-creator but moderator', async () => {
 			const user = 'member';
-			hlp.release.createRelease(user, request, function(release) {
-				hlp.file.createVpt(user, request, function(vptfile) {
-					hlp.file.createPlayfield(user, request, 'fs', function (playfield) {
-						request
-							.post('/api/v1/releases/' + release.id + '/versions')
-							.as('moderator')
-							.send({
-								version: '2.0.0',
-								changes: '*Second release.*',
-								files: [ {
-									_file: vptfile.id,
-									_playfield_image: playfield.id,
-									_compatibility: [ '9.9.0' ],
-									flavor: { orientation: 'fs', lighting: 'night' }
-								} ]
-							}).end(function(err, res) {
-								hlp.expectStatus(err, res, 201);
-							const version = res.body;
-							expect(version).to.be.ok();
-								expect(version.changes).to.be('*Second release.*');
-								done();
-							});
-					});
-				});
-			});
+			const release = await api.releaseHelper.createRelease(user);
+			const vptfile = await api.fileHelper.createVpt(user);
+			const playfield = await api.fileHelper.createPlayfield(user, 'fs');
+			res = await api.as('moderator')
+				.post('/v1/releases/' + release.id + '/versions', {
+					version: '2.0.0',
+					changes: '*Second release.*',
+					files: [{
+						_file: vptfile.id,
+						_playfield_image: playfield.id,
+						_compatibility: ['9.9.0'],
+						flavor: { orientation: 'fs', lighting: 'night' }
+					}]
+				})
+				.then(res => res.expectStatus(201));
+			const version = res.data;
+			expect(version).to.be.ok();
+			expect(version.changes).to.be('*Second release.*');
 		});
 	});
 
-	describe('when updating an existing version of a release', function() {
+	describe('when updating an existing version of a release', () => {
 
-		before(function(done) {
-			hlp.setupUsers(request, {
+		before(async () => {
+			await api.setupUsers({
 				member: { roles: [ 'member' ] },
 				member2: { roles: [ 'member' ] },
 				othermember: { roles: [ 'member' ] },
 				moderator: { roles: [ 'moderator' ] }
-			}, done);
-		});
-
-		after(function(done) {
-			hlp.cleanup(request, done);
-		});
-
-		it('should fail when logged as a different user', function(done) {
-			hlp.release.createRelease('member', request, function(release) {
-				request.patch('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
-					.as('member2')
-					.send({})
-					.saveResponse({ path: 'releases/update-version'})
-					.end(hlp.status(403, 'only moderators and authors of the release', done));
 			});
 		});
 
-		it('should fail for duplicate compat/flavor', function(done) {
+		after(async () => await api.teardown());
+
+		it('should fail when logged as a different user', async () => {
+			const release = await api.releaseHelper.createRelease('member');
+			await api.as('member2')
+				.saveResponse('releases/update-version')
+				.patch('/v1/releases/' + release.id + '/versions/' + release.versions[0].version, {})
+				.then(res => res.expectError(403, 'only moderators and authors of the release'));
+		});
+
+		it('should fail for duplicate compat/flavor', async () => {
 			const user = 'member';
-			hlp.release.createRelease(user, request, function(release) {
-				const versionFile = release.versions[0].files[0];
-				hlp.file.createVpt(user, request, function(vptfile) {
-					hlp.file.createPlayfield(user, request, 'fs', function(playfield) {
-						const data = {
-							files: [{
-								_file: vptfile.id,
-								_playfield_image: playfield.id,
-								_compatibility: _.map(versionFile.compatibility, 'id'),
-								flavor: versionFile.flavor
-							}]
-						};
-						request
-							.patch('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
-							.saveResponse({ path: 'releases/update-version'})
-							.as(user)
-							.send(data).end(function(err, res) {
-								hlp.expectValidationError(err, res, 'files.0._compatibility', 'compatibility and flavor already exists');
-								hlp.expectValidationError(err, res, 'files.0.flavor', 'compatibility and flavor already exists');
-								done();
-							});
-					});
-				});
-			});
+			const release = await api.releaseHelper.createRelease(user);
+			const versionFile = release.versions[0].files[0];
+			const vptfile = await api.releaseHelper.createVpt(user);
+			const playfield = await api.fileHelper.createPlayfield(user, 'fs');
+			const data = {
+				files: [{
+					_file: vptfile.id,
+					_playfield_image: playfield.id,
+					_compatibility: _.map(versionFile.compatibility, 'id'),
+					flavor: versionFile.flavor
+				}]
+			};
+			await api.as(user)
+				.saveResponse('releases/update-version')
+				.patch('/v1/releases/' + release.id + '/versions/' + release.versions[0].version, data)
+				.then(res => res.expectValidationErrors([
+					['files.0._compatibility', 'compatibility and flavor already exists'],
+					['files.0.flavor', 'compatibility and flavor already exists'],
+				]));
 		});
 
-		it('should succeed for same version', function(done) {
+		it('should succeed for same version', async () => {
 			const user = 'member';
 			const version = '1.0';
-			hlp.release.createRelease(user, request, { version: '1.0' }, function(release) {
-				request
-					.patch('/api/v1/releases/' + release.id + '/versions/' + version)
-					.as(user)
-					.send({ version: version }).end(function(err, res) {
-					hlp.expectStatus(err, res, 200);
-					done();
-				});
-			});
+			const release = await api.releaseHelper.createRelease(user, { version: '1.0' });
+			await api.as(user)
+				.patch('/v1/releases/' + release.id + '/versions/' + version, { version: version })
+				.then(res => res.expectStatus(200));
 		});
 
-		it('should fail for duplicate version', function(done) {
+		it('should fail for duplicate version', async () => {
 			const user = 'member';
-			hlp.release.createRelease(user, request, { version: '1.0.0'}, function(release) {
-				hlp.file.createVpt(user, request, function(vptfile) {
-					hlp.file.createPlayfield(user, request, 'fs', function (playfield) {
-						request
-							.post('/api/v1/releases/' + release.id + '/versions')
-							.as(user)
-							.send({
-								version: '2.0.0',
-								changes: '*Second release.*',
-								files: [ {
-									_file: vptfile.id,
-									_playfield_image: playfield.id,
-									_compatibility: [ '9.9.0' ],
-									flavor: { orientation: 'fs', lighting: 'night' }
-								} ]
-							}).end(function(err, res) {
-								hlp.expectStatus(err, res, 201);
-								request
-									.patch('/api/v1/releases/' + release.id + '/versions/2.0.0')
-									.as(user)
-									.send({ version: '1.0.0' }).end(function(err, res) {
-										hlp.expectValidationError(err, res, 'version', 'provided version already exists');
-										done();
-									});
-							});
-					});
-				});
-			});
+			const release = await api.releaseHelper.createRelease(user, { version: '1.0.0'});
+			const vptfile = await api.fileHelper.createVpt(user);
+			const playfield = await api.fileHelper.createPlayfield(user, 'fs');
+			await api.as(user)
+				.post('/v1/releases/' + release.id + '/versions', {
+					version: '2.0.0',
+					changes: '*Second release.*',
+					files: [ {
+						_file: vptfile.id,
+						_playfield_image: playfield.id,
+						_compatibility: [ '9.9.0' ],
+						flavor: { orientation: 'fs', lighting: 'night' }
+					} ]
+				})
+				.then(res => res.expectStatus(201));
+			await api.as(user)
+				.patch('/v1/releases/' + release.id + '/versions/2.0.0', { version: '1.0.0' })
+				.then(res => res.expectValidationError('version', 'provided version already exists'));
 		});
 
-		it('should succeed when providing valid data', function(done) {
+		it('should succeed when providing valid data', async () => {
 			const user = 'member';
 			const newChanges = 'New changes.';
 			const newVersion = 'v666';
-			hlp.release.createRelease(user, request, function(release) {
-				hlp.file.createVpt(user, request, function(vptfile) {
-					hlp.file.createPlayfield(user, request, 'fs', function(playfield) {
-						request
-							.patch('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
-							.save({ path: 'releases/update-version'})
-							.as(user)
-							.send({
-								version: newVersion,
-								changes: newChanges,
-								files: [{
-									_file: vptfile.id,
-									_playfield_image: playfield.id,
-									_compatibility: ['9.9.0'],
-									flavor: { orientation: 'fs', lighting: 'day' }
-								}]
-							}).end(function(err, res) {
-								hlp.expectStatus(err, res, 200);
-								expect(res.body.changes).to.be(newChanges);
-								expect(res.body.version).to.be(newVersion);
-								done();
-							});
-					});
-				});
-			});
+			const release = await api.releaseHelper.createRelease(user);
+			const vptfile = await api.fileHelper.createVpt(user);
+			const playfield = await api.fileHelper.createPlayfield(user, 'fs');
+			res = await api.as(user)
+				.save('releases/update-version')
+				.patch('/v1/releases/' + release.id + '/versions/' + release.versions[0].version, {
+					version: newVersion,
+					changes: newChanges,
+					files: [{
+						_file: vptfile.id,
+						_playfield_image: playfield.id,
+						_compatibility: ['9.9.0'],
+						flavor: { orientation: 'fs', lighting: 'day' }
+					}]
+				})
+				.then(res => res.expectStatus(200));
+			expect(res.data.changes).to.be(newChanges);
+			expect(res.data.version).to.be(newVersion);
 		});
 
-		it('should fail when data is missing', function(done) {
+		it('should fail when data is missing', async () => {
 			const user = 'member';
-			hlp.release.createRelease(user, request, function(release) {
-				hlp.file.createVpt(user, request, function(vptfile) {
-					request
-						.patch('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
-						.as(user)
-						.send({
-							files: [{
-								_file: vptfile.id,
-								flavor: {},
-								_compatibility: [],
-								_playfield_image: null,
-								_playfield_video: null
-							}]
-						}).end(function(err, res) {
-							hlp.expectValidationError(err, res, 'files.0._compatibility', 'must be provided');
-							hlp.expectValidationError(err, res, 'files.0._playfield_image', 'must be provided');
-							hlp.expectValidationError(err, res, 'files.0.flavor.lighting', 'must be provided');
-							hlp.expectValidationError(err, res, 'files.0.flavor.orientation', 'must be provided');
-							done();
-						});
-				});
-			});
+			const release = await api.releaseHelper.createRelease(user);
+			const vptfile = await api.fileHelper.createVpt(user);
+			await api.as(user)
+				.patch('/v1/releases/' + release.id + '/versions/' + release.versions[0].version, {
+					files: [{
+						_file: vptfile.id,
+						flavor: {},
+						_compatibility: [],
+						_playfield_image: null,
+						_playfield_video: null
+					}]
+				})
+				.then(res => res.expectValidationErrors([
+					['files.0._compatibility', 'must be provided'],
+					['files.0._playfield_image', 'must be provided'],
+					['files.0.flavor.lighting', 'must be provided'],
+					['files.0.flavor.orientation', 'must be provided'],
+				]));
 		});
 
-		it('should succeed when rotating an existing playfield image', function(done) {
+		it('should succeed when rotating an existing playfield image', async () => {
 			const user = 'member';
-			hlp.release.createRelease(user, request, function(release) {
-				let playfieldImage = release.versions[0].files[0].playfield_image;
-				request
-					.patch('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
-					.query({ rotate: release.versions[0].files[0].playfield_image.id + ':90' })
-					.as(user)
-					.send({
-						files: [{
-							_file: release.versions[0].files[0].file.id,
-							flavor: { orientation: 'any', lighting: 'day' }
-						}]
-					}).end(function(err, res) {
-						hlp.expectStatus(err, res, 200);
-						let rotatedPlayfieldImage = res.body.files[0].playfield_image;
-						expect(playfieldImage.metadata.size.height).to.be(rotatedPlayfieldImage.metadata.size.width);
-						expect(playfieldImage.metadata.size.width).to.be(rotatedPlayfieldImage.metadata.size.height);
-						done();
-				});
-			});
+			const release = await api.releaseHelper.createRelease(user);
+			let playfieldImage = release.versions[0].files[0].playfield_image;
+			res = await api.as(user)
+				.withQuery({ rotate: release.versions[0].files[0].playfield_image.id + ':90' })
+				.patch('/v1/releases/' + release.id + '/versions/' + release.versions[0].version, {
+					files: [{
+						_file: release.versions[0].files[0].file.id,
+						flavor: { orientation: 'any', lighting: 'day' }
+					}]
+				})
+				.then(res => res.expectStatus(200));
+			const rotatedPlayfieldImage = res.data.files[0].playfield_image;
+			expect(playfieldImage.metadata.size.height).to.be(rotatedPlayfieldImage.metadata.size.width);
+			expect(playfieldImage.metadata.size.width).to.be(rotatedPlayfieldImage.metadata.size.height);
 		});
 
-		it('should fail when rotating not a playfield image', function(done) {
+		it('should fail when rotating not a playfield image', async () => {
 			const user = 'member';
-			hlp.release.createRelease(user, request, function(release) {
-				request
-					.patch('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
-					.query({ rotate: release.versions[0].files[0].file.id + ':90' })
-					.as(user)
-					.send({
-						files: [{
-							_file: release.versions[0].files[0].file.id,
-							flavor: { orientation: 'ws' }
-						}]
-					}).end(hlp.status(400, 'can only rotate images', done));
-			});
+			const release = await api.releaseHelper.createRelease(user);
+			await api.as(user)
+				.withQuery({ rotate: release.versions[0].files[0].file.id + ':90' })
+				.patch('/v1/releases/' + release.id + '/versions/' + release.versions[0].version, {
+					files: [{
+						_file: release.versions[0].files[0].file.id,
+						flavor: { orientation: 'ws' }
+					}]
+				})
+				.then(res => res.expectError(400, 'can only rotate images'));
 		});
 
-		it('should fail when rotating playfield that does not belong to the version', function(done) {
+		it('should fail when rotating playfield that does not belong to the version', async () => {
 			let user = 'member';
-			hlp.file.createPlayfield(user, request, 'fs', 'playfield', function(playfield) {
-				hlp.release.createRelease(user, request, function(release) {
-					request
-						.patch('/api/v1/releases/' + release.id  + '/versions/' + release.versions[0].version)
-						.query({ rotate: playfield.id + ':90' })
-						.as('member')
-						.send({ })
-						.end(hlp.status(400, 'it is not part of the release', done));
-				});
-			});
+			const playfield = await api.fileHelper.createPlayfield(user, 'fs', 'playfield');
+			const release = await api.releaseHelper.createRelease(user);
+			await api.as('member')
+				.withQuery({ rotate: playfield.id + ':90' })
+				.patch('/v1/releases/' + release.id  + '/versions/' + release.versions[0].version, {})
+				.then(res => res.expectError(400, 'it is not part of the release'));
 		});
 
-		it('should succeed when logged as non-creator but author', function(done) {
+		it('should succeed when logged as non-creator but author', async () => {
 			const user = 'member';
 			const newChanges = 'New changes.';
-			hlp.release.createRelease(user, request, function(release) {
-				let originalAuthors = release.authors.map(a => { return { _user: a.user.id, roles: a.roles };});
-				request
-					.patch('/api/v1/releases/' + release.id)
-					.as(user)
-					.send({ authors: [ ...originalAuthors, { _user: hlp.getUser('othermember').id, roles: [ 'Some other job' ] } ] })
-					.end(function(err, res) {
-						hlp.expectStatus(err, res, 200);
-						request
-							.patch('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
-							.as('othermember')
-							.send({ changes: newChanges})
-							.end(function(err, res) {
-								hlp.expectStatus(err, res, 200);
-								const version = res.body;
-								expect(version).to.be.ok();
-								expect(version.changes).to.be(newChanges);
-								done();
-							});
-					});
-			});
+			const release = await api.releaseHelper.createRelease(user);
+			const originalAuthors = release.authors.map(a => { return { _user: a.user.id, roles: a.roles };});
+			await api.as(user)
+				.patch('/v1/releases/' + release.id,
+					{ authors: [ ...originalAuthors, { _user: api.getUser('othermember').id, roles: [ 'Some other job' ] } ] })
+				.then(res => res.expectStatus(200));
+			res = await api.as('othermember')
+				.patch('/v1/releases/' + release.id + '/versions/' + release.versions[0].version, { changes: newChanges})
+				.then(res => res.expectStatus(200));
+			const version = res.data;
+			expect(version).to.be.ok();
+			expect(version.changes).to.be(newChanges);
 		});
 
-		it('should succeed when logged as non-creator but moderator', function(done) {
+		it('should succeed when logged as non-creator but moderator', async () => {
 			const user = 'member';
 			const newChanges = 'New changes.';
-			hlp.release.createRelease(user, request, function(release) {
-				request
-					.patch('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
-					.as('moderator')
-					.send({ changes: newChanges})
-					.end(function(err, res) {
-						hlp.expectStatus(err, res, 200);
-						const version = res.body;
-						expect(version).to.be.ok();
-						expect(version.changes).to.be(newChanges);
-						done();
-					});
-			});
+			const release = await api.releaseHelper.createRelease(user);
+			res = await api.as('moderator')
+				.patch('/v1/releases/' + release.id + '/versions/' + release.versions[0].version, { changes: newChanges})
+				.then(res => res.expectStatus(200));
+			const version = res.data;
+			expect(version).to.be.ok();
+			expect(version.changes).to.be(newChanges);
 		});
-
 	});
-
 });

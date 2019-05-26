@@ -15,6 +15,7 @@ const FormData = require('form-data');
 const FileHelper = require('./file.helper');
 const ReleaseHelper = require('./release.helper');
 const GameHelper = require('./game.helper');
+const ImageHelper = require('./image.helper');
 
 const ApiClientResult = require('./api.client.result');
 
@@ -27,6 +28,7 @@ class ApiClient {
 		this.fileHelper = new FileHelper(this);
 		this.gameHelper = new GameHelper(this);
 		this.releaseHelper = new ReleaseHelper(this);
+		this.imageHelper = new ImageHelper();
 
 		this._users = new Map();
 		this._tokens = new Map();
@@ -259,6 +261,14 @@ class ApiClient {
 	responseAs(responseType) {
 		this._config.responseType = responseType;
 		return this;
+	}
+
+	/**
+	 * Makes the response to return a buffer instead of a string. Needed when parsing binary data such as images.
+	 * @returns {ApiClient}
+	 */
+	responseAsBuffer() {
+		return this.responseAs('arraybuffer');
 	}
 
 	/**

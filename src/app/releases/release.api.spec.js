@@ -19,6 +19,7 @@
 
 const expect = require('expect.js');
 const shortId = require('shortid32');
+const { filter } = require('lodash');
 
 shortId.characters('123456789abcdefghkmnopqrstuvwxyz');
 
@@ -719,392 +720,304 @@ describe('The VPDB `Release` API', () => {
 		});
 	});
 
-	// describe('when listing releases', () => {
-	//
-	// 	const numReleases = 4;
-	// 	let releases;
-	//
-	// 	before(function(done) {
-	// 		hlp.setupUsers(request, {
-	// 			member: { roles: [ 'member' ] },
-	// 			providerUser: { roles: [ 'contributor' ] },
-	// 			moderator: { roles: [ 'moderator', 'contributor' ] },
-	// 			admin: { roles: [ 'admin' ] }
-	// 		}, () => {
-	// 			hlp.release.createReleases('moderator', request, numReleases - 1, function(r) {
-	// 				releases = r;
-	// 				res = await api
-	// 					.post('/v1/authenticate/mock')
-	// 					.send({
-	// 						provider: 'github',
-	// 						profile: {
-	// 							provider: 'github',
-	// 							id: '11234',
-	// 							displayName: 'Motörhead Dude-23',
-	// 							username: 'motorhead',
-	// 							profileUrl: 'https://github.com/mockuser',
-	// 							emails: [
-	// 								{ value: api.getUser('providerUser').email }
-	// 							],
-	// 							_raw: '(not mocked)', _json: { not: 'mocked ' }
-	// 						}
-	// 					}).end(function(err, res) {
-	// 						hlp.expectStatus(err, res, 200);
-	// 						hlp.release.createRelease4('providerUser', request, function(r) {
-	// 							releases.push(r);
-	// 							done();
-	// 						});
-	// 					});
-	// 			});
-	// 		});
-	// 	});
-	//
-	// 	after(function(done) {
-	// 		hlp.cleanup(request, done);
-	// 	});
-	//
-	// 	it('should list all fields', async () => {
-	// 		res = await api
-	// 			.get('/v1/releases')
-	// 			.end(function(err, res) {
-	// 				hlp.expectStatus(err, res, 200);
-	// 				expect(res.data).to.be.an('array');
-	// 				expect(res.data).to.have.length(numReleases);
-	// 				_.each(res.data, function(release) {
-	// 					expect(release.id).to.be.ok();
-	// 					expect(release.name).to.be.ok();
-	// 					expect(release.created_at).to.be.ok();
-	// 					expect(release.authors).to.be.an('array');
-	// 					expect(release.authors[0]).to.be.an('object');
-	// 					expect(release.authors[0].roles).to.be.an('array');
-	// 					expect(release.authors[0].user).to.be.an('object');
-	// 					expect(release.authors[0].user.id).to.be.ok();
-	// 					expect(release.authors[0].user.name).to.be.ok();
-	// 					expect(release.authors[0].user.username).to.be.ok();
-	// 					expect(release.authors[0]._user).to.not.be.ok();
-	// 				});
-	// 				done();
-	// 			});
-	// 	});
-	//
-	// 	it('should fail when listing moderation fields as anonymous', async () => {
-	// 		res = await api
-	// 			.get('/v1/releases')
-	// 			.query({ fields: 'moderation' })
-	// 			.end(hlp.status(403, 'must be logged in order to fetch moderation fields', done));
-	// 	});
-	//
-	// 	it('should fail when listing moderation fields as non-moderator', async () => {
-	// 		res = await api
-	// 			.get('/v1/releases')
-	// 			.as('member')
-	// 			.query({ fields: 'moderation' })
-	// 			.end(hlp.status(403, 'must be moderator in order to fetch moderation fields', done));
-	// 	});
-	//
-	// 	it('should list moderation fields as moderator', async () => {
-	// 		res = await api
-	// 			.get('/v1/releases')
-	// 			.as('moderator')
-	// 			.query({ fields: 'moderation' })
-	// 			.end(function(err, res) {
-	// 				hlp.expectStatus(err, res, 200);
-	// 				expect(res.data[0].moderation).to.be.ok();
-	// 				done();
-	// 			});
-	// 	});
-	//
-	// 	it('should return the nearest thumb match of widescreen/night', async () => {
-	// 		res = await api
-	// 			.get('/v1/releases?thumb_full_data&thumb_flavor=orientation:ws,lighting:night')
-	// 			.end(function(err, res) {
-	//
-	// 				hlp.expectStatus(err, res, 200);
-	//
-	// 				const rls1 = _.find(res.data, { id: releases[0].id });
-	// 				const rls2 = _.find(res.data, { id: releases[1].id });
-	// 				const rls3 = _.find(res.data, { id: releases[2].id });
-	//
-	// 				expect(rls1.thumb.image.url).to.be(releases[0].versions[0].files[0].playfield_image.url);
-	// 				expect(rls2.thumb.image.url).to.be(releases[1].versions[0].files[1].playfield_image.url);
-	// 				expect(rls3.thumb.image.url).to.be(releases[2].versions[0].files[1].playfield_image.url);
-	//
-	// 				done();
-	// 			});
-	// 	});
-	//
-	// 	it('should return the nearest thumb match of widescreen/night in the correct format', async () => {
-	// 		res = await api
-	// 			.get('/v1/releases?thumb_full_data&thumb_flavor=orientation:ws,lighting:night&thumb_format=medium')
-	// 			.end(function(err, res) {
-	//
-	// 				hlp.expectStatus(err, res, 200);
-	//
-	// 				const rls1 = _.find(res.data, { id: releases[0].id });
-	// 				const rls2 = _.find(res.data, { id: releases[1].id });
-	// 				const rls3 = _.find(res.data, { id: releases[2].id });
-	//
-	// 				expect(rls1.thumb.image.url).to.be(releases[0].versions[0].files[0].playfield_image.variations.medium.url);
-	// 				expect(rls2.thumb.image.url).to.be(releases[1].versions[0].files[1].playfield_image.variations.medium.url);
-	// 				expect(rls3.thumb.image.url).to.be(releases[2].versions[0].files[1].playfield_image.variations.medium.url);
-	//
-	// 				done();
-	// 			});
-	// 	});
-	//
-	// 	it('should return the nearest thumb match of night/widescreen', async () => {
-	// 		res = await api
-	// 			.get('/v1/releases?thumb_full_data&thumb_flavor=lighting:night,orientation:ws')
-	// 			.end(function(err, res) {
-	//
-	// 				hlp.expectStatus(err, res, 200);
-	//
-	// 				const rls1 = _.find(res.data, { id: releases[0].id });
-	// 				const rls2 = _.find(res.data, { id: releases[1].id });
-	// 				const rls3 = _.find(res.data, { id: releases[2].id });
-	//
-	// 				expect(rls1.thumb.image.url).to.be(releases[0].versions[0].files[0].playfield_image.url);
-	// 				expect(rls2.thumb.image.url).to.be(releases[1].versions[0].files[0].playfield_image.url);
-	// 				expect(rls3.thumb.image.url).to.be(releases[2].versions[0].files[1].playfield_image.url);
-	//
-	// 				done();
-	// 			});
-	// 	});
-	//
-	// 	it('should return the a thumb of an older version if the newer version has no such thumb', async () => {
-	// 		res = await api
-	// 			.get('/v1/releases?thumb_full_data&thumb_flavor=lighting:night,orientation:ws')
-	// 			.end(function(err, res) {
-	//
-	// 				hlp.expectStatus(err, res, 200);
-	//
-	// 				const rls4 = _.find(res.data, { id: releases[3].id });
-	// 				expect(rls4.thumb.image.url).to.be(releases[3].versions[1].files[0].playfield_image.url);
-	//
-	// 				done();
-	// 			});
-	// 	});
-	//
-	// 	it('should return square thumb format', async () => {
-	// 		res = await api
-	// 			.get('/v1/releases?thumb_format=square')
-	// 			.save('releases/list')
-	// 			.end(function(err, res) {
-	//
-	// 				hlp.expectStatus(err, res, 200);
-	//
-	// 				for (let i = 0; i < numReleases; i++) {
-	// 					expect(res.data[i].thumb.image.url).to.contain('/square/');
-	// 				}
-	// 				done();
-	// 			});
-	// 	});
-	//
-	// 	it('should deny access to starred releases when not logged', async () => {
-	// 		request.get('/v1/releases?starred').saveResponse('releases/list').end(hlp.status(401, done));
-	// 	});
-	//
-	// 	it('should list only starred releases', async () => {
-	//
-	// 		request.get('/v1/releases?starred').as('member').end(function(err, res) {
-	// 			hlp.expectStatus(err, res, 200);
-	// 			expect(res.data).to.be.empty();
-	//
-	// 			request.post('/v1/releases/' + releases[0].id + '/star').send({}).as('member').end(function(err, res) {
-	// 				hlp.expectStatus(err, res, 201);
-	//
-	// 				request.get('/v1/releases?starred').as('member').end(function(err, res) {
-	// 					hlp.expectStatus(err, res, 200);
-	// 					expect(res.data).to.have.length(1);
-	// 					expect(res.data[0].id).to.be(releases[0].id);
-	//
-	// 					request.get('/v1/releases?starred=false').as('member').end(function(err, res) {
-	// 						hlp.expectStatus(err, res, 200);
-	// 						expect(res.data).to.have.length(numReleases - 1);
-	// 						expect(res.data[0].id).not.to.be(releases[0].id);
-	// 						expect(res.data[1].id).not.to.be(releases[0].id);
-	// 						done();
-	// 					});
-	// 				});
-	// 			});
-	// 		});
-	// 	});
-	//
-	// 	it('should list only releases for given IDs', async () => {
-	// 		const ids = [releases[0].id, releases[1].id];
-	// 		request.get('/v1/releases?ids=' + ids.join(',')).end(function(err, res) {
-	// 			hlp.expectStatus(err, res, 200);
-	// 			expect(res.data).to.have.length(ids.length);
-	// 			expect(_.find(res.data, { id: releases[0].id })).to.be.ok();
-	// 			expect(_.find(res.data, { id: releases[1].id })).to.be.ok();
-	// 			done();
-	// 		});
-	// 	});
-	//
-	// 	it('should list only tagged releases', async () => {
-	//
-	// 		const tags = ['dof'];
-	//
-	// 		request.get('/v1/releases?tags=' + tags.join(',')).end(function(err, res) {
-	// 			hlp.expectStatus(err, res, 200);
-	//
-	// 			const tagFilter = tags.map(function(tag) {
-	// 				return { id: tag };
-	// 			});
-	// 			const taggedReleases = _.filter(releases, { tags: tagFilter });
-	// 			expect(res.data).to.have.length(taggedReleases.length);
-	// 			for (let i = 0; i < taggedReleases.length; i++) {
-	// 				expect(_.find(res.data, { id: taggedReleases[i].id })).to.be.ok();
-	// 			}
-	// 			done();
-	// 		});
-	// 	});
-	//
-	// 	it('should list only tagged releases for multiple tags', async () => {
-	//
-	// 		const tags = ['dof', 'wip'];
-	//
-	// 		request.get('/v1/releases?tags=' + tags.join(',')).end(function(err, res) {
-	// 			hlp.expectStatus(err, res, 200);
-	//
-	// 			const tagFilter = tags.map(function(tag) {
-	// 				return { id: tag };
-	// 			});
-	// 			const taggedReleases = _.filter(releases, { tags: tagFilter });
-	// 			expect(res.data).to.have.length(taggedReleases.length);
-	// 			for (let i = 0; i < taggedReleases.length; i++) {
-	// 				expect(_.find(res.data, { id: taggedReleases[i].id })).to.be.ok();
-	// 			}
-	// 			done();
-	// 		});
-	// 	});
-	//
-	// 	it('should list only releases whose name matches a query', async () => {
-	//
-	// 		request.get('/v1/releases?q=' + releases[1].name).end(function(err, res) {
-	// 			hlp.expectStatus(err, res, 200);
-	// 			expect(_.find(res.data, { id: releases[1].id })).to.be.ok();
-	// 			done();
-	// 		});
-	// 	});
-	//
-	// 	it('should list only releases whose game title matches a query', async () => {
-	//
-	// 		request.get('/v1/releases?q=' + releases[1].game.title).end(function(err, res) {
-	// 			hlp.expectStatus(err, res, 200);
-	// 			expect(_.find(res.data, { id: releases[1].id })).to.be.ok();
-	// 			done();
-	// 		});
-	// 	});
-	//
-	// 	it('should fail for queries less than 3 characters', async () => {
-	// 		request.get('/v1/releases?q=12').end(hlp.status(400, done));
-	// 	});
-	//
-	// 	it('should succeed for queries more than 2 character', async () => {
-	//
-	// 		request.get('/v1/releases?q=' + releases[1].name.substr(0, 3)).end(function(err, res) {
-	// 			hlp.expectStatus(err, res, 200);
-	// 			expect(_.find(res.data, { id: releases[1].id })).to.be.ok();
-	// 			done();
-	// 		});
-	// 	});
-	//
-	// 	it('should list only a given flavor', async () => {
-	//
-	// 		request.get('/v1/releases?flavor=orientation:ws').end(function(err, res) {
-	// 			hlp.expectStatus(err, res, 200);
-	// 			expect(_.find(res.data, { id: releases[0].id })).to.not.be.ok();
-	// 			expect(_.find(res.data, { id: releases[1].id })).to.be.ok();
-	// 			expect(_.find(res.data, { id: releases[2].id })).to.be.ok();
-	// 			done();
-	// 		});
-	// 	});
-	//
-	// 	it('should list only releases for a given build', async () => {
-	//
-	// 		const builds = ['10.x'];
-	// 		request.get('/v1/releases?builds=' + builds.join(',')).end(function(err, res) {
-	// 			hlp.expectStatus(err, res, 200);
-	//
-	// 			let filteredReleases = [];
-	// 			_.each(builds, function(build) {
-	// 				filteredReleases = filteredReleases.concat(_.filter(releases, { versions: [{ files: [{ compatibility: [{ id: build }] }]}]}));
-	// 			});
-	// 			expect(res.data).to.have.length(filteredReleases.length);
-	// 			for (let i = 0; i < filteredReleases.length; i++) {
-	// 				expect(_.find(res.data, { id: filteredReleases[i].id })).to.be.ok();
-	// 			}
-	// 			done();
-	// 		});
-	// 	});
-	//
-	// 	it('should list only releases for multiple builds', async () => {
-	//
-	// 		const builds = ['10.x', 'physmod5'];
-	// 		request.get('/v1/releases?builds=' + builds.join(',')).end(function(err, res) {
-	// 			hlp.expectStatus(err, res, 200);
-	//
-	// 			let filteredReleases = [];
-	// 			_.each(builds, function(build) {
-	// 				filteredReleases = filteredReleases.concat(_.filter(releases, { versions: [{ files: [{ compatibility: [{ id: build }] }]}]}));
-	// 			});
-	// 			expect(res.data).to.have.length(filteredReleases.length);
-	// 			for (let i = 0; i < filteredReleases.length; i++) {
-	// 				expect(_.find(res.data, { id: filteredReleases[i].id })).to.be.ok();
-	// 			}
-	// 			done();
-	// 		});
-	// 	});
-	//
-	// 	it('should contain a thumb field per file if requested', async () => {
-	// 		request.get('/v1/releases?thumb_format=square&thumb_per_file=true').end(function(err, res) {
-	// 			hlp.expectStatus(err, res, 200);
-	// 			for (let i = 0; i < res.data.length; i++) {
-	// 				expect(res.data[i].versions[0].files[0].thumb).to.be.an('object');
-	// 				expect(res.data[i].versions[0].files[0].thumb.url).to.contain('/square/');
-	// 			}
-	// 			done();
-	// 		});
-	// 	});
-	//
-	// 	it('should refuse thumb field per file if no format is given', async () => {
-	// 		request.get('/v1/releases?thumb_per_file=true').end(hlp.status(400, 'must specify "thumb_format"', done));
-	// 	});
-	//
-	// 	it('should fail when filtering by provider without provider token', async () => {
-	// 		res = await api
-	// 			.get('/v1/releases')
-	// 			.query({ provider_user: '1234' })
-	// 			.end(hlp.status(400, 'Must be authenticated with provider token', done));
-	// 	});
-	//
-	// 	it('should succeed filtering by user provider id', async () => {
-	// 		res = await api
-	// 			.post('/v1/tokens')
-	// 			.as('admin')
-	// 			.send({ label: 'Test Application', password: api.getUser('admin').password, provider: 'github', type: 'provider', scopes: [ 'community'] })
-	// 			.end(function(err, res) {
-	// 				hlp.expectStatus(err, res, 201);
-	// 				const token = res.data.token;
-	// 				res = await api
-	// 					.get('/v1/releases')
-	// 					.with(token)
-	// 					.query({ provider_user: '11234' })
-	// 					.end(function(err, res) {
-	// 						hlp.expectStatus(err, res, 200);
-	// 						expect(res.data.length).to.be(1);
-	// 						expect(res.data[0].id).to.be(releases[3].id);
-	// 						done();
-	// 					});
-	// 			});
-	// 	});
-	//
-	// 	it('should only list releases with table files of a given size');
-	// 	it('should only list releases with table files of a given size and threshold');
-	//
-	// });
-	//
+	describe('when listing releases', () => {
+
+		const numReleases = 4;
+		let releases;
+
+		before(async () => {
+			await api.setupUsers({
+				member: { roles: [ 'member' ] },
+				providerUser: { roles: [ 'contributor' ] },
+				moderator: { roles: [ 'moderator', 'contributor' ] },
+				admin: { roles: [ 'admin' ] }
+			});
+			releases = await api.releaseHelper.createReleases('moderator',numReleases - 1);
+			await api
+				.post('/v1/authenticate/mock', {
+					provider: 'github',
+					profile: {
+						provider: 'github',
+						id: '11234',
+						displayName: 'Motörhead Dude-23',
+						username: 'motorhead',
+						profileUrl: 'https://github.com/mockuser',
+						emails: [
+							{ value: api.getUser('providerUser').email }
+						],
+						_raw: '(not mocked)', _json: { not: 'mocked ' }
+					}
+				})
+				.then(res => res.expectStatus(200));
+
+			releases.push(await api.releaseHelper.createRelease4('providerUser'));
+		});
+
+		after(async () => await api.teardown());
+
+		it('should list all fields', async () => {
+			res = await api
+				.get('/v1/releases')
+				.then(res => res.expectStatus(200));
+			expect(res.data).to.be.an('array');
+			expect(res.data).to.have.length(numReleases);
+
+			for (const release of res.data) {
+				expect(release.id).to.be.ok();
+				expect(release.name).to.be.ok();
+				expect(release.created_at).to.be.ok();
+				expect(release.authors).to.be.an('array');
+				expect(release.authors[0]).to.be.an('object');
+				expect(release.authors[0].roles).to.be.an('array');
+				expect(release.authors[0].user).to.be.an('object');
+				expect(release.authors[0].user.id).to.be.ok();
+				expect(release.authors[0].user.name).to.be.ok();
+				expect(release.authors[0].user.username).to.be.ok();
+				expect(release.authors[0]._user).to.not.be.ok();
+			}
+		});
+
+		it('should fail when listing moderation fields as anonymous', async () => {
+			await api
+				.withQuery({ fields: 'moderation' })
+				.get('/v1/releases')
+				.then(res => res.expectError(403, 'must be logged in order to fetch moderation fields'));
+		});
+
+		it('should fail when listing moderation fields as non-moderator', async () => {
+			await api.as('member')
+				.withQuery({ fields: 'moderation' })
+				.get('/v1/releases')
+				.then(res => res.expectError(403, 'must be moderator in order to fetch moderation fields'));
+		});
+
+		it('should list moderation fields as moderator', async () => {
+			res = await api.as('moderator')
+				.withQuery({ fields: 'moderation' })
+				.get('/v1/releases')
+				.then(res => res.expectStatus(200));
+			expect(res.data[0].moderation).to.be.ok();
+		});
+
+		it('should return the nearest thumb match of widescreen/night', async () => {
+			res = await api
+				.get('/v1/releases?thumb_full_data&thumb_flavor=orientation:ws,lighting:night')
+				.then(res => res.expectStatus(200));
+
+			const rls1 = res.data.find(r => r.id === releases[0].id);
+			const rls2 = res.data.find(r => r.id === releases[1].id);
+			const rls3 = res.data.find(r => r.id === releases[2].id);
+
+			expect(rls1.thumb.image.url).to.be(releases[0].versions[0].files[0].playfield_image.url);
+			expect(rls2.thumb.image.url).to.be(releases[1].versions[0].files[1].playfield_image.url);
+			expect(rls3.thumb.image.url).to.be(releases[2].versions[0].files[1].playfield_image.url);
+		});
+
+		it('should return the nearest thumb match of widescreen/night in the correct format', async () => {
+			res = await api
+				.get('/v1/releases?thumb_full_data&thumb_flavor=orientation:ws,lighting:night&thumb_format=medium')
+				.then(res => res.expectStatus(200));
+
+			const rls1 = res.data.find(r => r.id === releases[0].id);
+			const rls2 = res.data.find(r => r.id === releases[1].id);
+			const rls3 = res.data.find(r => r.id === releases[2].id);
+
+			expect(rls1.thumb.image.url).to.be(releases[0].versions[0].files[0].playfield_image.variations.medium.url);
+			expect(rls2.thumb.image.url).to.be(releases[1].versions[0].files[1].playfield_image.variations.medium.url);
+			expect(rls3.thumb.image.url).to.be(releases[2].versions[0].files[1].playfield_image.variations.medium.url);
+		});
+
+		it('should return the nearest thumb match of night/widescreen', async () => {
+			res = await api
+				.get('/v1/releases?thumb_full_data&thumb_flavor=lighting:night,orientation:ws')
+				.then(res => res.expectStatus(200));
+
+			const rls1 = res.data.find(r => r.id === releases[0].id);
+			const rls2 = res.data.find(r => r.id === releases[1].id);
+			const rls3 = res.data.find(r => r.id === releases[2].id);
+
+			expect(rls1.thumb.image.url).to.be(releases[0].versions[0].files[0].playfield_image.url);
+			expect(rls2.thumb.image.url).to.be(releases[1].versions[0].files[0].playfield_image.url);
+			expect(rls3.thumb.image.url).to.be(releases[2].versions[0].files[1].playfield_image.url);
+		});
+
+		it('should return the a thumb of an older version if the newer version has no such thumb', async () => {
+			res = await api
+				.get('/v1/releases?thumb_full_data&thumb_flavor=lighting:night,orientation:ws')
+				.then(res => res.expectStatus(200));
+
+			const rls4 = res.data.find(r => r.id === releases[3].id);
+			expect(rls4.thumb.image.url).to.be(releases[3].versions[1].files[0].playfield_image.url);
+		});
+
+		it('should return square thumb format', async () => {
+			res = await api
+				.save('releases/list')
+				.get('/v1/releases?thumb_format=square')
+				.then(res => res.expectStatus(200));
+			for (let i = 0; i < numReleases; i++) {
+				expect(res.data[i].thumb.image.url).to.contain('/square/');
+			}
+		});
+
+		it('should deny access to starred releases when not logged', async () => {
+			await api
+				.saveResponse('releases/list')
+				.get('/v1/releases?starred')
+				.then(res => res.expectError(401));
+		});
+
+		it('should list only starred releases', async () => {
+
+			res = await api.as('member').get('/v1/releases?starred').then(res => res.expectStatus(200));
+			expect(res.data).to.be.empty();
+
+			await api.as('member')
+				.post(`/v1/releases/${releases[0].id}/star`, {})
+				.then(res => res.expectStatus(201));
+
+			res = await api.as('member').get('/v1/releases?starred').then(res => res.expectStatus(200));
+			expect(res.data).to.have.length(1);
+			expect(res.data[0].id).to.be(releases[0].id);
+
+			res = await api.as('member').get('/v1/releases?starred=false').then(res => res.expectStatus(200));
+			expect(res.data).to.have.length(numReleases - 1);
+			expect(res.data[0].id).not.to.be(releases[0].id);
+			expect(res.data[1].id).not.to.be(releases[0].id);
+		});
+
+		it('should list only releases for given IDs', async () => {
+			const ids = [releases[0].id, releases[1].id];
+			res = await api.get('/v1/releases?ids=' + ids.join(',')).then(res => res.expectStatus(200));
+
+			expect(res.data).to.have.length(ids.length);
+			expect(res.data.find(r => r.id === releases[0].id)).to.be.ok();
+			expect(res.data.find(r => r.id === releases[1].id)).to.be.ok();
+		});
+
+		it('should list only tagged releases', async () => {
+			const tags = ['dof'];
+			res = await api.get('/v1/releases?tags=' + tags.join(',')).then(res => res.expectStatus(200));
+
+			const tagFilter = tags.map(tag => ({ id: tag }));
+			const taggedReleases = filter(releases, { tags: tagFilter });
+			expect(res.data).to.have.length(taggedReleases.length);
+			for (let i = 0; i < taggedReleases.length; i++) {
+				expect(res.data.find(r => r.id === taggedReleases[i].id)).to.be.ok();
+			}
+		});
+
+		it('should list only tagged releases for multiple tags', async () => {
+			const tags = ['dof', 'wip'];
+			res = await api.get('/v1/releases?tags=' + tags.join(',')).then(res => res.expectStatus(200));
+			const tagFilter = tags.map(tag => ({ id: tag }));
+			const taggedReleases = filter(releases, { tags: tagFilter });
+			expect(res.data).to.have.length(taggedReleases.length);
+			for (let i = 0; i < taggedReleases.length; i++) {
+				expect(res.data.find(r => r.id === taggedReleases[i].id)).to.be.ok();
+			}
+		});
+
+		it('should list only releases whose name matches a query', async () => {
+
+			res = await api.get('/v1/releases?q=' + releases[1].name).then(res => res.expectStatus(200));
+			expect(res.data.find(r => r.id === releases[1].id)).to.be.ok();
+		});
+
+		it('should list only releases whose game title matches a query', async () => {
+
+			res = await api.get('/v1/releases?q=' + releases[1].game.title).then(res => res.expectStatus(200));
+			expect(res.data.find(r => r.id === releases[1].id)).to.be.ok();
+		});
+
+		it('should fail for queries less than 3 characters', async () => {
+			await api.get('/v1/releases?q=12').then(res => res.expectError(400));
+		});
+
+		it('should succeed for queries more than 2 character', async () => {
+
+			res = await api.get('/v1/releases?q=' + releases[1].name.substr(0, 3)).then(res => res.expectStatus(200));
+			expect(res.data.find(r => r.id === releases[1].id)).to.be.ok();
+		});
+
+		it('should list only a given flavor', async () => {
+
+			res = await api.get('/v1/releases?flavor=orientation:ws').then(res => res.expectStatus(200));
+			expect(res.data.find(r => r.id === releases[0].id)).to.not.be.ok();
+			expect(res.data.find(r => r.id === releases[1].id)).to.be.ok();
+			expect(res.data.find(r => r.id === releases[2].id)).to.be.ok();
+		});
+
+		it('should list only releases for a given build', async () => {
+
+			const builds = ['10.x'];
+			res = await api.get('/v1/releases?builds=' + builds.join(',')).then(res => res.expectStatus(200));
+
+			let filteredReleases = [];
+			for (const build of builds) {
+				filteredReleases = filteredReleases.concat(filter(releases, { versions: [{ files: [{ compatibility: [{ id: build }] }]}]}));
+			}
+			expect(res.data).to.have.length(filteredReleases.length);
+			for (let i = 0; i < filteredReleases.length; i++) {
+				expect(res.data.find(r => r.id === filteredReleases[i].id)).to.be.ok();
+			}
+		});
+
+		it('should list only releases for multiple builds', async () => {
+
+			const builds = ['10.x', 'physmod5'];
+			res = await api.get('/v1/releases?builds=' + builds.join(',')).then(res => res.expectStatus(200));
+
+			let filteredReleases = [];
+			for (const build of builds) {
+				filteredReleases = filteredReleases.concat(filter(releases, { versions: [{ files: [{ compatibility: [{ id: build }] }]}]}));
+			}
+			expect(res.data).to.have.length(filteredReleases.length);
+			for (let i = 0; i < filteredReleases.length; i++) {
+				expect(res.data.find(r => r.id === filteredReleases[i].id)).to.be.ok();
+			}
+		});
+
+		it('should contain a thumb field per file if requested', async () => {
+			res = await api.get('/v1/releases?thumb_format=square&thumb_per_file=true').then(res => res.expectStatus(200));
+			for (let i = 0; i < res.data.length; i++) {
+				expect(res.data[i].versions[0].files[0].thumb).to.be.an('object');
+				expect(res.data[i].versions[0].files[0].thumb.url).to.contain('/square/');
+			}
+		});
+
+		it('should refuse thumb field per file if no format is given', async () => {
+			await api.get('/v1/releases?thumb_per_file=true').then(res => res.expectError(400, 'must specify "thumb_format"'));
+		});
+
+		it('should fail when filtering by provider without provider token', async () => {
+			res = await api
+				.withQuery({ provider_user: '1234' })
+				.get('/v1/releases')
+				.then(res => res.expectError(400, 'Must be authenticated with provider token'));
+		});
+
+		it('should succeed filtering by user provider id', async () => {
+			res = await api.as('admin')
+				.post('/v1/tokens',
+					{ label: 'Test Application', password: api.getUser('admin').password, provider: 'github', type: 'provider', scopes: [ 'community'] })
+				.then(res => res.expectStatus(201));
+
+			const token = res.data.token;
+			res = await api
+				.withToken(token)
+				.withQuery({ provider_user: '11234' })
+				.get('/v1/releases')
+				.then(res => res.expectStatus(200));
+			expect(res.data.length).to.be(1);
+			expect(res.data[0].id).to.be(releases[3].id);
+		});
+
+		it('should only list releases with table files of a given size');
+		it('should only list releases with table files of a given size and threshold');
+
+	});
+
 	// describe('when only listing "mine"', () => {
 	//
 	// 	before(done => {

@@ -655,84 +655,70 @@ describe('The VPDB `Release` API', () => {
 
 	});
 
-	// describe('when viewing a release', () => {
-	//
-	// 	before(function(done) {
-	// 		hlp.setupUsers(request, {
-	// 			member: { roles: [ 'member' ] },
-	// 			moderator: { roles: [ 'moderator' ] },
-	// 			contributor: { roles: [ 'contributor' ] }
-	// 		}, done);
-	// 	});
-	//
-	// 	after(function(done) {
-	// 		hlp.cleanup(request, done);
-	// 	});
-	//
-	// 	it('should list all fields', async () => {
-	// 		hlp.release.createRelease('contributor', request, function(release) {
-	// 			res = await api
-	// 				.get('/v1/releases/' + release.id)
-	// 				.end(function(err, res) {
-	// 					hlp.expectStatus(err, res, 200);
-	// 					release = res.data;
-	// 					expect(res.data).to.be.an('object');
-	// 					expect(release.id).to.be.ok();
-	// 					expect(release.name).to.be.ok();
-	// 					expect(release.created_at).to.be.ok();
-	// 					expect(release.authors).to.be.an('array');
-	// 					expect(release.authors[0]).to.be.an('object');
-	// 					expect(release.authors[0].roles).to.be.an('array');
-	// 					expect(release.authors[0].user).to.be.an('object');
-	// 					expect(release.authors[0].user.id).to.be.ok();
-	// 					expect(release.authors[0].user.name).to.be.ok();
-	// 					expect(release.authors[0].user.username).to.be.ok();
-	// 					expect(release.thumb).to.not.be.ok();
-	// 					done();
-	// 				});
-	// 		});
-	// 	});
-	//
-	// 	it('should include thumb if format is given', async () => {
-	// 		hlp.release.createRelease('contributor', request, function(release) {
-	// 			res = await api
-	// 				.get('/v1/releases/' + release.id + '?thumb_format=square')
-	// 				.save('releases/view')
-	// 				.end(function(err, res) {
-	// 					hlp.expectStatus(err, res, 200);
-	// 					release = res.data;
-	// 					expect(res.data).to.be.an('object');
-	// 					expect(release.id).to.be.ok();
-	// 					expect(release.name).to.be.ok();
-	// 					expect(release.thumb).to.be.an('object');
-	// 					expect(release.thumb.image).to.be.an('object');
-	// 					expect(release.thumb.image.url).to.contain('/square/');
-	// 					done();
-	// 				});
-	// 		});
-	// 	});
-	//
-	// 	it('should include thumb if flavor is given', async () => {
-	// 		hlp.release.createRelease('contributor', request, function(release) {
-	// 			res = await api
-	// 				.get('/v1/releases/' + release.id + '?thumb_flavor=orientation:fs')
-	// 				.save('releases/view')
-	// 				.end(function(err, res) {
-	//
-	// 					hlp.expectStatus(err, res, 200);
-	// 					release = res.data;
-	// 					expect(res.data).to.be.an('object');
-	// 					expect(release.id).to.be.ok();
-	// 					expect(release.name).to.be.ok();
-	// 					expect(release.thumb).to.be.an('object');
-	// 					expect(release.thumb.flavor).to.be.an('object');
-	// 					expect(release.thumb.flavor.orientation).to.be('fs');
-	// 					done();
-	// 				});
-	// 		});
-	// 	});
-	// });
-	//
+	describe('when viewing a release', () => {
+
+		before(async () => {
+			await api.setupUsers({
+				member: { roles: [ 'member' ] },
+				moderator: { roles: [ 'moderator' ] },
+				contributor: { roles: [ 'contributor' ] }
+			});
+		});
+
+		after(async () => await api.teardown());
+
+		it('should list all fields', async () => {
+			const release = await api.releaseHelper.createRelease('contributor');
+			res = await api
+				.get('/v1/releases/' + release.id)
+				.then(res => res.expectStatus(200));
+			const createdRelease = res.data;
+			expect(res.data).to.be.an('object');
+			expect(createdRelease.id).to.be.ok();
+			expect(createdRelease.name).to.be.ok();
+			expect(createdRelease.created_at).to.be.ok();
+			expect(createdRelease.authors).to.be.an('array');
+			expect(createdRelease.authors[0]).to.be.an('object');
+			expect(createdRelease.authors[0].roles).to.be.an('array');
+			expect(createdRelease.authors[0].user).to.be.an('object');
+			expect(createdRelease.authors[0].user.id).to.be.ok();
+			expect(createdRelease.authors[0].user.name).to.be.ok();
+			expect(createdRelease.authors[0].user.username).to.be.ok();
+			expect(createdRelease.thumb).to.not.be.ok();
+		});
+
+		it('should include thumb if format is given', async () => {
+			const release = await api.releaseHelper.createRelease('contributor');
+			res = await api
+				.save('releases/view')
+				.get('/v1/releases/' + release.id + '?thumb_format=square')
+				.then(res => res.expectStatus(200));
+			const createdRelease = res.data;
+			expect(res.data).to.be.an('object');
+			expect(createdRelease.id).to.be.ok();
+			expect(createdRelease.name).to.be.ok();
+			expect(createdRelease.thumb).to.be.an('object');
+			expect(createdRelease.thumb.image).to.be.an('object');
+			expect(createdRelease.thumb.image.url).to.contain('/square/');
+		});
+
+		it('should include thumb if flavor is given', async () => {
+			const release = await api.releaseHelper.createRelease('contributor');
+			res = await api
+				.save('releases/view')
+				.get('/v1/releases/' + release.id + '?thumb_flavor=orientation:fs')
+				.then(res => res.expectStatus(200));
+
+			const createdRelease = res.data;
+			expect(res.data).to.be.an('object');
+			expect(createdRelease.id).to.be.ok();
+			expect(createdRelease.name).to.be.ok();
+			expect(createdRelease.thumb).to.be.an('object');
+			expect(createdRelease.thumb.flavor).to.be.an('object');
+			expect(createdRelease.thumb.flavor.orientation).to.be('fs');
+		});
+	});
+
 	// describe('when listing releases', () => {
 	//
 	// 	const numReleases = 4;

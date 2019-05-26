@@ -146,6 +146,30 @@ class ApiClientResult {
 	}
 
 	/**
+	 * Expects a response body *without* given validation error.
+	 *
+	 * @param {string} field Field that must not be in the validation error
+	 * @param {string} [contains] If set, field *can* be in the errors, but mustn't contain given string
+	 * @returns {ApiClientResult}
+	 */
+	expectNoValidationError(field, contains) {
+		if (isArray(this.response.data.errors)) {
+			const fieldErrors = this.response.data.errors.filter(e => e.field === field);
+			if (contains) {
+				const matchedError = fieldErrors.find(e => e.message.toLowerCase().indexOf(contains.toLowerCase()) > -1);
+				if (matchedError) {
+					throw new Error('Expected no validation errors on field "' + field + '" containing "' + contains + '" but got an message saying "' + matchedError.message + '".');
+				}
+			} else {
+				if (fieldErrors.length !== 0) {
+					throw new Error('Expected no validation errors on field "' + field + '" but got ' + fieldErrors.length + '.');
+				}
+			}
+		}
+		return this;
+	}
+
+	/**
 	 * Expects a give number of validation errors.
 	 * @param numErrors Number of validation errors
 	 * @returns {ApiClientResult}

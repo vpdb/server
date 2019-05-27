@@ -1,6 +1,6 @@
 {
 	"name": "vpdb",
-	"version": "v3.2.1-SNAPSHOT",
+	"version": "v3.2.1",
 	"lockfileVersion": 1,
 	"requires": true,
 	"dependencies": {
@@ -551,9 +551,9 @@
 			}
 		},
 		"@types/lodash": {
-			"version": "4.14.129",
-			"resolved": "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.129.tgz",
-			"integrity": "sha512-oYaV0eSlnOacOr7i4X1FFdH8ttSlb57gu3I9MuStIv2CYkISEY84dNHYsC3bF6sNH7qYcu1BtVrCtQ8Q4KPTfQ==",
+			"version": "4.14.132",
+			"resolved": "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.132.tgz",
+			"integrity": "sha512-RNUU1rrh85NgUJcjOOr96YXr+RHwInGbaQCZmlitqOaCKXffj8bh+Zxwuq5rjDy5OgzFldDVoqk4pyLEDiwxIw==",
 			"dev": true
 		},
 		"@types/mime": {
@@ -1864,6 +1864,7 @@
 			"version": "2.0.1",
 			"resolved": "https://registry.npmjs.org/caw/-/caw-2.0.1.tgz",
 			"integrity": "sha512-Cg8/ZSBEa8ZVY9HspcGUYaK63d/bN7rqS3CYCzEGUxuYv6UlmcjzDUz2fCFFHyTvUW5Pk0I+3hkA3iXlIj6guA==",
+			"optional": true,
 			"requires": {
 				"get-proxy": "^2.0.0",
 				"isurl": "^1.0.0-alpha5",
@@ -2517,6 +2518,7 @@
 			"version": "4.2.0",
 			"resolved": "https://registry.npmjs.org/decompress/-/decompress-4.2.0.tgz",
 			"integrity": "sha1-eu3YVCflqS2s/lVnSnxQXpbQH50=",
+			"optional": true,
 			"requires": {
 				"decompress-tar": "^4.0.0",
 				"decompress-tarbz2": "^4.0.0",
@@ -2531,7 +2533,8 @@
 				"pify": {
 					"version": "2.3.0",
 					"resolved": "https://registry.npmjs.org/pify/-/pify-2.3.0.tgz",
-					"integrity": "sha1-7RQaasBDqEnqWISY59yosVMw6Qw="
+					"integrity": "sha1-7RQaasBDqEnqWISY59yosVMw6Qw=",
+					"optional": true
 				}
 			}
 		},
@@ -2547,6 +2550,7 @@
 			"version": "4.1.1",
 			"resolved": "https://registry.npmjs.org/decompress-tar/-/decompress-tar-4.1.1.tgz",
 			"integrity": "sha512-JdJMaCrGpB5fESVyxwpCx4Jdj2AagLmv3y58Qy4GE6HMVjWz1FeVQk1Ct4Kye7PftcdOo/7U7UKzYBJgqnGeUQ==",
+			"optional": true,
 			"requires": {
 				"file-type": "^5.2.0",
 				"is-stream": "^1.1.0",
@@ -2557,6 +2561,7 @@
 			"version": "4.1.1",
 			"resolved": "https://registry.npmjs.org/decompress-tarbz2/-/decompress-tarbz2-4.1.1.tgz",
 			"integrity": "sha512-s88xLzf1r81ICXLAVQVzaN6ZmX4A6U4z2nMbOwobxkLoIIfjVMBg7TeguTUXkKeXni795B6y5rnvDw7rxhAq9A==",
+			"optional": true,
 			"requires": {
 				"decompress-tar": "^4.1.0",
 				"file-type": "^6.1.0",
@@ -2568,7 +2573,8 @@
 				"file-type": {
 					"version": "6.2.0",
 					"resolved": "https://registry.npmjs.org/file-type/-/file-type-6.2.0.tgz",
-					"integrity": "sha512-YPcTBDV+2Tm0VqjybVd32MHdlEGAtuxS3VAYsumFokDSMG+ROT5wawGlnHDoz7bfMcMDt9hxuXvXwoKUx2fkOg=="
+					"integrity": "sha512-YPcTBDV+2Tm0VqjybVd32MHdlEGAtuxS3VAYsumFokDSMG+ROT5wawGlnHDoz7bfMcMDt9hxuXvXwoKUx2fkOg==",
+					"optional": true
 				}
 			}
 		},
@@ -2576,6 +2582,7 @@
 			"version": "4.1.1",
 			"resolved": "https://registry.npmjs.org/decompress-targz/-/decompress-targz-4.1.1.tgz",
 			"integrity": "sha512-4z81Znfr6chWnRDNfFNqLwPvm4db3WuZkqV+UgXQzSngG3CEKdBkw5jrv3axjjL96glyiiKjsxJG3X6WBZwX3w==",
+			"optional": true,
 			"requires": {
 				"decompress-tar": "^4.1.1",
 				"file-type": "^5.2.0",
@@ -2586,6 +2593,7 @@
 			"version": "4.0.1",
 			"resolved": "https://registry.npmjs.org/decompress-unzip/-/decompress-unzip-4.0.1.tgz",
 			"integrity": "sha1-3qrM39FK6vhVePczroIQ+bSEj2k=",
+			"optional": true,
 			"requires": {
 				"file-type": "^3.8.0",
 				"get-stream": "^2.2.0",
@@ -2596,12 +2604,14 @@
 				"file-type": {
 					"version": "3.9.0",
 					"resolved": "https://registry.npmjs.org/file-type/-/file-type-3.9.0.tgz",
-					"integrity": "sha1-JXoHg4TR24CHvESdEH1SpSZyuek="
+					"integrity": "sha1-JXoHg4TR24CHvESdEH1SpSZyuek=",
+					"optional": true
 				},
 				"get-stream": {
 					"version": "2.3.1",
 					"resolved": "https://registry.npmjs.org/get-stream/-/get-stream-2.3.1.tgz",
 					"integrity": "sha1-Xzj5PzRgCWZu4BUKBUFn+Rvdld4=",
+					"optional": true,
 					"requires": {
 						"object-assign": "^4.0.1",
 						"pinkie-promise": "^2.0.0"
@@ -2610,7 +2620,8 @@
 				"pify": {
 					"version": "2.3.0",
 					"resolved": "https://registry.npmjs.org/pify/-/pify-2.3.0.tgz",
-					"integrity": "sha1-7RQaasBDqEnqWISY59yosVMw6Qw="
+					"integrity": "sha1-7RQaasBDqEnqWISY59yosVMw6Qw=",
+					"optional": true
 				}
 			}
 		},
@@ -3496,7 +3507,8 @@
 		"file-type": {
 			"version": "5.2.0",
 			"resolved": "https://registry.npmjs.org/file-type/-/file-type-5.2.0.tgz",
-			"integrity": "sha1-LdvqfHP/42No365J3DOMBYwritY="
+			"integrity": "sha1-LdvqfHP/42No365J3DOMBYwritY=",
+			"optional": true
 		},
 		"file-uri-to-path": {
 			"version": "1.0.0",
@@ -3506,12 +3518,14 @@
 		"filename-reserved-regex": {
 			"version": "2.0.0",
 			"resolved": "https://registry.npmjs.org/filename-reserved-regex/-/filename-reserved-regex-2.0.0.tgz",
-			"integrity": "sha1-q/c9+rc10EVECr/qLZHzieu/oik="
+			"integrity": "sha1-q/c9+rc10EVECr/qLZHzieu/oik=",
+			"optional": true
 		},
 		"filenamify": {
 			"version": "2.1.0",
 			"resolved": "https://registry.npmjs.org/filenamify/-/filenamify-2.1.0.tgz",
 			"integrity": "sha512-ICw7NTT6RsDp2rnYKVd8Fu4cr6ITzGy3+u4vUujPkabyaz+03F24NWEX7fs5fp+kBonlaqPH8fAO2NM+SXt/JA==",
+			"optional": true,
 			"requires": {
 				"filename-reserved-regex": "^2.0.0",
 				"strip-outer": "^1.0.0",
@@ -4388,6 +4402,7 @@
 			"version": "2.1.0",
 			"resolved": "https://registry.npmjs.org/get-proxy/-/get-proxy-2.1.0.tgz",
 			"integrity": "sha512-zmZIaQTWnNQb4R4fJUEp/FC51eZsc6EkErspy3xtIYStaq8EB/hDIWipxsal+E8rz0qD7f2sL/NA9Xee4RInJw==",
+			"optional": true,
 			"requires": {
 				"npm-conf": "^1.1.0"
 			}
@@ -5279,7 +5294,8 @@
 		"is-natural-number": {
 			"version": "4.0.1",
 			"resolved": "https://registry.npmjs.org/is-natural-number/-/is-natural-number-4.0.1.tgz",
-			"integrity": "sha1-q5124dtM7VHjXeDHLr7PCfc0zeg="
+			"integrity": "sha1-q5124dtM7VHjXeDHLr7PCfc0zeg=",
+			"optional": true
 		},
 		"is-nil": {
 			"version": "1.0.1",
@@ -11353,6 +11369,7 @@
 			"version": "2.1.0",
 			"resolved": "https://registry.npmjs.org/strip-dirs/-/strip-dirs-2.1.0.tgz",
 			"integrity": "sha512-JOCxOeKLm2CAS73y/U4ZeZPTkE+gNVCzKt7Eox84Iej1LT/2pTWYpZKJuxwQpvX1LiZb1xokNR7RLfuBAa7T3g==",
+			"optional": true,
 			"requires": {
 				"is-natural-number": "^4.0.1"
 			}
@@ -12203,7 +12220,7 @@
 			"dependencies": {
 				"gltf-pipeline": {
 					"version": "github:freezy/gltf-pipeline#8e7c1450d08374755b3abaf0eb0e3ae9a118c8f2",
-					"from": "github:freezy/gltf-pipeline#hotfix/dedupe",
+					"from": "github:freezy/gltf-pipeline#8e7c1450d08374755b3abaf0eb0e3ae9a118c8f2",
 					"requires": {
 						"bluebird": "^3.5.3",
 						"cesium": "^1.54.0",

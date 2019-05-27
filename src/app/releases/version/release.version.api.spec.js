@@ -63,7 +63,7 @@ describe('The VPDB `Release Version` API', () => {
 						{ _file: vptfile.id },
 						{ _file: vptfile.id, _compatibility: ['non-existent'] }
 					]
-				}).then(res => res.expectNumValidationErrors([
+				}).then(res => res.expectValidationErrors([
 					['files.0.flavor.orientation', 'must be provided'],
 					['files.0.flavor.lighting', 'must be provided'],
 					['files.0._compatibility', 'must be provided'],
@@ -97,8 +97,8 @@ describe('The VPDB `Release Version` API', () => {
 		it('should succeed when providing valid data', async () => {
 			const user = 'member';
 			const release = await api.releaseHelper.createRelease(user);
-			const vptfile = await api.fileHelper.createVpt(user);
-			const playfield = await api.fileHelper.createPlayfield(user, 'fs');
+			const vptfile = await api.fileHelper.createVpt(user,  { keep: true });
+			const playfield = await api.fileHelper.createPlayfield(user, 'fs', undefined,  { keep: true });
 
 			res = await api.as(user)
 				.save('releases/create-version')
@@ -133,8 +133,8 @@ describe('The VPDB `Release Version` API', () => {
 					})
 				.then(res => res.expectStatus(200));
 
-			const vptfile = await api.fileHelper.createVpt('othermember');
-			const playfield = await api.fileHelper.createPlayfield('othermember', 'fs');
+			const vptfile = await api.fileHelper.createVpt('othermember',  { keep: true });
+			const playfield = await api.fileHelper.createPlayfield('othermember', 'fs', undefined,  { keep: true });
 			res = await api.as('othermember')
 				.post('/v1/releases/' + release.id + '/versions', {
 					version: '2.0.0',
@@ -155,8 +155,8 @@ describe('The VPDB `Release Version` API', () => {
 		it('should succeed when logged as non-creator but moderator', async () => {
 			const user = 'member';
 			const release = await api.releaseHelper.createRelease(user);
-			const vptfile = await api.fileHelper.createVpt(user);
-			const playfield = await api.fileHelper.createPlayfield(user, 'fs');
+			const vptfile = await api.fileHelper.createVpt(user,  { keep: true });
+			const playfield = await api.fileHelper.createPlayfield(user, 'fs', undefined,  { keep: true });
 			res = await api.as('moderator')
 				.post('/v1/releases/' + release.id + '/versions', {
 					version: '2.0.0',
@@ -200,13 +200,13 @@ describe('The VPDB `Release Version` API', () => {
 			const user = 'member';
 			const release = await api.releaseHelper.createRelease(user);
 			const versionFile = release.versions[0].files[0];
-			const vptfile = await api.releaseHelper.createVpt(user);
+			const vptfile = await api.fileHelper.createVpt(user);
 			const playfield = await api.fileHelper.createPlayfield(user, 'fs');
 			const data = {
 				files: [{
 					_file: vptfile.id,
 					_playfield_image: playfield.id,
-					_compatibility: _.map(versionFile.compatibility, 'id'),
+					_compatibility: versionFile.compatibility.map(c => c.id),
 					flavor: versionFile.flavor
 				}]
 			};
@@ -230,9 +230,9 @@ describe('The VPDB `Release Version` API', () => {
 
 		it('should fail for duplicate version', async () => {
 			const user = 'member';
-			const release = await api.releaseHelper.createRelease(user, { version: '1.0.0'});
-			const vptfile = await api.fileHelper.createVpt(user);
-			const playfield = await api.fileHelper.createPlayfield(user, 'fs');
+			const release = await api.releaseHelper.createRelease(user, { version: '1.0.0' });
+			const vptfile = await api.fileHelper.createVpt(user,  { keep: true });
+			const playfield = await api.fileHelper.createPlayfield(user, 'fs', undefined,  { keep: true });
 			await api.as(user)
 				.post('/v1/releases/' + release.id + '/versions', {
 					version: '2.0.0',
@@ -255,8 +255,8 @@ describe('The VPDB `Release Version` API', () => {
 			const newChanges = 'New changes.';
 			const newVersion = 'v666';
 			const release = await api.releaseHelper.createRelease(user);
-			const vptfile = await api.fileHelper.createVpt(user);
-			const playfield = await api.fileHelper.createPlayfield(user, 'fs');
+			const vptfile = await api.fileHelper.createVpt(user,  { keep: true });
+			const playfield = await api.fileHelper.createPlayfield(user, 'fs',  undefined, { keep: true });
 			res = await api.as(user)
 				.save('releases/update-version')
 				.patch('/v1/releases/' + release.id + '/versions/' + release.versions[0].version, {

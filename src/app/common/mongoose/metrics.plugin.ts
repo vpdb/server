@@ -48,7 +48,7 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 	}
 
 	schema.virtual('hasRelations').get(() => true);
-	schema.methods.$updateRelations = function(this: MetricsDocument, parentModel: string, parentId: Types.ObjectId, absPath: string, queryPath: string, arrayFilters: ArrayFilter[]) {
+	schema.methods.$updateRelations = function(this: MetricsDocument, parentModel: string, parentId: string, absPath: string, queryPath: string, arrayFilters: ArrayFilter[]) {
 		const arrayFields = absPath.split(/\.\d+/g);
 		const lastArrayField = arrayFields.pop();
 		this.$$parentModel = parentModel;
@@ -66,12 +66,8 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 		return this.$$parentModel || (this.constructor as any).modelName;
 	};
 
-	schema.methods.getModelName = function(this: MetricsDocument): string {
-		return (this.constructor as any).modelName;
-	};
-
-	schema.methods.getParentId = function(this: MetricsDocument): Types.ObjectId {
-		return this.$$parentId || this._id;
+	schema.methods.getParentId = function(this: MetricsDocument): string {
+		return this.$$parentId || this.id;
 	};
 
 	schema.methods.getPathWithinParent = function(this: MetricsDocument, opts: {prefix?: string, suffix?: string} = {}) {
@@ -120,7 +116,7 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 		const arrayFilters = this.$$queryArrayFilters || [];
 		//await getModel(this).findOneAndUpdate(condition, q).exec();
 		await getModel(this).updateOne(
-			{ _id: this.getParentId() || this._id },
+			{ id: this.getParentId() || this.id },
 			q,
 			{ arrayFilters },
 		).exec();
@@ -160,8 +156,8 @@ function getCacheModelName(doc: MetricsDocument): string {
  * @return {string} Query condition, e.g. `{ _id: "5b60261f687fc336902ffe2d", versions.files._id: "5b60261f687fc336902ffe2f" }`
  */
 function getQueryCondition(doc: MetricsDocument): any {
-	const condition: any = { _id: doc.getParentId() || doc._id };
-	if (doc.getParentId().equals(doc._id)) {
+	const condition: any = { id: doc.getParentId() || doc.id };
+	if (doc.getParentId() === doc.id) {
 		return condition;
 	}
 	condition[doc.getPathWithinParent({ suffix: '_id' })] = doc._id;
@@ -200,7 +196,7 @@ function getModel<M extends Model<Document> = Model<Document>>(doc: MetricsDocum
  */
 function onFindOne(doc: MetricsDocument, next: (err?: NativeError) => void) {
 	if (doc) {
-		updateChildren(doc, this.schema, (doc.constructor as any).modelName, doc._id);
+		updateChildren(doc, this.schema, (doc.constructor as any).modelName, doc.id);
 	}
 	next();
 }
@@ -215,7 +211,7 @@ function onFindOne(doc: MetricsDocument, next: (err?: NativeError) => void) {
  * @param parentId Entity `id` of the first parent that isn't nested
  * @param [parentPath] Path to parent when called recursively
  */
-function updateChildren(doc: MetricsDocument, schema: any, parentModel: string, parentId: Types.ObjectId, parentPath: string = '') {
+function updateChildren(doc: MetricsDocument, schema: any, parentModel: string, parentId: string, parentPath: string = '') {
 
 	// single references
 	const objectIdPaths: any[] = Object.keys(schema.paths).filter((p: string) => schema.paths[p].instance === 'ObjectID');
@@ -226,7 +222,7 @@ function updateChildren(doc: MetricsDocument, schema: any, parentModel: string, 
 			if (isChildSchema(schema, path)) {
 				child.$updateRelations(parentModel, parentId, currentPath, doc.$$pathWithinParent, Array.from(doc.$$queryArrayFilters || []));
 			} else {
-				child.$updateRelations(child.constructor.modelName, child._id, currentPath, doc.$$pathWithinParent, []);
+				child.$updateRelations(child.constructor.modelName, child.id, currentPath, doc.$$pathWithinParent, []);
 			}
 		}
 	}
@@ -243,7 +239,7 @@ function updateChildren(doc: MetricsDocument, schema: any, parentModel: string, 
 				child.$updateRelations(parentModel, parentId, currentPath, queryPath, Array.from(doc.$$queryArrayFilters || []));
 				updateChildren(child, get(schema.obj, path).type[0], parentModel, parentId, currentPath);
 			} else {
-				child.$updateRelations(child.constructor.modelName, child._id, currentPath, queryPath, []);
+				child.$updateRelations(child.constructor.modelName, child.id, currentPath, queryPath, []);
 			}
 			index++;
 		}
@@ -275,7 +271,7 @@ declare module 'mongoose' {
 
 		// privates
 		$$parentModel: string;
-		$$parentId: Types.ObjectId;
+		$$parentId: string;
 		$$normalizedPathWithinParent: string;
 		$$queryPathWithinParent: string;
 		$$pathWithinParent: string;
@@ -319,11 +315,16 @@ declare module 'mongoose' {
 		getParentModel(): string;
 
 		/**
-		 * Returns the id of the top-most parent that has its own collection.
+		 * Returns the (string) ID of the top-most parent that has its own collection.
 		 *
 		 * @see getParentModel()
 		 */
-		getParentId(): Types.ObjectId;
+		getParentId(): string;
+
+		/**
+		 * Returns the id of the top-most parent that has its own collection.
+		 */
+		//getParentId(): string;
 
 	}
 

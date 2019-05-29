@@ -100,7 +100,7 @@ export class Release {
 	public static getLinkedFiles(release: ReleaseDocument | ReleaseDocument[]): FileDocument[] {
 		let files: FileDocument[] = [];
 		if (isArray(release)) {
-			[files] = release.map(Release.getLinkedFiles);
+			files = flatten(release.map(Release.getLinkedFiles));
 			return files || [];
 		}
 		if (release.versions && release.versions.length > 0) {
@@ -123,16 +123,16 @@ export class Release {
 	public static getLinkedReleaseFiles(release: ReleaseDocument | ReleaseDocument[]): ReleaseVersionFileDocument[] {
 		let releaseVersionFiles: ReleaseVersionFileDocument[] = [];
 		if (isArray(release)) {
-			[ releaseVersionFiles ] = release.map(Release.getLinkedReleaseFiles);
+			releaseVersionFiles = flatten(release.map(Release.getLinkedReleaseFiles));
 			return releaseVersionFiles || [];
 		}
 		if (release.versions && release.versions.length > 0) {
-			[releaseVersionFiles] = release.versions.map(v => {
+			releaseVersionFiles = flatten(release.versions.map(v => {
 				if (v.files && v.files.length > 0) {
 					return v.files;
 				}
 				return [];
-			});
+			}));
 		}
 		return releaseVersionFiles.filter(f => !!f && f.file);
 	}

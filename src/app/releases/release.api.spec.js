@@ -530,7 +530,9 @@ describe('The VPDB `Release` API', () => {
 
 			res = await api.get(`/v1/releases/${release.id}`).then(res => res.expectStatus(200));
 			expect(res.data.versions[0].files[0].counter.downloads).to.be(0);
+			expect(res.data.versions[0].counter.downloads).to.be(0);
 			expect(res.data.versions[1].files[0].counter.downloads).to.be(1);
+			expect(res.data.versions[1].counter.downloads).to.be(1);
 
 			// check cached version while we're at it
 			await api
@@ -543,7 +545,9 @@ describe('The VPDB `Release` API', () => {
 				.then(res => res.expectStatus(200));
 			res = await api.get(`/v1/releases/${release.id}`).then(res => res.expectHeader('x-cache-api', 'hit').expectStatus(200));
 			expect(res.data.versions[0].files[0].counter.downloads).to.be(0);
+			expect(res.data.versions[0].counter.downloads).to.be(0);
 			expect(res.data.versions[1].files[0].counter.downloads).to.be(2);
+			expect(res.data.versions[1].counter.downloads).to.be(2);
 
 		});
 

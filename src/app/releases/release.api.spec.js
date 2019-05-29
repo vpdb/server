@@ -531,6 +531,20 @@ describe('The VPDB `Release` API', () => {
 			res = await api.get(`/v1/releases/${release.id}`).then(res => res.expectStatus(200));
 			expect(res.data.versions[0].files[0].counter.downloads).to.be(0);
 			expect(res.data.versions[1].files[0].counter.downloads).to.be(1);
+
+			// check cached version while we're at it
+			await api
+				.onStorage()
+				.as(user)
+				.withQuery(({ body: JSON.stringify(body) }))
+				.withHeader('Accept', 'application/zip')
+				.responseAsBuffer()
+				.get('/v1/releases/' + release.id)
+				.then(res => res.expectStatus(200));
+			res = await api.get(`/v1/releases/${release.id}`).then(res => res.expectHeader('x-cache-api', 'hit').expectStatus(200));
+			expect(res.data.versions[0].files[0].counter.downloads).to.be(0);
+			expect(res.data.versions[1].files[0].counter.downloads).to.be(2);
+
 		});
 
 		it('should fail when providing a non-rotated and unspecified playfield image ("playfield" file_type)');

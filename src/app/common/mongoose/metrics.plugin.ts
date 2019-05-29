@@ -48,17 +48,17 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 	}
 
 	schema.virtual('hasRelations').get(() => true);
-	schema.methods.$updateRelations = function(this: MetricsDocument, parentModel: string, parentId: Types.ObjectId, path: string, arrayFilters: ArrayFilter[]) {
-		const arrayFields = path.split(/\.\d+/g);
+	schema.methods.$updateRelations = function(this: MetricsDocument, parentModel: string, parentId: Types.ObjectId, absPath: string, queryPath: string, arrayFilters: ArrayFilter[]) {
+		const arrayFields = absPath.split(/\.\d+/g);
 		const lastArrayField = arrayFields.pop();
 		this.$$parentModel = parentModel;
 		this.$$parentId = parentId;
-		this.$$normalizedPathWithinParent = path.replace(/\.\d+/g, '');
+		this.$$normalizedPathWithinParent = absPath.replace(/\.\d+/g, '');
 		this.$$queryPathWithinParent = arrayFields.join('.$[]') + (arrayFields.length > 0 ? '.$' : '') + lastArrayField;
 		this.$$queryArrayFilters = arrayFilters;
-		if (/\.\d+$/.test(path)) {
-			this.$$pathWithinParent = path.replace(/\.\d+/g, `.$[obj_${this._id.toString()}]`);
-			this.$$queryArrayFilters.push({ [`obj_${this._id.toString()}._id`]: this._id });
+		if (/\.\d+$/.test(absPath)) {
+			this.$$pathWithinParent = queryPath.replace(/\.\d+$/g, `.$[id${this._id.toString()}]`);
+			this.$$queryArrayFilters.push({ [`id${this._id.toString()}._id`]: this._id });
 		}
 	};
 
@@ -117,11 +117,13 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 
 		// update db
 		const condition = getQueryCondition(this);
+		const arrayFilters = this.$$queryArrayFilters || [];
 		//await getModel(this).findOneAndUpdate(condition, q).exec();
 		await getModel(this).updateOne(
 			{ _id: this.getParentId() || this._id },
 			q,
-			{ arrayFilters: this.$$queryArrayFilters }).exec();
+			{ arrayFilters },
+		).exec();
 	};
 
 	/**
@@ -177,7 +179,8 @@ function getCounterUpdatePath(doc: MetricsDocument, counterName: string): string
 	// 	return 'counter.' + counterName;
 	// }
 	//return doc.getQueryFieldPath('counter.' + counterName);
-	return (doc.$$pathWithinParent || '') + 'counter.' + counterName;
+	const pathWithinParent = doc.$$pathWithinParent ? `${doc.$$pathWithinParent}.` : '';
+	return `${pathWithinParent}counter.${counterName}`;
 }
 
 /**
@@ -221,9 +224,9 @@ function updateChildren(doc: MetricsDocument, schema: any, parentModel: string, 
 		if (child && child.hasRelations) {
 			const currentPath = `${parentPath}${parentPath ? '.' : ''}${path}`;
 			if (isChildSchema(schema, path)) {
-				child.$updateRelations(parentModel, parentId, currentPath, Array.from(doc.$$queryArrayFilters || []));
+				child.$updateRelations(parentModel, parentId, currentPath, doc.$$pathWithinParent, Array.from(doc.$$queryArrayFilters || []));
 			} else {
-				child.$updateRelations(child.constructor.modelName, child._id, currentPath, Array.from(doc.$$queryArrayFilters || []));
+				child.$updateRelations(child.constructor.modelName, child._id, currentPath, doc.$$pathWithinParent, []);
 			}
 		}
 	}
@@ -235,11 +238,12 @@ function updateChildren(doc: MetricsDocument, schema: any, parentModel: string, 
 		let index = 0;
 		for (const child of children) {
 			const currentPath = `${parentPath}${parentPath ? '.' : ''}${path}.${index}`;
+			const queryPath = `${doc.$$pathWithinParent ? `${doc.$$pathWithinParent}.` : ''}${path}.${index}`;
 			if (isChildSchema(schema, path)) {
-				child.$updateRelations(parentModel, parentId, currentPath, Array.from(doc.$$queryArrayFilters || []));
+				child.$updateRelations(parentModel, parentId, currentPath, queryPath, Array.from(doc.$$queryArrayFilters || []));
 				updateChildren(child, get(schema.obj, path).type[0], parentModel, parentId, currentPath);
 			} else {
-				child.$updateRelations(child.constructor.modelName, child._id, currentPath, Array.from(doc.$$queryArrayFilters || []));
+				child.$updateRelations(child.constructor.modelName, child._id, currentPath, queryPath, []);
 			}
 			index++;
 		}

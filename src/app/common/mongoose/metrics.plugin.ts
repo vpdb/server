@@ -49,15 +49,12 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 
 	schema.virtual('hasRelations').get(() => true);
 	schema.methods.$updateRelations = function(this: MetricsDocument, parentModel: string, parentId: string, absPath: string, queryPath: string, arrayFilters: ArrayFilter[]) {
-		const arrayFields = absPath.split(/\.\d+/g);
-		const lastArrayField = arrayFields.pop();
 		this.$$parentModel = parentModel;
 		this.$$parentId = parentId;
-		this.$$normalizedPathWithinParent = absPath.replace(/\.\d+/g, '');
-		this.$$queryPathWithinParent = arrayFields.join('.$[]') + (arrayFields.length > 0 ? '.$' : '') + lastArrayField;
+		this.$$cachePath = absPath.replace(/\.\d+/g, '');
 		this.$$queryArrayFilters = arrayFilters;
 		if (/\.\d+$/.test(absPath)) {
-			this.$$pathWithinParent = queryPath.replace(/\.\d+$/g, `.$[id${this._id.toString()}]`);
+			this.$$queryPath = queryPath.replace(/\.\d+$/g, `.$[id${this._id.toString()}]`);
 			this.$$queryArrayFilters.push({ [`id${this._id.toString()}._id`]: this._id });
 		}
 	};
@@ -70,16 +67,11 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 		return this.$$parentId || this.id;
 	};
 
-	schema.methods.getPathWithinParent = function(this: MetricsDocument, opts: {prefix?: string, suffix?: string} = {}) {
-		const path = opts.prefix && this.$$normalizedPathWithinParent
-			? `${opts.prefix}.${this.$$normalizedPathWithinParent}`
-			: opts.prefix || this.$$normalizedPathWithinParent || '';
+	schema.methods.getCachePath = function(this: MetricsDocument, opts: {prefix?: string, suffix?: string} = {}) {
+		const path = opts.prefix && this.$$cachePath
+			? `${opts.prefix}.${this.$$cachePath}`
+			: opts.prefix || this.$$cachePath || '';
 		return path && opts.suffix ? `${path}.${opts.suffix}` : path || opts.suffix;
-	};
-
-	schema.methods.getQueryFieldPath = function(this: MetricsDocument, suffix?: string) {
-		const queryPath = this.$$queryPathWithinParent || '';
-		return suffix && queryPath ? `${queryPath}.${suffix}` : queryPath || suffix ;
 	};
 
 	/**
@@ -112,14 +104,9 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 		await apiCache.incrementCounter(getCacheModelName(this), getId(this), counterName, value);
 
 		// update db
-		const condition = getQueryCondition(this);
+		const conditions = { id: this.getParentId() || this.id };
 		const arrayFilters = this.$$queryArrayFilters || [];
-		//await getModel(this).findOneAndUpdate(condition, q).exec();
-		await getModel(this).updateOne(
-			{ id: this.getParentId() || this.id },
-			q,
-			{ arrayFilters },
-		).exec();
+		await getModel(this).updateOne(conditions, q, { arrayFilters }).exec();
 	};
 
 	/**
@@ -147,21 +134,7 @@ function getCacheModelName(doc: MetricsDocument): string {
 	if (doc.getParentId() === doc.id) {
 		return (doc.constructor as any).modelName.toLowerCase();
 	}
-	return doc.getPathWithinParent({ prefix: doc.getParentModel().toLowerCase() });
-}
-
-/**
- * Returns the query retrieving the entity (and embedded doc, if any).
- * @param doc Document
- * @return {string} Query condition, e.g. `{ _id: "5b60261f687fc336902ffe2d", versions.files._id: "5b60261f687fc336902ffe2f" }`
- */
-function getQueryCondition(doc: MetricsDocument): any {
-	const condition: any = { id: doc.getParentId() || doc.id };
-	if (doc.getParentId() === doc.id) {
-		return condition;
-	}
-	condition[doc.getPathWithinParent({ suffix: '_id' })] = doc._id;
-	return condition;
+	return doc.getCachePath({ prefix: doc.getParentModel().toLowerCase() });
 }
 
 /**
@@ -171,11 +144,7 @@ function getQueryCondition(doc: MetricsDocument): any {
  * @return {string} Path to the counter, e.g. "versions.$[].files.$.counter.downloads" (we use ".$." at the end and ".$[]." otherwise)
  */
 function getCounterUpdatePath(doc: MetricsDocument, counterName: string): string {
-	// if (doc.getParentId().equals(doc.id)) {
-	// 	return 'counter.' + counterName;
-	// }
-	//return doc.getQueryFieldPath('counter.' + counterName);
-	const pathWithinParent = doc.$$pathWithinParent ? `${doc.$$pathWithinParent}.` : '';
+	const pathWithinParent = doc.$$queryPath ? `${doc.$$queryPath}.` : '';
 	return `${pathWithinParent}counter.${counterName}`;
 }
 
@@ -220,9 +189,9 @@ function updateChildren(doc: MetricsDocument, schema: any, parentModel: string, 
 		if (child && child.hasRelations) {
 			const currentPath = `${parentPath}${parentPath ? '.' : ''}${path}`;
 			if (isChildSchema(schema, path)) {
-				child.$updateRelations(parentModel, parentId, currentPath, doc.$$pathWithinParent, Array.from(doc.$$queryArrayFilters || []));
+				child.$updateRelations(parentModel, parentId, currentPath, doc.$$queryPath, Array.from(doc.$$queryArrayFilters || []));
 			} else {
-				child.$updateRelations(child.constructor.modelName, child.id, currentPath, doc.$$pathWithinParent, []);
+				child.$updateRelations(child.constructor.modelName, child.id, currentPath, doc.$$queryPath, []);
 			}
 		}
 	}
@@ -234,7 +203,7 @@ function updateChildren(doc: MetricsDocument, schema: any, parentModel: string, 
 		let index = 0;
 		for (const child of children) {
 			const currentPath = `${parentPath}${parentPath ? '.' : ''}${path}.${index}`;
-			const queryPath = `${doc.$$pathWithinParent ? `${doc.$$pathWithinParent}.` : ''}${path}.${index}`;
+			const queryPath = `${doc.$$queryPath ? `${doc.$$queryPath}.` : ''}${path}.${index}`;
 			if (isChildSchema(schema, path)) {
 				child.$updateRelations(parentModel, parentId, currentPath, queryPath, Array.from(doc.$$queryArrayFilters || []));
 				updateChildren(child, get(schema.obj, path).type[0], parentModel, parentId, currentPath);
@@ -272,9 +241,8 @@ declare module 'mongoose' {
 		// privates
 		$$parentModel: string;
 		$$parentId: string;
-		$$normalizedPathWithinParent: string;
-		$$queryPathWithinParent: string;
-		$$pathWithinParent: string;
+		$$cachePath: string;
+		$$queryPath: string;
 		$$queryArrayFilters: ArrayFilter[];
 
 		/**
@@ -295,13 +263,7 @@ declare module 'mongoose' {
 		 * @param [opts.prefix] Path will be prefixed with prefix plus "."
 		 * @param [opts.suffix] Path will be suffixed with "." plus suffix.
 		 */
-		getPathWithinParent(opts?: {prefix?: string, suffix?: string}): string;
-
-		/**
-		 * Returns the query path withing the parent.
-		 * @return {string} Path to the counter, e.g. "versions.$[].files.$.counter.downloads"
-		 */
-		getQueryFieldPath(suffix?: string): string;
+		getCachePath(opts?: {prefix?: string, suffix?: string}): string;
 
 		/**
 		 * Returns the model of the top-most parent that has its own collection.

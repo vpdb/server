@@ -33,19 +33,34 @@ export const releaseDetailsCacheCounters: Array<CacheCounterConfig<ReleaseDocume
 }, {
 	modelName: 'release.versions',
 	counters: ['downloads', 'comments'],
-	get: (release: ReleaseDocument, counter: ReleaseVersionCounterType) => release.versions.reduce((acc: CacheCounterValues, version) => {
-		acc[[release.id, version.version].join(',')] = version.counter[counter]; return acc; }, {}),
-	set: (release: ReleaseDocument, counter: ReleaseVersionCounterType, values: CacheCounterValues) => Object.keys(values)
-		.forEach(id => release.versions
-			.find(version => version.version === id.split(',')[1]).counter[counter] = values[id]),
+	get: (releaseFromDb: ReleaseDocument, counter: ReleaseVersionCounterType) => releaseFromDb.versions.reduce((acc: CacheCounterValues, version) => {
+		const key = [releaseFromDb.id, version.version].join(',');
+		acc[key] = version.counter[counter];
+		return acc;
+	}, {}),
+	set: (releaseFromCache: ReleaseDocument, counter: ReleaseVersionCounterType, values: CacheCounterValues) => {
+		for (const key of Object.keys(values)) {
+			const id = key.split(',')[1];
+			const version = releaseFromCache.versions.find(v => v.version === id);
+			version.counter[counter] = values[key];
+		}
+	},
 }, {
 	modelName: 'release.versions.files',
 	counters: ['downloads'],
-	get: (release: ReleaseDocument, counter: ReleaseVersionFileCounterType) => Release.getLinkedReleaseFiles(release).reduce((acc: CacheCounterValues, versionFile) => {
-		acc[[release.id, versionFile.file.id].join(',')] = versionFile.counter[counter]; return acc; }, {}),
-	set: (release: ReleaseDocument, counter: ReleaseVersionFileCounterType, values: CacheCounterValues) => Object.keys(values)
-		.forEach(id => Release.getLinkedReleaseFiles(release)
-			.find(versionFile => versionFile.file.id === id.split(',')[1]).counter[counter] = values[id]),
+	get: (releaseFromDb: ReleaseDocument, counter: ReleaseVersionFileCounterType) => Release.getLinkedReleaseFiles(releaseFromDb).reduce((acc: CacheCounterValues, versionFile) => {
+		const key = [releaseFromDb.id, versionFile.file.id].join(',');
+		acc[key] = versionFile.counter[counter];
+		return acc;
+	}, {}),
+	set: (releaseFromCache: ReleaseDocument, counter: ReleaseVersionFileCounterType, values: CacheCounterValues) => {
+		for (const key of Object.keys(values)) {
+			const id = key.split(',')[1];
+			const files = Release.getLinkedReleaseFiles(releaseFromCache);
+			const file = files.find(versionFile => versionFile.file.id === id);
+			file.counter[counter] = values[key];
+		}
+	},
 }, {
 	modelName: 'file',
 	counters: ['downloads'],

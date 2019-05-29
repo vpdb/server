@@ -282,12 +282,6 @@ declare module 'mongoose' {
 		 * @see getParentModel()
 		 */
 		getParentId(): string;
-
-		/**
-		 * Returns the id of the top-most parent that has its own collection.
-		 */
-		//getParentId(): string;
-
 	}
 
 	// statics

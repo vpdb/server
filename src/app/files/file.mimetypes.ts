@@ -18,6 +18,7 @@
  */
 
 import { keys, uniq, values } from 'lodash';
+import { extname } from 'path';
 
 /**
  * This are the allowed MIME types.
@@ -127,4 +128,14 @@ export interface MimeType {
 	name: string;
 	ext: string;
 	category: 'image' | 'text' | 'video' | 'audio' | 'script' | 'archive' | 'directb2s' | 'table' | 'model';
+}
+
+export function getMimeTypeForFile(filename: string) {
+	const ext = extname(filename).substring(1);
+	for (const mimeType of Object.keys(mimeTypes)) {
+		if (mimeTypes[mimeType].ext === ext) {
+			return mimeType;
+		}
+	}
+	return 'application/octet-stream';
 }

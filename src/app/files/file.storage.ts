@@ -18,9 +18,10 @@
  */
 
 import Busboy from 'busboy';
-import { createReadStream } from 'fs';
+import unzip from 'unzip';
 import sanitize = require('mongo-sanitize');
 
+import { createReadStream } from 'fs';
 import { Api } from '../common/api';
 import { ApiError } from '../common/api.error';
 import { logger } from '../common/logger';
@@ -29,8 +30,10 @@ import { Context } from '../common/typings/context';
 import { LogEventUtil } from '../log-event/log.event.util';
 import { state } from '../state';
 import { FileDocument } from './file.document';
+import { getMimeTypeForFile } from './file.mimetypes';
 import { fileTypes } from './file.types';
 import { FileUtil } from './file.util';
+import { ArchiveEntry } from './metadata/archive.metadata';
 import { processorQueue } from './processor/processor.queue';
 
 /**
@@ -112,6 +115,38 @@ export class FileStorage extends Api {
 				});
 			});
 		}
+	}
+
+	/**
+	 * Downloads a file that is part of a zip archive.
+	 *
+	 * @see GET /files/:id.zip/:filepath
+	 * @param ctx Koa context
+	 */
+	public async zipStream(ctx: Context) {
+
+		const file = await state.models.File.findOne({ id: sanitize(ctx.params.id) }).exec();
+		if (!file) {
+			throw new ApiError('No such file with ID "%s".', ctx.params.id).status(404);
+		}
+
+		if (file.file_type !== 'rom') {
+			throw new ApiError('Streaming ZIP content only works for ROMs.').status(400);
+		}
+
+		if (!file.metadata || !Array.isArray(file.metadata.entries)) {
+			throw new ApiError('Cannot find meta data for ROM.');
+		}
+
+		const zippedFile: ArchiveEntry = file.metadata.entries.find((e: ArchiveEntry) => e.filename === ctx.params.filepath);
+		if (!zippedFile) {
+			throw new ApiError('Cannot find "%s" in archive.', ctx.params.filepath).status(404);
+		}
+
+		// todo handle modified-if header
+		// todo log event
+
+		await this.serveFromZip(ctx, file, zippedFile);
 	}
 
 	/**
@@ -393,5 +428,35 @@ export class FileStorage extends Api {
 		if (!file.isFree(ctx.state, variation)) {
 			await ctx.state.user.incrementCounter('downloads');
 		}
+	}
+
+	/**
+	 * Serves a file that is part of a zip archive.
+	 *
+	 * @param ctx Koa context
+	 * @param file File document
+	 * @param zipEntry Zip entry to stream
+	 */
+	private async serveFromZip(ctx: Context, file: FileDocument, zipEntry: ArchiveEntry): Promise<void> {
+		return new Promise((resolve, reject) => {
+			createReadStream(file.getPath(ctx.state))
+				.pipe(unzip.Parse())
+				.on('entry', entry => {
+					if (entry.type === 'File' && zipEntry.filename === entry.path) {
+						ctx.set('Content-Length', String(entry.size));
+						ctx.set('Content-Type', getMimeTypeForFile(entry.path));
+						ctx.set('Last-Modified', zipEntry.modified_at.toISOString().replace(/T/, ' ').replace(/\..+/, ''));
+						ctx.status = 200;
+						entry.pipe(ctx.res);
+					} else {
+						entry.autodrain();
+					}
+				})
+				.on('error', (err: Error) => {
+					logger.warn(ctx.state, 'Error extracting from zip: %s', err.message);
+					reject(err);
+				})
+				.on('close', resolve);
+		});
 	}
 }

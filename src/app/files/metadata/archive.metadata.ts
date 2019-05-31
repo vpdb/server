@@ -113,3 +113,11 @@ export class ArchiveMetadata extends Metadata {
 		}
 	}
 }
+
+export interface ArchiveEntry {
+	filename: string;
+	bytes: number;
+	bytes_compressed: number;
+	crc: number;
+	modified_at: Date;
+}

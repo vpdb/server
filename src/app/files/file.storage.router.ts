@@ -35,6 +35,7 @@ export class FileProtectedStorageRouter implements ApiRouter {
 		this.router.head('/files/:variation/:id.:ext', storage.auth(storage.head.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
 		this.router.get('/files/:id.:ext',             storage.auth(storage.get.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
 		this.router.get('/files/:variation/:id.:ext',  storage.auth(storage.get.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
+		this.router.get('/files/:id.zip/:filepath',   storage.zipStream.bind(storage));
 	}
 
 	public getRouter(): Router {

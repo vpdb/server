@@ -444,7 +444,7 @@ describe('The VPDB `file` storage API', () => {
 			res = await api.onStorage().get(`/files/${file.id}.zip/6530sys1.bin`).then(res => res.expectStatus(200));
 			expect(res.headers['content-length']).to.be('1024');
 			expect(res.headers['content-type']).to.be('application/octet-stream');
-			expect(res.headers['last-modified']).to.be('1996-12-24 22:32:00');
+			expect(res.headers['last-modified'].substr(0, 10)).to.be('1996-12-24');
 			expect(res.data.substr(0, 12)).to.be('BDFHKMOQSUWY');
 		});
 	});

@@ -456,7 +456,7 @@ export class FileStorage extends Api {
 						entry.autodrain();
 					}
 				})
-				.on('error', (err: Error) => {
+				.on('error', (err: Error) => /* istanbul ignore next */ {
 					logger.warn(ctx.state, 'Error extracting from zip: %s', err.message);
 					reject(err);
 				})

@@ -18,8 +18,8 @@
  */
 
 import Busboy from 'busboy';
-import unzip from 'unzip';
 import sanitize = require('mongo-sanitize');
+import unzip from 'unzip';
 
 import { createReadStream } from 'fs';
 import { Api } from '../common/api';

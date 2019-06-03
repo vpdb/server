@@ -134,6 +134,7 @@ export class FileStorage extends Api {
 			throw new ApiError('Streaming ZIP content only works for ROMs.').status(400);
 		}
 
+		/* istanbul ignore if: Metadata is screwed up and this shouldn't happen */
 		if (!file.metadata || !Array.isArray(file.metadata.entries)) {
 			throw new ApiError('Cannot find meta data for ROM.');
 		}
@@ -143,6 +144,7 @@ export class FileStorage extends Api {
 			throw new ApiError('Cannot find "%s" in archive.', ctx.params.filepath).status(404);
 		}
 
+		// todo invalidate inactive files
 		// todo handle modified-if header
 		// todo log event
 
@@ -443,9 +445,11 @@ export class FileStorage extends Api {
 				.pipe(unzip.Parse())
 				.on('entry', entry => {
 					if (entry.type === 'File' && zipEntry.filename === entry.path) {
-						ctx.set('Content-Length', String(entry.size));
-						ctx.set('Content-Type', getMimeTypeForFile(entry.path));
-						ctx.set('Last-Modified', zipEntry.modified_at.toISOString().replace(/T/, ' ').replace(/\..+/, ''));
+						const lastModified = zipEntry.modified_at.toISOString().replace(/T/, ' ').replace(/\..+/, '');
+						const contentType = getMimeTypeForFile(entry.path);
+						ctx.set('Content-Length', String(zipEntry.bytes));
+						ctx.set('Content-Type', contentType);
+						ctx.set('Last-Modified', lastModified);
 						ctx.status = 200;
 						entry.pipe(ctx.res);
 					} else {

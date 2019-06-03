@@ -32,10 +32,10 @@ export class FileProtectedStorageRouter implements ApiRouter {
 
 		this.router.post('/v1/files',                  storage.auth(storage.upload.bind(storage), 'files', 'upload', [ Scope.ALL ]));
 		this.router.head('/files/:id.:ext',            storage.auth(storage.head.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
+		this.router.get('/files/:id.:ext/:filepath',  storage.zipStream.bind(storage));
 		this.router.head('/files/:variation/:id.:ext', storage.auth(storage.head.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
 		this.router.get('/files/:id.:ext',             storage.auth(storage.get.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
 		this.router.get('/files/:variation/:id.:ext',  storage.auth(storage.get.bind(storage), 'files', 'download', [ Scope.ALL, Scope.STORAGE ]));
-		this.router.get('/files/:id.zip/:filepath',   storage.zipStream.bind(storage));
 	}
 
 	public getRouter(): Router {

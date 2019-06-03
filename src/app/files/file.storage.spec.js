@@ -422,4 +422,31 @@ describe('The VPDB `file` storage API', () => {
 				.then(res => res.expectStatus(304));
 		});
 	});
+
+	describe('when downloading a single file part of a zip archive', () => {
+
+		it('should fail for a non-existing file', async () => {
+			await api.onStorage().get('/files/test.zip/test.bin').then(res => res.expectError(404, 'no such file'));
+		});
+
+		it('should fail for a non-rom file', async () => {
+			const file = await api.fileHelper.createZip('member');
+			await api.onStorage().get(`/files/${file.id}.zip/test.bin`).then(res => res.expectError(400, 'only works for ROMs'));
+		});
+
+		it('should fail for a non-existing entry in an existing zip file', async () => {
+			const file = await api.fileHelper.createRom('member');
+			await api.onStorage().get(`/files/${file.id}.zip/test.bin`).then(res => res.expectError(404, 'cannot find "test.bin" in archive'));
+		});
+
+		it('should succeed for an existing entry in a rom file', async () => {
+			const file = await api.fileHelper.createRom('member');
+			res = await api.onStorage().get(`/files/${file.id}.zip/6530sys1.bin`).then(res => res.expectStatus(200));
+			expect(res.headers['content-length']).to.be('1024');
+			expect(res.headers['content-type']).to.be('application/octet-stream');
+			expect(res.headers['last-modified']).to.be('1996-12-24 22:32:00');
+			expect(res.data.substr(0, 12)).to.be('BDFHKMOQSUWY');
+		});
+	});
+
 });

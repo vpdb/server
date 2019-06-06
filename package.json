@@ -132,7 +132,7 @@
 		"@types/koa-json": "2.0.18",
 		"@types/koa-router": "7.0.40",
 		"@types/koa-send": "4.1.2",
-		"@types/lodash": "4.14.132",
+		"@types/lodash": "4.14.134",
 		"@types/mocha": "5.2.7",
 		"@types/mongo-sanitize": "1.0.1",
 		"@types/mongoose": "5.5.3",

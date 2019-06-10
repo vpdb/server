@@ -138,7 +138,7 @@
 		"@types/mongoose": "5.5.3",
 		"@types/mongoose-paginate": "5.0.6",
 		"@types/mongoose-unique-validator": "1.0.1",
-		"@types/nodegit": "0.24.7",
+		"@types/nodegit": "0.24.8",
 		"@types/nodemailer": "6.2.0",
 		"@types/randomstring": "1.1.6",
 		"@types/redis": "2.8.13",

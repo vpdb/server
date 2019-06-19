@@ -18,7 +18,7 @@
  */
 
 import { pick } from 'lodash';
-import UAParser from 'ua-parser-js';
+import { UAParser } from 'ua-parser-js';
 import { Serializer, SerializerLevel, SerializerOptions, SerializerReference } from '../common/serializer';
 import { Context } from '../common/typings/context';
 import { ModelName } from '../common/typings/models';

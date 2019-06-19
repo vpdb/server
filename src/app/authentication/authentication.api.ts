@@ -224,6 +224,7 @@ export class AuthenticationApi extends Api {
 		if (!ctx.request.body.token) {
 			throw new ApiError('Ignored incomplete authentication request')
 				.display('You must supply a username and password or a token with "login" scope.')
+				.code('invalid_request')
 				.warn()
 				.status(400);
 		}

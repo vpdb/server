@@ -171,6 +171,9 @@ const allowHeaders = [
 	'Origin',
 	'Referer',
 	'User-Agent',
+	'X-App-Name',
+	'X-App-Revision',
+	'X-App-Version',
 	'X-Authorization',
 	'X-Requested-With',
 ];

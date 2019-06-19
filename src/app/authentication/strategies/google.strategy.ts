@@ -19,14 +19,14 @@
 
 /* istanbul ignore file */
 import { OAuth2Client } from 'google-auth-library';
+import { GetTokenResponse } from 'google-auth-library/build/src/auth/oauth2client';
 
+import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
 import { config } from '../../common/settings';
 import { Context } from '../../common/typings/context';
 import { OAuthProfile } from '../authentication.api';
 import { Strategy } from './strategy';
-import { GetTokenResponse } from 'google-auth-library/build/src/auth/oauth2client';
-import { ApiError } from '../../common/api.error';
 
 export class GoogleStrategy extends Strategy {
 

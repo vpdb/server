@@ -25,6 +25,8 @@ import { config } from '../../common/settings';
 import { Context } from '../../common/typings/context';
 import { OAuthProfile } from '../authentication.api';
 import { Strategy } from './strategy';
+import { GetTokenResponse } from 'google-auth-library/build/src/auth/oauth2client';
+import { ApiError } from '../../common/api.error';
 
 export class GoogleStrategy extends Strategy {
 
@@ -52,37 +54,59 @@ export class GoogleStrategy extends Strategy {
 
 	protected async getProfile(ctx: Context): Promise<any> {
 		const code = ctx.query.code;
-		const r = await this.client.getToken(code);
+		let r: GetTokenResponse;
+		try {
+			r = await this.client.getToken(code);
+		} catch (err) {
+			logger.error(ctx.state, '[GoogleStrategy] Error retrieving token: %s', err.message);
+			throw new ApiError('Error retrieving token from Google.').status(400);
+		}
 		this.client.setCredentials(r.tokens);
-		const res = await this.client.request({ url: 'https://www.googleapis.com/plus/v1/people/me' });
+		let res: any;
+		try {
+			res = await this.client.request({ url: 'https://people.googleapis.com/v1/people/me?personFields=names,emailAddresses,photos' });
+		} catch (err) {
+			logger.error(ctx.state, '[GoogleStrategy] Error retrieving user profile: %s', err.message);
+			throw new ApiError('Error retrieving user email from Google.').status(400);
+		}
 		return res.data;
 	}
 
 	/**
-	 * Normalizes the Google+ profile.
+	 * Normalizes the Google profile.
 	 *
-	 * @see https://developers.google.com/+/web/api/rest/latest/people#resource
+	 * @see https://developers.google.com/people/api/rest/v1/people/get
 	 * @param profile
 	 * @return {OAuthProfile}
 	 */
 	protected normalizeProfile(profile: any): OAuthProfile {
+		const name = this.findPrimary(profile.names);
+		const photo = this.findPrimary(profile.photos);
+		const resourceName = profile.resourceName.split('/');
 		const normalizedProfile: OAuthProfile = {
 			provider: this.name,
-			id: profile.id,
-			emails: profile.emails,
-			displayName: profile.displayName,
+			id: resourceName[1],
+			emails: profile.emailAddresses.map((a: any) => ({
+				value: a.value,
+				type: a.metadata && a.metadata.primary ? 'primary' : 'unknown',
+			})),
+			displayName: name ? name.displayName : undefined,
 			_json: profile,
 		};
-		if (profile.name) {
-			normalizedProfile.name = {
-				familyName: profile.name.familyName,
-				givenName: profile.name.givenName,
-				middleName: profile.name.middleName,
-			};
+		if (name) {
+			normalizedProfile.name = name;
 		}
-		if (profile.image) {
-			normalizedProfile.photos = [ { value: profile.image.url }];
+		if (photo) {
+			normalizedProfile.photos = [ { value: photo.url }];
 		}
 		return normalizedProfile;
+	}
+
+	private findPrimary(items: Array<{ metadata?: { primary: boolean } }>): any {
+		const item = items.find((n: any) => n.metadata && n.metadata.primary);
+		if (!item && items.length > 0) {
+			return items[0];
+		}
+		return item;
 	}
 }

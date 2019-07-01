@@ -129,7 +129,7 @@
 		"@types/koa": "2.0.48",
 		"@types/koa-bodyparser": "4.2.2",
 		"@types/koa-json": "2.0.18",
-		"@types/koa-router": "7.0.41",
+		"@types/koa-router": "7.0.42",
 		"@types/koa-send": "4.1.2",
 		"@types/lodash": "4.14.134",
 		"@types/mocha": "5.2.7",

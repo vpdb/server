@@ -649,9 +649,9 @@
 			}
 		},
 		"@types/mongoose": {
-			"version": "5.5.7",
-			"resolved": "https://registry.npmjs.org/@types/mongoose/-/mongoose-5.5.7.tgz",
-			"integrity": "sha512-bQTgH19lwY56T4YE6YTeobTtJ4EVTqP8ST5lFxjecPHC+/ebpHU8W01by4KEGSg5AeWFWVCePUi44wHuFzbxDQ==",
+			"version": "5.5.8",
+			"resolved": "https://registry.npmjs.org/@types/mongoose/-/mongoose-5.5.8.tgz",
+			"integrity": "sha512-PtKUS5IC72F/5dwaUaCleYlXuaXXLDUL2wUGSnteq7ifUDQRqNji/vEpK8KQR+uHiRih1l90g4doOAZOc9veUg==",
 			"dev": true,
 			"requires": {
 				"@types/mongodb": "*",
@@ -6594,9 +6594,9 @@
 			}
 		},
 		"mongoose": {
-			"version": "5.6.2",
-			"resolved": "https://registry.npmjs.org/mongoose/-/mongoose-5.6.2.tgz",
-			"integrity": "sha512-s2FQn/XTlM/yeYxqNPGU8khSA1nPhGiESO7iLdFf8Ntn6lEwgO9KKOIGkRKPk5s+peAOwO34ex6NPX8EWtKgFA==",
+			"version": "5.6.4",
+			"resolved": "https://registry.npmjs.org/mongoose/-/mongoose-5.6.4.tgz",
+			"integrity": "sha512-mwMpa82uGvxSmkwTbxCmXb8/Nn9+2e+X61DiGFV9ZeenTsJKcdjc0QMGwDyDEkLcnYwQ5VrQbiB9548RZbFgVw==",
 			"requires": {
 				"async": "2.6.2",
 				"bson": "~1.1.1",

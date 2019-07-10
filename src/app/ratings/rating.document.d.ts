@@ -26,8 +26,8 @@ export interface RatingDocument extends Document {
 	id: string;
 	_from: UserDocument | Types.ObjectId;
 	_ref: {
-		game: GameDocument | Types.ObjectId,
-		release: ReleaseDocument | Types.ObjectId,
+		game?: GameDocument | Types.ObjectId,
+		release?: ReleaseDocument | Types.ObjectId,
 	};
 	value: number;
 	modified_at: Date;

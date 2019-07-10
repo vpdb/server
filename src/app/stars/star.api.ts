@@ -26,7 +26,7 @@ import { ApiError } from '../common/api.error';
 import { Context } from '../common/typings/context';
 import { LogEventUtil } from '../log-event/log.event.util';
 import { state } from '../state';
-import { StarDocument } from './star.document';
+import { StarDocument, StartReferenceType } from './star.document';
 
 export class StarApi extends Api {
 
@@ -131,7 +131,7 @@ export class StarApi extends Api {
 		const obj = {
 			_from: ctx.state.user._id,
 			_ref: { [modelName]: entity._id },
-			type: modelName,
+			type: modelName as StartReferenceType,
 			created_at: new Date(),
 		};
 		const star = new state.models.Star(obj);

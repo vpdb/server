@@ -27,12 +27,14 @@ import { UserDocument } from '../users/user.document';
 export interface StarDocument extends Document {
 	_from: UserDocument | Types.ObjectId;
 	_ref: {
-		game: GameDocument | Types.ObjectId,
-		release: ReleaseDocument | Types.ObjectId,
-		user: UserDocument | Types.ObjectId,
-		medium: MediumDocument | Types.ObjectId,
-		backglass: BackglassDocument | Types.ObjectId,
+		game?: GameDocument | Types.ObjectId,
+		release?: ReleaseDocument | Types.ObjectId,
+		user?: UserDocument | Types.ObjectId,
+		medium?: MediumDocument | Types.ObjectId,
+		backglass?: BackglassDocument | Types.ObjectId,
 	};
-	type: 'game' | 'release' | 'user' | 'medium' | 'backglass';
+	type: StartReferenceType;
 	created_at: Date;
 }
+
+export type StartReferenceType = 'game' | 'release' | 'user' | 'medium' | 'backglass';

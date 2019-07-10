@@ -25,8 +25,8 @@ export interface CommentDocument extends Document {
 	id: string;
 	_from: UserDocument | Types.ObjectId;
 	_ref: {
-		release: ReleaseDocument | Types.ObjectId;
-		release_moderation: ReleaseDocument | Types.ObjectId;
+		release?: ReleaseDocument | Types.ObjectId;
+		release_moderation?: ReleaseDocument | Types.ObjectId;
 	};
 	message: string;
 	ip: string;

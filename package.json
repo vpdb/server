@@ -77,7 +77,7 @@
 		"koa-response-time": "2.1.0",
 		"koa-router": "7.4.0",
 		"koa-send": "5.0.0",
-		"lodash": "4.17.11",
+		"lodash": "4.17.13",
 		"mongo-sanitize": "1.0.1",
 		"mongoose": "5.6.2",
 		"mongoose-paginate": "5.0.3",

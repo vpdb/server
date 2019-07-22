@@ -136,7 +136,7 @@
 		"@types/mongo-sanitize": "1.0.1",
 		"@types/mongoose": "5.5.8",
 		"@types/mongoose-paginate": "5.0.6",
-		"@types/mongoose-unique-validator": "1.0.1",
+		"@types/mongoose-unique-validator": "1.0.2",
 		"@types/nodegit": "0.24.8",
 		"@types/nodemailer": "6.2.0",
 		"@types/randomstring": "1.1.6",

@@ -148,7 +148,7 @@
 		"@types/uglify-js": "3.0.4",
 		"@types/unzip": "0.1.1",
 		"@types/validator": "10.11.1",
-		"@types/yargs": "13.0.0",
+		"@types/yargs": "13.0.2",
 		"async": "2.6.2",
 		"cheerio": "1.0.0-rc.2",
 		"cross-env": "5.2.0",
@@ -166,7 +166,7 @@
 		"ts-node": "8.3.0",
 		"tslint": "5.18.0",
 		"typescript": "3.5.3",
-		"yargs": "13.2.4",
+		"yargs": "13.3.0",
 		"yauzl": "2.10.0"
 	},
 	"nyc": {

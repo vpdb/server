@@ -67,7 +67,7 @@
 		"gltf-pipeline": "github:freezy/gltf-pipeline#hotfix/dedupe",
 		"gm": "1.23.1",
 		"google-auth-library": "4.2.5",
-		"handlebars": "4.1.2",
+		"handlebars": "4.3.0",
 		"has-ansi": "3.0.0",
 		"ioredis": "4.11.1",
 		"jwt-simple": "0.5.6",

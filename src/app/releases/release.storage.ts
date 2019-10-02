@@ -23,7 +23,7 @@ import { intersection, isArray, isUndefined, sortBy } from 'lodash';
 import sanitize = require('mongo-sanitize');
 import { Types } from 'mongoose';
 import { basename, extname } from 'path';
-import unzip from 'unzip';
+import unzip from 'unzipper';
 
 import { BuildDocument } from '../builds/build.document';
 import { Api } from '../common/api';

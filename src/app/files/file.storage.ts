@@ -19,7 +19,7 @@
 
 import Busboy from 'busboy';
 import sanitize = require('mongo-sanitize');
-import unzip from 'unzip';
+import unzip from 'unzipper';
 
 import { createReadStream } from 'fs';
 import { Api } from '../common/api';

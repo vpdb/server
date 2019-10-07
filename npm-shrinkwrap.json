@@ -764,9 +764,9 @@
 			}
 		},
 		"@types/mongoose-paginate": {
-			"version": "5.0.7",
-			"resolved": "https://registry.npmjs.org/@types/mongoose-paginate/-/mongoose-paginate-5.0.7.tgz",
-			"integrity": "sha512-zl+u3+k1tlll+2YOy5sKbAwFCFcKPYArhPwATRpg77SYMLaz1avj+LQ3wphujRzmzNJ5YklT/S0S52jBhZRDxA==",
+			"version": "5.0.8",
+			"resolved": "https://registry.npmjs.org/@types/mongoose-paginate/-/mongoose-paginate-5.0.8.tgz",
+			"integrity": "sha512-6Ybb8X+iBB1/CeScDhzn0q5ZXljHu2Zzg9Wp4nYI5V3Pjc02YuLq6GHHLQrljsA/hMytULnbwQovUYWeI3IxWA==",
 			"dev": true
 		},
 		"@types/mongoose-unique-validator": {

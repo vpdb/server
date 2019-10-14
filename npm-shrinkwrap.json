@@ -770,9 +770,9 @@
 			"dev": true
 		},
 		"@types/mongoose-unique-validator": {
-			"version": "1.0.2",
-			"resolved": "https://registry.npmjs.org/@types/mongoose-unique-validator/-/mongoose-unique-validator-1.0.2.tgz",
-			"integrity": "sha512-rdqjjWtwLH9EHClGwPOQxbcz5uK/uArJLZ9lOPR4oB04geBcZaxNYuLVFQZ2+qCllNNeoD5Txl3/HaOrA0kH+w==",
+			"version": "1.0.3",
+			"resolved": "https://registry.npmjs.org/@types/mongoose-unique-validator/-/mongoose-unique-validator-1.0.3.tgz",
+			"integrity": "sha512-OcY5DN9ONapv0sLZVyiuczWI2Lti/yZ68V/WWKadyc3x++FZ4QsDOPKwbcjVfAtxHc7Tawi6cmwlSMyjx4Z6UA==",
 			"dev": true,
 			"requires": {
 				"@types/mongoose": "*"

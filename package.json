@@ -54,7 +54,7 @@
 		"archiver": "3.1.1",
 		"axios": "0.19.0",
 		"base64-stream": "1.0.0",
-		"bluebird": "3.7.0",
+		"bluebird": "3.7.1",
 		"buffer-indexof": "1.1.1",
 		"bull": "3.11.0",
 		"busboy": "0.3.1",
@@ -113,7 +113,7 @@
 	"devDependencies": {
 		"@types/adm-zip": "0.4.32",
 		"@types/archiver": "3.0.0",
-		"@types/bluebird": "3.5.27",
+		"@types/bluebird": "3.5.28",
 		"@types/bull": "3.10.3",
 		"@types/busboy": "0.2.3",
 		"@types/bytes": "3.0.0",

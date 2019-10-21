@@ -424,9 +424,9 @@
 			}
 		},
 		"@types/bluebird": {
-			"version": "3.5.27",
-			"resolved": "https://registry.npmjs.org/@types/bluebird/-/bluebird-3.5.27.tgz",
-			"integrity": "sha512-6BmYWSBea18+tSjjSC3QIyV93ZKAeNWGM7R6aYt1ryTZXrlHF+QLV0G2yV0viEGVyRkyQsWfMoJ0k/YghBX5sQ==",
+			"version": "3.5.28",
+			"resolved": "https://registry.npmjs.org/@types/bluebird/-/bluebird-3.5.28.tgz",
+			"integrity": "sha512-0Vk/kqkukxPKSzP9c8WJgisgGDx5oZDbsLLWIP5t70yThO/YleE+GEm2S1GlRALTaack3O7U5OS5qEm7q2kciA==",
 			"dev": true
 		},
 		"@types/body-parser": {
@@ -1761,9 +1761,9 @@
 			}
 		},
 		"bluebird": {
-			"version": "3.7.0",
-			"resolved": "https://registry.npmjs.org/bluebird/-/bluebird-3.7.0.tgz",
-			"integrity": "sha512-aBQ1FxIa7kSWCcmKHlcHFlT2jt6J/l4FzC7KcPELkOJOsPOb/bccdhmIrKDfXhwFrmc7vDoDrrepFvGqjyXGJg=="
+			"version": "3.7.1",
+			"resolved": "https://registry.npmjs.org/bluebird/-/bluebird-3.7.1.tgz",
+			"integrity": "sha512-DdmyoGCleJnkbp3nkbxTLJ18rjDsE4yCggEwKNXkeV123sPNfOCYeDoeuOY+F2FrSjO1YXcTU+dsy96KMy+gcg=="
 		},
 		"boolbase": {
 			"version": "1.0.0",

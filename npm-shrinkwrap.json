@@ -793,9 +793,9 @@
 			}
 		},
 		"@types/nodemailer": {
-			"version": "6.2.1",
-			"resolved": "https://registry.npmjs.org/@types/nodemailer/-/nodemailer-6.2.1.tgz",
-			"integrity": "sha512-6f46rxxaFwyOW39psPoQiM7jHjL7apDRNT5WPHIuv+TZFv+7sBGSI9J7blIC3/NWff4O9/VSzgoQtO6aPLUdvQ==",
+			"version": "6.2.2",
+			"resolved": "https://registry.npmjs.org/@types/nodemailer/-/nodemailer-6.2.2.tgz",
+			"integrity": "sha512-vDbSSe3+bBXYgibKs8duOrH7bhAv1hMHl3Vtdr3KmXZWLfi5WtIg3X6D/+K4SMK1RbNlm5QZBQCOldST/sVjjg==",
 			"dev": true,
 			"requires": {
 				"@types/node": "*"
@@ -7257,9 +7257,9 @@
 			}
 		},
 		"nodemailer": {
-			"version": "6.3.0",
-			"resolved": "https://registry.npmjs.org/nodemailer/-/nodemailer-6.3.0.tgz",
-			"integrity": "sha512-TEHBNBPHv7Ie/0o3HXnb7xrPSSQmH1dXwQKRaMKDBGt/ZN54lvDVujP6hKkO/vjkIYL9rK8kHSG11+G42Nhxuw=="
+			"version": "6.3.1",
+			"resolved": "https://registry.npmjs.org/nodemailer/-/nodemailer-6.3.1.tgz",
+			"integrity": "sha512-j0BsSyaMlyadEDEypK/F+xlne2K5m6wzPYMXS/yxKI0s7jmT1kBx6GEKRVbZmyYfKOsjkeC/TiMVDJBI/w5gMQ=="
 		},
 		"nodemon": {
 			"version": "1.19.3",

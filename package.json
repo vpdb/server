@@ -120,7 +120,7 @@
 		"@types/cheerio": "0.22.13",
 		"@types/ent": "2.2.1",
 		"@types/expect.js": "0.3.29",
-		"@types/faker": "4.1.5",
+		"@types/faker": "4.1.7",
 		"@types/fluent-ffmpeg": "2.1.10",
 		"@types/gm": "1.18.4",
 		"@types/has-ansi": "3.0.0",

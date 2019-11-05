@@ -744,9 +744,9 @@
 			"dev": true
 		},
 		"@types/mongodb": {
-			"version": "3.3.4",
-			"resolved": "https://registry.npmjs.org/@types/mongodb/-/mongodb-3.3.4.tgz",
-			"integrity": "sha512-cCOIAK3+dDA4H/HelWbk2R8fHB1GUpLuFi76b1NBUIyoaQvuw3TG1prWRrtHrSV6PRhZNRnICA3P+Lye0m7lGA==",
+			"version": "3.3.8",
+			"resolved": "https://registry.npmjs.org/@types/mongodb/-/mongodb-3.3.8.tgz",
+			"integrity": "sha512-hsLcKRBFVeam4FyJOU6bwklvsNHzmUBI5SIxQ2meZu+RZgTDzrv+W19YAHgDIuiTn6UqHrVolweLMk0RpKEbxg==",
 			"dev": true,
 			"requires": {
 				"@types/bson": "*",
@@ -754,9 +754,9 @@
 			}
 		},
 		"@types/mongoose": {
-			"version": "5.5.18",
-			"resolved": "https://registry.npmjs.org/@types/mongoose/-/mongoose-5.5.18.tgz",
-			"integrity": "sha512-YWTNSehI+TvuqzEzr7nhzYRbwraq43bZao4XZc/T2ViGmzX06Wy9XPHCHAZ2vsuiZ9Vh9tiGomRt7MjzTihn+w==",
+			"version": "5.5.29",
+			"resolved": "https://registry.npmjs.org/@types/mongoose/-/mongoose-5.5.29.tgz",
+			"integrity": "sha512-bIlJfCIg/pPhORc35hGs14gmDjPLIPffcs20UgMZFB8bw0WPIAkDRTZJlBLpuZ0UgHTOOxcSt56exkUv7f/1Yw==",
 			"dev": true,
 			"requires": {
 				"@types/mongodb": "*",

@@ -44,6 +44,8 @@ export const romFields = {
 		bytes: { type: Number },
 		crc: { type: Number },
 		modified_at: { type: Date },
+		type: { type: String },
+		system: { type: String },
 	}],
 	version: { type: String },
 	languages: { type: [String] },

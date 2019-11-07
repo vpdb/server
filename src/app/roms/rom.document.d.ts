@@ -30,6 +30,8 @@ export interface RomDocument extends GameReferenceDocument, PrettyIdDocument, Fi
 		bytes: number;
 		crc: number;
 		modified_at: Date;
+		type?: string;
+		system?: string;
 	}>;
 	version: string;
 	languages: string[];

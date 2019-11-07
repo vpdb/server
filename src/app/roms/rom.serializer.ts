@@ -50,7 +50,7 @@ export class RomSerializer extends Serializer<RomDocument> {
 
 	protected _simple(ctx: Context, doc: RomDocument, opts: SerializerOptions): RomDocument {
 		const rom = pick(doc, ['id', 'version', 'notes', 'languages']) as RomDocument;
-		rom.rom_files = doc.rom_files.map((f: any) => pick(f, ['filename', 'bytes', 'crc', 'modified_at']));
+		rom.rom_files = doc.rom_files.map((f: any) => pick(f, ['filename', 'bytes', 'crc', 'modified_at', 'type', 'system']));
 
 		// file
 		if (this._populated(doc, '_file')) {

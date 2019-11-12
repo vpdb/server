@@ -152,7 +152,7 @@ function origin(ctx: Context): string {
 	if (process.env.NODE_ENV === 'development') {
 		return requestOrigin;
 	}
-	return requestOrigin.match(/(^https?:\/\/.*?vpdb\.(io|ch)(:\d+)?$)|(^https?:\/\/localhost(:\d+)?$)|^none$|^https:\/\/vpdb-lighthouse\.firebaseapp\.com$/i)
+	return requestOrigin.match(/(^https?:\/\/.*?vpdb\.(io|ch)(:\d+)?$)|(^https?:\/\/localhost(:\d+)?$)|^none$|^https:\/\/vpdb-lighthouse\.firebaseapp\.com|^https:\/\/vpx-js\.web\.app|^https:\/\/play\.pinballtube\.com/i)
 		? requestOrigin : 'https://vpdb.io';
 }
 

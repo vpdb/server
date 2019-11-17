@@ -215,7 +215,7 @@ class ApiCache {
 	 * @param requestState For logging
 	 * @param backglass Changed, added or removed backglass
 	 */
-	public async invalidateCreatedBackglass(requestState: RequestState, backglass: BackglassDocument) {
+	public async invalidateUpdatedBackglass(requestState: RequestState, backglass: BackglassDocument) {
 		await this.invalidateEntity(requestState, 'game', (backglass._game as GameDocument).id, 'detailed');
 	}
 

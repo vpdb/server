@@ -27,12 +27,13 @@ import {
 } from 'mongoose';
 import { Thumb } from '../common/typings/serializers';
 import { TagDocument } from '../tags/tag.document';
+import { AuthoredEntity } from '../users/authored-entity';
 import { ContentAuthor } from '../users/content.author';
 import { UserDocument } from '../users/user.document';
 import { ReleaseFileFlavor } from './version/file/release.version.file.document';
 import { ReleaseVersionDocument } from './version/release.version.document';
 
-export interface ReleaseDocument extends ModeratedDocument, GameReferenceDocument, PrettyIdDocument, MetricsDocument, FileReferenceDocument {
+export interface ReleaseDocument extends ModeratedDocument, GameReferenceDocument, PrettyIdDocument, MetricsDocument, FileReferenceDocument, AuthoredEntity {
 
 	// from model
 	id: string;

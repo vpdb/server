@@ -17,21 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Schema } from 'mongoose';
-import { fileReferencePlugin } from '../common/mongoose/file.reference.plugin';
+import { Types, } from 'mongoose';
+import { ContentAuthor } from './content.author';
+import { UserDocument } from './user.document';
 
-//-----------------------------------------------------------------------------
-// SCHEMA
-//-----------------------------------------------------------------------------
-export const backglassVersionFields = {
-	version: { type: String, required: 'Version must be provided.' },
-	changes: { type: String },
-	_file:  { type: Schema.Types.ObjectId, required: 'You must provide a file reference.', ref: 'File' },
-	released_at: { type: Date, required: true },
-	counter: {
-		downloads: { type: Number, default: 0 },
-	},
-};
-
-export const backglassVersionSchema = new Schema(backglassVersionFields, { toObject: { virtuals: true, versionKey: false } });
-backglassVersionSchema.plugin(fileReferencePlugin);
+export interface AuthoredEntity {
+	authors: ContentAuthor[];
+	_created_by: UserDocument | Types.ObjectId;
+}

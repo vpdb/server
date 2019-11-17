@@ -62,16 +62,8 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 			logger.info(ctx.state, '[ReleaseVersionApi.addVersion] Body: %s', JSON.stringify(ctx.request.body));
 
 			// check permission
-			const authorIds = release.authors.map(a => a._user.toString());
-			const creatorId = release._created_by.toString();
-			let isAllowed: boolean;
-			if ([creatorId, ...authorIds].includes(ctx.state.user._id.toString())) {
-				isAllowed = true;
-			} else {
-				isAllowed = await acl.isAllowed(ctx.state.user.id, 'releases', 'update');
-			}
-
-			if (!isAllowed) {
+			const hasPermission = await this.hasPermission(ctx, release, 'releases', 'update');
+			if (!hasPermission) {
 				throw new ApiError('Only moderators or authors of the release can add new versions.').status(403).log();
 			}
 
@@ -202,15 +194,7 @@ export class ReleaseVersionApi extends ReleaseAbstractApi {
 			}
 
 			// check permissions
-			const authorIds = release.authors.map(a => a._user.toString());
-			const creatorId = release._created_by.toString();
-			let hasPermission: boolean;
-			if ([creatorId, ...authorIds].includes(ctx.state.user._id.toString())) {
-				hasPermission = true;
-			} else {
-				// check for global update permissions
-				hasPermission = await acl.isAllowed(ctx.state.user.id, 'releases', 'update');
-			}
+			const hasPermission = await this.hasPermission(ctx, release, 'releases', 'update');
 			if (!hasPermission) {
 				throw new ApiError('Only moderators and authors of the release can update a version.').status(403).log();
 			}

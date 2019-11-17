@@ -29,7 +29,7 @@ import { moderationPlugin } from '../common/mongoose/moderation.plugin';
 import { prettyIdPlugin } from '../common/mongoose/pretty.id.plugin';
 import { authorSchema } from '../users/content.author.schema';
 import { BackglassDocument } from './backglass.document';
-import { backglassVersionSchema } from './backglass.version.schema';
+import { backglassVersionSchema } from './version/backglass.version.schema';
 
 const shortId = require('shortid32');
 

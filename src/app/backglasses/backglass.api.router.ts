@@ -22,6 +22,8 @@ import { ApiRouter } from '../common/api.router';
 import { Scope } from '../common/scope';
 import { StarApi } from '../stars/star.api';
 import { BackglassApi } from './backglass.api';
+import { ReleaseVersionApi } from '../releases/version/release.version.api';
+import { BackglassVersionApi } from './version/backglass.version.api';
 
 export class BackglassApiRouter implements ApiRouter {
 
@@ -36,6 +38,10 @@ export class BackglassApiRouter implements ApiRouter {
 		this.router.get('/v1/backglasses/:id',   api.view.bind(api));
 		this.router.patch('/v1/backglasses/:id',  api.auth(api.update.bind(api), 'backglasses', 'update-own', [ Scope.ALL, Scope.CREATE ]));
 		this.router.delete('/v1/backglasses/:id', api.auth(api.del.bind(api), 'backglasses', 'delete-own', [ Scope.ALL, Scope.CREATE ]));
+
+		const versionApi = new BackglassVersionApi();
+		this.router.post('/v1/backglasses/:id/versions',           versionApi.auth(versionApi.addVersion.bind(api), 'backglasses', 'add', [Scope.ALL, Scope.CREATE]));
+		//this.router.patch('/v1/backglasses/:id/versions/:version', versionApi.auth(versionApi.updateVersion.bind(api), 'backglasses', 'update-own', [Scope.ALL, Scope.CREATE]));
 
 		const starApi = new StarApi();
 		this.router.post('/v1/backglasses/:id/star',   api.auth(starApi.star('backglass').bind(starApi), 'backglasses', 'star', [ Scope.ALL, Scope.COMMUNITY ]));

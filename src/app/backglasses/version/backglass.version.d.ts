@@ -17,10 +17,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { ModeratedDocument, Types } from 'mongoose';
-import { FileDocument } from '../files/file.document';
+import { ModeratedDocument, PrettyIdDocument, Types } from 'mongoose';
+import { FileDocument } from '../../files/file.document';
 
-export interface BackglassVersion extends ModeratedDocument {
+export interface BackglassVersion extends ModeratedDocument, PrettyIdDocument {
 	version: string;
 	changes: string;
 	_file: FileDocument | Types.ObjectId;

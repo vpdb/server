@@ -26,7 +26,7 @@ import { GameDocument } from '../games/game.document';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
 import { BackglassDocument } from './backglass.document';
-import { BackglassVersion } from './backglass.version';
+import { BackglassVersion } from './version/backglass.version';
 
 export class BackglassSerializer extends Serializer<BackglassDocument> {
 

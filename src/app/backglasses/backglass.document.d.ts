@@ -25,11 +25,12 @@ import {
 	PrettyIdDocument,
 	Types,
 } from 'mongoose';
+import { AuthoredEntity } from '../users/authored-entity';
 import { ContentAuthor } from '../users/content.author';
 import { UserDocument } from '../users/user.document';
-import { BackglassVersion } from './backglass.version';
+import { BackglassVersion } from './version/backglass.version';
 
-export interface BackglassDocument extends ModeratedDocument, GameReferenceDocument, PrettyIdDocument, MetricsDocument, FileReferenceDocument {
+export interface BackglassDocument extends ModeratedDocument, GameReferenceDocument, PrettyIdDocument, MetricsDocument, FileReferenceDocument, AuthoredEntity {
 	id: string;
 	versions: BackglassVersion[];
 	description: { type: string };

@@ -96,7 +96,7 @@ export class BackglassApi extends Api {
 			.exec();
 
 		// invalidate cache
-		await apiCache.invalidateCreatedBackglass(ctx.state, populatedBackglass);
+		await apiCache.invalidateUpdatedBackglass(ctx.state, populatedBackglass);
 
 		// event log
 		await LogEventUtil.log(ctx, 'create_backglass', true, {
@@ -260,7 +260,7 @@ export class BackglassApi extends Api {
 		if (populated !== false) {
 			serializerOpts.includedFields.push('moderation');
 		}
-		this.success(ctx, state.serializers.Backglass.detailed(ctx, populated as BackglassDocument, serializerOpts));
+		this.success(ctx, state.serializers.Backglass.detailed(ctx, backglass, serializerOpts));
 	}
 
 	/**

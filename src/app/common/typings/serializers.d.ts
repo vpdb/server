@@ -18,7 +18,7 @@
  */
 
 import { BackglassSerializer } from '../../backglasses/backglass.serializer';
-import { BackglassVersionSerializer } from '../../backglasses/backglass.version.serializer';
+import { BackglassVersionSerializer } from '../../backglasses/version/backglass.version.serializer';
 import { BuildSerializer } from '../../builds/build.serializer';
 import { CommentSerializer } from '../../comments/comment.serializer';
 import { FileSerializer } from '../../files/file.serializer';

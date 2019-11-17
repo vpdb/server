@@ -29,6 +29,7 @@ import { scope, Scope } from './scope';
 import { config, settings } from './settings';
 import { VpdbBackoffConfig } from './typings/config';
 import { Context } from './typings/context';
+import { AuthoredEntity } from '../users/authored-entity';
 
 export abstract class Api {
 
@@ -423,6 +424,24 @@ export abstract class Api {
 	protected apmEndSpan(span: any) {
 		if (span) {
 			span.end();
+		}
+	}
+
+	/**
+	 * Checks whether the logged user is author or creator of an entity and falls back
+	 * to a given permission check if that's not the case.
+	 * @param ctx Koa context
+	 * @param obj Entity to check
+	 * @param resources Resource ACL
+	 * @param permissions Permission ACL
+	 */
+	protected async hasPermission(ctx: Context, obj: AuthoredEntity, resources: string, permissions: string): Promise<boolean> {
+		const authorIds = obj.authors.map(a => a._user.toString());
+		const creatorId = obj._created_by.toString();
+		if ([creatorId, ...authorIds].includes(ctx.state.user._id.toString())) {
+			return true;
+		} else {
+			return await acl.isAllowed(ctx.state.user.id, resources, permissions);
 		}
 	}
 

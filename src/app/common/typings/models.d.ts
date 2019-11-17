@@ -27,6 +27,7 @@ import { TagDocument } from '../../tags/tag.document';
 import { TokenDocument } from '../../tokens/token.document';
 
 import { BackglassModel } from '../../backglasses/backglass.schema';
+import { BackglassVersionModel } from '../../backglasses/version/backglass.version.schema';
 import { CommentModel } from '../../comments/comment.schema';
 import { FileModel } from '../../files/file.schema';
 import { GameModel } from '../../games/game.schema';
@@ -41,6 +42,7 @@ import { UserModel } from '../../users/user.schema';
 
 export interface Models {
 	Backglass: BackglassModel;
+	BackglassVersion: BackglassVersionModel;
 	Build: Model<BuildDocument>;
 	Comment: CommentModel;
 	File: FileModel;

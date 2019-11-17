@@ -26,7 +26,9 @@ import { BackglassApiRouter } from './backglass.api.router';
 import { BackglassDocument } from './backglass.document';
 import { BackglassModel, backglassSchema } from './backglass.schema';
 import { BackglassSerializer } from './backglass.serializer';
-import { BackglassVersionSerializer } from './backglass.version.serializer';
+import { BackglassVersion } from './version/backglass.version';
+import { BackglassVersionModel, backglassVersionSchema } from './version/backglass.version.schema';
+import { BackglassVersionSerializer } from './version/backglass.version.serializer';
 
 export class BackglassEndPoint extends EndPoint {
 
@@ -39,6 +41,7 @@ export class BackglassEndPoint extends EndPoint {
 
 	public registerModel(): EndPoint {
 		state.models.Backglass = mongoose.model<BackglassDocument, BackglassModel>('Backglass', backglassSchema);
+		state.models.BackglassVersion = mongoose.model<BackglassVersion, BackglassVersionModel>('BackglassVersion', backglassVersionSchema);
 		return this;
 	}
 

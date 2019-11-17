@@ -18,7 +18,7 @@
  */
 
 import chalk from 'chalk';
-import { compact, isEmpty } from 'lodash';
+import { compact, isEmpty, isObject } from 'lodash';
 import { basename, dirname, sep } from 'path';
 import { format as sprintf } from 'util';
 
@@ -83,12 +83,22 @@ export class ApiError extends Error {
 
 	/**
 	 * Constructor.
-	 * @param format Message
-	 * @param param Message arguments to replaced
+	 * @param formatOrPreviousError Message or previous error
+	 * @param params Message arguments to replaced
 	 */
-	constructor(format?: any, ...param: any[]) {
-		super(sprintf.apply(null, arguments));
+	constructor(formatOrPreviousError?: any, ...params: any[]) {
+		super(getMessage(formatOrPreviousError, ...params));
 		this.logLevel = null; // don't log per default
+
+		if (formatOrPreviousError && formatOrPreviousError.constructor && formatOrPreviousError.constructor.name === 'ApiError') {
+			Object.assign(this, formatOrPreviousError);
+
+		} else if (formatOrPreviousError && formatOrPreviousError.errors && isObject(formatOrPreviousError.errors)) {
+			for (const err of Object.values<any>(formatOrPreviousError.errors)) {
+				this.validationError(err.path, err.message, err.value, err.kind);
+			}
+			this.message = formatOrPreviousError.message || 'Validation failed.';
+		}
 	}
 
 	/**
@@ -330,4 +340,14 @@ export interface ApiValidationError {
 	value?: any;
 	kind?: string;
 	reason?: Error;
+}
+
+function getMessage(msgOrErr: any, ...params: any[]) {
+	if (!msgOrErr) {
+		return undefined;
+	}
+	if (msgOrErr && msgOrErr.message) {
+		return msgOrErr.message;
+	}
+	return sprintf(msgOrErr, ...params);
 }

@@ -98,6 +98,17 @@ describe('The VPDB `Backglass Version` API', () => {
 				]));
 		});
 
+		it('should fail validations when providing a wrong release date', async () => {
+			const user = 'member';
+			const backglass = await api.releaseHelper.createDirectB2S(user);
+			await api.as(user)
+				.post(`/v1/backglasses/${backglass.id}/versions`, {
+					released_at: { foo: 'bar '},
+				}).then(res => res.expectValidationErrors([
+					['released_at', 'Cast to Date failed'],
+				]));
+		});
+
 		it('should fail validations when providing a non-existent file reference', async () => {
 			const user = 'member';
 			const backglass = await api.releaseHelper.createDirectB2S(user);
@@ -124,6 +135,7 @@ describe('The VPDB `Backglass Version` API', () => {
 		});
 
 		it('should succeed with correct data', async () => {
+			const date = new Date('2101-11-18');
 			const user = 'moderator';
 			const backglass = await api.releaseHelper.createDirectB2S(user);
 			const b2sFile = await api.fileHelper.createDirectB2S(user, { keep: true });
@@ -131,18 +143,20 @@ describe('The VPDB `Backglass Version` API', () => {
 				.post(`/v1/backglasses/${backglass.id}/versions`, {
 					version: '2.0',
 					changes: '*Second release.*',
+					released_at: date.toISOString(),
 					_file: b2sFile.id
 				}).then(res => res.expectStatus(201));
 			expect(res.data.version).to.equal('2.0');
 
 			// expect it by id
-			res = await api.debug().get(`/v1/backglasses/${backglass.id}`)
+			res = await api.get(`/v1/backglasses/${backglass.id}`)
 				.then(res => res.expectStatus(200));
 
 			expect(res.data.versions).to.have.length(2);
 			expect(res.data.versions[1].version).to.equal('1.0');
 			expect(res.data.versions[0].version).to.equal('2.0');
 			expect(res.data.versions[0].changes).to.equal('*Second release.*');
+			expect(new Date(res.data.versions[0].released_at).getTime()).to.equal(date.getTime());
 			expect(res.data.versions[0].file.id).to.equal(b2sFile.id);
 
 			res = await api.get(`/v1/games/${backglass.game.id}`)

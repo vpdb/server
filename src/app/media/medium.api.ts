@@ -89,7 +89,7 @@ export class MediumApi extends Api {
 			throw new ApiError('No such medium with ID "%s".', ctx.params.id).status(404);
 		}
 
-		// only allow deleting own roms
+		// only allow deleting own media
 		if (!canDelete && !(medium._created_by as Types.ObjectId).equals(ctx.state.user._id)) {
 			throw new ApiError('Permission denied, must be owner.').status(403);
 		}

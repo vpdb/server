@@ -280,13 +280,16 @@ export class BackglassApi extends Api {
 		if (!backglass) {
 			throw new ApiError('No such backglass with ID "%s".', ctx.params.id).status(404);
 		}
-		// only allow deleting own roms
+		// only allow deleting own backglasses
 		if (!canDelete && !(backglass._created_by as Types.ObjectId).equals(ctx.state.user._id)) {
 			throw new ApiError('Permission denied, must be owner.').status(403);
 		}
 		// remove from db
 		await backglass.remove();
 		logger.info(ctx.state, '[BackglassApi.delete] Backglass "%s" successfully deleted.', backglass.id);
+
+		// invalidate cache
+		await apiCache.invalidateUpdatedGame(ctx.state, await state.models.Game.findById(backglass._game));
 
 		// event log
 		await LogEventUtil.log(ctx, 'delete_backglass', false, {

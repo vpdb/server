@@ -116,7 +116,7 @@ export class Directb2sOptimizationProcessor implements OptimizationProcessor<Bac
 					source.push(null);
 				} else {
 					write(' ' + attr.name + '="');
-					write(escape(attr.value));
+					write(attr.value.replace(/"/g, '&quot;'));
 					write('"');
 				}
 			});

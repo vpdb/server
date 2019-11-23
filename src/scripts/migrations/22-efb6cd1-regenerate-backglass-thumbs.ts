@@ -45,7 +45,7 @@ export async function up() {
 			await processorQueue.reprocessFile(null,
 				version._file as FileDocument,
 				false,
-				(variation: BackglassVariation) => !!variation.modulate,
+				(variation: BackglassVariation) => !!(variation as any).modulate,
 				() => false,
 			);
 		}

@@ -87,7 +87,6 @@ export interface ImageFileVariation extends FileVariation {
 
 export interface BackglassVariation extends ImageFileVariation {
 	cutGrill?: boolean;
-	modulate?: number;
 }
 
 export interface VideoFileVariation extends FileVariation {

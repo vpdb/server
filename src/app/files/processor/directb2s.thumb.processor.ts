@@ -96,10 +96,6 @@ export class Directb2sThumbProcessor implements CreationProcessor<BackglassVaria
 							img.setFormat(mimeTypes[variation.mimeType].ext);
 						}
 
-						if (variation.modulate) {
-							img.modulate(variation.modulate, 100, 100);
-						}
-
 						const writeStream = createWriteStream(dest);
 
 						// setup success handler

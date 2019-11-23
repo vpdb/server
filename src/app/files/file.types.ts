@@ -41,10 +41,10 @@ class FileTypes {
 		mimeTypes: ['application/x-directb2s'],
 		variations: [
 			{ name: 'full',                               mimeType: 'image/jpeg', cutGrill: false },
-			{ name: 'medium',    width: 364, height: 291, mimeType: 'image/jpeg', cutGrill: true, quality: 85, modulate: 200, source: 'medium-2x' },
-			{ name: 'medium-2x', width: 728, height: 582, mimeType: 'image/jpeg', cutGrill: true, quality: 80, modulate: 200 },
-			{ name: 'small',     width: 253, height: 202, mimeType: 'image/jpeg', cutGrill: true, quality: 90, modulate: 200, source: 'small-2x' },
-			{ name: 'small-2x',  width: 506, height: 404, mimeType: 'image/jpeg', cutGrill: true, quality: 80, modulate: 200, source: 'medium-2x' },
+			{ name: 'medium',    width: 364, height: 291, mimeType: 'image/jpeg', cutGrill: true, quality: 85, source: 'medium-2x' },
+			{ name: 'medium-2x', width: 728, height: 582, mimeType: 'image/jpeg', cutGrill: true, quality: 80 },
+			{ name: 'small',     width: 253, height: 202, mimeType: 'image/jpeg', cutGrill: true, quality: 90, source: 'small-2x' },
+			{ name: 'small-2x',  width: 506, height: 404, mimeType: 'image/jpeg', cutGrill: true, quality: 80, source: 'medium-2x' },
 		],
 	};
 

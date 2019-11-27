@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Document, Types } from 'mongoose';
+import { Document, Schema, Types } from 'mongoose';
 import { ReleaseDocument } from '../releases/release.document';
 import { UserDocument } from '../users/user.document';
 
@@ -31,6 +31,11 @@ export interface CommentDocument extends Document {
 	message: string;
 	ip: string;
 	created_at: Date;
+	edits?: Array<{
+		_editor: UserDocument | Types.ObjectId;
+		edited_at: Date;
+		diff: string;
+	}>;
 
 	// serialized
 	from?: UserDocument;

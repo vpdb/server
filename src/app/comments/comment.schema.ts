@@ -36,6 +36,11 @@ export const commentFields = {
 		release_moderation: { type: Schema.Types.ObjectId, ref: 'Release', index: true, sparse: true },
 	},
 	message: { type: String, required: 'You must provide a message when commenting.' },
+	edits: [{
+		_editor: { type: Schema.Types.ObjectId, required: true, ref: 'User', index: true },
+		edited_at:  { type: Date, required: true },
+		diff: { type: String }
+	}],
 	ip: { type: String, required: true },
 	created_at: { type: Date, required: true },
 };

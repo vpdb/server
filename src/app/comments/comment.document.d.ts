@@ -32,7 +32,7 @@ export interface CommentDocument extends Document {
 	ip: string;
 	created_at: Date;
 	edits?: Array<{
-		_editor: UserDocument | Types.ObjectId;
+		_edited_by: UserDocument | Types.ObjectId;
 		edited_at: Date;
 		diff: string;
 	}>;

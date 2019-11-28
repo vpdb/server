@@ -402,7 +402,7 @@ export abstract class Api {
 	 */
 	protected noAwait(func: () => Promise<void>): void {
 		func().catch(err => {
-			throw err;
+			logger.error(null, 'Error in noAwait: %s%s', err.message, err);
 		});
 	}
 

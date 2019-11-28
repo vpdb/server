@@ -244,6 +244,7 @@ export class CommentApi extends Api {
 					throw new ApiError('Access denied, must be moderator or owner.').status(403);
 				}
 
+				/* istanbul ignore next: doesn't happen in tests because there is no previous data. */
 				if (!comment.edits) {
 					comment.edits = [];
 				}

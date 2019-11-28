@@ -402,6 +402,7 @@ export abstract class Api {
 	 */
 	protected noAwait(func: () => Promise<void>): void {
 		func().catch(err => {
+			/* istanbul ignore next: should not happen, but when it does, it logs. */
 			logger.error(null, 'Error in noAwait: %s%s', err.message, err);
 		});
 	}

@@ -17,9 +17,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { apiCache } from '../../app/common/api.cache';
 import { logger } from '../../app/common/logger';
 import { state } from '../../app/state';
-import { apiCache } from '../../app/common/api.cache';
 
 /**
  * Updates most ROM files with the type, so we know which is the main ROM,

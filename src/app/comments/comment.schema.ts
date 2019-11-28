@@ -39,7 +39,7 @@ export const commentFields = {
 	edits: [{
 		_edited_by: { type: Schema.Types.ObjectId, required: true, ref: 'User', index: true },
 		edited_at:  { type: Date, required: true },
-		diff: { type: String }
+		diff: { type: String },
 	}],
 	ip: { type: String, required: true },
 	created_at: { type: Date, required: true },

@@ -20,14 +20,14 @@
 import { defaults, orderBy, pick } from 'lodash';
 import sanitize = require('mongo-sanitize');
 import { Api } from '../../common/api';
+import { apiCache } from '../../common/api.cache';
 import { ApiError } from '../../common/api.error';
 import { logger } from '../../common/logger';
 import { Context } from '../../common/typings/context';
+import { GameDocument } from '../../games/game.document';
+import { LogEventUtil } from '../../log-event/log.event.util';
 import { ReleaseVersionDocument } from '../../releases/version/release.version.document';
 import { state } from '../../state';
-import { LogEventUtil } from '../../log-event/log.event.util';
-import { GameDocument } from '../../games/game.document';
-import { apiCache } from '../../common/api.cache';
 
 /* tslint:disable:no-unsafe-finally */
 export class BackglassVersionApi extends Api {

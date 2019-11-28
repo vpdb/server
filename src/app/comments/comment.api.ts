@@ -19,6 +19,7 @@
 
 import { cloneDeep } from 'lodash';
 
+import { createTwoFilesPatch } from 'diff';
 import sanitize = require('mongo-sanitize');
 import { acl } from '../common/acl';
 import { Api } from '../common/api';
@@ -33,7 +34,6 @@ import { ReleaseDocument } from '../releases/release.document';
 import { state } from '../state';
 import { UserDocument } from '../users/user.document';
 import { CommentDocument } from './comment.document';
-import { createTwoFilesPatch } from 'diff';
 
 export class CommentApi extends Api {
 

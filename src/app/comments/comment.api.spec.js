@@ -145,6 +145,13 @@ describe('The VPDB `Comment` API', () => {
 				.then(res => res.expectValidationError('_ref.release', 'unknown reference'));
 		});
 
+		it('should fail when changing message as non-owner', async () => {
+			await api
+				.as('member2')
+				.patch(`/v1/comments/${comment.id}`, { message: 'foobar' })
+				.then(res => res.expectError(403, 'must be moderator or owner'));
+		});
+
 		it('should fail when changing reference as non-moderator', async () => {
 			await api
 				.as('member')
@@ -204,6 +211,40 @@ describe('The VPDB `Comment` API', () => {
 			expect(res.data.filter(comment => comment.id === oldComment.id)).to.have.length(1);
 			res = await api.as('moderator').get(`/v1/releases/${release.id}/moderate/comments`).then(res => res.expectStatus(200));
 			expect(res.data.filter(comment => comment.id === oldComment.id)).to.be.empty();
+		});
+
+		it('should succeed when updating the message as owner', async () => {
+
+			res = await api
+				.as('member')
+				.post('/v1/releases/' + release.id + '/comments', { message: faker.company.catchPhrase() })
+				.then(res => res.expectStatus(201));
+
+			const oldComment = res.data;
+			const newMessage = faker.company.catchPhrase();
+			res = await api
+				.as('member')
+				.patch(`/v1/comments/${oldComment.id}`, { message: newMessage })
+				.then(res => res.expectStatus(200));
+
+			expect(res.data.message).to.be(newMessage);
+		});
+
+		it('should succeed when updating the message as moderator', async () => {
+
+			res = await api
+				.as('member')
+				.post('/v1/releases/' + release.id + '/comments', { message: faker.company.catchPhrase() })
+				.then(res => res.expectStatus(201));
+
+			const oldComment = res.data;
+			const newMessage = faker.company.catchPhrase();
+			res = await api
+				.as('moderator')
+				.patch(`/v1/comments/${oldComment.id}`, { message: newMessage })
+				.then(res => res.expectStatus(200));
+
+			expect(res.data.message).to.be(newMessage);
 		});
 
 	});

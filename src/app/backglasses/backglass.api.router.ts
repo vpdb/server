@@ -20,9 +20,9 @@
 import Router = require('koa-router');
 import { ApiRouter } from '../common/api.router';
 import { Scope } from '../common/scope';
+import { ReleaseVersionApi } from '../releases/version/release.version.api';
 import { StarApi } from '../stars/star.api';
 import { BackglassApi } from './backglass.api';
-import { ReleaseVersionApi } from '../releases/version/release.version.api';
 import { BackglassVersionApi } from './version/backglass.version.api';
 
 export class BackglassApiRouter implements ApiRouter {

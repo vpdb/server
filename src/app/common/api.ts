@@ -21,6 +21,7 @@ import Router from 'koa-router';
 import { difference, extend, intersection, isEmpty, isObject, keys, map, pick, uniq, values } from 'lodash';
 import { format as formatUrl, parse as parseUrl } from 'url';
 import { state } from '../state';
+import { AuthoredEntity } from '../users/authored-entity';
 import { UserDocument } from '../users/user.document';
 import { acl } from './acl';
 import { ApiError, ApiValidationError } from './api.error';
@@ -29,7 +30,6 @@ import { scope, Scope } from './scope';
 import { config, settings } from './settings';
 import { VpdbBackoffConfig } from './typings/config';
 import { Context } from './typings/context';
-import { AuthoredEntity } from '../users/authored-entity';
 
 export abstract class Api {
 

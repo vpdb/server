@@ -92,7 +92,7 @@
 		"pngquant": "3.0.0",
 		"project-name-generator": "2.1.7",
 		"randomstring": "1.1.5",
-		"raygun": "0.10.1",
+		"raygun": "0.10.2",
 		"redis": "2.8.0",
 		"rollbar": "2.14.2",
 		"sax": "1.2.4",

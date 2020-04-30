@@ -1,5 +1,5 @@
 # Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
-version: v1.13.3
+version: v1.14.1
 # ignores vulnerabilities until expiry date; change duration by modifying expiry date
 ignore:
   'npm:braces:20180219':
@@ -134,3 +134,48 @@ patch:
         patched: '2018-07-13T21:56:19.990Z'
     - pngquant > pngquant-bin > bin-wrapper > download > caw > tunnel-agent:
         patched: '2018-07-13T21:56:19.990Z'
+  SNYK-JS-LODASH-567746:
+    - lodash:
+        patched: '2020-04-30T22:04:22.582Z'
+    - acl > lodash:
+        patched: '2020-04-30T22:04:22.582Z'
+    - bull > lodash:
+        patched: '2020-04-30T22:04:22.582Z'
+    - nodegit > lodash:
+        patched: '2020-04-30T22:04:22.582Z'
+    - project-name-generator > lodash:
+        patched: '2020-04-30T22:04:22.582Z'
+    - snyk > lodash:
+        patched: '2020-04-30T22:04:22.582Z'
+    - acl > async > lodash:
+        patched: '2020-04-30T22:04:22.582Z'
+    - archiver > async > lodash:
+        patched: '2020-04-30T22:04:22.582Z'
+    - winston > async > lodash:
+        patched: '2020-04-30T22:04:22.582Z'
+    - raygun > nock > lodash:
+        patched: '2020-04-30T22:04:22.582Z'
+    - snyk > @snyk/dep-graph > lodash:
+        patched: '2020-04-30T22:04:22.582Z'
+    - snyk > inquirer > lodash:
+        patched: '2020-04-30T22:04:22.582Z'
+    - snyk > snyk-config > lodash:
+        patched: '2020-04-30T22:04:22.582Z'
+    - snyk > snyk-mvn-plugin > lodash:
+        patched: '2020-04-30T22:04:22.582Z'
+    - snyk > snyk-nodejs-lockfile-parser > lodash:
+        patched: '2020-04-30T22:04:22.582Z'
+    - snyk > snyk-nuget-plugin > lodash:
+        patched: '2020-04-30T22:04:22.582Z'
+    - nodegit > request-promise-native > request-promise-core > lodash:
+        patched: '2020-04-30T22:04:22.582Z'
+    - snyk > @snyk/dep-graph > graphlib > lodash:
+        patched: '2020-04-30T22:04:22.582Z'
+    - snyk > snyk-go-plugin > graphlib > lodash:
+        patched: '2020-04-30T22:04:22.582Z'
+    - snyk > snyk-nodejs-lockfile-parser > graphlib > lodash:
+        patched: '2020-04-30T22:04:22.582Z'
+    - snyk > snyk-nuget-plugin > dotnet-deps-parser > lodash:
+        patched: '2020-04-30T22:04:22.582Z'
+    - snyk > snyk-php-plugin > @snyk/composer-lockfile-parser > lodash:
+        patched: '2020-04-30T22:04:22.582Z'

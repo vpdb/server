@@ -1,6 +1,6 @@
 {
 	"name": "vpdb",
-	"version": "v3.2.8-SNAPSHOT",
+	"version": "v3.2.9-SNAPSHOT",
 	"lockfileVersion": 1,
 	"requires": true,
 	"dependencies": {
@@ -566,9 +566,9 @@
 			"dev": true
 		},
 		"@types/fluent-ffmpeg": {
-			"version": "2.1.11",
-			"resolved": "https://registry.npmjs.org/@types/fluent-ffmpeg/-/fluent-ffmpeg-2.1.11.tgz",
-			"integrity": "sha512-Mt4nAJVsQdYAya0I/VEQ51PXgzi/UVGf/mih3uRnnQVC3ZaugEzEdnISjkGcqyHuKClVG2KrMbw6+krh3YS50A==",
+			"version": "2.1.16",
+			"resolved": "https://registry.npmjs.org/@types/fluent-ffmpeg/-/fluent-ffmpeg-2.1.16.tgz",
+			"integrity": "sha512-1FTstm6xY/2WsJVt6ARV7CiJjNCQDlR/nfw6xuYk5ITbVjk7sw89Biyqm2DGW4c3aZ3vBx+5irZvsql4eybpoQ==",
 			"dev": true,
 			"requires": {
 				"@types/node": "*"

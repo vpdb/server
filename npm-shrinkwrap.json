@@ -1,6 +1,6 @@
 {
 	"name": "vpdb",
-	"version": "v3.2.8-SNAPSHOT",
+	"version": "v3.2.9-SNAPSHOT",
 	"lockfileVersion": 1,
 	"requires": true,
 	"dependencies": {
@@ -717,9 +717,9 @@
 			}
 		},
 		"@types/lodash": {
-			"version": "4.14.145",
-			"resolved": "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.145.tgz",
-			"integrity": "sha512-7lX5bZFO3YG3AG0XVIm5L1SB6wDLtuaJksTkTWrux3/XwCZgw3MPWZBt3Jgj0w98uqUXWVypT2msxo0A1t22lw==",
+			"version": "4.14.162",
+			"resolved": "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.162.tgz",
+			"integrity": "sha512-alvcho1kRUnnD1Gcl4J+hK0eencvzq9rmzvFPRmP5rPHx9VVsJj6bKLTATPVf9ktgv4ujzh7T+XWKp+jhuODig==",
 			"dev": true
 		},
 		"@types/mime": {

@@ -94,7 +94,7 @@
 		"randomstring": "1.1.5",
 		"raygun": "0.10.1",
 		"redis": "2.8.0",
-		"rollbar": "2.14.2",
+		"rollbar": "2.19.4",
 		"sax": "1.2.4",
 		"sharp": "0.23.2",
 		"shortid32": "0.1.1",

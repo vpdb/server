@@ -67,7 +67,7 @@ export function gameReferencePlugin(schema: Schema, options: GameReferenceOption
 	 * @param {Array<any> | object} query Input query
 	 * @return {Promise<Array<any> | object>} Output query
 	 */
-	schema.statics.applyRestrictions = async function<T>(this: ModelProperties, ctx: Context, query: T): Promise<T> {
+	schema.statics.applyRestrictions = async function<T>(ctx: Context, query: T): Promise<T> {
 
 		const reference = modelReferenceMap[this.modelName];
 		const resource = modelResourceMap[this.modelName];
@@ -109,7 +109,7 @@ export function gameReferencePlugin(schema: Schema, options: GameReferenceOption
 	 * @param {Array<any> | object} query Query to append
 	 * @return {Promise<Array<any> | object | null>} Updated query on restriction, same without restriction and null if not logged.
 	 */
-	schema.statics.applyRestrictionsForGame = async function<T>(this: ModelProperties, ctx: Context, game: GameDocument, query: T): Promise<T | null> {
+	schema.statics.applyRestrictionsForGame = async function<T>(ctx: Context, game: GameDocument, query: T): Promise<T | null> {
 
 		const reference = modelReferenceMap[this.modelName];
 		const resource = modelResourceMap[this.modelName];

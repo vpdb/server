@@ -20,7 +20,7 @@
 import { isUndefined, times } from 'lodash';
 
 import { createHash } from 'crypto';
-import { OleCompoundDoc, Storage } from 'vpx-toolbox';
+import { BinaryReader, OleCompoundDoc, Storage } from 'vpx-js';
 import { TableBlock } from '../releases/release.tableblock';
 import { logger } from './logger';
 import { RequestState } from './typings/context';
@@ -115,7 +115,7 @@ class VisualPinballTable {
 	 * @returns {Promise<OleCompoundDoc>}
 	 */
 	public async readDoc(filename: string): Promise<OleCompoundDoc> {
-		return await OleCompoundDoc.load(filename);
+		return await OleCompoundDoc.load(new BinaryReader(filename));
 	}
 
 	/**

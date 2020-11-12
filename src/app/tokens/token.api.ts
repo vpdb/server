@@ -19,6 +19,7 @@
 
 import { extend, pick } from 'lodash';
 import sanitize = require('mongo-sanitize');
+import { FilterQuery } from 'mongoose';
 
 import { acl } from '../common/acl';
 import { Api } from '../common/api';
@@ -182,7 +183,7 @@ export class TokenApi extends Api {
 	 */
 	public async list(ctx: Context) {
 
-		const query = { _created_by: ctx.state.user._id, type: 'personal' };
+		const query = { _created_by: ctx.state.user._id, type: 'personal' } as FilterQuery<TokenDocument>;
 		const allowedTypes = [ 'personal', 'provider' ];
 
 		// filter by type?

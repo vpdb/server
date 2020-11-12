@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { Table } from 'vpx-toolbox';
+import { BinaryReader, Table, TableExporter, ThreeTextureLoader } from 'vpx-js';
 import { logger } from '../../common/logger';
 import { RequestState } from '../../common/typings/context';
 import { FileDocument } from '../file.document';
@@ -40,13 +40,14 @@ export class VptGltfProcessor implements CreationProcessor<FileVariation> {
 	public async process(requestState: RequestState, file: FileDocument, src: string, dest: string, variation?: FileVariation): Promise<string> {
 
 		logger.info(requestState, '[VptGltfProcessor.process]: Parsing VPX file at %s', src);
-		const vpt = await Table.load(src);
+		const vpt = await Table.load(new BinaryReader(src));
 		logger.info(requestState, '[VptGltfProcessor.process]: VPX file parsed, exporting to GLB at %s.', dest);
 
-		const glb = await vpt.exportGlb({
+		const exporter = new TableExporter(vpt);
+		const glb = await exporter.exportGlb({
 
 			// texture and material
-			applyTextures: process.env.NODE_ENV !== 'test', // gltf loader in tests can't handle textures
+			applyTextures: (process.env.NODE_ENV !== 'test') ? new ThreeTextureLoader() : undefined, // gltf loader in tests can't handle textures
 			applyMaterials: true,
 			optimizeTextures: true,
 			gltfOptions: {

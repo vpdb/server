@@ -19,6 +19,7 @@
 
 import { compact, flatten, isArray, map, uniq } from 'lodash';
 import {
+	FilterQuery,
 	GameReferenceModel,
 	MetricsModel,
 	ModeratedDocument,
@@ -162,7 +163,7 @@ releaseSchema.pre('remove', async function(this: ReleaseDocument) {
 
 	for (const fileId of fileIds) {
 		await state.models.TableBlock.updateOne(
-			{ _files: fileId },
+			{ _files: fileId } as FilterQuery<ReleaseDocument>,
 			{ $pull: { _files: fileId } },
 			{ multi: true },
 		);

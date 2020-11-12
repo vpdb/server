@@ -18,7 +18,7 @@
  */
 import { mapKeys, omit } from 'lodash';
 
-import { Table } from 'vpx-toolbox';
+import { BinaryReader, Table } from 'vpx-js';
 import { RequestState } from '../../common/typings/context';
 import { File } from '../file';
 import { FileDocument } from '../file.document';
@@ -33,9 +33,9 @@ export class VptMetadata extends Metadata {
 	}
 
 	public async getMetadata(requestState: RequestState, file: FileDocument, path: string, variation?: FileVariation): Promise<{ [p: string]: any }> {
-		const table = await Table.load(path, { gameDataOnly: true, tableInfoOnly: true });
+		const table = await Table.load(new BinaryReader(path), { tableDataOnly: true, tableInfoOnly: true, loadTableScript: true });
 		const script = await table.getTableScript();
-		const props = mapKeys(table.tableInfo, key => {
+		const props = mapKeys(table.info, key => {
 			switch (key) {
 				case 'TableName': return 'table_name';
 				case 'AuthorName': return 'author_name';

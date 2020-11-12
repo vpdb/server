@@ -20,7 +20,7 @@
 
 import { writeFileSync } from 'fs';
 import { basename } from 'path';
-import { Table } from 'vpx-toolbox';
+import { BinaryReader, Table, TableExporter, ThreeTextureLoader } from 'vpx-js';
 
 (async () => {
 
@@ -35,16 +35,17 @@ import { Table } from 'vpx-toolbox';
 		//const tablePath = 'C:/Development/vpdb-server/src/test/fixtures/table-hit-target.vpx';
 		//const tablePath = 'D:/Pinball/Visual Pinball/Tables/vpdb-production/eksmrxkrw.vpx';
 
-		const vpt = await Table.load(tablePath);
+		const vpt = await Table.load(new BinaryReader(tablePath));
 		const loaded = Date.now();
 
 		// const obj = vpt.gates.find(g => g.getName() === 'WireW');
 		// writeFileSync('gate-vpdb.obj', obj.getMeshes(vpt).wire.mesh.serializeToObj());
 
 		const name = basename(tablePath, '.vpx');
-		const glb = await vpt.exportGlb({
+		const exporter = new TableExporter(vpt);
+		const glb = await exporter.exportGlb({
 
-			applyTextures: true,
+			applyTextures: new ThreeTextureLoader(),
 			applyMaterials: true,
 			exportLightBulbLights: true,
 			optimizeTextures: true,

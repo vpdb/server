@@ -18,7 +18,7 @@
  */
 
 import { pick } from 'lodash';
-import { MetricsDocument, Model } from 'mongoose';
+import { FilterQuery, MetricsDocument, Model } from 'mongoose';
 
 import { Api } from '../common/api';
 import { apiCache } from '../common/api.cache';
@@ -190,7 +190,7 @@ export class StarApi extends Api {
 				['_ref.' + modelName]: entity._id,
 				_from: ctx.state.user._id,
 				type: modelName,
-			};
+			} as FilterQuery<StarDocument>;
 			const star = await state.models.Star.findOne(q);
 			return [entity, star];
 		};

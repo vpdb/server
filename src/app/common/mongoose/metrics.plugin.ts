@@ -117,7 +117,7 @@ export function metricsPlugin<T>(schema: Schema, options: MetricsOptions = {}) {
 	 * @param {string} counterName Name of the counter, e.g. "views"
 	 * @param {number} [value=1] How much to increment. Use a negative value for decrement
 	 */
-	schema.statics.incrementCounter = async function(this: ModelProperties, entityId: string, counterName: string, value: number = 1): Promise<void> {
+	schema.statics.incrementCounter = async function(entityId: string, counterName: string, value: number = 1): Promise<void> {
 		// update cache
 		await apiCache.incrementCounter(this.modelName.toLowerCase(), entityId, counterName, value);
 		// update db

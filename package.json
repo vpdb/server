@@ -85,7 +85,7 @@
 		"mongoose-unique-validator": "2.0.3",
 		"natives": "1.1.6",
 		"nodegit": "^0.26.2",
-		"nodemailer": "6.4.15",
+		"nodemailer": "6.6.1",
 		"optipng": "2.2.0",
 		"passthrough-counter": "1.0.0",
 		"path-to-regexp": "3.1.0",

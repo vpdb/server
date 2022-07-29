@@ -80,7 +80,7 @@
 		"lodash": "4.17.20",
 		"microtime": "3.0.0",
 		"mongo-sanitize": "1.1.0",
-		"mongoose": "5.7.8",
+		"mongoose": "6.4.6",
 		"mongoose-paginate": "5.0.3",
 		"mongoose-unique-validator": "2.0.3",
 		"natives": "1.1.6",

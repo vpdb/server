@@ -156,7 +156,7 @@
 		"cheerio": "1.0.0-rc.2",
 		"cross-env": "6.0.3",
 		"expect.js": "0.3.1",
-		"faker": "4.1.0",
+		"@faker-js/faker": "4.1.0",
 		"fast-glob": "3.2.4",
 		"form-data": "2.5.1",
 		"json-stable-stringify": "1.0.1",

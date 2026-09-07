@@ -121,7 +121,7 @@
 		"@types/cheerio": "0.22.13",
 		"@types/diff": "4.0.2",
 		"@types/ent": "2.2.3",
-		"@types/expect.js": "0.3.29",
+		"@types/expect.js": "0.3.32",
 		"@types/faker": "4.1.7",
 		"@types/fluent-ffmpeg": "2.1.16",
 		"@types/gm": "1.18.9",

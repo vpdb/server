@@ -46,7 +46,7 @@
 	},
 	"mod-project-name": "vpdb",
 	"dependencies": {
-		"@koa/cors": "3.1.0",
+		"@koa/cors": "5.0.0",
 		"@slack/client": "5.0.2",
 		"acl": "0.4.11",
 		"adm-zip": "0.4.16",

@@ -71,7 +71,7 @@
 		"has-ansi": "4.0.0",
 		"ioredis": "4.19.2",
 		"jwt-simple": "0.5.6",
-		"koa": "2.13.0",
+		"koa": "2.16.4",
 		"koa-bodyparser": "4.3.0",
 		"koa-json": "2.0.2",
 		"koa-response-time": "2.1.0",
